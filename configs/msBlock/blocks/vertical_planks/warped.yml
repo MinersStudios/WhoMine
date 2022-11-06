@@ -20,6 +20,7 @@ craft:
     - "P"
   material-list:
     P: WARPED_PLANKS
+  item-amount: 3
 noteblock:
   instrument: BANJO
   note: 7
