@@ -1,0 +1,41 @@
+namespaced-key: "framed_acacia_planks"
+block-settings:
+  dig-speed: 11.0
+  drop:
+    experience: 0
+    drops-default-item: true
+  tool:
+    type: AXE
+    force: false
+item:
+  material: PAPER
+  name: "Обрамленные акациевые доски"
+  custom-model-data: 13009
+craft:
+  show-in-crafts-menu: true
+  group: "framed_planks"
+  shaped-recipe:
+    - "SS"
+  material-list:
+    S: ACACIA_SLAB
+noteblock:
+  instrument: BANJO
+  note: 9
+  is-powered: false
+sounds:
+  place:
+    sound-name: "block.wood.place"
+    pitch: 1.0
+    volume: 1.0
+  break:
+    sound-name: "block.wood.break"
+    pitch: 1.0
+    volume: 1.0
+  step:
+    sound-name: "block.wood.step"
+    pitch: 0.9
+    volume: 0.3
+  hit:
+    sound-name: "block.wood.hit"
+    pitch: 0.5
+    volume: 0.5

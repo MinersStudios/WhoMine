@@ -1,0 +1,43 @@
+namespaced-key: "example"
+block-settings:
+  dig-speed: 1.0
+  drop:
+    experience: 0
+    drops-default-item: true
+  tool:
+    type: HAND/SWORD/PICKAXE/AXE/SHOVEL/HOE/SHEARS
+    force: false
+item:
+  material: PAPER
+  name: "Item name"
+  custom-model-data: 0
+craft:
+  show-in-crafts-menu: true
+  group: "group"
+  shaped-recipe:
+    - " P "
+    - " P "
+    - " P "
+  material-list:
+    P: PAPER
+noteblock:
+  instrument: BANJO
+  note: 0
+  is-powered: false
+sounds:
+  place:
+    sound-name: "block.wood.place"
+    pitch: 1.0
+    volume: 1.0
+  break:
+    sound-name: "block.wood.break"
+    pitch: 1.0
+    volume: 1.0
+  step:
+    sound-name: "block.wood.step"
+    pitch: 1.0
+    volume: 1.0
+  hit:
+    sound-name: "block.wood.hit"
+    pitch: 1.0
+    volume: 1.0
