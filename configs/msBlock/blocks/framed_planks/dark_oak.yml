@@ -18,10 +18,11 @@ craft:
     - "SS"
   material-list:
     S: DARK_OAK_SLAB
-noteblock:
-  instrument: BANJO
-  note: 12
-  is-powered: false
+placing:
+  normal:
+    instrument: BANJO
+    note: 12
+    is-powered: false
 sounds:
   place:
     sound-name: "block.wood.place"

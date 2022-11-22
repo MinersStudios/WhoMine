@@ -20,10 +20,11 @@ craft:
   material-list:
     K: KELP
     W: WHITE_WOOL
-noteblock:
-  instrument: BIT
-  note: 3
-  is-powered: false
+placing:
+  normal:
+    instrument: BIT
+    note: 3
+    is-powered: false
 sounds:
   place:
     sound-name: "entity.puffer_fish.hurt"

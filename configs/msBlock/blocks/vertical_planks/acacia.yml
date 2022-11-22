@@ -21,10 +21,11 @@ craft:
   material-list:
     P: ACACIA_PLANKS
   item-amount: 3
-noteblock:
-  instrument: BANJO
-  note: 0
-  is-powered: false
+placing:
+  normal:
+    instrument: BANJO
+    note: 0
+    is-powered: false
 sounds:
   place:
     sound-name: "block.wood.place"

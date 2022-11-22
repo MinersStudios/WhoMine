@@ -19,10 +19,11 @@ craft:
     - "S"
   material-list:
     S: CRIMSON_SLAB
-noteblock:
-  instrument: BANJO
-  note: 20
-  is-powered: false
+placing:
+  normal:
+    instrument: BANJO
+    note: 20
+    is-powered: false
 sounds:
   place:
     sound-name: "block.wood.place"

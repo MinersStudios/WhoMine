@@ -21,10 +21,11 @@ craft:
   material-list:
     P: DARK_OAK_PLANKS
   item-amount: 3
-noteblock:
-  instrument: BANJO
-  note: 3
-  is-powered: false
+placing:
+  normal:
+    instrument: BANJO
+    note: 3
+    is-powered: false
 sounds:
   place:
     sound-name: "block.wood.place"

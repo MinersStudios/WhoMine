@@ -21,10 +21,11 @@ craft:
   material-list:
     P: JUNGLE_PLANKS
   item-amount: 3
-noteblock:
-  instrument: BANJO
-  note: 4
-  is-powered: false
+placing:
+  normal:
+    instrument: BANJO
+    note: 4
+    is-powered: false
 sounds:
   place:
     sound-name: "block.wood.place"

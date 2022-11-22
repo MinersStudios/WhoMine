@@ -20,10 +20,56 @@ craft:
     - " P "
   material-list:
     P: PAPER
-noteblock:
-  instrument: BANJO
-  note: 0
-  is-powered: false
+  item-amount: 1
+placing:
+  placing-type: BY_BLOCK_FACE/BY_EYE_POSITION
+  normal:
+    instrument: BANJO
+    note: 0
+    is-powered: false
+  directional:
+    block-faces:
+      up:
+        instrument: BANJO
+        note: 0
+        is-powered: false
+      down:
+        instrument: BANJO
+        note: 0
+        is-powered: true
+      east:
+        instrument: BANJO
+        note: 1
+        is-powered: false
+      north:
+        instrument: BANJO
+        note: 1
+        is-powered: true
+      west:
+        instrument: BANJO
+        note: 2
+        is-powered: false
+      south:
+        instrument: BANJO
+        note: 2
+        is-powered: true
+  orientable:
+    axes:
+      x:
+        instrument: BANJO
+        note: 0
+        is-powered: false
+      y:
+        instrument: BANJO
+        note: 0
+        is-powered: true
+      z:
+        instrument: BANJO
+        note: 1
+        is-powered: false
+  placeable-materials:
+    - GRASS
+    - FERN
 sounds:
   place:
     sound-name: "block.wood.place"

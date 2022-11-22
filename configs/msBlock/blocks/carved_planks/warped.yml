@@ -19,10 +19,11 @@ craft:
     - "S"
   material-list:
     S: WARPED_SLAB
-noteblock:
-  instrument: BIT
-  note: 1
-  is-powered: false
+placing:
+  normal:
+    instrument: BIT
+    note: 1
+    is-powered: false
 sounds:
   place:
     sound-name: "block.wood.place"

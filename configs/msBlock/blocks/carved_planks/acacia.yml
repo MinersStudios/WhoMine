@@ -19,10 +19,11 @@ craft:
     - "S"
   material-list:
     S: ACACIA_SLAB
-noteblock:
-  instrument: BANJO
-  note: 18
-  is-powered: false
+placing:
+  normal:
+    instrument: BANJO
+    note: 18
+    is-powered: false
 sounds:
   place:
     sound-name: "block.wood.place"

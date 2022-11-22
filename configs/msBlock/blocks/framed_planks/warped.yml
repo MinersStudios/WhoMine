@@ -18,10 +18,11 @@ craft:
     - "SS"
   material-list:
     S: WARPED_SLAB
-noteblock:
-  instrument: BANJO
-  note: 16
-  is-powered: false
+placing:
+  normal:
+    instrument: BANJO
+    note: 16
+    is-powered: false
 sounds:
   place:
     sound-name: "block.wood.place"

@@ -19,10 +19,11 @@ craft:
     - "S"
   material-list:
     S: MANGROVE_SLAB
-noteblock:
-  instrument: BIT
-  note: 2
-  is-powered: false
+placing:
+  normal:
+    instrument: BIT
+    note: 2
+    is-powered: false
 sounds:
   place:
     sound-name: "block.wood.place"

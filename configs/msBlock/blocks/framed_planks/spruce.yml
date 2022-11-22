@@ -18,10 +18,11 @@ craft:
     - "SS"
   material-list:
     S: SPRUCE_SLAB
-noteblock:
-  instrument: BANJO
-  note: 15
-  is-powered: false
+placing:
+  normal:
+    instrument: BANJO
+    note: 15
+    is-powered: false
 sounds:
   place:
     sound-name: "block.wood.place"
