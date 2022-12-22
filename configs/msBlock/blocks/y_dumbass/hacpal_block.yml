@@ -1,0 +1,44 @@
+namespaced-key: "hacpal_block"
+block-settings:
+  dig-speed: 10.0
+  drop:
+    experience: 0
+    drops-default-item: true
+  tool:
+    type: SHEARS
+    force: false
+item:
+  material: PAPER
+  name: "Насрал-блок"
+  custom-model-data: 13027
+craft:
+  show-in-crafts-menu: true
+  shaped-recipe:
+    - "WWW"
+    - "WKW"
+    - "WWW"
+  material-list:
+    K: KELP
+    W: WHITE_WOOL
+placing:
+  normal:
+    instrument: BIT
+    note: 3
+    is-powered: false
+sounds:
+  place:
+    sound-name: "entity.puffer_fish.hurt"
+    pitch: 0.9
+    volume: 1.0
+  break:
+    sound-name: "entity.puffer_fish.death"
+    pitch: 0.9
+    volume: 1.0
+  step:
+    sound-name: "entity.llama.spit"
+    pitch: 0.9
+    volume: 0.6
+  hit:
+    sound-name: "entity.llama.spit"
+    pitch: 0.9
+    volume: 0.6
