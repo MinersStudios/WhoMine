@@ -1,0 +1,5 @@
+namespaced-key: "totem_of_undying_packmandude"
+rename-text: "packmandude"
+material: TOTEM_OF_UNDYING
+custom-model-data: 29
+show-in-rename-menu: false

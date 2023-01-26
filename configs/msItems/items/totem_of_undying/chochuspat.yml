@@ -1,0 +1,5 @@
+namespaced-key: "totem_of_undying_chochuspat"
+rename-text: "chochuspat"
+material: TOTEM_OF_UNDYING
+custom-model-data: 8
+show-in-rename-menu: false

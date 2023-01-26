@@ -1,0 +1,5 @@
+namespaced-key: "totem_of_undying_roostyk_sparrowros"
+rename-text: "sparrowros"
+material: TOTEM_OF_UNDYING
+custom-model-data: 34
+show-in-rename-menu: false

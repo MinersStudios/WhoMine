@@ -1,7 +1,0 @@
-namespaced-key: "netherite_goblet"
-rename-text: "Незеритовый бокал"
-material: 
-  - GLASS_BOTTLE
-  - POTION
-custom-model-data: 6
-show-in-rename-menu: true

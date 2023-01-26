@@ -1,7 +1,0 @@
-namespaced-key: "wine"
-rename-text: "Бутылка вина"
-material: 
-  - GLASS_BOTTLE
-  - POTION
-custom-model-data: 9
-show-in-rename-menu: true

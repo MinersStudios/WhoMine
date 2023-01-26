@@ -1,0 +1,7 @@
+namespaced-key: "beer_green"
+rename-text: "Зелёная бутылка пива"
+material: 
+  - GLASS_BOTTLE
+  - POTION
+custom-model-data: 2
+show-in-rename-menu: true

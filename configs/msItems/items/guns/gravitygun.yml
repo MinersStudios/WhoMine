@@ -1,0 +1,5 @@
+namespaced-key: "gravitygun"
+rename-text: "Гравитационная пушка"
+material: BOW
+custom-model-data: 2
+show-in-rename-menu: true
