@@ -1,0 +1,5 @@
+namespaced-key: "totem_of_undying_metrocop"
+rename-text: "metrocop"
+material: TOTEM_OF_UNDYING
+custom-model-data: 23
+show-in-rename-menu: false

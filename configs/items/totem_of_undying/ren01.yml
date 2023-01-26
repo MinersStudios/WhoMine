@@ -1,0 +1,5 @@
+namespaced-key: "totem_of_undying_ren01"
+rename-text: "ren01"
+material: TOTEM_OF_UNDYING
+custom-model-data: 31
+show-in-rename-menu: false

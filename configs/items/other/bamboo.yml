@@ -1,0 +1,5 @@
+namespaced-key: "bamboo_stick"
+rename-text: "Бамбуковая трость"
+material: BAMBOO
+custom-model-data: 1
+show-in-rename-menu: true

@@ -1,0 +1,5 @@
+namespaced-key: "totem_of_undying_roostyk_indust"
+rename-text: "roostyk_indust"
+material: TOTEM_OF_UNDYING
+custom-model-data: 32
+show-in-rename-menu: false

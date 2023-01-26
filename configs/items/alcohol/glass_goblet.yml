@@ -1,0 +1,7 @@
+namespaced-key: "glass_goblet"
+rename-text: "Стеклянный бокал"
+material: 
+  - GLASS_BOTTLE
+  - POTION
+custom-model-data: 4
+show-in-rename-menu: true

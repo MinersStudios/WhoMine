@@ -1,0 +1,5 @@
+namespaced-key: "revolver"
+rename-text: "Револьвер"
+material: CROSSBOW
+custom-model-data: 3
+show-in-rename-menu: true

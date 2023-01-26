@@ -1,0 +1,5 @@
+namespaced-key: "totem_of_undying_fetterok"
+rename-text: "fetterok"
+material: TOTEM_OF_UNDYING
+custom-model-data: 13
+show-in-rename-menu: false

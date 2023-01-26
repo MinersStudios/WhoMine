@@ -1,0 +1,11 @@
+namespaced-key: "blue_lightsaber_dual"
+rename-text: "Двойной синий световой меч"
+material: 
+  - WOODEN_SWORD
+  - STONE_SWORD
+  - IRON_SWORD
+  - GOLDEN_SWORD
+  - DIAMOND_SWORD
+  - NETHERITE_SWORD
+custom-model-data: 10
+show-in-rename-menu: true

@@ -1,0 +1,5 @@
+namespaced-key: "ppsh"
+rename-text: "PPSH"
+material: BOW
+custom-model-data: 1
+show-in-rename-menu: true

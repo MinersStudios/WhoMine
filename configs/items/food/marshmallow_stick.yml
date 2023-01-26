@@ -1,0 +1,5 @@
+namespaced-key: "marshmallow_stick"
+rename-text: "Маршмеллоу на палочке"
+material: BREAD
+custom-model-data: 4
+show-in-rename-menu: true

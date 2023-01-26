@@ -1,0 +1,5 @@
+namespaced-key: "musket"
+rename-text: "Мушкет"
+material: CROSSBOW
+custom-model-data: 4
+show-in-rename-menu: true

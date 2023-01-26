@@ -1,0 +1,11 @@
+namespaced-key: "firebrand"
+rename-text: "Огненный полэкс"
+material: 
+  - WOODEN_AXE
+  - STONE_AXE
+  - IRON_AXE
+  - GOLDEN_AXE
+  - DIAMOND_AXE
+  - NETHERITE_AXE
+custom-model-data: 1
+show-in-rename-menu: true

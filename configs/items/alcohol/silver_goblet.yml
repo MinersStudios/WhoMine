@@ -1,0 +1,7 @@
+namespaced-key: "silver_goblet"
+rename-text: "Серебренный бокал"
+material: 
+  - GLASS_BOTTLE
+  - POTION
+custom-model-data: 7
+show-in-rename-menu: true

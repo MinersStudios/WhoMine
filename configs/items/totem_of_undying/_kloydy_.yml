@@ -1,0 +1,5 @@
+namespaced-key: "totem_of_undying_kloydy"
+rename-text: "_kloydy_"
+material: TOTEM_OF_UNDYING
+custom-model-data: 2
+show-in-rename-menu: false

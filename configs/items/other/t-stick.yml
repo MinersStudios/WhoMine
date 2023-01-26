@@ -1,0 +1,5 @@
+namespaced-key: "t_stick"
+rename-text: "Т-трость"
+material: STICK
+custom-model-data: 2
+show-in-rename-menu: true
