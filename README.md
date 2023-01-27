@@ -5,7 +5,7 @@
     Most of them are pieces of shit so don't be surprised
   </p>
   <br>
-  <a href="https://whomine.ga/discord">
+  <a href="https://whomine.net/discord">
     <img alt="Discord" src="https://img.shields.io/discord/928575868643733535?color=000000&label=WhoMine&logo=Discord&logoColor=FFFFFF&style=for-the-badge">
   </a>
 </div>
