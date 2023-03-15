@@ -26,17 +26,21 @@ placing:
 sounds:
   place:
     sound-name: "block.wood.place"
+    sound-category: BLOCKS
     pitch: 1.0
     volume: 1.0
   break:
     sound-name: "block.wood.break"
+    sound-category: BLOCKS
     pitch: 1.0
     volume: 1.0
   step:
     sound-name: "block.wood.step"
+    sound-category: PLAYERS
     pitch: 0.9
     volume: 0.3
   hit:
     sound-name: "block.wood.hit"
+    sound-category: BLOCKS
     pitch: 0.5
     volume: 0.5

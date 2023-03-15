@@ -8,7 +8,6 @@ block-settings:
     type: HAND/SWORD/PICKAXE/AXE/SHOVEL/HOE/SHEARS
     force: false
 item:
-  material: PAPER
   name: "Item name"
   custom-model-data: 0
 craft:
@@ -73,17 +72,21 @@ placing:
 sounds:
   place:
     sound-name: "block.wood.place"
+    sound-category: BLOCKS
     pitch: 1.0
     volume: 1.0
   break:
     sound-name: "block.wood.break"
+    sound-category: BLOCKS
     pitch: 1.0
     volume: 1.0
   step:
     sound-name: "block.wood.step"
+    sound-category: PLAYERS
     pitch: 1.0
     volume: 1.0
   hit:
     sound-name: "block.wood.hit"
+    sound-category: BLOCKS
     pitch: 1.0
     volume: 1.0

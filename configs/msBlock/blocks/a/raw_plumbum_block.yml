@@ -1,49 +1,47 @@
-namespaced-key: "vertical_oak_planks"
+namespaced-key: "raw_plumbum_block"
 block-settings:
-  dig-speed: 11.0
+  dig-speed: 17.0
   drop:
     experience: 0
     drops-default-item: true
   tool:
-    type: AXE
+    type: PICKAXE
     force: false
 item:
   material: PAPER
-  name: "Вертикальные дубовые доски"
-  custom-model-data: 13005
+  name: "Блок рудного свинца"
+  custom-model-data: 13029
 craft:
   show-in-crafts-menu: true
-  group: "vertical_planks"
   shaped-recipe:
-    - "P"
-    - "P"
-    - "P"
+    - "PPP"
+    - "PPP"
+    - "PPP"
   material-list:
-    P: OAK_PLANKS
-  item-amount: 3
+    P: "msitem:raw_plumbum"
 placing:
   normal:
-    instrument: BANJO
+    instrument: BIT
     note: 5
     is-powered: false
 sounds:
   place:
-    sound-name: "block.wood.place"
+    sound-name: "block.stone.place"
     sound-category: BLOCKS
     pitch: 1.0
     volume: 1.0
   break:
-    sound-name: "block.wood.break"
+    sound-name: "block.stone.break"
     sound-category: BLOCKS
     pitch: 1.0
     volume: 1.0
   step:
-    sound-name: "block.wood.step"
+    sound-name: "block.stone.step"
     sound-category: PLAYERS
     pitch: 0.9
     volume: 0.3
   hit:
-    sound-name: "block.wood.hit"
+    sound-name: "block.stone.hit"
     sound-category: BLOCKS
     pitch: 0.5
     volume: 0.5
