@@ -9,3 +9,5 @@ material:
   - OAK_WOOD
 custom-model-data: 0
 show-in-rename-menu: false/true
+whitelist:
+  - 00000000-0000-0000-0000-000000000000
