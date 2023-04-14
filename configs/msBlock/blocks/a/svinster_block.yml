@@ -1,0 +1,49 @@
+namespaced-key: "svinster_block"
+block-settings:
+  dig-speed: 10.0
+  drop:
+    experience: 0
+    drops-default-item: true
+  tool:
+    type: SWORD
+    force: false
+item:
+  material: PAPER
+  name: "Свинстер-блок"
+  custom-model-data: 13028
+craft:
+  show-in-crafts-menu: true
+  group: "vertical_planks"
+  shaped-recipe:
+    - "PPP"
+    - "PDP"
+    - "PPP"
+  material-list:
+    P: PORKCHOP
+    D: BROWN_DYE
+placing:
+  normal:
+    instrument: BIT
+    note: 4
+    is-powered: false
+sounds:
+  place:
+    sound-name: "entity.pig.ambient"
+    sound-category: BLOCKS
+    pitch: 0.9
+    volume: 0.6
+  break:
+    sound-name: "entity.pig.death"
+    sound-category: BLOCKS
+    pitch: 0.9
+    volume: 0.6
+  step:
+    sound-name: "entity.pig.hurt"
+    sound-category: PLAYERS
+    pitch: 0.9
+    volume: 0.3
+  hit:
+    sound-name: "entity.pig.ambient"
+    sound-category: BLOCKS
+    pitch: 0.9
+    volume: 0.5
