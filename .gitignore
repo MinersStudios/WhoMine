@@ -120,3 +120,4 @@ run/
 build
 .gradle
 /*.jar
+builds/
