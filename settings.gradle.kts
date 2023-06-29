@@ -3,4 +3,4 @@ plugins {
 }
 
 rootProject.name = "WhoMine"
-include("shared", "msBlock", "msCore", "msDecor", "msItems", "msUtils")
+include("MSBlock", "MSCore", "MSDecor", "MSItem", "MSEssentials")

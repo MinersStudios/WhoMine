@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://whomine.net">
-    <img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=200&section=header&text=WhoMine&fontAlignY=35&fontSize=70&desc=Minecraft%20server%20with%20weird%20things&descSize=13&descAlignY=50&animation=fadeIn" align="center" style="width: 100%" />
+    <img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=200&section=header&text=WhoMine&fontAlignY=35&fontSize=70&desc=Minecraft%20server%20with%20weird%20things&descSize=13&descAlignY=50&animation=fadeIn" align="center" style="width: 100%"  alt="WhoMine"/>
   </a>
   <p>
     Here you will find various things from the server <b>WhoMine</b> <br> 
@@ -19,15 +19,15 @@
     </a>
   <br><br><br>
 <a href="https://github.com/MinersStudios/WhoMine">
-    <img alt="msTextures repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WhoMine&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
+    <img alt="WhoMine repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WhoMine&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
   </a>
   <a href="https://github.com/MinersStudios/msTextures">
-    <img alt="msTextures repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=msTextures&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
+    <img alt="MSTextures repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=msTextures&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
   </a>
-  <a href="https://github.com/MinersStudios/msTranslations">
-    <img alt="msItems repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=msTranslations&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
+  <a href="https://github.com/MinersStudios/mstranslations">
+    <img alt="MSTranslations repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=msTranslations&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
   </a>
   <a href="https://github.com/MinersStudios/WMSite">
-    <img alt="msItems repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMSite&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
+    <img alt="WMSite repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMSite&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
   </a>
 </div>

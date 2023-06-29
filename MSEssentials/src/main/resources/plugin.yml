@@ -1,0 +1,13 @@
+name: $name
+version: $version
+description: $description
+authors: [ $authors ]
+website: $website
+
+main: $main
+api-version: $apiVersion
+softdepend:
+  - MSCore
+  - AuthMe
+  - ProtocolLib
+  - DiscordSRV

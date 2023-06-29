@@ -5,19 +5,13 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.1.0"
 }
 
+group = "com.github.minersstudios"
+version = "2.0.0"
 val apiVersion = "'1.20'"
 val website = "https://minersstudios.github.io"
-val authors = "[ MinersStudios, p0loskun ]"
+val authors = listOf("MinersStudios", "p0loskun")
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-}
-
-dependencies {
-    paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
-}
-
-subprojects {
+allprojects {
     apply(plugin = "java")
     apply(plugin = "io.papermc.paperweight.userdev")
     apply(plugin = "xyz.jpenilla.run-paper")
@@ -55,12 +49,6 @@ subprojects {
     }
 
     tasks {
-        reobfJar {
-            if (project.name != "shared") {
-                outputJar.set(file("$rootDir/build/${project.name}-$version.jar"))
-            }
-        }
-
         assemble {
             dependsOn(reobfJar)
         }
@@ -73,17 +61,60 @@ subprojects {
         javadoc {
             options.encoding = Charsets.UTF_8.name()
         }
+    }
+}
+
+subprojects {
+
+    val lowercaseName = project.name.lowercase()
+    val description = when (project.name) {
+        "msblock" -> "A Minecraft plugin with custom blocks for WhoMine"
+        "msessentials" -> "A Minecraft plugin with custom features for WhoMine"
+        "msdecor" -> "A Minecraft plugin with Decorations for WhoMine"
+        else -> "A Minecraft plugin for WhoMine"
+    }
+
+    dependencies {
+        implementation(rootProject)
+    }
+
+    if (project.name != "src") {
+        sourceSets {
+            main {
+                java {
+                    srcDir("../src/main/java")
+                    include("**/$lowercaseName/**")
+                }
+                resources {
+                    srcDir("${project.name}/src/main/resources")
+                }
+            }
+        }
+    }
+
+    tasks {
+        reobfJar {
+            if (project.name != "src") {
+                outputJar.set(file("$rootDir/builds/${project.name}-v${rootProject.version}.jar"))
+            }
+        }
+
+        clean {
+            delete(".gradle")
+        }
 
         processResources {
             filteringCharset = Charsets.UTF_8.name()
-            duplicatesStrategy = DuplicatesStrategy.INCLUDE
             val props = mapOf(
-                    "version" to project.version,
-                    "description" to project.description,
-                    "authors" to authors,
-                    "url" to website,
-                    "apiVersion" to apiVersion
+                    "name" to project.name,
+                    "version" to rootProject.version,
+                    "description" to description,
+                    "authors" to authors.joinToString(", "),
+                    "website" to website,
+                    "apiVersion" to apiVersion,
+                    "main" to "${rootProject.group}.$lowercaseName.${project.name}",
             )
+
             inputs.properties(props)
             filesMatching("plugin.yml") {
                 expand(props)
@@ -92,6 +123,14 @@ subprojects {
     }
 }
 
-tasks.named<Jar>("jar") {
-    enabled = false
+tasks {
+    build {
+        doLast {
+            file("$rootDir/builds").deleteRecursively()
+        }
+    }
+
+    processResources {
+        filteringCharset = Charsets.UTF_8.name()
+    }
 }
