@@ -1,0 +1,5 @@
+namespaced-key: "rifle"
+rename-text: "Современная винтовка"
+material: CROSSBOW
+custom-model-data: 5
+show-in-rename-menu: true

@@ -1,0 +1,11 @@
+namespaced-key: "knife"
+rename-text: "Нож"
+material: 
+  - WOODEN_SWORD
+  - STONE_SWORD
+  - IRON_SWORD
+  - GOLDEN_SWORD
+  - DIAMOND_SWORD
+  - NETHERITE_SWORD
+custom-model-data: 19
+show-in-rename-menu: true

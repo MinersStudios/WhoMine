@@ -1,0 +1,12 @@
+name: msBlock
+version: $version
+description: $description
+authors: $authors
+website: $url
+
+main: com.github.minersstudios.msblock.MSBlock
+api-version: $apiVersion
+softdepend:
+  - msCore
+  - ProtocolLib
+  - CoreProtect

@@ -1,0 +1,10 @@
+name: msItems
+version: $version
+description: $description
+authors: $authors
+website: $url
+
+main: com.github.minersstudios.msitems.MSItems
+api-version: $apiVersion
+softdepend:
+  - msCore

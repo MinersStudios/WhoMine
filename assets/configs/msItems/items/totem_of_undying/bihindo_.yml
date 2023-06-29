@@ -1,0 +1,5 @@
+namespaced-key: "totem_of_undying_bihindo"
+rename-text: "bihindo_"
+material: TOTEM_OF_UNDYING
+custom-model-data: 5
+show-in-rename-menu: false

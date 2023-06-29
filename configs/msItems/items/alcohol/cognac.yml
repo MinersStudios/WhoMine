@@ -1,7 +1,0 @@
-namespaced-key: "cognac"
-rename-text: "Бутылка коньяка"
-material: 
-  - GLASS_BOTTLE
-  - POTION
-custom-model-data: 3
-show-in-rename-menu: true

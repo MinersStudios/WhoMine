@@ -1,0 +1,13 @@
+name: msCore
+version: $version
+description: $description
+authors: $authors
+website: $url
+
+main: com.github.minersstudios.mscore.MSCore
+api-version: $apiVersion
+loadbefore:
+  - msDecor
+  - msUtils
+  - msBlock
+  - msItems

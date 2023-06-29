@@ -1,0 +1,46 @@
+namespaced-key: "framed_crimson_planks"
+block-settings:
+  dig-speed: 11.0
+  drop:
+    experience: 0
+    drops-default-item: true
+  tool:
+    type: AXE
+    force: false
+item:
+  material: PAPER
+  name: "Обрамленные багровые доски"
+  custom-model-data: 13011
+craft:
+  show-in-crafts-menu: true
+  group: "framed_planks"
+  shaped-recipe:
+    - "SS"
+  material-list:
+    S: CRIMSON_SLAB
+placing:
+  normal:
+    instrument: BANJO
+    note: 11
+    is-powered: false
+sounds:
+  place:
+    sound-name: "block.nether_wood.place"
+    sound-category: BLOCKS
+    pitch: 1.0
+    volume: 1.0
+  break:
+    sound-name: "block.nether_wood.break"
+    sound-category: BLOCKS
+    pitch: 1.0
+    volume: 1.0
+  step:
+    sound-name: "block.nether_wood.step"
+    sound-category: PLAYERS
+    pitch: 0.9
+    volume: 0.3
+  hit:
+    sound-name: "block.nether_wood.hit"
+    sound-category: BLOCKS
+    pitch: 0.5
+    volume: 0.5

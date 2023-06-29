@@ -1,0 +1,11 @@
+name: msDecor
+version: $version
+description: $description
+authors: $authors
+website: $url
+
+main: com.github.minersstudios.msdecor.MSDecor
+api-version: $apiVersion
+softdepend:
+  - msCore
+  - CoreProtect

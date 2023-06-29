@@ -1,0 +1,5 @@
+namespaced-key: "i_stick"
+rename-text: "Роскошная трость"
+material: STICK
+custom-model-data: 1
+show-in-rename-menu: true

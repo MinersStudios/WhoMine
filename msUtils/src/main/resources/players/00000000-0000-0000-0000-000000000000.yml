@@ -1,0 +1,30 @@
+name:
+  nickname: Steve
+  first-name: Иван
+  last-name: Иванов
+  patronymic: Иваныч
+pronouns: HE/SHE/THEY
+ip-list:
+  - 0.0.0.0
+game-params:
+  game-mode: SURVIVAL/CREATIVE/ADVENTURE/SPECTATOR
+  health: 20.0
+  air: 300
+settings:
+  resource-pack-type: FULL/LITE/NONE
+first-join: 0
+locations:
+  last-death-location:
+    world: overworld
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    yaw: 0.0
+    pitch: 0.0
+  last-leave-location:
+    world: overworld
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    yaw: 0.0
+    pitch: 0.0

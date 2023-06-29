@@ -1,0 +1,13 @@
+namespaced-key: "example"
+rename-text: "Example"
+lore:
+  - "1"
+  - "2"
+  - "3"
+material:
+  - STICK
+  - OAK_WOOD
+custom-model-data: 0
+show-in-rename-menu: false/true
+whitelist:
+  - 00000000-0000-0000-0000-000000000000

@@ -1,0 +1,100 @@
+namespaced-key: example
+bounding-box:
+  location:
+    world-name: world
+    first-corner:
+      x: 0
+      y: 0
+      z: 0
+    second-corner:
+      x: 0
+      y: 0
+      z: 0
+  radius: [0.0, 50.0, 100.0]
+on-entering-to-area:
+  0.0:
+    spawn-particles:
+      time: 0
+      percentage: 100
+      particles:
+        REDSTONE:
+          count: 50
+          particle-size: 1.0
+          color: 0xFFFFFF
+          offset:
+            x: 5
+            y: 5
+            z: 5
+    add-potion-effect:
+      time: 0
+      percentage: 100
+      effects:
+        POISON:
+          time: 7200
+          amplifier: 2
+          ambient: false
+          particles: true
+          icon: true
+  50.0:
+    spawn-particles:
+      time: 0
+      percentage: 100
+      particles:
+        REDSTONE:
+          count: 25
+          particle-size: 1.0
+          color: 0xFFFFFF
+          offset:
+            x: 5
+            y: 5
+            z: 5
+    add-potion-effect:
+      time: 600
+      percentage: 50
+      effects:
+        POISON:
+          time: 1200
+          amplifier: 1
+          ambient: false
+          particles: true
+          icon: true
+  100.0:
+    spawn-particles:
+      time: 0
+      percentage: 100
+      particles:
+        REDSTONE:
+          count: 10
+          particle-size: 1.0
+          color: 0xFFFFFF
+          offset:
+            x: 5
+            y: 5
+            z: 5
+    add-potion-effect:
+      time: 1200
+      percentage: 25
+      effects:
+        POISON:
+          time: 600
+          amplifier: 0
+          ambient: false
+          particles: true
+          icon: true
+ignorable-items:
+  breaking-per-action: 1
+  slots:
+    head:
+      material: IRON_HELMET
+      custom-model-data: 1
+    chest:
+      material: IRON_CHESTPLATE
+      custom-model-data: 1
+    legs:
+      material: IRON_LEGGINGS
+      custom-model-data: 1
+    feet:
+      material: IRON_BOOTS
+      custom-model-data: 1
+ignorable-players:
+  - 00000000-0000-0000-0000-000000000000

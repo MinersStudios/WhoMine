@@ -1,0 +1,5 @@
+namespaced-key: "totem_of_undying_kartofe"
+rename-text: "kartofe"
+material: TOTEM_OF_UNDYING
+custom-model-data: 19
+show-in-rename-menu: false

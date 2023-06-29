@@ -1,0 +1,13 @@
+name: msUtils
+version: $version
+description: $description
+authors: $authors
+website: $url
+
+main: com.github.minersstudios.msutils.MSUtils
+api-version: $apiVersion
+softdepend:
+  - msCore
+  - AuthMe
+  - ProtocolLib
+  - DiscordSRV
