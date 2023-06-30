@@ -21,6 +21,17 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Builder for custom inventories with actions and buttons
+ * <br>
+ * Actions:
+ * <ul>
+ *     <li>{@link #openAction()}</li>
+ *     <li>{@link #closeAction()}</li>
+ *     <li>{@link #clickAction()}</li>
+ *     <li>{@link #bottomClickAction()}</li>
+ * </ul>
+ */
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class CustomInventory extends CraftInventoryCustom implements Inventory, Cloneable {
     protected final int size;
@@ -131,6 +142,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      * Gets inventory open action
      *
      * @return Inventory action that is performed when this inventory is opened
+     * @see #openAction(InventoryAction)
      */
     public @Nullable InventoryAction<InventoryOpenEvent> openAction() {
         return this.openAction;
@@ -141,6 +153,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      *
      * @param openAction New open action
      * @return This inventory
+     * @see #openAction()
      */
     public @NotNull CustomInventory openAction(@Nullable InventoryAction<InventoryOpenEvent> openAction) {
         this.openAction = openAction;
@@ -151,6 +164,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      * Gets inventory close action
      *
      * @return Inventory action that is performed when this inventory is closed
+     * @see #closeAction(InventoryAction)
      */
     public @Nullable InventoryAction<InventoryCloseEvent> closeAction() {
         return this.closeAction;
@@ -161,6 +175,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      *
      * @param closeAction New close action
      * @return This inventory
+     * @see #closeAction()
      */
     public @NotNull CustomInventory closeAction(@Nullable InventoryAction<InventoryCloseEvent> closeAction) {
         this.closeAction = closeAction;
@@ -171,6 +186,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      * Gets inventory click action
      *
      * @return Inventory action that is performed when this inventory is clicked
+     * @see #clickAction(InventoryAction)
      */
     public @Nullable InventoryAction<InventoryClickEvent> clickAction() {
         return this.clickAction;
@@ -181,6 +197,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      *
      * @param clickAction New click action
      * @return This inventory
+     * @see #clickAction()
      */
     public @NotNull CustomInventory clickAction(@Nullable InventoryAction<InventoryClickEvent> clickAction) {
         this.clickAction = clickAction;
@@ -191,8 +208,9 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      * Gets bottom inventory click action
      *
      * @return Inventory action that is performed when player is clicked bottom inventory
+     * @see #bottomClickAction(InventoryAction)
      */
-    public @Nullable InventoryAction<InventoryClickEvent> bottomInventoryClickAction() {
+    public @Nullable InventoryAction<InventoryClickEvent> bottomClickAction() {
         return this.bottomClickAction;
     }
 
@@ -201,8 +219,9 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      *
      * @param bottomClickAction New bottom inventory click action
      * @return This inventory
+     * @see #bottomClickAction()
      */
-    public @NotNull CustomInventory bottomInventoryClickAction(@Nullable InventoryAction<InventoryClickEvent> bottomClickAction) {
+    public @NotNull CustomInventory bottomClickAction(@Nullable InventoryAction<InventoryClickEvent> bottomClickAction) {
         this.bottomClickAction = bottomClickAction;
         return this;
     }
@@ -211,6 +230,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      * Performs the opening action when the inventory is opened, if it is set
      *
      * @param event Event that triggered the action
+     * @see #openAction(InventoryAction)
      */
     public void doOpenAction(@NotNull InventoryOpenEvent event) {
         if (this.openAction != null) {
@@ -222,6 +242,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      * Performs the closing action when the inventory is closed, if it is set
      *
      * @param event Event that triggered the action
+     * @see #closeAction(InventoryAction)
      */
     public void doCloseAction(@NotNull InventoryCloseEvent event) {
         if (this.closeAction != null) {
@@ -235,6 +256,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      * If click action is not set, it will cancel the click event
      *
      * @param event Event that triggered the action
+     * @see #clickAction(InventoryAction)
      */
     public void doClickAction(@NotNull InventoryClickEvent event) {
         if (this.clickAction != null) {
@@ -246,6 +268,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      * Performs the clicking action when player is clicked bottom inventory, if it is set
      *
      * @param event Event that triggered the action
+     * @see #bottomClickAction(InventoryAction)
      */
     public void doBottomClickAction(@NotNull InventoryClickEvent event) {
         if (this.bottomClickAction != null) {

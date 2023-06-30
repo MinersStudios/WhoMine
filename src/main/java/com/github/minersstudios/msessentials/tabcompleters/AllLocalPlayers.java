@@ -28,7 +28,7 @@ public class AllLocalPlayers implements TabCompleter {
         if (args.length == 1) {
             PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
+            for (var player : Bukkit.getOnlinePlayers()) {
                 PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
 
                 if (playerInfo.isOnline()) {

@@ -15,15 +15,17 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class CocaineMechanic implements Listener {
 
-	@EventHandler
-	public void onInventoryClick(@NotNull PlayerItemConsumeEvent event) {
-		ItemStack itemStack = event.getItem();
-		if (
-				!(itemStack.getItemMeta() instanceof PotionMeta)
-				|| !(MSItemUtils.getCustomItem(itemStack) instanceof Cocaine)
-		) return;
-		Bukkit.getScheduler().runTaskAsynchronously(MSItem.getInstance(),
-				() -> event.getPlayer().getInventory().getItem(event.getHand()).setAmount(0)
-		);
-	}
+    @EventHandler
+    public void onInventoryClick(@NotNull PlayerItemConsumeEvent event) {
+        ItemStack itemStack = event.getItem();
+
+        if (
+                !(itemStack.getItemMeta() instanceof PotionMeta)
+                || !(MSItemUtils.getCustomItem(itemStack) instanceof Cocaine)
+        ) return;
+
+        Bukkit.getScheduler().runTaskAsynchronously(MSItem.getInstance(),
+                () -> event.getPlayer().getInventory().getItem(event.getHand()).setAmount(0)
+        );
+    }
 }

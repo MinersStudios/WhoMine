@@ -12,12 +12,13 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class DamageableItemMechanic implements Listener {
 
-	@EventHandler
-	public void onPlayerItemDamage(@NotNull PlayerItemDamageEvent event) {
-		ItemStack itemStack = event.getItem();
-		if (DamageableItem.fromItemStack(itemStack) != null) {
-			event.setCancelled(true);
-			ItemUtils.damageItem(event.getPlayer(), event.getItem(), event.getDamage());
-		}
-	}
+    @EventHandler
+    public void onPlayerItemDamage(@NotNull PlayerItemDamageEvent event) {
+        ItemStack itemStack = event.getItem();
+
+        if (DamageableItem.fromItemStack(itemStack) != null) {
+            event.setCancelled(true);
+            ItemUtils.damageItem(event.getPlayer(), event.getItem(), event.getDamage());
+        }
+    }
 }

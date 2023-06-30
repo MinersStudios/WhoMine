@@ -53,7 +53,6 @@ public class FartCommand implements MSCommandExecutor {
         PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
         PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
 
-        if (!playerInfo.isOnline()) return true;
         if (playerInfo.isMuted()) {
             ChatUtils.sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));
             return true;
@@ -65,7 +64,7 @@ public class FartCommand implements MSCommandExecutor {
                 && location.clone().subtract(0.0d, 0.5d, 0.0d).getBlock().getType().isSolid()
                 && BlockUtils.REPLACE.contains(location.clone().getBlock().getType());
 
-        for (Entity nearbyEntity : player.getWorld().getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
+        for (var nearbyEntity : player.getWorld().getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
             if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && nearbyEntity.getType() != EntityType.PLAYER) {
                 withPoop = false;
                 break;

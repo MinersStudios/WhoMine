@@ -38,17 +38,17 @@ public class AnomalyIgnorableItems {
     }
 
     public boolean hasIgnorableItems(@NotNull PlayerInventory inventory) {
-        for (Map.Entry<EquipmentSlot, ItemStack> playerEquippedItem : getEquippedItems(inventory).entrySet()) {
-            if (!this.includedItems.containsKey(playerEquippedItem.getKey())) continue;
-            if (!this.isIgnorableItem(playerEquippedItem.getKey(), playerEquippedItem.getValue())) return false;
+        for (var entry : getEquippedItems(inventory).entrySet()) {
+            if (!this.includedItems.containsKey(entry.getKey())) continue;
+            if (!this.isIgnorableItem(entry.getKey(), entry.getValue())) return false;
         }
         return true;
     }
 
     public void damageIgnorableItems(@NotNull PlayerInventory inventory) {
-        for (Map.Entry<EquipmentSlot, ItemStack> playerEquippedItem : getEquippedItems(inventory).entrySet()) {
-            EquipmentSlot equipmentSlot = playerEquippedItem.getKey();
-            ItemStack item = playerEquippedItem.getValue();
+        for (var entry : getEquippedItems(inventory).entrySet()) {
+            EquipmentSlot equipmentSlot = entry.getKey();
+            ItemStack item = entry.getValue();
 
             if (
                     this.includedItems.containsKey(equipmentSlot)
@@ -71,11 +71,13 @@ public class AnomalyIgnorableItems {
     }
 
     private static @NotNull Map<@NotNull EquipmentSlot, @Nullable ItemStack> getEquippedItems(@NotNull PlayerInventory inventory) {
-        Map<EquipmentSlot, ItemStack> playerEquippedItems = new HashMap<>();
+        var playerEquippedItems = new HashMap<EquipmentSlot, ItemStack>();
+
         playerEquippedItems.put(EquipmentSlot.HEAD, inventory.getHelmet());
         playerEquippedItems.put(EquipmentSlot.CHEST, inventory.getChestplate());
         playerEquippedItems.put(EquipmentSlot.LEGS, inventory.getLeggings());
         playerEquippedItems.put(EquipmentSlot.FEET, inventory.getBoots());
+
         return playerEquippedItems;
     }
 }

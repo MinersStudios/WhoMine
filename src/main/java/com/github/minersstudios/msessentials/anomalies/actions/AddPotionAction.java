@@ -27,7 +27,8 @@ public class AddPotionAction extends AnomalyAction {
 
     @Override
     public void doAction(@NotNull Player player, @Nullable AnomalyIgnorableItems ignorableItems) {
-        Map<AnomalyAction, Long> actionMap = MSEssentials.getConfigCache().playerAnomalyActionMap.get(player);
+        var actionMap = MSEssentials.getConfigCache().playerAnomalyActionMap.get(player);
+
         if (
                 actionMap.containsKey(this)
                 && System.currentTimeMillis() - actionMap.get(this) >= (this.time * 50)

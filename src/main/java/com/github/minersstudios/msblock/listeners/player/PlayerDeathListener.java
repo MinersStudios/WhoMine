@@ -14,12 +14,12 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PlayerDeathListener implements Listener {
 
-	@EventHandler
-	public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
-		Player player = event.getEntity();
-		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
-			CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
-			PlayerUtils.removeSteps(player);
-		});
-	}
+    @EventHandler
+    public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
+            CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
+            PlayerUtils.removeSteps(player);
+        });
+    }
 }

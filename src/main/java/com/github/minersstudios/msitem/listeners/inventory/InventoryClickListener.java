@@ -20,45 +20,46 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class InventoryClickListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onInventoryClick(@NotNull InventoryClickEvent event) {
-		Player player = (Player) event.getWhoClicked();
-		PlayerInventory inventory = player.getInventory();
-		Inventory clickedInventory = event.getClickedInventory();
-		ItemStack cursorItem = event.getCursor(),
-				currentItem = event.getCurrentItem();
-		int slot = event.getSlot();
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onInventoryClick(@NotNull InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        PlayerInventory inventory = player.getInventory();
+        Inventory clickedInventory = event.getClickedInventory();
+        ItemStack cursorItem = event.getCursor(),
+                currentItem = event.getCurrentItem();
+        int slot = event.getSlot();
 
-		if (
-				slot == 39
-				&& event.getSlotType() == InventoryType.SlotType.ARMOR
-				&& cursorItem != null
-				&& !cursorItem.getType().isAir()
-				&& MSItemUtils.getCustomItem(cursorItem) instanceof Wearable
-		) {
-			if (
-					currentItem != null
-					&& currentItem.getEnchantments().containsKey(Enchantment.BINDING_CURSE)
-			) return;
-			Bukkit.getScheduler().runTask(MSItem.getInstance(), () -> {
-				inventory.setHelmet(cursorItem);
-				player.setItemOnCursor(currentItem);
-			});
-		}
+        if (
+                slot == 39
+                && event.getSlotType() == InventoryType.SlotType.ARMOR
+                && cursorItem != null
+                && !cursorItem.getType().isAir()
+                && MSItemUtils.getCustomItem(cursorItem) instanceof Wearable
+        ) {
+            if (
+                    currentItem != null
+                    && currentItem.getEnchantments().containsKey(Enchantment.BINDING_CURSE)
+            ) return;
 
-		if (
-				clickedInventory != null
-				&& event.isShiftClick()
-				&& clickedInventory.getType() == InventoryType.PLAYER
-				&& player.getOpenInventory().getType() == InventoryType.CRAFTING
-				&& inventory.getHelmet() == null
-				&& MSItemUtils.getCustomItem(currentItem) instanceof Wearable
-		) {
-			event.setCancelled(true);
-			Bukkit.getScheduler().runTask(MSItem.getInstance(), () -> {
-				inventory.setHelmet(currentItem);
-				currentItem.setAmount(0);
-			});
-		}
-	}
+            Bukkit.getScheduler().runTask(MSItem.getInstance(), () -> {
+                inventory.setHelmet(cursorItem);
+                player.setItemOnCursor(currentItem);
+            });
+        }
+
+        if (
+                clickedInventory != null
+                && event.isShiftClick()
+                && clickedInventory.getType() == InventoryType.PLAYER
+                && player.getOpenInventory().getType() == InventoryType.CRAFTING
+                && inventory.getHelmet() == null
+                && MSItemUtils.getCustomItem(currentItem) instanceof Wearable
+        ) {
+            event.setCancelled(true);
+            Bukkit.getScheduler().runTask(MSItem.getInstance(), () -> {
+                inventory.setHelmet(currentItem);
+                currentItem.setAmount(0);
+            });
+        }
+    }
 }

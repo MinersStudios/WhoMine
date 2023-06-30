@@ -20,66 +20,66 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 public class BanSword implements CustomItem {
-	private @NotNull NamespacedKey namespacedKey;
-	private @NotNull ItemStack itemStack;
+    private @NotNull NamespacedKey namespacedKey;
+    private @NotNull ItemStack itemStack;
 
-	public BanSword() {
-		this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "ban_sword");
-		this.itemStack = new ItemStack(Material.NETHERITE_SWORD);
-		ItemMeta itemMeta = this.itemStack.getItemMeta();
-		itemMeta.displayName(ChatUtils.createDefaultStyledText("Бан-меч"));
-		itemMeta.lore(ChatUtils.convertStringsToComponents(
-				ChatUtils.COLORLESS_DEFAULT_STYLE.color(NamedTextColor.GRAY),
-				"Ходят легенды, про его мощь...",
-				"Лишь в руках избранного",
-				"он раскрывает свой потенциал"
-		));
-		itemMeta.setCustomModelData(20);
-		itemMeta.setUnbreakable(true);
-		itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
-		itemMeta.addAttributeModifier(
-				Attribute.GENERIC_ATTACK_DAMAGE,
-				new AttributeModifier(UUID.randomUUID(), "attack_damage", Double.POSITIVE_INFINITY, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
-		);
-		itemMeta.addAttributeModifier(
-				Attribute.GENERIC_LUCK,
-				new AttributeModifier(UUID.randomUUID(), "luck", Double.POSITIVE_INFINITY, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
-		);
-		itemMeta.getPersistentDataContainer().set(
-				MSItemUtils.CUSTOM_ITEM_TYPE_NAMESPACED_KEY,
-				PersistentDataType.STRING,
-				this.getNamespacedKey().getKey()
-		);
-		this.itemStack.setItemMeta(itemMeta);
-	}
+    public BanSword() {
+        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "ban_sword");
+        this.itemStack = new ItemStack(Material.NETHERITE_SWORD);
+        ItemMeta itemMeta = this.itemStack.getItemMeta();
+        itemMeta.displayName(ChatUtils.createDefaultStyledText("Бан-меч"));
+        itemMeta.lore(ChatUtils.convertStringsToComponents(
+                ChatUtils.COLORLESS_DEFAULT_STYLE.color(NamedTextColor.GRAY),
+                "Ходят легенды, про его мощь...",
+                "Лишь в руках избранного",
+                "он раскрывает свой потенциал"
+        ));
+        itemMeta.setCustomModelData(20);
+        itemMeta.setUnbreakable(true);
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+        itemMeta.addAttributeModifier(
+                Attribute.GENERIC_ATTACK_DAMAGE,
+                new AttributeModifier(UUID.randomUUID(), "attack_damage", Double.POSITIVE_INFINITY, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
+        );
+        itemMeta.addAttributeModifier(
+                Attribute.GENERIC_LUCK,
+                new AttributeModifier(UUID.randomUUID(), "luck", Double.POSITIVE_INFINITY, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
+        );
+        itemMeta.getPersistentDataContainer().set(
+                MSItemUtils.CUSTOM_ITEM_TYPE_NAMESPACED_KEY,
+                PersistentDataType.STRING,
+                this.getNamespacedKey().getKey()
+        );
+        this.itemStack.setItemMeta(itemMeta);
+    }
 
-	@Override
-	public @NotNull NamespacedKey getNamespacedKey() {
-		return this.namespacedKey;
-	}
+    @Override
+    public @NotNull NamespacedKey getNamespacedKey() {
+        return this.namespacedKey;
+    }
 
-	@Override
-	public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
-		this.namespacedKey = namespacedKey;
-	}
+    @Override
+    public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
+        this.namespacedKey = namespacedKey;
+    }
 
-	@Override
-	public @NotNull ItemStack getItemStack() {
-		return this.itemStack;
-	}
+    @Override
+    public @NotNull ItemStack getItemStack() {
+        return this.itemStack;
+    }
 
-	@Override
-	public void setItemStack(@NotNull ItemStack itemStack) {
-		this.itemStack = itemStack;
-	}
+    @Override
+    public void setItemStack(@NotNull ItemStack itemStack) {
+        this.itemStack = itemStack;
+    }
 
-	@Override
-	public @NotNull CustomItem clone() {
-		try {
-			return (CustomItem) super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public @NotNull CustomItem clone() {
+        try {
+            return (CustomItem) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

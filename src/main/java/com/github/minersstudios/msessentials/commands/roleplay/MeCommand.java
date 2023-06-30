@@ -43,7 +43,6 @@ public class MeCommand implements MSCommandExecutor {
         PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
         PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
 
-        if (!playerInfo.isOnline()) return true;
         if (args.length == 0) return false;
         if (playerInfo.isMuted()) {
             ChatUtils.sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));

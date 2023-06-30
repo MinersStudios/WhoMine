@@ -24,6 +24,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.github.minersstudios.msessentials.MSEssentials.getInstance;
 
+/**
+ * Mute map with {@link UUID} and its {@link Params}.
+ * All mutes stored in the "config/minersstudios/MSEssentials/muted_players.json" file.
+ *
+ * @see Params
+ */
 public class MuteMap {
     private final File file;
     private final Map<UUID, Params> map = new ConcurrentHashMap<>();
@@ -156,13 +162,26 @@ public class MuteMap {
     }
 
     private void saveFile() {
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
+        try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             this.gson.toJson(this.map, writer);
         } catch (IOException e) {
             throw new RuntimeException("Failed to save muted players", e);
         }
     }
 
+    /**
+     * Mute parameters, used in {@link MuteMap}
+     * <br>
+     * Parameters:
+     * <ul>
+     *     <li>created - date when the player was muted</li>
+     *     <li>expiration - date when the player will be unmuted</li>
+     *     <li>reason - mute reason</li>
+     *     <li>source - mute source, could be a player's nickname or CONSOLE</li>
+     * </ul>
+     *
+     * @see MuteMap
+     */
     public static class Params {
         private final Instant created;
         private final Instant expiration;

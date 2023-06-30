@@ -14,7 +14,7 @@ public class ParticleTask implements Runnable {
 
     @Override
     public void run() {
-        Set<Map.Entry<Player, Map<AnomalyAction, Long>>> entries = MSEssentials.getConfigCache().playerAnomalyActionMap.entrySet();
+        var entries = MSEssentials.getConfigCache().playerAnomalyActionMap.entrySet();
         if (entries.isEmpty()) return;
         Bukkit.getScheduler().runTaskAsynchronously(
                 MSEssentials.getInstance(),
@@ -24,7 +24,7 @@ public class ParticleTask implements Runnable {
                         .forEach(action -> {
                             Player player = entry.getKey();
 
-                            for (Anomaly anomaly : MSEssentials.getConfigCache().anomalies.values()) {
+                            for (var anomaly : MSEssentials.getConfigCache().anomalies.values()) {
                                 Double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
 
                                 if (radiusInside == null) continue;

@@ -8,45 +8,45 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class CustomBlockBreakEvent extends CustomBlockEvent implements Cancellable {
-	private static final @NotNull HandlerList HANDLER_LIST = new HandlerList();
-	protected boolean cancel;
+    private static final @NotNull HandlerList HANDLER_LIST = new HandlerList();
+    protected boolean cancel;
 
-	protected final @NotNull Player player;
+    protected final @NotNull Player player;
 
-	public CustomBlockBreakEvent(
-			final @NotNull CustomBlock breakedCustomBlock,
-			final @NotNull Player player
-	) {
-		super(breakedCustomBlock);
-		this.player = player;
-		this.cancel = false;
-	}
+    public CustomBlockBreakEvent(
+            final @NotNull CustomBlock breakedCustomBlock,
+            final @NotNull Player player
+    ) {
+        super(breakedCustomBlock);
+        this.player = player;
+        this.cancel = false;
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return this.cancel;
-	}
+    @Override
+    public boolean isCancelled() {
+        return this.cancel;
+    }
 
-	@Override
-	public void setCancelled(boolean cancel) {
-		this.cancel = cancel;
-	}
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancel = cancel;
+    }
 
-	/**
-	 * Gets the player who broke the custom block involved in this event
-	 *
-	 * @return The Player who broke the custom block involved in this event
-	 */
-	public @NotNull Player getPlayer() {
-		return this.player;
-	}
+    /**
+     * Gets the player who broke the custom block involved in this event
+     *
+     * @return The Player who broke the custom block involved in this event
+     */
+    public @NotNull Player getPlayer() {
+        return this.player;
+    }
 
-	@Override
-	public @NotNull HandlerList getHandlers() {
-		return HANDLER_LIST;
-	}
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return HANDLER_LIST;
+    }
 
-	public static @NotNull HandlerList getHandlerList() {
-		return HANDLER_LIST;
-	}
+    public static @NotNull HandlerList getHandlerList() {
+        return HANDLER_LIST;
+    }
 }

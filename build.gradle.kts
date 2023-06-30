@@ -1,12 +1,10 @@
 plugins {
     java
-    `java-library`
     id("io.papermc.paperweight.userdev") version "1.5.5"
-    id("xyz.jpenilla.run-paper") version "2.1.0"
 }
 
 group = "com.github.minersstudios"
-version = "2.0.0"
+version = "1.0.0"
 val apiVersion = "'1.20'"
 val website = "https://minersstudios.github.io"
 val authors = listOf("MinersStudios", "p0loskun")
@@ -14,7 +12,6 @@ val authors = listOf("MinersStudios", "p0loskun")
 allprojects {
     apply(plugin = "java")
     apply(plugin = "io.papermc.paperweight.userdev")
-    apply(plugin = "xyz.jpenilla.run-paper")
 
     java {
         toolchain.languageVersion.set(JavaLanguageVersion.of(17))
@@ -48,6 +45,14 @@ allprojects {
         compileOnly("com.discordsrv:discordsrv:1.26.0")
     }
 
+    sourceSets {
+        test {
+            java {
+                srcDirs("src/main/test/java")
+            }
+        }
+    }
+
     tasks {
         assemble {
             dependsOn(reobfJar)
@@ -60,17 +65,23 @@ allprojects {
 
         javadoc {
             options.encoding = Charsets.UTF_8.name()
+            enabled = false
+        }
+
+        processResources {
+            filteringCharset = Charsets.UTF_8.name()
         }
     }
 }
 
 subprojects {
-
     val lowercaseName = project.name.lowercase()
     val description = when (project.name) {
-        "msblock" -> "A Minecraft plugin with custom blocks for WhoMine"
+        "mscore" -> "A Minecraft core plugin for WhoMine plugins"
         "msessentials" -> "A Minecraft plugin with custom features for WhoMine"
-        "msdecor" -> "A Minecraft plugin with Decorations for WhoMine"
+        "msblock" -> "A Minecraft plugin with custom blocks for WhoMine"
+        "msdecor" -> "A Minecraft plugin with decorations for WhoMine"
+        "msitem" -> "A Minecraft plugin with custom items for WhoMine"
         else -> "A Minecraft plugin for WhoMine"
     }
 
@@ -78,25 +89,21 @@ subprojects {
         implementation(rootProject)
     }
 
-    if (project.name != "src") {
-        sourceSets {
-            main {
-                java {
-                    srcDir("../src/main/java")
-                    include("**/$lowercaseName/**")
-                }
-                resources {
-                    srcDir("${project.name}/src/main/resources")
-                }
+    sourceSets {
+        main {
+            java {
+                srcDir("../src/main/java")
+                include("**/$lowercaseName/**")
+            }
+            resources {
+                srcDir("${project.name}/src/main/resources")
             }
         }
     }
 
     tasks {
         reobfJar {
-            if (project.name != "src") {
-                outputJar.set(file("$rootDir/builds/${project.name}-v${rootProject.version}.jar"))
-            }
+            outputJar.set(file("$rootDir/builds/jars/${project.name}-v${rootProject.version}.jar"))
         }
 
         clean {
@@ -104,7 +111,6 @@ subprojects {
         }
 
         processResources {
-            filteringCharset = Charsets.UTF_8.name()
             val props = mapOf(
                     "name" to project.name,
                     "version" to rootProject.version,
@@ -124,13 +130,14 @@ subprojects {
 }
 
 tasks {
-    build {
+    jar {
         doLast {
-            file("$rootDir/builds").deleteRecursively()
+            file("builds/jars").deleteRecursively()
         }
     }
 
-    processResources {
-        filteringCharset = Charsets.UTF_8.name()
+    javadoc {
+        enabled = true
+        destinationDir = file("$rootDir/builds/javadoc")
     }
 }

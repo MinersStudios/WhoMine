@@ -9,9 +9,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * All commands implemented using this annotation will be registered automatically
- * <br>
- * All commands must be implemented using {@link MSCommandExecutor}
+ * All commands annotated using {@link MSCommand} will be registered automatically.
+ * Also, must be implemented using {@link MSCommandExecutor}
+ *
+ * @see MSCommandExecutor
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

@@ -62,12 +62,12 @@ public class Anomaly {
                 ),
                 config.getDoubleList("bounding-box.radius")
         );
-        List<EquipmentSlot> equipmentSlots = new ArrayList<>();
+        var equipmentSlots = new ArrayList<EquipmentSlot>();
         ConfigurationSection slotsSection = config.getConfigurationSection("ignorable-items.slots");
 
         if (slotsSection != null) {
             try {
-                for (String string : slotsSection.getValues(false).keySet()) {
+                for (var string : slotsSection.getValues(false).keySet()) {
                     equipmentSlots.add(EquipmentSlot.valueOf(string.toUpperCase(Locale.ROOT)));
                 }
             } catch (IllegalArgumentException e) {
@@ -75,12 +75,13 @@ public class Anomaly {
             }
         }
 
-        Map<EquipmentSlot, ItemStack> items = new HashMap<>();
+        var items = new HashMap<EquipmentSlot, ItemStack>();
 
-        for (EquipmentSlot equipmentSlot : equipmentSlots) {
+        for (var equipmentSlot : equipmentSlots) {
             String name = equipmentSlot.name().toLowerCase(Locale.ROOT);
             ItemStack itemStack = new ItemStack(Material.valueOf(slotsSection.getString(name + ".material")));
             ItemMeta itemMeta = itemStack.getItemMeta();
+
             itemMeta.setCustomModelData(slotsSection.getInt(name + ".custom-model-data"));
             itemStack.setItemMeta(itemMeta);
             items.put(equipmentSlot, itemStack);
@@ -91,23 +92,23 @@ public class Anomaly {
                 config.getInt("ignorable-items.breaking-per-action")
         );
 
-        Map<Double, List<AnomalyAction>> anomalyActionMap = new HashMap<>();
+        var anomalyActionMap = new HashMap<Double, List<AnomalyAction>>();
 
-        for (Double radius : anomalyBoundingBox.getRadii()) {
+        for (var radius : anomalyBoundingBox.getRadii()) {
             ConfigurationSection radiusSection = config.getConfigurationSection("on-entering-to-area." + radius);
-            Set<String> actionStrings =
+            var actionStrings =
                     Objects.requireNonNull(radiusSection, "Anomaly configuration radii not properly configured, anomaly : " + fileName)
                     .getValues(false).keySet();
 
-            for (String anomalyAction : actionStrings) {
+            for (var anomalyAction : actionStrings) {
                 AnomalyAction action;
 
                 switch (anomalyAction) {
                     case "add-potion-effect" -> {
-                        List<PotionEffect> potionEffects = new ArrayList<>();
+                        var potionEffects = new ArrayList<PotionEffect>();
                         ConfigurationSection effectsSection = radiusSection.getConfigurationSection("add-potion-effect.effects");
 
-                        for (String potionStr : Objects.requireNonNull(effectsSection).getValues(false).keySet()) {
+                        for (var potionStr : Objects.requireNonNull(effectsSection).getValues(false).keySet()) {
                             ConfigurationSection potionSection = effectsSection.getConfigurationSection(potionStr);
                             assert potionSection != null;
                             PotionEffectType potionEffectType = PotionEffectType.getByName(potionStr);
@@ -132,7 +133,7 @@ public class Anomaly {
                         List<ParticleBuilder> particleBuilderList = new ArrayList<>();
                         ConfigurationSection particlesSection = radiusSection.getConfigurationSection("spawn-particles.particles");
 
-                        for (String particleStr : Objects.requireNonNull(particlesSection).getValues(false).keySet()) {
+                        for (var particleStr : Objects.requireNonNull(particlesSection).getValues(false).keySet()) {
                             ConfigurationSection particleSection = particlesSection.getConfigurationSection(particleStr);
                             assert particleSection != null;
                             Particle particle = Particle.valueOf(particleStr);
@@ -174,9 +175,9 @@ public class Anomaly {
             }
         }
 
-        List<OfflinePlayer> ignorablePlayers = new ArrayList<>();
+        var ignorablePlayers = new ArrayList<OfflinePlayer>();
 
-        for (String uuid : config.getStringList("ignorable-players")) {
+        for (var uuid : config.getStringList("ignorable-players")) {
             ignorablePlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
         }
 
@@ -192,7 +193,7 @@ public class Anomaly {
     }
 
     public boolean isAnomalyActionRadius(@NotNull AnomalyAction anomalyAction, double radius) {
-        for (Map.Entry<Double, List<AnomalyAction>> action : this.anomalyActionMap.entrySet()) {
+        for (var action : this.anomalyActionMap.entrySet()) {
             if (action.getValue().contains(anomalyAction)) {
                 return action.getKey() == radius;
             }

@@ -16,160 +16,164 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public interface CustomDecorData extends Cloneable {
-	@NotNull NamespacedKey getNamespacedKey();
+    @NotNull NamespacedKey getNamespacedKey();
 
-	void setNamespacedKey(@NotNull NamespacedKey namespacedKey);
+    void setNamespacedKey(@NotNull NamespacedKey namespacedKey);
 
-	@NotNull ItemStack getItemStack();
+    @NotNull ItemStack getItemStack();
 
-	void setItemStack(@NotNull ItemStack itemStack);
+    void setItemStack(@NotNull ItemStack itemStack);
 
-	@NotNull SoundGroup getSoundGroup();
+    @NotNull SoundGroup getSoundGroup();
 
-	void setSoundGroup(@NotNull SoundGroup soundGroup);
+    void setSoundGroup(@NotNull SoundGroup soundGroup);
 
-	@NotNull HitBox getHitBox();
+    @NotNull HitBox getHitBox();
 
-	void setHitBox(@NotNull HitBox hitBox);
+    void setHitBox(@NotNull HitBox hitBox);
 
-	@Nullable Facing getFacing();
+    @Nullable Facing getFacing();
 
-	void setFacing(@Nullable Facing facing);
+    void setFacing(@Nullable Facing facing);
 
-	default @Nullable List<Recipe> getRecipes() {
-		return null;
-	}
+    default @Nullable List<Recipe> getRecipes() {
+        return null;
+    }
 
-	default void setRecipes(@Nullable List<Recipe> recipes) {}
+    default void setRecipes(@Nullable List<Recipe> recipes) {
+    }
 
-	default boolean isShowInCraftsMenu() {
-		return true;
-	}
+    default boolean isShowInCraftsMenu() {
+        return true;
+    }
 
-	default void setShowInCraftsMenu(boolean showInCraftsMenu) {}
+    default void setShowInCraftsMenu(boolean showInCraftsMenu) {
+    }
 
-	default void register() {
-		this.register(true);
-	}
+    default void register() {
+        this.register(true);
+    }
 
-	default void register(boolean regRecipes) {
-		if (this instanceof Typed typed) {
-			for (Typed.Type type : typed.getTypes()) {
-				MSCore.getCache().customDecorMap.put(
-						type.getNamespacedKey().getKey(),
-						type.getCustomModelData(),
-						typed.createCustomDecorData(type)
-				);
-			}
-		} else {
-			MSCore.getCache().customDecorMap.put(
-					this.getNamespacedKey().getKey(),
-					this.getItemStack().getItemMeta().getCustomModelData(),
-					this
-			);
-		}
+    default void register(boolean regRecipes) {
+        if (this instanceof Typed typed) {
+            for (var type : typed.getTypes()) {
+                MSCore.getCache().customDecorMap.put(
+                        type.getNamespacedKey().getKey(),
+                        type.getCustomModelData(),
+                        typed.createCustomDecorData(type)
+                );
+            }
+        } else {
+            MSCore.getCache().customDecorMap.put(
+                    this.getNamespacedKey().getKey(),
+                    this.getItemStack().getItemMeta().getCustomModelData(),
+                    this
+            );
+        }
 
-		if (regRecipes) {
-			MSDecor.getConfigCache().recipeDecors.add(this);
-		}
-	}
+        if (regRecipes) {
+            MSDecor.getConfigCache().recipeDecors.add(this);
+        }
+    }
 
-	default @Nullable List<Recipe> initRecipes() {
-		return null;
-	}
+    default @Nullable List<Recipe> initRecipes() {
+        return null;
+    }
 
-	default void registerRecipes() {
-		List<Recipe> recipes = this.initRecipes();
-		if (recipes != null) {
-			for (Recipe recipe : recipes) {
-				Bukkit.addRecipe(recipe);
-				if (this.isShowInCraftsMenu()) {
-					MSCore.getCache().customDecorRecipes.add(recipe);
-				}
-			}
-		}
-	}
+    default void registerRecipes() {
+        var recipes = this.initRecipes();
 
-	@Contract("null -> false")
-	default boolean isSimilar(@Nullable ItemStack itemStack) {
-		if (
-				itemStack == null
-				|| itemStack.getType() != this.getItemStack().getType()
-				|| !itemStack.hasItemMeta()
-				|| !itemStack.getItemMeta().hasCustomModelData()
-				|| !this.getItemStack().getItemMeta().hasCustomModelData()
-		) return false;
-		return itemStack.getItemMeta().getCustomModelData() == this.getItemStack().getItemMeta().getCustomModelData();
-	}
+        if (recipes != null) {
+            for (var recipe : recipes) {
+                Bukkit.addRecipe(recipe);
 
-	CustomDecorData clone();
+                if (this.isShowInCraftsMenu()) {
+                    MSCore.getCache().customDecorRecipes.add(recipe);
+                }
+            }
+        }
+    }
 
-	enum Facing {
-		CEILING(Lists.newArrayList(BlockFace.DOWN)),
-		FLOOR(Lists.newArrayList(BlockFace.UP)),
-		WALL(Lists.newArrayList(BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH));
+    @Contract("null -> false")
+    default boolean isSimilar(@Nullable ItemStack itemStack) {
+        if (
+                itemStack == null
+                || itemStack.getType() != this.getItemStack().getType()
+                || !itemStack.hasItemMeta()
+                || !itemStack.getItemMeta().hasCustomModelData()
+                || !this.getItemStack().getItemMeta().hasCustomModelData()
+        ) return false;
+        return itemStack.getItemMeta().getCustomModelData() == this.getItemStack().getItemMeta().getCustomModelData();
+    }
 
-		private final List<BlockFace> blockFaces;
+    CustomDecorData clone();
 
-		Facing(@NotNull List<BlockFace> blockFaces) {
-			this.blockFaces = blockFaces;
-		}
+    enum Facing {
+        CEILING(Lists.newArrayList(BlockFace.DOWN)),
+        FLOOR(Lists.newArrayList(BlockFace.UP)),
+        WALL(Lists.newArrayList(BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH));
 
-		@Contract("null -> false")
-		public boolean hasFace(@Nullable BlockFace blockFace) {
-			if (blockFace == null) return false;
-			return this.blockFaces.contains(blockFace);
-		}
-	}
+        private final List<BlockFace> blockFaces;
 
-	enum HitBox {
-		FRAME,
-		SOLID_FRAME,
-		STRUCTURE_FRAME,
-		SMALL_ARMOR_STAND,
-		STRUCTURE_SMALL_ARMOR_STAND,
-		SOLID_SMALL_ARMOR_STAND,
-		NORMAL_ARMOR_STAND,
-		SOLID_NORMAL_ARMOR_STAND,
-		STRUCTURE_NORMAL_ARMOR_STAND;
+        Facing(@NotNull List<BlockFace> blockFaces) {
+            this.blockFaces = blockFaces;
+        }
 
-		/**
-		 * @return True if hit-box of custom decor is barrier
-		 */
-		public boolean isSolidHitBox() {
-			return switch (this) {
-				case SOLID_FRAME,
-						SOLID_SMALL_ARMOR_STAND,
-						SOLID_NORMAL_ARMOR_STAND -> true;
-				default -> false;
-			};
-		}
+        @Contract("null -> false")
+        public boolean hasFace(@Nullable BlockFace blockFace) {
+            if (blockFace == null) return false;
+            return this.blockFaces.contains(blockFace);
+        }
+    }
 
-		/**
-		 * @return True if hit-box of custom decor is structure void
-		 */
-		public boolean isStructureHitBox() {
-			return switch (this) {
-				case STRUCTURE_FRAME,
-						STRUCTURE_SMALL_ARMOR_STAND,
-						STRUCTURE_NORMAL_ARMOR_STAND -> true;
-				default -> false;
-			};
-		}
+    enum HitBox {
+        FRAME,
+        SOLID_FRAME,
+        STRUCTURE_FRAME,
+        SMALL_ARMOR_STAND,
+        STRUCTURE_SMALL_ARMOR_STAND,
+        SOLID_SMALL_ARMOR_STAND,
+        NORMAL_ARMOR_STAND,
+        SOLID_NORMAL_ARMOR_STAND,
+        STRUCTURE_NORMAL_ARMOR_STAND;
 
-		/**
-		 * @return True if hit-box of custom decor is armor stand
-		 */
-		public boolean isArmorStand() {
-			return switch (this) {
-				case SOLID_SMALL_ARMOR_STAND,
-						SOLID_NORMAL_ARMOR_STAND,
-						NORMAL_ARMOR_STAND,
-						SMALL_ARMOR_STAND,
-						STRUCTURE_NORMAL_ARMOR_STAND,
-						STRUCTURE_SMALL_ARMOR_STAND -> true;
-				default -> false;
-			};
-		}
-	}
+        /**
+         * @return True if hit-box of custom decor is barrier
+         */
+        public boolean isSolidHitBox() {
+            return switch (this) {
+                case SOLID_FRAME,
+                        SOLID_SMALL_ARMOR_STAND,
+                        SOLID_NORMAL_ARMOR_STAND -> true;
+                default -> false;
+            };
+        }
+
+        /**
+         * @return True if hit-box of custom decor is structure void
+         */
+        public boolean isStructureHitBox() {
+            return switch (this) {
+                case STRUCTURE_FRAME,
+                        STRUCTURE_SMALL_ARMOR_STAND,
+                        STRUCTURE_NORMAL_ARMOR_STAND -> true;
+                default -> false;
+            };
+        }
+
+        /**
+         * @return True if hit-box of custom decor is armor stand
+         */
+        public boolean isArmorStand() {
+            return switch (this) {
+                case SOLID_SMALL_ARMOR_STAND,
+                        SOLID_NORMAL_ARMOR_STAND,
+                        NORMAL_ARMOR_STAND,
+                        SMALL_ARMOR_STAND,
+                        STRUCTURE_NORMAL_ARMOR_STAND,
+                        STRUCTURE_SMALL_ARMOR_STAND -> true;
+                default -> false;
+            };
+        }
+    }
 }

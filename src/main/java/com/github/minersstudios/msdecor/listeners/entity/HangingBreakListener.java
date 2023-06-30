@@ -12,13 +12,13 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class HangingBreakListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onHangingBreak(@NotNull HangingBreakEvent event) {
-		if (
-				event.getEntity() instanceof ItemFrame itemFrame
-				&& MSDecorUtils.isCustomDecorEntity(itemFrame)
-		) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onHangingBreak(@NotNull HangingBreakEvent event) {
+        if (
+                event.getEntity() instanceof ItemFrame itemFrame
+                && MSDecorUtils.isCustomDecorEntity(itemFrame)
+        ) {
+            event.setCancelled(true);
+        }
+    }
 }

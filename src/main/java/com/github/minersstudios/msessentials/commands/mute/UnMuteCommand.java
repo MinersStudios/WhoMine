@@ -101,7 +101,7 @@ public class UnMuteCommand implements MSCommandExecutor {
                 MuteMap muteMap = configCache.muteMap;
                 IDMap idMap = configCache.idMap;
 
-                for (UUID uuid : muteMap.getMap().keySet()) {
+                for (var uuid : muteMap.getMap().keySet()) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
                     String nickname = offlinePlayer.getName();
 

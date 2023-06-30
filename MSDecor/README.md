@@ -11,7 +11,7 @@
   </a>
 </p>
 <p align="center">
-  A Minecraft plugin with Decorations for WhoMine<br>
+  A Minecraft plugin with decorations for WhoMine<br>
   (Project is in development, so there is shit)
 </p>
 <br>

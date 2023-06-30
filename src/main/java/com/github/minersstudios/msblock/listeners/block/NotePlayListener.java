@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class NotePlayListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onNotePlay(@NotNull NotePlayEvent event) {
-		if (!(event.getInstrument() == Instrument.BIT && event.getNote().equals(new Note(0)))) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onNotePlay(@NotNull NotePlayEvent event) {
+        if (!(event.getInstrument() == Instrument.BIT && event.getNote().equals(new Note(0)))) {
+            event.setCancelled(true);
+        }
+    }
 }

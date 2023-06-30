@@ -14,12 +14,12 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PlayerGameModeChangeListener implements Listener {
 
-	@EventHandler
-	public void onPlayerGameModeChange(@NotNull PlayerGameModeChangeEvent event) {
-		Player player = event.getPlayer();
-		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
-			CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
-			PlayerUtils.removeSteps(player);
-		});
-	}
+    @EventHandler
+    public void onPlayerGameModeChange(@NotNull PlayerGameModeChangeEvent event) {
+        Player player = event.getPlayer();
+        Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
+            CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
+            PlayerUtils.removeSteps(player);
+        });
+    }
 }

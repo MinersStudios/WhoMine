@@ -10,9 +10,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Button builder class.
+ * Button can use {@link ButtonClickAction} to perform action when clicked
+ */
 @SuppressWarnings("unused")
 public class InventoryButton {
-    private @Nullable Player whoClicked;
     private @Nullable ItemStack item;
     private @Nullable ButtonClickAction clickAction;
 
@@ -93,7 +96,7 @@ public class InventoryButton {
             @NotNull CustomInventory customInventory
     ) {
         if (this.clickAction != null) {
-            this.clickAction.doAction(event, customInventory.clone(), this);
+            this.clickAction.doAction(event, customInventory.clone());
         }
     }
 }

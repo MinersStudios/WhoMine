@@ -12,15 +12,16 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class BlockBreakListener implements Listener {
 
-	@EventHandler
-	public void onBlockBreak(@NotNull BlockBreakEvent event) {
-		Block block = event.getBlock();
-		if (MSDecorUtils.isCustomDecorMaterial(event.getBlock().getType())) {
-			for (Entity nearbyEntity : block.getWorld().getNearbyEntities(block.getLocation().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
-				if (MSDecorUtils.isCustomDecorEntity(nearbyEntity)) {
-					event.setCancelled(true);
-				}
-			}
-		}
-	}
+    @EventHandler
+    public void onBlockBreak(@NotNull BlockBreakEvent event) {
+        Block block = event.getBlock();
+
+        if (MSDecorUtils.isCustomDecorMaterial(event.getBlock().getType())) {
+            for (var nearbyEntity : block.getWorld().getNearbyEntities(block.getLocation().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
+                if (MSDecorUtils.isCustomDecorEntity(nearbyEntity)) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
 }

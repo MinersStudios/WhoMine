@@ -8,6 +8,19 @@ import org.jetbrains.annotations.Range;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Builder for listed inventories with pages and static buttons
+ * <br>
+ * Can have:
+ * <ul>
+ *     <li>Static buttons - buttons that do not change when the page index changes</li>
+ *     <li>Pages that are also listed inventories</li>
+ * </ul>
+ * <br>
+ * @see CustomInventory
+ * @see StaticInventoryButton
+ * @see #build()
+ */
 @SuppressWarnings("unused")
 public class ListedInventory extends CustomInventory {
     protected final @NotNull Map<Integer, StaticInventoryButton> staticButtons = new HashMap<>();
@@ -43,9 +56,8 @@ public class ListedInventory extends CustomInventory {
     }
 
     /**
-     * Used to update static buttons in the inventory
-     * <br>
-     * If there are no static buttons, this method does not need to be called
+     * Used to update static buttons in the inventory.
+     * If there are no static buttons, this method does not need to be called.
      *
      * @return Listed inventory
      */
@@ -97,9 +109,8 @@ public class ListedInventory extends CustomInventory {
     }
 
     /**
-     * Sets static button at specified slot
-     * <br>
-     * Static buttons are buttons that do not change when the page changes
+     * Sets static button at specified slot.
+     * Static buttons are buttons that do not change when the page index changes.
      *
      * @param slot   Slot to set static button at
      * @param button Static button to set
@@ -173,14 +184,13 @@ public class ListedInventory extends CustomInventory {
     }
 
     /**
-     * Sets pages size
-     * <br>
-     * This method is used to update pages size in all pages
+     * Sets pages size.
+     * This method is used to update pages size in all pages.
      *
      * @param pagesSize Pages size to set
      */
     protected void setPagesSize(@Range(from = 0, to = Integer.MAX_VALUE) int pagesSize) {
-        for (ListedInventory listedInventory : this.pages.values()) {
+        for (var listedInventory : this.pages.values()) {
             listedInventory.pagesSize = pagesSize;
         }
     }
@@ -207,7 +217,7 @@ public class ListedInventory extends CustomInventory {
     public void updateStaticButtons() {
         if (this.hasStaticButtons()) {
             this.staticButtons.forEach((slot, button) -> {
-                for (ListedInventory listedInventory : this.pages.values()) {
+                for (var listedInventory : this.pages.values()) {
                     listedInventory.setItem(slot, button == null ? EMPTY_ITEM : button.getButton(listedInventory).item());
                 }
             });
@@ -222,7 +232,7 @@ public class ListedInventory extends CustomInventory {
     public void updateStaticButtons(@Range(from = 0, to = Integer.MAX_VALUE) int page) {
         ListedInventory listedInventory = this.pages.get(page);
         if (this.hasStaticButtons()) {
-            for (Map.Entry<Integer, StaticInventoryButton> entry : this.staticButtons.entrySet()) {
+            for (var entry : this.staticButtons.entrySet()) {
                 listedInventory.setItem(entry.getKey(), entry.getValue().getButton(listedInventory).item());
             }
         }

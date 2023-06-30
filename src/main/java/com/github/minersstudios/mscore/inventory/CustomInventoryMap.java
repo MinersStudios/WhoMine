@@ -6,10 +6,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Represents a map of custom inventories.
+ * This class is used to store custom inventories and associate them with a key.
+ */
 @SuppressWarnings("unused")
 public class CustomInventoryMap {
-    private final @NotNull Map<String, CustomInventory> map = new HashMap<>();
+    private final @NotNull Map<String, CustomInventory> map = new ConcurrentHashMap<>();
 
     /**
      * @return Custom inventory map with associated keys

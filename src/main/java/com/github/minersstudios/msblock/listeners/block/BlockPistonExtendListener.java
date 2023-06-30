@@ -12,12 +12,12 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class BlockPistonExtendListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onBlockPistonExtend(@NotNull BlockPistonExtendEvent event) {
-		for (Block block : event.getBlocks()) {
-			if (block.getType() == Material.NOTE_BLOCK) {
-				event.setCancelled(true);
-			}
-		}
-	}
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBlockPistonExtend(@NotNull BlockPistonExtendEvent event) {
+        for (Block block : event.getBlocks()) {
+            if (block.getType() == Material.NOTE_BLOCK) {
+                event.setCancelled(true);
+            }
+        }
+    }
 }

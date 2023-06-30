@@ -20,76 +20,76 @@ import java.util.List;
 import java.util.Map;
 
 public class Wrench extends DamageableItem implements CustomItem {
-	private @NotNull NamespacedKey namespacedKey;
-	private @NotNull ItemStack itemStack;
-	private @Nullable List<Map.Entry<Recipe, Boolean>> recipes;
+    private @NotNull NamespacedKey namespacedKey;
+    private @NotNull ItemStack itemStack;
+    private @Nullable List<Map.Entry<Recipe, Boolean>> recipes;
 
-	public Wrench() {
-		super(Material.IRON_SHOVEL.getMaxDurability(), 300);
-		this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "wrench");
-		this.itemStack = new ItemStack(Material.IRON_SHOVEL);
-		ItemMeta itemMeta = this.itemStack.getItemMeta();
-		itemMeta.displayName(ChatUtils.createDefaultStyledText("Гаечный ключ"));
-		itemMeta.setCustomModelData(1);
-		itemMeta.lore(ChatUtils.convertStringsToComponents(
-				ChatUtils.COLORLESS_DEFAULT_STYLE.color(NamedTextColor.GRAY),
-				"С его помощью вы можете",
-				"изменять вид декораций,",
-				"которые помечены как : ",
-				"§fꀳ"
-		));
-		itemMeta.getPersistentDataContainer().set(
-				MSItemUtils.CUSTOM_ITEM_TYPE_NAMESPACED_KEY,
-				PersistentDataType.STRING,
-				this.getNamespacedKey().getKey()
-		);
-		this.itemStack.setItemMeta(itemMeta);
-	}
+    public Wrench() {
+        super(Material.IRON_SHOVEL.getMaxDurability(), 300);
+        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "wrench");
+        this.itemStack = new ItemStack(Material.IRON_SHOVEL);
+        ItemMeta itemMeta = this.itemStack.getItemMeta();
+        itemMeta.displayName(ChatUtils.createDefaultStyledText("Гаечный ключ"));
+        itemMeta.setCustomModelData(1);
+        itemMeta.lore(ChatUtils.convertStringsToComponents(
+                ChatUtils.COLORLESS_DEFAULT_STYLE.color(NamedTextColor.GRAY),
+                "С его помощью вы можете",
+                "изменять вид декораций,",
+                "которые помечены как : ",
+                "§fꀳ"
+        ));
+        itemMeta.getPersistentDataContainer().set(
+                MSItemUtils.CUSTOM_ITEM_TYPE_NAMESPACED_KEY,
+                PersistentDataType.STRING,
+                this.getNamespacedKey().getKey()
+        );
+        this.itemStack.setItemMeta(itemMeta);
+    }
 
-	@Override
-	public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
-		ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
-				.shape("I", "I", "I")
-				.setIngredient('I', Material.IRON_INGOT);
-		return this.recipes = List.of(Map.entry(shapedRecipe, true));
-	}
+    @Override
+    public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
+        ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
+                .shape("I", "I", "I")
+                .setIngredient('I', Material.IRON_INGOT);
+        return this.recipes = List.of(Map.entry(shapedRecipe, true));
+    }
 
-	@Override
-	public @NotNull NamespacedKey getNamespacedKey() {
-		return this.namespacedKey;
-	}
+    @Override
+    public @NotNull NamespacedKey getNamespacedKey() {
+        return this.namespacedKey;
+    }
 
-	@Override
-	public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
-		this.namespacedKey = namespacedKey;
-	}
+    @Override
+    public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
+        this.namespacedKey = namespacedKey;
+    }
 
-	@Override
-	public @NotNull ItemStack getItemStack() {
-		return this.itemStack;
-	}
+    @Override
+    public @NotNull ItemStack getItemStack() {
+        return this.itemStack;
+    }
 
-	@Override
-	public void setItemStack(@NotNull ItemStack itemStack) {
-		this.itemStack = itemStack;
-	}
+    @Override
+    public void setItemStack(@NotNull ItemStack itemStack) {
+        this.itemStack = itemStack;
+    }
 
-	@Override
-	public @Nullable List<Map.Entry<Recipe, Boolean>> getRecipes() {
-		return this.recipes;
-	}
+    @Override
+    public @Nullable List<Map.Entry<Recipe, Boolean>> getRecipes() {
+        return this.recipes;
+    }
 
-	@Override
-	public void setRecipes(@Nullable List<Map.Entry<Recipe, Boolean>> recipes) {
-		this.recipes = recipes;
-	}
+    @Override
+    public void setRecipes(@Nullable List<Map.Entry<Recipe, Boolean>> recipes) {
+        this.recipes = recipes;
+    }
 
-	@Override
-	public @NotNull CustomItem clone() {
-		try {
-			return (CustomItem) super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public @NotNull CustomItem clone() {
+        try {
+            return (CustomItem) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

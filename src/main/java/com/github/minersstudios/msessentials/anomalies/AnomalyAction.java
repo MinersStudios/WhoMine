@@ -25,20 +25,26 @@ public abstract class AnomalyAction {
         this.percentage = percentage;
     }
 
-    public abstract void doAction(@NotNull Player player, @Nullable AnomalyIgnorableItems ignorableItems);
+    public abstract void doAction(
+            @NotNull Player player,
+            @Nullable AnomalyIgnorableItems ignorableItems
+    );
 
     public Map<AnomalyAction, Long> putAction(@NotNull Player player) {
         return this.putAction(player, System.currentTimeMillis());
     }
 
-    public Map<AnomalyAction, Long> putAction(@NotNull Player player, long time) {
-        Map<AnomalyAction, Long> actionMap = getConfigCache().playerAnomalyActionMap.getOrDefault(player, new ConcurrentHashMap<>());
+    public Map<AnomalyAction, Long> putAction(
+            @NotNull Player player,
+            long time
+    ) {
+        var actionMap = getConfigCache().playerAnomalyActionMap.getOrDefault(player, new ConcurrentHashMap<>());
         actionMap.put(this, time);
         return getConfigCache().playerAnomalyActionMap.put(player, actionMap);
     }
 
     public void removeAction(@NotNull Player player) {
-        Map<AnomalyAction, Long> actionMap = getConfigCache().playerAnomalyActionMap.get(player);
+        var actionMap = getConfigCache().playerAnomalyActionMap.get(player);
         if (actionMap != null) {
             actionMap.remove(this);
             getConfigCache().playerAnomalyActionMap.put(player, actionMap);

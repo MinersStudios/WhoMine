@@ -60,7 +60,7 @@ public class ChatBuffer {
             @NotNull Player player,
             @NotNull String message
     ) {
-        Map<UUID, Queue<String>> chatQueue = getConfigCache().chatQueue;
+        var chatQueue = getConfigCache().chatQueue;
         UUID uuid = player.getUniqueId();
 
         if (!chatQueue.containsKey(uuid)) {
@@ -77,7 +77,7 @@ public class ChatBuffer {
             int delay
     ) {
         Bukkit.getScheduler().runTaskLater(MSEssentials.getInstance(), () -> {
-            Map<UUID, Queue<String>> chatQueue = getConfigCache().chatQueue;
+            var chatQueue = getConfigCache().chatQueue;
 
             if (
                     !player.isOnline()

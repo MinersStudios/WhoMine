@@ -34,6 +34,16 @@ import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayA
 import static com.github.minersstudios.msessentials.utils.MessageUtils.*;
 import static net.kyori.adventure.text.Component.text;
 
+/**
+ * Player info with player file, settings, etc.
+ * All player info stored in {@link PlayerInfoMap}.
+ * Use {@link PlayerInfoMap#getPlayerInfo(UUID, String)} to get player info.
+ * It will create new player info if it doesn't exist,
+ * or get existing player info if it exists and save it to the map if it's not cached.
+ *
+ * @see PlayerFile
+ * @see PlayerInfoMap
+ */
 @SuppressWarnings("unused")
 public class PlayerInfo {
     private final @NotNull UUID uuid;

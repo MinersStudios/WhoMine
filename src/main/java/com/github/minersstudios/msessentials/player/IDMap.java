@@ -13,6 +13,10 @@ import java.util.*;
 
 import static com.github.minersstudios.msessentials.MSEssentials.getInstance;
 
+/**
+ * ID map with {@link UUID} and its ID.
+ * All ids stored in the "config/minersstudios/MSEssentials/ids.yml" file.
+ */
 @SuppressWarnings("unused")
 public class IDMap {
     private final File file;
@@ -73,9 +77,8 @@ public class IDMap {
     }
 
     /**
-     * Gets next ID, by the size of the ID map
-     * <br>
-     * If the ID with that size already exists, returns the next ID
+     * Gets next ID, by the size of the ID map.
+     * If the ID with that size already exists, returns the next ID.
      *
      * @return next player ID
      */
@@ -141,7 +144,7 @@ public class IDMap {
     public void reloadIds() {
         this.map.clear();
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(this.file);
-        for (String key : configuration.getKeys(false)) {
+        for (var key : configuration.getKeys(false)) {
             UUID uuid = UUID.fromString(key);
             int id = configuration.getInt(key);
             this.map.put(uuid, id);
@@ -165,7 +168,7 @@ public class IDMap {
     private void saveFile() {
         YamlConfiguration configuration = new YamlConfiguration();
 
-        for (Map.Entry<UUID, Integer> entry : this.map.entrySet()) {
+        for (var entry : this.map.entrySet()) {
             configuration.set(entry.getKey().toString(), entry.getValue());
         }
 

@@ -1,5 +1,6 @@
 package com.github.minersstudios.msessentials.player;
 
+import com.github.minersstudios.mscore.config.LanguageFile;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.menu.PronounsMenu;
 import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
@@ -19,6 +20,11 @@ import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslat
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
+/**
+ * Registration process class.
+ * It is used to register a player on the server on the first join.
+ * All messages stored in the {@link LanguageFile}.
+ */
 public class RegistrationProcess {
     private Player player;
     private PlayerInfo playerInfo;

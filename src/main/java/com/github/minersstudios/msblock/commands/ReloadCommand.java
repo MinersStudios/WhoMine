@@ -15,24 +15,32 @@ import java.util.Iterator;
 
 public class ReloadCommand {
 
-	public static void runCommand(@NotNull CommandSender sender) {
-		long time = System.currentTimeMillis();
-		Iterator<Recipe> crafts = Bukkit.recipeIterator();
-		while (crafts.hasNext()) {
-			Recipe recipe = crafts.next();
-			if (recipe instanceof ShapedRecipe shapedRecipe && shapedRecipe.getKey().getNamespace().equals("msblock")) {
-				Bukkit.removeRecipe(shapedRecipe.getKey());
-			}
-		}
-		Cache cache = MSCore.getCache();
-		cache.customBlockMap.clear();
-		cache.cachedNoteBlockData.clear();
-		cache.customBlockRecipes.clear();
-		MSBlock.reloadConfigs();
-		if (MSBlock.getInstance().isEnabled()) {
-			ChatUtils.sendFine(sender, Component.text("Плагин был успешно перезагружён за " + (System.currentTimeMillis() - time) + "ms"));
-			return;
-		}
-		ChatUtils.sendError(sender, Component.text("Плагин был перезагружён неудачно"));
-	}
+    public static void runCommand(@NotNull CommandSender sender) {
+        long time = System.currentTimeMillis();
+        Iterator<Recipe> crafts = Bukkit.recipeIterator();
+
+        while (crafts.hasNext()) {
+            Recipe recipe = crafts.next();
+
+            if (
+                    recipe instanceof ShapedRecipe shapedRecipe
+                    && "msblock".equals(shapedRecipe.getKey().getNamespace())
+            ) {
+                Bukkit.removeRecipe(shapedRecipe.getKey());
+            }
+        }
+
+        Cache cache = MSCore.getCache();
+        cache.customBlockMap.clear();
+        cache.cachedNoteBlockData.clear();
+        cache.customBlockRecipes.clear();
+        MSBlock.reloadConfigs();
+        ChatUtils.sendFine(
+                sender,
+                Component.translatable(
+                        "ms.command.msblock.reload.success",
+                        Component.text(System.currentTimeMillis() - time)
+                )
+        );
+    }
 }

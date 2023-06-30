@@ -28,6 +28,15 @@ import java.security.MessageDigest;
 import java.util.Map;
 import java.util.logging.Level;
 
+/**
+ * Resource pack file loader with hash and url.
+ * It is used to load resource packs from GitHub releases.
+ * If the resource pack is not loaded or a new version is detected,
+ * it will be loaded with the url and the hash will be generated,
+ * then the new settings of the resource pack will be saved in config
+ * and the file will be deleted.
+ * All settings stored in the "config/minersstudios/MSEssentials/config.yml" file.
+ */
 public class ResourcePack {
     private final String hash;
     private final String url;

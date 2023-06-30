@@ -88,7 +88,7 @@ public final class ConfigCache {
     }
 
     private void loadAnomalies() {
-        try (Stream<Path> path = Files.walk(Paths.get(MSEssentials.getInstance().getPluginFolder() + "/anomalies"))) {
+        try (var path = Files.walk(Paths.get(MSEssentials.getInstance().getPluginFolder() + "/anomalies"))) {
             path
             .filter(Files::isRegularFile)
             .map(Path::toFile)

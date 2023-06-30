@@ -51,7 +51,7 @@ public class PronounsMenu {
 
         InventoryButton heButton = InventoryButton.create()
                 .item(he)
-                .clickAction((event, inventory, button) -> {
+                .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
                     PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
                     PlayerFile playerFile = playerInfo.getPlayerFile();
@@ -64,7 +64,7 @@ public class PronounsMenu {
 
         InventoryButton sheButton = InventoryButton.create()
                 .item(she)
-                .clickAction((event, inventory, button) -> {
+                .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
                     PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
                     PlayerFile playerFile = playerInfo.getPlayerFile();
@@ -77,7 +77,7 @@ public class PronounsMenu {
 
         InventoryButton theyButton = InventoryButton.create()
                 .item(they)
-                .clickAction((event, inventory, button) -> {
+                .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
                     PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
                     PlayerFile playerFile = playerInfo.getPlayerFile();

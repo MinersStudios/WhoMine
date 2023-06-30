@@ -97,7 +97,7 @@ public class UnBanCommand implements MSCommandExecutor {
         if (args.length == 1) {
             PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
 
-            for (OfflinePlayer offlinePlayer : Bukkit.getBannedPlayers()) {
+            for (var offlinePlayer : Bukkit.getBannedPlayers()) {
                 if (offlinePlayer != null && !StringUtils.isBlank(offlinePlayer.getName())) {
                     PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
                     int id = playerInfo.getID(false, false);

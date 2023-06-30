@@ -198,9 +198,9 @@ public final class MSEssentials extends MSPlugin {
         customInventoryMap.put("resourcepack", ResourcePackMenu.create());
         customInventoryMap.put("crafts", CraftsMenu.create());
 
-        List<Recipe> customBlockRecipes = cache.customBlockRecipes;
-        List<Recipe> customDecorRecipes = cache.customDecorRecipes;
-        List<Recipe> customItemRecipes = cache.customItemRecipes;
+        var customBlockRecipes = cache.customBlockRecipes;
+        var customDecorRecipes = cache.customDecorRecipes;
+        var customItemRecipes = cache.customItemRecipes;
         Bukkit.getScheduler().runTaskTimer(instance, task -> {
             if (
                     MSPluginUtils.isLoadedCustoms()

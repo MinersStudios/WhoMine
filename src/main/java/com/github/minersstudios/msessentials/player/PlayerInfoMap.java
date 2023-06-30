@@ -9,6 +9,16 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Player info map with {@link UUID} and its {@link PlayerInfo}.
+ * All player files stored in the "config/minersstudios/MSEssentials/players" folder.
+ * Use {@link #getPlayerInfo(UUID, String)} to get player info.
+ * It will create new player info if it doesn't exist,
+ * or get existing player info if it exists and save it to the map if it's not cached.
+ *
+ * @see PlayerInfo
+ * @see PlayerFile
+ */
 @SuppressWarnings("unused")
 public class PlayerInfoMap {
     private final Map<UUID, PlayerInfo> map = new ConcurrentHashMap<>();
@@ -50,8 +60,7 @@ public class PlayerInfoMap {
     }
 
     /**
-     * Gets {@link PlayerInfo} of the player from the map
-     * <br>
+     * Gets {@link PlayerInfo} of the player from the map,
      * or creates new {@link PlayerInfo} and puts it in the map if it's not cached
      *
      * @param uniqueId player {@link UUID}
@@ -70,8 +79,7 @@ public class PlayerInfoMap {
 
 
     /**
-     * Gets {@link PlayerInfo} of the player from the map
-     * <br>
+     * Gets {@link PlayerInfo} of the player from the map,
      * or creates new {@link PlayerInfo} and puts it in the map if it's not cached
      *
      * @param player the player

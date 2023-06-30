@@ -13,6 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Builder for listed inventory with elements.
+ * Element slots are slots where elements are located.
+ * Elements are buttons that change when the page index changes,
+ * all elements are located in the element slots.
+ *
+ * @see ListedInventory
+ * @see #build()
+ */
 @SuppressWarnings("unused")
 public class ElementListedInventory extends ListedInventory {
     protected final @NotNull Multimap<Integer, InventoryButton> elements;
@@ -112,19 +121,19 @@ public class ElementListedInventory extends ListedInventory {
      * @return Elements of the page
      */
     public @NotNull Map<Integer, InventoryButton> getPageContents(int page) {
-        Map<Integer, InventoryButton> content = new HashMap<>(this.elementSlots.length);
+        var buttons = new HashMap<Integer, InventoryButton>(this.elementSlots.length);
         int i = 0;
 
-        for (InventoryButton inventoryButton : this.elements.get(page)) {
-            content.put(this.elementSlots[i], inventoryButton);
+        for (var inventoryButton : this.elements.get(page)) {
+            buttons.put(this.elementSlots[i], inventoryButton);
             i++;
         }
 
         Arrays.stream(this.elementSlots)
-                .filter(slot -> !content.containsKey(slot))
-                .forEach(slot -> content.put(slot, null));
+                .filter(slot -> !buttons.containsKey(slot))
+                .forEach(slot -> buttons.put(slot, null));
 
-        return content;
+        return buttons;
     }
 
     /**

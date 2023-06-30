@@ -27,7 +27,7 @@ public class AnomalyBoundingBox extends BoundingBox {
         this.boundingBox = boundingBox;
         this.radii.addAll(radii);
 
-        for (double radius : radii) {
+        for (var radius : radii) {
             this.radiusBoundingBoxes.put(radius, boundingBox.clone().expand(radius));
         }
     }
@@ -40,7 +40,7 @@ public class AnomalyBoundingBox extends BoundingBox {
      */
     public @Nullable Double getRadiusInside(@NotNull Player player) {
         if (player.getWorld() != this.world) return null;
-        for (Map.Entry<Double, BoundingBox> radiusBoundingBox : this.getRadiusBoundingBoxes().entrySet()) {
+        for (var radiusBoundingBox : this.getRadiusBoundingBoxes().entrySet()) {
             if (radiusBoundingBox.getValue().contains(player.getLocation().toVector())) {
                 return radiusBoundingBox.getKey();
             }

@@ -13,48 +13,72 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
+
 public class GiveCommand {
 
-	public static boolean runCommand(@NotNull CommandSender sender, String @NotNull ... args) {
-		if (args.length < 3) return false;
-		if (args[1].length() > 2) {
-			Player player = Bukkit.getPlayer(args[1]);
+    public static boolean runCommand(
+            @NotNull CommandSender sender,
+            String @NotNull ... args
+    ) {
+        if (args.length < 3) return false;
+        if (args[1].length() > 2) {
+            int amount = 1;
+            Player player = Bukkit.getPlayer(args[1]);
+            CustomDecorData customDecorData = MSCore.getCache().customDecorMap.getByPrimaryKey(args[2]);
 
-			int amount = args.length == 4 && args[3].matches("[0-99]+")
-					? Integer.parseInt(args[3])
-					: args.length == 5 && args[4].matches("[0-99]+")
-					? Integer.parseInt(args[4])
-					: 1;
-			if (player == null) {
-				ChatUtils.sendError(sender, Component.text("Данный игрок не на сервере!"));
-				return true;
-			}
+            if (player == null) {
+                ChatUtils.sendError(sender, translatable("ms.error.player_not_found"));
+                return true;
+            }
 
-			CustomDecorData customDecorData = MSCore.getCache().customDecorMap.getByPrimaryKey(args[2]);
-			if (customDecorData == null) {
-				ChatUtils.sendError(sender, Component.text("Такого декора не существует!"));
-				return true;
-			}
+            if (customDecorData == null) {
+                ChatUtils.sendError(sender, translatable("ms.command.msdecor.give.wrong_decor"));
+                return true;
+            }
 
-			if (
-					customDecorData instanceof Typed typed
-					&& args.length == 4
-					&& !args[3].matches("[0-99]+")
-			) {
-				for (Typed.Type type : typed.getTypes()) {
-					if (type.getNamespacedKey().getKey().equals(args[3])) {
-						customDecorData = typed.createCustomDecorData(type);
-					}
-				}
-			}
+            switch (args.length) {
+                case 4, 5 -> {
+                    try {
+                        amount = Integer.parseInt(args[args.length - 1]);
+                    } catch (NumberFormatException ignore) {
+                        ChatUtils.sendError(sender, translatable("ms.error.wrong_format"));
+                        return true;
+                    }
+                }
+            }
 
-			ItemStack itemStack = customDecorData.getItemStack();
-			itemStack.setAmount(amount);
-			player.getInventory().addItem(itemStack);
-			ChatUtils.sendInfo(sender, Component.text("Выдано " + amount + " " + ChatUtils.serializePlainComponent(Objects.requireNonNull(itemStack.displayName())) + " Игроку : " + player.getName()));
-			return true;
-		}
-		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
-		return true;
-	}
+            if (
+                    customDecorData instanceof Typed typed
+                    && args.length == 4
+                    && !args[3].matches("[0-99]+")
+            ) {
+                for (var type : typed.getTypes()) {
+                    if (args[3].equals(type.getNamespacedKey().getKey())) {
+                        customDecorData = typed.createCustomDecorData(type);
+                    }
+                }
+            }
+
+            ItemStack itemStack = customDecorData.getItemStack();
+            Component itemName = itemStack.displayName();
+            itemStack.setAmount(amount);
+
+            player.getInventory().addItem(itemStack);
+            ChatUtils.sendInfo(
+                    sender,
+                    translatable(
+                            "ms.command.msdecor.give.success",
+                            text(amount),
+                            itemName,
+                            text(player.getName())
+                    )
+            );
+            return true;
+        }
+
+        ChatUtils.sendWarning(sender, translatable("ms.error.name_length"));
+        return true;
+    }
 }

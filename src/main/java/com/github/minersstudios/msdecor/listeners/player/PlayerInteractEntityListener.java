@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PlayerInteractEntityListener implements Listener {
 
-	@EventHandler
-	public void onPlayerInteractEntity(@NotNull PlayerInteractEntityEvent event) {
-		if (MSDecorUtils.isCustomDecorEntity(event.getRightClicked())) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler
+    public void onPlayerInteractEntity(@NotNull PlayerInteractEntityEvent event) {
+        if (MSDecorUtils.isCustomDecorEntity(event.getRightClicked())) {
+            event.setCancelled(true);
+        }
+    }
 }

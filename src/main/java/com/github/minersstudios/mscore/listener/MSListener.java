@@ -8,9 +8,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * All listeners implemented using this annotation will be registered automatically
- * <br>
- * All listeners must be implemented using {@link Listener}
+ * All listeners annotated using {@link MSListener} will be registered automatically.
+ * Also, must be implemented using {@link Listener}.
+ *
+ * @see Listener
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

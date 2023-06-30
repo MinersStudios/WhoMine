@@ -13,16 +13,16 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class BlockExplodeListener implements Listener {
 
-	@EventHandler
-	public void onBlockExplode(@NotNull BlockExplodeEvent event) {
-		for (Block block : event.blockList()) {
-			if (block.getBlockData() instanceof NoteBlock noteBlock) {
-				block.setType(Material.AIR);
-				block.getWorld().dropItemNaturally(
-						block.getLocation(),
-						CustomBlockData.fromNoteBlock(noteBlock).craftItemStack()
-				);
-			}
-		}
-	}
+    @EventHandler
+    public void onBlockExplode(@NotNull BlockExplodeEvent event) {
+        for (Block block : event.blockList()) {
+            if (block.getBlockData() instanceof NoteBlock noteBlock) {
+                block.setType(Material.AIR);
+                block.getWorld().dropItemNaturally(
+                        block.getLocation(),
+                        CustomBlockData.fromNoteBlock(noteBlock).craftItemStack()
+                );
+            }
+        }
+    }
 }

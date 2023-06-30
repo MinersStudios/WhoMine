@@ -27,83 +27,83 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ConfigCache {
-	public final @NotNull File configFile;
-	public final @NotNull YamlConfiguration configYaml;
+    public final @NotNull File configFile;
+    public final @NotNull YamlConfiguration configYaml;
 
-	public final boolean isChristmas;
-	public final boolean isHalloween;
+    public final boolean isChristmas;
+    public final boolean isHalloween;
 
-	public final List<CustomDecorData> recipeDecors = new ArrayList<>();
+    public final List<CustomDecorData> recipeDecors = new ArrayList<>();
 
-	public ConfigCache() {
-		this.configFile = new File(MSDecor.getInstance().getPluginFolder(), "config.yml");
-		this.configYaml = YamlConfiguration.loadConfiguration(this.configFile);
+    public ConfigCache() {
+        this.configFile = new File(MSDecor.getInstance().getPluginFolder(), "config.yml");
+        this.configYaml = YamlConfiguration.loadConfiguration(this.configFile);
 
-		this.isChristmas = this.configYaml.getBoolean("is-christmas");
-		this.isHalloween = this.configYaml.getBoolean("is-halloween");
-	}
+        this.isChristmas = this.configYaml.getBoolean("is-christmas");
+        this.isHalloween = this.configYaml.getBoolean("is-halloween");
+    }
 
-	public void registerCustomDecors() {
-		//<editor-fold desc="Custom decors">
-		new Ball().register(this.isChristmas);
-		new TallBall().register(this.isChristmas);
-		new SnowmanBall().register(this.isChristmas);
-		new SnowflakeOnString().register(this.isChristmas);
-		new StarOnString().register(this.isChristmas);
-		new SantaSock().register(this.isChristmas);
-		new Snowman().register(this.isChristmas);
-		new TreeStar().register(this.isChristmas);
+    public void registerCustomDecors() {
+        //<editor-fold desc="Custom decors">
+        new Ball().register(this.isChristmas);
+        new TallBall().register(this.isChristmas);
+        new SnowmanBall().register(this.isChristmas);
+        new SnowflakeOnString().register(this.isChristmas);
+        new StarOnString().register(this.isChristmas);
+        new SantaSock().register(this.isChristmas);
+        new Snowman().register(this.isChristmas);
+        new TreeStar().register(this.isChristmas);
 
-		new SkeletonHand().register(this.isHalloween);
+        new SkeletonHand().register(this.isHalloween);
 
-		new Poop().register();
+        new Poop().register();
 
-		new DeerHead().register();
-		new HoglinHead().register();
-		new ZoglinHead().register();
+        new DeerHead().register();
+        new HoglinHead().register();
+        new ZoglinHead().register();
 
-		new BMOPlush().register();
-		new BrownBearPlush().register();
-		new RacoonPlush().register();
+        new BMOPlush().register();
+        new BrownBearPlush().register();
+        new RacoonPlush().register();
 
-		new Cell().register();
-		new CookingPot().register();
-		new OldCamera().register();
-		new Patefon().register();
-		new Piggybank().register();
-		new SmallClock().register();
-		new SmallGlobe().register();
+        new Cell().register();
+        new CookingPot().register();
+        new OldCamera().register();
+        new Patefon().register();
+        new Piggybank().register();
+        new SmallClock().register();
+        new SmallGlobe().register();
 
-		new ATM().register();
-		new Brazier().register();
-		new FireHydrant().register();
-		new IronTrashcan().register();
-		new Wheelbarrow().register();
+        new ATM().register();
+        new Brazier().register();
+        new FireHydrant().register();
+        new IronTrashcan().register();
+        new Wheelbarrow().register();
 
-		new BigLamp().register();
-		new SmallLamp().register();
+        new BigLamp().register();
+        new SmallLamp().register();
 
-		new BigTable().register();
-		new SmallTable().register();
+        new BigTable().register();
+        new SmallTable().register();
 
-		new BarStool().register();
-		new CoolArmchair().register();
-		new CoolChair().register();
-		new Armchair().register();
-		new Chair().register();
-		new RockingChair().register();
-		new SmallArmchair().register();
-		new SmallChair().register();
+        new BarStool().register();
+        new CoolArmchair().register();
+        new CoolChair().register();
+        new Armchair().register();
+        new Chair().register();
+        new RockingChair().register();
+        new SmallArmchair().register();
+        new SmallChair().register();
 
-		new AcaciaNightstand().register();
-		new BirchNightstand().register();
-		new CrimsonNightstand().register();
-		new DarkOakNightstand().register();
-		new JungleNightstand().register();
-		new MangroveNightstand().register();
-		new OakNightstand().register();
-		new SpruceNightstand().register();
-		new WarpedNightstand().register();
-		//</editor-fold>
-	}
+        new AcaciaNightstand().register();
+        new BirchNightstand().register();
+        new CrimsonNightstand().register();
+        new DarkOakNightstand().register();
+        new JungleNightstand().register();
+        new MangroveNightstand().register();
+        new OakNightstand().register();
+        new SpruceNightstand().register();
+        new WarpedNightstand().register();
+        //</editor-fold>
+    }
 }

@@ -3,6 +3,7 @@ package com.github.minersstudios.mscore;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.mscore.collections.DualMap;
 import com.github.minersstudios.mscore.config.Config;
+import com.github.minersstudios.mscore.config.LanguageFile;
 import com.github.minersstudios.mscore.inventory.CustomInventoryMap;
 import com.github.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.github.minersstudios.msitem.items.CustomItem;
@@ -13,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.*;
 
+/**
+ * Cache for all custom data
+ */
 @SuppressWarnings("unused")
 public final class Cache {
     public final @NotNull DualMap<String, Integer, CustomDecorData> customDecorMap = new DualMap<>();
@@ -26,18 +30,4 @@ public final class Cache {
     public final @NotNull List<Recipe> customItemRecipes = new ArrayList<>();
     public final @NotNull CustomInventoryMap customInventoryMap = new CustomInventoryMap();
     public final Map<String, UUID> playerUUIDs = new HashMap<>();
-    public Config config;
-
-    public Cache() {
-        this.reloadConfigs();
-    }
-
-    public void reloadConfigs() {
-        MSCore plugin = MSCore.getInstance();
-        File configFile = plugin.getConfigFile();
-
-        plugin.saveDefaultConfig();
-        plugin.reloadConfig();
-        this.config = new Config(configFile);
-    }
 }

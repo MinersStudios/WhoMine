@@ -20,7 +20,7 @@ public class PlayerUpdateSignListener extends PacketAdapter {
     @Override
     public void onPacketReceiving(@NotNull PacketEvent event) {
         Player player = event.getPlayer();
-        Map<Player, SignMenu> signs = MSEssentials.getConfigCache().signs;
+        var signs = MSEssentials.getConfigCache().signs;
         if (signs.isEmpty() || !signs.containsKey(player)) return;
         SignMenu menu = signs.remove(player);
 

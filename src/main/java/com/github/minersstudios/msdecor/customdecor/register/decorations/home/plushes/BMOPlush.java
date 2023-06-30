@@ -18,109 +18,109 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BMOPlush implements CustomDecorData {
-	private @NotNull NamespacedKey namespacedKey;
-	private @NotNull ItemStack itemStack;
-	private @NotNull SoundGroup soundGroup;
-	private @NotNull HitBox hitBox;
-	private @Nullable Facing facing;
-	private @Nullable List<Recipe> recipes;
+    private @NotNull NamespacedKey namespacedKey;
+    private @NotNull ItemStack itemStack;
+    private @NotNull SoundGroup soundGroup;
+    private @NotNull HitBox hitBox;
+    private @Nullable Facing facing;
+    private @Nullable List<Recipe> recipes;
 
-	public BMOPlush() {
-		this.namespacedKey = new NamespacedKey(MSDecor.getInstance(), "bmo_plush");
-		this.itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
-		ItemMeta itemMeta = this.itemStack.getItemMeta();
-		itemMeta.setCustomModelData(1153);
-		itemMeta.displayName(ChatUtils.createDefaultStyledText("Плюшевый БМО"));
-		itemMeta.getPersistentDataContainer().set(
-				MSDecorUtils.CUSTOM_DECOR_TYPE_NAMESPACED_KEY,
-				PersistentDataType.STRING,
-				this.getNamespacedKey().getKey()
-		);
-		this.itemStack.setItemMeta(itemMeta);
-		this.soundGroup = new SoundGroup(
-				"block.wool.place", 1.0f, 1.0f,
-				"block.wool.break", 1.0f, 1.0f
-		);
-		this.hitBox = HitBox.SMALL_ARMOR_STAND;
-		this.facing = Facing.FLOOR;
-	}
+    public BMOPlush() {
+        this.namespacedKey = new NamespacedKey(MSDecor.getInstance(), "bmo_plush");
+        this.itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
+        ItemMeta itemMeta = this.itemStack.getItemMeta();
+        itemMeta.setCustomModelData(1153);
+        itemMeta.displayName(ChatUtils.createDefaultStyledText("Плюшевый БМО"));
+        itemMeta.getPersistentDataContainer().set(
+                MSDecorUtils.CUSTOM_DECOR_TYPE_NAMESPACED_KEY,
+                PersistentDataType.STRING,
+                this.getNamespacedKey().getKey()
+        );
+        this.itemStack.setItemMeta(itemMeta);
+        this.soundGroup = new SoundGroup(
+                "block.wool.place", 1.0f, 1.0f,
+                "block.wool.break", 1.0f, 1.0f
+        );
+        this.hitBox = HitBox.SMALL_ARMOR_STAND;
+        this.facing = Facing.FLOOR;
+    }
 
-	@Override
-	public @Nullable List<Recipe> initRecipes() {
-		ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
-				.shape("II", "DI")
-				.setIngredient('D', Material.LIGHT_BLUE_DYE)
-				.setIngredient('I', Material.IRON_INGOT);
-		this.recipes = List.of(shapedRecipe);
-		return this.recipes;
-	}
+    @Override
+    public @Nullable List<Recipe> initRecipes() {
+        ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
+                .shape("II", "DI")
+                .setIngredient('D', Material.LIGHT_BLUE_DYE)
+                .setIngredient('I', Material.IRON_INGOT);
+        this.recipes = List.of(shapedRecipe);
+        return this.recipes;
+    }
 
-	@Override
-	public @NotNull NamespacedKey getNamespacedKey() {
-		return this.namespacedKey;
-	}
+    @Override
+    public @NotNull NamespacedKey getNamespacedKey() {
+        return this.namespacedKey;
+    }
 
-	@Override
-	public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
-		this.namespacedKey = namespacedKey;
-	}
+    @Override
+    public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
+        this.namespacedKey = namespacedKey;
+    }
 
-	@Override
-	public @NotNull ItemStack getItemStack() {
-		return this.itemStack;
-	}
+    @Override
+    public @NotNull ItemStack getItemStack() {
+        return this.itemStack;
+    }
 
-	@Override
-	public void setItemStack(@NotNull ItemStack itemStack) {
-		this.itemStack = itemStack;
-	}
+    @Override
+    public void setItemStack(@NotNull ItemStack itemStack) {
+        this.itemStack = itemStack;
+    }
 
-	@Override
-	public @NotNull SoundGroup getSoundGroup() {
-		return this.soundGroup;
-	}
+    @Override
+    public @NotNull SoundGroup getSoundGroup() {
+        return this.soundGroup;
+    }
 
-	@Override
-	public void setSoundGroup(@NotNull SoundGroup soundGroup) {
-		this.soundGroup = soundGroup;
-	}
+    @Override
+    public void setSoundGroup(@NotNull SoundGroup soundGroup) {
+        this.soundGroup = soundGroup;
+    }
 
-	@Override
-	public @NotNull HitBox getHitBox() {
-		return this.hitBox;
-	}
+    @Override
+    public @NotNull HitBox getHitBox() {
+        return this.hitBox;
+    }
 
-	@Override
-	public void setHitBox(@NotNull HitBox hitBox) {
-		this.hitBox = hitBox;
-	}
+    @Override
+    public void setHitBox(@NotNull HitBox hitBox) {
+        this.hitBox = hitBox;
+    }
 
-	@Override
-	public @Nullable Facing getFacing() {
-		return this.facing;
-	}
+    @Override
+    public @Nullable Facing getFacing() {
+        return this.facing;
+    }
 
-	@Override
-	public void setFacing(@Nullable Facing facing) {
-		this.facing = facing;
-	}
+    @Override
+    public void setFacing(@Nullable Facing facing) {
+        this.facing = facing;
+    }
 
-	@Override
-	public @Nullable List<Recipe> getRecipes() {
-		return this.recipes;
-	}
+    @Override
+    public @Nullable List<Recipe> getRecipes() {
+        return this.recipes;
+    }
 
-	@Override
-	public void setRecipes(@Nullable List<Recipe> recipes) {
-		this.recipes = recipes;
-	}
+    @Override
+    public void setRecipes(@Nullable List<Recipe> recipes) {
+        this.recipes = recipes;
+    }
 
-	@Override
-	public @NotNull CustomDecorData clone() {
-		try {
-			return (CustomDecorData) super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public @NotNull CustomDecorData clone() {
+        try {
+            return (CustomDecorData) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

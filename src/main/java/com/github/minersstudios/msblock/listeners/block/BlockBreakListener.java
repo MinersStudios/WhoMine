@@ -26,47 +26,50 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class BlockBreakListener implements Listener {
 
-	@EventHandler
-	public void onBlockBreak(@NotNull BlockBreakEvent event) {
-		Player player = event.getPlayer();
-		ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-		Block block = event.getBlock();
-		CraftBlock craftBlock = (CraftBlock) block;
-		Block topBlock = event.getBlock().getRelative(BlockFace.UP);
-		Block bottomBlock = event.getBlock().getRelative(BlockFace.DOWN);
-		Location blockLocation = block.getLocation().toCenterLocation();
+    @EventHandler
+    public void onBlockBreak(@NotNull BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        Block block = event.getBlock();
+        CraftBlock craftBlock = (CraftBlock) block;
+        Block topBlock = event.getBlock().getRelative(BlockFace.UP);
+        Block bottomBlock = event.getBlock().getRelative(BlockFace.DOWN);
+        Location blockLocation = block.getLocation().toCenterLocation();
 
-		if (BlockUtils.isWoodenSound(block.getBlockData())) {
-			CustomBlockData.DEFAULT.getSoundGroup().playBreakSound(blockLocation);
-		}
+        if (BlockUtils.isWoodenSound(block.getBlockData())) {
+            CustomBlockData.DEFAULT.getSoundGroup().playBreakSound(blockLocation);
+        }
 
-		if (block.getBlockData() instanceof NoteBlock noteBlock) {
-			CustomBlockData customBlockMaterial = CustomBlockData.fromNoteBlock(noteBlock);
-			GameMode gameMode = player.getGameMode();
+        if (block.getBlockData() instanceof NoteBlock noteBlock) {
+            CustomBlockData customBlockMaterial = CustomBlockData.fromNoteBlock(noteBlock);
+            GameMode gameMode = player.getGameMode();
 
-			event.setCancelled(true);
+            event.setCancelled(true);
 
-			if (
-					gameMode == GameMode.CREATIVE
-					&& CustomBlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition())
-			) {
-				customBlockMaterial.getSoundGroup().playBreakSound(blockLocation);
-			}
+            if (
+                    gameMode == GameMode.CREATIVE
+                    && CustomBlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition())
+            ) {
+                customBlockMaterial.getSoundGroup().playBreakSound(blockLocation);
+            }
 
-			if (customBlockMaterial.getToolType() == ToolType.AXE && gameMode != GameMode.CREATIVE) {
-				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));
-				block.getWorld().dropItemNaturally(block.getLocation(), customBlockMaterial.craftItemStack());
-				CustomBlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition());
-			}
-			return;
-		}
+            if (
+                    customBlockMaterial.getToolType() == ToolType.AXE
+                    && gameMode != GameMode.CREATIVE
+            ) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));
+                block.getWorld().dropItemNaturally(block.getLocation(), customBlockMaterial.craftItemStack());
+                CustomBlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition());
+            }
+            return;
+        }
 
-		if (
-				topBlock.getType() == Material.NOTE_BLOCK
-				|| bottomBlock.getType() == Material.NOTE_BLOCK
-		) {
-			event.setCancelled(true);
-			CustomBlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition());
-		}
-	}
+        if (
+                topBlock.getType() == Material.NOTE_BLOCK
+                || bottomBlock.getType() == Material.NOTE_BLOCK
+        ) {
+            event.setCancelled(true);
+            CustomBlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition());
+        }
+    }
 }

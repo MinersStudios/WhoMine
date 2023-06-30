@@ -58,7 +58,7 @@ public final class MSCustomUtils {
         if (itemMeta == null) return null;
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-        for (NamespacedKey namespacedKey : container.getKeys()) {
+        for (var namespacedKey : container.getKeys()) {
             String key = namespacedKey.getKey();
 
             switch (namespacedKey.namespace()) {

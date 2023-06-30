@@ -26,7 +26,7 @@ public class AllPlayers implements TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+            for (var offlinePlayer : Bukkit.getOfflinePlayers()) {
                 String nickname = offlinePlayer.getName();
 
                 if (nickname == null) continue;

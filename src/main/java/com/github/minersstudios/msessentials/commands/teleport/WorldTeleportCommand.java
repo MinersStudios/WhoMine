@@ -96,7 +96,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             case 1 -> {
                 PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
 
-                for (Player player : Bukkit.getOnlinePlayers()) {
+                for (var player : Bukkit.getOnlinePlayers()) {
                     PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
                     int id = playerInfo.getID(false, false);
 
@@ -108,7 +108,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
                 }
             }
             case 2 -> {
-                for (World world : Bukkit.getWorlds()) {
+                for (var world : Bukkit.getWorlds()) {
                     if (world.equals(MSEssentials.getWorldDark())) continue;
                     completions.add(world.getName());
                 }

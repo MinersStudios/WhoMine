@@ -14,54 +14,74 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
+
 public class GiveCommand {
 
-	public static boolean runCommand(@NotNull CommandSender sender, String @NotNull ... args) {
-		if (args.length < 3) return false;
-		if (args[1].length() > 2) {
-			Player player = Bukkit.getPlayer(args[1]);
+    public static boolean runCommand(@NotNull CommandSender sender, String @NotNull ... args) {
+        if (args.length < 3) return false;
+        if (args[1].length() > 2) {
+            int amount = 1;
+            Player player = Bukkit.getPlayer(args[1]);
 
-			int amount = args.length == 4 && args[3].matches("\\d+")
-					? Integer.parseInt(args[3])
-					: args.length == 5 && args[4].matches("\\d+")
-					? Integer.parseInt(args[4])
-					: 1;
-			if (player == null) {
-				ChatUtils.sendError(sender, Component.text("Данный игрок не на сервере!"));
-				return true;
-			}
+            if (player == null) {
+                ChatUtils.sendError(sender, translatable("ms.error.player_not_found"));
+                return true;
+            }
 
-			ItemStack itemStack;
-			RenameableItem renameableItem = MSCore.getCache().renameableItemMap.getByPrimaryKey(args[2]);
-			CustomItem customItem = MSCore.getCache().customItemMap.getByPrimaryKey(args[2]);
-			if (customItem == null) {
-				if (renameableItem == null) {
-					ChatUtils.sendError(sender, Component.text("Такого предмета не существует!"));
-					return true;
-				} else {
-					itemStack = renameableItem.getResultItemStack();
-				}
-			} else {
-				if (
-						customItem instanceof Typed typed
-						&& args.length == 4
-						&& !args[3].matches("\\d+")
-				) {
-					for (Typed.Type type : typed.getTypes()) {
-						if (type.getNamespacedKey().getKey().equals(args[3])) {
-							customItem = typed.createCustomItem(type);
-						}
-					}
-				}
-				itemStack = customItem.getItemStack();
-			}
+            ItemStack itemStack;
+            RenameableItem renameableItem = MSCore.getCache().renameableItemMap.getByPrimaryKey(args[2]);
+            CustomItem customItem = MSCore.getCache().customItemMap.getByPrimaryKey(args[2]);
 
-			itemStack.setAmount(amount);
-			player.getInventory().addItem(itemStack);
-			ChatUtils.sendInfo(sender, Component.text("Выдано " + amount + " " + ChatUtils.serializePlainComponent(Objects.requireNonNull(itemStack.displayName())) + " Игроку : " + player.getName()));
-			return true;
-		}
-		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
-		return true;
-	}
+            if (customItem == null) {
+                if (renameableItem == null) {
+                    ChatUtils.sendError(sender, translatable("ms.command.msitem.give.wrong_item"));
+                    return true;
+                } else {
+                    itemStack = renameableItem.getResultItemStack();
+                }
+            } else {
+                if (
+                        customItem instanceof Typed typed
+                        && args.length == 4
+                        && !args[3].matches("\\d+")
+                ) {
+                    for (var type : typed.getTypes()) {
+                        if (type.getNamespacedKey().getKey().equals(args[3])) {
+                            customItem = typed.createCustomItem(type);
+                        }
+                    }
+                }
+                itemStack = customItem.getItemStack();
+            }
+
+            switch (args.length) {
+                case 4, 5 -> {
+                    try {
+                        amount = Integer.parseInt(args[args.length - 1]);
+                    } catch (NumberFormatException ignore) {
+                        ChatUtils.sendError(sender, translatable("ms.error.wrong_format"));
+                        return true;
+                    }
+                }
+            }
+
+            itemStack.setAmount(amount);
+            player.getInventory().addItem(itemStack);
+            ChatUtils.sendInfo(
+                    sender,
+                    translatable(
+                            "ms.command.msitem.give.success",
+                            text(amount),
+                            itemStack.displayName(),
+                            text(player.getName())
+                    )
+            );
+            return true;
+        }
+
+        ChatUtils.sendWarning(sender, translatable("ms.error.name_length"));
+        return true;
+    }
 }

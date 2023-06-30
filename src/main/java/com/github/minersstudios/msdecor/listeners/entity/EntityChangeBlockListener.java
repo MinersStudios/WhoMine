@@ -13,15 +13,16 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class EntityChangeBlockListener implements Listener {
 
-	@EventHandler
-	public void onEntityChangeBlock(@NotNull EntityChangeBlockEvent event) {
-		Block block = event.getBlock();
-		if (
-				event.getEntity() instanceof FallingBlock
-				&& MSDecorUtils.isCustomDecorMaterial(block.getType())
-		) {
-			event.setCancelled(true);
-			block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(event.getTo()));
-		}
-	}
+    @EventHandler
+    public void onEntityChangeBlock(@NotNull EntityChangeBlockEvent event) {
+        Block block = event.getBlock();
+
+        if (
+                event.getEntity() instanceof FallingBlock
+                && MSDecorUtils.isCustomDecorMaterial(block.getType())
+        ) {
+            event.setCancelled(true);
+            block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(event.getTo()));
+        }
+    }
 }

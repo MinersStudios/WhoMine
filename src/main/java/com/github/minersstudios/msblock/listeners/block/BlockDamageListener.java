@@ -18,22 +18,23 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class BlockDamageListener implements Listener {
 
-	@EventHandler
-	public void onBlockDamage(@NotNull BlockDamageEvent event) {
-		Player player = event.getPlayer();
-		Block block = event.getBlock();
-		Location blockLocation = block.getLocation().toCenterLocation();
+    @EventHandler
+    public void onBlockDamage(@NotNull BlockDamageEvent event) {
+        Player player = event.getPlayer();
+        Block block = event.getBlock();
+        Location blockLocation = block.getLocation().toCenterLocation();
 
-		if (BlockUtils.isWoodenSound(block.getBlockData())) {
-			CustomBlockData.DEFAULT.getSoundGroup().playHitSound(blockLocation);
-		}
+        if (BlockUtils.isWoodenSound(block.getBlockData())) {
+            CustomBlockData.DEFAULT.getSoundGroup().playHitSound(blockLocation);
+        }
 
-		if (block.getBlockData() instanceof NoteBlock noteBlock) {
-			CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
-			CustomBlockDamageEvent customBlockDamageEvent = new CustomBlockDamageEvent(new CustomBlock(block, player, customBlockData), player, event.getItemInHand());
-			Bukkit.getPluginManager().callEvent(customBlockDamageEvent);
-			if (customBlockDamageEvent.isCancelled()) return;
-			customBlockData.getSoundGroup().playHitSound(blockLocation);
-		}
-	}
+        if (block.getBlockData() instanceof NoteBlock noteBlock) {
+            CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
+            CustomBlockDamageEvent customBlockDamageEvent = new CustomBlockDamageEvent(new CustomBlock(block, player, customBlockData), player, event.getItemInHand());
+
+            Bukkit.getPluginManager().callEvent(customBlockDamageEvent);
+            if (customBlockDamageEvent.isCancelled()) return;
+            customBlockData.getSoundGroup().playHitSound(blockLocation);
+        }
+    }
 }

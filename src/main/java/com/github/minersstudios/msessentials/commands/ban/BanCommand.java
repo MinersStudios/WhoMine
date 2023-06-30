@@ -105,7 +105,7 @@ public class BanCommand implements MSCommandExecutor {
 
         switch (args.length) {
             case 1 -> {
-                for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+                for (var offlinePlayer : Bukkit.getOfflinePlayers()) {
                     String nickname = offlinePlayer.getName();
                     UUID uuid = offlinePlayer.getUniqueId();
 

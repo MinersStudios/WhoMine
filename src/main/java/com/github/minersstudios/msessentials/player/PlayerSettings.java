@@ -7,6 +7,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Level;
 
+/**
+ * Player settings class, which contains all player custom settings.
+ *
+ * @see PlayerFile
+ */
 @SuppressWarnings("unused")
 public class PlayerSettings {
     private final @NotNull PlayerFile playerFile;

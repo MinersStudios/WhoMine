@@ -30,6 +30,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a Java plugin and its main class.
+ * It contains methods for auto registering commands and listeners.
+ * This is an indirect implementation of {@link JavaPlugin}.
+ *
+ * @see #onLoad()
+ * @see #onEnable()
+ * @see #onDisable()
+ */
 @SuppressWarnings({"unused", "EmptyMethod"})
 public abstract class MSPlugin extends JavaPlugin {
     protected File pluginFolder;
@@ -53,16 +62,16 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * Called after a plugin is loaded but before it has been enabled
-     * <br>
+     * Called after a plugin is loaded but before it has been enabled.
      * When multiple plugins are loaded, the onLoad() for all plugins is
-     * called before any onEnable() is called
-     * <br>
-     * Sets the plugin folder to "/config/minersstudios/PLUGIN_NAME"
-     * <br>
-     * Also loads the config from the new folder, class names, command instances and listener instances
-     * <br>
-     * After that, it calls the load() method
+     * called before any onEnable() is called.
+     * Sets the plugin folder to "/config/minersstudios/PLUGIN_NAME".
+     * Also loads the config from the new folder, class names, command instances and listener instances.
+     * After that, it calls the load() method.
+     *
+     * @see #loadClassNames()
+     * @see #loadCommands()
+     * @see #loadListeners()
      */
     @Override
     public final void onLoad() {
@@ -84,13 +93,13 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * Called when this plugin is enabled
-     * <br>
-     * Registers all commands and listeners
-     * <br>
-     * After that, it calls the enable() method
-     * <br>
-     * Also logs the time it took to enable the plugin
+     * Called when this plugin is enabled.
+     * Registers all commands and listeners.
+     * After that, it calls the enable() method.
+     * Also logs the time it took to enable the plugin.
+     *
+     * @see #registerCommands()
+     * @see #registerListeners()
      */
     @Override
     public final void onEnable() {
@@ -104,11 +113,9 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * Called when this plugin is disabled
-     * <br>
-     * After that, it calls the disable() method
-     * <br>
-     * Also logs the time it took to disable the plugin
+     * Called when this plugin is disabled.
+     * After that, it calls the disable() method.
+     * Also logs the time it took to disable the plugin.
      */
     @Override
     public final void onDisable() {
@@ -142,7 +149,7 @@ public abstract class MSPlugin extends JavaPlugin {
     /**
      * Gets the names of all plugin classes, similar to the package string
      * <br>
-     * "com.example.Example"
+     * Example: "com.example.Example"
      *
      * @return Plugin class names
      */
@@ -175,9 +182,11 @@ public abstract class MSPlugin extends JavaPlugin {
 
     /**
      * Used in :
-     * <br>msBlock({@link Cache#customBlockMap})
-     * <br>msDecor({@link Cache#customDecorMap})
-     * <br>msItem({@link Cache#customItemMap})
+     * <ul>
+     *     <li>msBlock({@link Cache#customBlockMap})</li>
+     *     <li>msDecor({@link Cache#customDecorMap})</li>
+     *     <li>msItem({@link Cache#customItemMap})</li>
+     * </ul>
      *
      * @return True if the plugin has loaded the customs to the cache
      */
@@ -197,14 +206,10 @@ public abstract class MSPlugin extends JavaPlugin {
     @Override
     public void reloadConfig() {
         this.newConfig = YamlConfiguration.loadConfiguration(this.configFile);
-        InputStream defConfigStream = this.getResource("config.yml");
-
-        if (defConfigStream == null) return;
-
-        InputStreamReader inputStreamReader = new InputStreamReader(defConfigStream, Charsets.UTF_8);
-        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(inputStreamReader);
-
-        this.newConfig.setDefaults(configuration);
+        InputStream defaultInput = this.getResource("config.yml");
+        if (defaultInput == null) return;
+        InputStreamReader inputReader = new InputStreamReader(defaultInput, Charsets.UTF_8);
+        this.newConfig.setDefaults(YamlConfiguration.loadConfiguration(inputReader));
     }
 
     @Override
@@ -273,9 +278,10 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * Loads all commands annotated with {@link MSCommand} the project
-     * <br>
-     * All commands must be implemented using {@link MSCommandExecutor}
+     * Loads all commands annotated with {@link MSCommand} the project.
+     * All commands must be implemented using {@link MSCommandExecutor}.
+     *
+     * @see MSCommand
      */
     private void loadCommands() {
         Logger logger = this.getLogger();
@@ -300,18 +306,20 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * Registers all command in the project that is annotated with {@link MSCommand}
-     * <br>
-     * All commands must be implemented using {@link MSCommandExecutor}
+     * Registers all command in the project that is annotated with {@link MSCommand}.
+     * All commands must be implemented using {@link MSCommandExecutor}.
+     *
+     * @see MSCommand
      */
     public void registerCommands() {
         this.msCommands.forEach(this::registerCommand);
     }
 
     /**
-     * Loads all listeners annotated with {@link MSListener} the project
-     * <br>
-     * All listeners must be implemented using {@link Listener}
+     * Loads all listeners annotated with {@link MSListener} the project.
+     * All listeners must be implemented using {@link Listener}.
+     *
+     * @see MSListener
      */
     private void loadListeners() {
         Logger logger = this.getLogger();
@@ -335,9 +343,10 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * Registers all listeners in the project that is annotated with {@link MSListener}
-     * <br>
-     * All listeners must be implemented using {@link Listener}
+     * Registers all listeners in the project that is annotated with {@link MSListener}.
+     * All listeners must be implemented using {@link Listener}.
+     *
+     * @see MSListener
      */
     public void registerListeners() {
         PluginManager pluginManager = this.getServer().getPluginManager();
@@ -432,7 +441,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * "com/example/Example.class" -> "com.example.Example"
      */
     private void loadClassNames() {
-        try (JarFile jarFile = new JarFile(this.getFile())) {
+        try (var jarFile = new JarFile(this.getFile())) {
             this.classNames = jarFile.stream().parallel()
                     .map(JarEntry::getName)
                     .filter(name -> name.endsWith(".class"))

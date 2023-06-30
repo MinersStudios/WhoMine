@@ -173,7 +173,7 @@ public class WhitelistCommand implements MSCommandExecutor {
         } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
 
-            for (OfflinePlayer offlinePlayer : Bukkit.getWhitelistedPlayers()) {
+            for (var offlinePlayer : Bukkit.getWhitelistedPlayers()) {
                 PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), args[1]);
                 int id = playerInfo.getID(false, false);
 

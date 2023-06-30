@@ -18,75 +18,75 @@ import java.util.List;
 import java.util.Map;
 
 public class AntiRadiationTextile implements CustomItem {
-	private @NotNull NamespacedKey namespacedKey;
-	private @NotNull ItemStack itemStack;
-	private @Nullable List<Map.Entry<Recipe, Boolean>> recipes;
+    private @NotNull NamespacedKey namespacedKey;
+    private @NotNull ItemStack itemStack;
+    private @Nullable List<Map.Entry<Recipe, Boolean>> recipes;
 
-	public AntiRadiationTextile() {
-		this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "anti_radiation_textile");
-		this.itemStack = new ItemStack(Material.PAPER);
-		ItemMeta itemMeta = this.itemStack.getItemMeta();
-		itemMeta.displayName(ChatUtils.createDefaultStyledText("Антирадиационная ткань"));
-		itemMeta.setCustomModelData(12002);
-		itemMeta.getPersistentDataContainer().set(
-				MSItemUtils.CUSTOM_ITEM_TYPE_NAMESPACED_KEY,
-				PersistentDataType.STRING,
-				this.getNamespacedKey().getKey()
-		);
-		this.itemStack.setItemMeta(itemMeta);
-	}
+    public AntiRadiationTextile() {
+        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "anti_radiation_textile");
+        this.itemStack = new ItemStack(Material.PAPER);
+        ItemMeta itemMeta = this.itemStack.getItemMeta();
+        itemMeta.displayName(ChatUtils.createDefaultStyledText("Антирадиационная ткань"));
+        itemMeta.setCustomModelData(12002);
+        itemMeta.getPersistentDataContainer().set(
+                MSItemUtils.CUSTOM_ITEM_TYPE_NAMESPACED_KEY,
+                PersistentDataType.STRING,
+                this.getNamespacedKey().getKey()
+        );
+        this.itemStack.setItemMeta(itemMeta);
+    }
 
-	@Override
-	public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
-		ItemStack plumbumIngot = MSItemUtils.getCustomItemItemStack("plumbum_ingot");
-		ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
-				.shape(
-						"WSW",
-						"SIS",
-						"WSW"
-				)
-				.setIngredient('I', plumbumIngot)
-				.setIngredient('W', Material.YELLOW_WOOL)
-				.setIngredient('S', Material.STRING);
-		return this.recipes = List.of(Map.entry(shapedRecipe, true));
-	}
+    @Override
+    public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
+        ItemStack plumbumIngot = MSItemUtils.getCustomItemItemStack("plumbum_ingot");
+        ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
+                .shape(
+                        "WSW",
+                        "SIS",
+                        "WSW"
+                )
+                .setIngredient('I', plumbumIngot)
+                .setIngredient('W', Material.YELLOW_WOOL)
+                .setIngredient('S', Material.STRING);
+        return this.recipes = List.of(Map.entry(shapedRecipe, true));
+    }
 
-	@Override
-	public @NotNull NamespacedKey getNamespacedKey() {
-		return this.namespacedKey;
-	}
+    @Override
+    public @NotNull NamespacedKey getNamespacedKey() {
+        return this.namespacedKey;
+    }
 
-	@Override
-	public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
-		this.namespacedKey = namespacedKey;
-	}
+    @Override
+    public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
+        this.namespacedKey = namespacedKey;
+    }
 
-	@Override
-	public @NotNull ItemStack getItemStack() {
-		return this.itemStack;
-	}
+    @Override
+    public @NotNull ItemStack getItemStack() {
+        return this.itemStack;
+    }
 
-	@Override
-	public void setItemStack(@NotNull ItemStack itemStack) {
-		this.itemStack = itemStack;
-	}
+    @Override
+    public void setItemStack(@NotNull ItemStack itemStack) {
+        this.itemStack = itemStack;
+    }
 
-	@Override
-	public @Nullable List<Map.Entry<Recipe, Boolean>> getRecipes() {
-		return this.recipes;
-	}
+    @Override
+    public @Nullable List<Map.Entry<Recipe, Boolean>> getRecipes() {
+        return this.recipes;
+    }
 
-	@Override
-	public void setRecipes(@Nullable List<Map.Entry<Recipe, Boolean>> recipes) {
-		this.recipes = recipes;
-	}
+    @Override
+    public void setRecipes(@Nullable List<Map.Entry<Recipe, Boolean>> recipes) {
+        this.recipes = recipes;
+    }
 
-	@Override
-	public @NotNull CustomItem clone() {
-		try {
-			return (CustomItem) super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public @NotNull CustomItem clone() {
+        try {
+            return (CustomItem) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

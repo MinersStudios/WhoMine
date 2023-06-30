@@ -268,7 +268,9 @@ public final class ChatUtils {
      * <br>
      * Example:
      * <br>
-     * <code>extractMessage(new String[]{"Hello", "Sir.", "PackmanDude"}, 1);</code>
+     *      <code>
+     *          extractMessage(new String[]{"Hello", "Sir.", "PackmanDude"}, 1);
+     *      </code>
      * <br>
      * - will return "Sir. PackmanDude"
      *
@@ -378,9 +380,9 @@ public final class ChatUtils {
             @Nullable Style style,
             String @NotNull [] strings
     ) {
-        List<Component> components = new ArrayList<>();
+        var components = new ArrayList<Component>();
 
-        for (String string : strings) {
+        for (var string : strings) {
             Component component = Component.text(string);
             components.add(
                     style == null
@@ -388,6 +390,7 @@ public final class ChatUtils {
                     : component.style(style)
             );
         }
+
         return components;
     }
 
@@ -432,7 +435,9 @@ public final class ChatUtils {
      * <br>
      * Example:
      * <br>
-     * <code>convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");</code>
+     *      <code>
+     *          convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
+     *      </code>
      * <br>
      * - will return list of components with text "Hello", "Sir." and "PackmanDude"
      *

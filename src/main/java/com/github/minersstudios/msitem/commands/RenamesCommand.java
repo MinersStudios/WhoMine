@@ -16,31 +16,33 @@ import org.jetbrains.annotations.Nullable;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 
 @MSCommand(
-		command = "renames",
-		aliases = {"optifine", "rename", "renameables"},
-		usage = " ꀑ §cИспользуй: /<command>",
-		description = "Открывает меню с переименованиями предметов"
+        command = "renames",
+        aliases = {"optifine", "rename", "renameables"},
+        usage = " ꀑ §cИспользуй: /<command>",
+        description = "Открывает меню с переименованиями предметов"
 )
 public class RenamesCommand implements MSCommandExecutor {
 
-	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
-		if (args.length > 0) return false;
-		if (!(sender instanceof Player player)) {
-			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
-			return true;
-		}
-		CustomInventory inventory = MSCore.getCache().customInventoryMap.get("renames_inventory");
-		if (inventory == null) {
-			ChatUtils.sendError(sender, Component.text("Похоже, что-то пошло не так..."));
-			return true;
-		}
-		player.openInventory(inventory);
-		return true;
-	}
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+        if (args.length > 0) return false;
+        if (!(sender instanceof Player player)) {
+            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
+            return true;
+        }
 
-	@Override
-	public @Nullable CommandNode<?> getCommandNode() {
-		return literal("renames").build();
-	}
+        CustomInventory inventory = MSCore.getCache().customInventoryMap.get("renames_inventory");
+        if (inventory == null) {
+            ChatUtils.sendError(sender, Component.translatable("ms.error.something_went_wrong"));
+            return true;
+        }
+
+        player.openInventory(inventory);
+        return true;
+    }
+
+    @Override
+    public @Nullable CommandNode<?> getCommandNode() {
+        return literal("renames").build();
+    }
 }

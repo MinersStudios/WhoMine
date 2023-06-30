@@ -18,37 +18,41 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PrepareAnvilListener implements Listener {
 
-	@EventHandler
-	public void onPrepareAnvil(@NotNull PrepareAnvilEvent event) {
-		ItemStack resultItem = event.getResult();
-		ItemStack firstItem = event.getInventory().getFirstItem();
-		String renameText = event.getInventory().getRenameText();
-		if (resultItem == null || firstItem == null) return;
-		if (MSItemUtils.getCustomItem(resultItem) instanceof Renameable renameable) {
-			ItemStack renameableItem = renameable.createRenamedItem(resultItem, renameText);
-			if (renameableItem != null) {
-				event.setResult(renameableItem);
-			}
-		} else {
-			RenameableItem renameableItem = CustomItemUtils.getRenameableItem(resultItem, renameText);
-			if (
-					renameableItem != null
-					&& renameableItem.isWhiteListed((OfflinePlayer) event.getViewers().get(0))
-			) {
-				ItemStack renamedItem = renameableItem.createRenamedItem(resultItem, renameText);
-				if (renamedItem != null) {
-					event.setResult(renamedItem);
-				}
-			} else if (
-					!MSBlockUtils.isCustomBlock(firstItem)
-					&& !MSDecorUtils.isCustomDecor(firstItem)
-					&& !MSItemUtils.isCustomItem(firstItem)
-			) {
-				ItemMeta itemMeta = resultItem.getItemMeta();
-				itemMeta.setCustomModelData(null);
-				resultItem.setItemMeta(itemMeta);
-				event.setResult(resultItem);
-			}
-		}
-	}
+    @EventHandler
+    public void onPrepareAnvil(@NotNull PrepareAnvilEvent event) {
+        ItemStack resultItem = event.getResult();
+        ItemStack firstItem = event.getInventory().getFirstItem();
+        String renameText = event.getInventory().getRenameText();
+
+        if (resultItem == null || firstItem == null) return;
+        if (MSItemUtils.getCustomItem(resultItem) instanceof Renameable renameable) {
+            ItemStack renameableItem = renameable.createRenamedItem(resultItem, renameText);
+
+            if (renameableItem != null) {
+                event.setResult(renameableItem);
+            }
+        } else {
+            RenameableItem renameableItem = CustomItemUtils.getRenameableItem(resultItem, renameText);
+
+            if (
+                    renameableItem != null
+                    && renameableItem.isWhiteListed((OfflinePlayer) event.getViewers().get(0))
+            ) {
+                ItemStack renamedItem = renameableItem.createRenamedItem(resultItem, renameText);
+
+                if (renamedItem != null) {
+                    event.setResult(renamedItem);
+                }
+            } else if (
+                    !MSBlockUtils.isCustomBlock(firstItem)
+                    && !MSDecorUtils.isCustomDecor(firstItem)
+                    && !MSItemUtils.isCustomItem(firstItem)
+            ) {
+                ItemMeta itemMeta = resultItem.getItemMeta();
+                itemMeta.setCustomModelData(null);
+                resultItem.setItemMeta(itemMeta);
+                event.setResult(resultItem);
+            }
+        }
+    }
 }

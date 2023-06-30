@@ -20,6 +20,13 @@ import java.util.UUID;
 
 import static com.github.minersstudios.msessentials.MSEssentials.getInstance;
 
+/**
+ * Player file with player data, settings, etc.
+ * All files stored in the "config/minersstudios/MSEssentials/players" folder.
+ * File name is player {@link UUID}.
+ *
+ * @see PlayerInfo
+ */
 @SuppressWarnings("unused")
 public class PlayerFile {
     private final @NotNull File dataFile;

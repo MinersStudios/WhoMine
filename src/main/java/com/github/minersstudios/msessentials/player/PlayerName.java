@@ -12,6 +12,11 @@ import java.util.Locale;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.Colors.*;
 import static net.kyori.adventure.text.Component.text;
 
+/**
+ * Player name class with nickname, first name, last name and patronymic.
+ *
+ * @see PlayerFile
+ */
 public class PlayerName {
     private @NotNull String nickname;
     private @NotNull String firstName;

@@ -16,24 +16,24 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class BlockPlaceListener implements Listener {
 
-	@EventHandler
-	public void onBlockPlace(@NotNull BlockPlaceEvent event) {
-		Player player = event.getPlayer();
-		Block block = event.getBlockPlaced();
+    @EventHandler
+    public void onBlockPlace(@NotNull BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        Block block = event.getBlockPlaced();
 
-		if (
-				block.getType() == Material.NOTE_BLOCK
-				|| MSBlockUtils.isCustomBlock(player.getInventory().getItemInMainHand())
-		) {
-			event.setCancelled(true);
-		}
+        if (
+                block.getType() == Material.NOTE_BLOCK
+                || MSBlockUtils.isCustomBlock(player.getInventory().getItemInMainHand())
+        ) {
+            event.setCancelled(true);
+        }
 
-		if (BlockUtils.isWoodenSound(block.getBlockData())) {
-			CustomBlockData.DEFAULT.getSoundGroup().playPlaceSound(block.getLocation().toCenterLocation());
-		}
+        if (BlockUtils.isWoodenSound(block.getBlockData())) {
+            CustomBlockData.DEFAULT.getSoundGroup().playPlaceSound(block.getLocation().toCenterLocation());
+        }
 
-		if (block.getType() == Material.NOTE_BLOCK) {
-			new CustomBlock(block, player, CustomBlockData.DEFAULT).setCustomBlock(event.getHand());
-		}
-	}
+        if (block.getType() == Material.NOTE_BLOCK) {
+            new CustomBlock(block, player, CustomBlockData.DEFAULT).setCustomBlock(event.getHand());
+        }
+    }
 }

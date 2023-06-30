@@ -66,17 +66,16 @@ public final class DateUtils {
      * @return Timezone from ip
      */
     public static @NotNull String getTimezone(@NotNull InetAddress ip) {
-        try (InputStream input = new URL("http://ip-api.com/json/" + ip.getHostAddress()).openStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        try (
+                var input = new URL("http://ip-api.com/json/" + ip.getHostAddress()).openStream();
+                var reader = new BufferedReader(new InputStreamReader(input))
+        ) {
             StringBuilder entirePage = new StringBuilder();
 
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
                 entirePage.append(inputLine);
             }
-
-            reader.close();
-            input.close();
 
             String pageString = entirePage.toString();
             return pageString.contains("\"timezone\":\"")

@@ -32,15 +32,15 @@ public final class MSDecorUtils {
     }
 
     /**
-     * Places custom decor
-     * <br>
-     * Calls {@link CustomDecorPlaceEvent} when returns true
+     * Places custom decor.
+     * Calls {@link CustomDecorPlaceEvent} when returns true.
      *
      * @param block     Block instead of which decor will be installed
      * @param player    Player who places decor
      * @param key       {@link CustomDecorData} namespaced key string, example - (msdecor:example)
      * @param blockFace Side on which decor will be placed
      * @throws MSCustomNotFoundException If {@link CustomDecorData} is not found
+     * @see CustomDecorPlaceEvent
      */
     public static void placeCustomDecor(
             @NotNull Block block,
@@ -52,9 +52,8 @@ public final class MSDecorUtils {
     }
 
     /**
-     * Places custom decor
-     * <br>
-     * Calls {@link CustomDecorPlaceEvent} when returns true
+     * Places custom decor.
+     * Calls {@link CustomDecorPlaceEvent} when returns true.
      *
      * @param block     Block instead of which decor will be installed
      * @param player    Player who places decor
@@ -62,6 +61,7 @@ public final class MSDecorUtils {
      * @param blockFace Side on which decor will be placed
      * @param hand      Hand that was involved
      * @throws MSCustomNotFoundException If {@link CustomDecorData} is not found
+     * @see CustomDecorPlaceEvent
      */
     public static void placeCustomDecor(
             @NotNull Block block,
@@ -74,9 +74,8 @@ public final class MSDecorUtils {
     }
 
     /**
-     * Places custom decor
-     * <br>
-     * Calls {@link CustomDecorPlaceEvent} when returns true
+     * Places custom decor.
+     * Calls {@link CustomDecorPlaceEvent} when returns true.
      *
      * @param block      Block instead of which decor will be installed
      * @param player     Player who places decor
@@ -85,6 +84,7 @@ public final class MSDecorUtils {
      * @param hand       Hand that was involved
      * @param customName Custom name of decor
      * @throws MSCustomNotFoundException If {@link CustomDecorData} is not found
+     * @see CustomDecorPlaceEvent
      */
     public static void placeCustomDecor(
             @NotNull Block block,

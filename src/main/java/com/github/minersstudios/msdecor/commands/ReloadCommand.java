@@ -14,21 +14,29 @@ import java.util.Iterator;
 
 public class ReloadCommand {
 
-	public static void runCommand(@NotNull CommandSender sender) {
-		long time = System.currentTimeMillis();
-		Iterator<Recipe> crafts = Bukkit.recipeIterator();
-		while (crafts.hasNext()) {
-			Recipe recipe = crafts.next();
-			if (recipe instanceof ShapedRecipe shapedRecipe && shapedRecipe.getKey().getNamespace().equals("msdecor")) {
-				Bukkit.removeRecipe(shapedRecipe.getKey());
-			}
-		}
-		MSCore.getCache().customDecorRecipes.clear();
-		MSDecor.reloadConfigs();
-		if (MSDecor.getInstance().isEnabled()) {
-			ChatUtils.sendFine(sender, Component.text("Плагин был успешно перезагружён за " + (System.currentTimeMillis() - time) + "ms"));
-			return;
-		}
-		ChatUtils.sendError(sender, Component.text("Плагин был перезагружён неудачно"));
-	}
+    public static void runCommand(@NotNull CommandSender sender) {
+        long time = System.currentTimeMillis();
+        Iterator<Recipe> crafts = Bukkit.recipeIterator();
+
+        while (crafts.hasNext()) {
+            Recipe recipe = crafts.next();
+
+            if (
+                    recipe instanceof ShapedRecipe shapedRecipe
+                    && "msdecor".equals(shapedRecipe.getKey().getNamespace())
+            ) {
+                Bukkit.removeRecipe(shapedRecipe.getKey());
+            }
+        }
+
+        MSCore.getCache().customDecorRecipes.clear();
+        MSDecor.reloadConfigs();
+        ChatUtils.sendFine(
+                sender,
+                Component.translatable(
+                        "ms.command.msdecor.reload.success",
+                        Component.text(System.currentTimeMillis() - time)
+                )
+        );
+    }
 }

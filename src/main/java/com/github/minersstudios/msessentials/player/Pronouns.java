@@ -1,11 +1,18 @@
 package com.github.minersstudios.msessentials.player;
 
 
+import com.github.minersstudios.mscore.config.LanguageFile;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
+/**
+ * Pronouns enum with custom messages.
+ * All messages stored in the {@link LanguageFile}.
+ *
+ * @see PlayerFile
+ */
 public enum Pronouns {
     HE, SHE, THEY;
 

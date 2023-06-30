@@ -21,8 +21,14 @@ import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.Locale;
 
+/**
+ * Language file loader
+ * <br>
+ * Loads the language file from the language repository and adds it to {@link GlobalTranslator}.
+ * All downloaded language files are stored in the "/config/minersstudios/language" folder
+ */
 @SuppressWarnings("unused")
-public class LanguageFile {
+public final class LanguageFile {
     private final String sourceUrl;
     private final String languageCode;
     private final JsonObject translations;
@@ -41,8 +47,7 @@ public class LanguageFile {
     }
 
     /**
-     * Loads the translations from the language file to {@link GlobalTranslator}
-     * <br>
+     * Loads the translations from the language file to {@link GlobalTranslator}.
      * If the language file does not exist, it will be downloaded from the language repository
      *
      * @param sourceUrl    URL of the language repository
@@ -86,12 +91,10 @@ public class LanguageFile {
     }
 
     /**
-     * Renders the translation from {@link #registry} as {@link TranslatableComponent}
+     * Renders the translation from {@link #registry} as {@link TranslatableComponent}.
      * <br>
-     * <br>
-     * <b>NOTE:</b> Use only for custom translations loaded from the language file
-     * <br>
-     * <b>NOTE:</b> Usually used for item names and lore, because they are renders it's without fallback
+     * <b>NOTE:</b> Use only for custom translations loaded from the language file.
+     * Usually used for item names and lore, because they are renders it's without fallback
      *
      * @param key Translation key
      * @return TranslatableComponent with translation from {@link #registry} or key if translation is not found
@@ -104,7 +107,6 @@ public class LanguageFile {
     /**
      * Renders the translation from {@link #registry} as {@link String}
      * <br>
-     * <br>
      * <b>NOTE:</b> Use only for custom translations loaded from the language file
      *
      * @param key Translation key
@@ -116,12 +118,13 @@ public class LanguageFile {
     }
 
     /**
-     * Loads language file from
+     * Loads language file from the language repository.
+     * File will be downloaded to "/config/minersstudios/language" folder
      *
      * @return Language file
      */
     private @NotNull File loadFile() {
-        File langFolder = new File("config/minersstudios/msTranslations");
+        File langFolder = new File("config/minersstudios/language");
 
         if (!langFolder.exists() && !langFolder.mkdirs()) {
             throw new RuntimeException("Failed to create language folder");
@@ -136,10 +139,10 @@ public class LanguageFile {
                 URL fileUrl = new URL(url);
 
                 try (
-                        InputStream in = fileUrl.openStream();
-                        OutputStream out = new FileOutputStream(langFile)
+                        var input = fileUrl.openStream();
+                        var output = new FileOutputStream(langFile)
                 ) {
-                    in.transferTo(out);
+                    input.transferTo(output);
                 }
             } catch (IOException e) {
                 ChatUtils.sendError("Failed to download language file: " + url);
@@ -174,10 +177,8 @@ public class LanguageFile {
     }
 
     /**
-     * Creates a backup file of the corrupted language file
-     * <br>
-     * The backup file will be named as the original file with ".OLD" appended to the end
-     * <br>
+     * Creates a backup file of the corrupted language file.
+     * The backup file will be named as the original file with ".OLD" appended to the end.
      * If the backup file already exists, it will be replaced
      *
      * @throws RuntimeException If failed to create backup file

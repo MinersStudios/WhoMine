@@ -32,7 +32,7 @@ public class MSCoreCommandHandler implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (args.length > 0) {
-            switch (args[0].toLowerCase(Locale.ROOT)) {
+            switch (args[0]) {
                 case "reloadlanguage" -> ReloadLanguageCommand.runCommand(sender);
                 case "reloadconfig" -> ReloadConfigCommand.runCommand(sender);
                 default -> {

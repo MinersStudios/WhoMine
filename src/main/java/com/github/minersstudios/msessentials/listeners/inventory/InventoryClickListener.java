@@ -52,7 +52,7 @@ public class InventoryClickListener implements Listener {
             boolean remove = currentItem.getType() == Material.BEDROCK;
 
             if (!remove) {
-                for (Enchantment enchantment : currentItem.getEnchantments().keySet()) {
+                for (var enchantment : currentItem.getEnchantments().keySet()) {
                     remove = currentItem.getEnchantmentLevel(enchantment) > enchantment.getMaxLevel();
                 }
             }

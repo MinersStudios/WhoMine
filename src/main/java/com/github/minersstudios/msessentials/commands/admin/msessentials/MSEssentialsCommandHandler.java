@@ -51,7 +51,7 @@ public class MSEssentialsCommandHandler implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (args.length > 0) {
-            switch (args[0].toLowerCase(Locale.ROOT)) {
+            switch (args[0]) {
                 case "reload" -> ReloadCommand.runCommand(sender);
                 case "updateids" -> UpdateIdsCommand.runCommand(sender);
                 case "updatemutes" -> UpdateMutesCommand.runCommand(sender);

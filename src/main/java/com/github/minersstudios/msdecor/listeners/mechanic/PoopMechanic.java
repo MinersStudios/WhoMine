@@ -19,39 +19,46 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PoopMechanic implements Listener {
 
-	@EventHandler
-	public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
-		if (
-				event.getClickedBlock() == null
-				|| event.getHand() == null
-				|| event.getAction().isLeftClick()
-		) return;
-		Block clickedBlock = event.getClickedBlock();
-		if (clickedBlock.getType() != Material.COMPOSTER) return;
-		Player player = event.getPlayer();
-		GameMode gameMode = player.getGameMode();
-		EquipmentSlot hand = event.getHand();
-		ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-		if (MSBlockUtils.isCustomBlock(itemInMainHand)) return;
-		if (hand != EquipmentSlot.HAND && MSDecorUtils.isCustomDecor(itemInMainHand)) {
-			hand = EquipmentSlot.HAND;
-		}
-		ItemStack itemInHand = player.getInventory().getItem(hand);
-		if (
-				event.getHand() == EquipmentSlot.HAND
-				&& gameMode != GameMode.SPECTATOR
-				&& !player.isSneaking()
-				&& clickedBlock.getBlockData() instanceof Levelled levelled
-				&& (!itemInHand.getType().isBlock() || itemInHand.getType() == Material.AIR)
-				&& MSDecorUtils.getCustomDecorData(itemInHand) instanceof Poop
-				&& levelled.getLevel() < levelled.getMaximumLevel()
-		) {
-			levelled.setLevel(levelled.getLevel() + 1);
-			clickedBlock.setBlockData(levelled);
-			player.swingHand(hand);
-			if (gameMode != GameMode.CREATIVE) {
-				itemInHand.setAmount(itemInHand.getAmount() - 1);
-			}
-		}
-	}
+    @EventHandler
+    public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
+        if (
+                event.getClickedBlock() == null
+                || event.getHand() == null
+                || event.getAction().isLeftClick()
+        ) return;
+
+        Block clickedBlock = event.getClickedBlock();
+
+        if (clickedBlock.getType() != Material.COMPOSTER) return;
+
+        Player player = event.getPlayer();
+        GameMode gameMode = player.getGameMode();
+        EquipmentSlot hand = event.getHand();
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+
+        if (MSBlockUtils.isCustomBlock(itemInMainHand)) return;
+
+        if (hand != EquipmentSlot.HAND && MSDecorUtils.isCustomDecor(itemInMainHand)) {
+            hand = EquipmentSlot.HAND;
+        }
+
+        ItemStack itemInHand = player.getInventory().getItem(hand);
+        if (
+                event.getHand() == EquipmentSlot.HAND
+                && gameMode != GameMode.SPECTATOR
+                && !player.isSneaking()
+                && clickedBlock.getBlockData() instanceof Levelled levelled
+                && (!itemInHand.getType().isBlock() || itemInHand.getType() == Material.AIR)
+                && MSDecorUtils.getCustomDecorData(itemInHand) instanceof Poop
+                && levelled.getLevel() < levelled.getMaximumLevel()
+        ) {
+            levelled.setLevel(levelled.getLevel() + 1);
+            clickedBlock.setBlockData(levelled);
+            player.swingHand(hand);
+
+            if (gameMode != GameMode.CREATIVE) {
+                itemInHand.setAmount(itemInHand.getAmount() - 1);
+            }
+        }
+    }
 }

@@ -60,7 +60,7 @@ public final class ItemUtils {
             @Nullable ItemStack item
     ) {
         if (list.isEmpty() || item == null) return false;
-        for (ItemStack listItem : list) {
+        for (var listItem : list) {
             if (isSimilarItemStacks(listItem, item)) return true;
         }
         return false;

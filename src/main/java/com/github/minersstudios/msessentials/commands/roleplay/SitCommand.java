@@ -45,7 +45,6 @@ public class SitCommand implements MSCommandExecutor {
         PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
         PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
 
-        if (!playerInfo.isOnline()) return true;
         if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
             ChatUtils.sendWarning(player, Component.translatable("ms.command.sit.in_air"));
             return true;

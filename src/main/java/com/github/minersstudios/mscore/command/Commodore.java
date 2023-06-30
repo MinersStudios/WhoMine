@@ -24,6 +24,9 @@ import java.util.stream.Stream;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 
+/**
+ * API for registering commands with Mojang's Brigadier command system
+ */
 public final class Commodore {
     public final List<Command> commands = new ArrayList<>();
     private final String pluginName;
@@ -99,15 +102,15 @@ public final class Commodore {
     ) {
         setFields(node, SUGGESTION_PROVIDER);
 
-        List<String> aliases = this.getAliases(command);
+        var aliases = this.getAliases(command);
 
         if (!aliases.contains(node.getLiteral())) {
             node = renameLiteralNode(node, command.getName());
         }
 
-        for (String alias : aliases) {
-            CommandNode<Object> targetNode = node.getLiteral().equals(alias)
-                    ? (CommandNode<Object>) node
+        for (var alias : aliases) {
+            CommandNode<?> targetNode = node.getLiteral().equals(alias)
+                    ? node
                     : literal(alias)
                     .redirect((CommandNode<Object>) node)
                     .build();
@@ -151,9 +154,8 @@ public final class Commodore {
     }
 
     /**
-     * Sets the command fields for a command node and its children
-     * <br>
-     * Also sets the suggestion provider for {@link ArgumentCommandNode}s
+     * Sets the command fields for a command node and its children.
+     * Also sets the suggestion provider for {@link ArgumentCommandNode}
      *
      * @param node               Command node
      * @param suggestionProvider Suggestion provider
@@ -175,7 +177,7 @@ public final class Commodore {
             throw new RuntimeException("Failed to set fields", e);
         }
 
-        for (CommandNode<?> child : node.getChildren()) {
+        for (var child : node.getChildren()) {
             setFields(child, suggestionProvider);
         }
     }
@@ -200,7 +202,7 @@ public final class Commodore {
                 node.isFork()
         );
 
-        for (CommandNode<S> child : node.getChildren()) {
+        for (var child : node.getChildren()) {
             clone.addChild(child);
         }
 

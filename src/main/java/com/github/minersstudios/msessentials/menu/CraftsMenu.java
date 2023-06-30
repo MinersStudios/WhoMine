@@ -34,7 +34,7 @@ public class CraftsMenu {
     public static @NotNull CustomInventory create() {
         InventoryButton blocksButton = InventoryButton.create()
                 .item(new ItemStack(Material.AIR))
-                .clickAction((event, i, b) -> {
+                .clickAction((event, i) -> {
                     Player player = (Player) event.getWhoClicked();
                     open(Type.BLOCKS, player);
                     playClickSound(player);
@@ -42,7 +42,7 @@ public class CraftsMenu {
 
         InventoryButton decorsButton = InventoryButton.create()
                 .item(new ItemStack(Material.AIR))
-                .clickAction((event, i, b) -> {
+                .clickAction((event, i) -> {
                     Player player = (Player) event.getWhoClicked();
                     open(Type.DECORS, player);
                     playClickSound(player);
@@ -50,7 +50,7 @@ public class CraftsMenu {
 
         InventoryButton itemsButton = InventoryButton.create()
                 .item(new ItemStack(Material.AIR))
-                .clickAction((event, i, b) -> {
+                .clickAction((event, i) -> {
                     Player player = (Player) event.getWhoClicked();
                     open(Type.ITEMS, player);
                     playClickSound(player);
@@ -123,14 +123,14 @@ public class CraftsMenu {
         quitMeta.setCustomModelData(1);
         quitItem.setItemMeta(quitMeta);
 
-        List<InventoryButton> elements = new ArrayList<>();
-        for (Recipe recipe : recipes) {
+        var elements = new ArrayList<InventoryButton>();
+        for (var recipe : recipes) {
             ItemStack resultItem = recipe.getResult();
 
             elements.add(
                     InventoryButton.create()
                     .item(resultItem)
-                    .clickAction((clickEvent, inventory, button) -> {
+                    .clickAction((clickEvent, inventory) -> {
                         Player player = (Player) clickEvent.getWhoClicked();
                         CustomInventory craftInventory = CustomInventory.create(Component.translatable("ms.menu.crafts.craft.title", ChatUtils.DEFAULT_STYLE), 4);
 
@@ -138,8 +138,8 @@ public class CraftsMenu {
                             String[] shapes = shapedRecipe.getShape();
                             int i = 0;
 
-                            for (String shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
-                                for (Character character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
+                            for (var shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
+                                for (var character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
                                     ItemStack ingredient = shapedRecipe.getIngredientMap().get(character);
 
                                     if (ingredient == null) {
@@ -168,7 +168,7 @@ public class CraftsMenu {
                                     CRAFT_QUIT_BUTTON,
                                     InventoryButton.create()
                                     .item(quitItem)
-                                    .clickAction((e, inv, b) -> {
+                                    .clickAction((e, inv) -> {
                                         player.openInventory(inventory);
                                         playClickSound(player);
                                     })
@@ -184,7 +184,7 @@ public class CraftsMenu {
                 ElementListedInventory.create(Component.translatable("ms.menu.crafts.category.title", ChatUtils.DEFAULT_STYLE), 5, IntStream.range(0, 36).toArray())
                 .elements(elements);
 
-        ButtonClickAction previousClick = (event, customInventory, button) -> {
+        ButtonClickAction previousClick = (event, customInventory) -> {
             if (!(customInventory instanceof ListedInventory listedInventory)) return;
 
             Player player = (Player) event.getWhoClicked();
@@ -198,7 +198,7 @@ public class CraftsMenu {
 
         InventoryButton previousPageButton = InventoryButton.create().item(previousPageNoCMD).clickAction(previousClick);
 
-        ButtonClickAction nextClick = (event, customInventory, button) -> {
+        ButtonClickAction nextClick = (event, customInventory) -> {
             if (!(customInventory instanceof ListedInventory listedInventory)) return;
 
             Player player = (Player) event.getWhoClicked();
@@ -226,7 +226,7 @@ public class CraftsMenu {
                         CRAFTS_QUIT_BUTTON,
                         i -> InventoryButton.create()
                                 .item(quitItem)
-                                .clickAction((event, customInventory, inventoryButton) -> {
+                                .clickAction((event, customInventory) -> {
                                     Player player = (Player) event.getWhoClicked();
                                     open(Type.MAIN, player);
                                     playClickSound(player);

@@ -2,7 +2,7 @@ package com.github.minersstudios.msdecor.customdecor;
 
 @SuppressWarnings("unused")
 public interface Sittable extends CustomDecorData {
-	double getHeight();
+    double getHeight();
 
-	void setHeight(double height);
+    void setHeight(double height);
 }

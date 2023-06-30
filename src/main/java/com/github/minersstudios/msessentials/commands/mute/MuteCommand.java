@@ -113,7 +113,7 @@ public class MuteCommand implements MSCommandExecutor {
                 MuteMap muteMap = configCache.muteMap;
                 IDMap idMap = configCache.idMap;
 
-                for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+                for (var offlinePlayer : Bukkit.getOfflinePlayers()) {
                     String nickname = offlinePlayer.getName();
                     UUID uuid = offlinePlayer.getUniqueId();
 

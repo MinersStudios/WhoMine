@@ -87,7 +87,7 @@ public class ResourcePackMenu {
 
         InventoryButton noneButton = InventoryButton.create()
                 .item(none)
-                .clickAction((event, inventory, button) -> {
+                .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
                     PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
                     PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
@@ -111,7 +111,7 @@ public class ResourcePackMenu {
 
         InventoryButton fullButton = InventoryButton.create()
                 .item(full)
-                .clickAction((event, inventory, button) -> {
+                .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
                     PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
                     PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
@@ -125,7 +125,7 @@ public class ResourcePackMenu {
 
         InventoryButton liteButton = InventoryButton.create()
                 .item(lite)
-                .clickAction((event, inventory, button) -> {
+                .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
                     PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
                     PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();

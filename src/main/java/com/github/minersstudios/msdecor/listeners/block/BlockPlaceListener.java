@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class BlockPlaceListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onBlockPlace(@NotNull BlockPlaceEvent event) {
-		if (
-				MSDecorUtils.isCustomDecorMaterial(event.getBlockReplacedState().getType())
-				|| MSDecorUtils.isCustomDecor(event.getPlayer().getInventory().getItemInMainHand())
-		) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBlockPlace(@NotNull BlockPlaceEvent event) {
+        if (
+                MSDecorUtils.isCustomDecorMaterial(event.getBlockReplacedState().getType())
+                || MSDecorUtils.isCustomDecor(event.getPlayer().getInventory().getItemInMainHand())
+        ) {
+            event.setCancelled(true);
+        }
+    }
 }

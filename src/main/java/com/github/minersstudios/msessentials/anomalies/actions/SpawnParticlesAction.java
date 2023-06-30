@@ -24,7 +24,7 @@ public class SpawnParticlesAction extends AnomalyAction {
 
     @Override
     public void doAction(@NotNull Player player, @Nullable AnomalyIgnorableItems ignorableItems) {
-        for (ParticleBuilder particleBuilder : this.particleBuilderList) {
+        for (var particleBuilder : this.particleBuilderList) {
             particleBuilder.location(player.getLocation()).spawn();
         }
     }

@@ -9,27 +9,27 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public final class ConcurrentDualMap<K1, K2, V> {
-    private final @NotNull ConcurrentHashMap<K1, Map.Entry<K2, V>> map = new ConcurrentHashMap<>();
-    private final @NotNull ConcurrentHashMap<K2, K1> keyMap = new ConcurrentHashMap<>();
+public final class ConcurrentDualMap<P, S, V> {
+    private final @NotNull Map<P, Map.Entry<S, V>> map = new ConcurrentHashMap<>();
+    private final @NotNull Map<S, P> keyMap = new ConcurrentHashMap<>();
 
     public @Nullable V put(
-            @NotNull K1 key1,
-            @NotNull K2 key2,
+            @NotNull P primary,
+            @NotNull S secondary,
             @NotNull V value
     ) {
-        Map.Entry<K2, V> entry = new AbstractMap.SimpleEntry<>(key2, value);
-        this.keyMap.put(key2, key1);
-        return this.map.put(key1, entry) != null ? value : null;
+        var entry = new AbstractMap.SimpleEntry<>(secondary, value);
+        this.keyMap.put(secondary, primary);
+        return this.map.put(primary, entry) != null ? value : null;
     }
 
     @Contract(pure = true)
-    public @NotNull Set<K1> primaryKeySet() {
+    public @NotNull Set<P> primaryKeySet() {
         return this.map.keySet();
     }
 
     @Contract(pure = true)
-    public @NotNull Set<K2> secondaryKeySet() {
+    public @NotNull Set<S> secondaryKeySet() {
         return this.keyMap.keySet();
     }
 
@@ -40,34 +40,34 @@ public final class ConcurrentDualMap<K1, K2, V> {
                 .collect(Collectors.toList());
     }
 
-    public @Nullable K1 getPrimaryKey(@Nullable K2 key2) {
-        return this.keyMap.get(key2);
+    public P getPrimaryKey(@Nullable S secondary) {
+        return this.keyMap.get(secondary);
     }
 
-    public @Nullable K2 getSecondaryKey(@Nullable K1 key1) {
-        Map.Entry<K2, V> entry = this.map.get(key1);
+    public S getSecondaryKey(@Nullable P primary) {
+        var entry = this.map.get(primary);
         return entry != null ? entry.getKey() : null;
     }
 
-    public @Nullable V getByPrimaryKey(@Nullable K1 key1) {
-        Map.Entry<K2, V> entry = this.map.get(key1);
+    public V getByPrimaryKey(@Nullable P primary) {
+        var entry = this.map.get(primary);
         return entry != null ? entry.getValue() : null;
     }
 
-    public @Nullable V getBySecondaryKey(@Nullable K2 key2) {
-        return this.getByPrimaryKey(this.keyMap.get(key2));
+    public V getBySecondaryKey(@Nullable S secondary) {
+        return this.getByPrimaryKey(this.keyMap.get(secondary));
     }
 
     @Contract(value = "null -> false", pure = true)
-    public boolean containsPrimaryKey(@Nullable K1 key1) {
-        if (key1 == null) return false;
-        return this.map.containsKey(key1);
+    public boolean containsPrimaryKey(@Nullable P primary) {
+        if (primary == null) return false;
+        return this.map.containsKey(primary);
     }
 
     @Contract(value = "null -> false", pure = true)
-    public boolean containsSecondaryKey(@Nullable K2 key2) {
-        if (key2 == null) return false;
-        return this.secondaryKeySet().contains(key2);
+    public boolean containsSecondaryKey(@Nullable S secondary) {
+        if (secondary == null) return false;
+        return this.secondaryKeySet().contains(secondary);
     }
 
     @Contract(value = "null -> false", pure = true)
@@ -76,17 +76,17 @@ public final class ConcurrentDualMap<K1, K2, V> {
         return this.values().contains(value);
     }
 
-    public @Nullable V removeByPrimaryKey(@NotNull K1 key1) {
-        Map.Entry<K2, V> entry = this.map.remove(key1);
+    public @Nullable V removeByPrimaryKey(@NotNull P primary) {
+        var entry = this.map.remove(primary);
         if (entry == null) return null;
         this.keyMap.remove(entry.getKey());
         return entry.getValue();
     }
 
-    public @Nullable V removeBySecondaryKey(@NotNull K2 key2) {
-        K1 key1 = this.keyMap.remove(key2);
-        if (key1 == null) return null;
-        return this.map.remove(key1).getValue();
+    public @Nullable V removeBySecondaryKey(@NotNull S secondary) {
+        P primary = this.keyMap.remove(secondary);
+        if (primary == null) return null;
+        return this.map.remove(primary).getValue();
     }
 
     public void clear() {
