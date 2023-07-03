@@ -4,7 +4,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("unused")
 public final class IDUtils {
     public static final @NotNull String ID_REGEX = "-?\\d+";
 

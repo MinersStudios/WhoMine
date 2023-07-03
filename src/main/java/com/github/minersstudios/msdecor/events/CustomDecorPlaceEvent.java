@@ -9,7 +9,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("unused")
 public class CustomDecorPlaceEvent extends CustomDecorEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     protected boolean cancel;

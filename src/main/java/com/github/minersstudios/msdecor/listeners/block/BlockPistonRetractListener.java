@@ -2,7 +2,6 @@ package com.github.minersstudios.msdecor.listeners.block;
 
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.MSDecorUtils;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

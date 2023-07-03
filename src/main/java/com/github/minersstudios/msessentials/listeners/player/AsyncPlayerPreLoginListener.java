@@ -3,10 +3,9 @@ package com.github.minersstudios.msessentials.listeners.player;
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.config.ConfigCache;
+import com.github.minersstudios.msessentials.config.Config;
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,9 +28,8 @@ public class AsyncPlayerPreLoginListener implements Listener {
     public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
         String hostAddress = event.getAddress().getHostAddress();
         String nickname = event.getName();
-        ConfigCache configCache = MSEssentials.getConfigCache();
-        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(event.getUniqueId(), nickname);
+        Config config = MSEssentials.getConfiguration();
+        PlayerInfo playerInfo = PlayerInfo.fromMap(event.getUniqueId(), nickname);
         PlayerFile playerFile = playerInfo.getPlayerFile();
         OfflinePlayer offlinePlayer = playerInfo.getOfflinePlayer();
         TranslatableComponent leaveMessageFormat = Component.translatable("ms.format.leave.message").color(NamedTextColor.DARK_GRAY);
@@ -53,8 +51,18 @@ public class AsyncPlayerPreLoginListener implements Listener {
             );
         }
 
+        if (!MSEssentials.getInstance().isLoadedCustoms()) {
+            event.disallow(
+                    AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+                    leaveMessageFormat.args(
+                            Component.translatable("ms.server_not_fully_loaded.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
+                            Component.translatable("ms.server_not_fully_loaded.subtitle").color(NamedTextColor.GRAY)
+                    )
+            );
+        }
+
         if (
-                configCache.developerMode
+                config.developerMode
                 && !offlinePlayer.isOp()
         ) {
             event.disallow(

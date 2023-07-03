@@ -5,14 +5,11 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msitem.items.CustomItem;
 import com.github.minersstudios.msitem.items.RenameableItem;
 import com.github.minersstudios.msitem.items.Typed;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;

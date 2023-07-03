@@ -1,5 +1,9 @@
 package com.github.minersstudios.msessentials.anomalies;
 
+import com.github.minersstudios.msessentials.Cache;
+import com.github.minersstudios.msessentials.MSEssentials;
+import com.github.minersstudios.msessentials.anomalies.actions.AddPotionAction;
+import com.github.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,15 +12,24 @@ import java.security.SecureRandom;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.github.minersstudios.msessentials.MSEssentials.getConfigCache;
-
-@SuppressWarnings("unused")
+/**
+ * Anomaly action class.
+ * Used to do something when a player is in anomaly zone
+ * and the time is up and the percentage is reached.
+ *
+ * @see AddPotionAction
+ * @see SpawnParticlesAction
+ */
 public abstract class AnomalyAction {
     protected static final SecureRandom random = new SecureRandom();
 
     protected final long time;
     protected final int percentage;
 
+    /**
+     * @param time       Time in ticks to perform action (1 second = 20 ticks)
+     * @param percentage Percentage chance of completing action
+     */
     protected AnomalyAction(
             long time,
             int percentage
@@ -25,40 +38,66 @@ public abstract class AnomalyAction {
         this.percentage = percentage;
     }
 
+    /**
+     * Do action if the time is up and the percentage is reached
+     *
+     * @param player         The player to be influenced
+     * @param ignorableItems Ignorable items that will be damaged
+     *                       if player has them and the action will be performed
+     */
     public abstract void doAction(
             @NotNull Player player,
             @Nullable AnomalyIgnorableItems ignorableItems
     );
 
-    public Map<AnomalyAction, Long> putAction(@NotNull Player player) {
-        return this.putAction(player, System.currentTimeMillis());
+    /**
+     * Puts this action to player's action map with current time
+     *
+     * @param player The player to be influenced
+     * @return The previous action map associated with player,
+     *         or null if there was no mapping for player
+     */
+    public @Nullable Map<AnomalyAction, Long> putAction(@NotNull Player player) {
+        Cache cache = MSEssentials.getCache();
+        var actionMap = cache.playerAnomalyActionMap.getOrDefault(player, new ConcurrentHashMap<>());
+
+        actionMap.put(this, System.currentTimeMillis());
+        return cache.playerAnomalyActionMap.put(player, actionMap);
     }
 
-    public Map<AnomalyAction, Long> putAction(
-            @NotNull Player player,
-            long time
-    ) {
-        var actionMap = getConfigCache().playerAnomalyActionMap.getOrDefault(player, new ConcurrentHashMap<>());
-        actionMap.put(this, time);
-        return getConfigCache().playerAnomalyActionMap.put(player, actionMap);
-    }
-
+    /**
+     * Removes this action from player's action map
+     *
+     * @param player A player who has been influenced
+     *               and from which the action will be removed
+     */
     public void removeAction(@NotNull Player player) {
-        var actionMap = getConfigCache().playerAnomalyActionMap.get(player);
+        Cache cache = MSEssentials.getCache();
+        var actionMap = cache.playerAnomalyActionMap.get(player);
+
         if (actionMap != null) {
             actionMap.remove(this);
-            getConfigCache().playerAnomalyActionMap.put(player, actionMap);
+            cache.playerAnomalyActionMap.put(player, actionMap);
         }
     }
 
+    /**
+     * @return True if the percentage is reached
+     */
     public boolean isDo() {
         return random.nextInt(100) < this.percentage;
     }
 
+    /**
+     * @return Time in ticks to perform action (1 second = 20 ticks)
+     */
     public long getTime() {
         return this.time;
     }
 
+    /**
+     * @return Percentage chance of completing the action
+     */
     public int getPercentage() {
         return this.percentage;
     }

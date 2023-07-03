@@ -7,7 +7,6 @@ import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.github.minersstudios.msessentials.tabcompleters.AllLocalPlayers;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -53,7 +52,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
         if (args.length == 0) return false;
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = MSEssentials.getConfigCache().idMap;
+            IDMap idMap = MSEssentials.getCache().idMap;
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null) {
@@ -100,8 +99,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
             return;
         }
 
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+        PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), offlinePlayer.getName());
         Location lastDeathLocation = playerInfo.getPlayerFile().getLastDeathLocation();
         TranslatableComponent playerNotOnline = Component.translatable("ms.error.player_not_online");
 

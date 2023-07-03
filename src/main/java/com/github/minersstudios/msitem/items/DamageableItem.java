@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class DamageableItem {

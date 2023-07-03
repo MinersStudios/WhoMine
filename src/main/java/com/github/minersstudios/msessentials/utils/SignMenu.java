@@ -95,7 +95,7 @@ public class SignMenu {
         connection.send(ClientboundBlockEntityDataPacket.create(sign));
         connection.send(new ClientboundOpenSignEditorPacket(blockPos, true));
 
-        MSEssentials.getConfigCache().signs.put(player, this);
+        MSEssentials.getCache().signs.put(player, this);
     }
 
     /**
@@ -106,7 +106,7 @@ public class SignMenu {
      * @param player The player
      */
     public void close(@NotNull Player player) {
-        MSEssentials.getConfigCache().signs.remove(player);
+        MSEssentials.getCache().signs.remove(player);
         Bukkit.getScheduler().runTask(MSEssentials.getInstance(), () -> {
             if (player.isOnline()) {
                 player.sendBlockChange(this.location, this.location.getBlock().getBlockData());

@@ -4,11 +4,10 @@ import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
+import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.config.ConfigCache;
 import com.github.minersstudios.msessentials.player.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -53,8 +52,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             return true;
         }
 
-        ConfigCache configCache = MSEssentials.getConfigCache();
-        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
+        Cache cache = MSEssentials.getCache();
         TranslatableComponent removedFormat = Component.translatable("ms.command.white_list.remove.sender.message");
         TranslatableComponent alreadyFormat = Component.translatable("ms.command.white_list.add.already");
 
@@ -65,7 +63,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("remove")) {
-                IDMap idMap = configCache.idMap;
+                IDMap idMap = cache.idMap;
                 OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[1]);
 
                 if (offlinePlayer == null || offlinePlayer.getName() == null) {
@@ -73,7 +71,7 @@ public class WhitelistCommand implements MSCommandExecutor {
                     return true;
                 }
 
-                PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+                PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 
                 if (playerInfo.setWhiteListed(false)) {
                     ChatUtils.sendFine(
@@ -105,7 +103,7 @@ public class WhitelistCommand implements MSCommandExecutor {
                 return true;
             }
 
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), args[1]);
+            PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), args[1]);
 
             if (args[0].equalsIgnoreCase("add")) {
                 if (playerInfo.setWhiteListed(true)) {
@@ -171,10 +169,8 @@ public class WhitelistCommand implements MSCommandExecutor {
             completions.add("remove");
             completions.add("reload");
         } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
-            PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-
             for (var offlinePlayer : Bukkit.getWhitelistedPlayers()) {
-                PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), args[1]);
+                PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), args[1]);
                 int id = playerInfo.getID(false, false);
 
                 if (id != -1) {

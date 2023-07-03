@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.security.SecureRandom;
 
-@SuppressWarnings("unused")
 public class SoundGroup {
     private @Nullable String placeSound;
     private float placeSoundPitch;

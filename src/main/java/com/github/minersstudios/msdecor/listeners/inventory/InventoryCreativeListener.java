@@ -6,7 +6,6 @@ import com.github.minersstudios.msdecor.utils.CustomDecorUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;

@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("unused")
 public final class MSItemUtils {
     public static final NamespacedKey CUSTOM_ITEM_TYPE_NAMESPACED_KEY = new NamespacedKey(MSItem.getInstance(), "type");
     public static final NamespacedKey CUSTOM_ITEM_RENAMEABLE_NAMESPACED_KEY = new NamespacedKey(MSItem.getInstance(), "renameable");

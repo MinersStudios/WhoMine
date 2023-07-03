@@ -21,8 +21,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
         PlayerFile playerFile = playerInfo.getPlayerFile();
 
         event.joinMessage(null);
@@ -45,7 +44,7 @@ public class PlayerJoinListener implements Listener {
 
         Bukkit.getScheduler().runTaskTimer(MSEssentials.getInstance(), (task) -> {
             if (!player.isOnline()) task.cancel();
-            if (MSEssentials.getAuthMeApi().isAuthenticated(player) && !player.isDead()) {
+            if (playerInfo.isAuthenticated() && !player.isDead()) {
                 if (
                         !playerFile.exists()
                         || (playerFile.exists()

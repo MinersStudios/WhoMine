@@ -5,11 +5,11 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
+import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.config.ConfigCache;
 import com.github.minersstudios.msessentials.player.IDMap;
 import com.github.minersstudios.msessentials.player.MuteMap;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
+import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -56,14 +56,13 @@ public class MuteCommand implements MSCommandExecutor {
             return true;
         }
 
-        ConfigCache configCache = MSEssentials.getConfigCache();
-        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
+        Cache cache = MSEssentials.getCache();
         String reason = args.length > 2
                 ? ChatUtils.extractMessage(args, 2)
                 : "неизвестно";
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = configCache.idMap;
+            IDMap idMap = cache.idMap;
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (
@@ -74,7 +73,7 @@ public class MuteCommand implements MSCommandExecutor {
                 return true;
             }
 
-            playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
+            PlayerInfo.fromMap(offlinePlayer.getUniqueId(), offlinePlayer.getName())
                     .setMuted(true, date, reason, sender);
             return true;
         }
@@ -90,7 +89,7 @@ public class MuteCommand implements MSCommandExecutor {
                 return true;
             }
 
-            playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), name)
+            PlayerInfo.fromMap(offlinePlayer.getUniqueId(), name)
                     .setMuted(true, date, reason, sender);
             return true;
         }
@@ -109,9 +108,9 @@ public class MuteCommand implements MSCommandExecutor {
         List<String> completions = new ArrayList<>();
         switch (args.length) {
             case 1 -> {
-                ConfigCache configCache = MSEssentials.getConfigCache();
-                MuteMap muteMap = configCache.muteMap;
-                IDMap idMap = configCache.idMap;
+                Cache cache = MSEssentials.getCache();
+                MuteMap muteMap = cache.muteMap;
+                IDMap idMap = cache.idMap;
 
                 for (var offlinePlayer : Bukkit.getOfflinePlayers()) {
                     String nickname = offlinePlayer.getName();

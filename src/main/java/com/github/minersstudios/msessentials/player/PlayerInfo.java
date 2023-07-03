@@ -3,9 +3,9 @@ package com.github.minersstudios.msessentials.player;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
-import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.mojang.authlib.GameProfile;
+import fr.xephi.authme.api.v3.AuthMeApi;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -28,7 +28,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.github.minersstudios.msessentials.MSEssentials.getConfigCache;
+import static com.github.minersstudios.msessentials.MSEssentials.*;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.ME;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.TODO;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.*;
@@ -37,19 +37,19 @@ import static net.kyori.adventure.text.Component.text;
 /**
  * Player info with player file, settings, etc.
  * All player info stored in {@link PlayerInfoMap}.
- * Use {@link PlayerInfoMap#getPlayerInfo(UUID, String)} to get player info.
+ * Use {@link #fromMap(Player)} or {@link #fromMap(UUID, String)} to get player info.
  * It will create new player info if it doesn't exist,
  * or get existing player info if it exists and save it to the map if it's not cached.
  *
  * @see PlayerFile
  * @see PlayerInfoMap
  */
-@SuppressWarnings("unused")
 public class PlayerInfo {
     private final @NotNull UUID uuid;
     private final @NotNull String nickname;
-    private @NotNull PlayerFile playerFile;
     private final @NotNull OfflinePlayer offlinePlayer;
+    private @NotNull PlayerFile playerFile;
+
     private Component defaultName;
     private Component goldenName;
     private Component grayIDGoldName;
@@ -74,6 +74,17 @@ public class PlayerInfo {
         this.offlinePlayer = PlayerUtils.getOfflinePlayer(this.uuid, this.nickname);
 
         this.initNames();
+    }
+
+    public static @NotNull PlayerInfo fromMap(
+            @NotNull UUID uuid,
+            @NotNull String nickname
+    ) {
+        return getCache().playerInfoMap.get(uuid, nickname);
+    }
+
+    public static @NotNull PlayerInfo fromMap(@NotNull Player player) {
+        return getCache().playerInfoMap.get(player);
     }
 
     public @NotNull Component getDefaultName() {
@@ -105,9 +116,9 @@ public class PlayerInfo {
             boolean addPlayer,
             boolean zeroIfNull
     ) {
-        return this == MSEssentials.getConsolePlayerInfo()
+        return this == getConsolePlayerInfo()
                 ? -1
-                : getConfigCache().idMap.get(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
+                : getCache().idMap.get(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
     }
 
     public int getID() {
@@ -115,11 +126,11 @@ public class PlayerInfo {
     }
 
     public boolean isMuted() {
-        return getConfigCache().muteMap.isMuted(this.offlinePlayer);
+        return getCache().muteMap.isMuted(this.offlinePlayer);
     }
 
     public @Nullable MuteMap.Params getMuteParams() {
-        return getConfigCache().muteMap.getParams(this.offlinePlayer);
+        return getCache().muteMap.getParams(this.offlinePlayer);
     }
 
     public @NotNull String getMuteReason() throws IllegalStateException {
@@ -177,7 +188,7 @@ public class PlayerInfo {
             CommandSender sender
     ) {
         Player player = this.getOnlinePlayer();
-        MuteMap muteMap = getConfigCache().muteMap;
+        MuteMap muteMap = getCache().muteMap;
 
         if (value) {
             if (this.isMuted()) {
@@ -435,7 +446,7 @@ public class PlayerInfo {
         this.teleportToLastLeaveLocation();
 
         Bukkit.getScheduler().runTaskAsynchronously(
-                MSEssentials.getInstance(),
+                getInstance(),
                 () -> sendJoinMessage(this)
         );
     }
@@ -451,7 +462,7 @@ public class PlayerInfo {
             vehicle.eject();
         }
 
-        MSEssentials.getConfigCache().playerAnomalyActionMap.remove(player);
+        getCache().playerAnomalyActionMap.remove(player);
         this.savePlayerDataParams();
 
         if (!this.isInWorldDark()) {
@@ -463,7 +474,7 @@ public class PlayerInfo {
         Player player = this.getOnlinePlayer();
         if (player == null) return;
 
-        Bukkit.getScheduler().runTask(MSEssentials.getInstance(), () -> {
+        Bukkit.getScheduler().runTask(getInstance(), () -> {
             if (player.getGameMode() == GameMode.SPECTATOR) {
                 player.setSpectatorTarget(null);
             }
@@ -471,7 +482,7 @@ public class PlayerInfo {
 
         Location location = this.playerFile.getLastLeaveLocation();
         player.teleportAsync(
-                location == null ? MSEssentials.getOverworld().getSpawnLocation() : location,
+                location == null ? getOverworld().getSpawnLocation() : location,
                 PlayerTeleportEvent.TeleportCause.PLUGIN
         );
     }
@@ -488,7 +499,7 @@ public class PlayerInfo {
                 player.isDead()
                         ? player.getBedSpawnLocation() != null
                         ? player.getBedSpawnLocation()
-                        : MSEssentials.getOverworld().getSpawnLocation()
+                        : getOverworld().getSpawnLocation()
                         : location
         );
         this.playerFile.save();
@@ -499,7 +510,7 @@ public class PlayerInfo {
 
         if (player == null) return;
 
-        Bukkit.getScheduler().runTask(MSEssentials.getInstance(), () -> {
+        Bukkit.getScheduler().runTask(getInstance(), () -> {
             if (player.getGameMode() == GameMode.SPECTATOR) {
                 player.setSpectatorTarget(null);
             }
@@ -507,7 +518,7 @@ public class PlayerInfo {
 
         Location location = this.playerFile.getLastDeathLocation();
         player.teleportAsync(
-                location == null ? MSEssentials.getOverworld().getSpawnLocation() : location,
+                location == null ? getOverworld().getSpawnLocation() : location,
                 PlayerTeleportEvent.TeleportCause.PLUGIN
         );
     }
@@ -613,7 +624,7 @@ public class PlayerInfo {
 
     public boolean isSitting() {
         Player player = this.getOnlinePlayer();
-        return player != null && getConfigCache().seats.containsKey(player);
+        return player != null && getCache().seats.containsKey(player);
     }
 
     public void setSitting(
@@ -639,7 +650,7 @@ public class PlayerInfo {
             armorStand.setSmall(true);
             armorStand.addPassenger(player);
             armorStand.addScoreboardTag("customDecor");
-            getConfigCache().seats.put(player, armorStand);
+            getCache().seats.put(player, armorStand);
         });
 
         if (message == null) {
@@ -663,7 +674,7 @@ public class PlayerInfo {
                 || !isSitting()
         ) return;
 
-        ArmorStand armorStand = getConfigCache().seats.remove(player);
+        ArmorStand armorStand = getCache().seats.remove(player);
         Location playerLoc = player.getLocation();
         Location getUpLocation = armorStand.getLocation().add(0.0d, 0.5d, 0.0d);
 
@@ -703,9 +714,14 @@ public class PlayerInfo {
         return true;
     }
 
+    public boolean isAuthenticated() {
+        Player player = this.getOnlinePlayer();
+        return player != null && AuthMeApi.getInstance().isAuthenticated(player);
+    }
+
     public boolean isInWorldDark() {
         Player player = this.getOnlinePlayer();
-        return player != null && player.getWorld().equals(MSEssentials.getWorldDark());
+        return player != null && player.getWorld().equals(getWorldDark());
     }
 
     public void savePlayerDataParams() {

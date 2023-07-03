@@ -1,6 +1,7 @@
 package com.github.minersstudios.msessentials.anomalies;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.anomalies.actions.AddPotionAction;
 import com.github.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
@@ -20,6 +21,20 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.*;
 
+/**
+ * Anomaly class with all anomaly data and associated namespaced key.
+ * All anomalies are cached in {@link Cache#anomalies}.
+ * <br>
+ * Can have :
+ * <ul>
+ *     <li>{@link AnomalyBoundingBox} - radii and location of anomaly</li>
+ *     <li>{@link AnomalyIgnorableItems} - ignorable items</li>
+ *     <li>{@link AnomalyAction} - anomaly actions, which will be executed when player is in anomaly</li>
+ *     <li>{@link OfflinePlayer} - ignorable players, which will be ignored by anomaly actions</li>
+ * </ul>
+ *
+ * @see #fromConfig(File)
+ */
 public class Anomaly {
     private final @NotNull NamespacedKey namespacedKey;
     private final @NotNull AnomalyBoundingBox anomalyBoundingBox;
@@ -27,6 +42,13 @@ public class Anomaly {
     private final @NotNull Map<Double, List<AnomalyAction>> anomalyActionMap;
     private final @NotNull List<OfflinePlayer> ignorablePlayers;
 
+    /**
+     * @param namespacedKey         Namespaced key associated with anomaly
+     * @param anomalyBoundingBox    Bounding box of anomaly
+     * @param anomalyIgnorableItems Ignorable items of anomaly
+     * @param anomalyActionMap      Action map of anomaly
+     * @param ignorablePlayers      Ignorable players of anomaly
+     */
     public Anomaly(
             @NotNull NamespacedKey namespacedKey,
             @NotNull AnomalyBoundingBox anomalyBoundingBox,
@@ -41,12 +63,18 @@ public class Anomaly {
         this.ignorablePlayers = ignorablePlayers;
     }
 
-    @Contract("_, _ -> new")
-    public static @NotNull Anomaly fromConfig(
-            @NotNull File file,
-            @NotNull YamlConfiguration config
-    ) {
+    /**
+     * Loads anomaly from config with specified settings.
+     * Example can be found in "plugin_folder/anomalies/example.yml"
+     *
+     * @param file File of anomaly yaml config
+     * @return Loaded anomaly from config
+     * @throws IllegalArgumentException If anomaly config is invalid
+     */
+    @Contract("_ -> new")
+    public static @NotNull Anomaly fromConfig(@NotNull File file) throws IllegalArgumentException {
         String fileName = file.getName();
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         World world = Bukkit.getWorld(
                 Objects.requireNonNull(config.getString("bounding-box.location.world-name"), "world in " + fileName + " is null")
         );
@@ -192,7 +220,15 @@ public class Anomaly {
         );
     }
 
-    public boolean isAnomalyActionRadius(@NotNull AnomalyAction anomalyAction, double radius) {
+    /**
+     * @param anomalyAction Anomaly action to get the radius of
+     * @param radius        Radius to check
+     * @return True if the radios is the same as the anomaly action radius
+     */
+    public boolean isAnomalyActionRadius(
+            @NotNull AnomalyAction anomalyAction,
+            double radius
+    ) {
         for (var action : this.anomalyActionMap.entrySet()) {
             if (action.getValue().contains(anomalyAction)) {
                 return action.getKey() == radius;
@@ -201,22 +237,41 @@ public class Anomaly {
         return false;
     }
 
+    /**
+     * @return Namespaced key associated with the anomaly
+     */
     public @NotNull NamespacedKey getNamespacedKey() {
         return this.namespacedKey;
     }
 
+    /**
+     * @return Bounding box of the anomaly
+     */
     public @NotNull AnomalyBoundingBox getBoundingBox() {
         return this.anomalyBoundingBox;
     }
 
+    /**
+     * @return Ignorable items of the anomaly,
+     *         null if the anomaly does not have ignorable items.
+     * @see AnomalyIgnorableItems
+     */
     public @Nullable AnomalyIgnorableItems getIgnorableItems() {
         return this.anomalyIgnorableItems;
     }
 
+    /**
+     * @return Map of anomaly actions and their radius to be executed when a player enters the anomaly
+     */
     public @NotNull Map<Double, List<AnomalyAction>> getAnomalyActionMap() {
         return this.anomalyActionMap;
     }
 
+    /**
+     * @return List of ignorable players of the anomaly,
+     *         empty list if the anomaly does not have ignorable players.
+     *         These players will not be affected by the anomaly.
+     */
     public @NotNull List<OfflinePlayer> getIgnorablePlayers() {
         return this.ignorablePlayers;
     }

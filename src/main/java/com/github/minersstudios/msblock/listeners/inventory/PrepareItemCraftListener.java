@@ -13,6 +13,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("deprecation")
 @MSListener
 public class PrepareItemCraftListener implements Listener {
 

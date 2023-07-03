@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Contract;
 
 import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
 
-@SuppressWarnings("unused")
 public final class Badges {
     public static final Component GREEN_EXCLAMATION_MARK = createDefaultStyledText(" ꀒ ");
     public static final Component YELLOW_EXCLAMATION_MARK = createDefaultStyledText(" ꀓ ");

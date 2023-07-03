@@ -8,14 +8,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.List;
-import java.util.Map;
 
-@SuppressWarnings("unused")
+/**
+ * Anomaly potion action class.
+ * Used to add potion effects to player when a player is in anomaly zone
+ * and the time is up and the percentage is reached,
+ * and if the player has no ignorable items.
+ */
 public class AddPotionAction extends AnomalyAction {
     private final @NotNull List<PotionEffect> potionEffects;
 
+    /**
+     * @param time          Time in ticks to perform action (1 second = 20 ticks)
+     * @param percentage    Percentage chance of completing action
+     * @param potionEffects Potion effects to add to player when action is performed
+     */
     public AddPotionAction(
             long time,
             int percentage,
@@ -25,9 +35,22 @@ public class AddPotionAction extends AnomalyAction {
         this.potionEffects = potionEffects;
     }
 
+    /**
+     * Adds potion effects to player if the time is up and the percentage is reached.
+     * If the player has ignorable items, they will be damaged
+     * instead of adding potion effects.
+     *
+     * @param player         The player to be influenced
+     * @param ignorableItems Ignorable items that will be damaged
+     *                       if player has them and the action will be performed
+     * @see AnomalyAction#isDo()
+     */
     @Override
-    public void doAction(@NotNull Player player, @Nullable AnomalyIgnorableItems ignorableItems) {
-        var actionMap = MSEssentials.getConfigCache().playerAnomalyActionMap.get(player);
+    public void doAction(
+            @NotNull Player player,
+            @Nullable AnomalyIgnorableItems ignorableItems
+    ) {
+        var actionMap = MSEssentials.getCache().playerAnomalyActionMap.get(player);
 
         if (
                 actionMap.containsKey(this)
@@ -51,7 +74,10 @@ public class AddPotionAction extends AnomalyAction {
         }
     }
 
-    public @NotNull List<PotionEffect> getPotionEffects() {
-        return this.potionEffects;
+    /**
+     * @return Unmodifiable list of potion effects to add to player when action is performed
+     */
+    public @NotNull @UnmodifiableView List<PotionEffect> getPotionEffects() {
+        return List.copyOf(this.potionEffects);
     }
 }

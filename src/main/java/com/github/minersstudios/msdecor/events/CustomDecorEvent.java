@@ -4,7 +4,6 @@ import com.github.minersstudios.msdecor.customdecor.CustomDecor;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("unused")
 public abstract class CustomDecorEvent extends Event {
     protected final CustomDecor customDecor;
 

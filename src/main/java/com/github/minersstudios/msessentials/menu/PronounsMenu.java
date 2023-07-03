@@ -47,13 +47,11 @@ public class PronounsMenu {
         theyMeta.lore(loreThey);
         they.setItemMeta(theyMeta);
 
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-
         InventoryButton heButton = InventoryButton.create()
                 .item(he)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
                     PlayerFile playerFile = playerInfo.getPlayerFile();
 
                     playerFile.setPronouns(Pronouns.HE);
@@ -66,7 +64,7 @@ public class PronounsMenu {
                 .item(she)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
                     PlayerFile playerFile = playerInfo.getPlayerFile();
 
                     playerFile.setPronouns(Pronouns.SHE);
@@ -79,7 +77,7 @@ public class PronounsMenu {
                 .item(they)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
                     PlayerFile playerFile = playerInfo.getPlayerFile();
 
                     playerFile.setPronouns(Pronouns.THEY);
@@ -100,7 +98,7 @@ public class PronounsMenu {
                 .buttonAt(8, theyButton)
                 .closeAction((event, inventory) -> {
                     Player player = (Player) event.getPlayer();
-                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
 
                     if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") == null) {
                         Bukkit.getScheduler().runTask(

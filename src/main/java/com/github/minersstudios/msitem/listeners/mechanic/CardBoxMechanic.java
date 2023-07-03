@@ -19,7 +19,6 @@ import org.bukkit.inventory.meta.BundleMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 @MSListener

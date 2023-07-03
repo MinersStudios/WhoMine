@@ -1,10 +1,8 @@
 package com.github.minersstudios.msessentials.listeners.chat;
 
 import com.github.minersstudios.mscore.listener.MSListener;
-import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.chat.ChatBuffer;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
@@ -27,10 +25,9 @@ public class AsyncChatListener implements Listener {
         event.setCancelled(true);
 
         Player player = event.getPlayer();
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
 
-        if (playerInfo.isInWorldDark() || !MSEssentials.getAuthMeApi().isAuthenticated(player)) return;
+        if (playerInfo.isInWorldDark() || !playerInfo.isAuthenticated()) return;
 
         if (playerInfo.isMuted() && playerInfo.getMutedTo().isBefore(Instant.now())) {
             playerInfo.setMuted(false, null);

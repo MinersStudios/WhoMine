@@ -1,9 +1,7 @@
 package com.github.minersstudios.msessentials.listeners.player;
 
 import com.github.minersstudios.mscore.listener.MSListener;
-import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,8 +18,7 @@ public class PlayerEditBookListener implements Listener {
     public void onPlayerEditBook(@NotNull PlayerEditBookEvent event) {
         if (!event.isSigning()) return;
 
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(event.getPlayer());
+        PlayerInfo playerInfo = PlayerInfo.fromMap(event.getPlayer());
         BookMeta bookMeta = event.getNewBookMeta();
         String title = bookMeta.getTitle();
         boolean isAnon = title != null && title.startsWith("*");

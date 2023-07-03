@@ -1,5 +1,6 @@
 package com.github.minersstudios.mscore.utils;
 
+import com.github.minersstudios.mscore.MSCore;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -24,7 +24,6 @@ import java.util.logging.Level;
 
 import static com.github.minersstudios.mscore.MSCore.getConfiguration;
 
-@SuppressWarnings("unused")
 public final class DateUtils {
     private static final ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
     private static final String DEFAULT_TIMEZONE = DEFAULT_ZONE_ID.toString();
@@ -66,6 +65,11 @@ public final class DateUtils {
      * @return Timezone from ip
      */
     public static @NotNull String getTimezone(@NotNull InetAddress ip) {
+        var timezoneCache = MSCore.getCache().timezoneCache;
+        String cachedTimezone = timezoneCache.get(ip);
+
+        if (cachedTimezone != null) return cachedTimezone;
+
         try (
                 var input = new URL("http://ip-api.com/json/" + ip.getHostAddress()).openStream();
                 var reader = new BufferedReader(new InputStreamReader(input))
@@ -78,9 +82,13 @@ public final class DateUtils {
             }
 
             String pageString = entirePage.toString();
-            return pageString.contains("\"timezone\":\"")
+            String timezone = pageString.contains("\"timezone\":\"")
                     ? pageString.split("\"timezone\":\"")[1].split("\",")[0]
                     : DEFAULT_TIMEZONE;
+
+            timezoneCache.put(ip, timezone);
+
+            return timezone;
         } catch (IOException e) {
             Bukkit.getLogger().log(Level.WARNING, e.getMessage(), e);
             return DEFAULT_TIMEZONE;

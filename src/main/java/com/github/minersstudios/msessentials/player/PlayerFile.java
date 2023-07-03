@@ -27,7 +27,6 @@ import static com.github.minersstudios.msessentials.MSEssentials.getInstance;
  *
  * @see PlayerInfo
  */
-@SuppressWarnings("unused")
 public class PlayerFile {
     private final @NotNull File dataFile;
     private final @NotNull YamlConfiguration yamlConfiguration;
@@ -103,18 +102,6 @@ public class PlayerFile {
         String child = "players/" + ("$Console".equals(nickname) ? "console" : uniqueId) + ".yml";
         File dataFile = new File(getInstance().getPluginFolder(), child);
         return new PlayerFile(dataFile, YamlConfiguration.loadConfiguration(dataFile));
-    }
-
-    public boolean exists() {
-        return this.dataFile.exists();
-    }
-
-    public void save() {
-        try {
-            this.yamlConfiguration.save(this.dataFile);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 
     public @NotNull File getFile() {
@@ -252,5 +239,17 @@ public class PlayerFile {
         section.set("z", isNull ? null : location.getZ());
         section.set("yaw", isNull ? null : location.getYaw());
         section.set("pitch", isNull ? null : location.getPitch());
+    }
+
+    public boolean exists() {
+        return this.dataFile.exists();
+    }
+
+    public void save() {
+        try {
+            this.yamlConfiguration.save(this.dataFile);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

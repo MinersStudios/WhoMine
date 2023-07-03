@@ -167,10 +167,10 @@ public class DosimeterMechanic implements Listener {
                             if (dosimeter.isEnabled()) {
                                 var radiiPlayerInside = new HashMap<Anomaly, Double>();
 
-                                for (var anomaly : MSEssentials.getConfigCache().anomalies.values()) {
-                                    Double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
+                                for (var anomaly : MSEssentials.getCache().anomalies.values()) {
+                                    double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
 
-                                    if (radiusInside != null) {
+                                    if (radiusInside != -1.0d) {
                                         radiiPlayerInside.put(anomaly, radiusInside);
                                     }
                                 }

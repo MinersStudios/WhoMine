@@ -50,37 +50,6 @@ public class PlayerName {
         );
     }
 
-    public @NotNull Component createName(
-            int id,
-            @Nullable TextColor first,
-            @Nullable TextColor second
-    ) {
-        return text("[")
-                .append(text(id)
-                .append(text("] ")))
-                .color(first)
-                .append(text(this.getFirstName())
-                .append(this.getLastName().isEmpty() ? Component.empty() : Component.space()
-                .append(text(this.getLastName())))
-                .color(second));
-    }
-
-    public @NotNull Component createDefaultName(int id) {
-        return this.createName(id, null, null);
-    }
-
-    public @NotNull Component createGoldenName(int id) {
-        return this.createName(id, JOIN_MESSAGE_COLOR_SECONDARY, JOIN_MESSAGE_COLOR_PRIMARY);
-    }
-
-    public @NotNull Component createGrayIDGoldName(int id) {
-        return this.createName(id, NamedTextColor.GRAY, RP_MESSAGE_MESSAGE_COLOR_PRIMARY);
-    }
-
-    public @NotNull Component createGrayIDGreenName(int id) {
-        return this.createName(id, NamedTextColor.GRAY, NamedTextColor.GREEN);
-    }
-
     public @NotNull String getNickname() {
         return this.nickname;
     }
@@ -111,6 +80,37 @@ public class PlayerName {
 
     public void setPatronymic(@NotNull String patronymic) {
         this.patronymic = normalize(patronymic);
+    }
+
+    public @NotNull Component createName(
+            int id,
+            @Nullable TextColor first,
+            @Nullable TextColor second
+    ) {
+        return text("[")
+                .append(text(id)
+                .append(text("] ")))
+                .color(first)
+                .append(text(this.getFirstName())
+                .append(this.getLastName().isEmpty() ? Component.empty() : Component.space()
+                .append(text(this.getLastName())))
+                .color(second));
+    }
+
+    public @NotNull Component createDefaultName(int id) {
+        return this.createName(id, null, null);
+    }
+
+    public @NotNull Component createGoldenName(int id) {
+        return this.createName(id, JOIN_MESSAGE_COLOR_SECONDARY, JOIN_MESSAGE_COLOR_PRIMARY);
+    }
+
+    public @NotNull Component createGrayIDGoldName(int id) {
+        return this.createName(id, NamedTextColor.GRAY, RP_MESSAGE_MESSAGE_COLOR_PRIMARY);
+    }
+
+    public @NotNull Component createGrayIDGreenName(int id) {
+        return this.createName(id, NamedTextColor.GRAY, NamedTextColor.GREEN);
     }
 
     private static @NotNull String normalize(@NotNull String string) {

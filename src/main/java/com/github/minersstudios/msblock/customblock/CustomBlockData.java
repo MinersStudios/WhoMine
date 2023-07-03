@@ -26,7 +26,6 @@ import java.util.*;
 
 import static com.github.minersstudios.mscore.MSCore.getCache;
 
-@SuppressWarnings("unused")
 public class CustomBlockData implements Cloneable {
     public static final CustomBlockData DEFAULT = new CustomBlockData(
             //<editor-fold desc="Default note block params">

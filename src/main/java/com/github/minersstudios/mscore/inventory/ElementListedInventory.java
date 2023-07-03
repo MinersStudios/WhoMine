@@ -22,7 +22,6 @@ import java.util.Map;
  * @see ListedInventory
  * @see #build()
  */
-@SuppressWarnings("unused")
 public class ElementListedInventory extends ListedInventory {
     protected final @NotNull Multimap<Integer, InventoryButton> elements;
     protected final int[] elementSlots;

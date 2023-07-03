@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Represents a class which contains a bunch of methods for handling commands
  */
-@SuppressWarnings("unused")
 public interface MSCommandExecutor extends CommandExecutor, TabCompleter {
 
     /**

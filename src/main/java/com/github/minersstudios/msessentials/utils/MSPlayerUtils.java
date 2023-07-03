@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
+@SuppressWarnings({"BooleanMethodIsAlwaysInverted"})
 public final class MSPlayerUtils {
     /**
      * Regex supports all <a href="https://jrgraphix.net/r/Unicode/0400-04FF">cyrillic</a> characters

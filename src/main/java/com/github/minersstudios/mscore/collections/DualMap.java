@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("unused")
 public final class DualMap<P, S, V> {
     private final @NotNull Map<P, Map.Entry<S, V>> map = new HashMap<>();
     private final @NotNull Map<S, P> keyMap = new HashMap<>();
@@ -17,7 +16,7 @@ public final class DualMap<P, S, V> {
             @NotNull S secondary,
             @NotNull V value
     ) {
-        var entry = new AbstractMap.SimpleEntry<>(secondary, value);
+        var entry = Map.entry(secondary, value);
         this.keyMap.put(secondary, primary);
         return this.map.put(primary, entry) != null ? value : null;
     }

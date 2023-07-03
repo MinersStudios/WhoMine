@@ -5,7 +5,6 @@ import com.github.minersstudios.msdecor.MSDecor;
 import com.github.minersstudios.msitem.MSItem;
 import org.jetbrains.annotations.Contract;
 
-@SuppressWarnings("unused")
 public final class MSPluginUtils {
 
     @Contract(value = " -> fail")

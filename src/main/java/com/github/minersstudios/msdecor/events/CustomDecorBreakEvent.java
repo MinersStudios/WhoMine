@@ -6,7 +6,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("unused")
 public class CustomDecorBreakEvent extends CustomDecorEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     protected boolean cancel;

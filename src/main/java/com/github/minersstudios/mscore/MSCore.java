@@ -2,28 +2,27 @@ package com.github.minersstudios.mscore;
 
 import com.github.minersstudios.mscore.config.Config;
 import com.github.minersstudios.mscore.config.LanguageFile;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Main class of the plugin
  *
  * @see MSPlugin
  */
-@SuppressWarnings("unused")
 public final class MSCore extends MSPlugin {
-    private static MSCore instance;
+    private static MSCore singleton;
     private static Cache cache;
     private static Config config;
 
     @Override
-    public void enable() {
-        instance = this;
+    public void load() {
         cache = new Cache();
+    }
+
+    @Override
+    public void enable() {
+        singleton = this;
         config = new Config();
 
         LanguageFile.loadLanguage(config.languageUrl, config.languageCode);
@@ -35,6 +34,11 @@ public final class MSCore extends MSPlugin {
     }
 
     @Contract(pure = true)
+    public static @NotNull MSCore getInstance() {
+        return singleton;
+    }
+
+    @Contract(pure = true)
     public static @NotNull Cache getCache() {
         return cache;
     }
@@ -42,10 +46,5 @@ public final class MSCore extends MSPlugin {
     @Contract(pure = true)
     public static @NotNull Config getConfiguration() {
         return config;
-    }
-
-    @Contract(pure = true)
-    public static @NotNull MSCore getInstance() {
-        return instance;
     }
 }

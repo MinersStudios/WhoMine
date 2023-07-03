@@ -29,7 +29,6 @@ import java.util.stream.IntStream;
 import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
 import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
 
-@SuppressWarnings("unused")
 public class RenameableItem {
     private @NotNull NamespacedKey namespacedKey;
     private @NotNull String renameText;

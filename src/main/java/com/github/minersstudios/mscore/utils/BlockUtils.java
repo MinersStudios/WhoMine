@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-@SuppressWarnings("unused")
 public final class BlockUtils {
     public static final Set<Material> REPLACE = Sets.newHashSet(
             //<editor-fold desc="Replace materials">

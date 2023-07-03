@@ -7,7 +7,6 @@ import com.github.minersstudios.mscore.inventory.InventoryButton;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.github.minersstudios.msessentials.player.PlayerSettings;
 import com.github.minersstudios.msessentials.player.ResourcePack;
 import net.kyori.adventure.text.Component;
@@ -83,13 +82,11 @@ public class ResourcePackMenu {
         ));
         full.setItemMeta(fullMeta);
 
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-
         InventoryButton noneButton = InventoryButton.create()
                 .item(none)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
                     PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
                     if (playerSettings.getResourcePackType() != ResourcePack.Type.NULL && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
@@ -113,7 +110,7 @@ public class ResourcePackMenu {
                 .item(full)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
                     PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
                     playerSettings.setResourcePackType(ResourcePack.Type.FULL);
@@ -127,7 +124,7 @@ public class ResourcePackMenu {
                 .item(lite)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
                     PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
                     playerSettings.setResourcePackType(ResourcePack.Type.LITE);
@@ -149,7 +146,7 @@ public class ResourcePackMenu {
                 .buttonAt(8, liteButton)
                 .closeAction(((event, inventory) -> {
                     Player player = (Player) event.getPlayer();
-                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
                     ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
                     if (type == ResourcePack.Type.NULL) {

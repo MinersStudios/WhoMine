@@ -8,7 +8,6 @@ import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.github.minersstudios.msessentials.tabcompleters.AllPlayers;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
@@ -49,7 +48,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
         if (args.length < 2) return false;
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = MSEssentials.getConfigCache().idMap;
+            IDMap idMap = MSEssentials.getCache().idMap;
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null || offlinePlayer.getName() == null) {
@@ -287,8 +286,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
             String @NotNull [] args,
             @NotNull OfflinePlayer offlinePlayer
     ) {
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
+        PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
 
         return switch (args[1].toLowerCase(Locale.ROOT)) {
             case "update" -> AdminUpdateCommand.runCommand(sender, playerInfo);

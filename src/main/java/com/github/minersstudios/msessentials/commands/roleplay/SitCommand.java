@@ -3,11 +3,7 @@ package com.github.minersstudios.msessentials.commands.roleplay;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msessentials.MSEssentials;
-
-import com.github.minersstudios.msessentials.config.ConfigCache;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -41,9 +37,7 @@ public class SitCommand implements MSCommandExecutor {
             return true;
         }
 
-        ConfigCache configCache = MSEssentials.getConfigCache();
-        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
 
         if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
             ChatUtils.sendWarning(player, Component.translatable("ms.command.sit.in_air"));

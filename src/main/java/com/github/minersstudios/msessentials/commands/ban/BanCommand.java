@@ -6,9 +6,8 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.config.ConfigCache;
 import com.github.minersstudios.msessentials.player.IDMap;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
+import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -55,14 +54,12 @@ public class BanCommand implements MSCommandExecutor {
             return true;
         }
 
-        ConfigCache configCache = MSEssentials.getConfigCache();
-        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
         String reason = args.length > 2
                 ? ChatUtils.extractMessage(args, 2)
                 : "неизвестно";
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = configCache.idMap;
+            IDMap idMap = MSEssentials.getCache().idMap;
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null || StringUtils.isBlank(offlinePlayer.getName())) {
@@ -70,7 +67,7 @@ public class BanCommand implements MSCommandExecutor {
                 return true;
             }
 
-            playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
+            PlayerInfo.fromMap(offlinePlayer.getUniqueId(), offlinePlayer.getName())
                     .setBanned(true, date, reason, sender);
             return true;
         }
@@ -84,7 +81,7 @@ public class BanCommand implements MSCommandExecutor {
                 return true;
             }
 
-            playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), name)
+            PlayerInfo.fromMap(offlinePlayer.getUniqueId(), name)
                     .setBanned(true, date, reason, sender);
             return true;
         }
@@ -101,7 +98,7 @@ public class BanCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         List<String> completions = new ArrayList<>();
-        IDMap idMap = MSEssentials.getConfigCache().idMap;
+        IDMap idMap = MSEssentials.getCache().idMap;
 
         switch (args.length) {
             case 1 -> {

@@ -196,6 +196,7 @@ public final class CustomBlockUtils {
         }
     }
 
+    @SuppressWarnings("DataFlowIssue")
     public static boolean destroyBlock(@NotNull ServerPlayerGameMode serverPlayerGameMode, @NotNull ServerPlayer serverPlayer, @NotNull BlockPos pos) {
         BlockState iBlockData = serverPlayerGameMode.level.getBlockState(pos);
         Block bblock = CraftBlock.at(serverPlayerGameMode.level, pos);

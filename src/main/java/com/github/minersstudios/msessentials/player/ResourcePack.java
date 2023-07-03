@@ -1,7 +1,7 @@
 package com.github.minersstudios.msessentials.player;
 
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.config.ConfigCache;
+import com.github.minersstudios.msessentials.config.Config;
 import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -22,9 +22,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -53,59 +54,58 @@ public class ResourcePack {
     }
 
     public static void init() {
-        ConfigCache configCache = MSEssentials.getConfigCache();
-        user = configCache.user;
-        repo = configCache.repo;
-        Map.Entry<Boolean, String> latestTagName = getLatestTagName();
+        Config config = MSEssentials.getConfiguration();
+        user = config.user;
+        repo = config.repo;
+        var latestTagName = getLatestTagName();
         tagName = latestTagName.getValue();
         boolean hasNoUpdates =
-                tagName.equals(configCache.version)
+                tagName.equals(config.version)
                 && latestTagName.getKey()
-                && configCache.fullHash != null
-                && configCache.liteHash != null;
+                && config.fullHash != null
+                && config.liteHash != null;
 
-        String fullFileName = String.format(configCache.fullFileName, tagName);
-        String liteFileName = String.format(configCache.liteFileName, tagName);
+        String fullFileName = String.format(config.fullFileName, tagName);
+        String liteFileName = String.format(config.liteFileName, tagName);
 
         String fullUrl = "https://github.com/" + user + "/" + repo + "/releases/download/" + tagName + "/" + fullFileName;
         String liteUrl = "https://github.com/" + user + "/" + repo + "/releases/download/" + tagName + "/" + liteFileName;
 
         String fullHash = hasNoUpdates
-                ? configCache.fullHash
+                ? config.fullHash
                 : generateHash(fullUrl, fullFileName);
         String liteHash = hasNoUpdates
-                ? configCache.liteHash
+                ? config.liteHash
                 : generateHash(liteUrl, liteFileName);
 
         Type.FULL.resourcePack = new ResourcePack(fullHash, fullUrl);
         Type.LITE.resourcePack = new ResourcePack(liteHash, liteUrl);
 
         if (!hasNoUpdates) {
-            YamlConfiguration configYaml = configCache.configYaml;
+            YamlConfiguration configYaml = YamlConfiguration.loadConfiguration(config.getFile());
 
             configYaml.set("resource-pack.version", tagName);
             configYaml.set("resource-pack.full.hash", fullHash);
             configYaml.set("resource-pack.lite.hash", liteHash);
 
-            deleteResourcePackFiles(configCache.fullFileName);
-            deleteResourcePackFiles(configCache.liteFileName);
+            deleteResourcePackFiles(config.fullFileName);
+            deleteResourcePackFiles(config.liteFileName);
 
-            configCache.save();
+            config.save(configYaml);
         }
     }
 
-    private static void deleteResourcePackFiles(@NotNull String fileName) throws SecurityException {
+    private static void deleteResourcePackFiles(@NotNull String fileName) {
         File[] files = MSEssentials.getInstance().getPluginFolder().listFiles();
 
         if (files != null) {
-            for (File fileFromList : files) {
-                if (
-                        fileFromList.getName().matches(String.format(fileName, ".*"))
-                        && !fileFromList.delete()
-                ) {
-                    throw new SecurityException("File deletion failed");
+            Arrays.stream(files)
+            .filter(file -> file.getName().matches(String.format(fileName, ".*")))
+            .forEach(file -> {
+                if (!file.delete()) {
+                    throw new SecurityException("File deletion failed: " + file.getAbsolutePath());
                 }
-            }
+            });
         }
     }
 
@@ -115,36 +115,31 @@ public class ResourcePack {
             @NotNull String fileName
     ) throws RuntimeException {
         File pluginFolder = MSEssentials.getInstance().getPluginFolder();
-        try {
-            ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
-            FileOutputStream out = new FileOutputStream(pluginFolder + "/" + fileName);
 
-            out.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-            out.close();
-            readableByteChannel.close();
+        try (
+                var byteChannel = Channels.newChannel(new URL(url).openStream());
+                var output = new FileOutputStream(pluginFolder + "/" + fileName)
+        ) {
+            output.getChannel().transferFrom(byteChannel, 0, Long.MAX_VALUE);
             return bytesToHexString(createSha1(new File(pluginFolder, fileName)));
         } catch (IOException e) {
             throw new RuntimeException("Failed to generate resource pack hash", e);
         }
     }
 
-    private static byte @NotNull [] createSha1(@NotNull File file) throws RuntimeException {
+    private static byte @NotNull [] createSha1(@NotNull File file) {
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            int n = 0;
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[8192];
+            int bytesRead;
 
-            while (n != -1) {
-                n = fileInputStream.read(buffer);
-                if (n > 0) {
-                    digest.update(buffer, 0, n);
-                }
+            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                digest.update(buffer, 0, bytesRead);
             }
 
-            fileInputStream.close();
             return digest.digest();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IOException | NoSuchAlgorithmException e) {
+            throw new RuntimeException("Failed to create SHA-1 hash", e);
         }
     }
 
@@ -162,23 +157,24 @@ public class ResourcePack {
         return stringBuilder.toString();
     }
 
-    private static @NotNull Map.Entry<Boolean, String> getLatestTagName() throws RuntimeException {
+    private static @NotNull Map.Entry<Boolean, String> getLatestTagName() throws NullPointerException {
         URI uri = URI.create("https://api.github.com/repos/" + user + "/" + repo + "/tags");
 
         try {
             String json = IOUtils.toString(uri, StandardCharsets.UTF_8);
             JsonArray tags = JsonParser.parseString(json).getAsJsonArray();
             JsonObject latestTag = tags.get(0).getAsJsonObject();
+
             return Map.entry(true, latestTag.get("name").getAsString());
         } catch (IOException e) {
-            String configTagName = MSEssentials.getConfigCache().version;
+            String configTagName = MSEssentials.getConfiguration().version;
 
             if (configTagName == null) {
-                throw new RuntimeException("Apparently the API rate limit has been exceeded\nRequest URL : " + uri, e);
+                throw new NullPointerException("Apparently the API rate limit has been exceeded\nRequest URL : " + uri);
+            } else {
+                Bukkit.getLogger().log(Level.SEVERE, "Apparently the API rate limit has been exceeded. Plugin will use existing version\nRequest URL : " + uri, e);
+                return Map.entry(false, configTagName);
             }
-
-            Bukkit.getLogger().log(Level.SEVERE, "Apparently the API rate limit has been exceeded. Plugin will use existing version\nRequest URL : " + uri, e);
-            return Map.entry(false, configTagName);
         }
     }
 
@@ -201,8 +197,8 @@ public class ResourcePack {
                 || Type.LITE.getHash() == null
         ) {
             playerInfo.kickPlayer(
-                    Component.translatable("ms.resource_pack.not_initialized.title"),
-                    Component.translatable("ms.resource_pack.not_initialized.subtitle")
+                    Component.translatable("ms.server_not_fully_loaded.title"),
+                    Component.translatable("ms.server_not_fully_loaded.subtitle")
             );
             return;
         }

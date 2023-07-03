@@ -16,7 +16,6 @@ import java.util.Map;
 
 import static com.github.minersstudios.mscore.MSCore.getCache;
 
-@SuppressWarnings("unused")
 public interface CustomItem extends Cloneable {
     @NotNull
     NamespacedKey getNamespacedKey();
@@ -112,13 +111,10 @@ public interface CustomItem extends Cloneable {
                 || !this.getItemStack().getItemMeta().hasCustomModelData()
         ) return false;
 
-        if (this instanceof Renameable renameable) {
-            for (var renameableItem : renameable.getRenameableItems()) {
-                if (renameable.hasRenameableItem(itemStack)) {
-                    return true;
-                }
-            }
-        }
+        if (
+                this instanceof Renameable renameable
+                && renameable.hasRenameableItem(itemStack)
+        ) return true;
         return itemStack.getItemMeta().getCustomModelData() == this.getItemStack().getItemMeta().getCustomModelData();
     }
 

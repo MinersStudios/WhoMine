@@ -20,7 +20,6 @@ import java.util.List;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.*;
 
-@SuppressWarnings("unused")
 public final class ChatUtils {
     private static final ConsoleCommandSender CONSOLE_SENDER = Bukkit.getConsoleSender();
 

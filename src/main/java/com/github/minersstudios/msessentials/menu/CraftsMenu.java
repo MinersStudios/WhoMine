@@ -87,6 +87,7 @@ public class CraftsMenu {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Contract("_ -> new")
     public static @NotNull CustomInventory createCraftsInventory(@NotNull List<Recipe> recipes) {
         ItemStack
@@ -127,61 +128,68 @@ public class CraftsMenu {
         for (var recipe : recipes) {
             ItemStack resultItem = recipe.getResult();
 
-            elements.add(
-                    InventoryButton.create()
-                    .item(resultItem)
-                    .clickAction((clickEvent, inventory) -> {
-                        Player player = (Player) clickEvent.getWhoClicked();
-                        CustomInventory craftInventory = CustomInventory.create(Component.translatable("ms.menu.crafts.craft.title", ChatUtils.DEFAULT_STYLE), 4);
+            CustomInventory craftInventory = CustomInventory.create(Component.translatable("ms.menu.crafts.craft.title", ChatUtils.DEFAULT_STYLE), 4);
 
-                        if (recipe instanceof ShapedRecipe shapedRecipe) {
-                            String[] shapes = shapedRecipe.getShape();
-                            int i = 0;
+            if (recipe instanceof ShapedRecipe shapedRecipe) {
+                String[] shapes = shapedRecipe.getShape();
+                int i = 0;
 
-                            for (var shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
-                                for (var character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
-                                    ItemStack ingredient = shapedRecipe.getIngredientMap().get(character);
+                for (var shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
+                    for (var character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
+                        ItemStack ingredient = shapedRecipe.getIngredientMap().get(character);
 
-                                    if (ingredient == null) {
-                                        i++;
-                                        continue;
-                                    }
-
-                                    switch (i) {
-                                        case 0 -> craftInventory.setItem(2, ingredient);
-                                        case 1 -> craftInventory.setItem(3, ingredient);
-                                        case 2 -> craftInventory.setItem(4, ingredient);
-                                        case 3 -> craftInventory.setItem(11, ingredient);
-                                        case 4 -> craftInventory.setItem(12, ingredient);
-                                        case 5 -> craftInventory.setItem(13, ingredient);
-                                        case 6 -> craftInventory.setItem(20, ingredient);
-                                        case 7 -> craftInventory.setItem(21, ingredient);
-                                        case 8 -> craftInventory.setItem(22, ingredient);
-                                    }
-
-                                    i++;
-                                }
-                            }
-
-                            craftInventory.setItem(RESULT_SLOT, resultItem);
-                            craftInventory.buttonAt(
-                                    CRAFT_QUIT_BUTTON,
-                                    InventoryButton.create()
-                                    .item(quitItem)
-                                    .clickAction((e, inv) -> {
-                                        player.openInventory(inventory);
-                                        playClickSound(player);
-                                    })
-                            );
-                            player.openInventory(craftInventory);
-                            playClickSound(player);
+                        if (ingredient == null) {
+                            i++;
+                            continue;
                         }
-                    })
-            );
+
+                        switch (i) {
+                            case 0 -> craftInventory.setItem(2, ingredient);
+                            case 1 -> craftInventory.setItem(3, ingredient);
+                            case 2 -> craftInventory.setItem(4, ingredient);
+                            case 3 -> craftInventory.setItem(11, ingredient);
+                            case 4 -> craftInventory.setItem(12, ingredient);
+                            case 5 -> craftInventory.setItem(13, ingredient);
+                            case 6 -> craftInventory.setItem(20, ingredient);
+                            case 7 -> craftInventory.setItem(21, ingredient);
+                            case 8 -> craftInventory.setItem(22, ingredient);
+                        }
+
+                        i++;
+                    }
+                }
+
+                craftInventory.setItem(RESULT_SLOT, resultItem);
+
+                elements.add(
+                        InventoryButton.create()
+                        .item(resultItem)
+                        .clickAction((clickEvent, inventory) -> {
+                            Player player = (Player) clickEvent.getWhoClicked();
+                            player.openInventory(
+                                    craftInventory
+                                    .buttonAt(
+                                            CRAFT_QUIT_BUTTON,
+                                            InventoryButton.create()
+                                            .item(quitItem)
+                                            .clickAction((event, inv) -> {
+                                                player.openInventory(inventory);
+                                                playClickSound(player);
+                                            })
+                                    )
+                            );
+                            playClickSound(player);
+                        })
+                );
+            }
         }
 
-        ElementListedInventory craftsInventory =
-                ElementListedInventory.create(Component.translatable("ms.menu.crafts.category.title", ChatUtils.DEFAULT_STYLE), 5, IntStream.range(0, 36).toArray())
+        ElementListedInventory craftsInventory = ElementListedInventory
+                .create(
+                        Component.translatable("ms.menu.crafts.category.title", ChatUtils.DEFAULT_STYLE),
+                        5,
+                        IntStream.range(0, 36).toArray()
+                )
                 .elements(elements);
 
         ButtonClickAction previousClick = (event, customInventory) -> {

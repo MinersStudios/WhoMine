@@ -1,7 +1,7 @@
 package com.github.minersstudios.mscore.utils;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.msessentials.MSEssentials;
+import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.google.common.base.Charsets;
 import com.mojang.authlib.GameProfile;
 import net.kyori.adventure.text.Component;
@@ -26,7 +26,6 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.UUID;
 
-@SuppressWarnings("unused")
 public final class PlayerUtils {
     public static final @NotNull String UUID_URL = "https://api.mojang.com/users/profiles/minecraft/";
 
@@ -69,7 +68,7 @@ public final class PlayerUtils {
             @NotNull Location location,
             @Nullable Component message
     ) {
-        MSEssentials.getConfigCache().playerInfoMap.getPlayerInfo(player).setSitting(location, message);
+        PlayerInfo.fromMap(player).setSitting(location, message);
     }
 
     /**
@@ -91,7 +90,7 @@ public final class PlayerUtils {
             @NotNull Player player,
             @Nullable Component message
     ) {
-        MSEssentials.getConfigCache().playerInfoMap.getPlayerInfo(player).unsetSitting(message);
+        PlayerInfo.fromMap(player).unsetSitting(message);
     }
 
     /**

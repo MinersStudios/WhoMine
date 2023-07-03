@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("unused")
 public class Dosimeter implements CustomItem {
     private @NotNull NamespacedKey namespacedKey;
     private @NotNull ItemStack itemStack;

@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("unused")
 public final class MSDecorUtils {
     public static final NamespacedKey CUSTOM_DECOR_TYPE_NAMESPACED_KEY = new NamespacedKey(MSDecor.getInstance(), "type");
     public static final String NAMESPACED_KEY_REGEX = "msdecor:(\\w+)";

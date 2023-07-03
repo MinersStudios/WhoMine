@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
 public interface Wrenchable extends Typed {
 
     default @Nullable Type getNextType() {

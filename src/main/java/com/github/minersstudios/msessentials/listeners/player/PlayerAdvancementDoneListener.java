@@ -1,9 +1,7 @@
 package com.github.minersstudios.msessentials.listeners.player;
 
 import com.github.minersstudios.mscore.listener.MSListener;
-import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import io.papermc.paper.advancement.AdvancementDisplay;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -27,8 +25,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         if (advancementDisplay == null || event.message() == null) return;
 
         AdvancementDisplay.Frame frame = advancementDisplay.frame();
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(event.getPlayer());
+        PlayerInfo playerInfo = PlayerInfo.fromMap(event.getPlayer());
 
         event.message(
                 Component.space()

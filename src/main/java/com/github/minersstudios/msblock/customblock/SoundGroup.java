@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.security.SecureRandom;
 
-@SuppressWarnings("unused")
 public class SoundGroup implements Cloneable {
     private @Nullable String placeSound;
     private @NotNull SoundCategory placeSoundCategory;

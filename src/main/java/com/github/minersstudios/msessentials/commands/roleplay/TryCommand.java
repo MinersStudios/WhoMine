@@ -3,10 +3,7 @@ package com.github.minersstudios.msessentials.commands.roleplay;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msessentials.MSEssentials;
-
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -24,6 +21,7 @@ import java.security.SecureRandom;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.ME;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.sendRPEventMessage;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 @MSCommand(
         command = "try",
@@ -45,8 +43,7 @@ public class TryCommand implements MSCommandExecutor {
             return true;
         }
 
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
 
         if (!playerInfo.isOnline()) return true;
         if (args.length == 0) return false;
@@ -60,8 +57,8 @@ public class TryCommand implements MSCommandExecutor {
                 text(ChatUtils.extractMessage(args, 0))
                 .append(Component.space())
                 .append(new Component[]{
-                        text("Успешно", NamedTextColor.GREEN),
-                        text("Неуспешно", NamedTextColor.RED)
+                        translatable("ms.command.try.variant.success", NamedTextColor.GREEN),
+                        translatable("ms.command.try.variant.fail", NamedTextColor.RED)
                 }[this.random.nextInt(2)]),
                 ME
         );

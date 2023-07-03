@@ -3,9 +3,7 @@ package com.github.minersstudios.msessentials.commands.roleplay;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -40,8 +38,7 @@ public class TodoCommand implements MSCommandExecutor {
             return true;
         }
 
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
 
         if (!playerInfo.isOnline()) return true;
 

@@ -1,40 +1,52 @@
 package com.github.minersstudios.msessentials.anomalies.tasks;
 
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.anomalies.Anomaly;
-import com.github.minersstudios.msessentials.anomalies.AnomalyAction;
+import com.github.minersstudios.msessentials.anomalies.AnomalyBoundingBox;
 import com.github.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
+import com.github.minersstudios.msessentials.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Map;
-import java.util.Set;
-
+/**
+ * Particle anomaly task.
+ * This task is used to check if the player is in anomaly zone.
+ * When player is in anomaly zone, the action will be performed
+ * and particles will be spawned.
+ * Otherwise, the action will be removed.
+ * <br>
+ * The task is registered in {@link Config#reload()}
+ * with {@link Config#anomalyParticlesCheckRate}.
+ *
+ * @see SpawnParticlesAction
+ * @see AnomalyBoundingBox
+ */
 public class ParticleTask implements Runnable {
 
     @Override
     public void run() {
-        var entries = MSEssentials.getConfigCache().playerAnomalyActionMap.entrySet();
+        var entries = MSEssentials.getCache().playerAnomalyActionMap.entrySet();
+        var anomalies = MSEssentials.getCache().anomalies.values();
+
         if (entries.isEmpty()) return;
-        Bukkit.getScheduler().runTaskAsynchronously(
-                MSEssentials.getInstance(),
-                () -> entries
-                        .forEach(entry -> entry.getValue().keySet().stream()
-                        .filter(action -> action instanceof SpawnParticlesAction)
-                        .forEach(action -> {
-                            Player player = entry.getKey();
 
-                            for (var anomaly : MSEssentials.getConfigCache().anomalies.values()) {
-                                Double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
+        Bukkit.getScheduler().runTaskAsynchronously(MSEssentials.getInstance(), () ->
+                entries
+                .forEach(entry -> entry.getValue().keySet().stream()
+                .filter(action -> action instanceof SpawnParticlesAction)
+                .forEach(action -> {
+                    Player player = entry.getKey();
 
-                                if (radiusInside == null) continue;
-                                if (anomaly.getAnomalyActionMap().get(radiusInside).contains(action)) {
-                                    action.doAction(player, null);
-                                } else {
-                                    action.removeAction(player);
-                                }
-                            }
-                        }))
+                    for (var anomaly : anomalies) {
+                        double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
+
+                        if (radiusInside == -1.0d) continue;
+                        if (anomaly.getAnomalyActionMap().get(radiusInside).contains(action)) {
+                            action.doAction(player, null);
+                        } else {
+                            action.removeAction(player);
+                        }
+                    }
+                }))
         );
     }
 }

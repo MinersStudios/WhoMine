@@ -3,7 +3,6 @@ package com.github.minersstudios.mscore.utils;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.github.minersstudios.msitem.items.CustomItem;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -12,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
-@SuppressWarnings("unused")
 public final class MSCustomUtils {
 
     @Contract(value = " -> fail")

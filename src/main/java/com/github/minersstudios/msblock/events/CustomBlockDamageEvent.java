@@ -7,7 +7,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("unused")
 public class CustomBlockDamageEvent extends CustomBlockEvent implements Cancellable {
     private static final @NotNull HandlerList HANDLER_LIST = new HandlerList();
     protected boolean cancel;

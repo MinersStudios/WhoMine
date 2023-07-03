@@ -17,7 +17,6 @@ import static com.github.minersstudios.msessentials.MSEssentials.getInstance;
  * ID map with {@link UUID} and its ID.
  * All ids stored in the "config/minersstudios/MSEssentials/ids.yml" file.
  */
-@SuppressWarnings("unused")
 public class IDMap {
     private final File file;
     private final Map<UUID, Integer> map = new HashMap<>();
@@ -64,6 +63,57 @@ public class IDMap {
     ) {
         this.map.put(uuid, id);
         this.saveFile();
+    }
+
+    /**
+     * @return The number of ids in this map
+     */
+    public int size() {
+        return this.map.size();
+    }
+
+    /**
+     * @return True if this map contains no ids
+     */
+    public boolean isEmpty() {
+        return this.map.isEmpty();
+    }
+
+    /**
+     * @param uuid {@link UUID} of player
+     * @return True if the map contains the uuid of the player
+     */
+    public boolean containsUUID(@Nullable UUID uuid) {
+        return this.map.containsKey(uuid);
+    }
+
+    /**
+     * @param id ID of player
+     * @return True if the map contains the id of the player
+     */
+    public boolean containsID(@NotNull Integer id) {
+        return this.map.containsValue(id);
+    }
+
+    /**
+     * @return An unmodifiable view of the UUIDs contained in this map
+     */
+    public @NotNull @UnmodifiableView Set<UUID> uuidSet() {
+        return Set.copyOf(this.map.keySet());
+    }
+
+    /**
+     * @return An unmodifiable view of the ids contained in this map
+     */
+    public @NotNull @UnmodifiableView Collection<Integer> ids() {
+        return Collections.unmodifiableCollection(this.map.values());
+    }
+
+    /**
+     * @return An unmodifiable view of the mappings contained in this map
+     */
+    public @NotNull @UnmodifiableView Set<Map.Entry<UUID, Integer>> entrySet() {
+        return Set.copyOf(this.map.entrySet());
     }
 
     /**
@@ -165,6 +215,9 @@ public class IDMap {
         }
     }
 
+    /**
+     * Saves ids.yml file with the current map values
+     */
     private void saveFile() {
         YamlConfiguration configuration = new YamlConfiguration();
 

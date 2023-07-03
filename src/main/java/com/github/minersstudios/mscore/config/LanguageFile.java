@@ -27,7 +27,6 @@ import java.util.Locale;
  * Loads the language file from the language repository and adds it to {@link GlobalTranslator}.
  * All downloaded language files are stored in the "/config/minersstudios/language" folder
  */
-@SuppressWarnings("unused")
 public final class LanguageFile {
     private final String sourceUrl;
     private final String languageCode;

@@ -12,7 +12,6 @@ import java.util.logging.Level;
  *
  * @see PlayerFile
  */
-@SuppressWarnings("unused")
 public class PlayerSettings {
     private final @NotNull PlayerFile playerFile;
     private final @NotNull YamlConfiguration config;
@@ -34,10 +33,6 @@ public class PlayerSettings {
         this.resourcePackType = new Parameter<>("resource-pack.resource-pack-type", resourcePackType);
     }
 
-    public void save() {
-        this.playerFile.save();
-    }
-
     public @NotNull Parameter<ResourcePack.Type> getResourcePackParam() {
         return this.resourcePackType;
     }
@@ -54,6 +49,10 @@ public class PlayerSettings {
                         ? ResourcePack.Type.NULL
                         : resourcePackType.name()
         );
+    }
+
+    public void save() {
+        this.playerFile.save();
     }
 
     public static class Parameter<V> {

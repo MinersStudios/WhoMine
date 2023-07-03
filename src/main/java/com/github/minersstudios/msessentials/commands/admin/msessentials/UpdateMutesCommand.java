@@ -13,7 +13,8 @@ public class UpdateMutesCommand {
     public static void runCommand(@NotNull CommandSender sender) {
         long time = System.currentTimeMillis();
 
-        MSEssentials.getConfigCache().muteMap.reloadMutes();
+        MSEssentials.getCache().muteMap.reloadMutes();
+
         ChatUtils.sendFine(
                 sender,
                 Component.translatable(

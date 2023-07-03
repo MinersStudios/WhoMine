@@ -1,7 +1,6 @@
 package com.github.minersstudios.mscore.commands;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.config.Config;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;

@@ -1,8 +1,8 @@
 package com.github.minersstudios.msessentials.commands.admin.msessentials;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.config.ConfigCache;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -14,10 +14,11 @@ public class UpdateIdsCommand {
 
     public static void runCommand(@NotNull CommandSender sender) {
         long time = System.currentTimeMillis();
-        ConfigCache configCache = MSEssentials.getConfigCache();
+        Cache cache = MSEssentials.getCache();
 
-        configCache.idMap.reloadIds();
-        configCache.playerInfoMap.getMap().values().forEach(PlayerInfo::initNames);
+        cache.idMap.reloadIds();
+        cache.playerInfoMap.playerInfos().forEach(PlayerInfo::initNames);
+
         ChatUtils.sendFine(
                 sender,
                 Component.translatable(

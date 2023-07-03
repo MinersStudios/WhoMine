@@ -13,8 +13,8 @@ public class ReloadCommand {
     public static void runCommand(@NotNull CommandSender sender) {
         long time = System.currentTimeMillis();
 
-        MSEssentials.getConfigCache().playerAnomalyActionMap.clear();
-        MSEssentials.reloadConfigs();
+        MSEssentials.getConfiguration().reload();
+
         ChatUtils.sendFine(
                 sender,
                 Component.translatable(

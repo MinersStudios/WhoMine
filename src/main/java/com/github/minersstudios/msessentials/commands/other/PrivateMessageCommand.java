@@ -4,11 +4,10 @@ import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
+import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.config.ConfigCache;
 import com.github.minersstudios.msessentials.player.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.github.minersstudios.msessentials.tabcompleters.AllLocalPlayers;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -52,10 +51,9 @@ public class PrivateMessageCommand implements MSCommandExecutor {
     ) {
         if (args.length < 2) return false;
 
-        ConfigCache configCache = MSEssentials.getConfigCache();
-        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
+        Cache cache = MSEssentials.getCache();
         PlayerInfo senderInfo = sender instanceof Player player
-                ? playerInfoMap.getPlayerInfo(player)
+                ? PlayerInfo.fromMap(player)
                 : MSEssentials.getConsolePlayerInfo();
         TranslatableComponent playerNotOnline = Component.translatable("ms.error.player_not_online");
 
@@ -67,7 +65,7 @@ public class PrivateMessageCommand implements MSCommandExecutor {
         String message = ChatUtils.extractMessage(args, 1);
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = configCache.idMap;
+            IDMap idMap = cache.idMap;
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (!(offlinePlayer instanceof Player player)) {
@@ -75,7 +73,7 @@ public class PrivateMessageCommand implements MSCommandExecutor {
                 return true;
             }
 
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+            PlayerInfo playerInfo = PlayerInfo.fromMap(player);
 
             if (!playerInfo.isOnline() && !sender.hasPermission("msessentials.*")) {
                 ChatUtils.sendWarning(sender, playerNotOnline);
@@ -90,7 +88,7 @@ public class PrivateMessageCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 
             if (offlinePlayer instanceof Player player) {
-                PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                PlayerInfo playerInfo = PlayerInfo.fromMap(player);
 
                 if (playerInfo.isOnline() || sender.hasPermission("msessentials.*")) {
                     sendPrivateMessage(senderInfo, playerInfo, text(message));

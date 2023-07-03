@@ -17,11 +17,11 @@ import java.util.Map;
  *     <li>Pages that are also listed inventories</li>
  * </ul>
  * <br>
+ *
  * @see CustomInventory
  * @see StaticInventoryButton
  * @see #build()
  */
-@SuppressWarnings("unused")
 public class ListedInventory extends CustomInventory {
     protected final @NotNull Map<Integer, StaticInventoryButton> staticButtons = new HashMap<>();
     protected final @NotNull Map<Integer, ListedInventory> pages = new HashMap<>();

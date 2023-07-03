@@ -1,7 +1,7 @@
 package com.github.minersstudios.msessentials.tabcompleters;
 
+import com.github.minersstudios.msessentials.MSEssentials;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -11,8 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static com.github.minersstudios.msessentials.MSEssentials.getConfigCache;
 
 public class AllPlayers implements TabCompleter {
 
@@ -32,7 +30,7 @@ public class AllPlayers implements TabCompleter {
                 if (nickname == null) continue;
 
                 UUID uuid = offlinePlayer.getUniqueId();
-                int id = getConfigCache().idMap.get(uuid, false, false);
+                int id = MSEssentials.getCache().idMap.get(uuid, false, false);
 
                 if (id != -1) {
                     completions.add(String.valueOf(id));

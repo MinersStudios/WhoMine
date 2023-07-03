@@ -1,6 +1,7 @@
 package com.github.minersstudios.msessentials.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msessentials.MSEssentials;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -17,12 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static com.github.minersstudios.msessentials.MSEssentials.getInstance;
 
 /**
  * Mute map with {@link UUID} and its {@link Params}.
@@ -36,21 +33,12 @@ public class MuteMap {
     private final Gson gson;
 
     public MuteMap() {
-        this.file = new File(getInstance().getPluginFolder(), "muted_players.json");
+        this.file = new File(MSEssentials.getInstance().getPluginFolder(), "muted_players.json");
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
                 .setPrettyPrinting()
                 .create();
         this.reloadMutes();
-    }
-
-    /**
-     * Gets mute map
-     *
-     * @return map with {@link UUID} and its {@link Params}
-     */
-    public @NotNull @UnmodifiableView Map<UUID, Params> getMap() {
-        return Collections.unmodifiableMap(this.map);
     }
 
     /**
@@ -102,6 +90,42 @@ public class MuteMap {
         if (player == null) return;
         this.map.remove(player.getUniqueId());
         this.saveFile();
+    }
+
+    /**
+     * @return The number of muted players
+     */
+    public int size() {
+        return this.map.size();
+    }
+
+    /**
+     * @return True if this map contains no muted players
+     */
+    public boolean isEmpty() {
+        return this.map.isEmpty();
+    }
+
+    /**
+     * @param uuid Player's UUID
+     * @return True if this map contains a mute for the specified player
+     */
+    public boolean containsPlayer(@Nullable UUID uuid) {
+        return this.map.containsKey(uuid);
+    }
+
+    /**
+     * @return An unmodifiable view of the UUIDs contained in this map
+     */
+    public @NotNull @UnmodifiableView Set<UUID> uuidSet() {
+        return Set.copyOf(this.map.keySet());
+    }
+
+    /**
+     * @return An unmodifiable view of the mappings contained in this map
+     */
+    public @NotNull @UnmodifiableView Set<Map.Entry<UUID, Params>> entrySet() {
+        return Set.copyOf(this.map.entrySet());
     }
 
     /**

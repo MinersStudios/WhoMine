@@ -20,9 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-
-@SuppressWarnings("unused")
 public class CustomBlock implements Cloneable {
     private final @NotNull Block block;
     private final @NotNull Player player;

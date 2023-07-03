@@ -2,10 +2,7 @@ package com.github.minersstudios.msessentials.listeners.player;
 
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msessentials.MSEssentials;
-
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.github.minersstudios.msessentials.player.PlayerSettings;
 import com.github.minersstudios.msessentials.player.ResourcePack;
 import net.kyori.adventure.text.Component;
@@ -23,8 +20,7 @@ public class PlayerResourcePackStatusListener implements Listener {
     @EventHandler
     public void onPlayerResourcePackStatus(@NotNull PlayerResourcePackStatusEvent event) {
         Player player = event.getPlayer();
-        PlayerInfoMap playerInfoMap = MSEssentials.getConfigCache().playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
         PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
         Component nickname = text(player.getName());
 

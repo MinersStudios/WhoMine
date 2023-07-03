@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("unused")
 public class NoteBlockData implements Cloneable {
     private @NotNull Instrument instrument;
     private @NotNull Note note;

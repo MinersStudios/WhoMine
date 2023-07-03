@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static com.github.minersstudios.msessentials.MSEssentials.getConfigCache;
+import static com.github.minersstudios.msessentials.MSEssentials.getCache;
 import static net.kyori.adventure.text.Component.space;
 import static net.kyori.adventure.text.Component.text;
 
@@ -60,7 +60,7 @@ public class ChatBuffer {
             @NotNull Player player,
             @NotNull String message
     ) {
-        var chatQueue = getConfigCache().chatQueue;
+        var chatQueue = getCache().chatQueue;
         UUID uuid = player.getUniqueId();
 
         if (!chatQueue.containsKey(uuid)) {
@@ -77,7 +77,7 @@ public class ChatBuffer {
             int delay
     ) {
         Bukkit.getScheduler().runTaskLater(MSEssentials.getInstance(), () -> {
-            var chatQueue = getConfigCache().chatQueue;
+            var chatQueue = getCache().chatQueue;
 
             if (
                     !player.isOnline()

@@ -4,11 +4,10 @@ import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
+import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.config.ConfigCache;
 import com.github.minersstudios.msessentials.player.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
 import com.github.minersstudios.msessentials.tabcompleters.AllLocalPlayers;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -46,8 +45,7 @@ public class KickCommand implements MSCommandExecutor {
     ) {
         if (args.length == 0) return false;
 
-        ConfigCache configCache = MSEssentials.getConfigCache();
-        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
+        Cache cache = MSEssentials.getCache();
         Component reason = args.length > 1
                 ? text(ChatUtils.extractMessage(args, 1))
                 : text("неизвестно");
@@ -57,7 +55,7 @@ public class KickCommand implements MSCommandExecutor {
         TranslatableComponent kickMessageFormat = Component.translatable("ms.command.kick.message.sender");
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = configCache.idMap;
+            IDMap idMap = cache.idMap;
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null || offlinePlayer.getName() == null) {
@@ -66,7 +64,7 @@ public class KickCommand implements MSCommandExecutor {
             }
 
             String nickname = offlinePlayer.getName();
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), nickname);
+            PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), nickname);
 
             if (playerInfo.kickPlayer(kickTitle, kickSubtitle)) {
                 ChatUtils.sendFine(
@@ -92,7 +90,7 @@ public class KickCommand implements MSCommandExecutor {
                 return true;
             }
 
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
+            PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), args[0]);
 
             if (playerInfo.kickPlayer(kickTitle, kickSubtitle)) {
                 ChatUtils.sendFine(

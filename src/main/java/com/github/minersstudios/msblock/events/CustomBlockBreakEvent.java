@@ -6,7 +6,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("unused")
 public class CustomBlockBreakEvent extends CustomBlockEvent implements Cancellable {
     private static final @NotNull HandlerList HANDLER_LIST = new HandlerList();
     protected boolean cancel;
