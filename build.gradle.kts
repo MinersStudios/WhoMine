@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.minersstudios"
-version = "1.0.0"
+version = "2.0.0"
 val apiVersion = "'1.20'"
 val website = "https://minersstudios.github.io"
 val authors = listOf("MinersStudios", "p0loskun")
@@ -38,7 +38,6 @@ allprojects {
 
     dependencies {
         paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
-        compileOnly("io.papermc.paper:paper-api:1.20-R0.1-SNAPSHOT")
         compileOnly("net.coreprotect:coreprotect:21.3")
         compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
         compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
