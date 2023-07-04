@@ -9,6 +9,7 @@ import com.mojang.authlib.properties.PropertyMap;
 import net.kyori.adventure.text.Component;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
@@ -22,6 +23,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerShowEntityEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +33,9 @@ import org.json.simple.JSONValue;
 
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class PlayerUtils {
     public static final @NotNull String UUID_URL = "https://api.mojang.com/users/profiles/minecraft/";
@@ -125,8 +130,7 @@ public final class PlayerUtils {
 
     /**
      * Sets player's skin with specified value and signature.
-     * Use {@link PlayerUtils#reloadPlayer(Player)} to reload the player
-     * and make the skin visible.
+     * Also updates the skin for all players on the server.
      *
      * @param player    Player whose skin will be set
      * @param value     Value of the skin
@@ -137,7 +141,9 @@ public final class PlayerUtils {
             @NotNull String value,
             @NotNull String signature
     ) {
+        MinecraftServer minecraftServer = MinecraftServer.getServer();
         CraftPlayer craftPlayer = (CraftPlayer) player;
+        ServerPlayer serverPlayer = craftPlayer.getHandle();
         GameProfile gameProfile = craftPlayer.getProfile();
         PropertyMap propertyMap = gameProfile.getProperties();
         Property newProperty = new Property("textures", value, signature);
@@ -148,75 +154,96 @@ public final class PlayerUtils {
         }
 
         propertyMap.put("textures", newProperty);
-    }
 
-    /**
-     * Reloads player, like if he was joining the server
-     *
-     * @param player Player whose will be reloaded
-     */
-    public static void reloadPlayer(@NotNull Player player) {
-        MSCore plugin = MSCore.getInstance();
-        Location location = player.getLocation();
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        ServerPlayer serverPlayer = craftPlayer.getHandle();
-        ServerGamePacketListenerImpl playerConnection = serverPlayer.connection;
+        if (!serverPlayer.sentListPacket) {
+            serverPlayer.gameProfile = gameProfile;
+            return;
+        }
+
+        Location location = craftPlayer.getLocation();
+        ServerGamePacketListenerImpl connection = serverPlayer.connection;
+        ServerLevel serverLevel = serverPlayer.serverLevel();
         ServerPlayerGameMode gameMode = serverPlayer.gameMode;
-        ServerLevel level = serverPlayer.serverLevel();
+        var players = minecraftServer.getPlayerList().players;
 
-        ClientboundPlayerInfoRemovePacket removePacket = new ClientboundPlayerInfoRemovePacket(
-                List.of(player.getUniqueId())
-        );
-        ClientboundPlayerInfoUpdatePacket addPacket = new ClientboundPlayerInfoUpdatePacket(
-                ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER,
-                serverPlayer
-        );
         ClientboundRespawnPacket respawnPacket = new ClientboundRespawnPacket(
-                level.dimensionTypeId(),
-                level.dimension(),
-                BiomeManager.obfuscateSeed(level.getSeed()),
+                serverLevel.dimensionTypeId(),
+                serverLevel.dimension(),
+                BiomeManager.obfuscateSeed(serverLevel.getSeed()),
                 gameMode.getGameModeForPlayer(),
                 gameMode.getPreviousGameModeForPlayer(),
-                level.isDebug(),
-                level.isFlat(),
-                (byte) 0xFF,
+                serverLevel.isDebug(),
+                serverLevel.isFlat(),
+                ClientboundRespawnPacket.KEEP_ALL_DATA,
                 serverPlayer.getLastDeathLocation(),
-                serverPlayer.portalCooldown
+                serverPlayer.getPortalCooldown()
         );
-        ClientboundPlayerPositionPacket positionPacket = new ClientboundPlayerPositionPacket(
-                location.getX(),
-                location.getY(),
-                location.getZ(),
-                location.getYaw(),
-                location.getPitch(),
-                Collections.emptySet(),
-                0
-        );
-        ClientboundSetCarriedItemPacket heldItemPacket = new ClientboundSetCarriedItemPacket(
-                player.getInventory().getHeldItemSlot()
+        ClientboundSetExperiencePacket experiencePacket = new ClientboundSetExperiencePacket(
+                serverPlayer.experienceProgress,
+                serverPlayer.totalExperience,
+                serverPlayer.experienceLevel
         );
 
-        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
-            if (onlinePlayer.equals(player)) return;
-            onlinePlayer.hidePlayer(plugin, player);
-            onlinePlayer.showPlayer(plugin, player);
-        });
+        players.stream()
+        .filter(forWho -> forWho.getBukkitEntity().canSee(craftPlayer))
+        .forEach(forWho -> unregisterEntity(forWho, serverPlayer));
 
-        playerConnection.send(removePacket);
-        playerConnection.send(addPacket);
-        playerConnection.send(respawnPacket);
-        playerConnection.send(positionPacket);
-        playerConnection.send(heldItemPacket);
+        serverPlayer.gameProfile = gameProfile;
 
-        craftPlayer.updateScaledHealth();
-        serverPlayer.containerMenu.sendAllDataToRemote();
+        players.stream()
+        .filter(forWho -> forWho.getBukkitEntity().canSee(craftPlayer))
+        .forEach(forWho -> trackAndShowEntity(forWho, serverPlayer));
 
-        if (player.isOp()) {
-           Bukkit.getScheduler().runTask(plugin, () -> {
-               player.setOp(false);
-               player.setOp(true);
-           });
+        connection.send(respawnPacket);
+        serverPlayer.onUpdateAbilities();
+        connection.teleport(location);
+        minecraftServer.getPlayerList().sendAllPlayerInfo(serverPlayer);
+        connection.send(experiencePacket);
+
+        for (var mobEffect : serverPlayer.getActiveEffects()) {
+            connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), mobEffect));
         }
+
+        if (craftPlayer.isOp()) {
+            craftPlayer.setOp(false);
+            craftPlayer.setOp(true);
+        }
+    }
+
+    private static void unregisterEntity(
+            @NotNull ServerPlayer forWho,
+            @NotNull ServerPlayer serverPlayer
+    ) {
+        ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
+        ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
+        ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(List.of(serverPlayer.getUUID()));
+
+        if (entry != null) {
+            entry.removePlayer(forWho);
+        }
+
+        if (serverPlayer.sentListPacket) {
+            forWho.connection.send(packet);
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private static void trackAndShowEntity(
+            @NotNull ServerPlayer forWho,
+            @NotNull ServerPlayer serverPlayer
+    ) {
+        ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
+        ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(serverPlayer));
+        ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
+        Event event = new PlayerShowEntityEvent(forWho.getBukkitEntity(), serverPlayer.getBukkitEntity());
+
+        forWho.connection.send(packet);
+
+        if (entry != null && !entry.seenBy.contains(forWho.connection)) {
+            entry.updatePlayer(forWho);
+        }
+
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     /**

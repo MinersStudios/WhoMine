@@ -8,14 +8,40 @@ import com.github.minersstudios.mscore.MSPlugin;
 import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
+import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 
 public final class MSBlock extends MSPlugin {
     private static MSBlock instance;
     private static ConfigCache configCache;
     private static CoreProtectAPI coreProtectAPI;
+
+    @Override
+    public void load() {
+        MinecraftServer server = MinecraftServer.getServer();
+        File paperGlobalConfig = new File("config/paper-global.yml");
+        YamlConfiguration paperConfig = YamlConfiguration.loadConfiguration(paperGlobalConfig);
+        String noteBlockUpdates = "block-updates.disable-noteblock-updates";
+
+        if (!paperConfig.getBoolean(noteBlockUpdates, false)) {
+            paperConfig.set(noteBlockUpdates, true);
+            try {
+                paperConfig.save(paperGlobalConfig);
+            } catch (IOException e) {
+                this.getLogger().log(Level.SEVERE, "Failed to save paper-global.yml with " + noteBlockUpdates + " enabled", e);
+            }
+
+            server.paperConfigurations.reloadConfigs(server);
+            server.server.reloadCount++;
+        }
+    }
 
     @Override
     public void enable() {

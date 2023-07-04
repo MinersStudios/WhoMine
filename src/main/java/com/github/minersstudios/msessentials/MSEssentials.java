@@ -97,7 +97,7 @@ public final class MSEssentials extends MSPlugin {
             Component subtitle = Component.translatable("ms.on_disable.message.subtitle");
 
             this.getServer().getOnlinePlayers().stream().parallel()
-            .forEach(player -> PlayerInfo.fromMap(player).kickPlayer(title, subtitle));
+            .forEach(player -> playerInfoMap.get(player).kickPlayer(title, subtitle));
         }
 
         cache.bukkitTasks.forEach(BukkitTask::cancel);

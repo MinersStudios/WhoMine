@@ -95,10 +95,6 @@ public class PlayerInteractListener implements Listener {
             PlayerUtils.openShulkerBoxWithoutAnimation(this.player, shulkerBox);
         }
 
-        if (clickedBlock.getType() == Material.NOTE_BLOCK) {
-            event.setCancelled(true);
-        }
-
         if (MSDecorUtils.isCustomDecor(itemInMainHand)) return;
         if (hand != EquipmentSlot.HAND && MSBlockUtils.isCustomBlock(itemInMainHand)) {
             hand = EquipmentSlot.HAND;
@@ -318,10 +314,7 @@ public class PlayerInteractListener implements Listener {
         );
 
         if (
-                this.nmsItem.useOn(
-                        new UseOnContext(serverPlayer, this.interactionHand, blockHitResult),
-                        this.interactionHand
-                ) == InteractionResult.FAIL
+                this.nmsItem.useOn(new UseOnContext(serverPlayer, this.interactionHand, blockHitResult)) == InteractionResult.FAIL
                 || !copyItem.getType().isBlock()
         ) return;
 

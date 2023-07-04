@@ -53,7 +53,6 @@ public class SkinsCommand implements MSCommandExecutor {
                     "LIp+6/E2lg7o2z8tozshe5ol7jv7rA7SSxVuTxbk5z29ZQbI6LoVT4rY12YcukosjjR7yzTeMb+wzIoVZogw0CoZKdqCIxjDrepjxPAFEgpV+vcAIysRiAhY3vMR5ueQGzcsxtZbbDOp3BDuCjWOERrcWMoPnwB8v0eiET1GbqjoPceRf4LUuYD0a0F3W44RwzxYMMeIfWBSPkQjClQm44sGCc7NQnmIszvFsvS5qDpLzhVt8QIyV25YGHhLOg+qBaiY6RssG7yTTgcbx7HvxtMFPNoXJGaetSe8vRON0VVPxqYfk/Txu73t/cDVHo0sDMWYjgpo8IznMHApHSYWINcLSVKnAiisVULGbwkN8FLKSyiWals+wM8XSCPN1Ow0+nA+XvcRDwjWqsu8LKs+Sf7mhyiVFjuZG3kA2F7Qo923yR7BE5vCjrXUhZzugRfjE671lKhRb1KmtADddqZBaAwcu4KPsaO5OJ4d2+8zMSPiAD51i8m4DFs3hiEfL1W4SAbyeNOSbxd9ej9YtE3nFkoyagFlN4EGtluoeyebiFgbOnwfTJ/E2/3bFQtQ1X2TBeieikZpU38utTB9E6X2lIJ/zeBwXdknxNJrqNQykQXMpAWBHTHdyfDxWmxR/lmES7s5P+5erz4YrVOrrDFjl6fP2xDLiY4CyfZGRUN+rws="
             );
         }
-        PlayerUtils.reloadPlayer(player);
         return true;
     }
 
