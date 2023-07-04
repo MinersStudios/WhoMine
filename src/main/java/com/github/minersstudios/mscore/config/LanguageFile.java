@@ -117,6 +117,17 @@ public final class LanguageFile {
     }
 
     /**
+     * Renders the translation from {@link GlobalTranslator} as {@link String}
+     *
+     * @param translatable TranslatableComponent to render
+     * @return Translated string or key if translation is not found
+     */
+    public static @NotNull String renderTranslation(@NotNull TranslatableComponent translatable) {
+        Component rendered = GlobalTranslator.render(translatable, Locale.US);
+        return ChatUtils.serializePlainComponent(rendered);
+    }
+
+    /**
      * Loads language file from the language repository.
      * File will be downloaded to "/config/minersstudios/language" folder
      *

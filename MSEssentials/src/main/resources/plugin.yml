@@ -11,3 +11,5 @@ softdepend:
   - AuthMe
   - ProtocolLib
   - DiscordSRV
+loadafter:
+  - DiscordSRV

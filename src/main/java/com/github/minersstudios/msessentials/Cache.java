@@ -2,10 +2,7 @@ package com.github.minersstudios.msessentials;
 
 import com.github.minersstudios.msessentials.anomalies.Anomaly;
 import com.github.minersstudios.msessentials.anomalies.AnomalyAction;
-import com.github.minersstudios.msessentials.player.IDMap;
-import com.github.minersstudios.msessentials.player.MuteMap;
-import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
+import com.github.minersstudios.msessentials.player.*;
 import com.github.minersstudios.msessentials.utils.SignMenu;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
@@ -21,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class Cache {
     public final PlayerInfoMap playerInfoMap = new PlayerInfoMap();
     public final MuteMap muteMap = new MuteMap();
+    public final DiscordMap discordMap = new DiscordMap();
     public final IDMap idMap = new IDMap();
     public final Map<Player, ArmorStand> seats = new HashMap<>();
     public final Map<NamespacedKey, Anomaly> anomalies = new HashMap<>();

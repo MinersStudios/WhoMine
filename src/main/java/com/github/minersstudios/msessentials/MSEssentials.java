@@ -2,8 +2,10 @@ package com.github.minersstudios.msessentials;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.github.minersstudios.mscore.MSPlugin;
+import com.github.minersstudios.msessentials.commands.other.discord.DiscordCommandHandler;
 import com.github.minersstudios.msessentials.config.Config;
 import com.github.minersstudios.msessentials.listeners.chat.DiscordGuildMessagePreProcessListener;
+import com.github.minersstudios.msessentials.listeners.chat.DiscordPrivateMessageReceivedListener;
 import com.github.minersstudios.msessentials.listeners.player.PlayerUpdateSignListener;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.PlayerInfoMap;
@@ -11,6 +13,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.generator.ChunkGenerator;
@@ -22,7 +25,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Objects;
 
 public final class MSEssentials extends MSPlugin {
     private static MSEssentials singleton;
@@ -48,8 +51,14 @@ public final class MSEssentials extends MSPlugin {
         scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
         scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 
+        PluginCommand command = DiscordSRV.getPlugin().getCommand("discord");
+        if (command != null) {
+            command.setExecutor(new DiscordCommandHandler());
+        }
+
         ProtocolLibrary.getProtocolManager().addPacketListener(new PlayerUpdateSignListener());
         DiscordSRV.api.subscribe(new DiscordGuildMessagePreProcessListener());
+        DiscordSRV.api.subscribe(new DiscordPrivateMessageReceivedListener());
 
         scheduler.runTask(this, () -> {
             worldDark = setWorldDark();

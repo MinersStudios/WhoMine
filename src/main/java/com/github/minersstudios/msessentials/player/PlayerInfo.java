@@ -1,5 +1,6 @@
 package com.github.minersstudios.msessentials.player;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
@@ -33,6 +34,7 @@ import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayA
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.TODO;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.*;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 /**
  * Player info with player file, settings, etc.
@@ -85,6 +87,17 @@ public class PlayerInfo {
 
     public static @NotNull PlayerInfo fromMap(@NotNull Player player) {
         return getCache().playerInfoMap.get(player);
+    }
+
+    public static @Nullable PlayerInfo fromDiscord(long id) {
+        DiscordMap.Params params = getCache().discordMap.getParams(id);
+
+        if (params == null) return null;
+
+        UUID uuid = params.getUuid();
+        String nickname = params.getNickname();
+
+        return getCache().playerInfoMap.get(uuid, nickname);
     }
 
     public @NotNull Component getDefaultName() {
@@ -194,7 +207,7 @@ public class PlayerInfo {
             if (this.isMuted()) {
                 ChatUtils.sendWarning(
                         sender,
-                        Component.translatable(
+                        translatable(
                                 "ms.command.mute.already.sender",
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
@@ -206,7 +219,7 @@ public class PlayerInfo {
             muteMap.put(this.offlinePlayer, date, reason, sender.getName());
             ChatUtils.sendFine(
                     sender,
-                    Component.translatable(
+                    translatable(
                             "ms.command.mute.message.sender",
                             this.getGrayIDGreenName(),
                             text(this.nickname),
@@ -218,7 +231,7 @@ public class PlayerInfo {
             if (player != null) {
                 ChatUtils.sendWarning(
                         player,
-                        Component.translatable(
+                        translatable(
                                 "ms.command.mute.message.receiver",
                                 text(reason),
                                 text(DateUtils.getSenderDate(date, sender))
@@ -229,7 +242,7 @@ public class PlayerInfo {
             if (!this.isMuted()) {
                 ChatUtils.sendWarning(
                         sender,
-                        Component.translatable(
+                        translatable(
                                 "ms.command.unmute.not_muted",
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
@@ -241,7 +254,7 @@ public class PlayerInfo {
             muteMap.remove(this.offlinePlayer);
             ChatUtils.sendFine(
                     sender,
-                    Component.translatable(
+                    translatable(
                             "ms.command.unmute.sender.message",
                             this.getGrayIDGreenName(),
                             text(this.nickname)
@@ -249,7 +262,7 @@ public class PlayerInfo {
             );
 
             if (player != null) {
-                ChatUtils.sendWarning(player, Component.translatable("ms.command.unmute.receiver.message"));
+                ChatUtils.sendWarning(player, translatable("ms.command.unmute.receiver.message"));
             }
         }
     }
@@ -261,8 +274,9 @@ public class PlayerInfo {
         this.setMuted(value, Instant.EPOCH, "", commandSender);
     }
 
-    public @Nullable BanEntry getBanEntry() {
-        return Bukkit.getBanList(BanList.Type.NAME).getBanEntry(this.nickname);
+    public @Nullable BanEntry<PlayerProfile> getBanEntry() {
+        BanList<PlayerProfile> banList = Bukkit.getBanList(BanList.Type.PROFILE);
+        return banList.getBanEntry(this.offlinePlayer.getPlayerProfile());
     }
 
     public boolean isBanned() {
@@ -270,7 +284,7 @@ public class PlayerInfo {
     }
 
     public @NotNull Component getBanReason() throws IllegalStateException {
-        BanEntry banEntry = this.getBanEntry();
+        var banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
@@ -279,7 +293,7 @@ public class PlayerInfo {
     }
 
     public void setBanReason(@NotNull String reason) {
-        BanEntry banEntry = this.getBanEntry();
+        var banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
@@ -288,7 +302,7 @@ public class PlayerInfo {
     }
 
     public @NotNull String getBannedBy() throws IllegalStateException {
-        BanEntry banEntry = this.getBanEntry();
+        var banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
@@ -296,7 +310,7 @@ public class PlayerInfo {
     }
 
     public void setBannedBy(@NotNull String source) {
-        BanEntry banEntry = this.getBanEntry();
+        var banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
@@ -313,7 +327,7 @@ public class PlayerInfo {
     }
 
     public @NotNull Instant getBannedFrom() throws IllegalStateException {
-        BanEntry banEntry = this.getBanEntry();
+        var banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
@@ -321,29 +335,29 @@ public class PlayerInfo {
     }
 
     public @NotNull Component getBannedTo(@NotNull CommandSender sender) throws IllegalStateException {
-        BanEntry banEntry = this.getBanEntry();
+        var banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
         Date expiration = banEntry.getExpiration();
         return expiration == null
-                ? Component.translatable("ms.command.ban.time.forever")
+                ? translatable("ms.command.ban.time.forever")
                 : text(DateUtils.getSenderDate(expiration.toInstant(), sender));
     }
 
     public @NotNull Component getBannedTo(@NotNull InetAddress address) throws IllegalStateException {
-        BanEntry banEntry = this.getBanEntry();
+        var banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
         Date expiration = banEntry.getExpiration();
         return expiration == null
-                ? Component.translatable("ms.command.ban.time.forever")
+                ? translatable("ms.command.ban.time.forever")
                 : text(DateUtils.getDate(expiration.toInstant(), address));
     }
 
     public @Nullable Date getBannedTo() throws IllegalStateException {
-        BanEntry banEntry = this.getBanEntry();
+        var banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
@@ -351,7 +365,7 @@ public class PlayerInfo {
     }
 
     public void setBannedTo(@NotNull Date expiration) {
-        BanEntry banEntry = this.getBanEntry();
+        var banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
@@ -365,13 +379,14 @@ public class PlayerInfo {
             @NotNull String reason,
             @NotNull CommandSender sender
     ) {
-        BanList banList = Bukkit.getBanList(BanList.Type.NAME);
+        BanList<PlayerProfile> banList = Bukkit.getBanList(BanList.Type.PROFILE);
+        PlayerProfile playerProfile = this.offlinePlayer.getPlayerProfile();
 
         if (value) {
             if (this.isBanned()) {
                 ChatUtils.sendWarning(
                         sender,
-                        Component.translatable(
+                        translatable(
                                 "ms.command.ban.already.sender",
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
@@ -380,10 +395,10 @@ public class PlayerInfo {
                 return;
             }
 
-            banList.addBan(this.nickname, reason, Date.from(date), sender.getName());
+            banList.addBan(playerProfile, reason, Date.from(date), sender.getName());
             this.kickPlayer(
-                    Component.translatable("ms.command.ban.message.receiver.title"),
-                    Component.translatable(
+                    translatable("ms.command.ban.message.receiver.title"),
+                    translatable(
                             "ms.command.ban.message.receiver.subtitle",
                             text(reason),
                             text(DateUtils.getSenderDate(date, this.getOnlinePlayer()))
@@ -391,7 +406,7 @@ public class PlayerInfo {
             );
             ChatUtils.sendFine(
                     sender,
-                    Component.translatable(
+                    translatable(
                             "ms.command.ban.message.sender",
                             this.getGrayIDGreenName(),
                             text(this.nickname),
@@ -403,7 +418,7 @@ public class PlayerInfo {
             if (!this.isBanned()) {
                 ChatUtils.sendWarning(
                         sender,
-                        Component.translatable(
+                        translatable(
                                 "ms.command.unban.not_banned",
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
@@ -412,10 +427,10 @@ public class PlayerInfo {
                 return;
             }
 
-            banList.pardon(this.nickname);
+            banList.pardon(playerProfile);
             ChatUtils.sendFine(
                     sender,
-                    Component.translatable(
+                    translatable(
                             "ms.command.unban.message.sender",
                             this.getGrayIDGreenName(),
                             text(this.nickname)
@@ -551,7 +566,7 @@ public class PlayerInfo {
 
         this.playerFile.save();
         ChatUtils.sendFine(
-                Component.translatable(
+                translatable(
                         "ms.info.player_file_created",
                         text(this.nickname),
                         text(this.offlinePlayer.getUniqueId().toString())
@@ -613,7 +628,7 @@ public class PlayerInfo {
 
         this.initQuit();
         player.kick(
-                Component.translatable(
+                translatable(
                         "ms.format.leave.message",
                         title.color(NamedTextColor.RED).decorate(TextDecoration.BOLD),
                         reason.color(NamedTextColor.GRAY)
@@ -707,11 +722,35 @@ public class PlayerInfo {
             if (!contains) return false;
             userWhiteList.remove(gameProfile);
             this.kickPlayer(
-                    Component.translatable("ms.command.white_list.remove.receiver.message.title"),
-                    Component.translatable("ms.command.white_list.remove.receiver.message.subtitle")
+                    translatable("ms.command.white_list.remove.receiver.message.title"),
+                    translatable("ms.command.white_list.remove.receiver.message.subtitle")
             );
         }
         return true;
+    }
+
+    public long getDiscordID() {
+        return getCache().discordMap.getId(DiscordMap.Params.create(this.uuid, this.nickname));
+    }
+
+    public void linkDiscord(long id) {
+        getCache().discordMap.put(id, this.uuid, this.nickname);
+    }
+
+    public long unlinkDiscord() {
+        DiscordMap discordMap = getCache().discordMap;
+        long id = discordMap.getId(DiscordMap.Params.create(this.uuid, this.nickname));
+
+        discordMap.remove(id);
+        return id;
+    }
+
+    public boolean isLinked() {
+        return getCache().discordMap.containsPlayer(DiscordMap.Params.create(this.uuid, this.nickname));
+    }
+
+    public short generateCode() {
+        return getCache().discordMap.generateCode(this);
     }
 
     public boolean isAuthenticated() {

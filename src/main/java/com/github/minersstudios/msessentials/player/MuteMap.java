@@ -6,20 +6,28 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mojang.util.InstantTypeAdapter;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Mute map with {@link UUID} and its {@link Params}.
@@ -32,6 +40,10 @@ public class MuteMap {
     private final Map<UUID, Params> map = new ConcurrentHashMap<>();
     private final Gson gson;
 
+    /**
+     * Mute map with {@link UUID} and its {@link Params}.
+     * Loads mutes from the file.
+     */
     public MuteMap() {
         this.file = new File(MSEssentials.getInstance().getPluginFolder(), "muted_players.json");
         this.gson = new GsonBuilder()
@@ -44,15 +56,15 @@ public class MuteMap {
     /**
      * Gets mute parameters
      *
-     * @param player probably muted player
-     * @return creation and expiration date, reason and source of mute
+     * @param player Probably muted player
+     * @return Creation and expiration date, reason and source of mute
      */
     public @Nullable Params getParams(@NotNull OfflinePlayer player) {
         return this.map.get(player.getUniqueId());
     }
 
     /**
-     * @param player probably muted player
+     * @param player Probably muted player
      * @return True if the player is muted
      */
     @Contract("null -> false")
@@ -63,10 +75,10 @@ public class MuteMap {
     /**
      * Adds mute for the player
      *
-     * @param player     player who will be muted
-     * @param expiration date when the player will be unmuted
-     * @param reason     mute reason
-     * @param source     mute source, could be a player's nickname or CONSOLE
+     * @param player     Player who will be muted
+     * @param expiration Date when the player will be unmuted
+     * @param reason     Mute reason
+     * @param source     Mute source, could be a player's nickname or CONSOLE
      */
     public void put(
             @NotNull OfflinePlayer player,
@@ -84,7 +96,7 @@ public class MuteMap {
     /**
      * Removes mute from player
      *
-     * @param player muted player
+     * @param player Muted player
      */
     public void remove(@Nullable OfflinePlayer player) {
         if (player == null) return;
@@ -108,9 +120,9 @@ public class MuteMap {
 
     /**
      * @param uuid Player's UUID
-     * @return True if this map contains a mute for the specified player
+     * @return True if this map contains a mute for the specified uuid
      */
-    public boolean containsPlayer(@Nullable UUID uuid) {
+    public boolean containsUniqueId(@Nullable UUID uuid) {
         return this.map.containsKey(uuid);
     }
 
@@ -129,11 +141,9 @@ public class MuteMap {
     }
 
     /**
-     * Reloads muted_players.json
-     *
-     * @throws RuntimeException if the file "muted_players.json" was not created successfully
+     * Reloads "muted_players.json" file
      */
-    public void reloadMutes() throws RuntimeException {
+    public void reloadMutes() {
         this.map.clear();
 
         if (!this.file.exists()) {
@@ -164,32 +174,44 @@ public class MuteMap {
         }
     }
 
-    private void createFile() throws RuntimeException {
+    /**
+     * Creates a new "muted_players.json" file
+     */
+    private void createFile() {
         try {
             if (this.file.createNewFile()) {
                 this.saveFile();
             }
         } catch (IOException e) {
-            throw new RuntimeException("Failed to create a new \"muted_players.json\" file", e);
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to create a new \"muted_players.json\" file", e);
         }
     }
 
+    /**
+     * Creates a backup file of the "muted_players.json" file
+     */
     private void createBackupFile() {
         File backupFile = new File(this.file.getParent(), this.file.getName() + ".OLD");
+        Logger logger = Bukkit.getLogger();
+
         try {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to create \"muted_players.json.OLD\" backup file", e);
+            logger.log(Level.SEVERE, "Failed to create \"muted_players.json.OLD\" backup file", e);
         }
-        ChatUtils.sendError("Failed to read the \"muted_players.json\" file, creating a new file");
+
+        logger.log(Level.SEVERE, "Failed to read the \"muted_players.json\" file, creating a new file");
     }
 
+    /**
+     * Saves the mute map to the "muted_players.json" file
+     */
     private void saveFile() {
         try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             this.gson.toJson(this.map, writer);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save muted players", e);
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to save muted players", e);
         }
     }
 
@@ -227,11 +249,11 @@ public class MuteMap {
         /**
          * Creates a new {@link Params} with the specified parameters
          *
-         * @param created    date when the player was muted
-         * @param expiration date when the player will be unmuted
-         * @param reason     mute reason
-         * @param source     mute source, could be a player's nickname or CONSOLE
-         * @return new {@link Params}
+         * @param created    Date when the player was muted
+         * @param expiration Date when the player will be unmuted
+         * @param reason     Mute reason
+         * @param source     Mute source, could be a player's nickname or CONSOLE
+         * @return New {@link Params}
          */
         @Contract(value = "_, _, _, _ -> new")
         public static @NotNull Params create(
@@ -244,41 +266,41 @@ public class MuteMap {
         }
 
         /**
-         * @return True if created, expiration, reason, source != null
-         */
-        public boolean isValidate() {
-            return this.created != null
-                    && this.expiration != null
-                    && this.reason != null
-                    && this.source != null;
-        }
-
-        /**
-         * @return date when the player was muted
+         * @return Date when the player was muted
          */
         public Instant getCreated() {
             return this.created;
         }
 
         /**
-         * @return date when the player will be unmuted
+         * @return Date when the player will be unmuted
          */
         public Instant getExpiration() {
             return this.expiration;
         }
 
         /**
-         * @return mute reason
+         * @return Mute reason
          */
         public String getReason() {
             return this.reason;
         }
 
         /**
-         * @return mute source, could be a player's nickname or CONSOLE
+         * @return Mute source, could be a player's nickname or CONSOLE
          */
         public String getSource() {
             return this.source;
+        }
+
+        /**
+         * @return True if created, expiration, reason, source are not null
+         */
+        public boolean isValidate() {
+            return this.created != null
+                    && this.expiration != null
+                    && this.reason != null
+                    && this.source != null;
         }
     }
 }
