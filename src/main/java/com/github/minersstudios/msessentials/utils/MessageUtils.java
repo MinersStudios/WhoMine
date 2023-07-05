@@ -6,6 +6,8 @@ import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.config.Config;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.EmbedType;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -22,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
 import static com.github.minersstudios.mscore.utils.ChatUtils.sendInfo;
 import static com.github.minersstudios.mscore.utils.ChatUtils.serializeLegacyComponent;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.Colors.*;
@@ -348,6 +351,29 @@ public final class MessageUtils {
            sendActionMessage(player, getTextChannelById(config.discordLocalChannelId), stringQuitMessage, 16711680);
         });
         sendInfo(quitMessage);
+    }
+
+    public static @NotNull MessageEmbed craftEmbed(@NotNull String description) {
+        return new MessageEmbed(
+                null,
+                renderTranslation("ms.discord.embed.title"),
+                description,
+                EmbedType.RICH,
+                null,
+                0x3368cb,
+                new MessageEmbed.Thumbnail(
+                        "https://github.com/MinersStudios/WhoMine/blob/release/assets/logo/text_logo.png?raw=true",
+                        null,
+                        0,
+                        0
+                ),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     private static void sendActionMessage(

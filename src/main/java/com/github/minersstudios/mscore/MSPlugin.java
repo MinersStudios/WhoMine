@@ -390,7 +390,7 @@ public abstract class MSPlugin extends JavaPlugin {
 
         if (!permissionStr.isEmpty()) {
             PluginManager pluginManager = this.getServer().getPluginManager();
-            Map<String, Boolean> children = new HashMap<>();
+            var children = new HashMap<String, Boolean>();
             String[] keys = msCommand.permissionParentKeys();
             boolean[] values = msCommand.permissionParentValues();
 

@@ -1,10 +1,13 @@
 package com.github.minersstudios.msessentials.commands.other.discord;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import github.scarsz.discordsrv.DiscordSRV;
+import com.github.minersstudios.msessentials.utils.MessageUtils;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.util.DiscordUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,34 +23,40 @@ public class UnlinkCommand {
     ) {
         long id = playerInfo.unlinkDiscord();
 
-        if (id == -1) {
+        if (id == -1L) {
             ChatUtils.sendWarning(sender, translatable("ms.command.discord.unlink.no_links"));
             return;
         }
 
-        JDA jda = DiscordSRV.getPlugin().getJda();
-        User user = jda.getUserById(id);
+        Bukkit.getScheduler().runTaskAsynchronously(
+                MSEssentials.getInstance(),
+                () -> {
+                    JDA jda = DiscordUtil.getJda();
+                    User user = jda.getUserById(id);
 
-        if (user != null) {
-            user.openPrivateChannel().complete().sendMessage(
-                    renderTranslation(
+                    if (user != null) {
+                        user.openPrivateChannel().complete().sendMessageEmbeds(
+                                MessageUtils.craftEmbed(
+                                        renderTranslation(
+                                                translatable(
+                                                        "ms.command.discord.unlink.discord.success",
+                                                        playerInfo.getDefaultName(),
+                                                        text(sender.getName())
+                                                )
+                                        ))
+                        ).queue();
+                    }
+
+                    ChatUtils.sendFine(
+                            sender,
                             translatable(
-                                    "ms.command.discord.unlink.discord.success",
-                                    playerInfo.getDefaultName(),
-                                    text(sender.getName())
+                                    "ms.command.discord.unlink.minecraft.success",
+                                    user == null
+                                    ? text(id)
+                                    : text(user.getName())
                             )
-                    )
-            ).queue();
-        }
-
-        ChatUtils.sendFine(
-                sender,
-                translatable(
-                        "ms.command.discord.unlink.minecraft.success",
-                        user == null
-                        ? text(id)
-                        : text(user.getName())
-                )
+                    );
+                }
         );
     }
 }

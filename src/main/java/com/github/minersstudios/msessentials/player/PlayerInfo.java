@@ -5,8 +5,12 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
+import com.github.minersstudios.msessentials.utils.MessageUtils;
 import com.mojang.authlib.GameProfile;
 import fr.xephi.authme.api.v3.AuthMeApi;
+import github.scarsz.discordsrv.dependencies.jda.api.JDA;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -29,6 +33,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
+import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
 import static com.github.minersstudios.msessentials.MSEssentials.*;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.ME;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.TODO;
@@ -381,6 +386,7 @@ public class PlayerInfo {
     ) {
         BanList<PlayerProfile> banList = Bukkit.getBanList(BanList.Type.PROFILE);
         PlayerProfile playerProfile = this.offlinePlayer.getPlayerProfile();
+        Player player = this.getOnlinePlayer();
 
         if (value) {
             if (this.isBanned()) {
@@ -401,7 +407,7 @@ public class PlayerInfo {
                     translatable(
                             "ms.command.ban.message.receiver.subtitle",
                             text(reason),
-                            text(DateUtils.getSenderDate(date, this.getOnlinePlayer()))
+                            text(DateUtils.getSenderDate(date, player))
                     )
             );
             ChatUtils.sendFine(
@@ -435,6 +441,39 @@ public class PlayerInfo {
                             this.getGrayIDGreenName(),
                             text(this.nickname)
                     )
+            );
+        }
+
+        if (this.isLinked()) {
+            long id = this.getDiscordID();
+
+            Bukkit.getScheduler().runTaskAsynchronously(
+                    getInstance(),
+                    () -> {
+                        JDA jda = DiscordUtil.getJda();
+                        User user = jda.getUserById(id);
+
+                        if (user != null) {
+                            user.openPrivateChannel().complete().sendMessageEmbeds(
+                                    MessageUtils.craftEmbed(
+                                            renderTranslation(
+                                                    value
+                                                    ? translatable(
+                                                            "ms.discord.unbanned",
+                                                            this.defaultName,
+                                                            text(sender.getName()),
+                                                            text(reason),
+                                                            text(DateUtils.getSenderDate(date, player))
+                                                    )
+                                                    : translatable(
+                                                            "ms.discord.banned",
+                                                            this.defaultName,
+                                                            text(sender.getName())
+                                                    )
+                                            ))
+                            ).queue();
+                        }
+                    }
             );
         }
     }

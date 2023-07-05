@@ -1,6 +1,7 @@
 package com.github.minersstudios.msessentials;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.github.minersstudios.mscore.MSPlugin;
 import com.github.minersstudios.msessentials.commands.other.discord.DiscordCommandHandler;
 import com.github.minersstudios.msessentials.config.Config;
@@ -25,7 +26,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.UUID;
 
 public final class MSEssentials extends MSPlugin {
     private static MSEssentials singleton;
@@ -94,6 +98,33 @@ public final class MSEssentials extends MSPlugin {
                 PlayerInfo.fromMap(player.getUniqueId(), Objects.requireNonNull(player.getName())).setMuted(false, null);
             });
         }, 0L, 50L);
+
+        var ignoreBanSet = new HashSet<BanEntry<PlayerProfile>>();
+
+        scheduler.runTaskTimerAsynchronously(this, () -> {
+            BanList<PlayerProfile> banned = server.getBanList(BanList.Type.PROFILE);
+            Instant currentInstant = Instant.now();
+
+            banned.getEntries().stream().parallel()
+                    .filter(entry -> {
+                        Date expiration = entry.getExpiration();
+                        return !ignoreBanSet.contains(entry)
+                                && expiration != null
+                                && expiration.toInstant().isBefore(currentInstant);
+                    })
+                    .forEach(entry -> {
+                        PlayerProfile profile = entry.getBanTarget();
+                        UUID uuid = profile.getId();
+                        String name = profile.getName();
+
+                        if (uuid == null || name == null) {
+                            ignoreBanSet.add(entry);
+                            return;
+                        }
+
+                        PlayerInfo.fromMap(uuid, name).setBanned(false);
+                    });
+        }, 0L, 6000L);
     }
 
     @Override

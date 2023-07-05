@@ -34,7 +34,6 @@ import org.json.simple.JSONValue;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public final class PlayerUtils {
@@ -253,7 +252,7 @@ public final class PlayerUtils {
      * @return Player UUID
      */
     public static @Nullable UUID getUUID(@NotNull String nickname) {
-        Map<String, UUID> map = MSCore.getCache().playerUUIDs;
+        var map = MSCore.getCache().playerUUIDs;
         UUID uuid = map.get(nickname);
 
         if (uuid != null) return uuid;
@@ -314,8 +313,10 @@ public final class PlayerUtils {
         if (offlinePlayer.getName() == null) {
             CraftServer craftServer = (CraftServer) Bukkit.getServer();
             GameProfile gameProfile = new GameProfile(uuid, name);
+
             return craftServer.getOfflinePlayer(gameProfile);
         }
+
         return offlinePlayer;
     }
 }
