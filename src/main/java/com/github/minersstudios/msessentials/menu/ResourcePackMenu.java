@@ -11,7 +11,6 @@ import com.github.minersstudios.msessentials.player.PlayerSettings;
 import com.github.minersstudios.msessentials.player.ResourcePack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -150,7 +149,7 @@ public class ResourcePackMenu {
                     ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
                     if (type == ResourcePack.Type.NULL) {
-                        Bukkit.getScheduler().runTask(MSEssentials.getInstance(), () -> player.openInventory(inventory));
+                        MSEssentials.getInstance().runTask(() -> player.openInventory(inventory));
                     }
                 }));
     }

@@ -209,42 +209,6 @@ public final class PlayerUtils {
         }
     }
 
-    private static void unregisterEntity(
-            @NotNull ServerPlayer forWho,
-            @NotNull ServerPlayer serverPlayer
-    ) {
-        ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
-        ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
-        ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(List.of(serverPlayer.getUUID()));
-
-        if (entry != null) {
-            entry.removePlayer(forWho);
-        }
-
-        if (serverPlayer.sentListPacket) {
-            forWho.connection.send(packet);
-        }
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    private static void trackAndShowEntity(
-            @NotNull ServerPlayer forWho,
-            @NotNull ServerPlayer serverPlayer
-    ) {
-        ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
-        ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(serverPlayer));
-        ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
-        Event event = new PlayerShowEntityEvent(forWho.getBukkitEntity(), serverPlayer.getBukkitEntity());
-
-        forWho.connection.send(packet);
-
-        if (entry != null && !entry.seenBy.contains(forWho.connection)) {
-            entry.updatePlayer(forWho);
-        }
-
-        Bukkit.getPluginManager().callEvent(event);
-    }
-
     /**
      * Gets UUID from player nickname
      *
@@ -318,5 +282,41 @@ public final class PlayerUtils {
         }
 
         return offlinePlayer;
+    }
+
+    private static void unregisterEntity(
+            @NotNull ServerPlayer forWho,
+            @NotNull ServerPlayer serverPlayer
+    ) {
+        ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
+        ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
+        ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(List.of(serverPlayer.getUUID()));
+
+        if (entry != null) {
+            entry.removePlayer(forWho);
+        }
+
+        if (serverPlayer.sentListPacket) {
+            forWho.connection.send(packet);
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private static void trackAndShowEntity(
+            @NotNull ServerPlayer forWho,
+            @NotNull ServerPlayer serverPlayer
+    ) {
+        ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
+        ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(serverPlayer));
+        ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
+        Event event = new PlayerShowEntityEvent(forWho.getBukkitEntity(), serverPlayer.getBukkitEntity());
+
+        forWho.connection.send(packet);
+
+        if (entry != null && !entry.seenBy.contains(forWho.connection)) {
+            entry.updatePlayer(forWho);
+        }
+
+        Bukkit.getPluginManager().callEvent(event);
     }
 }

@@ -118,7 +118,7 @@ public class MuteCommand implements MSCommandExecutor {
 
                     if (StringUtils.isBlank(nickname) || muteMap.isMuted(offlinePlayer)) continue;
 
-                    int id = idMap.get(uuid, false, false);
+                    int id = idMap.getID(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

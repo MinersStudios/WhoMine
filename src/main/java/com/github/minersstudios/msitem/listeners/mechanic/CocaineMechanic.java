@@ -4,7 +4,6 @@ import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.MSItemUtils;
 import com.github.minersstudios.msitem.MSItem;
 import com.github.minersstudios.msitem.items.register.items.Cocaine;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -24,7 +23,7 @@ public class CocaineMechanic implements Listener {
                 || !(MSItemUtils.getCustomItem(itemStack) instanceof Cocaine)
         ) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(MSItem.getInstance(),
+        MSItem.getInstance().runTask(
                 () -> event.getPlayer().getInventory().getItem(event.getHand()).setAmount(0)
         );
     }

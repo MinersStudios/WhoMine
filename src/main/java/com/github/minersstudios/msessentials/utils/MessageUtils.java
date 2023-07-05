@@ -62,8 +62,7 @@ public final class MessageUtils {
             @NotNull Location location,
             double radius
     ) {
-        Bukkit.getScheduler().runTask(
-                MSEssentials.getInstance(),
+        MSEssentials.getInstance().runTask(
                 () -> location.getWorld().getNearbyPlayers(location, radius)
                         .forEach(player -> player.sendMessage(message))
         );
@@ -97,8 +96,7 @@ public final class MessageUtils {
             String stringLocalMessage = serializeLegacyComponent(localMessage);
 
             sendLocalMessage(localMessage, location, config.localChatRadius);
-            Bukkit.getScheduler().runTaskAsynchronously(
-                    MSEssentials.getInstance(),
+            MSEssentials.getInstance().runTaskAsync(
                     () -> sendMessage(getTextChannelById(config.discordLocalChannelId), stringLocalMessage)
             );
             sendInfo(localMessage);
@@ -117,7 +115,7 @@ public final class MessageUtils {
         String stringGlobalMessage = serializeLegacyComponent(globalMessage);
 
         sendGlobalMessage(globalMessage);
-        Bukkit.getScheduler().runTaskAsynchronously(MSCore.getInstance(), () -> {
+        MSCore.getInstance().runTaskAsync(() -> {
             sendMessage(getTextChannelById(config.discordGlobalChannelId), stringGlobalMessage.replaceFirst("\\[WM]", ""));
             sendMessage(getTextChannelById(config.discordLocalChannelId), stringGlobalMessage);
         });
@@ -169,8 +167,7 @@ public final class MessageUtils {
                     .clickEvent(ClickEvent.suggestCommand("/pm " + sender.getID() + " ")))
                     .append(message.color(CHAT_COLOR_SECONDARY))
             );
-            Bukkit.getScheduler().runTaskAsynchronously(
-                    MSCore.getInstance(),
+            MSCore.getInstance().runTaskAsync(
                     () -> sendMessage(getTextChannelById(MSEssentials.getConfiguration().discordLocalChannelId), privateMessageString)
             );
             sendInfo(privateMessage);
@@ -228,8 +225,7 @@ public final class MessageUtils {
         };
 
         sendLocalMessage(Badges.YELLOW_EXCLAMATION_MARK.append(fullMessage), sender.getLocation(), config.localChatRadius);
-        Bukkit.getScheduler().runTaskAsynchronously(
-                MSCore.getInstance(),
+        MSCore.getInstance().runTaskAsync(
                 () -> sendMessage(getTextChannelById(config.discordLocalChannelId), serializeLegacyComponent(fullMessage))
         );
         sendInfo(fullMessage);
@@ -276,7 +272,7 @@ public final class MessageUtils {
 
         killedInfo.setLastDeathLocation(deathLocation);
         sendGlobalMessage(deathMessage);
-        Bukkit.getScheduler().runTaskAsynchronously(MSCore.getInstance(), () -> {
+        MSCore.getInstance().runTaskAsync(() -> {
             sendActionMessage(killed, getTextChannelById(config.discordGlobalChannelId), stringDeathMessage, 16757024);
             sendActionMessage(killed, getTextChannelById(config.discordLocalChannelId), stringDeathMessage, 16757024);
         });
@@ -319,7 +315,7 @@ public final class MessageUtils {
         String stringJoinMessage = serializeLegacyComponent(joinMessage);
 
         sendGlobalMessage(joinMessage);
-        Bukkit.getScheduler().runTaskAsynchronously(MSCore.getInstance(), () -> {
+        MSCore.getInstance().runTaskAsync(() -> {
             sendActionMessage(player, getTextChannelById(config.discordGlobalChannelId), stringJoinMessage, 65280);
             sendActionMessage(player, getTextChannelById(config.discordLocalChannelId), stringJoinMessage, 65280);
         });
@@ -346,7 +342,7 @@ public final class MessageUtils {
         String stringQuitMessage = serializeLegacyComponent(quitMessage);
 
         sendGlobalMessage(quitMessage);
-        Bukkit.getScheduler().runTaskAsynchronously(MSCore.getInstance(), () -> {
+        MSCore.getInstance().runTaskAsync(() -> {
            sendActionMessage(player, getTextChannelById(config.discordGlobalChannelId), stringQuitMessage, 16711680);
            sendActionMessage(player, getTextChannelById(config.discordLocalChannelId), stringQuitMessage, 16711680);
         });

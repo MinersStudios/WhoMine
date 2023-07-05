@@ -18,7 +18,6 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -47,7 +46,7 @@ public final class MSEssentials extends MSPlugin {
         singleton = this;
         cache = new Cache();
         Server server = this.getServer();
-        BukkitScheduler scheduler = server.getScheduler();
+        var ignoreBanSet = new HashSet<BanEntry<PlayerProfile>>();
         overworld = server.getWorlds().get(0);
         scoreboardHideTags = server.getScoreboardManager().getNewScoreboard();
         scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("hide_tags");
@@ -60,11 +59,11 @@ public final class MSEssentials extends MSPlugin {
             command.setExecutor(new DiscordCommandHandler());
         }
 
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PlayerUpdateSignListener());
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PlayerUpdateSignListener(this));
         DiscordSRV.api.subscribe(new DiscordGuildMessagePreProcessListener());
         DiscordSRV.api.subscribe(new DiscordPrivateMessageReceivedListener());
 
-        scheduler.runTask(this, () -> {
+        this.runTask(() -> {
             worldDark = setWorldDark();
             darkSpawnLocation = new Location(worldDark, 0.0d, 0.0d, 0.0d);
             darkEntity = worldDark.getEntitiesByClass(ItemFrame.class).stream().findFirst().orElseGet(() ->
@@ -81,13 +80,12 @@ public final class MSEssentials extends MSPlugin {
 
         this.loadedCustoms = true;
 
-        scheduler.runTaskTimerAsynchronously(
-                this,
-                () -> cache.seats.entrySet().stream().parallel().forEach(entry -> entry.getValue().setRotation(entry.getKey().getLocation().getYaw(), 0.0f)),
+        this.runTaskTimerAsync(
+                () -> cache.seats.forEach((player, armorStand) -> armorStand.setRotation(player.getLocation().getYaw(), 0.0f)),
                 0L, 1L
         );
 
-        scheduler.runTaskTimerAsynchronously(this, () -> {
+        this.runTaskTimerAsync(() -> {
             if (cache.muteMap.isEmpty()) return;
             Instant currentInstant = Instant.now();
 
@@ -99,9 +97,7 @@ public final class MSEssentials extends MSPlugin {
             });
         }, 0L, 50L);
 
-        var ignoreBanSet = new HashSet<BanEntry<PlayerProfile>>();
-
-        scheduler.runTaskTimerAsynchronously(this, () -> {
+        this.runTaskTimerAsync(() -> {
             BanList<PlayerProfile> banned = server.getBanList(BanList.Type.PROFILE);
             Instant currentInstant = Instant.now();
 
@@ -130,13 +126,13 @@ public final class MSEssentials extends MSPlugin {
     @Override
     public void disable() {
         PlayerInfoMap playerInfoMap = cache.playerInfoMap;
-        var onlinePlayers = Bukkit.getOnlinePlayers();
+        var onlinePlayers = this.getServer().getOnlinePlayers();
 
         if (!playerInfoMap.isEmpty() && !onlinePlayers.isEmpty()) {
             Component title = Component.translatable("ms.on_disable.message.title");
             Component subtitle = Component.translatable("ms.on_disable.message.subtitle");
 
-            this.getServer().getOnlinePlayers().stream().parallel()
+            onlinePlayers.stream().parallel()
             .forEach(player -> playerInfoMap.get(player).kickPlayer(title, subtitle));
         }
 

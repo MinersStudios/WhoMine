@@ -3,8 +3,10 @@ package com.github.minersstudios.msessentials.listeners.player;
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.menu.PronounsMenu;
-import com.github.minersstudios.msessentials.player.*;
-import org.bukkit.Bukkit;
+import com.github.minersstudios.msessentials.player.PlayerFile;
+import com.github.minersstudios.msessentials.player.PlayerInfo;
+import com.github.minersstudios.msessentials.player.RegistrationProcess;
+import com.github.minersstudios.msessentials.player.ResourcePack;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -29,20 +31,17 @@ public class PlayerJoinListener implements Listener {
         player.displayName(playerInfo.getDefaultName());
 
         if (player.isDead()) {
-            Bukkit.getScheduler().runTaskLater(MSEssentials.getInstance(), () -> {
+            MSEssentials.getInstance().runTaskLater(() -> {
                 player.spigot().respawn();
                 player.teleport(new Location(MSEssentials.getWorldDark(), 0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 player.setGameMode(GameMode.SPECTATOR);
             }, 8L);
         } else {
             player.setGameMode(GameMode.SPECTATOR);
-            Bukkit.getScheduler().runTask(
-                    MSEssentials.getInstance(),
-                    () -> player.setSpectatorTarget(MSEssentials.getDarkEntity())
-            );
+            MSEssentials.getInstance().runTask(() -> player.setSpectatorTarget(MSEssentials.getDarkEntity()));
         }
 
-        Bukkit.getScheduler().runTaskTimer(MSEssentials.getInstance(), (task) -> {
+        MSEssentials.getInstance().runTaskTimer(task -> {
             if (!player.isOnline()) task.cancel();
             if (playerInfo.isAuthenticated() && !player.isDead()) {
                 if (

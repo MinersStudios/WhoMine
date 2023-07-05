@@ -4,7 +4,6 @@ import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.MSItemUtils;
 import com.github.minersstudios.msitem.MSItem;
 import com.github.minersstudios.msitem.items.Wearable;
-import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +40,7 @@ public class InventoryClickListener implements Listener {
                     && currentItem.getEnchantments().containsKey(Enchantment.BINDING_CURSE)
             ) return;
 
-            Bukkit.getScheduler().runTask(MSItem.getInstance(), () -> {
+            MSItem.getInstance().runTask(() -> {
                 inventory.setHelmet(cursorItem);
                 player.setItemOnCursor(currentItem);
             });
@@ -56,7 +55,7 @@ public class InventoryClickListener implements Listener {
                 && MSItemUtils.getCustomItem(currentItem) instanceof Wearable
         ) {
             event.setCancelled(true);
-            Bukkit.getScheduler().runTask(MSItem.getInstance(), () -> {
+            MSItem.getInstance().runTask(() -> {
                 inventory.setHelmet(currentItem);
                 currentItem.setAmount(0);
             });

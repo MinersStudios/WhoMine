@@ -36,9 +36,9 @@ import java.util.logging.Logger;
  */
 public class DiscordMap {
     private final File file;
+    private final Gson gson;
     private final Map<Long, Params> map = new ConcurrentHashMap<>();
     public final Map<Short, PlayerInfo> codeMap = new ConcurrentHashMap<>();
-    private final Gson gson;
     private final SecureRandom random = new SecureRandom();
 
     /**
@@ -134,7 +134,7 @@ public class DiscordMap {
         }
 
         this.codeMap.put(code, playerInfo);
-        Bukkit.getScheduler().runTaskLater(MSEssentials.getInstance(), () -> this.codeMap.remove(code, playerInfo), 6000L);
+        MSEssentials.getInstance().runTaskLater(() -> this.codeMap.remove(code, playerInfo), 6000L);
 
         return code;
     }

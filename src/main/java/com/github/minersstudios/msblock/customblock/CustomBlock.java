@@ -60,7 +60,7 @@ public class CustomBlock implements Cloneable {
 
         if (this.customBlockData.getNoteBlockData() == null) return;
 
-        Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
+        MSBlock.getInstance().runTask(() -> {
             this.block.setType(Material.NOTE_BLOCK);
 
             NoteBlock noteBlock = this.customBlockData.getNoteBlockData().craftNoteBlock(this.block.getBlockData());
@@ -90,8 +90,7 @@ public class CustomBlock implements Cloneable {
 
         if (!CustomBlockUtils.hasBlock(this.block)) return;
 
-        Bukkit.getScheduler().runTask(
-                MSBlock.getInstance(),
+        MSBlock.getInstance().runTask(
                 () -> CustomBlockUtils.cancelAllTasksWithThisBlock(this.block)
         );
 

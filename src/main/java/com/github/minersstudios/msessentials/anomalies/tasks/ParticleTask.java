@@ -4,7 +4,6 @@ import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.anomalies.AnomalyBoundingBox;
 import com.github.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
 import com.github.minersstudios.msessentials.config.Config;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -27,9 +26,9 @@ public class ParticleTask implements Runnable {
         var entries = MSEssentials.getCache().playerAnomalyActionMap.entrySet();
         var anomalies = MSEssentials.getCache().anomalies.values();
 
-        if (entries.isEmpty()) return;
+        if (anomalies.isEmpty() || entries.isEmpty()) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(MSEssentials.getInstance(), () ->
+        MSEssentials.getInstance().runTaskAsync(() ->
                 entries
                 .forEach(entry -> entry.getValue().keySet().stream()
                 .filter(action -> action instanceof SpawnParticlesAction)

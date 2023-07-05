@@ -30,7 +30,7 @@ public class AllPlayers implements TabCompleter {
                 if (nickname == null) continue;
 
                 UUID uuid = offlinePlayer.getUniqueId();
-                int id = MSEssentials.getCache().idMap.get(uuid, false, false);
+                int id = MSEssentials.getCache().idMap.getID(uuid, false, false);
 
                 if (id != -1) {
                     completions.add(String.valueOf(id));

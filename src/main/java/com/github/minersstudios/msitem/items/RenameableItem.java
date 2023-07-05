@@ -200,7 +200,7 @@ public class RenameableItem {
                                     ItemStack secondItem = renameInventory.getItem(renamedItemSlot);
                                     assert secondItem != null;
                                     String renameText = ChatUtils.serializePlainComponent(Objects.requireNonNull(secondItem.getItemMeta().displayName()));
-                                    Bukkit.getScheduler().runTask(MSItem.getInstance(), () ->
+                                    MSItem.getInstance().runTask(() ->
                                             createRenamedItem(clickEvent.getCurrentItem(), renameInventory, renameText, hasExp)
                                     );
                                     return;

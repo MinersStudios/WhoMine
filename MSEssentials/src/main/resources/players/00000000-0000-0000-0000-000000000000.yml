@@ -28,3 +28,8 @@ locations:
     z: 0.0
     yaw: 0.0
     pitch: 0.0
+skins:
+  '0':
+    name: Default
+    signature: a
+    value: b

@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
+import com.github.minersstudios.msessentials.discord.BotHandler;
 import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
 import com.mojang.authlib.GameProfile;
@@ -136,7 +137,7 @@ public class PlayerInfo {
     ) {
         return this == getConsolePlayerInfo()
                 ? -1
-                : getCache().idMap.get(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
+                : getCache().idMap.getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
     }
 
     public int getID() {
@@ -447,8 +448,7 @@ public class PlayerInfo {
         if (this.isLinked()) {
             long id = this.getDiscordID();
 
-            Bukkit.getScheduler().runTaskAsynchronously(
-                    getInstance(),
+            getInstance().runTaskAsync(
                     () -> {
                         JDA jda = DiscordUtil.getJda();
                         User user = jda.getUserById(id);
@@ -499,10 +499,7 @@ public class PlayerInfo {
 
         this.teleportToLastLeaveLocation();
 
-        Bukkit.getScheduler().runTaskAsynchronously(
-                getInstance(),
-                () -> sendJoinMessage(this)
-        );
+        getInstance().runTaskAsync(() -> sendJoinMessage(this));
     }
 
     public void initQuit() {
@@ -528,7 +525,7 @@ public class PlayerInfo {
         Player player = this.getOnlinePlayer();
         if (player == null) return;
 
-        Bukkit.getScheduler().runTask(getInstance(), () -> {
+        getInstance().runTask(() -> {
             if (player.getGameMode() == GameMode.SPECTATOR) {
                 player.setSpectatorTarget(null);
             }
@@ -564,7 +561,7 @@ public class PlayerInfo {
 
         if (player == null) return;
 
-        Bukkit.getScheduler().runTask(getInstance(), () -> {
+        getInstance().runTask(() -> {
             if (player.getGameMode() == GameMode.SPECTATOR) {
                 player.setSpectatorTarget(null);
             }
@@ -779,6 +776,13 @@ public class PlayerInfo {
     public long unlinkDiscord() {
         DiscordMap discordMap = getCache().discordMap;
         long id = discordMap.getId(DiscordMap.Params.create(this.uuid, this.nickname));
+        var botHandlers = getCache().botHandlers;
+        BotHandler botHandler = botHandlers.get(id);
+
+        if (botHandler != null) {
+            botHandler.setPlayerInfo(null);
+            botHandler.setWaitingReplyTask(null);
+        }
 
         discordMap.remove(id);
         return id;

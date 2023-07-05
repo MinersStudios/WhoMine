@@ -31,7 +31,7 @@ public class MainAnomalyActionsTask implements Runnable {
         Cache cache = MSEssentials.getCache();
         var playerActionMap = cache.playerAnomalyActionMap;
 
-        Bukkit.getScheduler().runTaskAsynchronously(MSEssentials.getInstance(), () ->
+        MSEssentials.getInstance().runTaskAsync(() ->
                 onlinePlayers
                 .forEach(player -> {
                     for (var anomaly : cache.anomalies.values()) {

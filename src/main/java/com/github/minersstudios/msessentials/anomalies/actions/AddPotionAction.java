@@ -3,7 +3,6 @@ package com.github.minersstudios.msessentials.anomalies.actions;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.anomalies.AnomalyAction;
 import com.github.minersstudios.msessentials.anomalies.AnomalyIgnorableItems;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
@@ -65,10 +64,7 @@ public class AddPotionAction extends AnomalyAction {
                 ) {
                     ignorableItems.damageIgnorableItems(player.getInventory());
                 } else {
-                    Bukkit.getScheduler().runTask(
-                            MSEssentials.getInstance(),
-                            () -> player.addPotionEffects(this.potionEffects)
-                    );
+                    MSEssentials.getInstance().runTask(() -> player.addPotionEffects(this.potionEffects));
                 }
             }
         }

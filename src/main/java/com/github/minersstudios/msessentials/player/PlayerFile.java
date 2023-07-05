@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +35,7 @@ public class PlayerFile {
     private @NotNull PlayerName playerName;
     private @NotNull Pronouns pronouns;
     private final @NotNull List<String> ipList;
+    private final @NotNull List<Skin> skins = new ArrayList<>(18);
     private @NotNull GameMode gameMode;
     private double health;
     private int air;
@@ -93,6 +95,23 @@ public class PlayerFile {
                 (float) lastDeathSection.getDouble("yaw"),
                 (float) lastDeathSection.getDouble("pitch")
         );
+
+        ConfigurationSection skinsSection = this.yamlConfiguration.getConfigurationSection("skins");
+        if (skinsSection != null) {
+            for (var key : skinsSection.getKeys(false)) {
+                ConfigurationSection skinSection = skinsSection.getConfigurationSection(key);
+
+                if (skinSection == null) continue;
+
+                String name = skinSection.getString("name");
+                String value = skinSection.getString("value");
+                String signature = skinSection.getString("signature");
+
+                if (name == null || value == null || signature == null) continue;
+
+                this.skins.add(Skin.create(name, value, signature));
+            }
+        }
     }
 
     public static @NotNull PlayerFile loadConfig(
@@ -155,6 +174,91 @@ public class PlayerFile {
 
     public void saveIpList() {
         this.yamlConfiguration.set("ip-list", this.ipList);
+    }
+
+    public @NotNull List<Skin> getSkins() {
+        return List.copyOf(this.skins);
+    }
+
+    public @Nullable Skin getSkin(int index) {
+        return this.skins.get(index);
+    }
+
+    public @Nullable Skin getSkin(@NotNull String name) {
+        return this.skins.stream()
+                .filter(skin -> skin.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public int getSkinIndex(@NotNull Skin skin) {
+        return this.skins.indexOf(skin);
+    }
+
+    public int getSkinIndex(@NotNull String name) {
+        return this.skins.indexOf(this.getSkin(name));
+    }
+
+    public boolean setSkin(
+            int index,
+            @NotNull Skin skin
+    ) {
+        String sectionName = "skins." + index;
+
+        this.skins.set(index, skin);
+        this.yamlConfiguration.set(sectionName + ".value", skin.getValue());
+        this.yamlConfiguration.set(sectionName + ".signature", skin.getSignature());
+        this.save();
+
+        return true;
+    }
+
+    public boolean addSkin(@NotNull Skin skin) {
+        if (!this.hasAvailableSkinSlot()) return false;
+
+        String sectionName = "skins." + this.skins.size();
+
+        this.skins.add(skin);
+        this.yamlConfiguration.set(sectionName + ".name", skin.getName());
+        this.yamlConfiguration.set(sectionName + ".value", skin.getValue());
+        this.yamlConfiguration.set(sectionName + ".signature", skin.getSignature());
+        this.save();
+
+        return true;
+    }
+
+    public boolean removeSkin(@NotNull Skin skin) {
+        if (!this.skins.contains(skin)) return false;
+
+        this.skins.remove(skin);
+        this.yamlConfiguration.set("skins." + this.getSkinIndex(skin), null);
+        this.save();
+
+        return true;
+    }
+
+    public boolean renameSkin(
+            @NotNull Skin skin,
+            @NotNull String newName
+    ) {
+        if (!this.skins.contains(skin)) return false;
+
+        this.yamlConfiguration.set("skins." + this.getSkinIndex(skin) + ".name", newName);
+        this.save();
+
+        return true;
+    }
+
+    public boolean hasAvailableSkinSlot() {
+        return this.skins.size() < 18;
+    }
+
+    public boolean containsSkin(@NotNull Skin skin) {
+        return this.skins.contains(skin);
+    }
+
+    public boolean containsSkin(@NotNull String name) {
+        return this.skins.stream().anyMatch(skin -> skin.getName().equalsIgnoreCase(name));
     }
 
     public @NotNull GameMode getGameMode() {

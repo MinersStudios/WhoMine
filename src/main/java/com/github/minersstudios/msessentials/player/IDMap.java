@@ -1,28 +1,43 @@
 package com.github.minersstudios.msessentials.player;
 
+import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msessentials.MSEssentials;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
-
-import static com.github.minersstudios.msessentials.MSEssentials.getInstance;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * ID map with {@link UUID} and its ID.
- * All ids stored in the "config/minersstudios/MSEssentials/ids.yml" file.
+ * All ids stored in the "config/minersstudios/MSEssentials/ids.json" file.
  */
 public class IDMap {
     private final File file;
-    private final Map<UUID, Integer> map = new HashMap<>();
+    private final Gson gson;
+    private final Map<UUID, Integer> map = new ConcurrentHashMap<>();
 
     public IDMap() {
-        this.file = new File(getInstance().getPluginFolder(), "ids.yml");
+        this.file = new File(MSEssentials.getInstance().getPluginFolder(), "ids.json");
+        this.gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
         this.reloadIds();
     }
 
@@ -36,14 +51,14 @@ public class IDMap {
     }
 
     /**
-     * Gets player ID
+     * Gets player ID by uuid
      *
-     * @param uuid       player {@link UUID}
-     * @param addPlayer  if true, the new player will be added with the next ID
-     * @param zeroIfNull if true and the player is not found, the return value will be 0, not -1
+     * @param uuid       Player {@link UUID}
+     * @param addPlayer  If true, the new player will be added with the next ID
+     * @param zeroIfNull If true and the player is not found, the return value will be 0, not -1
      * @return -1 if the player is not found
      */
-    public int get(
+    public int getID(
             @NotNull UUID uuid,
             boolean addPlayer,
             boolean zeroIfNull
@@ -52,9 +67,56 @@ public class IDMap {
     }
 
     /**
+     * Gets player uuid by id
+     *
+     * @param id Player ID
+     * @return {@link UUID} of player with this ID or null if not found
+     */
+    public @Nullable UUID getUUID(int id) {
+        return this.map.entrySet().stream()
+                .filter(entry -> entry.getValue() == id)
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
+
+    /**
+     * Gets {@link UUID} associated with the ID
+     *
+     * @param stringId player ID string
+     * @return {@link UUID} from ID string
+     */
+    public @Nullable UUID getUUID(@NotNull String stringId) {
+        int id = this.parseID(stringId);
+        return id != -1 ? this.getUUID(id) : null;
+    }
+
+    /**
+     * Gets {@link OfflinePlayer} associated with the ID
+     *
+     * @param id player ID
+     * @return {@link OfflinePlayer} from ID
+     */
+    public @Nullable OfflinePlayer getPlayerByID(int id) {
+        UUID uuid = this.getUUID(id);
+        return uuid == null ? null : Bukkit.getOfflinePlayer(uuid);
+    }
+
+    /**
+     * Gets {@link OfflinePlayer} associated with the ID
+     *
+     * @param stringId player ID string
+     * @return {@link OfflinePlayer} from ID string
+     */
+    public @Nullable OfflinePlayer getPlayerByID(@NotNull String stringId) {
+        int id = this.parseID(stringId);
+        return id != -1 ? this.getPlayerByID(id) : null;
+    }
+
+    /**
      * Sets player ID
      *
-     * @param uuid player {@link UUID}
+     * @param uuid Player {@link UUID}
      * @param id   ID to set
      */
     public void put(
@@ -133,71 +195,46 @@ public class IDMap {
      * @return next player ID
      */
     public int nextID() {
-        Set<Integer> usedIDs = new HashSet<>(this.map.values());
+        var usedIDs = new HashSet<>(this.map.values());
+
         for (int id = 0; id < Integer.MAX_VALUE; id++) {
             if (!usedIDs.contains(id)) return id;
         }
+
         throw new IllegalStateException("No available ID found.");
     }
 
     /**
-     * Gets {@link UUID} associated with the ID
-     *
-     * @param id player ID
-     * @return {@link UUID} from ID
-     */
-    public @Nullable UUID getUUIDByID(int id) {
-        return this.map.entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().equals(id))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
-    }
-
-    /**
-     * Gets {@link UUID} associated with the ID
-     *
-     * @param stringId player ID string
-     * @return {@link UUID} from ID string
-     */
-    public @Nullable UUID getUUIDByID(@NotNull String stringId) {
-        int id = this.parseID(stringId);
-        return id != -1 ? this.getUUIDByID(id) : null;
-    }
-
-    /**
-     * Gets {@link OfflinePlayer} associated with the ID
-     *
-     * @param id player ID
-     * @return {@link OfflinePlayer} from ID
-     */
-    public @Nullable OfflinePlayer getPlayerByID(int id) {
-        UUID uuid = this.getUUIDByID(id);
-        return uuid == null ? null : Bukkit.getOfflinePlayer(uuid);
-    }
-
-    /**
-     * Gets {@link OfflinePlayer} associated with the ID
-     *
-     * @param stringId player ID string
-     * @return {@link OfflinePlayer} from ID string
-     */
-    public @Nullable OfflinePlayer getPlayerByID(@NotNull String stringId) {
-        int id = this.parseID(stringId);
-        return id != -1 ? this.getPlayerByID(id) : null;
-    }
-
-    /**
-     * Reloads ids.yml
+     * Reloads ids.json file
      */
     public void reloadIds() {
         this.map.clear();
-        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(this.file);
-        for (var key : configuration.getKeys(false)) {
-            UUID uuid = UUID.fromString(key);
-            int id = configuration.getInt(key);
-            this.map.put(uuid, id);
+
+        if (!this.file.exists()) {
+            this.createFile();
+        } else {
+            try {
+                Type mapType = new TypeToken<Map<UUID, Integer>>() {}.getType();
+                String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
+                Map<UUID, Integer> jsonMap = this.gson.fromJson(json, mapType);
+
+                if (jsonMap == null) {
+                    this.createBackupFile();
+                    this.reloadIds();
+                    return;
+                }
+
+                jsonMap.forEach((uuid, id) -> {
+                    if (id != null) {
+                        this.map.put(uuid, id);
+                    } else {
+                        ChatUtils.sendError("Failed to read the player id : " + uuid.toString() + " in \"ids.json\"");
+                    }
+                });
+            } catch (Exception e) {
+                this.createBackupFile();
+                this.reloadIds();
+            }
         }
     }
 
@@ -216,19 +253,43 @@ public class IDMap {
     }
 
     /**
-     * Saves ids.yml file with the current map values
+     * Creates a new "ids.json" file
      */
-    private void saveFile() {
-        YamlConfiguration configuration = new YamlConfiguration();
-
-        for (var entry : this.map.entrySet()) {
-            configuration.set(entry.getKey().toString(), entry.getValue());
+    private void createFile() {
+        try {
+            if (this.file.createNewFile()) {
+                this.saveFile();
+            }
+        } catch (IOException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to create a new \"ids.json\" file", e);
         }
+    }
+
+    /**
+     * Creates a backup file of the "ids.json" file
+     */
+    private void createBackupFile() {
+        File backupFile = new File(this.file.getParent(), this.file.getName() + ".OLD");
+        Logger logger = Bukkit.getLogger();
 
         try {
-            configuration.save(this.file);
+            Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            this.saveFile();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save ID map", e);
+            logger.log(Level.SEVERE, "Failed to create \"ids.json.OLD\" backup file", e);
+        }
+
+        logger.log(Level.SEVERE, "Failed to read the \"ids.json\" file, creating a new file");
+    }
+
+    /**
+     * Saves the mute map to the "ids.json" file
+     */
+    private void saveFile() {
+        try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
+            this.gson.toJson(this.map, writer);
+        } catch (IOException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to save ids", e);
         }
     }
 }

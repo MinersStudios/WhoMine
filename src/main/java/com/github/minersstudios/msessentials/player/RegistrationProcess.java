@@ -1,15 +1,14 @@
 package com.github.minersstudios.msessentials.player;
 
 import com.github.minersstudios.mscore.config.LanguageFile;
+import com.github.minersstudios.mscore.utils.SignMenu;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.menu.PronounsMenu;
 import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
-import com.github.minersstudios.msessentials.utils.SignMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -48,7 +47,7 @@ public class RegistrationProcess {
         this.sendDialogueMessage(translatable("ms.registration.message.5"), 400L);
         this.sendDialogueMessage(translatable("ms.registration.message.6"), 450L);
 
-        Bukkit.getScheduler().runTaskLater(MSEssentials.getInstance(), this::setFirstname, 550L);
+        MSEssentials.getInstance().runTaskLater(this::setFirstname, 550L);
     }
 
     private void setFirstname() {
@@ -72,7 +71,7 @@ public class RegistrationProcess {
                     this.sendDialogueMessage(translatable("ms.registration.message.9"), 225L);
                     this.sendDialogueMessage(translatable("ms.registration.message.10"), 300L);
 
-                    Bukkit.getScheduler().runTaskLater(MSEssentials.getInstance(), this::setLastname, 375L);
+                    MSEssentials.getInstance().runTaskLater(this::setLastname, 375L);
                     return true;
                 }).open(this.player);
     }
@@ -92,7 +91,7 @@ public class RegistrationProcess {
                     }
 
                     this.playerInfo.getPlayerFile().getPlayerName().setLastName(lastname);
-                    Bukkit.getScheduler().runTaskLater(MSEssentials.getInstance(), this::setPatronymic, 10L);
+                    MSEssentials.getInstance().runTaskLater(this::setPatronymic, 10L);
                     return true;
                 }).open(this.player);
     }
@@ -132,11 +131,7 @@ public class RegistrationProcess {
                     this.sendDialogueMessage(translatable("ms.registration.message.12"), 100L);
                     this.sendDialogueMessage(translatable("ms.registration.message.13"), 150L);
 
-                    Bukkit.getScheduler().runTaskLater(
-                            MSEssentials.getInstance(),
-                            () -> PronounsMenu.open(this.player),
-                            225L
-                    );
+                    MSEssentials.getInstance().runTaskLater(() -> PronounsMenu.open(this.player), 225L);
                     return true;
                 }).open(this.player);
     }
@@ -162,7 +157,7 @@ public class RegistrationProcess {
                 175L
         );
 
-        Bukkit.getScheduler().runTaskLater(MSEssentials.getInstance(), this::setOther, 225L);
+        MSEssentials.getInstance().runTaskLater(this::setOther, 225L);
     }
 
     private void setOther() {
@@ -170,9 +165,9 @@ public class RegistrationProcess {
         this.player.displayName(this.playerInfo.getDefaultName());
 
         if (playerSettings.getResourcePackType() == ResourcePack.Type.NULL) {
-            Bukkit.getScheduler().runTask(MSEssentials.getInstance(), () -> ResourcePackMenu.open(this.player));
+            MSEssentials.getInstance().runTask(() -> ResourcePackMenu.open(this.player));
         } else if (playerSettings.getResourcePackType() == ResourcePack.Type.NONE) {
-            Bukkit.getScheduler().runTask(MSEssentials.getInstance(), this.playerInfo::initJoin);
+            MSEssentials.getInstance().runTask(this.playerInfo::initJoin);
         } else {
             ResourcePack.setResourcePack(this.playerInfo);
         }
@@ -186,7 +181,7 @@ public class RegistrationProcess {
             @NotNull Component message,
             long delay
     ) {
-        Bukkit.getScheduler().runTaskLater(MSEssentials.getInstance(), () -> {
+        MSEssentials.getInstance().runTaskLater(() -> {
             this.player.sendMessage(
                     translatable(
                             "ms.chat.local.format",

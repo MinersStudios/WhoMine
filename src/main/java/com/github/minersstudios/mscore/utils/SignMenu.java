@@ -1,6 +1,6 @@
-package com.github.minersstudios.msessentials.utils;
+package com.github.minersstudios.mscore.utils;
 
-import com.github.minersstudios.msessentials.MSEssentials;
+import com.github.minersstudios.mscore.MSCore;
 import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
@@ -10,7 +10,6 @@ import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R1.block.CraftSign;
@@ -95,7 +94,7 @@ public class SignMenu {
         connection.send(ClientboundBlockEntityDataPacket.create(sign));
         connection.send(new ClientboundOpenSignEditorPacket(blockPos, true));
 
-        MSEssentials.getCache().signs.put(player, this);
+        MSCore.getCache().signMenuMap.put(player, this);
     }
 
     /**
@@ -106,8 +105,8 @@ public class SignMenu {
      * @param player The player
      */
     public void close(@NotNull Player player) {
-        MSEssentials.getCache().signs.remove(player);
-        Bukkit.getScheduler().runTask(MSEssentials.getInstance(), () -> {
+        MSCore.getCache().signMenuMap.remove(player);
+        MSCore.getInstance().runTask(() -> {
             if (player.isOnline()) {
                 player.sendBlockChange(this.location, this.location.getBlock().getBlockData());
             }

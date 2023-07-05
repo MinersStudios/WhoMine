@@ -7,7 +7,6 @@ import com.github.minersstudios.msessentials.utils.MessageUtils;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,8 +27,7 @@ public class UnlinkCommand {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(
-                MSEssentials.getInstance(),
+        MSEssentials.getInstance().runTaskAsync(
                 () -> {
                     JDA jda = DiscordUtil.getJda();
                     User user = jda.getUserById(id);

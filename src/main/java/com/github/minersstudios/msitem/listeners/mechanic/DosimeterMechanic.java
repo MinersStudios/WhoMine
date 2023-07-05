@@ -2,12 +2,11 @@ package com.github.minersstudios.msitem.listeners.mechanic;
 
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.MSItemUtils;
-import com.github.minersstudios.msitem.MSItem;
-import com.github.minersstudios.msitem.items.register.items.Dosimeter;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.anomalies.Anomaly;
+import com.github.minersstudios.msitem.MSItem;
+import com.github.minersstudios.msitem.items.register.items.Dosimeter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -79,7 +78,7 @@ public class DosimeterMechanic implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(MSItem.getInstance(), () -> {
+        MSItem.getInstance().runTask(() -> {
             if (dosimeterItem.equals(playerInventory.getItem(newEquipmentSlot))) {
                 MSItem.getConfigCache().dosimeterPlayers.put(player, newEquipmentSlot);
             } else if (
@@ -87,8 +86,8 @@ public class DosimeterMechanic implements Listener {
             ) {
                 dosimeter.setItemStack(
                         clickType.isKeyboardClick()
-                                ? dosimeterItem
-                                : Objects.requireNonNull(event.getCursor()));
+                        ? dosimeterItem
+                        : Objects.requireNonNull(event.getCursor()));
                 dosimeter.setEnabled(false);
                 MSItem.getConfigCache().dosimeterPlayers.remove(player);
             }

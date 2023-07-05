@@ -16,6 +16,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +25,7 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
@@ -418,6 +420,110 @@ public abstract class MSPlugin extends JavaPlugin {
         }
 
         this.getServer().getCommandMap().register(this.getName(), pluginCommand);
+    }
+
+    public @NotNull BukkitTask runTaskAsync(@NotNull Runnable task) {
+        return this.getServer().getScheduler().runTaskAsynchronously(this, task);
+    }
+
+    public @NotNull BukkitTask runTaskTimerAsync(
+            @NotNull Runnable task,
+            long delay
+    ) {
+        return this.runTaskTimerAsync(task, delay, 0L);
+    }
+
+    public @NotNull BukkitTask runTaskTimerAsync(
+            @NotNull Runnable task,
+            long delay,
+            long period
+    ) {
+        return this.getServer().getScheduler().runTaskTimerAsynchronously(this, task, delay, period);
+    }
+
+    public @NotNull BukkitTask runTask(@NotNull Runnable task) {
+        return this.getServer().getScheduler().runTask(this, task);
+    }
+
+    public @NotNull BukkitTask runTaskLaterAsync(
+            @NotNull Runnable task,
+            long delay
+    ) {
+        return this.getServer().getScheduler().runTaskLaterAsynchronously(this, task, delay);
+    }
+
+    public @NotNull BukkitTask runTaskLater(
+            @NotNull Runnable task,
+            long delay
+    ) {
+        return this.getServer().getScheduler().runTaskLater(this, task, delay);
+    }
+
+    public @NotNull BukkitTask runTaskTimer(
+            @NotNull Runnable task,
+            long delay
+    ) {
+        return this.runTaskTimer(task, delay, 0L);
+    }
+
+    public @NotNull BukkitTask runTaskTimer(
+            @NotNull Runnable task,
+            long delay,
+            long period
+    ) {
+        return this.getServer().getScheduler().runTaskTimer(this, task, delay, period);
+    }
+
+    public void runTaskAsync(@NotNull Consumer<BukkitTask> task) {
+        this.getServer().getScheduler().runTaskAsynchronously(this, task);
+    }
+
+    public void runTaskTimerAsync(
+            @NotNull Consumer<BukkitTask> task,
+            long delay
+    ) {
+        this.runTaskTimerAsync(task, delay, 0L);
+    }
+
+    public void runTaskTimerAsync(
+            @NotNull Consumer<BukkitTask> task,
+            long delay,
+            long period
+    ) {
+        this.getServer().getScheduler().runTaskTimerAsynchronously(this, task, delay, period);
+    }
+
+    public void runTask(@NotNull Consumer<BukkitTask> task) {
+        this.getServer().getScheduler().runTask(this, task);
+    }
+
+    public void runTaskLaterAsync(
+            @NotNull Consumer<BukkitTask> task,
+            long delay
+    ) {
+        this.getServer().getScheduler().runTaskLaterAsynchronously(this, task, delay);
+    }
+
+    public void runTaskLater(
+            @NotNull Consumer<BukkitTask> task,
+            long delay
+    ) {
+        this.getServer().getScheduler().runTaskLater(this, task, delay);
+    }
+
+    public void runTaskTimer(
+            @NotNull Consumer<BukkitTask> task,
+            long delay
+    ) {
+        this.runTaskTimer(task, delay, 0L);
+    }
+
+    public void runTaskTimer(
+            @NotNull Consumer<BukkitTask> task,
+            long delay,
+            long period
+    ) {
+        this.getServer().getScheduler().runTaskTimer(this, task, delay, period);
     }
 
     /**

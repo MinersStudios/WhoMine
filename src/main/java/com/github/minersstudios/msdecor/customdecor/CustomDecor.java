@@ -62,7 +62,7 @@ public class CustomDecor {
 
         if (event.isCancelled()) return;
 
-        Bukkit.getScheduler().runTask(MSDecor.getInstance(), () -> {
+        MSDecor.getInstance().runTask(() -> {
             this.itemInHand = hand != null
                     ? this.player.getInventory().getItem(hand)
                     : this.customDecorData.getItemStack();
@@ -191,7 +191,7 @@ public class CustomDecor {
     }
 
     private void setHitBox() {
-        Bukkit.getScheduler().runTask(MSDecor.getInstance(), () -> {
+        MSDecor.getInstance().runTask(() -> {
             this.block.setType(
                     this.customDecorData.getHitBox().isStructureHitBox()
                             ? Material.STRUCTURE_VOID

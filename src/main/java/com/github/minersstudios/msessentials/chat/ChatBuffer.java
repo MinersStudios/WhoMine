@@ -4,7 +4,6 @@ import com.github.minersstudios.mscore.utils.Badges;
 import com.github.minersstudios.msessentials.MSEssentials;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.AreaEffectCloud;
@@ -12,7 +11,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.UUID;
 
 import static com.github.minersstudios.msessentials.MSEssentials.getCache;
 import static net.kyori.adventure.text.Component.space;
@@ -76,7 +76,7 @@ public class ChatBuffer {
             @NotNull UUID uuid,
             int delay
     ) {
-        Bukkit.getScheduler().runTaskLater(MSEssentials.getInstance(), () -> {
+        MSEssentials.getInstance().runTaskLater(() -> {
             var chatQueue = getCache().chatQueue;
 
             if (

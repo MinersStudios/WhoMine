@@ -108,7 +108,7 @@ public class BanCommand implements MSCommandExecutor {
 
                     if (StringUtils.isBlank(nickname) || offlinePlayer.isBanned()) continue;
 
-                    int id = idMap.get(uuid, false, false);
+                    int id = idMap.getID(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

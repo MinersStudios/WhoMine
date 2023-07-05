@@ -106,7 +106,7 @@ public class UnMuteCommand implements MSCommandExecutor {
                     MuteMap.Params params = muteMap.getParams(offlinePlayer);
                     if (params != null && params.getExpiration().isBefore(Instant.now())) continue;
 
-                    int id = idMap.get(uuid, false, false);
+                    int id = idMap.getID(uuid, false, false);
                     if (id != -1) {
                         completions.add(String.valueOf(id));
                     }

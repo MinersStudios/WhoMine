@@ -44,7 +44,7 @@ public class PacketBlockDigListener extends PacketAdapter {
         Block block = blockPosition.toLocation(player.getWorld()).getBlock();
         boolean hasSlowDigging = player.hasPotionEffect(PotionEffectType.SLOW_DIGGING);
 
-        Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
+        MSBlock.getInstance().runTask(() -> {
             if (digType == EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) {
                 if (block.getBlockData() instanceof NoteBlock noteBlock) {
                     if (CustomBlockUtils.hasPlayer(player)) {

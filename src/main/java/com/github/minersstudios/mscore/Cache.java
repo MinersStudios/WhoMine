@@ -3,9 +3,11 @@ package com.github.minersstudios.mscore;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.mscore.collections.DualMap;
 import com.github.minersstudios.mscore.inventory.CustomInventoryMap;
+import com.github.minersstudios.mscore.utils.SignMenu;
 import com.github.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.github.minersstudios.msitem.items.CustomItem;
 import com.github.minersstudios.msitem.items.RenameableItem;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,4 +31,5 @@ public final class Cache {
     public final @NotNull CustomInventoryMap customInventoryMap = new CustomInventoryMap();
     public final Map<InetAddress, String> timezoneCache = new ConcurrentHashMap<>();
     public final Map<String, UUID> playerUUIDs = new HashMap<>();
+    public final Map<Player, SignMenu> signMenuMap = new HashMap<>();
 }

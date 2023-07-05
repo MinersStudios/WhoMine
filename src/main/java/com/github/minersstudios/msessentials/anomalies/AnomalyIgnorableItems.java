@@ -2,7 +2,6 @@ package com.github.minersstudios.msessentials.anomalies;
 
 import com.github.minersstudios.mscore.utils.ItemUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -81,9 +80,8 @@ public class AnomalyIgnorableItems {
                     this.includedItems.containsKey(equipmentSlot)
                     && this.isIgnorableItem(equipmentSlot, item)
             ) {
-                Bukkit.getScheduler().runTask(
-                        MSEssentials.getInstance(),
-                        () -> ItemUtils.damageItem(
+                MSEssentials.getInstance().runTask(() ->
+                        ItemUtils.damageItem(
                                 (Player) Objects.requireNonNull(inventory.getHolder()),
                                 equipmentSlot,
                                 item,

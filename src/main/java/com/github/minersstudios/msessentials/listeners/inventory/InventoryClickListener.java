@@ -4,7 +4,6 @@ import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,7 +43,7 @@ public class InventoryClickListener implements Listener {
                 && cursorItem.getType() != Material.AIR
         ) {
             player.setItemOnCursor(null);
-            Bukkit.getScheduler().runTask(MSEssentials.getInstance(), () -> player.getInventory().setHelmet(cursorItem));
+            MSEssentials.getInstance().runTask(() -> player.getInventory().setHelmet(cursorItem));
         }
 
         if (currentItem != null && currentItem.getType() != Material.AIR) {

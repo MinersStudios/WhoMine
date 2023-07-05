@@ -9,7 +9,6 @@ import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.minecraft.server.MinecraftServer;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +61,7 @@ public final class MSBlock extends MSPlugin {
         configCache.loadBlocks();
         instance.loadedCustoms = true;
 
-        Bukkit.getScheduler().runTaskTimer(instance, task -> {
+        instance.runTaskTimer(task -> {
             if (MSPluginUtils.isLoadedCustoms()) {
                 configCache.recipeBlocks.forEach(CustomBlockData::registerRecipes);
                 configCache.recipeBlocks.clear();

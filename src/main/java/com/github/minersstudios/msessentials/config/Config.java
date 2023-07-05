@@ -15,7 +15,6 @@ import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.ResourcePack;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +59,6 @@ public final class Config {
     public void reload() {
         MSEssentials plugin = MSEssentials.getInstance();
         Logger logger = plugin.getLogger();
-        BukkitScheduler scheduler = plugin.getServer().getScheduler();
         File pluginFolder = plugin.getPluginFolder();
         YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(this.configFile);
         Cache cache = MSEssentials.getCache();
@@ -95,9 +93,9 @@ public final class Config {
 
         cache.consolePlayerInfo = new PlayerInfo(UUID.randomUUID(), "$Console");
 
-        scheduler.runTaskAsynchronously(plugin, ResourcePack::init);
+        plugin.runTaskAsync(ResourcePack::init);
 
-        scheduler.runTaskAsynchronously(plugin, () -> {
+        plugin.runTaskAsync(() -> {
             try (var path = Files.walk(Paths.get(pluginFolder + "/anomalies"))) {
                 path
                 .filter(file -> {
@@ -116,15 +114,13 @@ public final class Config {
             }
         });
 
-        cache.bukkitTasks.add(scheduler.runTaskTimer(
-                plugin,
+        cache.bukkitTasks.add(plugin.runTaskTimer(
                 new MainAnomalyActionsTask(),
                 0L,
                 this.anomalyCheckRate
         ));
 
-        cache.bukkitTasks.add(scheduler.runTaskTimer(
-                plugin,
+        cache.bukkitTasks.add(plugin.runTaskTimer(
                 new ParticleTask(),
                 0L,
                 this.anomalyParticlesCheckRate
@@ -145,7 +141,7 @@ public final class Config {
         var customDecorRecipes = msCoreCache.customDecorRecipes;
         var customItemRecipes = msCoreCache.customItemRecipes;
 
-        scheduler.runTaskTimer(plugin, task -> {
+        plugin.runTaskTimer(task -> {
             if (
                     MSPluginUtils.isLoadedCustoms()
                     && !customBlockRecipes.isEmpty()

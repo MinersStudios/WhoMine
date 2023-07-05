@@ -5,10 +5,12 @@ import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.player.*;
+import com.github.minersstudios.msessentials.player.PlayerFile;
+import com.github.minersstudios.msessentials.player.PlayerInfo;
+import com.github.minersstudios.msessentials.player.Pronouns;
+import com.github.minersstudios.msessentials.player.RegistrationProcess;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -101,10 +103,7 @@ public class PronounsMenu {
                     PlayerInfo playerInfo = PlayerInfo.fromMap(player);
 
                     if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") == null) {
-                        Bukkit.getScheduler().runTask(
-                                MSEssentials.getInstance(),
-                                () -> player.openInventory(inventory)
-                        );
+                        MSEssentials.getInstance().runTask(() -> player.openInventory(inventory));
                     } else {
                         new RegistrationProcess().setPronouns(player, playerInfo);
                     }

@@ -37,8 +37,8 @@ import java.util.logging.Logger;
  */
 public class MuteMap {
     private final File file;
-    private final Map<UUID, Params> map = new ConcurrentHashMap<>();
     private final Gson gson;
+    private final Map<UUID, Params> map = new ConcurrentHashMap<>();
 
     /**
      * Mute map with {@link UUID} and its {@link Params}.
