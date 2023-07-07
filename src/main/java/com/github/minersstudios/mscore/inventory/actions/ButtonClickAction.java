@@ -14,10 +14,10 @@ public interface ButtonClickAction {
      * Do action when button is clicked
      *
      * @param event           Click event that triggered the action
-     * @param customInventory Custom inventory that is involved in this event
+     * @param singleInventory Custom inventory that is involved in this event
      */
     void doAction(
             @NotNull InventoryClickEvent event,
-            @NotNull CustomInventory customInventory
+            @NotNull CustomInventory singleInventory
     );
 }

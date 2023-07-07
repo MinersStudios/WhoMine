@@ -3,6 +3,7 @@ package com.github.minersstudios.msessentials.menu;
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
+import com.github.minersstudios.mscore.inventory.SingleInventory;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerFile;
@@ -88,7 +89,7 @@ public class PronounsMenu {
                     player.closeInventory();
                 });
 
-        return CustomInventory.create(Component.translatable("ms.menu.pronouns.title"), 1)
+        return SingleInventory.single(Component.translatable("ms.menu.pronouns.title"), 1)
                 .buttonAt(0, heButton)
                 .buttonAt(1, heButton)
                 .buttonAt(2, heButton)

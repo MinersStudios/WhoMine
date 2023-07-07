@@ -1,5 +1,6 @@
 package com.github.minersstudios.msessentials.player;
 
+import com.github.minersstudios.msessentials.player.skin.Skin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ public class PlayerSettings {
     private final @NotNull YamlConfiguration config;
 
     private final @NotNull Parameter<ResourcePack.Type> resourcePackType;
+    private final @NotNull Parameter<Skin> skin;
 
     public PlayerSettings(
             @NotNull PlayerFile playerFile
@@ -26,11 +28,13 @@ public class PlayerSettings {
 
         ResourcePack.Type resourcePackType = null;
         try {
-            resourcePackType = ResourcePack.Type.valueOf(this.config.getString("resource-pack.resource-pack-type", "NULL"));
+            resourcePackType = ResourcePack.Type.valueOf(this.config.getString("settings.resource-pack.resource-pack-type", "NULL"));
         } catch (IllegalArgumentException e) {
             Bukkit.getLogger().log(Level.SEVERE, "Incorrect resource-pack type in : " + playerFile.getFile().getName(), e);
         }
-        this.resourcePackType = new Parameter<>("resource-pack.resource-pack-type", resourcePackType);
+        this.resourcePackType = new Parameter<>("settings.resource-pack.resource-pack-type", resourcePackType);
+
+        this.skin = new Parameter<>("settings.skin", this.playerFile.getSkin(this.config.getString("settings.skin")));
     }
 
     public @NotNull Parameter<ResourcePack.Type> getResourcePackParam() {
@@ -46,8 +50,26 @@ public class PlayerSettings {
         this.resourcePackType.setForYaml(
                 this.config,
                 resourcePackType == null
-                        ? ResourcePack.Type.NULL
-                        : resourcePackType.name()
+                ? ResourcePack.Type.NULL
+                : resourcePackType.name()
+        );
+    }
+
+    public @NotNull Parameter<Skin> getSkinParam() {
+        return this.skin;
+    }
+
+    public @Nullable Skin getSkin() {
+        return this.skin.getValue();
+    }
+
+    public void setSkin(@Nullable Skin skin) {
+        this.skin.setValue(skin);
+        this.skin.setForYaml(
+                this.config,
+                skin == null
+                ? null
+                : skin.getName()
         );
     }
 

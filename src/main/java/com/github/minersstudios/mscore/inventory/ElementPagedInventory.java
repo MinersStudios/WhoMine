@@ -14,15 +14,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Builder for listed inventory with elements.
+ * Builder for paged inventory with elements.
  * Element slots are slots where elements are located.
  * Elements are buttons that change when the page index changes,
  * all elements are located in the element slots.
  *
- * @see ListedInventory
- * @see #build()
+ * @see CustomInventory
+ * @see PagedCustomInventory
  */
-public class ElementListedInventory extends ListedInventory {
+public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPagedInventory> implements PagedCustomInventory {
     protected final @NotNull Multimap<Integer, InventoryButton> elements;
     protected final int[] elementSlots;
 
@@ -33,7 +33,7 @@ public class ElementListedInventory extends ListedInventory {
      * @param verticalSize Vertical size of the inventory
      * @param elementSlots Slots of the elements in the inventory
      */
-    protected ElementListedInventory(
+    protected ElementPagedInventory(
             @NotNull Component title,
             @Range(from = 1, to = 6) int verticalSize,
             int @Range(from = 0, to = Integer.MAX_VALUE) [] elementSlots
@@ -49,24 +49,24 @@ public class ElementListedInventory extends ListedInventory {
      * @param title        Title of the inventory
      * @param verticalSize Vertical size of the inventory
      * @param elementSlots Slots of the elements in the inventory
-     * @return New element listed inventory
+     * @return New element paged inventory
      */
     @Contract("_, _, _ -> new")
-    public static @NotNull ElementListedInventory create(
+    public static @NotNull ElementPagedInventory elementPaged(
             @NotNull Component title,
             @Range(from = 1, to = 6) int verticalSize,
             int @Range(from = 0, to = Integer.MAX_VALUE) [] elementSlots
     ) {
-        return new ElementListedInventory(title, verticalSize, elementSlots);
+        return new ElementPagedInventory(title, verticalSize, elementSlots);
     }
 
     /**
      * Used to update the pages of the inventory
      *
-     * @return Listed inventory
+     * @return Element paged inventory
      */
     @Override
-    public @NotNull ElementListedInventory build() {
+    public @NotNull ElementPagedInventory build() {
         this.updatePages();
         return this;
     }
@@ -87,7 +87,7 @@ public class ElementListedInventory extends ListedInventory {
      * @param elements New elements of the inventory
      * @return This inventory
      */
-    public @NotNull ElementListedInventory elements(@NotNull List<InventoryButton> elements) {
+    public @NotNull ElementPagedInventory elements(@NotNull List<InventoryButton> elements) {
         this.elements.clear();
         this.setPagesSize((int) Math.ceil((double) elements.size() / this.elementSlots.length));
 
@@ -141,13 +141,13 @@ public class ElementListedInventory extends ListedInventory {
      * @param page Page index
      * @return Page of the inventory
      */
-    public @Nullable ListedInventory createPage(@Range(from = 0, to = Integer.MAX_VALUE) int page) {
+    public @Nullable ElementPagedInventory createPage(@Range(from = 0, to = Integer.MAX_VALUE) int page) {
         if (page >= this.pagesSize) return null;
 
-        ListedInventory listedInventory = (ListedInventory) this.clone();
-        listedInventory.setPageIndex(page);
-        listedInventory.buttons(this.getPageContents(page));
-        return listedInventory;
+        ElementPagedInventory pagedInventory = this.clone();
+        pagedInventory.setPageIndex(page);
+        pagedInventory.buttons(this.getPageContents(page));
+        return pagedInventory;
     }
 
     /**

@@ -498,6 +498,12 @@ public class PlayerInfo {
         Player player = this.getOnlinePlayer();
         if (player == null) return;
 
+        Skin currentSkin = this.getCurrentSkin();
+
+        if (currentSkin != null) {
+            this.setSkin(currentSkin);
+        }
+
         player.setGameMode(this.playerFile.getGameMode());
         player.setHealth(this.playerFile.getHealth());
         player.setRemainingAir(this.playerFile.getAir());
@@ -780,6 +786,11 @@ public class PlayerInfo {
                 skin.getValue(),
                 skin.getSignature()
         );
+        this.playerFile.getPlayerSettings().setSkin(skin);
+    }
+
+    public @Nullable Skin getCurrentSkin() {
+        return this.playerFile.getPlayerSettings().getSkin();
     }
 
     public long getDiscordID() {

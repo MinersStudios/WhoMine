@@ -1,10 +1,7 @@
 package com.github.minersstudios.msitem.items;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.inventory.CustomInventory;
-import com.github.minersstudios.mscore.inventory.ElementListedInventory;
-import com.github.minersstudios.mscore.inventory.InventoryButton;
-import com.github.minersstudios.mscore.inventory.ListedInventory;
+import com.github.minersstudios.mscore.inventory.*;
 import com.github.minersstudios.mscore.inventory.actions.ButtonClickAction;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.MSItemUtils;
@@ -12,7 +9,10 @@ import com.github.minersstudios.msitem.MSItem;
 import com.github.minersstudios.msitem.utils.CustomItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -150,7 +150,7 @@ public class RenameableItem {
                         .item(resultItem)
                         .clickAction((buttonEvent, inventory) -> {
                             Player player = (Player) buttonEvent.getWhoClicked();
-                            CustomInventory renameInventory = CustomInventory.create(ChatUtils.createDefaultStyledText("뀃ꀱ"), 5);
+                            var renameInventory = SingleInventory.single(ChatUtils.createDefaultStyledText("뀃ꀱ"), 5);
                             var renameableItemStacks = renameableItem.getRenameableItemStacks();
 
                             if (renameableItemStacks.size() == 1) {
@@ -226,10 +226,10 @@ public class RenameableItem {
             }
 
             ButtonClickAction previousClick = (event, customInventory) -> {
-                if (!(customInventory instanceof ListedInventory listedInventory)) return;
+                if (!(customInventory instanceof PagedInventory pagedInventory)) return;
 
                 Player player = (Player) event.getWhoClicked();
-                ListedInventory previousPage = listedInventory.getPage(listedInventory.getPreviousPageIndex());
+                PagedInventory previousPage = pagedInventory.getPage(pagedInventory.getPreviousPageIndex());
 
                 if (previousPage != null) {
                     player.openInventory(previousPage);
@@ -240,10 +240,10 @@ public class RenameableItem {
             InventoryButton previousPageButton = InventoryButton.create().item(createPreviousPageButton()[1]).clickAction(previousClick);
 
             ButtonClickAction nextClick = (event, customInventory) -> {
-                if (!(customInventory instanceof ListedInventory listedInventory)) return;
+                if (!(customInventory instanceof PagedInventory pagedInventory)) return;
 
                 Player player = (Player) event.getWhoClicked();
-                ListedInventory nextPage = listedInventory.getPage(listedInventory.getNextPageIndex());
+                PagedInventory nextPage = pagedInventory.getPage(pagedInventory.getNextPageIndex());
 
                 if (nextPage != null) {
                     player.openInventory(nextPage);
@@ -253,7 +253,7 @@ public class RenameableItem {
 
             InventoryButton nextButton = InventoryButton.create().item(createNextPageButton()[1]).clickAction(nextClick);
 
-            return ElementListedInventory.create(ChatUtils.createDefaultStyledText("뀂ꀰ"), 5, IntStream.range(0, 36).toArray())
+            return ElementPagedInventory.elementPaged(ChatUtils.createDefaultStyledText("뀂ꀰ"), 5, IntStream.range(0, 36).toArray())
                     .elements(elements)
                     .staticButtonAt(
                             36,

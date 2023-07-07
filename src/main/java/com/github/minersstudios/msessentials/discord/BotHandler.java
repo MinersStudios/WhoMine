@@ -15,11 +15,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-
 import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
@@ -136,9 +131,9 @@ public class BotHandler {
                 return;
             }
 
-            if (this.isValidSkinImg(link)) {
+            try {
                 this.handleSkin(link);
-            } else {
+            } catch (IllegalArgumentException e) {
                 this.reply(renderTranslation("ms.discord.skin.invalid_img"));
             }
 
@@ -245,7 +240,7 @@ public class BotHandler {
         }
     }
 
-    private void handleSkin(@NotNull String link) {
+    private void handleSkin(@NotNull String link) throws IllegalArgumentException {
         PlayerFile playerFile = this.playerInfo.getPlayerFile();
         String skinName = this.messageString;
         String variantYes = renderTranslation("ms.discord.skin.variant.yes");
@@ -351,16 +346,6 @@ public class BotHandler {
                             )
                     )
             );
-        }
-    }
-
-    private boolean isValidSkinImg(@NotNull String link) {
-        if (!link.endsWith(".png")) return false;
-        try {
-            BufferedImage image = ImageIO.read(new URL(link));
-            return image.getWidth() == 64 && image.getHeight() == 64;
-        } catch (IOException e) {
-            return false;
         }
     }
 

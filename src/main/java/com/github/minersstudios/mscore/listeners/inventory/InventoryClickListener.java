@@ -1,8 +1,8 @@
 package com.github.minersstudios.mscore.listeners.inventory;
 
-import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
+import com.github.minersstudios.mscore.listener.MSListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

@@ -56,7 +56,7 @@ public class CraftsMenu {
                     playClickSound(player);
                 });
 
-        return CustomInventory.create(Component.translatable("ms.menu.crafts.categories.title", NamedTextColor.WHITE), 4)
+        return SingleInventory.single(Component.translatable("ms.menu.crafts.categories.title", NamedTextColor.WHITE), 4)
                 .buttons(
                         IntStream.of(0, 1, 2, 9, 10, 11, 18, 19, 20, 27, 28, 29)
                         .boxed()
@@ -76,7 +76,7 @@ public class CraftsMenu {
 
     public static boolean open(@NotNull Type type, @NotNull Player player) {
         CustomInventoryMap customInventoryMap = MSCore.getCache().customInventoryMap;
-        CustomInventory customInventory = switch (type) {
+        var customInventory = switch (type) {
             case MAIN -> customInventoryMap.get("crafts");
             case BLOCKS -> customInventoryMap.get("crafts_blocks");
             case DECORS -> customInventoryMap.get("crafts_decors");
@@ -128,7 +128,7 @@ public class CraftsMenu {
         for (var recipe : recipes) {
             ItemStack resultItem = recipe.getResult();
 
-            CustomInventory craftInventory = CustomInventory.create(Component.translatable("ms.menu.crafts.craft.title", ChatUtils.DEFAULT_STYLE), 4);
+            SingleInventory craftInventory = SingleInventory.single(Component.translatable("ms.menu.crafts.craft.title", ChatUtils.DEFAULT_STYLE), 4);
 
             if (recipe instanceof ShapedRecipe shapedRecipe) {
                 String[] shapes = shapedRecipe.getShape();
@@ -184,8 +184,8 @@ public class CraftsMenu {
             }
         }
 
-        ElementListedInventory craftsInventory = ElementListedInventory
-                .create(
+        ElementPagedInventory craftsInventory = ElementPagedInventory
+                .elementPaged(
                         Component.translatable("ms.menu.crafts.category.title", ChatUtils.DEFAULT_STYLE),
                         5,
                         IntStream.range(0, 36).toArray()
@@ -193,10 +193,10 @@ public class CraftsMenu {
                 .elements(elements);
 
         ButtonClickAction previousClick = (event, customInventory) -> {
-            if (!(customInventory instanceof ListedInventory listedInventory)) return;
+            if (!(customInventory instanceof PagedCustomInventory pagedInventory)) return;
 
             Player player = (Player) event.getWhoClicked();
-            ListedInventory previousPage = craftsInventory.getPage(listedInventory.getPreviousPageIndex());
+            CustomInventory previousPage = craftsInventory.getPage(pagedInventory.getPreviousPageIndex());
 
             if (previousPage != null) {
                 player.openInventory(previousPage);
@@ -207,10 +207,10 @@ public class CraftsMenu {
         InventoryButton previousPageButton = InventoryButton.create().item(previousPageNoCMD).clickAction(previousClick);
 
         ButtonClickAction nextClick = (event, customInventory) -> {
-            if (!(customInventory instanceof ListedInventory listedInventory)) return;
+            if (!(customInventory instanceof PagedCustomInventory pagedInventory)) return;
 
             Player player = (Player) event.getWhoClicked();
-            ListedInventory nextPage = craftsInventory.getPage(listedInventory.getNextPageIndex());
+            CustomInventory nextPage = craftsInventory.getPage(pagedInventory.getNextPageIndex());
 
             if (nextPage != null) {
                 player.openInventory(nextPage);

@@ -14,9 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * Use {@link #get(String)} to get custom inventory by key.
  * Use {@link #put(String, CustomInventory)} to put custom inventory with key.
  *
- * @see CustomInventory
- * @see ListedInventory
- * @see ElementListedInventory
+ * @see CustomInventoryImpl
+ * @see PagedInventory
+ * @see ElementPagedInventory
  */
 public class CustomInventoryMap {
     private final @NotNull Map<String, CustomInventory> map = new ConcurrentHashMap<>();
@@ -28,8 +28,8 @@ public class CustomInventoryMap {
      */
     public @Nullable CustomInventory get(@NotNull String key) {
         CustomInventory customInventory = this.map.get(key);
-        return customInventory instanceof ListedInventory listedInventory
-                ? listedInventory.getPage(0)
+        return customInventory instanceof PagedCustomInventoryImpl<?> pagedInventory
+                ? pagedInventory.getPage(0)
                 : customInventory;
     }
 

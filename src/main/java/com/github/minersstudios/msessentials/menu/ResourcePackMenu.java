@@ -1,9 +1,7 @@
 package com.github.minersstudios.msessentials.menu;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.inventory.CustomInventory;
-import com.github.minersstudios.mscore.inventory.CustomInventoryMap;
-import com.github.minersstudios.mscore.inventory.InventoryButton;
+import com.github.minersstudios.mscore.inventory.*;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
@@ -133,7 +131,7 @@ public class ResourcePackMenu {
                     ResourcePack.setResourcePack(playerInfo);
                 });
 
-        return CustomInventory.create(Component.translatable("ms.menu.resource_pack.title"), 1)
+        return SingleInventory.single(Component.translatable("ms.menu.resource_pack.title"), 1)
                 .buttonAt(0, noneButton)
                 .buttonAt(1, noneButton)
                 .buttonAt(2, fullButton)

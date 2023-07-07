@@ -15,7 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.RegEx;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
@@ -65,7 +68,7 @@ public class Skin {
             @NotNull String signature
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(matchesNameRegex(name), "The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores");
-        Preconditions.checkArgument(value.startsWith("ewog"), "The value must start with ewog");
+        Preconditions.checkArgument(isValidValue(value), "The value must start with ewog");
         return new Skin(name, value, signature);
     }
 
@@ -85,7 +88,7 @@ public class Skin {
             @NotNull String link
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(matchesNameRegex(name), "The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores");
-        Preconditions.checkArgument(link.startsWith("https://") || link.endsWith(".png"), "The link must start with https:// and end with .png");
+        Preconditions.checkArgument(isValidSkinImg(link), "The link must start with https:// and end with .png and the image must be 64x64 pixels");
 
         AtomicInteger retryAttempts = new AtomicInteger(0);
 
@@ -153,6 +156,24 @@ public class Skin {
     }
 
     /**
+     * @param link Link to be checked
+     * @return True if the link starts with https:// and ends with .png and the image is 64x64
+     */
+    public static boolean isValidSkinImg(@NotNull String link) {
+        if (!link.startsWith("https://") || !link.endsWith(".png")) return false;
+        try {
+            BufferedImage image = ImageIO.read(new URL(link));
+            return image.getWidth() == 64 && image.getHeight() == 64;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public static boolean isValidValue(@NotNull String value) {
+        return value.startsWith("ewog");
+    }
+
+    /**
      * @param string String to be checked
      * @return True if string matches {@link #NAME_REGEX}
      */
@@ -190,8 +211,14 @@ public class Skin {
             case 200 -> {
                 MineSkinJson json = response.getBodyResponse(MineSkinJson.class);
                 MineSkinJson.Data.Texture texture = json.data().texture();
+                String value = texture.value();
+                String signature = texture.signature();
 
-                return Skin.create(name, texture.value(), texture.signature());
+                try {
+                    return Skin.create(name, value, signature);
+                } catch (IllegalArgumentException e) {
+                    logger.log(Level.SEVERE, "Failed to create skin : \"" + name + "\" with value : " + value + " and signature : " + signature, e);
+                }
             }
             case 500, 400 -> {
                 MineSkinErrorJson errorJson = response.getBodyResponse(MineSkinErrorJson.class);
@@ -253,7 +280,7 @@ public class Skin {
                     logger.log(Level.SEVERE, "Failed to sleep thread", e);
                 }
             }
-            default -> Bukkit.getLogger().log(Level.SEVERE, "Unknown MineSkin error: " + response.getStatusCode());
+            default -> logger.log(Level.SEVERE, "Unknown MineSkin error: " + response.getStatusCode());
         }
 
         return null;

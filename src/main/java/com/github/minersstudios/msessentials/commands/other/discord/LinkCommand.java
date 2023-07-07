@@ -1,6 +1,6 @@
 package com.github.minersstudios.msessentials.commands.other.discord;
 
-import com.github.minersstudios.mscore.inventory.CustomInventory;
+import com.github.minersstudios.mscore.inventory.SingleInventory;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -28,7 +28,7 @@ public class LinkCommand {
     ) {
         short code = playerInfo.generateCode();
         sender.openInventory(
-                CustomInventory.create(
+                SingleInventory.single(
                         TITLE
                         .append(generateNumbers(code))
                         .color(NamedTextColor.WHITE),

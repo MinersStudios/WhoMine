@@ -1,8 +1,7 @@
 package com.github.minersstudios.msessentials.menu;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.inventory.CustomInventory;
-import com.github.minersstudios.mscore.inventory.InventoryButton;
+import com.github.minersstudios.mscore.inventory.*;
 import com.github.minersstudios.mscore.inventory.actions.ButtonClickAction;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
@@ -34,7 +33,7 @@ public class SkinsMenu {
         quitMeta.setCustomModelData(1);
         quitItem.setItemMeta(quitMeta);
 
-        return CustomInventory.create(TITLE, 3)
+        return SingleInventory.single(TITLE, 3)
                 .buttonAt(
                         22,
                         InventoryButton.create()
@@ -48,11 +47,11 @@ public class SkinsMenu {
     }
 
     public static boolean open(@NotNull Player player) {
-        CustomInventory a = MSCore.getCache().customInventoryMap.get("skins");
+        CustomInventory toClone = MSCore.getCache().customInventoryMap.get("skins");
 
-        if (a == null) return false;
+        if (toClone == null) return false;
 
-        CustomInventory customInventory = a.clone();
+        CustomInventory customInventory = toClone.clone();
 
         ItemStack applyItem = new ItemStack(Material.PAPER);
         ItemStack applyNoCMD = new ItemStack(Material.PAPER);

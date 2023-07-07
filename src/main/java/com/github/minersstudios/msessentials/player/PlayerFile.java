@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +20,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import static com.github.minersstudios.msessentials.MSEssentials.getInstance;
 
@@ -63,7 +65,6 @@ public class PlayerFile {
         this.gameMode = GameMode.valueOf(yamlConfiguration.getString("game-params.game-mode", "SURVIVAL"));
         this.health = yamlConfiguration.getDouble("game-params.health", 20.0d);
         this.air = yamlConfiguration.getInt("game-params.air", 300);
-        this.playerSettings = new PlayerSettings(this);
         this.firstJoin = Instant.ofEpochMilli(yamlConfiguration.getLong("first-join", System.currentTimeMillis()));
 
         World overworld = MSEssentials.getOverworld();
@@ -110,9 +111,15 @@ public class PlayerFile {
 
                 if (value == null || signature == null) continue;
 
-                this.skins.add(Skin.create(name, value, signature));
+                try {
+                    this.skins.add(Skin.create(name, value, signature));
+                } catch (IllegalArgumentException e) {
+                    Bukkit.getLogger().log(Level.WARNING, "Can't load skin : \"" + name + "\" for player : " + this.playerName.getNickname(), e);
+                }
             }
         }
+
+        this.playerSettings = new PlayerSettings(this);
     }
 
     public static @NotNull PlayerFile loadConfig(
@@ -185,8 +192,11 @@ public class PlayerFile {
         return this.skins.get(index);
     }
 
-    public @Nullable Skin getSkin(@NotNull String name) {
-        return this.skins.stream()
+    @Contract("null -> null")
+    public @Nullable Skin getSkin(@Nullable String name) {
+        return name == null
+                ? null
+                : this.skins.stream()
                 .filter(skin -> skin.getName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
