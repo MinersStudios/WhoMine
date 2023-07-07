@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.minersstudios"
-version = "2.0.0"
+version = "1.0.0"
 val apiVersion = "'1.20'"
 val website = "https://minersstudios.github.io"
 val authors = listOf("MinersStudios", "p0loskun")
