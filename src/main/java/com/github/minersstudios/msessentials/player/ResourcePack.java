@@ -45,7 +45,7 @@ public class ResourcePack {
     private static String repo;
     public static String tagName;
 
-    public ResourcePack(
+    private ResourcePack(
             @NotNull String hash,
             @NotNull String url
     ) {
@@ -53,6 +53,11 @@ public class ResourcePack {
         this.url = url;
     }
 
+    /**
+     * Initializes the resource pack's parameters
+     *
+     * @see ResourcePack
+     */
     public static void init() {
         Config config = MSEssentials.getConfiguration();
         user = config.user;
@@ -88,27 +93,45 @@ public class ResourcePack {
             configYaml.set("resource-pack.full.hash", fullHash);
             configYaml.set("resource-pack.lite.hash", liteHash);
 
-            deleteResourcePackFiles(config.fullFileName);
-            deleteResourcePackFiles(config.liteFileName);
+            deleteResourcePackFile(config.fullFileName);
+            deleteResourcePackFile(config.liteFileName);
 
             config.save(configYaml);
         }
     }
 
-    private static void deleteResourcePackFiles(@NotNull String fileName) {
+    /**
+     * Deletes the resource pack file
+     *
+     * @param fileName The name of the file to be deleted
+     */
+    private static void deleteResourcePackFile(@NotNull String fileName) {
         File[] files = MSEssentials.getInstance().getPluginFolder().listFiles();
 
         if (files != null) {
             Arrays.stream(files)
-            .filter(file -> file.getName().matches(String.format(fileName, ".*")))
-            .forEach(file -> {
-                if (!file.delete()) {
-                    throw new SecurityException("File deletion failed: " + file.getAbsolutePath());
-                }
-            });
+            .filter(file -> file.getName().matches(fileName))
+            .forEach(
+                    file -> {
+                        if (file.delete()) {
+                            Bukkit.getLogger().log(Level.INFO, "File deleted: " + file.getAbsolutePath());
+                        } else {
+                            Bukkit.getLogger().log(Level.WARNING, "Failed to delete file: " + file.getAbsolutePath());
+                        }
+                    }
+            );
         }
     }
 
+    /**
+     * Downloads the resource pack and generates the hash
+     *
+     * @param url      The url to download the resource pack
+     * @param fileName The name of the file to save the resource pack
+     * @return The hash of the downloaded resource pack
+     * @throws RuntimeException If the resource pack cannot be downloaded
+     * @see #createSha1(File)
+     */
     @Contract("_, _ -> new")
     private static @NotNull String generateHash(
             @NotNull String url,
@@ -127,13 +150,17 @@ public class ResourcePack {
         }
     }
 
+    /**
+     * @param file The file to generate the hash
+     * @return The hash of the file
+     */
     private static byte @NotNull [] createSha1(@NotNull File file) {
-        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+        try (var input = new FileInputStream(file)) {
             MessageDigest digest = MessageDigest.getInstance("SHA-1");
             byte[] buffer = new byte[8192];
             int bytesRead;
 
-            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+            while ((bytesRead = input.read(buffer)) != -1) {
                 digest.update(buffer, 0, bytesRead);
             }
 
@@ -143,8 +170,15 @@ public class ResourcePack {
         }
     }
 
+    /**
+     * Converts bytes to hex string
+     *
+     * @param bytes The bytes to convert to hex string
+     * @return The hex string of the bytes
+     */
     private static @NotNull String bytesToHexString(byte @NotNull [] bytes) {
         StringBuilder stringBuilder = new StringBuilder();
+
         for (byte b : bytes) {
             int value = b & 0xFF;
 
@@ -154,9 +188,16 @@ public class ResourcePack {
 
             stringBuilder.append(Integer.toHexString(value));
         }
+
         return stringBuilder.toString();
     }
 
+    /**
+     * Gets the latest tag name of the repository specified in the configuration file
+     *
+     * @return The latest tag name of the repository and whether the request was successful
+     * @throws NullPointerException If the API rate limit has been exceeded
+     */
     private static @NotNull Map.Entry<Boolean, String> getLatestTagName() throws NullPointerException {
         URI uri = URI.create("https://api.github.com/repos/" + user + "/" + repo + "/tags");
 
@@ -213,8 +254,20 @@ public class ResourcePack {
         }
     }
 
+    /**
+     * The type of resource pack.
+     * <ul>
+     *     <li>{@link Type#FULL} - Full resource pack</li>
+     *     <li>{@link Type#LITE} - Lite resource pack</li>
+     *     <li>{@link Type#NONE} - No resource pack, need to kick a player if they already have a resource pack loaded</li>
+     *     <li>{@link Type#NULL} - Null resource pack, used for null check</li>
+     * </ul>
+     */
     public enum Type {
-        FULL, LITE, NONE, NULL;
+        FULL,
+        LITE,
+        NONE,
+        NULL;
 
         private @Nullable ResourcePack resourcePack;
 
@@ -222,10 +275,16 @@ public class ResourcePack {
             this.resourcePack = null;
         }
 
+        /**
+         * @return The hash of the resource pack
+         */
         public @Nullable String getHash() {
             return this.resourcePack == null ? null : this.resourcePack.hash;
         }
 
+        /**
+         * @return The url of the resource pack
+         */
         public @Nullable String getUrl() {
             return this.resourcePack == null ? null : this.resourcePack.url;
         }

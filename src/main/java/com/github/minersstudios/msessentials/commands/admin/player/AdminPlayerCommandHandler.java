@@ -6,7 +6,7 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.player.IDMap;
+import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.tabcompleters.AllPlayers;
 import com.github.minersstudios.msessentials.utils.IDUtils;

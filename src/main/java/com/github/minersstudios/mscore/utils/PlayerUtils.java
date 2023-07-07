@@ -22,6 +22,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerShowEntityEvent;
@@ -141,25 +142,28 @@ public final class PlayerUtils {
             @NotNull String signature
     ) {
         MinecraftServer minecraftServer = MinecraftServer.getServer();
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        ServerPlayer serverPlayer = craftPlayer.getHandle();
-        GameProfile gameProfile = craftPlayer.getProfile();
+        Entity vehicle = player.getVehicle();
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        GameProfile gameProfile = serverPlayer.getGameProfile();
         PropertyMap propertyMap = gameProfile.getProperties();
-        Property newProperty = new Property("textures", value, signature);
+
+        if (vehicle != null) {
+            vehicle.eject();
+        }
 
         if (propertyMap.containsKey("textures")) {
             Property oldProperty = propertyMap.get("textures").iterator().next();
             propertyMap.remove("textures", oldProperty);
         }
 
-        propertyMap.put("textures", newProperty);
+        propertyMap.put("textures", new Property("textures", value, signature));
 
         if (!serverPlayer.sentListPacket) {
             serverPlayer.gameProfile = gameProfile;
             return;
         }
 
-        Location location = craftPlayer.getLocation();
+        Location location = player.getLocation();
         ServerGamePacketListenerImpl connection = serverPlayer.connection;
         ServerLevel serverLevel = serverPlayer.serverLevel();
         ServerPlayerGameMode gameMode = serverPlayer.gameMode;
@@ -184,13 +188,13 @@ public final class PlayerUtils {
         );
 
         players.stream()
-        .filter(forWho -> forWho.getBukkitEntity().canSee(craftPlayer))
+        .filter(forWho -> forWho.getBukkitEntity().canSee(player))
         .forEach(forWho -> unregisterEntity(forWho, serverPlayer));
 
         serverPlayer.gameProfile = gameProfile;
 
         players.stream()
-        .filter(forWho -> forWho.getBukkitEntity().canSee(craftPlayer))
+        .filter(forWho -> forWho.getBukkitEntity().canSee(player))
         .forEach(forWho -> trackAndShowEntity(forWho, serverPlayer));
 
         connection.send(respawnPacket);
@@ -203,9 +207,9 @@ public final class PlayerUtils {
             connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), mobEffect));
         }
 
-        if (craftPlayer.isOp()) {
-            craftPlayer.setOp(false);
-            craftPlayer.setOp(true);
+        if (player.isOp()) {
+            player.setOp(false);
+            player.setOp(true);
         }
     }
 

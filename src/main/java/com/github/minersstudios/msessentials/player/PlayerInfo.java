@@ -1,10 +1,13 @@
 package com.github.minersstudios.msessentials.player;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.discord.BotHandler;
+import com.github.minersstudios.msessentials.discord.DiscordMap;
+import com.github.minersstudios.msessentials.player.map.MuteMap;
+import com.github.minersstudios.msessentials.player.map.PlayerInfoMap;
+import com.github.minersstudios.msessentials.player.skin.Skin;
 import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
 import com.mojang.authlib.GameProfile;
@@ -20,12 +23,14 @@ import net.minecraft.server.players.UserWhiteListEntry;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R1.profile.CraftPlayerProfile;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.profile.PlayerProfile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -282,7 +287,7 @@ public class PlayerInfo {
 
     public @Nullable BanEntry<PlayerProfile> getBanEntry() {
         BanList<PlayerProfile> banList = Bukkit.getBanList(BanList.Type.PROFILE);
-        return banList.getBanEntry(this.offlinePlayer.getPlayerProfile());
+        return banList.getBanEntry(new CraftPlayerProfile(this.uuid, this.nickname));
     }
 
     public boolean isBanned() {
@@ -763,6 +768,18 @@ public class PlayerInfo {
             );
         }
         return true;
+    }
+
+    public void setSkin(@NotNull Skin skin) {
+        Player player = this.getOnlinePlayer();
+
+        if (player == null) return;
+
+        PlayerUtils.setSkin(
+                player,
+                skin.getValue(),
+                skin.getSignature()
+        );
     }
 
     public long getDiscordID() {

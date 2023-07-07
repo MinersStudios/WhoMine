@@ -1,6 +1,8 @@
 developer-mode: false
 anomaly-check-rate: 100
 anomaly-particles-check-rate: 10
+skin:
+  mine-skin-api-key: ''
 chat:
   local:
     radius: 25.0

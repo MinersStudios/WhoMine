@@ -3,7 +3,7 @@ package com.github.minersstudios.msessentials.commands.admin.player;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.player.MuteMap;
+import com.github.minersstudios.msessentials.player.map.MuteMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;

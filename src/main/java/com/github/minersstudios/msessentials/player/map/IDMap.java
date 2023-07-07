@@ -1,4 +1,4 @@
-package com.github.minersstudios.msessentials.player;
+package com.github.minersstudios.msessentials.player.map;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
@@ -30,14 +30,15 @@ import java.util.logging.Logger;
  */
 public class IDMap {
     private final File file;
-    private final Gson gson;
     private final Map<UUID, Integer> map = new ConcurrentHashMap<>();
+
+    private static final Gson GSON =
+            new GsonBuilder()
+            .setPrettyPrinting()
+            .create();
 
     public IDMap() {
         this.file = new File(MSEssentials.getInstance().getPluginFolder(), "ids.json");
-        this.gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
         this.reloadIds();
     }
 
@@ -216,7 +217,7 @@ public class IDMap {
             try {
                 Type mapType = new TypeToken<Map<UUID, Integer>>() {}.getType();
                 String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
-                Map<UUID, Integer> jsonMap = this.gson.fromJson(json, mapType);
+                Map<UUID, Integer> jsonMap = GSON.fromJson(json, mapType);
 
                 if (jsonMap == null) {
                     this.createBackupFile();
@@ -287,7 +288,7 @@ public class IDMap {
      */
     private void saveFile() {
         try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
-            this.gson.toJson(this.map, writer);
+            GSON.toJson(this.map, writer);
         } catch (IOException e) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to save ids", e);
         }

@@ -18,7 +18,9 @@ import org.jetbrains.annotations.Range;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,6 +42,7 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
     protected @Nullable InventoryAction<InventoryCloseEvent> closeAction;
     protected @Nullable InventoryAction<InventoryClickEvent> clickAction;
     protected @Nullable InventoryAction<InventoryClickEvent> bottomClickAction;
+    protected @NotNull List<Object> args = new ArrayList<>();
 
     protected static final ItemStack EMPTY_ITEM = new ItemStack(Material.AIR);
 
@@ -223,6 +226,15 @@ public class CustomInventory extends CraftInventoryCustom implements Inventory, 
      */
     public @NotNull CustomInventory bottomClickAction(@Nullable InventoryAction<InventoryClickEvent> bottomClickAction) {
         this.bottomClickAction = bottomClickAction;
+        return this;
+    }
+
+    public @NotNull List<Object> args() {
+        return this.args;
+    }
+
+    public @NotNull CustomInventory args(@NotNull List<Object> args) {
+        this.args = args;
         return this;
     }
 

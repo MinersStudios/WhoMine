@@ -3,10 +3,9 @@ package com.github.minersstudios.msessentials.discord;
 import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.player.DiscordMap;
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.Skin;
+import com.github.minersstudios.msessentials.player.skin.Skin;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
@@ -75,6 +74,8 @@ public class BotHandler {
     public void handleMessage(@NotNull Message message) {
         this.message = message;
         this.messageString = this.message.getContentDisplay();
+        var attachments = this.message.getAttachments();
+        int attachmentSize = attachments.size();
         short code = 0;
 
         if (this.isFlooding()) {
@@ -87,7 +88,7 @@ public class BotHandler {
             return;
         }
 
-        if (this.messageString.matches("\\d+")) {
+        if (this.messageString.matches("\\d+") && attachmentSize == 0) {
             String invalidCode = renderTranslation("ms.discord.invalid_code");
 
             try {
@@ -118,9 +119,6 @@ public class BotHandler {
             return;
         }
 
-        var attachments = this.message.getAttachments();
-        int attachmentSize = attachments.size();
-
         if (attachmentSize > 1) {
             this.reply(renderTranslation("ms.discord.skin.only_one_img"));
             return;
@@ -133,7 +131,7 @@ public class BotHandler {
                 return;
             }
 
-            if (!this.messageString.matches("[a-zA-ZЀ-ӿ-0-9]{1,32}")) {
+            if (!Skin.matchesNameRegex(this.messageString)) {
                 this.reply(renderTranslation("ms.discord.skin.invalid_name_regex"));
                 return;
             }

@@ -112,7 +112,11 @@ public class PronounsMenu {
 
     public static void open(@NotNull Player player) {
         CustomInventory customInventory = MSCore.getCache().customInventoryMap.get("pronouns");
-        if (customInventory == null) return;
+
+        if (customInventory == null) {
+            throw new NullPointerException("CustomInventory \"pronouns\" not found");
+        }
+
         player.openInventory(customInventory);
     }
 }

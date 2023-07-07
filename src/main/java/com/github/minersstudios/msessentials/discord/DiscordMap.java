@@ -1,7 +1,8 @@
-package com.github.minersstudios.msessentials.player;
+package com.github.minersstudios.msessentials.discord;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
+import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -36,10 +37,14 @@ import java.util.logging.Logger;
  */
 public class DiscordMap {
     private final File file;
-    private final Gson gson;
     private final Map<Long, Params> map = new ConcurrentHashMap<>();
     public final Map<Short, PlayerInfo> codeMap = new ConcurrentHashMap<>();
     private final SecureRandom random = new SecureRandom();
+
+    private static final Gson GSON =
+            new GsonBuilder()
+            .setPrettyPrinting()
+            .create();
 
     /**
      * Discord linking map with discord user id and its player's {@link Params}.
@@ -47,9 +52,6 @@ public class DiscordMap {
      */
     public DiscordMap() {
         this.file = new File(MSEssentials.getInstance().getPluginFolder(), "discord_links.json");
-        this.gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
         this.reloadLinks();
     }
 
@@ -222,7 +224,7 @@ public class DiscordMap {
             try {
                 Type mapType = new TypeToken<Map<Long, Params>>() {}.getType();
                 String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
-                Map<Long, Params> jsonMap = this.gson.fromJson(json, mapType);
+                Map<Long, Params> jsonMap = GSON.fromJson(json, mapType);
 
                 if (jsonMap == null) {
                     this.createBackupFile();
@@ -279,7 +281,7 @@ public class DiscordMap {
      */
     private void saveFile() {
         try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
-            this.gson.toJson(this.map, writer);
+            GSON.toJson(this.map, writer);
         } catch (IOException e) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to save \"discord_links.json\" file", e);
         }

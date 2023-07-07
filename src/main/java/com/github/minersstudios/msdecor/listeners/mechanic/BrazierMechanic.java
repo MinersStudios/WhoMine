@@ -35,7 +35,7 @@ public class BrazierMechanic implements Listener {
 
         if (
                 (heldItem.getType() != Material.FLINT_AND_STEEL
-                && !heldItem.getType().toString().matches(".*_SHOVEL"))
+                && !heldItem.getType().toString().endsWith("_SHOVEL"))
                 || !(MSDecorUtils.getCustomDecorData(helmet) instanceof Brazier brazier)
                 || !(block.getBlockData() instanceof Levelled levelled)
                 || !(heldItem.getItemMeta() instanceof Damageable itemMeta)
@@ -51,7 +51,7 @@ public class BrazierMechanic implements Listener {
             block.getWorld().playSound(armorStand.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0f, 1.0f);
         } else if (
                 type == Brazier.Type.FIRED
-                && heldItem.getType().toString().matches(".*_SHOVEL")
+                && heldItem.getType().toString().endsWith("_SHOVEL")
         ) {
             armorStand.getEquipment().setHelmet(brazier.createItemStack(Brazier.Type.DEFAULT));
             player.getWorld().playSound(armorStand.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 1.0f, 1.0f);

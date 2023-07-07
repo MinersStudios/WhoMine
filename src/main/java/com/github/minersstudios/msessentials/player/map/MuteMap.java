@@ -1,4 +1,4 @@
-package com.github.minersstudios.msessentials.player;
+package com.github.minersstudios.msessentials.player.map;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
@@ -37,8 +37,13 @@ import java.util.logging.Logger;
  */
 public class MuteMap {
     private final File file;
-    private final Gson gson;
     private final Map<UUID, Params> map = new ConcurrentHashMap<>();
+
+    private static final Gson GSON =
+            new GsonBuilder()
+            .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+            .setPrettyPrinting()
+            .create();
 
     /**
      * Mute map with {@link UUID} and its {@link Params}.
@@ -46,10 +51,6 @@ public class MuteMap {
      */
     public MuteMap() {
         this.file = new File(MSEssentials.getInstance().getPluginFolder(), "muted_players.json");
-        this.gson = new GsonBuilder()
-                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
-                .setPrettyPrinting()
-                .create();
         this.reloadMutes();
     }
 
@@ -152,7 +153,7 @@ public class MuteMap {
             try {
                 Type mapType = new TypeToken<Map<UUID, Params>>() {}.getType();
                 String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
-                Map<UUID, Params> jsonMap = this.gson.fromJson(json, mapType);
+                Map<UUID, Params> jsonMap = GSON.fromJson(json, mapType);
 
                 if (jsonMap == null) {
                     this.createBackupFile();
@@ -209,7 +210,7 @@ public class MuteMap {
      */
     private void saveFile() {
         try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
-            this.gson.toJson(this.map, writer);
+            GSON.toJson(this.map, writer);
         } catch (IOException e) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to save muted players", e);
         }

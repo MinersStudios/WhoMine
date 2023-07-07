@@ -2,6 +2,7 @@ package com.github.minersstudios.msessentials.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
+import com.github.minersstudios.msessentials.player.skin.Skin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -103,11 +104,11 @@ public class PlayerFile {
 
                 if (skinSection == null) continue;
 
-                String name = skinSection.getString("name");
+                String name = skinSection.getName();
                 String value = skinSection.getString("value");
                 String signature = skinSection.getString("signature");
 
-                if (name == null || value == null || signature == null) continue;
+                if (value == null || signature == null) continue;
 
                 this.skins.add(Skin.create(name, value, signature));
             }
@@ -216,10 +217,9 @@ public class PlayerFile {
     public boolean addSkin(@NotNull Skin skin) {
         if (!this.hasAvailableSkinSlot()) return false;
 
-        String sectionName = "skins." + this.skins.size();
+        String sectionName = "skins." + skin.getName();
 
         this.skins.add(skin);
-        this.yamlConfiguration.set(sectionName + ".name", skin.getName());
         this.yamlConfiguration.set(sectionName + ".value", skin.getValue());
         this.yamlConfiguration.set(sectionName + ".signature", skin.getSignature());
         this.save();
@@ -227,14 +227,15 @@ public class PlayerFile {
         return true;
     }
 
-    public boolean removeSkin(@NotNull Skin skin) {
-        if (!this.skins.contains(skin)) return false;
+    public void removeSkin(int index) {
+        Skin skin = this.skins.get(index);
+        String sectionName = "skins." + skin.getName();
 
         this.skins.remove(skin);
-        this.yamlConfiguration.set("skins." + this.getSkinIndex(skin), null);
+        this.yamlConfiguration.set(sectionName + ".value", null);
+        this.yamlConfiguration.set(sectionName + ".signature", null);
+        this.yamlConfiguration.set(sectionName, null);
         this.save();
-
-        return true;
     }
 
     public boolean renameSkin(
@@ -243,7 +244,7 @@ public class PlayerFile {
     ) {
         if (!this.skins.contains(skin)) return false;
 
-        this.yamlConfiguration.set("skins." + this.getSkinIndex(skin) + ".name", newName);
+        this.yamlConfiguration.set("skins." + skin.getName(), newName);
         this.save();
 
         return true;

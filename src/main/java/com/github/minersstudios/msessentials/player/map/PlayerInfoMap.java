@@ -1,5 +1,7 @@
-package com.github.minersstudios.msessentials.player;
+package com.github.minersstudios.msessentials.player.map;
 
+import com.github.minersstudios.msessentials.player.PlayerFile;
+import com.github.minersstudios.msessentials.player.PlayerInfo;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

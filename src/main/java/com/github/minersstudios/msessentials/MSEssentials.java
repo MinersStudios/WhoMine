@@ -9,7 +9,7 @@ import com.github.minersstudios.msessentials.listeners.chat.DiscordGuildMessageP
 import com.github.minersstudios.msessentials.listeners.chat.DiscordPrivateMessageReceivedListener;
 import com.github.minersstudios.msessentials.listeners.player.PlayerUpdateSignListener;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.PlayerInfoMap;
+import com.github.minersstudios.msessentials.player.map.PlayerInfoMap;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.TriState;

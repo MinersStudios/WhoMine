@@ -50,7 +50,7 @@ public class GiveCommand {
             if (
                     customDecorData instanceof Typed typed
                     && args.length == 4
-                    && !args[3].matches("[0-99]+")
+                    && !args[3].matches("\\d+")
             ) {
                 for (var type : typed.getTypes()) {
                     if (args[3].equals(type.getNamespacedKey().getKey())) {

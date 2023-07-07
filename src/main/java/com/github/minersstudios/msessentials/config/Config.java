@@ -11,6 +11,7 @@ import com.github.minersstudios.msessentials.anomalies.tasks.ParticleTask;
 import com.github.minersstudios.msessentials.menu.CraftsMenu;
 import com.github.minersstudios.msessentials.menu.PronounsMenu;
 import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
+import com.github.minersstudios.msessentials.menu.SkinsMenu;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.ResourcePack;
 import org.bukkit.Bukkit;
@@ -43,6 +44,7 @@ public final class Config {
     public String liteFileName;
     public String liteHash;
     public double localChatRadius;
+    public String mineSkinApiKey;
 
     public Config() {
         this.configFile = MSEssentials.getInstance().getConfigFile();
@@ -63,10 +65,10 @@ public final class Config {
         YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(this.configFile);
         Cache cache = MSEssentials.getCache();
 
-        this.developerMode = yamlConfig.getBoolean("developer-mode");
-        this.anomalyCheckRate = yamlConfig.getLong("anomaly-check-rate");
-        this.anomalyParticlesCheckRate = yamlConfig.getLong("anomaly-particles-check-rate");
-        this.localChatRadius = yamlConfig.getDouble("chat.local.radius");
+        this.developerMode = yamlConfig.getBoolean("developer-mode", false);
+        this.anomalyCheckRate = yamlConfig.getLong("anomaly-check-rate", 100L);
+        this.anomalyParticlesCheckRate = yamlConfig.getLong("anomaly-particles-check-rate", 10L);
+        this.localChatRadius = yamlConfig.getDouble("chat.local.radius", 25);
         this.discordGlobalChannelId = yamlConfig.getString("chat.global.discord-channel-id");
         this.discordLocalChannelId = yamlConfig.getString("chat.local.discord-channel-id");
         this.version = yamlConfig.getString("resource-pack.version");
@@ -76,6 +78,7 @@ public final class Config {
         this.fullHash = yamlConfig.getString("resource-pack.full.hash");
         this.liteFileName = yamlConfig.getString("resource-pack.lite.file-name");
         this.liteHash = yamlConfig.getString("resource-pack.lite.hash");
+        this.mineSkinApiKey = yamlConfig.getString("skin.mine-skin-api-key", "");
 
         if (!cache.bukkitTasks.isEmpty()) {
             cache.bukkitTasks.forEach(BukkitTask::cancel);
@@ -132,10 +135,12 @@ public final class Config {
         customInventoryMap.remove("pronouns");
         customInventoryMap.remove("resourcepack");
         customInventoryMap.remove("crafts");
+        customInventoryMap.remove("skins");
 
         customInventoryMap.put("pronouns", PronounsMenu.create());
         customInventoryMap.put("resourcepack", ResourcePackMenu.create());
         customInventoryMap.put("crafts", CraftsMenu.create());
+        customInventoryMap.put("skins", SkinsMenu.create());
 
         var customBlockRecipes = msCoreCache.customBlockRecipes;
         var customDecorRecipes = msCoreCache.customDecorRecipes;
