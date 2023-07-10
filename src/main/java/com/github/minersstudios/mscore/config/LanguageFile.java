@@ -143,19 +143,15 @@ public final class LanguageFile {
         File langFile = new File(langFolder, this.languageCode + ".json");
 
         if (!langFile.exists()) {
-            String url = this.sourceUrl + this.languageCode + ".json";
+            String link = this.sourceUrl + this.languageCode + ".json";
 
-            try {
-                URL fileUrl = new URL(url);
-
-                try (
-                        var input = fileUrl.openStream();
-                        var output = new FileOutputStream(langFile)
-                ) {
-                    input.transferTo(output);
-                }
+            try (
+                    var in = new URL(link).openStream();
+                    var out = new FileOutputStream(langFile)
+            ) {
+                in.transferTo(out);
             } catch (IOException e) {
-                ChatUtils.sendError("Failed to download language file: " + url);
+                ChatUtils.sendError("Failed to download language file: " + link);
             }
         }
 

@@ -303,14 +303,22 @@ public abstract class MSPlugin extends JavaPlugin {
             logger.log(Level.WARNING, "Directory " + outDirName + " creation failed");
         }
 
-        try (var out = new FileOutputStream(outFile); in) {
-            if (!outFile.exists() || replace) {
-                in.transferTo(out);
-            } else {
-                logger.log(Level.WARNING, "Could not save " + outFileName + " to " + outFile + " because " + outFileName + " already exists");
+        if (!outFile.exists() || replace) {
+            try (
+                    var out = new FileOutputStream(outFile);
+                    in
+            ) {
+                byte[] buffer = new byte[1024];
+                int read;
+
+                while ((read = in.read(buffer)) >= 0) {
+                    out.write(buffer, 0, read);
+                }
+            } catch (IOException ex) {
+                this.getLogger().log(Level.SEVERE, "Could not save " + outFileName + " to " + outFile, ex);
             }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Could not save " + outFileName + " to " + outFile, e);
+        } else {
+            this.getLogger().log(Level.WARNING, "Could not save " + outFileName + " to " + outFile + " because " + outFileName + " already exists.");
         }
     }
 

@@ -1,12 +1,13 @@
 package com.github.minersstudios.msessentials.player;
 
-import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.Config;
+import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.kyori.adventure.text.Component;
+import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -21,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -110,7 +110,7 @@ public class ResourcePack {
 
         if (files != null) {
             Arrays.stream(files)
-            .filter(file -> file.getName().matches(fileName))
+            .filter(file -> file.getName().equalsIgnoreCase(fileName))
             .forEach(
                     file -> {
                         if (file.delete()) {
@@ -126,7 +126,7 @@ public class ResourcePack {
     /**
      * Downloads the resource pack and generates the hash
      *
-     * @param url      The url to download the resource pack
+     * @param link     The link to download the resource pack
      * @param fileName The name of the file to save the resource pack
      * @return The hash of the downloaded resource pack
      * @throws RuntimeException If the resource pack cannot be downloaded
@@ -134,19 +134,20 @@ public class ResourcePack {
      */
     @Contract("_, _ -> new")
     private static @NotNull String generateHash(
-            @NotNull String url,
+            @NotNull String link,
             @NotNull String fileName
     ) throws RuntimeException {
         File pluginFolder = MSEssentials.getInstance().getPluginFolder();
+        File file = new File(pluginFolder, fileName);
 
         try (
-                var byteChannel = Channels.newChannel(new URL(url).openStream());
-                var output = new FileOutputStream(pluginFolder + "/" + fileName)
+                var in = new URL(link).openStream();
+                var out = new FileOutputStream(file)
         ) {
-            output.getChannel().transferFrom(byteChannel, 0, Long.MAX_VALUE);
+            in.transferTo(out);
             return bytesToHexString(createSha1(new File(pluginFolder, fileName)));
         } catch (IOException e) {
-            throw new RuntimeException("Failed to generate resource pack hash", e);
+            throw new RuntimeException("Failed to download resource pack", e);
         }
     }
 
@@ -155,12 +156,12 @@ public class ResourcePack {
      * @return The hash of the file
      */
     private static byte @NotNull [] createSha1(@NotNull File file) {
-        try (var input = new FileInputStream(file)) {
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+        try (var in = new FileInputStream(file)) {
+            MessageDigest digest = MessageDigest.getInstance(MessageDigestAlgorithms.SHA_1);
             byte[] buffer = new byte[8192];
             int bytesRead;
 
-            while ((bytesRead = input.read(buffer)) != -1) {
+            while ((bytesRead = in.read(buffer)) != -1) {
                 digest.update(buffer, 0, bytesRead);
             }
 
