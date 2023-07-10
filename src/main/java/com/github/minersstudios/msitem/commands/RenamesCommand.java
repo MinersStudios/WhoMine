@@ -1,10 +1,9 @@
 package com.github.minersstudios.msitem.commands;
 
-import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
-import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msitem.items.RenamesMenu;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
@@ -31,13 +30,7 @@ public class RenamesCommand implements MSCommandExecutor {
             return true;
         }
 
-        CustomInventory inventory = MSCore.getCache().customInventoryMap.get("renames_inventory");
-        if (inventory == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.something_went_wrong"));
-            return true;
-        }
-
-        player.openInventory(inventory);
+        RenamesMenu.open(player);
         return true;
     }
 

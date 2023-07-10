@@ -6,6 +6,7 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import org.bukkit.command.PluginCommand;
@@ -17,49 +18,55 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Represents a Java plugin and its main class.
  * It contains methods for auto registering commands and listeners.
  * This is an indirect implementation of {@link JavaPlugin}.
  *
- * @see #onLoad()
- * @see #onEnable()
- * @see #onDisable()
+ * @see #load()
+ * @see #enable()
+ * @see #disable()
  */
-@SuppressWarnings({"unused", "EmptyMethod"})
+@SuppressWarnings("EmptyMethod")
 public abstract class MSPlugin extends JavaPlugin {
-    protected File pluginFolder;
-    protected File configFile;
-    protected FileConfiguration newConfig;
-    protected boolean loadedCustoms;
-    protected Set<String> classNames;
-    protected Map<MSCommand, MSCommandExecutor> msCommands;
-    protected Set<Listener> listeners;
-    protected Commodore commodore;
+    private final File pluginFolder = new File("config/minersstudios/" + this.getName() + "/");
+    private final File configFile = new File(this.pluginFolder, "config.yml");
+    private final Set<String> classNames = new HashSet<>();
+    private final Map<MSCommand, MSCommandExecutor> msCommands = new HashMap<>();
+    private final Set<Listener> listeners = new HashSet<>();
+    private Commodore commodore;
+    private FileConfiguration newConfig;
+    private boolean loadedCustoms;
 
     private static final Field DATA_FOLDER_FIELD;
+    private static final Constructor<PluginCommand> COMMAND_CONSTRUCTOR;
 
     static {
         try {
             DATA_FOLDER_FIELD = JavaPlugin.class.getDeclaredField("dataFolder");
+            COMMAND_CONSTRUCTOR = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
+
             DATA_FOLDER_FIELD.setAccessible(true);
+            COMMAND_CONSTRUCTOR.setAccessible(true);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Could not find data folder field", e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Could not find command constructor", e);
         }
     }
 
@@ -77,10 +84,6 @@ public abstract class MSPlugin extends JavaPlugin {
      */
     @Override
     public final void onLoad() {
-        this.pluginFolder = new File("config/minersstudios/" + this.getName() + "/");
-        this.configFile = new File(this.pluginFolder, "config.yml");
-        this.loadedCustoms = false;
-
         this.loadClassNames();
         this.loadCommands();
         this.loadListeners();
@@ -110,7 +113,9 @@ public abstract class MSPlugin extends JavaPlugin {
 
         this.registerCommands();
         this.registerListeners();
+
         this.enable();
+
         ChatUtils.sendFine("[" + this.getName() + "] Enabled in " + (System.currentTimeMillis() - time) + "ms");
     }
 
@@ -124,6 +129,7 @@ public abstract class MSPlugin extends JavaPlugin {
         long time = System.currentTimeMillis();
 
         this.disable();
+
         ChatUtils.sendFine("[" + this.getName() + "] Disabled in " + (System.currentTimeMillis() - time) + "ms");
     }
 
@@ -153,16 +159,36 @@ public abstract class MSPlugin extends JavaPlugin {
      * <br>
      * Example: "com.example.Example"
      *
-     * @return Plugin class names
+     * @return The unmodifiable set of class names
      */
-    public final @NotNull Set<String> getClassNames() {
-        return this.classNames;
+    public final @NotNull @Unmodifiable Set<String> getClassNames() {
+        return Set.copyOf(this.classNames);
+    }
+
+    /**
+     * @return The unmodifiable set of listeners
+     */
+    public final @NotNull @Unmodifiable Set<Listener> getListeners() {
+        return Set.copyOf(this.listeners);
+    }
+
+    /**
+     * @return The unmodifiable map of commands
+     */
+    public final @NotNull @Unmodifiable Map<MSCommand, MSCommandExecutor> getCommands() {
+        return Map.copyOf(this.msCommands);
+    }
+
+    /**
+     * @return Commodore instance
+     */
+    public final @NotNull Commodore getCommodore() {
+        return this.commodore;
     }
 
     /**
      * @return Plugin config file "/config/minersstudios/PLUGIN_NAME/config.yml"
      */
-    @Contract(pure = true)
     public final @NotNull File getConfigFile() {
         return this.configFile;
     }
@@ -170,7 +196,6 @@ public abstract class MSPlugin extends JavaPlugin {
     /**
      * @return Plugin folder "/config/minersstudios/PLUGIN_NAME"
      */
-    @Contract(pure = true)
     public final @NotNull File getPluginFolder() {
         return this.pluginFolder;
     }
@@ -192,11 +217,19 @@ public abstract class MSPlugin extends JavaPlugin {
      *
      * @return True if the plugin has loaded the customs to the cache
      */
-    @Contract(pure = true)
     public final boolean isLoadedCustoms() {
         return this.loadedCustoms;
     }
 
+    /**
+     * Gets a {@link FileConfiguration} for this plugin, read through
+     * "config.yml"
+     * <br>
+     * If there is a default config.yml embedded in this plugin, it will be
+     * provided as a default for this Configuration.
+     *
+     * @return Plugin configuration
+     */
     @Override
     public @NotNull FileConfiguration getConfig() {
         if (this.newConfig == null) {
@@ -205,15 +238,25 @@ public abstract class MSPlugin extends JavaPlugin {
         return this.newConfig;
     }
 
+    /**
+     * Discards any data in {@link #getConfig()} and reloads from disk.
+     */
     @Override
     public void reloadConfig() {
         this.newConfig = YamlConfiguration.loadConfiguration(this.configFile);
         InputStream defaultInput = this.getResource("config.yml");
+
         if (defaultInput == null) return;
+
         InputStreamReader inputReader = new InputStreamReader(defaultInput, Charsets.UTF_8);
-        this.newConfig.setDefaults(YamlConfiguration.loadConfiguration(inputReader));
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(inputReader);
+
+        this.newConfig.setDefaults(configuration);
     }
 
+    /**
+     * Saves the {@link FileConfiguration} retrievable by {@link #getConfig()}
+     */
     @Override
     public void saveConfig() {
         try {
@@ -223,55 +266,60 @@ public abstract class MSPlugin extends JavaPlugin {
         }
     }
 
+    /**
+     * Saves the raw contents of any resource embedded with a plugin's .jar
+     * file assuming it can be found using {@link #getResource(String)}.
+     * <br>
+     * The resource is saved into the plugin's data folder using the same
+     * hierarchy as the .jar file (subdirectories are preserved).
+     *
+     * @param resourcePath The embedded resource path to look for within the
+     *                     plugin's .jar file. (No preceding slash).
+     * @param replace If true, the embedded resource will overwrite the
+     *                contents of an existing file.
+     * @throws IllegalArgumentException if the resource path is null, empty,
+     *                                  or points to a nonexistent resource.
+     */
     @Override
     public void saveResource(
             @NotNull String resourcePath,
             boolean replace
     ) throws IllegalArgumentException {
-        if (resourcePath.isEmpty()) {
-            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
-        }
+        Preconditions.checkArgument(!resourcePath.isEmpty(), "ResourcePath cannot be empty");
 
         String path = resourcePath.replace('\\', '/');
         InputStream in = this.getResource(path);
 
-        if (in == null) {
-            throw new IllegalArgumentException("The embedded resource '" + path + "' cannot be found");
-        }
+        Preconditions.checkNotNull(in, "The embedded resource '" + path + "' cannot be found");
 
+        Logger logger = this.getLogger();
         String dirPath = path.substring(0, Math.max(path.lastIndexOf('/'), 0));
         File outFile = new File(this.pluginFolder, path);
         File outDir = new File(this.pluginFolder, dirPath);
         String outFileName = outFile.getName();
-        String outDirName = outFile.getName();
+        String outDirName = outDir.getName();
 
-        if (!outDir.exists()) {
-            boolean created = outDir.mkdirs();
-            if (!created) {
-                this.getLogger().log(Level.WARNING, "Directory " + outDirName + " creation failed");
-            }
+        if (!outDir.exists() && !outDir.mkdirs()) {
+            logger.log(Level.WARNING, "Directory " + outDirName + " creation failed");
         }
 
-        try {
+        try (var out = new FileOutputStream(outFile); in) {
             if (!outFile.exists() || replace) {
-                OutputStream out = new FileOutputStream(outFile);
-                byte[] buf = new byte[1024];
-                int len;
-
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-
-                out.close();
-                in.close();
+                in.transferTo(out);
             } else {
-                this.getLogger().log(Level.WARNING, "Could not save " + outFileName + " to " + outFile + " because " + outFileName + " already exists.");
+                logger.log(Level.WARNING, "Could not save " + outFileName + " to " + outFile + " because " + outFileName + " already exists");
             }
-        } catch (IOException ex) {
-            this.getLogger().log(Level.SEVERE, "Could not save " + outFileName + " to " + outFile, ex);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Could not save " + outFileName + " to " + outFile, e);
         }
     }
 
+    /**
+     * Saves the raw contents of the default config.yml file to the location
+     * retrievable by {@link #getConfig()}.
+     * <br>
+     * This should fail silently if the config.yml already exists.
+     */
     @Override
     public void saveDefaultConfig() {
         if (!this.configFile.exists()) {
@@ -287,7 +335,6 @@ public abstract class MSPlugin extends JavaPlugin {
      */
     private void loadCommands() {
         Logger logger = this.getLogger();
-        this.msCommands = new HashMap<>();
 
         this.classNames.stream().parallel().forEach(className -> {
             try {
@@ -325,7 +372,6 @@ public abstract class MSPlugin extends JavaPlugin {
      */
     private void loadListeners() {
         Logger logger = this.getLogger();
-        this.listeners = new HashSet<>();
 
         this.classNames.stream().parallel().forEach(className -> {
             try {
@@ -369,7 +415,7 @@ public abstract class MSPlugin extends JavaPlugin {
         PluginCommand pluginCommand = bukkitCommand == null ? createCommand(name) : bukkitCommand;
 
         if (pluginCommand == null) {
-            this.getLogger().log(Level.SEVERE, "Failed to register command: " + name);
+            this.getLogger().log(Level.SEVERE, "Failed to register command : " + name);
             return;
         }
 
@@ -397,7 +443,7 @@ public abstract class MSPlugin extends JavaPlugin {
             boolean[] values = msCommand.permissionParentValues();
 
             if (keys.length != values.length) {
-                throw new IllegalArgumentException("Permission and boolean array lengths do not match in command : " + name);
+                this.getLogger().severe("Permission and boolean array lengths do not match in command : " + name);
             } else {
                 for (int i = 0; i < keys.length; i++) {
                     children.put(keys[i], values[i]);
@@ -422,17 +468,48 @@ public abstract class MSPlugin extends JavaPlugin {
         this.getServer().getCommandMap().register(this.getName(), pluginCommand);
     }
 
+    /**
+     * Creates a new {@link PluginCommand} instance
+     *
+     * @param command Command name
+     * @return A new {@link PluginCommand} instance or null if failed
+     */
+    public @Nullable PluginCommand createCommand(@NotNull String command) {
+        try {
+            return COMMAND_CONSTRUCTOR.newInstance(command, this);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            this.getLogger().log(Level.WARNING, "Failed to create command : " + command, e);
+            return null;
+        }
+    }
+
+    /**
+     * Asynchronous tasks should never access any API in Bukkit. Great care
+     * should be taken to assure the thread-safety of asynchronous tasks.
+     * <br>
+     * Returns a task that will run asynchronously.
+     *
+     * @param task The task to be run
+     * @return A BukkitTask that contains the id number
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public @NotNull BukkitTask runTaskAsync(@NotNull Runnable task) {
         return this.getServer().getScheduler().runTaskAsynchronously(this, task);
     }
 
-    public @NotNull BukkitTask runTaskTimerAsync(
-            @NotNull Runnable task,
-            long delay
-    ) {
-        return this.runTaskTimerAsync(task, delay, 0L);
-    }
-
+    /**
+     * Asynchronous tasks should never access any API in Bukkit. Great care
+     * should be taken to assure the thread-safety of asynchronous tasks.
+     * <br>
+     * Returns a task that will repeatedly run asynchronously until cancelled,
+     * starting after the specified number of server ticks.
+     *
+     * @param task   The task to be run
+     * @param delay  The ticks to wait before running the task for the first time
+     * @param period The ticks to wait between runs
+     * @return A BukkitTask that contains the id number
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public @NotNull BukkitTask runTaskTimerAsync(
             @NotNull Runnable task,
             long delay,
@@ -441,10 +518,29 @@ public abstract class MSPlugin extends JavaPlugin {
         return this.getServer().getScheduler().runTaskTimerAsynchronously(this, task, delay, period);
     }
 
+    /**
+     * Returns a task that will run on the next server tick
+     *
+     * @param task The task to be run
+     * @return A BukkitTask that contains the id number
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public @NotNull BukkitTask runTask(@NotNull Runnable task) {
         return this.getServer().getScheduler().runTask(this, task);
     }
 
+    /**
+     * Asynchronous tasks should never access any API in Bukkit. Great care
+     * should be taken to assure the thread-safety of asynchronous tasks.
+     * <br>
+     * Returns a task that will run asynchronously after the specified number
+     * of server ticks.
+     *
+     * @param task  The task to be run
+     * @param delay The ticks to wait before running the task
+     * @return A BukkitTask that contains the id number
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public @NotNull BukkitTask runTaskLaterAsync(
             @NotNull Runnable task,
             long delay
@@ -452,6 +548,14 @@ public abstract class MSPlugin extends JavaPlugin {
         return this.getServer().getScheduler().runTaskLaterAsynchronously(this, task, delay);
     }
 
+    /**
+     * Returns a task that will run after the specified number of server ticks
+     *
+     * @param task  The task to be run
+     * @param delay The ticks to wait before running the task
+     * @return A BukkitTask that contains the id number
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public @NotNull BukkitTask runTaskLater(
             @NotNull Runnable task,
             long delay
@@ -459,13 +563,16 @@ public abstract class MSPlugin extends JavaPlugin {
         return this.getServer().getScheduler().runTaskLater(this, task, delay);
     }
 
-    public @NotNull BukkitTask runTaskTimer(
-            @NotNull Runnable task,
-            long delay
-    ) {
-        return this.runTaskTimer(task, delay, 0L);
-    }
-
+    /**
+     * Returns a task that will repeatedly run until cancelled, starting after
+     * the specified number of server ticks
+     *
+     * @param task   The task to be run
+     * @param delay  The ticks to wait before running the task
+     * @param period The ticks to wait between runs
+     * @return A BukkitTask that contains the id number
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public @NotNull BukkitTask runTaskTimer(
             @NotNull Runnable task,
             long delay,
@@ -474,17 +581,31 @@ public abstract class MSPlugin extends JavaPlugin {
         return this.getServer().getScheduler().runTaskTimer(this, task, delay, period);
     }
 
+    /**
+     * Asynchronous tasks should never access any API in Bukkit. Great care
+     * should be taken to assure the thread-safety of asynchronous tasks.
+     * <br>
+     * Returns a task that will run asynchronously.
+     *
+     * @param task The task to be run
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public void runTaskAsync(@NotNull Consumer<BukkitTask> task) {
         this.getServer().getScheduler().runTaskAsynchronously(this, task);
     }
 
-    public void runTaskTimerAsync(
-            @NotNull Consumer<BukkitTask> task,
-            long delay
-    ) {
-        this.runTaskTimerAsync(task, delay, 0L);
-    }
-
+    /**
+     * Asynchronous tasks should never access any API in Bukkit. Great care
+     * should be taken to assure the thread-safety of asynchronous tasks.
+     * <br>
+     * Returns a task that will repeatedly run asynchronously until cancelled,
+     * starting after the specified number of server ticks.
+     *
+     * @param task   The task to be run
+     * @param delay  The ticks to wait before running the task for the first time
+     * @param period The ticks to wait between runs
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public void runTaskTimerAsync(
             @NotNull Consumer<BukkitTask> task,
             long delay,
@@ -493,10 +614,27 @@ public abstract class MSPlugin extends JavaPlugin {
         this.getServer().getScheduler().runTaskTimerAsynchronously(this, task, delay, period);
     }
 
+    /**
+     * Returns a task that will run on the next server tick
+     *
+     * @param task The task to be run
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public void runTask(@NotNull Consumer<BukkitTask> task) {
         this.getServer().getScheduler().runTask(this, task);
     }
 
+    /**
+     * Asynchronous tasks should never access any API in Bukkit. Great care
+     * should be taken to assure the thread-safety of asynchronous tasks.
+     * <br>
+     * Returns a task that will run asynchronously after the specified number
+     * of server ticks.
+     *
+     * @param task  The task to be run
+     * @param delay The ticks to wait before running the task
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public void runTaskLaterAsync(
             @NotNull Consumer<BukkitTask> task,
             long delay
@@ -504,6 +642,13 @@ public abstract class MSPlugin extends JavaPlugin {
         this.getServer().getScheduler().runTaskLaterAsynchronously(this, task, delay);
     }
 
+    /**
+     * Returns a task that will run after the specified number of server ticks
+     *
+     * @param task  The task to be run
+     * @param delay The ticks to wait before running the task
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public void runTaskLater(
             @NotNull Consumer<BukkitTask> task,
             long delay
@@ -511,13 +656,15 @@ public abstract class MSPlugin extends JavaPlugin {
         this.getServer().getScheduler().runTaskLater(this, task, delay);
     }
 
-    public void runTaskTimer(
-            @NotNull Consumer<BukkitTask> task,
-            long delay
-    ) {
-        this.runTaskTimer(task, delay, 0L);
-    }
-
+    /**
+     * Returns a task that will repeatedly run until cancelled, starting after
+     * the specified number of server ticks
+     *
+     * @param task   The task to be run
+     * @param delay  The ticks to wait before running the task
+     * @param period The ticks to wait between runs
+     * @throws IllegalArgumentException If current plugin is not enabled
+     */
     public void runTaskTimer(
             @NotNull Consumer<BukkitTask> task,
             long delay,
@@ -527,32 +674,19 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * @param command Command name
-     * @return New {@link PluginCommand} instance
-     */
-    private @Nullable PluginCommand createCommand(@NotNull String command) {
-        try {
-            Constructor<PluginCommand> constructor = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
-            constructor.setAccessible(true);
-            return constructor.newInstance(command, this);
-        } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "Failed to create command: " + command, e);
-            return null;
-        }
-    }
-
-    /**
      * Gathers the names of all plugin classes and converts them to the same string as the package
      * <br>
      * "com/example/Example.class" -> "com.example.Example"
      */
     private void loadClassNames() {
         try (var jarFile = new JarFile(this.getFile())) {
-            this.classNames = jarFile.stream().parallel()
+            this.classNames.addAll(
+                    jarFile.stream().parallel()
                     .map(JarEntry::getName)
                     .filter(name -> name.endsWith(".class"))
                     .map(name -> name.replace("/", ".").replace(".class", ""))
-                    .collect(Collectors.toSet());
+                    .toList()
+            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

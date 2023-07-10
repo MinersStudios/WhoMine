@@ -6,6 +6,7 @@ import net.minecraft.world.Container;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryCustom;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -173,6 +174,11 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
         if (this.bottomClickAction != null) {
             this.bottomClickAction.doAction(event, this.clone());
         }
+    }
+
+    @Override
+    public void open(@NotNull Player player) {
+        player.openInventory(this);
     }
 
     @Override

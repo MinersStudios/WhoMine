@@ -1,7 +1,7 @@
 package com.github.minersstudios.msessentials.player;
 
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.config.Config;
+import com.github.minersstudios.msessentials.Config;
 import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

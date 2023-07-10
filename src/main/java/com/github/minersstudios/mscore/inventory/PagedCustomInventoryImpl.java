@@ -1,6 +1,7 @@
 package com.github.minersstudios.mscore.inventory;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -141,6 +142,14 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
             for (var entry : this.staticButtons.entrySet()) {
                 pagedInventory.setItem(entry.getKey(), entry.getValue().getButton(pagedInventory).item());
             }
+        }
+    }
+
+    @Override
+    public void open(@NotNull Player player) {
+        S pagedInventory = this.getPage(0);
+        if (pagedInventory != null) {
+            player.openInventory(pagedInventory);
         }
     }
 }

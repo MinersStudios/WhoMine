@@ -1,7 +1,8 @@
 package com.github.minersstudios.msessentials.menu;
 
-import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.inventory.*;
+import com.github.minersstudios.mscore.inventory.CustomInventory;
+import com.github.minersstudios.mscore.inventory.InventoryButton;
+import com.github.minersstudios.mscore.inventory.SingleInventory;
 import com.github.minersstudios.mscore.inventory.actions.ButtonClickAction;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
@@ -23,36 +24,13 @@ import static com.github.minersstudios.mscore.inventory.InventoryButton.playClic
 public class SkinsMenu {
     private static final Component TITLE = Component.translatable("ms.menu.skins.title", ChatUtils.DEFAULT_STYLE);
     private static final InventoryButton EMPTY_BUTTON = InventoryButton.create().item(new ItemStack(Material.AIR));
+    private static final InventoryButton APPLY_BUTTON;
+    private static final InventoryButton APPLY_BUTTON_NO_CMD;
+    private static final InventoryButton DELETE_BUTTON;
+    private static final InventoryButton DELETE_BUTTON_NO_CMD;
+    private static final CustomInventory CUSTOM_INVENTORY;
 
-    public static @NotNull CustomInventory create() {
-        ItemStack quitItem = new ItemStack(Material.PAPER);
-        ItemMeta quitMeta = quitItem.getItemMeta();
-        Component quitName = renderTranslationComponent("ms.menu.skins.button.quit").style(ChatUtils.DEFAULT_STYLE);
-
-        quitMeta.displayName(quitName);
-        quitMeta.setCustomModelData(1);
-        quitItem.setItemMeta(quitMeta);
-
-        return SingleInventory.single(TITLE, 3)
-                .buttonAt(
-                        22,
-                        InventoryButton.create()
-                        .item(quitItem)
-                        .clickAction((event, inv) -> {
-                            Player player = (Player) event.getWhoClicked();
-                            player.closeInventory();
-                            playClickSound(player);
-                        })
-                );
-    }
-
-    public static boolean open(@NotNull Player player) {
-        CustomInventory toClone = MSCore.getCache().customInventoryMap.get("skins");
-
-        if (toClone == null) return false;
-
-        CustomInventory customInventory = toClone.clone();
-
+    static {
         ItemStack applyItem = new ItemStack(Material.PAPER);
         ItemStack applyNoCMD = new ItemStack(Material.PAPER);
         ItemMeta applyMeta = applyItem.getItemMeta();
@@ -67,6 +45,7 @@ public class SkinsMenu {
         applyItem.setItemMeta(applyMeta);
 
         ButtonClickAction applyClickAction = (event, inv) -> {
+            Player player = (Player) event.getWhoClicked();
             PlayerInfo playerInfo = PlayerInfo.fromMap(player);
             Skin skin = playerInfo.getPlayerFile().getSkin((int) inv.args().get(0));
 
@@ -75,8 +54,8 @@ public class SkinsMenu {
             playerInfo.setSkin(skin);
             player.closeInventory();
         };
-        InventoryButton applySkinButton = InventoryButton.create().item(applyItem).clickAction(applyClickAction);
-        InventoryButton applySkinButtonNoCMD = InventoryButton.create().item(applyNoCMD).clickAction(applyClickAction);
+        APPLY_BUTTON = InventoryButton.create().item(applyItem).clickAction(applyClickAction);
+        APPLY_BUTTON_NO_CMD = InventoryButton.create().item(applyNoCMD).clickAction(applyClickAction);
 
         ItemStack deleteItem = new ItemStack(Material.PAPER);
         ItemStack deleteNoCMD = new ItemStack(Material.PAPER);
@@ -92,14 +71,30 @@ public class SkinsMenu {
         deleteItem.setItemMeta(deleteMeta);
 
         ButtonClickAction deleteClickAction = (event, inv) -> {
+            Player player = (Player) event.getWhoClicked();
             PlayerInfo playerInfo = PlayerInfo.fromMap(player);
             int selectedPartIndex = (int) inv.args().get(0);
 
             playerInfo.getPlayerFile().removeSkin(selectedPartIndex);
             open(player);
         };
-        InventoryButton deleteSkinButton = InventoryButton.create().item(deleteItem).clickAction(deleteClickAction);
-        InventoryButton deleteSkinButtonNoCMD = InventoryButton.create().item(deleteNoCMD).clickAction(deleteClickAction);
+        DELETE_BUTTON = InventoryButton.create().item(deleteItem).clickAction(deleteClickAction);
+        DELETE_BUTTON_NO_CMD = InventoryButton.create().item(deleteNoCMD).clickAction(deleteClickAction);
+
+        CUSTOM_INVENTORY = SingleInventory.single(TITLE, 3)
+                .buttonAt(
+                        22,
+                        InventoryButton.create()
+                        .clickAction((event, inv) -> {
+                            Player player = (Player) event.getWhoClicked();
+                            player.closeInventory();
+                            playClickSound(player);
+                        })
+                );
+    }
+
+    public static void open(@NotNull Player player) {
+        CustomInventory customInventory = CUSTOM_INVENTORY.clone();
 
         PlayerInfo playerInfo = PlayerInfo.fromMap(player);
         var skins = playerInfo.getPlayerFile().getSkins();
@@ -118,9 +113,10 @@ public class SkinsMenu {
                     .clickAction((event, inv) -> {
                         boolean havePrevious = !inv.args().isEmpty();
                         boolean isSame = havePrevious && ((int) inv.args().get(0)) == finalI;
-                        ItemMeta meta = head.getItemMeta();
-                        meta.setCustomModelData(isSame ? null : 1);
-                        head.setItemMeta(meta);
+                        ItemMeta headItemMeta = head.getItemMeta();
+
+                        headItemMeta.setCustomModelData(isSame ? null : 1);
+                        head.setItemMeta(headItemMeta);
 
                         if (havePrevious) {
                             int previous = (int) inv.args().get(0);
@@ -139,14 +135,14 @@ public class SkinsMenu {
                         if (!isSame) {
                             inv
                             .buttonAt(finalI, inventoryButton.item(head))
-                            .buttonAt(18, applySkinButton)
-                            .buttonAt(19, applySkinButtonNoCMD)
-                            .buttonAt(20, applySkinButtonNoCMD)
-                            .buttonAt(21, applySkinButtonNoCMD)
-                            .buttonAt(23, deleteSkinButton)
-                            .buttonAt(24, deleteSkinButtonNoCMD)
-                            .buttonAt(25, deleteSkinButtonNoCMD)
-                            .buttonAt(26, deleteSkinButtonNoCMD)
+                            .buttonAt(18, APPLY_BUTTON)
+                            .buttonAt(19, APPLY_BUTTON_NO_CMD)
+                            .buttonAt(20, APPLY_BUTTON_NO_CMD)
+                            .buttonAt(21, APPLY_BUTTON_NO_CMD)
+                            .buttonAt(23, DELETE_BUTTON)
+                            .buttonAt(24, DELETE_BUTTON_NO_CMD)
+                            .buttonAt(25, DELETE_BUTTON_NO_CMD)
+                            .buttonAt(26, DELETE_BUTTON_NO_CMD)
                             .args(List.of(finalI));
                         } else {
                             inv
@@ -167,7 +163,6 @@ public class SkinsMenu {
             );
         }
 
-        player.openInventory(customInventory.buttons(skinButtons));
-        return true;
+        customInventory.buttons(skinButtons).open(player);
     }
 }

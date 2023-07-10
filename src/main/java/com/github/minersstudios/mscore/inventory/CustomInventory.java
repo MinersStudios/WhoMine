@@ -2,6 +2,7 @@ package com.github.minersstudios.mscore.inventory;
 
 import com.github.minersstudios.mscore.inventory.actions.InventoryAction;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -192,6 +193,13 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @see #bottomClickAction(InventoryAction)
      */
     void doBottomClickAction(@NotNull InventoryClickEvent event);
+
+    /**
+     * Opens this inventory for specified player
+     *
+     * @param player Player to open this inventory for
+     */
+    void open(@NotNull Player player);
 
     /**
      * Checks if slot is in inventory bounds

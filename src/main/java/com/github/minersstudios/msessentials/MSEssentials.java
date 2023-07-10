@@ -4,7 +4,6 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.github.minersstudios.mscore.MSPlugin;
 import com.github.minersstudios.msessentials.commands.other.discord.DiscordCommandHandler;
-import com.github.minersstudios.msessentials.config.Config;
 import com.github.minersstudios.msessentials.listeners.chat.DiscordGuildMessagePreProcessListener;
 import com.github.minersstudios.msessentials.listeners.chat.DiscordPrivateMessageReceivedListener;
 import com.github.minersstudios.msessentials.listeners.player.PlayerUpdateSignListener;
@@ -78,10 +77,12 @@ public final class MSEssentials extends MSPlugin {
 
         config = new Config();
 
-        this.loadedCustoms = true;
+        this.setLoadedCustoms(true);
 
         this.runTaskTimerAsync(
-                () -> cache.seats.forEach((player, armorStand) -> armorStand.setRotation(player.getLocation().getYaw(), 0.0f)),
+                () -> cache.seats.entrySet().stream().parallel().forEach(
+                        entry -> entry.getValue().setRotation(entry.getKey().getLocation().getYaw(), 0.0f)
+                ),
                 0L, 1L
         );
 
@@ -89,7 +90,7 @@ public final class MSEssentials extends MSPlugin {
             if (cache.muteMap.isEmpty()) return;
             Instant currentInstant = Instant.now();
 
-            cache.muteMap.entrySet().stream().parallel()
+            cache.muteMap.entrySet().stream()
             .filter(entry -> entry.getValue().getExpiration().isBefore(currentInstant))
             .forEach(entry -> {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());
@@ -101,7 +102,7 @@ public final class MSEssentials extends MSPlugin {
             BanList<PlayerProfile> banned = server.getBanList(BanList.Type.PROFILE);
             Instant currentInstant = Instant.now();
 
-            banned.getEntries().stream().parallel()
+            banned.getEntries().stream()
                     .filter(entry -> {
                         Date expiration = entry.getExpiration();
                         return !ignoreBanSet.contains(entry)
@@ -132,8 +133,9 @@ public final class MSEssentials extends MSPlugin {
             Component title = Component.translatable("ms.on_disable.message.title");
             Component subtitle = Component.translatable("ms.on_disable.message.subtitle");
 
-            onlinePlayers.stream().parallel()
-            .forEach(player -> playerInfoMap.get(player).kickPlayer(title, subtitle));
+            onlinePlayers.stream()
+            .map(playerInfoMap::get)
+            .forEach(playerInfo -> playerInfo.kickPlayer(title, subtitle));
         }
 
         cache.bukkitTasks.forEach(BukkitTask::cancel);

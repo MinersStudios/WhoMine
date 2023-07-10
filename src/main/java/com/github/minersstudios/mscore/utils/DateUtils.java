@@ -111,8 +111,8 @@ public final class DateUtils {
             return DateUtils.getDate(
                     date,
                     socketAddress != null
-                            ? socketAddress.getAddress()
-                            : null
+                    ? socketAddress.getAddress()
+                    : null
             );
         }
         return DateUtils.getDate(date, null);
@@ -127,7 +127,7 @@ public final class DateUtils {
      * @return Time suggestions
      */
     public static @NotNull List<String> getTimeSuggestions(@NotNull String input) {
-        List<String> suggestions = new ArrayList<>();
+        var suggestions = new ArrayList<String>();
         if (!input.matches("\\d+")) return suggestions;
         suggestions.add(input + "s");
         suggestions.add(input + "m");

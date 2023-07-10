@@ -10,7 +10,6 @@ import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -59,7 +58,7 @@ public final class MSBlock extends MSPlugin {
         configCache = new ConfigCache();
 
         configCache.loadBlocks();
-        instance.loadedCustoms = true;
+        instance.setLoadedCustoms(true);
 
         instance.runTaskTimer(task -> {
             if (MSPluginUtils.isLoadedCustoms()) {
@@ -70,17 +69,14 @@ public final class MSBlock extends MSPlugin {
         }, 0L, 10L);
     }
 
-    @Contract(pure = true)
     public static @NotNull MSBlock getInstance() {
         return instance;
     }
 
-    @Contract(pure = true)
     public static @NotNull ConfigCache getConfigCache() {
         return configCache;
     }
 
-    @Contract(pure = true)
     public static @NotNull CoreProtectAPI getCoreProtectAPI() {
         return coreProtectAPI;
     }

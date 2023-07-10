@@ -2,103 +2,48 @@ package com.github.minersstudios.mscore.collections;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.Set;
 
-public final class DualMap<P, S, V> {
-    private final @NotNull Map<P, Map.Entry<S, V>> map = new HashMap<>();
-    private final @NotNull Map<S, P> keyMap = new HashMap<>();
+public interface DualMap<P, S, V> {
 
-    public @Nullable V put(
-            @NotNull P primary,
-            @NotNull S secondary,
-            @NotNull V value
-    ) {
-        var entry = Map.entry(secondary, value);
-        this.keyMap.put(secondary, primary);
-        return this.map.put(primary, entry) != null ? value : null;
-    }
+    V put(
+            P primary,
+            S secondary,
+            V value
+    );
 
-    @Contract(pure = true)
-    public @NotNull Set<P> primaryKeySet() {
-        return this.map.keySet();
-    }
+    P getPrimaryKey(S secondary);
 
-    @Contract(pure = true)
-    public @NotNull Set<S> secondaryKeySet() {
-        return this.keyMap.keySet();
-    }
+    S getSecondaryKey(P primary);
 
-    @Contract(pure = true)
-    public @NotNull Collection<V> values() {
-        return this.map.values().stream()
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
-    }
+    V getByPrimaryKey(P primary);
 
-    public P getPrimaryKey(@Nullable S secondary) {
-        return this.keyMap.get(secondary);
-    }
+    V getBySecondaryKey(S secondary);
 
-    public S getSecondaryKey(@Nullable P primary) {
-        var entry = this.map.get(primary);
-        return entry != null ? entry.getKey() : null;
-    }
+    V removeByPrimaryKey(P primary);
 
-    public V getByPrimaryKey(@Nullable P primary) {
-        var entry = this.map.get(primary);
-        return entry != null ? entry.getValue() : null;
-    }
-
-    public V getBySecondaryKey(@Nullable S secondary) {
-        return this.getByPrimaryKey(this.keyMap.get(secondary));
-    }
+    V removeBySecondaryKey(S secondary);
 
     @Contract(value = "null -> false", pure = true)
-    public boolean containsPrimaryKey(@Nullable P primary) {
-        if (primary == null) return false;
-        return this.map.containsKey(primary);
-    }
+    boolean containsPrimaryKey(P primary);
 
     @Contract(value = "null -> false", pure = true)
-    public boolean containsSecondaryKey(@Nullable S secondary) {
-        if (secondary == null) return false;
-        return this.secondaryKeySet().contains(secondary);
-    }
+    boolean containsSecondaryKey(S secondary);
 
     @Contract(value = "null -> false", pure = true)
-    public boolean containsValue(@Nullable V value) {
-        if (value == null) return false;
-        return this.values().contains(value);
-    }
+    boolean containsValue(V value);
 
-    public @Nullable V removeByPrimaryKey(@NotNull P primary) {
-        var entry = this.map.remove(primary);
-        if (entry == null) return null;
-        this.keyMap.remove(entry.getKey());
-        return entry.getValue();
-    }
+    void clear();
 
-    public @Nullable V removeBySecondaryKey(@NotNull S secondary) {
-        P primary = this.keyMap.remove(secondary);
-        if (primary == null) return null;
-        return this.map.remove(primary).getValue();
-    }
+    int size();
 
-    public void clear() {
-        this.map.clear();
-        this.keyMap.clear();
-    }
+    boolean isEmpty();
 
-    @Contract(pure = true)
-    public int size() {
-        return this.map.size();
-    }
+    @NotNull Set<P> primaryKeySet();
 
-    @Contract(pure = true)
-    public boolean isEmpty() {
-        return this.map.isEmpty();
-    }
+    @NotNull Set<S> secondaryKeySet();
+
+    @NotNull Collection<V> values();
 }

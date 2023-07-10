@@ -2,6 +2,7 @@ package com.github.minersstudios.msessentials.player.map;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
+import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -88,7 +89,7 @@ public class IDMap {
      * @return {@link UUID} from ID string
      */
     public @Nullable UUID getUUID(@NotNull String stringId) {
-        int id = this.parseID(stringId);
+        int id = IDUtils.parseID(stringId);
         return id != -1 ? this.getUUID(id) : null;
     }
 
@@ -110,7 +111,7 @@ public class IDMap {
      * @return {@link OfflinePlayer} from ID string
      */
     public @Nullable OfflinePlayer getPlayerByID(@NotNull String stringId) {
-        int id = this.parseID(stringId);
+        int id = IDUtils.parseID(stringId);
         return id != -1 ? this.getPlayerByID(id) : null;
     }
 
@@ -236,20 +237,6 @@ public class IDMap {
                 this.createBackupFile();
                 this.reloadIds();
             }
-        }
-    }
-
-    /**
-     * Parses ID from the string
-     *
-     * @param stringId ID string
-     * @return int ID from string or -1 if
-     */
-    public int parseID(@NotNull String stringId) {
-        try {
-            return Integer.parseInt(stringId);
-        } catch (NumberFormatException e) {
-            return -1;
         }
     }
 

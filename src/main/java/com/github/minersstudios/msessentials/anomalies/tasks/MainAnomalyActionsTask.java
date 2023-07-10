@@ -5,7 +5,7 @@ import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.anomalies.AnomalyAction;
 import com.github.minersstudios.msessentials.anomalies.AnomalyBoundingBox;
 import com.github.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
-import com.github.minersstudios.msessentials.config.Config;
+import com.github.minersstudios.msessentials.Config;
 import org.bukkit.Bukkit;
 
 /**

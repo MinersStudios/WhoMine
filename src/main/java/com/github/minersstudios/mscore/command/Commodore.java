@@ -16,9 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -28,7 +29,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
  * API for registering commands with Mojang's Brigadier command system
  */
 public final class Commodore {
-    public final List<Command> commands = new ArrayList<>();
+    public final Set<Command> commands = new HashSet<>();
     private final String pluginName;
 
     private static final Field CHILDREN_FIELD;
@@ -79,7 +80,7 @@ public final class Commodore {
             public void onPlayerSendCommandsEvent(@NotNull AsyncPlayerSendCommandsEvent<?> event) {
                 if (event.isAsynchronous() || !event.hasFiredAsync()) {
                     Player player = event.getPlayer();
-                    RootCommandNode<?> commandNode = event.getCommandNode();
+                    var commandNode = event.getCommandNode();
 
                     Commodore.this.commands.forEach(command -> command.apply(player, commandNode));
                 }
@@ -193,7 +194,7 @@ public final class Commodore {
             @NotNull LiteralCommandNode<S> node,
             @NotNull String literal
     ) {
-        LiteralCommandNode<S> clone = new LiteralCommandNode<>(
+        var clone = new LiteralCommandNode<>(
                 literal,
                 node.getCommand(),
                 node.getRequirement(),
@@ -220,14 +221,14 @@ public final class Commodore {
          * @param sender Sender to apply the command to
          * @param root   Root node to apply the command to
          */
-        @SuppressWarnings({"unchecked", "rawtypes"})
-        public void apply(
+        @SuppressWarnings({"unchecked"})
+        public <S> void apply(
                 @NotNull CommandSender sender,
-                @NotNull RootCommandNode<?> root
+                @NotNull RootCommandNode<S> root
         ) {
             if (!this.permissionTest.test(sender)) return;
             removeChild(root, this.node.getName());
-            root.addChild((CommandNode) this.node);
+            root.addChild((CommandNode<S>) this.node);
         }
     }
 }

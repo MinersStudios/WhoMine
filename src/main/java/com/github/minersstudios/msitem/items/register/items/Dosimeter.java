@@ -11,7 +11,6 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -150,12 +149,10 @@ public class Dosimeter implements CustomItem {
             this.customModelData = customModelData;
         }
 
-        @Contract(pure = true)
         public int getCustomModelData() {
             return this.customModelData;
         }
 
-        @Contract(pure = true)
         public static @Nullable ScreenType getScreenType(int customModelData) {
             for (ScreenType screenType : VALUES) {
                 if (screenType.customModelData == customModelData) {

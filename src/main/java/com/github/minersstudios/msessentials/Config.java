@@ -1,17 +1,11 @@
-package com.github.minersstudios.msessentials.config;
+package com.github.minersstudios.msessentials;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.inventory.CustomInventoryMap;
 import com.github.minersstudios.mscore.utils.MSPluginUtils;
-import com.github.minersstudios.msessentials.Cache;
-import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.anomalies.Anomaly;
 import com.github.minersstudios.msessentials.anomalies.tasks.MainAnomalyActionsTask;
 import com.github.minersstudios.msessentials.anomalies.tasks.ParticleTask;
 import com.github.minersstudios.msessentials.menu.CraftsMenu;
-import com.github.minersstudios.msessentials.menu.PronounsMenu;
-import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
-import com.github.minersstudios.msessentials.menu.SkinsMenu;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.ResourcePack;
 import org.bukkit.Bukkit;
@@ -130,17 +124,6 @@ public final class Config {
         ));
 
         com.github.minersstudios.mscore.Cache msCoreCache = MSCore.getCache();
-        CustomInventoryMap customInventoryMap = msCoreCache.customInventoryMap;
-
-        customInventoryMap.remove("pronouns");
-        customInventoryMap.remove("resourcepack");
-        customInventoryMap.remove("crafts");
-        customInventoryMap.remove("skins");
-
-        customInventoryMap.put("pronouns", PronounsMenu.create());
-        customInventoryMap.put("resourcepack", ResourcePackMenu.create());
-        customInventoryMap.put("crafts", CraftsMenu.create());
-        customInventoryMap.put("skins", SkinsMenu.create());
 
         var customBlockRecipes = msCoreCache.customBlockRecipes;
         var customDecorRecipes = msCoreCache.customDecorRecipes;
@@ -153,9 +136,9 @@ public final class Config {
                     && !customDecorRecipes.isEmpty()
                     && !customItemRecipes.isEmpty()
             ) {
-                customInventoryMap.put("crafts_blocks", CraftsMenu.createCraftsInventory(customBlockRecipes));
-                customInventoryMap.put("crafts_decors", CraftsMenu.createCraftsInventory(customDecorRecipes));
-                customInventoryMap.put("crafts_items", CraftsMenu.createCraftsInventory(customItemRecipes));
+                CraftsMenu.putCrafts(CraftsMenu.Type.BLOCKS, customBlockRecipes);
+                CraftsMenu.putCrafts(CraftsMenu.Type.DECORS, customDecorRecipes);
+                CraftsMenu.putCrafts(CraftsMenu.Type.ITEMS, customItemRecipes);
                 task.cancel();
             }
         }, 0L, 10L);

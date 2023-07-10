@@ -3,7 +3,7 @@ package com.github.minersstudios.msessentials.utils;
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.utils.Badges;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.config.Config;
+import com.github.minersstudios.msessentials.Config;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.EmbedType;

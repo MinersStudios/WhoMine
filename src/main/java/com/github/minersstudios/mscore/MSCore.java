@@ -2,7 +2,6 @@ package com.github.minersstudios.mscore;
 
 import com.github.minersstudios.mscore.config.Config;
 import com.github.minersstudios.mscore.config.LanguageFile;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -33,17 +32,14 @@ public final class MSCore extends MSPlugin {
         LanguageFile.unloadLanguage();
     }
 
-    @Contract(pure = true)
     public static @NotNull MSCore getInstance() {
         return singleton;
     }
 
-    @Contract(pure = true)
     public static @NotNull Cache getCache() {
         return cache;
     }
 
-    @Contract(pure = true)
     public static @NotNull Config getConfiguration() {
         return config;
     }

@@ -326,7 +326,6 @@ public final class CustomBlockUtils {
      * @param player player
      * @return False if no tasks with player
      */
-    @Contract(pure = true)
     public static boolean hasPlayer(@NotNull Player player) {
         return getConfigCache().blocks.containsSecondaryKey(player);
     }
@@ -335,7 +334,6 @@ public final class CustomBlockUtils {
      * @param block block
      * @return False if no tasks with block
      */
-    @Contract(pure = true)
     public static boolean hasBlock(@NotNull Block block) {
         return getConfigCache().blocks.containsPrimaryKey(block);
     }

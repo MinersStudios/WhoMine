@@ -33,9 +33,7 @@ public class SkinsCommand implements MSCommandExecutor {
             return true;
         }
 
-        if (!SkinsMenu.open(player)) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.something_went_wrong"));
-        }
+        SkinsMenu.open(player);
         return true;
     }
 

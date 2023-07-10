@@ -33,9 +33,7 @@ public class CraftsCommand implements MSCommandExecutor {
             return true;
         }
 
-        if (!CraftsMenu.open(CraftsMenu.Type.MAIN, player)) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.something_went_wrong"));
-        }
+        CraftsMenu.open(CraftsMenu.Type.MAIN, player);
         return true;
     }
 

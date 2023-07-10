@@ -2,7 +2,7 @@ package com.github.minersstudios.mscore;
 
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.mscore.collections.DualMap;
-import com.github.minersstudios.mscore.inventory.CustomInventoryMap;
+import com.github.minersstudios.mscore.collections.HashDualMap;
 import com.github.minersstudios.mscore.utils.SignMenu;
 import com.github.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.github.minersstudios.msitem.items.CustomItem;
@@ -19,16 +19,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache for all custom data
  */
 public final class Cache {
-    public final @NotNull DualMap<String, Integer, CustomDecorData> customDecorMap = new DualMap<>();
+    public final @NotNull DualMap<String, Integer, CustomDecorData> customDecorMap = new HashDualMap<>();
     public final @NotNull List<Recipe> customDecorRecipes = new ArrayList<>();
-    public final @NotNull DualMap<String, Integer, CustomBlockData> customBlockMap = new DualMap<>();
+    public final @NotNull DualMap<String, Integer, CustomBlockData> customBlockMap = new HashDualMap<>();
     public final @NotNull Map<Integer, CustomBlockData> cachedNoteBlockData = new HashMap<>();
     public final @NotNull List<Recipe> customBlockRecipes = new ArrayList<>();
-    public final @NotNull DualMap<String, Integer, CustomItem> customItemMap = new DualMap<>();
-    public final @NotNull DualMap<String, Integer, RenameableItem> renameableItemMap = new DualMap<>();
+    public final @NotNull DualMap<String, Integer, CustomItem> customItemMap = new HashDualMap<>();
+    public final @NotNull DualMap<String, Integer, RenameableItem> renameableItemMap = new HashDualMap<>();
     public final @NotNull List<RenameableItem> renameableItemsMenu = new ArrayList<>();
     public final @NotNull List<Recipe> customItemRecipes = new ArrayList<>();
-    public final @NotNull CustomInventoryMap customInventoryMap = new CustomInventoryMap();
     public final Map<InetAddress, String> timezoneCache = new ConcurrentHashMap<>();
     public final Map<String, UUID> playerUUIDs = new HashMap<>();
     public final Map<Player, SignMenu> signMenuMap = new HashMap<>();

@@ -1,14 +1,12 @@
 package com.github.minersstudios.msitem;
 
-import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.MSPlugin;
 import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import com.github.minersstudios.msitem.items.CustomItem;
-import com.github.minersstudios.msitem.items.RenameableItem;
+import com.github.minersstudios.msitem.items.RenamesMenu;
 import com.github.minersstudios.msitem.listeners.mechanic.DosimeterMechanic;
 import com.github.minersstudios.msitem.utils.ConfigCache;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public final class MSItem extends MSPlugin {
@@ -34,9 +32,8 @@ public final class MSItem extends MSPlugin {
         configCache = new ConfigCache();
 
         configCache.registerItems();
-        instance.loadedCustoms = true;
-
-        MSCore.getCache().customInventoryMap.put("renames_inventory", RenameableItem.Menu.create());
+        RenamesMenu.update();
+        instance.setLoadedCustoms(true);
 
         configCache.bukkitTasks.add(instance.runTaskTimer(DosimeterMechanic.DosimeterTask::run, 0L, configCache.dosimeterCheckRate));
 
@@ -49,12 +46,10 @@ public final class MSItem extends MSPlugin {
         }, 0L, 10L);
     }
 
-    @Contract(pure = true)
     public static @NotNull MSItem getInstance() {
         return instance;
     }
 
-    @Contract(pure = true)
     public static @NotNull ConfigCache getConfigCache() {
         return configCache;
     }

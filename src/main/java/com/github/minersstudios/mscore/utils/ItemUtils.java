@@ -40,8 +40,10 @@ public final class ItemUtils {
                 || second == null
                 || first.getType() != second.getType()
         ) return false;
+
         ItemMeta firstMeta = first.getItemMeta();
         ItemMeta secondMeta = second.getItemMeta();
+
         return firstMeta.hasCustomModelData()
                 && secondMeta.hasCustomModelData()
                 && firstMeta.getCustomModelData() == secondMeta.getCustomModelData();
@@ -147,8 +149,8 @@ public final class ItemUtils {
 
         if (
                 damageableItem != null
-                        ? damageableItem.getRealDamage() >= damageableItem.getMaxDamage()
-                        : damageable.getDamage() >= item.getType().getMaxDurability()
+                ? damageableItem.getRealDamage() >= damageableItem.getMaxDamage()
+                : damageable.getDamage() >= item.getType().getMaxDurability()
         ) {
             item.setAmount(item.getAmount() - 1);
 

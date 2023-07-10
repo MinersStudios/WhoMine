@@ -77,6 +77,7 @@ public class SignMenu {
     public void open(@NotNull Player player) {
         this.location = player.getLocation();
         this.location.setY(this.location.getY() - 4.0d);
+
         ServerGamePacketListenerImpl connection = ((CraftPlayer) player).getHandle().connection;
         BlockPos blockPos = new BlockPos(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ());
         net.minecraft.network.chat.Component[] components = CraftSign.sanitizeLines(this.text);
@@ -84,10 +85,10 @@ public class SignMenu {
 
         sign.setText(
                 sign.getFrontText()
-                        .setMessage(0, components[0])
-                        .setMessage(1, components[1])
-                        .setMessage(2, components[2])
-                        .setMessage(3, components[3]),
+                .setMessage(0, components[0])
+                .setMessage(1, components[1])
+                .setMessage(2, components[2])
+                .setMessage(3, components[3]),
                 true
         );
         connection.send(new ClientboundBlockUpdatePacket(blockPos, ((CraftBlockData) Material.OAK_SIGN.createBlockData()).getState()));

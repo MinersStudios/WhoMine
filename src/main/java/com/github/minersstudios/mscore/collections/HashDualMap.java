@@ -3,15 +3,26 @@ package com.github.minersstudios.mscore.collections;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public final class ConcurrentDualMap<P, S, V> {
-    private final @NotNull Map<P, Map.Entry<S, V>> map = new ConcurrentHashMap<>();
-    private final @NotNull Map<S, P> keyMap = new ConcurrentHashMap<>();
+public class HashDualMap<P, S, V> implements DualMap<P, S, V> {
+    private final @NotNull Map<P, Map.Entry<S, V>> map;
+    private final @NotNull Map<S, P> keyMap;
 
+    public HashDualMap() {
+        map = new HashMap<>();
+        keyMap = new HashMap<>();
+    }
+
+    public HashDualMap(@Range(from = 0, to = Integer.MAX_VALUE) int initialCapacity) {
+        map = new HashMap<>(initialCapacity);
+        keyMap = new HashMap<>(initialCapacity);
+    }
+
+    @Override
     public @Nullable V put(
             @NotNull P primary,
             @NotNull S secondary,
@@ -22,59 +33,29 @@ public final class ConcurrentDualMap<P, S, V> {
         return this.map.put(primary, entry) != null ? value : null;
     }
 
-    @Contract(pure = true)
-    public @NotNull Set<P> primaryKeySet() {
-        return this.map.keySet();
-    }
-
-    @Contract(pure = true)
-    public @NotNull Set<S> secondaryKeySet() {
-        return this.keyMap.keySet();
-    }
-
-    @Contract(pure = true)
-    public @NotNull Collection<V> values() {
-        return this.map.values().stream()
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
-    }
-
+    @Override
     public P getPrimaryKey(@Nullable S secondary) {
         return this.keyMap.get(secondary);
     }
 
+    @Override
     public S getSecondaryKey(@Nullable P primary) {
         var entry = this.map.get(primary);
         return entry != null ? entry.getKey() : null;
     }
 
+    @Override
     public V getByPrimaryKey(@Nullable P primary) {
         var entry = this.map.get(primary);
         return entry != null ? entry.getValue() : null;
     }
 
+    @Override
     public V getBySecondaryKey(@Nullable S secondary) {
         return this.getByPrimaryKey(this.keyMap.get(secondary));
     }
 
-    @Contract(value = "null -> false", pure = true)
-    public boolean containsPrimaryKey(@Nullable P primary) {
-        if (primary == null) return false;
-        return this.map.containsKey(primary);
-    }
-
-    @Contract(value = "null -> false", pure = true)
-    public boolean containsSecondaryKey(@Nullable S secondary) {
-        if (secondary == null) return false;
-        return this.secondaryKeySet().contains(secondary);
-    }
-
-    @Contract(value = "null -> false", pure = true)
-    public boolean containsValue(@Nullable V value) {
-        if (value == null) return false;
-        return this.values().contains(value);
-    }
-
+    @Override
     public @Nullable V removeByPrimaryKey(@NotNull P primary) {
         var entry = this.map.remove(primary);
         if (entry == null) return null;
@@ -82,24 +63,61 @@ public final class ConcurrentDualMap<P, S, V> {
         return entry.getValue();
     }
 
+    @Override
     public @Nullable V removeBySecondaryKey(@NotNull S secondary) {
         P primary = this.keyMap.remove(secondary);
         if (primary == null) return null;
         return this.map.remove(primary).getValue();
     }
 
+    @Override
+    @Contract(value = "null -> false", pure = true)
+    public boolean containsPrimaryKey(@Nullable P primary) {
+        return primary != null && this.map.containsKey(primary);
+    }
+
+    @Override
+    @Contract(value = "null -> false", pure = true)
+    public boolean containsSecondaryKey(@Nullable S secondary) {
+        return secondary != null && this.secondaryKeySet().contains(secondary);
+    }
+
+    @Override
+    @Contract(value = "null -> false", pure = true)
+    public boolean containsValue(@Nullable V value) {
+        return value != null && this.values().contains(value);
+    }
+
+    @Override
     public void clear() {
         this.map.clear();
         this.keyMap.clear();
     }
 
-    @Contract(pure = true)
+    @Override
     public int size() {
         return this.map.size();
     }
 
-    @Contract(pure = true)
+    @Override
     public boolean isEmpty() {
         return this.map.isEmpty();
+    }
+
+    @Override
+    public @NotNull Set<P> primaryKeySet() {
+        return this.map.keySet();
+    }
+
+    @Override
+    public @NotNull Set<S> secondaryKeySet() {
+        return this.keyMap.keySet();
+    }
+
+    @Override
+    public @NotNull Collection<V> values() {
+        return this.map.values().stream()
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 }

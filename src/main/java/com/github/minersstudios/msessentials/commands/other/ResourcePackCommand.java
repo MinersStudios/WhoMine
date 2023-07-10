@@ -36,9 +36,7 @@ public class ResourcePackCommand implements MSCommandExecutor {
             return true;
         }
 
-        if (!ResourcePackMenu.open(player)) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.something_went_wrong"));
-        }
+        ResourcePackMenu.open(player);
         return true;
     }
 

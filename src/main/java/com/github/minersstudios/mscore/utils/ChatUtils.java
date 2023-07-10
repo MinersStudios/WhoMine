@@ -1,6 +1,7 @@
 package com.github.minersstudios.mscore.utils;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -23,6 +24,21 @@ import static net.kyori.adventure.text.format.TextDecoration.*;
 public final class ChatUtils {
     private static final ConsoleCommandSender CONSOLE_SENDER = Bukkit.getConsoleSender();
 
+    /**
+     * Default style for components.
+     * <br>
+     * <b>Color:</b> {@link NamedTextColor#WHITE}
+     * <br>
+     * <b>Obfuscated:</b> false
+     * <br>
+     * <b>Bold:</b> false
+     * <br>
+     * <b>Italic:</b> false
+     * <br>
+     * <b>Strikethrough:</b> false
+     * <br>
+     * <b>Underlined:</b> false
+     */
     public static final Style DEFAULT_STYLE = Style.style(
             WHITE,
             OBFUSCATED.withState(false),
@@ -31,6 +47,20 @@ public final class ChatUtils {
             STRIKETHROUGH.withState(false),
             UNDERLINED.withState(false)
     );
+
+    /**
+     * Colorless default style for components.
+     * <br>
+     * <b>Obfuscated:</b> false
+     * <br>
+     * <b>Bold:</b> false
+     * <br>
+     * <b>Italic:</b> false
+     * <br>
+     * <b>Strikethrough:</b> false
+     * <br>
+     * <b>Underlined:</b> false
+     */
     public static final Style COLORLESS_DEFAULT_STYLE = Style.style(
             OBFUSCATED.withState(false),
             BOLD.withState(false),
@@ -367,7 +397,9 @@ public final class ChatUtils {
      * <br>
      * Example:
      * <br>
-     * <code>convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");</code>
+     * <code>
+     *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
+     * </code>
      * <br>
      * - will return list of components with text "Hello", "Sir." and "PackmanDude"
      *
@@ -398,7 +430,9 @@ public final class ChatUtils {
      * <br>
      * Example:
      * <br>
-     * <code>convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");</code>
+     * <code>
+     *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
+     * </code>
      * <br>
      * - will return list of components with text "Hello", "Sir." and "PackmanDude"
      *
@@ -414,7 +448,9 @@ public final class ChatUtils {
      * <br>
      * Example:
      * <br>
-     * <code>convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");</code>
+     * <code>
+     *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
+     * </code>
      * <br>
      * - will return list of components with text "Hello", "Sir." and "PackmanDude"
      *
@@ -434,9 +470,9 @@ public final class ChatUtils {
      * <br>
      * Example:
      * <br>
-     *      <code>
-     *          convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
-     *      </code>
+     * <code>
+     *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
+     * </code>
      * <br>
      * - will return list of components with text "Hello", "Sir." and "PackmanDude"
      *

@@ -1,6 +1,5 @@
 package com.github.minersstudios.msessentials.menu;
 
-import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
 import com.github.minersstudios.mscore.inventory.SingleInventory;
@@ -24,8 +23,10 @@ import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslat
 import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
 
 public class PronounsMenu {
+    private static final Component TITLE = Component.translatable("ms.menu.pronouns.title", ChatUtils.DEFAULT_STYLE);
+    private static final CustomInventory INVENTORY;
 
-    public static @NotNull CustomInventory create() {
+    static {
         ItemStack he = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
         ItemMeta heMeta = he.getItemMeta();
         heMeta.displayName(renderTranslationComponent("ms.menu.pronouns.button.he.title").style(ChatUtils.DEFAULT_STYLE));
@@ -89,7 +90,7 @@ public class PronounsMenu {
                     player.closeInventory();
                 });
 
-        return SingleInventory.single(Component.translatable("ms.menu.pronouns.title"), 1)
+        INVENTORY = SingleInventory.single(TITLE, 1)
                 .buttonAt(0, heButton)
                 .buttonAt(1, heButton)
                 .buttonAt(2, heButton)
@@ -112,12 +113,6 @@ public class PronounsMenu {
     }
 
     public static void open(@NotNull Player player) {
-        CustomInventory customInventory = MSCore.getCache().customInventoryMap.get("pronouns");
-
-        if (customInventory == null) {
-            throw new NullPointerException("CustomInventory \"pronouns\" not found");
-        }
-
-        player.openInventory(customInventory);
+        INVENTORY.open(player);
     }
 }

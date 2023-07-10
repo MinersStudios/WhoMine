@@ -6,7 +6,6 @@ import com.github.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.github.minersstudios.msdecor.utils.ConfigCache;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public final class MSDecor extends MSPlugin {
@@ -28,7 +27,7 @@ public final class MSDecor extends MSPlugin {
         configCache = new ConfigCache();
 
         configCache.registerCustomDecors();
-        instance.loadedCustoms = true;
+        instance.setLoadedCustoms(true);
 
         instance.runTaskTimer(task -> {
             if (MSPluginUtils.isLoadedCustoms()) {
@@ -39,17 +38,14 @@ public final class MSDecor extends MSPlugin {
         }, 0L, 10L);
     }
 
-    @Contract(pure = true)
     public static @NotNull MSDecor getInstance() {
         return instance;
     }
 
-    @Contract(pure = true)
     public static @NotNull CoreProtectAPI getCoreProtectAPI() {
         return coreProtectAPI;
     }
 
-    @Contract(pure = true)
     public static @NotNull ConfigCache getConfigCache() {
         return configCache;
     }
