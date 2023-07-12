@@ -40,7 +40,7 @@ public class PlayerInteractEntityListener implements Listener {
                 whoClicked.eject();
             }
 
-            PlayerInfo clickedInfo = PlayerInfo.fromMap(clickedPlayer);
+            PlayerInfo clickedInfo = PlayerInfo.fromOnlinePlayer(clickedPlayer);
 
             whoClicked.sendActionBar(
                     empty()

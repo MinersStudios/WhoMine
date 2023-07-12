@@ -3,12 +3,8 @@ package com.github.minersstudios.msessentials.commands.teleport;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.mscore.utils.PlayerUtils;
-import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.tabcompleters.AllLocalPlayers;
-import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
@@ -55,32 +51,44 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
     ) {
         if (args.length == 0) return false;
 
-        if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = MSEssentials.getCache().idMap;
-            OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
+        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
-            if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
-                return true;
-            }
-
-            teleportToLastDeathLocation(sender, offlinePlayer);
+        if (playerInfo == null) {
+            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
-        if (args[0].length() > 2) {
-            OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+        OfflinePlayer offlinePlayer = playerInfo.getOfflinePlayer();
+        TranslatableComponent playerNotOnline = Component.translatable("ms.error.player_not_online");
 
-            if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
-                return true;
-            }
-
-            teleportToLastDeathLocation(sender, offlinePlayer);
+        if (offlinePlayer.getPlayer() == null) {
+            ChatUtils.sendWarning(sender, playerNotOnline);
             return true;
         }
 
-        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
+        Location lastDeathLocation = playerInfo.getPlayerFile().getLastDeathLocation();
+
+        if (lastDeathLocation == null) {
+            ChatUtils.sendWarning(
+                    sender,
+                    Component.translatable(
+                            "ms.command.teleport_to_last_death.no_position",
+                            playerInfo.getGrayIDGoldName(),
+                            text(playerInfo.getNickname())
+                    )
+            );
+            return true;
+        }
+
+        playerInfo.teleportToLastDeathLocation();
+        ChatUtils.sendFine(
+                sender,
+                Component.translatable(
+                        "ms.command.teleport_to_last_death.sender.message",
+                        playerInfo.getGrayIDGreenName(),
+                        text(playerInfo.getNickname())
+                )
+        );
         return true;
     }
 
@@ -97,46 +105,5 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
         return COMMAND_NODE;
-    }
-
-    private static void teleportToLastDeathLocation(
-            @NotNull CommandSender sender,
-            @NotNull OfflinePlayer offlinePlayer
-    ) {
-        if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
-            return;
-        }
-
-        PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), offlinePlayer.getName());
-        Location lastDeathLocation = playerInfo.getPlayerFile().getLastDeathLocation();
-        TranslatableComponent playerNotOnline = Component.translatable("ms.error.player_not_online");
-
-        if (offlinePlayer.getPlayer() == null) {
-            ChatUtils.sendWarning(sender, playerNotOnline);
-            return;
-        }
-
-        if (lastDeathLocation == null) {
-            ChatUtils.sendWarning(
-                    sender,
-                    Component.translatable(
-                            "ms.command.teleport_to_last_death.no_position",
-                            playerInfo.getGrayIDGoldName(),
-                            text(offlinePlayer.getName())
-                    )
-            );
-            return;
-        }
-
-        playerInfo.teleportToLastDeathLocation();
-        ChatUtils.sendFine(
-                sender,
-                Component.translatable(
-                        "ms.command.teleport_to_last_death.sender.message",
-                        playerInfo.getGrayIDGreenName(),
-                        text(offlinePlayer.getName())
-                )
-        );
     }
 }

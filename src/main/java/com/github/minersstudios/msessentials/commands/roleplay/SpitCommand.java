@@ -50,7 +50,7 @@ public class SpitCommand implements MSCommandExecutor {
 
         World world = player.getWorld();
         Location location = player.getLocation();
-        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (playerInfo.isMuted()) {
             ChatUtils.sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));

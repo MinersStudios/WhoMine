@@ -107,11 +107,11 @@ public class PlayerFile {
 
                 if (skinSection == null) continue;
 
-                String name = skinSection.getName();
+                String name = skinSection.getString("name");
                 String value = skinSection.getString("value");
                 String signature = skinSection.getString("signature");
 
-                if (value == null || signature == null) continue;
+                if (name == null || value == null || signature == null) continue;
 
                 try {
                     this.skins.add(Skin.create(name, value, signature));
@@ -190,7 +190,7 @@ public class PlayerFile {
         return List.copyOf(this.skins);
     }
 
-    public @Nullable Skin getSkin(int index) {
+    public @Nullable Skin getSkin(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         return this.skins.get(index);
     }
 
@@ -221,6 +221,7 @@ public class PlayerFile {
         String sectionName = "skins." + index;
 
         this.skins.set(index, skin);
+        this.yamlConfiguration.set(sectionName + ".name", skin.getName());
         this.yamlConfiguration.set(sectionName + ".value", skin.getValue());
         this.yamlConfiguration.set(sectionName + ".signature", skin.getSignature());
         this.save();
@@ -231,9 +232,10 @@ public class PlayerFile {
     public boolean addSkin(@NotNull Skin skin) {
         if (!this.hasAvailableSkinSlot()) return false;
 
-        String sectionName = "skins." + skin.getName();
+        String sectionName = "skins." + this.skins.size();
 
         this.skins.add(skin);
+        this.yamlConfiguration.set(sectionName + ".name", skin.getName());
         this.yamlConfiguration.set(sectionName + ".value", skin.getValue());
         this.yamlConfiguration.set(sectionName + ".signature", skin.getSignature());
         this.save();
@@ -252,22 +254,11 @@ public class PlayerFile {
         String sectionName = "skins." + skin.getName();
 
         Preconditions.checkArgument(this.skins.remove(skin), "Skin not found");
+        this.yamlConfiguration.set(sectionName + ".name", null);
         this.yamlConfiguration.set(sectionName + ".value", null);
         this.yamlConfiguration.set(sectionName + ".signature", null);
         this.yamlConfiguration.set(sectionName, null);
         this.save();
-    }
-
-    public boolean renameSkin(
-            @NotNull Skin skin,
-            @NotNull String newName
-    ) {
-        if (!this.skins.contains(skin)) return false;
-
-        this.yamlConfiguration.set("skins." + skin.getName(), newName);
-        this.save();
-
-        return true;
     }
 
     public boolean hasAvailableSkinSlot() {

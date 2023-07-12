@@ -47,7 +47,7 @@ public class TodoCommand implements MSCommandExecutor {
             return true;
         }
 
-        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
         String message = ChatUtils.extractMessage(args, 0);
 
         if (args.length < 3 || !message.contains("*")) return false;

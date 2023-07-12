@@ -191,7 +191,7 @@ public final class MessageUtils {
             @NotNull RolePlayActionType rolePlayActionType
     ) {
         Config config = MSEssentials.getConfiguration();
-        PlayerInfo playerInfo = PlayerInfo.fromMap(sender);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(sender);
         Component fullMessage = switch (rolePlayActionType) {
             case DO ->
                     text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
@@ -251,9 +251,9 @@ public final class MessageUtils {
     ) {
         Config config = MSEssentials.getConfiguration();
         Location deathLocation = killed.getLocation();
-        PlayerInfo killedInfo = PlayerInfo.fromMap(killed);
+        PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(killed);
         PlayerInfo killerInfo = killer != null
-                        ? PlayerInfo.fromMap(killer)
+                        ? PlayerInfo.fromOnlinePlayer(killer)
                         : null;
         Component deathMessage = killerInfo != null
                 ? space()

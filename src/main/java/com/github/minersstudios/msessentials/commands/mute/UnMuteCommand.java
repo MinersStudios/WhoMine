@@ -4,17 +4,14 @@ import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
-import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
+import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.player.map.MuteMap;
-import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -52,40 +49,14 @@ public class UnMuteCommand implements MSCommandExecutor {
     ) {
         if (args.length == 0) return false;
 
-        Cache cache = MSEssentials.getCache();
+        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
-        if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = cache.idMap;
-            OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
-
-            if (
-                    offlinePlayer == null
-                    || !offlinePlayer.hasPlayedBefore()
-                    || StringUtils.isBlank(offlinePlayer.getName())
-            ) {
-                ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
-                return true;
-            }
-
-            PlayerInfo.fromMap(offlinePlayer.getUniqueId(), offlinePlayer.getName())
-                    .setMuted(false, sender);
+        if (playerInfo == null) {
+            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
-        if (args[0].length() > 2) {
-            String name = args[0];
-            OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(name);
-
-            if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
-                return true;
-            }
-
-            PlayerInfo.fromMap(offlinePlayer.getUniqueId(), name)
-                    .setMuted(false, sender);
-            return true;
-        }
-        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
+        playerInfo.setMuted(false, sender);
         return true;
     }
 

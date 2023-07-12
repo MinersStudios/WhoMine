@@ -20,7 +20,7 @@ public class PlayerResourcePackStatusListener implements Listener {
     @EventHandler
     public void onPlayerResourcePackStatus(@NotNull PlayerResourcePackStatusEvent event) {
         Player player = event.getPlayer();
-        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
         PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
         Component nickname = text(player.getName());
 

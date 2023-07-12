@@ -87,7 +87,7 @@ public class ResourcePackMenu {
                 .item(noneItem)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
                     PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
                     if (playerSettings.getResourcePackType() != ResourcePack.Type.NULL && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
@@ -111,7 +111,7 @@ public class ResourcePackMenu {
                 .item(fullItem)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
                     PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
                     playerSettings.setResourcePackType(ResourcePack.Type.FULL);
@@ -125,7 +125,7 @@ public class ResourcePackMenu {
                 .item(liteItem)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
                     PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
                     playerSettings.setResourcePackType(ResourcePack.Type.LITE);
@@ -147,7 +147,7 @@ public class ResourcePackMenu {
                 .buttonAt(8, liteButton)
                 .closeAction(((event, inventory) -> {
                     Player player = (Player) event.getPlayer();
-                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
                     ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
                     if (type == ResourcePack.Type.NULL) {

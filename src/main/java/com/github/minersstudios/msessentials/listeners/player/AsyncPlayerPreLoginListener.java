@@ -29,7 +29,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
         String hostAddress = event.getAddress().getHostAddress();
         String nickname = event.getName();
         Config config = MSEssentials.getConfiguration();
-        PlayerInfo playerInfo = PlayerInfo.fromMap(event.getUniqueId(), nickname);
+        PlayerInfo playerInfo = PlayerInfo.fromProfile(event.getUniqueId(), nickname);
         PlayerFile playerFile = playerInfo.getPlayerFile();
         OfflinePlayer offlinePlayer = playerInfo.getOfflinePlayer();
         TranslatableComponent leaveMessageFormat = Component.translatable("ms.format.leave.message").color(NamedTextColor.DARK_GRAY);

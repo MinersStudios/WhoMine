@@ -9,6 +9,7 @@ import com.github.minersstudios.msessentials.discord.DiscordMap;
 import com.github.minersstudios.msessentials.player.map.MuteMap;
 import com.github.minersstudios.msessentials.player.map.PlayerInfoMap;
 import com.github.minersstudios.msessentials.player.skin.Skin;
+import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
 import com.mojang.authlib.GameProfile;
@@ -53,7 +54,7 @@ import static net.kyori.adventure.text.Component.translatable;
 /**
  * Player info with player file, settings, etc.
  * All player info stored in {@link PlayerInfoMap}.
- * Use {@link #fromMap(Player)} or {@link #fromMap(UUID, String)} to get player info.
+ * Use {@link #fromOnlinePlayer(Player)} or {@link #fromProfile(UUID, String)} to get player info.
  * It will create new player info if it doesn't exist,
  * or get existing player info if it exists and save it to the map if it's not cached.
  *
@@ -87,20 +88,40 @@ public class PlayerInfo {
         this(player.getUniqueId(), player.getName());
     }
 
-    public static @NotNull PlayerInfo fromMap(
+    public static @NotNull PlayerInfo fromProfile(
             @NotNull UUID uuid,
             @NotNull String nickname
     ) {
         return getCache().playerInfoMap.get(uuid, nickname);
     }
 
-    public static @NotNull PlayerInfo fromMap(@NotNull Player player) {
+    public static @NotNull PlayerInfo fromOnlinePlayer(@NotNull Player player) {
         return getCache().playerInfoMap.get(player);
     }
 
     @Contract("null -> null")
-    public static @Nullable PlayerInfo fromMap(@Nullable OfflinePlayer offlinePlayer) {
+    public static @Nullable PlayerInfo fromOfflinePlayer(@Nullable OfflinePlayer offlinePlayer) {
         return getCache().playerInfoMap.get(offlinePlayer);
+    }
+
+    public static @Nullable PlayerInfo fromID(int id) {
+        return fromOfflinePlayer(getCache().idMap.getPlayerByID(id));
+    }
+
+    public static @Nullable PlayerInfo fromNickname(@NotNull String nickname) {
+        return nickname.isBlank() ? null : fromOfflinePlayer(PlayerUtils.getOfflinePlayerByNick(nickname));
+    }
+
+    public static @Nullable PlayerInfo fromUUID(@NotNull UUID uuid) {
+        return fromOfflinePlayer(Bukkit.getOfflinePlayer(uuid));
+    }
+
+    public static @Nullable PlayerInfo fromString(@NotNull String string) {
+        return string.isBlank()
+                ? null
+                : IDUtils.matchesIDRegex(string)
+                ? fromID(IDUtils.parseID(string))
+                : fromNickname(string);
     }
 
     public static @Nullable PlayerInfo fromDiscord(long id) {

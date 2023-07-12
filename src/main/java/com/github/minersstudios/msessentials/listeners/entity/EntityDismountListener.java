@@ -14,7 +14,7 @@ public class EntityDismountListener implements Listener {
     @EventHandler
     public void onEntityDismount(@NotNull EntityDismountEvent event) {
         if (event.getEntity() instanceof Player player) {
-            PlayerInfo.fromMap(player).unsetSitting();
+            PlayerInfo.fromOnlinePlayer(player).unsetSitting();
         }
     }
 }

@@ -23,7 +23,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
         PlayerFile playerFile = playerInfo.getPlayerFile();
 
         event.joinMessage(null);

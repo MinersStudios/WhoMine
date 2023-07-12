@@ -3,18 +3,12 @@ package com.github.minersstudios.msessentials.commands.other;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.mscore.utils.PlayerUtils;
-import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.tabcompleters.AllLocalPlayers;
-import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -57,11 +51,9 @@ public class PrivateMessageCommand implements MSCommandExecutor {
     ) {
         if (args.length < 2) return false;
 
-        Cache cache = MSEssentials.getCache();
         PlayerInfo senderInfo = sender instanceof Player player
-                ? PlayerInfo.fromMap(player)
+                ? PlayerInfo.fromOnlinePlayer(player)
                 : MSEssentials.getConsolePlayerInfo();
-        TranslatableComponent playerNotOnline = Component.translatable("ms.error.player_not_online");
 
         if (senderInfo.isMuted()) {
             ChatUtils.sendWarning(sender, Component.translatable("ms.command.mute.already.receiver"));
@@ -70,43 +62,19 @@ public class PrivateMessageCommand implements MSCommandExecutor {
 
         String message = ChatUtils.extractMessage(args, 1);
 
-        if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = cache.idMap;
-            OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
+        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
-            if (!(offlinePlayer instanceof Player player)) {
-                ChatUtils.sendWarning(sender, playerNotOnline);
-                return true;
-            }
-
-            PlayerInfo playerInfo = PlayerInfo.fromMap(player);
-
-            if (!playerInfo.isOnline() && !sender.hasPermission("msessentials.*")) {
-                ChatUtils.sendWarning(sender, playerNotOnline);
-                return true;
-            }
-
-            sendPrivateMessage(senderInfo, playerInfo, text(message));
+        if (playerInfo == null) {
+            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
-        if (args[0].length() > 2) {
-            OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
-
-            if (offlinePlayer instanceof Player player) {
-                PlayerInfo playerInfo = PlayerInfo.fromMap(player);
-
-                if (playerInfo.isOnline() || sender.hasPermission("msessentials.*")) {
-                    sendPrivateMessage(senderInfo, playerInfo, text(message));
-                    return true;
-                }
-            }
-
-            ChatUtils.sendWarning(sender, playerNotOnline);
+        if (!playerInfo.isOnline() && !sender.hasPermission("msessentials.*")) {
+            ChatUtils.sendWarning(sender, Component.translatable("ms.error.player_not_online"));
             return true;
         }
 
-        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
+        sendPrivateMessage(senderInfo, playerInfo, text(message));
         return true;
     }
 

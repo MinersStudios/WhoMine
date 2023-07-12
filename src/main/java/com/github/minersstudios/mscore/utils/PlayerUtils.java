@@ -79,7 +79,7 @@ public final class PlayerUtils {
             @NotNull Location location,
             @Nullable Component message
     ) {
-        PlayerInfo.fromMap(player).setSitting(location, message);
+        PlayerInfo.fromOnlinePlayer(player).setSitting(location, message);
     }
 
     /**
@@ -101,7 +101,7 @@ public final class PlayerUtils {
             @NotNull Player player,
             @Nullable Component message
     ) {
-        PlayerInfo.fromMap(player).unsetSitting(message);
+        PlayerInfo.fromOnlinePlayer(player).unsetSitting(message);
     }
 
     /**

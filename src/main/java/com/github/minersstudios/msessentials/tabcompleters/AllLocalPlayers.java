@@ -24,7 +24,7 @@ public class AllLocalPlayers implements TabCompleter {
 
         if (args.length == 1) {
             for (var player : Bukkit.getOnlinePlayers()) {
-                PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+                PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
                 if (playerInfo.isOnline()) {
                     int id = playerInfo.getID(false, false);

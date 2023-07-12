@@ -25,7 +25,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         if (advancementDisplay == null || event.message() == null) return;
 
         AdvancementDisplay.Frame frame = advancementDisplay.frame();
-        PlayerInfo playerInfo = PlayerInfo.fromMap(event.getPlayer());
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(event.getPlayer());
 
         event.message(
                 Component.space()

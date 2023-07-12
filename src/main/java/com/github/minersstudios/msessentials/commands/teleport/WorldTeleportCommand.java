@@ -3,11 +3,8 @@ package com.github.minersstudios.msessentials.commands.teleport;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import com.github.minersstudios.msessentials.player.map.IDMap;
-import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
@@ -67,28 +64,68 @@ public class WorldTeleportCommand implements MSCommandExecutor {
     ) {
         if (args.length < 2) return false;
 
-        if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = MSEssentials.getCache().idMap;
-            OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
+        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
-            if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
-                return true;
-            }
-            return teleportToWorld(sender, offlinePlayer, args);
+        if (playerInfo == null) {
+            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
+            return true;
         }
 
-        if (args[0].length() > 2) {
-            OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+        OfflinePlayer offlinePlayer = playerInfo.getOfflinePlayer();
+        Player player = offlinePlayer.getPlayer();
 
-            if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
-                return true;
-            }
-            return teleportToWorld(sender, offlinePlayer, args);
+        if (player == null) {
+            ChatUtils.sendWarning(sender, Component.translatable("ms.error.player_not_online"));
+            return true;
         }
 
-        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
+        World world = Bukkit.getWorld(args[1]);
+
+        if (world == null) {
+            ChatUtils.sendWarning(sender, Component.translatable("ms.command.world_teleport.world_not_found"));
+            return true;
+        }
+
+        Location spawnLoc = world.getSpawnLocation();
+        double x = spawnLoc.getX();
+        double y = spawnLoc.getY();
+        double z = spawnLoc.getZ();
+
+        if (args.length > 2) {
+            if (
+                    args.length != 5
+                    || !args[2].matches(coordinatesRegex)
+                    || !args[3].matches(coordinatesRegex)
+                    || !args[4].matches(coordinatesRegex)
+            ) return false;
+
+            try {
+                x = Double.parseDouble(args[2]);
+                y = Double.parseDouble(args[3]);
+                z = Double.parseDouble(args[4]);
+            } catch (NumberFormatException e) {
+                return false;
+            }
+
+            if (x > 29999984 || z > 29999984) {
+                ChatUtils.sendWarning(sender, Component.translatable("ms.command.world_teleport.too_big_coordinates"));
+                return true;
+            }
+        }
+
+        player.teleportAsync(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        ChatUtils.sendFine(
+                sender,
+                Component.translatable(
+                        "ms.command.world_teleport.sender.message",
+                        playerInfo.getGrayIDGreenName(),
+                        text(playerInfo.getNickname()),
+                        text(world.getName()),
+                        text(x),
+                        text(y),
+                        text(z)
+                )
+        );
         return true;
     }
 
@@ -104,7 +141,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
         switch (args.length) {
             case 1 -> {
                 for (var player : Bukkit.getOnlinePlayers()) {
-                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
                     int id = playerInfo.getID(false, false);
 
                     if (id != -1) {
@@ -145,68 +182,5 @@ public class WorldTeleportCommand implements MSCommandExecutor {
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
         return COMMAND_NODE;
-    }
-
-    private static boolean teleportToWorld(
-            @NotNull CommandSender sender,
-            @NotNull OfflinePlayer offlinePlayer,
-            String @NotNull ... args
-    ) {
-        if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
-            return true;
-        }
-
-        PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), offlinePlayer.getName());
-
-        if (offlinePlayer.getPlayer() == null) {
-            ChatUtils.sendWarning(sender, Component.translatable("ms.error.player_not_online"));
-            return true;
-        }
-
-        World world = Bukkit.getWorld(args[1]);
-        if (world == null) {
-            ChatUtils.sendWarning(sender, Component.translatable("ms.command.world_teleport.world_not_found"));
-            return true;
-        }
-
-        Location spawnLoc = world.getSpawnLocation();
-        double
-                x = spawnLoc.getX(),
-                y = spawnLoc.getY(),
-                z = spawnLoc.getZ();
-
-        if (args.length > 2) {
-            if (
-                    args.length != 5
-                    || !args[2].matches(coordinatesRegex)
-                    || !args[3].matches(coordinatesRegex)
-                    || !args[4].matches(coordinatesRegex)
-            ) return false;
-
-            x = Double.parseDouble(args[2]);
-            y = Double.parseDouble(args[3]);
-            z = Double.parseDouble(args[4]);
-
-            if (x > 29999984 || z > 29999984) {
-                ChatUtils.sendWarning(sender, Component.translatable("ms.command.world_teleport.too_big_coordinates"));
-                return true;
-            }
-        }
-
-        offlinePlayer.getPlayer().teleportAsync(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN);
-        ChatUtils.sendFine(
-                sender,
-                Component.translatable(
-                        "ms.command.world_teleport.sender.message",
-                        playerInfo.getGrayIDGreenName(),
-                        text(playerInfo.getNickname()),
-                        text(world.getName()),
-                        text(x),
-                        text(y),
-                        text(z)
-                )
-        );
-        return true;
     }
 }

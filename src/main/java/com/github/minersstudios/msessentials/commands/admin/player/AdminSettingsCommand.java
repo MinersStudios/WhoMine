@@ -149,7 +149,7 @@ public class AdminSettingsCommand {
                                         )
                                 );
                             } else {
-                                playerFile.removeSkin(playerFile.getSkinIndex(skin));
+                                playerFile.removeSkin(skin);
                                 ChatUtils.sendFine(
                                         sender,
                                         translatable(
@@ -190,44 +190,46 @@ public class AdminSettingsCommand {
                         String skinName = args[4];
                         String skinLink = args[5];
 
-                        try {
-                            Skin skin = Skin.create(skinName, skinLink);
+                        if (playerFile.hasAvailableSkinSlot()) {
+                            try {
+                                Skin skin = Skin.create(skinName, skinLink);
 
-                            if (skin != null) {
-                                playerFile.addSkin(skin);
-                                ChatUtils.sendFine(
-                                        sender,
-                                        translatable(
-                                                "ms.command.player.settings.add.skin",
-                                                text(skinName),
-                                                playerInfo.getDefaultName(),
-                                                text(playerInfo.getNickname())
-                                        )
-                                );
-
-                                if (player != null) {
+                                if (skin != null) {
+                                    playerFile.addSkin(skin);
                                     ChatUtils.sendFine(
-                                            player,
+                                            sender,
                                             translatable(
-                                                    "ms.discord.skin.successfully_added.minecraft",
-                                                    text(skinName)
+                                                    "ms.command.player.settings.add.skin",
+                                                    text(skinName),
+                                                    playerInfo.getDefaultName(),
+                                                    text(playerInfo.getNickname())
                                             )
                                     );
-                                }
 
-                                playerInfo.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
-                                        renderTranslation(
+                                    if (player != null) {
+                                        ChatUtils.sendFine(
+                                                player,
                                                 translatable(
-                                                        "ms.discord.skin.successfully_added",
-                                                        text(skinName),
-                                                        playerInfo.getDefaultName(),
-                                                        text(playerInfo.getNickname())
+                                                        "ms.discord.skin.successfully_added.minecraft",
+                                                        text(skinName)
                                                 )
-                                        )
-                                ));
-                                return true;
-                            }
-                        } catch (IllegalArgumentException ignored) {}
+                                        );
+                                    }
+
+                                    playerInfo.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+                                            renderTranslation(
+                                                    translatable(
+                                                            "ms.discord.skin.successfully_added",
+                                                            text(skinName),
+                                                            playerInfo.getDefaultName(),
+                                                            text(playerInfo.getNickname())
+                                                    )
+                                            )
+                                    ));
+                                    return true;
+                                }
+                            } catch (IllegalArgumentException ignored) {}
+                        }
 
                         ChatUtils.sendError(
                                 sender,

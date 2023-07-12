@@ -55,7 +55,7 @@ public class PronounsMenu {
                 .item(he)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
                     PlayerFile playerFile = playerInfo.getPlayerFile();
 
                     playerFile.setPronouns(Pronouns.HE);
@@ -68,7 +68,7 @@ public class PronounsMenu {
                 .item(she)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
                     PlayerFile playerFile = playerInfo.getPlayerFile();
 
                     playerFile.setPronouns(Pronouns.SHE);
@@ -81,7 +81,7 @@ public class PronounsMenu {
                 .item(they)
                 .clickAction((event, inventory) -> {
                     Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
                     PlayerFile playerFile = playerInfo.getPlayerFile();
 
                     playerFile.setPronouns(Pronouns.THEY);
@@ -102,7 +102,7 @@ public class PronounsMenu {
                 .buttonAt(8, theyButton)
                 .closeAction((event, inventory) -> {
                     Player player = (Player) event.getPlayer();
-                    PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
                     if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") == null) {
                         MSEssentials.getInstance().runTask(() -> player.openInventory(inventory));

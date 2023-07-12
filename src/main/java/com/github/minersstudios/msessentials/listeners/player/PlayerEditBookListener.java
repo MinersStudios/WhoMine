@@ -18,7 +18,7 @@ public class PlayerEditBookListener implements Listener {
     public void onPlayerEditBook(@NotNull PlayerEditBookEvent event) {
         if (!event.isSigning()) return;
 
-        PlayerInfo playerInfo = PlayerInfo.fromMap(event.getPlayer());
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(event.getPlayer());
         BookMeta bookMeta = event.getNewBookMeta();
         String title = bookMeta.getTitle();
         boolean isAnon = title != null && title.startsWith("*");

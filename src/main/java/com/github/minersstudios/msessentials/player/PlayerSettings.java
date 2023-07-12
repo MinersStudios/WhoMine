@@ -34,7 +34,13 @@ public class PlayerSettings {
         }
         this.resourcePackType = new Parameter<>("settings.resource-pack.resource-pack-type", resourcePackType);
 
-        this.skin = new Parameter<>("settings.skin", this.playerFile.getSkin(this.config.getString("settings.skin")));
+        String skinIndex = this.config.getString("settings.skin");
+        this.skin = new Parameter<>(
+                "settings.skin",
+                skinIndex == null
+                ? null
+                : this.playerFile.getSkin(Integer.parseInt(skinIndex))
+        );
     }
 
     public @NotNull Parameter<ResourcePack.Type> getResourcePackParam() {
@@ -69,7 +75,7 @@ public class PlayerSettings {
                 this.config,
                 skin == null
                 ? null
-                : skin.getName()
+                : this.playerFile.getSkinIndex(skin)
         );
     }
 

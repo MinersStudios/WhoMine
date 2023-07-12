@@ -54,7 +54,7 @@ public class MSCoreCommandHandler implements MSCommandExecutor {
             @NotNull String label,
             String @NotNull ... args
     ) {
-        return args.length == 1 ? TAB : EMPTY_LIST;
+        return args.length == 1 ? TAB : EMPTY_TAB;
     }
 
     @Override

@@ -12,7 +12,7 @@ game-params:
   air: 300
 settings:
   resource-pack-type: FULL/LITE/NONE
-  skin: Default
+  skin: 0
 first-join: 0
 locations:
   last-death-location:
@@ -30,6 +30,7 @@ locations:
     yaw: 0.0
     pitch: 0.0
 skins:
-  Default:
+  '0':
+    name: Default
     signature: a
     value: b

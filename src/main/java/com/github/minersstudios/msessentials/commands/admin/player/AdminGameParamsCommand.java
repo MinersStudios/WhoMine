@@ -1,13 +1,11 @@
 package com.github.minersstudios.msessentials.commands.admin.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
-
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.GameMode;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +20,6 @@ public class AdminGameParamsCommand {
     public static boolean runCommand(
             @NotNull CommandSender sender,
             String @NotNull [] args,
-            @NotNull OfflinePlayer offlinePlayer,
             @NotNull PlayerInfo playerInfo
     ) {
         if (args.length < 3) {
@@ -34,7 +31,7 @@ public class AdminGameParamsCommand {
         boolean haveArg = args.length >= 4;
         String paramString = args[2].toLowerCase(Locale.ROOT);
         String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
-        Player player = offlinePlayer.getPlayer();
+        Player player = playerInfo.getOnlinePlayer();
         TranslatableComponent wrongFormat = Component.translatable("ms.error.wrong_format");
 
         switch (paramString) {

@@ -80,7 +80,7 @@ public class Skin {
      * @param name The name of the skin
      * @param link The link to the skin, must start with https:// and end with .png
      * @return The skin if it was successfully retrieved, otherwise null
-     * @throws IllegalArgumentException If the name or link is invalid
+     * @throws IllegalArgumentException If the name or link is invalid or the image is not 64x64 pixels
      * @see <a href="https://wiki.vg/Mojang_API#UUID_-.3E_Profile_.2B_Skin.2FCape">Mojang API</a>
      */
     public static @Nullable Skin create(

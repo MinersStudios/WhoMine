@@ -51,7 +51,7 @@ public class FartCommand implements MSCommandExecutor {
             return true;
         }
 
-        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (playerInfo.isMuted()) {
             ChatUtils.sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));

@@ -14,7 +14,7 @@ public class PlayerTeleportListener implements Listener {
     @EventHandler
     public void onPlayerTeleport(@NotNull PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         playerInfo.unsetSitting();
 

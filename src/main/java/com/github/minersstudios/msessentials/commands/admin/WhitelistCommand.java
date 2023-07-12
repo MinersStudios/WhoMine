@@ -84,7 +84,7 @@ public class WhitelistCommand implements MSCommandExecutor {
                     return true;
                 }
 
-                PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+                PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 
                 if (playerInfo.setWhiteListed(false)) {
                     ChatUtils.sendFine(
@@ -116,7 +116,7 @@ public class WhitelistCommand implements MSCommandExecutor {
                 return true;
             }
 
-            PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), args[1]);
+            PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), args[1]);
 
             if (args[0].equalsIgnoreCase("add")) {
                 if (playerInfo.setWhiteListed(true)) {
@@ -182,7 +182,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             return TAB;
         } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             for (var offlinePlayer : Bukkit.getWhitelistedPlayers()) {
-                PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), args[1]);
+                PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), args[1]);
                 int id = playerInfo.getID(false, false);
 
                 if (id != -1) {

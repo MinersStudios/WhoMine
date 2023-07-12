@@ -46,7 +46,7 @@ public class SkinsMenu {
 
         ButtonClickAction applyClickAction = (event, inv) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+            PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
             Skin skin = playerInfo.getPlayerFile().getSkin((int) inv.args().get(0));
 
             if (skin == null) return;
@@ -72,7 +72,7 @@ public class SkinsMenu {
 
         ButtonClickAction deleteClickAction = (event, inv) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+            PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
             int selectedPartIndex = (int) inv.args().get(0);
 
             try {
@@ -101,7 +101,7 @@ public class SkinsMenu {
     public static void open(@NotNull Player player) {
         CustomInventory customInventory = CUSTOM_INVENTORY.clone();
 
-        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
         var skins = playerInfo.getPlayerFile().getSkins();
         var skinButtons = new HashMap<Integer, InventoryButton>();
 

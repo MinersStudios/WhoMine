@@ -15,7 +15,7 @@ public class PlayerDeathListener implements Listener {
     @EventHandler
     public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
         Player killedPlayer = event.getEntity();
-        PlayerInfo killedInfo = PlayerInfo.fromMap(killedPlayer);
+        PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(killedPlayer);
 
         event.deathMessage(null);
         killedInfo.unsetSitting();

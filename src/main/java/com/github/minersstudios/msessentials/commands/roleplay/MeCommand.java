@@ -42,7 +42,7 @@ public class MeCommand implements MSCommandExecutor {
             return true;
         }
 
-        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (args.length == 0) return false;
         if (playerInfo.isMuted()) {

@@ -25,7 +25,7 @@ public class AsyncChatListener implements Listener {
         event.setCancelled(true);
 
         Player player = event.getPlayer();
-        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (playerInfo.isInWorldDark() || !playerInfo.isAuthenticated()) return;
 

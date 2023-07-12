@@ -36,6 +36,67 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permissionDefault = PermissionDefault.OP
 )
 public class AdminPlayerCommandHandler implements MSCommandExecutor {
+    private static final List<String> TAB_2 = List.of(
+            "update",
+            "info",
+            "first-join",
+            "pronouns",
+            "game-params",
+            "settings",
+            "ban-info",
+            "mute-info",
+            "name"
+    );
+    private static final List<String> TAB_3_PRONOUNS = List.of(
+            "he",
+            "she",
+            "they"
+    );
+    private static final List<String> TAB_3_GAME_PARAMS = List.of(
+            "game-mode",
+            "health",
+            "air"
+    );
+    private static final List<String> TAB_3_SETTINGS = List.of(
+            "resourcepack-type"
+    );
+    private static final List<String> TAB_3_BAN_MUTE_INFO = List.of(
+            "reason",
+            "time"
+    );
+    private static final List<String> TAB_3_NAME = List.of(
+            "reset",
+            "first-name",
+            "last-name",
+            "patronymic"
+    );
+    private static final List<String> TAB_4_GAME_PARAMS_GAME_MODE = List.of(
+            "survival",
+            "creative",
+            "spectator",
+            "adventure"
+    );
+    private static final List<String> TAB_4_GAME_PARAMS_AIR = List.of(
+            "300",
+            "0"
+    );
+    private static final List<String> TAB_4_GAME_PARAMS_HEALTH = List.of(
+            "20.0",
+            "0.0"
+    );
+    private static final List<String> TAB_4_SETTINGS_RESOURCEPACK_TYPE = List.of(
+            "full",
+            "lite",
+            "none",
+            "null"
+    );
+    private static final List<String> TAB_4_SETTINGS_SKIN = List.of(
+            "set",
+            "remove",
+            "add"
+    );
+    private static final List<String> TAB_4_BAN_MUTE_INFO_REASON = List.of("неизвестно");
+    private static final List<String> TAB_4_NAME_EMPTY = List.of("empty");
     private static final CommandNode<?> COMMAND_NODE =
             literal("player")
             .then(
@@ -136,67 +197,6 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                             )
                     )
             ).build();
-    private static final List<String> TAB_2 = List.of(
-            "update",
-            "info",
-            "first-join",
-            "pronouns",
-            "game-params",
-            "settings",
-            "ban-info",
-            "mute-info",
-            "name"
-    );
-    private static final List<String> TAB_3_PRONOUNS = List.of(
-            "he",
-            "she",
-            "they"
-    );
-    private static final List<String> TAB_3_GAME_PARAMS = List.of(
-            "game-mode",
-            "health",
-            "air"
-    );
-    private static final List<String> TAB_3_SETTINGS = List.of(
-            "resourcepack-type"
-    );
-    private static final List<String> TAB_3_BAN_MUTE_INFO = List.of(
-            "reason",
-            "time"
-    );
-    private static final List<String> TAB_3_NAME = List.of(
-            "reset",
-            "first-name",
-            "last-name",
-            "patronymic"
-    );
-    private static final List<String> TAB_4_GAME_PARAMS_GAME_MODE = List.of(
-            "survival",
-            "creative",
-            "spectator",
-            "adventure"
-    );
-    private static final List<String> TAB_4_GAME_PARAMS_AIR = List.of(
-            "300",
-            "0"
-    );
-    private static final List<String> TAB_4_GAME_PARAMS_HEALTH = List.of(
-            "20.0",
-            "0.0"
-    );
-    private static final List<String> TAB_4_SETTINGS_RESOURCEPACK_TYPE = List.of(
-            "full",
-            "lite",
-            "none",
-            "null"
-    );
-    private static final List<String> TAB_4_SETTINGS_SKIN = List.of(
-            "set",
-            "remove",
-            "add"
-    );
-    private static final List<String> TAB_4_BAN_MUTE_INFO_REASON = List.of("неизвестно");
-    private static final List<String> TAB_4_NAME_EMPTY = List.of("empty");
 
     @Override
     public boolean onCommand(
@@ -207,24 +207,25 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
     ) {
         if (args.length < 2) return false;
 
-        OfflinePlayer offlinePlayer;
+        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
-        if (IDUtils.matchesIDRegex(args[0])) {
-            IDMap idMap = MSEssentials.getCache().idMap;
-            offlinePlayer = idMap.getPlayerByID(args[0]);
-        } else if (args[0].length() > 2) {
-            offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
-        } else {
-            ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
+        if (playerInfo == null) {
+            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
-        if (offlinePlayer == null || offlinePlayer.getName() == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
-            return true;
-        }
-
-        return runCommand(sender, args, offlinePlayer);
+        return switch (args[1]) {
+            case "update" -> AdminUpdateCommand.runCommand(sender, playerInfo);
+            case "info" -> AdminInfoCommand.runCommand(sender, playerInfo);
+            case "pronouns" -> AdminPronounsCommand.runCommand(sender, args, playerInfo);
+            case "game-params" -> AdminGameParamsCommand.runCommand(sender, args, playerInfo);
+            case "first-join" -> AdminFirstJoinCommand.runCommand(sender, playerInfo);
+            case "settings" -> AdminSettingsCommand.runCommand(sender, args, playerInfo);
+            case "ban-info" -> AdminBanInfoCommand.runCommand(sender, args, playerInfo);
+            case "mute-info" -> AdminMuteInfoCommand.runCommand(sender, args, playerInfo);
+            case "name" -> AdminNameCommand.runCommand(sender, args, playerInfo);
+            default -> false;
+        };
     }
 
     @Override
@@ -316,45 +317,24 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                             offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
                         }
 
-                        if (offlinePlayer == null) return EMPTY_LIST;
+                        if (offlinePlayer == null) return EMPTY_TAB;
 
-                        PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer);
+                        PlayerInfo playerInfo = PlayerInfo.fromOfflinePlayer(offlinePlayer);
 
                         switch (args[3]) {
                             case "set", "remove" -> {
-                                return playerInfo == null ? EMPTY_LIST : playerInfo.getPlayerFile().getSkins().stream().map(Skin::getName).toList();
+                                return playerInfo == null ? EMPTY_TAB : playerInfo.getPlayerFile().getSkins().stream().map(Skin::getName).toList();
                             }
                         }
                     }
                 }
             }
         }
-        return EMPTY_LIST;
+        return EMPTY_TAB;
     }
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
         return COMMAND_NODE;
-    }
-
-    private static boolean runCommand(
-            @NotNull CommandSender sender,
-            String @NotNull [] args,
-            @NotNull OfflinePlayer offlinePlayer
-    ) {
-        PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer);
-
-        return playerInfo != null && switch (args[1]) {
-            case "update" -> AdminUpdateCommand.runCommand(sender, playerInfo);
-            case "info" -> AdminInfoCommand.runCommand(sender, playerInfo);
-            case "pronouns" -> AdminPronounsCommand.runCommand(sender, args, playerInfo);
-            case "game-params" -> AdminGameParamsCommand.runCommand(sender, args, offlinePlayer, playerInfo);
-            case "first-join" -> AdminFirstJoinCommand.runCommand(sender, playerInfo);
-            case "settings" -> AdminSettingsCommand.runCommand(sender, args, playerInfo);
-            case "ban-info" -> AdminBanInfoCommand.runCommand(sender, args, playerInfo);
-            case "mute-info" -> AdminMuteInfoCommand.runCommand(sender, args, playerInfo);
-            case "name" -> AdminNameCommand.runCommand(sender, args, playerInfo);
-            default -> false;
-        };
     }
 }

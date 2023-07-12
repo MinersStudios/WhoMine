@@ -59,7 +59,7 @@ public class DiscordCommandHandler implements MSCommandExecutor {
             return true;
         }
 
-        PlayerInfo playerInfo = PlayerInfo.fromMap(player);
+        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (args.length > 0) {
             switch (args[0]) {
