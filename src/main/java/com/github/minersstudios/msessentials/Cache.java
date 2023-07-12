@@ -4,7 +4,7 @@ import com.github.minersstudios.msessentials.anomalies.Anomaly;
 import com.github.minersstudios.msessentials.anomalies.AnomalyAction;
 import com.github.minersstudios.msessentials.discord.BotHandler;
 import com.github.minersstudios.msessentials.discord.DiscordMap;
-import com.github.minersstudios.msessentials.player.*;
+import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.player.map.MuteMap;
 import com.github.minersstudios.msessentials.player.map.PlayerInfoMap;
@@ -29,6 +29,6 @@ public final class Cache {
     public final Map<Player, Map<AnomalyAction, Long>> playerAnomalyActionMap = new ConcurrentHashMap<>();
     public final Map<UUID, Queue<String>> chatQueue = new HashMap<>();
     public final List<BukkitTask> bukkitTasks = new ArrayList<>();
-    public PlayerInfo consolePlayerInfo;
     public final Map<Long, BotHandler> botHandlers = new HashMap<>();
+    public PlayerInfo consolePlayerInfo;
 }

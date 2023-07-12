@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
         description = "Открывает меню с ресурспаками"
 )
 public class ResourcePackCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE = LiteralArgumentBuilder.literal("resourcepack").build();
 
     @Override
     public boolean onCommand(
@@ -42,6 +43,6 @@ public class ResourcePackCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return LiteralArgumentBuilder.literal("resourcepack").build();
+        return COMMAND_NODE;
     }
 }

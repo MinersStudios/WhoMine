@@ -75,7 +75,12 @@ public class SkinsMenu {
             PlayerInfo playerInfo = PlayerInfo.fromMap(player);
             int selectedPartIndex = (int) inv.args().get(0);
 
-            playerInfo.getPlayerFile().removeSkin(selectedPartIndex);
+            try {
+                playerInfo.getPlayerFile().removeSkin(selectedPartIndex);
+            } catch (Exception e) {
+                ChatUtils.sendError(player, Component.translatable("ms.error.something_went_wrong"));
+            }
+
             open(player);
         };
         DELETE_BUTTON = InventoryButton.create().item(deleteItem).clickAction(deleteClickAction);

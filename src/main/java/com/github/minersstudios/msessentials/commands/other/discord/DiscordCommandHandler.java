@@ -5,6 +5,7 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
@@ -28,8 +29,23 @@ import static net.kyori.adventure.text.event.HoverEvent.showText;
         permissionDefault = PermissionDefault.NOT_OP
 )
 public class DiscordCommandHandler implements MSCommandExecutor {
-    private static final List<String> ARGUMENTS = List.of("link", "unlink");
     private static final String DISCORD_LINK = "https://discord.whomine.net";
+    private static final TranslatableComponent DISCORD_MESSAGE =
+            translatable(
+                    "ms.command.discord",
+                    text(DISCORD_LINK)
+                    .hoverEvent(showText(translatable("ms.link.hover", NamedTextColor.GRAY)))
+                    .clickEvent(ClickEvent.openUrl(DISCORD_LINK)),
+                    text("/discord link")
+                    .hoverEvent(showText(translatable("ms.command.hover.run", NamedTextColor.GRAY)))
+                    .clickEvent(ClickEvent.runCommand("/discord link"))
+            );
+    private static final List<String> TAB = List.of("link", "unlink");
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("discord")
+            .then(literal("link"))
+            .then(literal("unlink"))
+            .build();
 
     @Override
     public boolean onCommand(
@@ -54,18 +70,7 @@ public class DiscordCommandHandler implements MSCommandExecutor {
                 }
             }
         } else {
-            ChatUtils.sendWarning(
-                    sender,
-                    translatable(
-                            "ms.command.discord",
-                            text(DISCORD_LINK)
-                            .hoverEvent(showText(translatable("ms.link.hover", NamedTextColor.GRAY)))
-                            .clickEvent(ClickEvent.openUrl(DISCORD_LINK)),
-                            text("/discord link")
-                            .hoverEvent(showText(translatable("ms.command.hover.run", NamedTextColor.GRAY)))
-                            .clickEvent(ClickEvent.runCommand("/discord link"))
-                    )
-            );
+            ChatUtils.sendWarning(sender, DISCORD_MESSAGE);
         }
         return true;
     }
@@ -77,14 +82,11 @@ public class DiscordCommandHandler implements MSCommandExecutor {
             @NotNull String label,
             String @NotNull ... args
     ) {
-        return ARGUMENTS;
+        return TAB;
     }
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return literal("discord")
-                .then(literal("link"))
-                .then(literal("unlink"))
-                .build();
+        return COMMAND_NODE;
     }
 }

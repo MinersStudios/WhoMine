@@ -22,8 +22,13 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Configuration loader class.
+ * Use {@link MSEssentials#getConfiguration()} to get configuration instance.
+ * Use {@link #reload()} to reload configuration and {@link #save(YamlConfiguration)} to save configuration.
+ */
 public final class Config {
-    private final File configFile;
+    private final File file;
 
     public long anomalyCheckRate;
     public long anomalyParticlesCheckRate;
@@ -41,12 +46,15 @@ public final class Config {
     public String mineSkinApiKey;
 
     public Config() {
-        this.configFile = MSEssentials.getInstance().getConfigFile();
+        this.file = MSEssentials.getInstance().getConfigFile();
         this.reload();
     }
 
+    /**
+     * @return The config file, where the configuration is stored
+     */
     public @NotNull File getFile() {
-        return this.configFile;
+        return this.file;
     }
 
     /**
@@ -56,7 +64,7 @@ public final class Config {
         MSEssentials plugin = MSEssentials.getInstance();
         Logger logger = plugin.getLogger();
         File pluginFolder = plugin.getPluginFolder();
-        YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(this.configFile);
+        YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(this.file);
         Cache cache = MSEssentials.getCache();
 
         this.developerMode = yamlConfig.getBoolean("developer-mode", false);
@@ -154,7 +162,7 @@ public final class Config {
      */
     public void save(@NotNull YamlConfiguration configuration) {
         try {
-            configuration.save(this.configFile);
+            configuration.save(MSEssentials.getInstance().getConfigFile());
         } catch (IOException e) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving the config!", e);
         }

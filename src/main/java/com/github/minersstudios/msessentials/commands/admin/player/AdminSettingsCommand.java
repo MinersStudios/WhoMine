@@ -1,16 +1,21 @@
 package com.github.minersstudios.msessentials.commands.admin.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.PlayerSettings;
 import com.github.minersstudios.msessentials.player.ResourcePack;
+import com.github.minersstudios.msessentials.player.skin.Skin;
+import com.github.minersstudios.msessentials.utils.MessageUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Locale;
 
+import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
@@ -26,10 +31,12 @@ public class AdminSettingsCommand {
             return true;
         }
 
-        PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+        PlayerFile playerFile = playerInfo.getPlayerFile();
+        PlayerSettings playerSettings = playerFile.getPlayerSettings();
+        Player player = playerInfo.getOnlinePlayer();
         boolean haveArg = args.length >= 4;
-        String paramString = args[2].toLowerCase(Locale.ROOT);
-        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
+        String paramString = args[2];
+        String paramArgString = haveArg ? args[3] : "";
 
         switch (paramString) {
             case "resourcepack-type" -> {
@@ -87,7 +94,162 @@ public class AdminSettingsCommand {
                 );
                 return true;
             }
+            case "skin" -> {
+                if (!haveArg) {
+                    Skin skin = playerSettings.getSkin();
+
+                    if (skin == null) {
+                        ChatUtils.sendWarning(
+                                sender,
+                                translatable(
+                                        "ms.command.player.settings.get.no_skin",
+                                        playerInfo.getGrayIDGreenName(),
+                                        text(playerInfo.getNickname())
+                                )
+                        );
+                    } else {
+                        ChatUtils.sendFine(
+                                sender,
+                                translatable(
+                                        "ms.command.player.settings.get.skin",
+                                        playerInfo.getGrayIDGreenName(),
+                                        text(playerInfo.getNickname()),
+                                        text(skin.getName())
+                                )
+                        );
+                    }
+                    return true;
+                }
+
+                switch (paramArgString) {
+                    case "set", "remove" -> {
+                        if (args.length < 5) return false;
+
+                        String skinName = args[4];
+                        Skin skin = playerFile.getSkin(skinName);
+
+                        if (skin == null) {
+                            ChatUtils.sendError(
+                                    sender,
+                                    translatable(
+                                            "ms.command.player.settings.skin_not_found",
+                                            text(skinName)
+                                    )
+                            );
+                        } else {
+                            if (paramArgString.equals("set")) {
+                                playerInfo.setSkin(skin);
+                                ChatUtils.sendFine(
+                                        sender,
+                                        translatable(
+                                                "ms.command.player.settings.set.skin",
+                                                playerInfo.getDefaultName(),
+                                                text(playerInfo.getNickname()),
+                                                text(skinName)
+                                        )
+                                );
+                            } else {
+                                playerFile.removeSkin(playerFile.getSkinIndex(skin));
+                                ChatUtils.sendFine(
+                                        sender,
+                                        translatable(
+                                                "ms.command.player.settings.remove.skin",
+                                                text(skinName),
+                                                playerInfo.getDefaultName(),
+                                                text(playerInfo.getNickname())
+                                        )
+                                );
+
+                                if (player != null) {
+                                    ChatUtils.sendFine(
+                                            player,
+                                            translatable(
+                                                    "ms.discord.skin.successfully_removed.minecraft",
+                                                    text(skinName)
+                                            )
+                                    );
+                                }
+
+                                playerInfo.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+                                        renderTranslation(
+                                                translatable(
+                                                        "ms.discord.skin.successfully_removed",
+                                                        text(skinName),
+                                                        playerInfo.getDefaultName(),
+                                                        text(playerInfo.getNickname())
+                                                )
+                                        )
+                                ));
+                            }
+                        }
+                        return true;
+                    }
+                    case "add" -> {
+                        if (args.length < 6) return false;
+
+                        String skinName = args[4];
+                        String skinLink = args[5];
+
+                        try {
+                            Skin skin = Skin.create(skinName, skinLink);
+
+                            if (skin != null) {
+                                playerFile.addSkin(skin);
+                                ChatUtils.sendFine(
+                                        sender,
+                                        translatable(
+                                                "ms.command.player.settings.add.skin",
+                                                text(skinName),
+                                                playerInfo.getDefaultName(),
+                                                text(playerInfo.getNickname())
+                                        )
+                                );
+
+                                if (player != null) {
+                                    ChatUtils.sendFine(
+                                            player,
+                                            translatable(
+                                                    "ms.discord.skin.successfully_added.minecraft",
+                                                    text(skinName)
+                                            )
+                                    );
+                                }
+
+                                playerInfo.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+                                        renderTranslation(
+                                                translatable(
+                                                        "ms.discord.skin.successfully_added",
+                                                        text(skinName),
+                                                        playerInfo.getDefaultName(),
+                                                        text(playerInfo.getNickname())
+                                                )
+                                        )
+                                ));
+                                return true;
+                            }
+                        } catch (IllegalArgumentException ignored) {}
+
+                        ChatUtils.sendError(
+                                sender,
+                                translatable(
+                                        "ms.command.player.settings.add.skin.error",
+                                        text(skinName),
+                                        playerInfo.getDefaultName(),
+                                        text(playerInfo.getNickname())
+                                )
+                        );
+                        return true;
+                    }
+                    default -> {
+                        ChatUtils.sendError(sender, translatable("ms.command.player.settings.skin.use_one_of"));
+                        return true;
+                    }
+                }
+            }
+            default -> {
+                ChatUtils.sendError(sender, translatable("ms.command.player.settings.use_one_of"));
+                return true;
+            }
         }
-        return false;
     }
 }

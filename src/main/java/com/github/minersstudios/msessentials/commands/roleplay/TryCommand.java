@@ -5,8 +5,6 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -20,6 +18,8 @@ import java.security.SecureRandom;
 
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.ME;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.sendRPEventMessage;
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
@@ -30,6 +30,10 @@ import static net.kyori.adventure.text.Component.translatable;
 )
 public class TryCommand implements MSCommandExecutor {
     private final SecureRandom random = new SecureRandom();
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("try")
+            .then(argument("действие", StringArgumentType.greedyString()))
+            .build();
 
     @Override
     public boolean onCommand(
@@ -45,7 +49,6 @@ public class TryCommand implements MSCommandExecutor {
 
         PlayerInfo playerInfo = PlayerInfo.fromMap(player);
 
-        if (!playerInfo.isOnline()) return true;
         if (args.length == 0) return false;
         if (playerInfo.isMuted()) {
             ChatUtils.sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));
@@ -67,8 +70,6 @@ public class TryCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return LiteralArgumentBuilder.literal("try")
-                .then(RequiredArgumentBuilder.argument("действие", StringArgumentType.greedyString()))
-                .build();
+        return COMMAND_NODE;
     }
 }

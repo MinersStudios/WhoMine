@@ -6,13 +6,11 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
+import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.tabcompleters.AllLocalPlayers;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -25,6 +23,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -35,6 +35,12 @@ import static net.kyori.adventure.text.Component.text;
         permissionDefault = PermissionDefault.OP
 )
 public class KickCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("kick")
+            .then(
+                    argument("id/никнейм", StringArgumentType.word())
+                    .then(argument("причина", StringArgumentType.greedyString()))
+            ).build();
 
     @Override
     public boolean onCommand(
@@ -123,10 +129,6 @@ public class KickCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return LiteralArgumentBuilder.literal("kick")
-                .then(
-                        RequiredArgumentBuilder.argument("id/никнейм", StringArgumentType.word())
-                        .then(RequiredArgumentBuilder.argument("причина", StringArgumentType.greedyString()))
-                ).build();
+        return COMMAND_NODE;
     }
 }

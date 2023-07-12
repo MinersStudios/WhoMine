@@ -29,6 +29,7 @@ import static net.kyori.adventure.text.Component.text;
         permissionDefault = PermissionDefault.OP
 )
 public class GetMapLocationCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE = LiteralArgumentBuilder.literal("getmaplocation").build();
 
     @Override
     public boolean onCommand(
@@ -76,6 +77,6 @@ public class GetMapLocationCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return LiteralArgumentBuilder.literal("getmaplocation").build();
+        return COMMAND_NODE;
     }
 }

@@ -3,6 +3,7 @@ package com.github.minersstudios.msessentials.player;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
+import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.discord.BotHandler;
 import com.github.minersstudios.msessentials.discord.DiscordMap;
 import com.github.minersstudios.msessentials.player.map.MuteMap;
@@ -13,6 +14,7 @@ import com.github.minersstudios.msessentials.utils.MessageUtils;
 import com.mojang.authlib.GameProfile;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.kyori.adventure.text.Component;
@@ -31,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.profile.PlayerProfile;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,12 +84,7 @@ public class PlayerInfo {
     }
 
     public PlayerInfo(@NotNull Player player) {
-        this.uuid = player.getUniqueId();
-        this.nickname = player.getName();
-        this.playerFile = PlayerFile.loadConfig(this.uuid, this.nickname);
-        this.offlinePlayer = PlayerUtils.getOfflinePlayer(this.uuid, this.nickname);
-
-        this.initNames();
+        this(player.getUniqueId(), player.getName());
     }
 
     public static @NotNull PlayerInfo fromMap(
@@ -98,6 +96,11 @@ public class PlayerInfo {
 
     public static @NotNull PlayerInfo fromMap(@NotNull Player player) {
         return getCache().playerInfoMap.get(player);
+    }
+
+    @Contract("null -> null")
+    public static @Nullable PlayerInfo fromMap(@Nullable OfflinePlayer offlinePlayer) {
+        return getCache().playerInfoMap.get(offlinePlayer);
     }
 
     public static @Nullable PlayerInfo fromDiscord(long id) {
@@ -787,6 +790,7 @@ public class PlayerInfo {
                 skin.getSignature()
         );
         this.playerFile.getPlayerSettings().setSkin(skin);
+        this.playerFile.save();
     }
 
     public @Nullable Skin getCurrentSkin() {
@@ -822,6 +826,39 @@ public class PlayerInfo {
 
     public short generateCode() {
         return getCache().discordMap.generateCode(this);
+    }
+
+    public boolean sendPrivateDiscordMessage(
+            @NotNull MessageEmbed messageEmbed,
+            MessageEmbed @NotNull ... other
+    ) {
+        long id = this.getDiscordID();
+
+        if (id == -1) return false;
+
+        MSEssentials.getInstance().runTaskAsync(() -> {
+            User user = DiscordUtil.getJda().getUserById(id);
+
+            if (user != null) {
+                user.openPrivateChannel().complete().sendMessageEmbeds(messageEmbed, other).queue();
+            }
+        });
+        return true;
+    }
+
+    public boolean sendPrivateDiscordMessage(@NotNull CharSequence message) {
+        long id = this.getDiscordID();
+
+        if (id == -1) return false;
+
+        MSEssentials.getInstance().runTaskAsync(() -> {
+            User user = DiscordUtil.getJda().getUserById(id);
+
+            if (user != null) {
+                user.openPrivateChannel().complete().sendMessage(message).queue();
+            }
+        });
+        return true;
     }
 
     public boolean isAuthenticated() {

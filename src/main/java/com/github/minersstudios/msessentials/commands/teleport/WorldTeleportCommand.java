@@ -5,12 +5,10 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
+import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import net.minecraft.commands.arguments.DimensionArgument;
@@ -30,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -48,6 +48,15 @@ import static net.kyori.adventure.text.Component.text;
 )
 public class WorldTeleportCommand implements MSCommandExecutor {
     private static final String coordinatesRegex = "^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$";
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("worldteleport")
+            .then(
+                    argument("id/никнейм", StringArgumentType.word())
+                    .then(
+                            argument("мир", DimensionArgument.dimension())
+                            .then(argument("координаты", Vec3Argument.vec3()))
+                    )
+            ).build();
 
     @Override
     public boolean onCommand(
@@ -91,6 +100,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         List<String> completions = new ArrayList<>();
+
         switch (args.length) {
             case 1 -> {
                 for (var player : Bukkit.getOnlinePlayers()) {
@@ -130,6 +140,11 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             }
         }
         return completions;
+    }
+
+    @Override
+    public @Nullable CommandNode<?> getCommandNode() {
+        return COMMAND_NODE;
     }
 
     private static boolean teleportToWorld(
@@ -193,17 +208,5 @@ public class WorldTeleportCommand implements MSCommandExecutor {
                 )
         );
         return true;
-    }
-
-    @Override
-    public @Nullable CommandNode<?> getCommandNode() {
-        return LiteralArgumentBuilder.literal("worldteleport")
-                .then(
-                        RequiredArgumentBuilder.argument("id/никнейм", StringArgumentType.word())
-                        .then(
-                                RequiredArgumentBuilder.argument("мир", DimensionArgument.dimension())
-                                .then(RequiredArgumentBuilder.argument("координаты", Vec3Argument.vec3()))
-                        )
-                ).build();
     }
 }

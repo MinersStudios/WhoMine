@@ -38,6 +38,10 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permissionDefault = PermissionDefault.OP
 )
 public class UnMuteCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("unmute")
+            .then(argument("id/никнейм", StringArgumentType.word()))
+            .build();
 
     @Override
     public boolean onCommand(
@@ -125,8 +129,6 @@ public class UnMuteCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return literal("unmute")
-                .then(argument("id/никнейм", StringArgumentType.word()))
-                .build();
+        return COMMAND_NODE;
     }
 }

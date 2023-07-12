@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
         description = "Открывает меню с крафтами кастомных предметов/декора/блоков"
 )
 public class CraftsCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE = LiteralArgumentBuilder.literal("crafts").build();
 
     @Override
     public boolean onCommand(
@@ -39,6 +40,6 @@ public class CraftsCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return LiteralArgumentBuilder.literal("crafts").build();
+        return COMMAND_NODE;
     }
 }

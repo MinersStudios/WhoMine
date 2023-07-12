@@ -5,8 +5,6 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -23,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.ME;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.TODO;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.sendRPEventMessage;
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -31,6 +31,10 @@ import static net.kyori.adventure.text.Component.text;
         description = "Покажи свою дерзость и плюнь кому-то в лицо"
 )
 public class SpitCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("spit")
+            .then(argument("речь", StringArgumentType.greedyString()))
+            .build();
 
     @Override
     public boolean onCommand(
@@ -70,8 +74,6 @@ public class SpitCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return LiteralArgumentBuilder.literal("spit")
-                .then(RequiredArgumentBuilder.argument("речь", StringArgumentType.greedyString()))
-                .build();
+        return COMMAND_NODE;
     }
 }

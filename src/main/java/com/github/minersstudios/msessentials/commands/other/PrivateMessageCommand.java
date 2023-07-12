@@ -41,6 +41,12 @@ import static net.kyori.adventure.text.Component.text;
         description = "Отправь другому игроку приватное сообщение"
 )
 public class PrivateMessageCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("privatemessage")
+            .then(
+                    argument("id/никнейм", StringArgumentType.word())
+                    .then(argument("сообщение", StringArgumentType.greedyString()))
+            ).build();
 
     @Override
     public boolean onCommand(
@@ -116,10 +122,6 @@ public class PrivateMessageCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return literal("privatemessage")
-                .then(
-                        argument("id/никнейм", StringArgumentType.word())
-                        .then(argument("сообщение", StringArgumentType.greedyString()))
-                ).build();
+        return COMMAND_NODE;
     }
 }

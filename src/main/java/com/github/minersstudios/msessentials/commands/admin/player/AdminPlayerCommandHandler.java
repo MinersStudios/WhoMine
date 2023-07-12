@@ -6,8 +6,9 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
+import com.github.minersstudios.msessentials.player.map.IDMap;
+import com.github.minersstudios.msessentials.player.skin.Skin;
 import com.github.minersstudios.msessentials.tabcompleters.AllPlayers;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
@@ -22,10 +23,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
@@ -38,6 +36,168 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permissionDefault = PermissionDefault.OP
 )
 public class AdminPlayerCommandHandler implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("player")
+            .then(
+                    argument("айди/никнейм", StringArgumentType.word())
+                    .then(literal("update"))
+                    .then(literal("info"))
+                    .then(
+                            literal("pronouns")
+                            .then(literal("he"))
+                            .then(literal("she"))
+                            .then(literal("they"))
+                    )
+                    .then(
+                            literal("game-params")
+                            .then(
+                                    literal("game-mode")
+                                    .then(literal("survival"))
+                                    .then(literal("creative"))
+                                    .then(literal("spectator"))
+                                    .then(literal("adventure"))
+                            )
+                            .then(
+                                    literal("health")
+                                    .then(argument("значение", DoubleArgumentType.doubleArg()))
+                            )
+                            .then(
+                                    literal("air")
+                                    .then(argument("значение", IntegerArgumentType.integer()))
+                            )
+                    )
+                    .then(literal("first-join"))
+                    .then(
+                            literal("settings")
+                            .then(
+                                    literal("resourcepack-type")
+                                    .then(literal("full"))
+                                    .then(literal("lite"))
+                                    .then(literal("none"))
+                                    .then(literal("null"))
+                            )
+                            .then(
+                                    literal("skin")
+                                    .then(
+                                            literal("set")
+                                            .then(argument("имя", StringArgumentType.word()))
+                                    )
+                                    .then(
+                                            literal("remove")
+                                            .then(argument("имя", StringArgumentType.word()))
+                                    )
+                                    .then(
+                                            literal("add")
+                                            .then(
+                                                    argument("имя", StringArgumentType.word())
+                                                    .then(argument("ссылка", StringArgumentType.greedyString()))
+                                            )
+                                    )
+                            )
+                    )
+                    .then(
+                            literal("ban-info")
+                            .then(
+                                    literal("reason")
+                                    .then(argument("причина", StringArgumentType.greedyString()))
+                            )
+                            .then(
+                                    literal("time")
+                                    .then(argument("время", StringArgumentType.greedyString()))
+                            )
+                    )
+                    .then(
+                            literal("mute-info")
+                            .then(
+                                    literal("reason")
+                                    .then(argument("причина", StringArgumentType.greedyString()))
+                            )
+                            .then(
+                                    literal("time")
+                                    .then(argument("время", StringArgumentType.greedyString()))
+                            )
+                    )
+                    .then(
+                            literal("name")
+                            .then(literal("reset"))
+                            .then(
+                                    literal("first-name")
+                                    .then(argument("имя", StringArgumentType.greedyString()))
+                            )
+                            .then(
+                                    literal("last-name")
+                                    .then(literal("empty"))
+                                    .then(argument("фамилия", StringArgumentType.greedyString()))
+                            )
+                            .then(
+                                    literal("patronymic")
+                                    .then(literal("empty"))
+                                    .then(argument("отчество", StringArgumentType.greedyString()))
+                            )
+                    )
+            ).build();
+    private static final List<String> TAB_2 = List.of(
+            "update",
+            "info",
+            "first-join",
+            "pronouns",
+            "game-params",
+            "settings",
+            "ban-info",
+            "mute-info",
+            "name"
+    );
+    private static final List<String> TAB_3_PRONOUNS = List.of(
+            "he",
+            "she",
+            "they"
+    );
+    private static final List<String> TAB_3_GAME_PARAMS = List.of(
+            "game-mode",
+            "health",
+            "air"
+    );
+    private static final List<String> TAB_3_SETTINGS = List.of(
+            "resourcepack-type"
+    );
+    private static final List<String> TAB_3_BAN_MUTE_INFO = List.of(
+            "reason",
+            "time"
+    );
+    private static final List<String> TAB_3_NAME = List.of(
+            "reset",
+            "first-name",
+            "last-name",
+            "patronymic"
+    );
+    private static final List<String> TAB_4_GAME_PARAMS_GAME_MODE = List.of(
+            "survival",
+            "creative",
+            "spectator",
+            "adventure"
+    );
+    private static final List<String> TAB_4_GAME_PARAMS_AIR = List.of(
+            "300",
+            "0"
+    );
+    private static final List<String> TAB_4_GAME_PARAMS_HEALTH = List.of(
+            "20.0",
+            "0.0"
+    );
+    private static final List<String> TAB_4_SETTINGS_RESOURCEPACK_TYPE = List.of(
+            "full",
+            "lite",
+            "none",
+            "null"
+    );
+    private static final List<String> TAB_4_SETTINGS_SKIN = List.of(
+            "set",
+            "remove",
+            "add"
+    );
+    private static final List<String> TAB_4_BAN_MUTE_INFO_REASON = List.of("неизвестно");
+    private static final List<String> TAB_4_NAME_EMPTY = List.of("empty");
+
     @Override
     public boolean onCommand(
             @NotNull CommandSender sender,
@@ -47,29 +207,24 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
     ) {
         if (args.length < 2) return false;
 
+        OfflinePlayer offlinePlayer;
+
         if (IDUtils.matchesIDRegex(args[0])) {
             IDMap idMap = MSEssentials.getCache().idMap;
-            OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
-
-            if (offlinePlayer == null || offlinePlayer.getName() == null) {
-                ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
-                return true;
-            }
-            return runCommand(sender, args, offlinePlayer);
+            offlinePlayer = idMap.getPlayerByID(args[0]);
+        } else if (args[0].length() > 2) {
+            offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+        } else {
+            ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
+            return true;
         }
 
-        if (args[0].length() > 2) {
-            OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
-
-            if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
-                return true;
-            }
-            return runCommand(sender, args, offlinePlayer);
+        if (offlinePlayer == null || offlinePlayer.getName() == null) {
+            ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
+            return true;
         }
 
-        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
-        return true;
+        return runCommand(sender, args, offlinePlayer);
     }
 
     @Override
@@ -84,201 +239,102 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                 return new AllPlayers().onTabComplete(sender, command, label, args);
             }
             case 2 -> {
-                return List.of(
-                        "update",
-                        "info",
-                        "first-join",
-                        "pronouns",
-                        "game-params",
-                        "settings",
-                        "ban-info",
-                        "mute-info",
-                        "name"
-                );
+                return TAB_2;
             }
             case 3 -> {
-                switch (args[1].toLowerCase(Locale.ROOT)) {
+                switch (args[1]) {
                     case "pronouns" -> {
-                        return List.of(
-                                "he",
-                                "she",
-                                "they"
-                        );
+                        return TAB_3_PRONOUNS;
                     }
                     case "game-params" -> {
-                        return List.of(
-                                "game-mode",
-                                "health",
-                                "air"
-                        );
+                        return TAB_3_GAME_PARAMS;
                     }
                     case "settings" -> {
-                        return List.of(
-                                "resourcepack-type"
-                        );
+                        return TAB_3_SETTINGS;
                     }
                     case "ban-info", "mute-info" -> {
-                        return List.of(
-                                "reason",
-                                "time"
-                        );
+                        return TAB_3_BAN_MUTE_INFO;
                     }
                     case "name" -> {
-                        return List.of(
-                                "reset",
-                                "first-name",
-                                "last-name",
-                                "patronymic"
-                        );
+                        return TAB_3_NAME;
                     }
                 }
             }
             case 4 -> {
-                switch (args[1].toLowerCase(Locale.ROOT)) {
+                switch (args[1]) {
                     case "game-params" -> {
-                        switch (args[2].toLowerCase(Locale.ROOT)) {
+                        switch (args[2]) {
                             case "game-mode" -> {
-                                return List.of(
-                                        "survival",
-                                        "creative",
-                                        "spectator",
-                                        "adventure"
-                                );
+                                return TAB_4_GAME_PARAMS_GAME_MODE;
                             }
                             case "air" -> {
-                                return List.of(
-                                        "0",
-                                        "300"
-                                );
+                                return TAB_4_GAME_PARAMS_AIR;
                             }
                             case "health" -> {
-                                return List.of(
-                                        "0.0",
-                                        "20.0"
-                                );
+                                return TAB_4_GAME_PARAMS_HEALTH;
                             }
                         }
                     }
                     case "settings" -> {
-                        switch (args[2].toLowerCase(Locale.ROOT)) {
+                        switch (args[2]) {
                             case "resourcepack-type" -> {
-                                return List.of(
-                                        "full",
-                                        "lite",
-                                        "none",
-                                        "null"
-                                );
+                                return TAB_4_SETTINGS_RESOURCEPACK_TYPE;
+                            }
+                            case "skin" -> {
+                                return TAB_4_SETTINGS_SKIN;
                             }
                         }
                     }
                     case "ban-info", "mute-info" -> {
-                        switch (args[2].toLowerCase(Locale.ROOT)) {
+                        switch (args[2]) {
                             case "time" -> {
                                 return DateUtils.getTimeSuggestions(args[3]);
                             }
                             case "reason" -> {
-                                return List.of("неизвестно");
+                                return TAB_4_BAN_MUTE_INFO_REASON;
                             }
                         }
                     }
                     case "name" -> {
-                        switch (args[2].toLowerCase(Locale.ROOT)) {
+                        switch (args[2]) {
                             case "last-name", "patronymic" -> {
-                                return List.of(
-                                        "empty"
-                                );
+                                return TAB_4_NAME_EMPTY;
+                            }
+                        }
+                    }
+                }
+            }
+            case 5 -> {
+                switch (args[2]) {
+                    case "skin" -> {
+                        OfflinePlayer offlinePlayer = null;
+
+                        if (IDUtils.matchesIDRegex(args[0])) {
+                            IDMap idMap = MSEssentials.getCache().idMap;
+                            offlinePlayer = idMap.getPlayerByID(args[0]);
+                        } else if (args[0].length() > 2) {
+                            offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+                        }
+
+                        if (offlinePlayer == null) return EMPTY_LIST;
+
+                        PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer);
+
+                        switch (args[3]) {
+                            case "set", "remove" -> {
+                                return playerInfo == null ? EMPTY_LIST : playerInfo.getPlayerFile().getSkins().stream().map(Skin::getName).toList();
                             }
                         }
                     }
                 }
             }
         }
-        return new ArrayList<>();
+        return EMPTY_LIST;
     }
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return literal("player")
-                .then(
-                        argument("айди/никнейм", StringArgumentType.word())
-                        .then(literal("update"))
-                        .then(literal("info"))
-                        .then(
-                                literal("pronouns")
-                                .then(literal("he"))
-                                .then(literal("she"))
-                                .then(literal("they"))
-                        )
-                        .then(
-                                literal("game-params")
-                                .then(
-                                        literal("game-mode")
-                                        .then(literal("survival"))
-                                        .then(literal("creative"))
-                                        .then(literal("spectator"))
-                                        .then(literal("adventure"))
-                                )
-                                .then(
-                                        literal("health")
-                                        .then(argument("значение", DoubleArgumentType.doubleArg()))
-                                )
-                                .then(
-                                        literal("air")
-                                        .then(argument("значение", IntegerArgumentType.integer()))
-                                )
-                        )
-                        .then(literal("first-join"))
-                        .then(
-                                literal("settings")
-                                .then(
-                                        literal("resourcepack-type")
-                                        .then(literal("full"))
-                                        .then(literal("lite"))
-                                        .then(literal("none"))
-                                        .then(literal("null"))
-                                )
-                        )
-                        .then(
-                                literal("ban-info")
-                                .then(
-                                        literal("reason")
-                                        .then(argument("причина", StringArgumentType.greedyString()))
-                                )
-                                .then(
-                                        literal("time")
-                                        .then(argument("время", StringArgumentType.greedyString()))
-                                )
-                        )
-                        .then(
-                                literal("mute-info")
-                                .then(
-                                        literal("reason")
-                                        .then(argument("причина", StringArgumentType.greedyString()))
-                                )
-                                .then(
-                                        literal("time")
-                                        .then(argument("время", StringArgumentType.greedyString()))
-                                )
-                        )
-                        .then(
-                                literal("name")
-                                .then(literal("reset"))
-                                .then(
-                                        literal("first-name")
-                                        .then(argument("имя", StringArgumentType.greedyString()))
-                                )
-                                .then(
-                                        literal("last-name")
-                                        .then(literal("empty"))
-                                        .then(argument("фамилия", StringArgumentType.greedyString()))
-                                )
-                                .then(
-                                        literal("patronymic")
-                                        .then(literal("empty"))
-                                        .then(argument("отчество", StringArgumentType.greedyString()))
-                                )
-                        )
-                ).build();
+        return COMMAND_NODE;
     }
 
     private static boolean runCommand(
@@ -286,9 +342,9 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
             String @NotNull [] args,
             @NotNull OfflinePlayer offlinePlayer
     ) {
-        PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
+        PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer);
 
-        return switch (args[1].toLowerCase(Locale.ROOT)) {
+        return playerInfo != null && switch (args[1]) {
             case "update" -> AdminUpdateCommand.runCommand(sender, playerInfo);
             case "info" -> AdminInfoCommand.runCommand(sender, playerInfo);
             case "pronouns" -> AdminPronounsCommand.runCommand(sender, args, playerInfo);

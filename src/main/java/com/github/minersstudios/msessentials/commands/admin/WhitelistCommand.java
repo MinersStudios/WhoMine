@@ -36,6 +36,19 @@ import static net.kyori.adventure.text.Component.text;
         permissionDefault = PermissionDefault.OP
 )
 public class WhitelistCommand implements MSCommandExecutor {
+    private static final List<String> TAB = List.of("add", "remove", "reload");
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("whitelist")
+            .then(
+                    literal("add")
+                    .then(argument("никнейм", StringArgumentType.word()))
+            )
+            .then(
+                    literal("remove")
+                    .then(argument("id/никнейм", StringArgumentType.word()))
+            )
+            .then(literal("reload"))
+            .build();
 
     @Override
     public boolean onCommand(
@@ -164,10 +177,9 @@ public class WhitelistCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         List<String> completions = new ArrayList<>();
+
         if (args.length == 1) {
-            completions.add("add");
-            completions.add("remove");
-            completions.add("reload");
+            return TAB;
         } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             for (var offlinePlayer : Bukkit.getWhitelistedPlayers()) {
                 PlayerInfo playerInfo = PlayerInfo.fromMap(offlinePlayer.getUniqueId(), args[1]);
@@ -185,10 +197,6 @@ public class WhitelistCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return literal("whitelist")
-                .then(literal("add").then(argument("никнейм", StringArgumentType.word())))
-                .then(literal("remove").then(argument("id/никнейм", StringArgumentType.word())))
-                .then(literal("reload"))
-                .build();
+        return COMMAND_NODE;
     }
 }

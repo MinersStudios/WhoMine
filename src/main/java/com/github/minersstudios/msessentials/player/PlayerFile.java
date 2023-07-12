@@ -3,6 +3,7 @@ package com.github.minersstudios.msessentials.player;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.skin.Skin;
+import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -13,6 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.io.File;
 import java.io.IOException;
@@ -126,8 +128,8 @@ public class PlayerFile {
             @NotNull UUID uniqueId,
             @Nullable String nickname
     ) {
-        String child = "players/" + ("$Console".equals(nickname) ? "console" : uniqueId) + ".yml";
-        File dataFile = new File(getInstance().getPluginFolder(), child);
+        String filePath = "players/" + ("$Console".equals(nickname) ? "console" : uniqueId) + ".yml";
+        File dataFile = new File(getInstance().getPluginFolder(), filePath);
         return new PlayerFile(dataFile, YamlConfiguration.loadConfiguration(dataFile));
     }
 
@@ -211,9 +213,11 @@ public class PlayerFile {
     }
 
     public boolean setSkin(
-            int index,
+            @Range(from = 0, to = Integer.MAX_VALUE) int index,
             @NotNull Skin skin
-    ) {
+    ) throws IndexOutOfBoundsException {
+        if (this.containsSkin(skin)) return false;
+
         String sectionName = "skins." + index;
 
         this.skins.set(index, skin);
@@ -237,11 +241,17 @@ public class PlayerFile {
         return true;
     }
 
-    public void removeSkin(int index) {
+    public void removeSkin(@Range(from = 0, to = Integer.MAX_VALUE) int index) throws NullPointerException, IndexOutOfBoundsException, IllegalArgumentException {
         Skin skin = this.skins.get(index);
+
+        Preconditions.checkNotNull(skin, "Skin not found");
+        this.removeSkin(skin);
+    }
+
+    public void removeSkin(@NotNull Skin skin) throws IllegalArgumentException {
         String sectionName = "skins." + skin.getName();
 
-        this.skins.remove(skin);
+        Preconditions.checkArgument(this.skins.remove(skin), "Skin not found");
         this.yamlConfiguration.set(sectionName + ".value", null);
         this.yamlConfiguration.set(sectionName + ".signature", null);
         this.yamlConfiguration.set(sectionName, null);

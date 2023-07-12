@@ -110,7 +110,7 @@ public class ResourcePack {
 
         if (files != null) {
             Arrays.stream(files)
-            .filter(file -> file.getName().equalsIgnoreCase(fileName))
+            .filter(file -> file.getName().matches(String.format(fileName, ".*")))
             .forEach(
                     file -> {
                         if (file.delete()) {

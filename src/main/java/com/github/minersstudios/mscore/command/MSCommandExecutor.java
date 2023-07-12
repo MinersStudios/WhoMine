@@ -9,12 +9,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Represents a class which contains a bunch of methods for handling commands
  */
 public interface MSCommandExecutor extends CommandExecutor, TabCompleter {
+    List<String> EMPTY_LIST = Collections.emptyList();
 
     /**
      * Executes the given command, returning its success.

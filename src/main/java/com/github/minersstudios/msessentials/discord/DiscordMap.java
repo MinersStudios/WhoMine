@@ -103,10 +103,10 @@ public class DiscordMap {
         Params params = Params.create(uuid, nickname);
 
         this.map.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(params))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .ifPresent(this.map::remove);
+        .filter(entry -> entry.getValue().equals(params))
+        .map(Map.Entry::getKey)
+        .findFirst()
+        .ifPresent(this.map::remove);
 
         this.map.put(id, params);
         this.saveFile();
@@ -123,10 +123,10 @@ public class DiscordMap {
     public short generateCode(@NotNull PlayerInfo playerInfo) {
         if (this.codeMap.containsValue(playerInfo)) {
             this.codeMap.entrySet().stream()
-                    .filter(entry -> entry.getValue().equals(playerInfo))
-                    .map(Map.Entry::getKey)
-                    .findFirst()
-                    .ifPresent(this.codeMap::remove);
+            .filter(entry -> entry.getValue().equals(playerInfo))
+            .map(Map.Entry::getKey)
+            .findFirst()
+            .ifPresent(this.codeMap::remove);
         }
 
         short code = (short) (this.random.nextInt(9000) + 1000);

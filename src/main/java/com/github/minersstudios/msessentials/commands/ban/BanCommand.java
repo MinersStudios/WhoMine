@@ -37,6 +37,15 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permissionDefault = PermissionDefault.OP
 )
 public class BanCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("ban")
+            .then(
+                    argument("id/никнейм", StringArgumentType.word())
+                    .then(
+                            argument("время", StringArgumentType.word())
+                            .then(argument("причина", StringArgumentType.greedyString()))
+                    )
+            ).build();
 
     @Override
     public boolean onCommand(
@@ -128,13 +137,6 @@ public class BanCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return literal("ban")
-                .then(
-                        argument("id/никнейм", StringArgumentType.word())
-                        .then(
-                                argument("время", StringArgumentType.word())
-                                .then(argument("причина", StringArgumentType.greedyString()))
-                        )
-                ).build();
+        return COMMAND_NODE;
     }
 }

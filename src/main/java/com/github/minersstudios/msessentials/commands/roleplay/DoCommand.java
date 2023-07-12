@@ -5,8 +5,6 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
@@ -17,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.DO;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.sendRPEventMessage;
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -25,6 +25,10 @@ import static net.kyori.adventure.text.Component.text;
         description = "Описывает состояние вашего персонажа и объектов вокруг вас"
 )
 public class DoCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("do")
+            .then(argument("действие", StringArgumentType.greedyString()))
+            .build();
 
     @Override
     public boolean onCommand(
@@ -52,8 +56,6 @@ public class DoCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return LiteralArgumentBuilder.literal("do")
-                .then(RequiredArgumentBuilder.argument("действие", StringArgumentType.greedyString()))
-                .build();
+        return COMMAND_NODE;
     }
 }

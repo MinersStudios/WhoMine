@@ -41,6 +41,13 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
         }
 )
 public class MSEssentialsCommandHandler implements MSCommandExecutor {
+    private static final List<String> TAB = List.of("reload", "updateids", "updatemutes");
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("msessentials")
+            .then(literal("reload"))
+            .then(literal("updateids"))
+            .then(literal("updatemutes"))
+            .build();
 
     @Override
     public boolean onCommand(
@@ -49,7 +56,7 @@ public class MSEssentialsCommandHandler implements MSCommandExecutor {
             @NotNull String label,
             String @NotNull ... args
     ) {
-        if (args.length > 0) {
+        if (args.length == 1) {
             switch (args[0]) {
                 case "reload" -> ReloadCommand.runCommand(sender);
                 case "updateids" -> UpdateIdsCommand.runCommand(sender);
@@ -58,8 +65,6 @@ public class MSEssentialsCommandHandler implements MSCommandExecutor {
                     return false;
                 }
             }
-        } else {
-            return false;
         }
         return true;
     }
@@ -71,15 +76,11 @@ public class MSEssentialsCommandHandler implements MSCommandExecutor {
             @NotNull String label,
             String @NotNull ... args
     ) {
-        return List.of("reload", "updateids", "updatemutes");
+        return TAB;
     }
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return literal("msessentials")
-                .then(literal("reload"))
-                .then(literal("updateids"))
-                .then(literal("updatemutes"))
-                .build();
+        return COMMAND_NODE;
     }
 }

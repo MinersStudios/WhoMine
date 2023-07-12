@@ -39,6 +39,15 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permissionDefault = PermissionDefault.OP
 )
 public class MuteCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("mute")
+            .then(
+                    argument("id/никнейм", StringArgumentType.word())
+                    .then(
+                            argument("время", StringArgumentType.word())
+                            .then(argument("причина", StringArgumentType.greedyString()))
+                    )
+            ).build();
 
     @Override
     public boolean onCommand(
@@ -77,6 +86,7 @@ public class MuteCommand implements MSCommandExecutor {
                     .setMuted(true, date, reason, sender);
             return true;
         }
+
         if (args[0].length() > 2) {
             String name = args[0];
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(name);
@@ -138,13 +148,6 @@ public class MuteCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return literal("mute")
-                .then(
-                        argument("id/никнейм", StringArgumentType.word())
-                        .then(
-                                argument("время", StringArgumentType.word())
-                                .then(argument("причина", StringArgumentType.greedyString()))
-                        )
-                ).build();
+        return COMMAND_NODE;
     }
 }

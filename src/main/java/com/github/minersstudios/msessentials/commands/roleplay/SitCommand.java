@@ -5,8 +5,6 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
@@ -15,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -24,6 +24,10 @@ import static net.kyori.adventure.text.Component.text;
         description = "Сядь на картаны и порви жопу"
 )
 public class SitCommand implements MSCommandExecutor {
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("sit")
+            .then(argument("речь", StringArgumentType.greedyString()))
+            .build();
 
     @Override
     public boolean onCommand(
@@ -46,6 +50,7 @@ public class SitCommand implements MSCommandExecutor {
 
         String messageString = ChatUtils.extractMessage(args, 0);
         Component message = messageString.isEmpty() ? null : text(messageString);
+
         if (playerInfo.isSitting()) {
             playerInfo.unsetSitting(message);
         } else {
@@ -56,8 +61,6 @@ public class SitCommand implements MSCommandExecutor {
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return LiteralArgumentBuilder.literal("sit")
-                .then(RequiredArgumentBuilder.argument("речь", StringArgumentType.greedyString()))
-                .build();
+        return COMMAND_NODE;
     }
 }

@@ -2,7 +2,9 @@ package com.github.minersstudios.msessentials.player.map;
 
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -24,11 +26,10 @@ public class PlayerInfoMap {
     private final Map<UUID, PlayerInfo> map = new ConcurrentHashMap<>();
 
     /**
-     * Gets {@link PlayerInfo} of the player from the map,
-     * or creates new {@link PlayerInfo} and puts it in the map if it's not cached
+     * Gets {@link PlayerInfo} of the player from the map
      *
-     * @param uniqueId player {@link UUID}
-     * @param nickname player nickname
+     * @param uniqueId Player {@link UUID}
+     * @param nickname Player nickname
      * @return {@link PlayerInfo} of player
      */
     public @NotNull PlayerInfo get(
@@ -42,10 +43,9 @@ public class PlayerInfoMap {
     }
 
     /**
-     * Gets {@link PlayerInfo} of the player from the map,
-     * or creates new {@link PlayerInfo} and puts it in the map if it's not cached
+     * Gets {@link PlayerInfo} of the player from the map
      *
-     * @param player the player
+     * @param player The player
      * @return {@link PlayerInfo} of player
      */
     public @NotNull PlayerInfo get(@NotNull Player player) {
@@ -53,6 +53,22 @@ public class PlayerInfoMap {
                 player.getUniqueId(),
                 uuid -> new PlayerInfo(player)
         );
+    }
+
+    /**
+     * Gets {@link PlayerInfo} of the player from the map
+     *
+     * @param offlinePlayer The offline player
+     * @return {@link PlayerInfo} of player, or null if we have not seen a name for this player yet
+     */
+    @Contract("null -> null")
+    public @Nullable PlayerInfo get(@Nullable OfflinePlayer offlinePlayer) {
+        if (offlinePlayer == null) return null;
+
+        UUID uuid = offlinePlayer.getUniqueId();
+        String nickname = offlinePlayer.getName();
+
+        return nickname == null ? null : this.get(uuid, nickname);
     }
 
     /**
@@ -69,7 +85,7 @@ public class PlayerInfoMap {
     /**
      * Removes {@link UUID} with its {@link PlayerInfo} in the map
      *
-     * @param uniqueId cached {@link UUID} of {@link PlayerInfo}
+     * @param uniqueId Cached {@link UUID} of {@link PlayerInfo}
      * @return The previous {@link PlayerInfo} associated with {@link UUID},
      *         or null if there was no mapping for player's {@link UUID}
      */
@@ -80,7 +96,7 @@ public class PlayerInfoMap {
     /**
      * Removes {@link UUID} with its {@link PlayerInfo} in the map
      *
-     * @param playerInfo cached {@link PlayerInfo}
+     * @param playerInfo Cached {@link PlayerInfo}
      * @return The previous {@link PlayerInfo} associated with {@link UUID},
      *         or null if there was no mapping for player's {@link UUID}
      */

@@ -9,7 +9,6 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -22,6 +21,12 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
         permissionDefault = PermissionDefault.OP
 )
 public class MSCoreCommandHandler implements MSCommandExecutor {
+    private static final List<String> TAB = List.of("reloadlanguage", "reloadconfig");
+    private static final CommandNode<?> COMMAND_NODE =
+            literal("mscore")
+            .then(literal("reloadlanguage"))
+            .then(literal("reloadconfig"))
+            .build();
 
     @Override
     public boolean onCommand(
@@ -30,7 +35,7 @@ public class MSCoreCommandHandler implements MSCommandExecutor {
             @NotNull String label,
             String @NotNull ... args
     ) {
-        if (args.length > 0) {
+        if (args.length == 1) {
             switch (args[0]) {
                 case "reloadlanguage" -> ReloadLanguageCommand.runCommand(sender);
                 case "reloadconfig" -> ReloadConfigCommand.runCommand(sender);
@@ -38,8 +43,6 @@ public class MSCoreCommandHandler implements MSCommandExecutor {
                     return false;
                 }
             }
-        } else {
-            return false;
         }
         return true;
     }
@@ -51,14 +54,11 @@ public class MSCoreCommandHandler implements MSCommandExecutor {
             @NotNull String label,
             String @NotNull ... args
     ) {
-        return args.length == 1 ? List.of("reloadlanguage", "reloadconfig") : new ArrayList<>();
+        return args.length == 1 ? TAB : EMPTY_LIST;
     }
 
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
-        return literal("mscore")
-                .then(literal("reloadlanguage"))
-                .then(literal("reloadconfig"))
-                .build();
+        return COMMAND_NODE;
     }
 }
