@@ -1,6 +1,7 @@
 package com.github.minersstudios.mscore.utils;
 
-import com.github.minersstudios.mscore.MSCore;
+import com.destroystokyo.paper.profile.CraftPlayerProfile;
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.google.common.base.Charsets;
 import com.mojang.authlib.GameProfile;
@@ -34,11 +35,15 @@ import org.json.simple.JSONValue;
 
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public final class PlayerUtils {
     public static final @NotNull String UUID_URL = "https://api.mojang.com/users/profiles/minecraft/";
+
+    private static final Map<String, UUID> UUID_CACHE = new HashMap<>();
 
     @Contract(value = " -> fail")
     private PlayerUtils() {
@@ -220,8 +225,7 @@ public final class PlayerUtils {
      * @return Player UUID
      */
     public static @Nullable UUID getUUID(@NotNull String nickname) {
-        var map = MSCore.getCache().playerUUIDs;
-        UUID uuid = map.get(nickname);
+        UUID uuid = UUID_CACHE.get(nickname);
 
         if (uuid != null) return uuid;
 
@@ -248,7 +252,7 @@ public final class PlayerUtils {
             uuid = UUID.nameUUIDFromBytes(bytes);
         }
 
-        map.put(nickname, uuid);
+        UUID_CACHE.put(nickname, uuid);
         return uuid;
     }
 
@@ -286,6 +290,22 @@ public final class PlayerUtils {
         }
 
         return offlinePlayer;
+    }
+
+    /**
+     * Gets player profile by uuid and nickname
+     *
+     * @param uuid     Player unique id
+     * @param nickname Player nickname
+     * @return Player profile
+     * @throws IllegalArgumentException If uuid and nickname are both null or empty
+     */
+    @Contract("_, _ -> new")
+    public static @NotNull PlayerProfile craftProfile(
+            @NotNull UUID uuid,
+            @NotNull String nickname
+    ) throws IllegalArgumentException {
+        return new CraftPlayerProfile(uuid, nickname);
     }
 
     private static void unregisterEntity(

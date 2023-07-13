@@ -14,6 +14,6 @@ public class PlayerQuitListener implements Listener {
     public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
         event.quitMessage(null);
         if (event.getReason() == PlayerQuitEvent.QuitReason.KICKED) return;
-        PlayerInfo.fromOnlinePlayer(event.getPlayer()).initQuit();
+        PlayerInfo.fromOnlinePlayer(event.getPlayer()).handleQuit();
     }
 }

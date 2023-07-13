@@ -11,6 +11,7 @@ import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.player.skin.Skin;
 import com.github.minersstudios.msessentials.tabcompleters.AllPlayers;
 import com.github.minersstudios.msessentials.utils.IDUtils;
+import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -95,7 +96,8 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
             "remove",
             "add"
     );
-    private static final List<String> TAB_4_BAN_MUTE_INFO_REASON = List.of("неизвестно");
+    private static final List<String> TAB_4_BAN_INFO_REASON = List.of(MSPlayerUtils.DEFAULT_BAN_REASON_STRING);
+    private static final List<String> TAB_4_MUTE_INFO_REASON = List.of(MSPlayerUtils.DEFAULT_MUTE_REASON_STRING);
     private static final List<String> TAB_4_NAME_EMPTY = List.of("empty");
     private static final CommandNode<?> COMMAND_NODE =
             literal("player")
@@ -286,13 +288,23 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                             }
                         }
                     }
-                    case "ban-info", "mute-info" -> {
+                    case "ban-info" -> {
                         switch (args[2]) {
                             case "time" -> {
                                 return DateUtils.getTimeSuggestions(args[3]);
                             }
                             case "reason" -> {
-                                return TAB_4_BAN_MUTE_INFO_REASON;
+                                return TAB_4_BAN_INFO_REASON;
+                            }
+                        }
+                    }
+                    case "mute-info" -> {
+                        switch (args[2]) {
+                            case "time" -> {
+                                return DateUtils.getTimeSuggestions(args[3]);
+                            }
+                            case "reason" -> {
+                                return TAB_4_MUTE_INFO_REASON;
                             }
                         }
                     }

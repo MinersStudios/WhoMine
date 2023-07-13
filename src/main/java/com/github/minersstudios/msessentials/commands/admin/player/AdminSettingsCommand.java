@@ -190,7 +190,10 @@ public class AdminSettingsCommand {
                         String skinName = args[4];
                         String skinLink = args[5];
 
-                        if (playerFile.hasAvailableSkinSlot()) {
+                        if (
+                                playerFile.hasAvailableSkinSlot()
+                                && !playerFile.containsSkin(skinName)
+                        ) {
                             try {
                                 Skin skin = Skin.create(skinName, skinLink);
 

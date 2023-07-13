@@ -51,7 +51,7 @@ public class UnBanCommand implements MSCommandExecutor {
             return true;
         }
 
-        playerInfo.setBanned(false, sender);
+        playerInfo.pardon(sender);
         return true;
     }
 

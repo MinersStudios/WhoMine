@@ -57,7 +57,7 @@ public class PlayerJoinListener implements Listener {
                         PronounsMenu.open(player);
                     } else {
                         if (playerFile.getPlayerSettings().getResourcePackType() == ResourcePack.Type.NONE) {
-                            playerInfo.initJoin();
+                            playerInfo.handleJoin();
                         } else {
                             ResourcePack.setResourcePack(playerInfo);
                         }

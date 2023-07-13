@@ -21,7 +21,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiPredicate;
 
 /**
@@ -29,10 +31,12 @@ import java.util.function.BiPredicate;
  * <br><br>
  * @see #create(Component, Component, Component, Component, BiPredicate)
  */
-public class SignMenu {
+public final class SignMenu {
     private final List<Component> text;
     private BiPredicate<Player, String[]> response;
     private Location location;
+
+    public static final Map<Player, SignMenu> SIGN_MENU_MAP = new HashMap<>();
 
     private SignMenu(@NotNull List<Component> text) {
         this.text = text;
@@ -95,7 +99,7 @@ public class SignMenu {
         connection.send(ClientboundBlockEntityDataPacket.create(sign));
         connection.send(new ClientboundOpenSignEditorPacket(blockPos, true));
 
-        MSCore.getCache().signMenuMap.put(player, this);
+        SIGN_MENU_MAP.put(player, this);
     }
 
     /**
@@ -106,7 +110,7 @@ public class SignMenu {
      * @param player The player
      */
     public void close(@NotNull Player player) {
-        MSCore.getCache().signMenuMap.remove(player);
+        SIGN_MENU_MAP.remove(player);
         MSCore.getInstance().runTask(() -> {
             if (player.isOnline()) {
                 player.sendBlockChange(this.location, this.location.getBlock().getBlockData());

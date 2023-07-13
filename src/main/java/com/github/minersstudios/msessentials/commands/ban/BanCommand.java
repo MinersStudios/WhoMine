@@ -7,6 +7,7 @@ import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.map.IDMap;
+import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
@@ -62,7 +63,7 @@ public class BanCommand implements MSCommandExecutor {
 
         String reason = args.length > 2
                 ? ChatUtils.extractMessage(args, 2)
-                : "неизвестно";
+                : MSPlayerUtils.DEFAULT_BAN_REASON_STRING;
 
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 

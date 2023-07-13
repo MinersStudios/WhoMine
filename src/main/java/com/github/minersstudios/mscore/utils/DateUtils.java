@@ -1,6 +1,5 @@
 package com.github.minersstudios.mscore.utils;
 
-import com.github.minersstudios.mscore.MSCore;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,15 +19,18 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import static com.github.minersstudios.mscore.MSCore.getConfiguration;
 
 public final class DateUtils {
+    public static final String CHRONO_REGEX = "\\d+[smhdMy]";
+
     private static final ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
     private static final String DEFAULT_TIMEZONE = DEFAULT_ZONE_ID.toString();
-
-    public static final String CHRONO_REGEX = "\\d+[smhdMy]";
+    private static final Map<InetAddress, String> TIMEZONE_CACHE = new ConcurrentHashMap<>();
 
     @Contract(value = " -> fail")
     private DateUtils() {
@@ -65,8 +67,7 @@ public final class DateUtils {
      * @return Timezone from ip
      */
     public static @NotNull String getTimezone(@NotNull InetAddress ip) {
-        var timezoneCache = MSCore.getCache().timezoneCache;
-        String cachedTimezone = timezoneCache.get(ip);
+        String cachedTimezone = TIMEZONE_CACHE.get(ip);
 
         if (cachedTimezone != null) return cachedTimezone;
 
@@ -86,7 +87,7 @@ public final class DateUtils {
                     ? pageString.split("\"timezone\":\"")[1].split("\",")[0]
                     : DEFAULT_TIMEZONE;
 
-            timezoneCache.put(ip, timezone);
+            TIMEZONE_CACHE.put(ip, timezone);
 
             return timezone;
         } catch (IOException e) {

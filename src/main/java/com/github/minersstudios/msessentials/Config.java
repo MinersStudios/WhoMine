@@ -1,6 +1,7 @@
 package com.github.minersstudios.msessentials;
 
 import com.github.minersstudios.mscore.MSCore;
+import com.github.minersstudios.mscore.config.MSConfig;
 import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import com.github.minersstudios.msessentials.anomalies.Anomaly;
 import com.github.minersstudios.msessentials.anomalies.tasks.MainAnomalyActionsTask;
@@ -8,8 +9,6 @@ import com.github.minersstudios.msessentials.anomalies.tasks.ParticleTask;
 import com.github.minersstudios.msessentials.menu.CraftsMenu;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.ResourcePack;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,11 +24,9 @@ import java.util.logging.Logger;
 /**
  * Configuration loader class.
  * Use {@link MSEssentials#getConfiguration()} to get configuration instance.
- * Use {@link #reload()} to reload configuration and {@link #save(YamlConfiguration)} to save configuration.
+ * Use {@link #reload()} to reload configuration and {@link #save()} to save configuration.
  */
-public final class Config {
-    private final File file;
-
+public final class Config extends MSConfig {
     public long anomalyCheckRate;
     public long anomalyParticlesCheckRate;
     public boolean developerMode;
@@ -45,42 +42,41 @@ public final class Config {
     public double localChatRadius;
     public String mineSkinApiKey;
 
-    public Config() {
-        this.file = MSEssentials.getInstance().getConfigFile();
-        this.reload();
+    /**
+     * Configuration constructor, automatically loads the yaml configuration
+     * from the specified file and initializes the variables of the class
+     *
+     * @param file The config file, where the configuration is stored
+     * @throws IllegalArgumentException If the given file does not exist
+     */
+    public Config(@NotNull File file) throws IllegalArgumentException {
+        super(file);
     }
 
     /**
-     * @return The config file, where the configuration is stored
+     * Reloads config variables
      */
-    public @NotNull File getFile() {
-        return this.file;
-    }
-
-    /**
-     * Reloads the config file
-     */
-    public void reload() {
+    @Override
+    public void reloadVariables() {
         MSEssentials plugin = MSEssentials.getInstance();
+        Cache cache = MSEssentials.getCache();
         Logger logger = plugin.getLogger();
         File pluginFolder = plugin.getPluginFolder();
-        YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(this.file);
-        Cache cache = MSEssentials.getCache();
 
-        this.developerMode = yamlConfig.getBoolean("developer-mode", false);
-        this.anomalyCheckRate = yamlConfig.getLong("anomaly-check-rate", 100L);
-        this.anomalyParticlesCheckRate = yamlConfig.getLong("anomaly-particles-check-rate", 10L);
-        this.localChatRadius = yamlConfig.getDouble("chat.local.radius", 25);
-        this.discordGlobalChannelId = yamlConfig.getString("chat.global.discord-channel-id");
-        this.discordLocalChannelId = yamlConfig.getString("chat.local.discord-channel-id");
-        this.version = yamlConfig.getString("resource-pack.version");
-        this.user = yamlConfig.getString("resource-pack.user");
-        this.repo = yamlConfig.getString("resource-pack.repo");
-        this.fullFileName = yamlConfig.getString("resource-pack.full.file-name");
-        this.fullHash = yamlConfig.getString("resource-pack.full.hash");
-        this.liteFileName = yamlConfig.getString("resource-pack.lite.file-name");
-        this.liteHash = yamlConfig.getString("resource-pack.lite.hash");
-        this.mineSkinApiKey = yamlConfig.getString("skin.mine-skin-api-key", "");
+        this.developerMode = this.config.getBoolean("developer-mode", false);
+        this.anomalyCheckRate = this.config.getLong("anomaly-check-rate", 100L);
+        this.anomalyParticlesCheckRate = this.config.getLong("anomaly-particles-check-rate", 10L);
+        this.localChatRadius = this.config.getDouble("chat.local.radius", 25);
+        this.discordGlobalChannelId = this.config.getString("chat.global.discord-channel-id");
+        this.discordLocalChannelId = this.config.getString("chat.local.discord-channel-id");
+        this.version = this.config.getString("resource-pack.version");
+        this.user = this.config.getString("resource-pack.user");
+        this.repo = this.config.getString("resource-pack.repo");
+        this.fullFileName = this.config.getString("resource-pack.full.file-name");
+        this.fullHash = this.config.getString("resource-pack.full.hash");
+        this.liteFileName = this.config.getString("resource-pack.lite.file-name");
+        this.liteHash = this.config.getString("resource-pack.lite.hash");
+        this.mineSkinApiKey = this.config.getString("skin.mine-skin-api-key", "");
 
         if (!cache.bukkitTasks.isEmpty()) {
             cache.bukkitTasks.forEach(BukkitTask::cancel);
@@ -153,18 +149,5 @@ public final class Config {
 
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
-    }
-
-    /**
-     * Saves the configuration to the config file
-     *
-     * @param configuration The configuration to save
-     */
-    public void save(@NotNull YamlConfiguration configuration) {
-        try {
-            configuration.save(MSEssentials.getInstance().getConfigFile());
-        } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving the config!", e);
-        }
     }
 }

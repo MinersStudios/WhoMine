@@ -3,11 +3,12 @@ package com.github.minersstudios.msessentials.listeners.player;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
-import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.utils.SignMenu;
 import com.github.minersstudios.msessentials.MSEssentials;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import static com.github.minersstudios.mscore.utils.SignMenu.SIGN_MENU_MAP;
 
 public class PlayerUpdateSignListener extends PacketAdapter {
     private final MSEssentials plugin;
@@ -20,9 +21,8 @@ public class PlayerUpdateSignListener extends PacketAdapter {
     @Override
     public void onPacketReceiving(@NotNull PacketEvent event) {
         Player player = event.getPlayer();
-        var signs = MSCore.getCache().signMenuMap;
-        if (signs.isEmpty() || !signs.containsKey(player)) return;
-        SignMenu menu = signs.remove(player);
+        if (SIGN_MENU_MAP.isEmpty() || !SIGN_MENU_MAP.containsKey(player)) return;
+        SignMenu menu = SIGN_MENU_MAP.remove(player);
 
         event.setCancelled(true);
 

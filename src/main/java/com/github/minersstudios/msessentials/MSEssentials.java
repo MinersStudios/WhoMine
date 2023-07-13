@@ -75,8 +75,10 @@ public final class MSEssentials extends MSPlugin {
             );
         });
 
-        config = new Config();
+        config = new Config(this.getConfigFile());
 
+        config.reload();
+        System.out.println(config.toString());
         this.setLoadedCustoms(true);
 
         this.runTaskTimerAsync(
@@ -94,7 +96,7 @@ public final class MSEssentials extends MSPlugin {
             .filter(entry -> entry.getValue().getExpiration().isBefore(currentInstant))
             .forEach(entry -> {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());
-                PlayerInfo.fromProfile(player.getUniqueId(), Objects.requireNonNull(player.getName())).setMuted(false, null);
+                PlayerInfo.fromProfile(player.getUniqueId(), Objects.requireNonNull(player.getName())).unmute(null);
             });
         }, 0L, 50L);
 
@@ -119,7 +121,7 @@ public final class MSEssentials extends MSPlugin {
                             return;
                         }
 
-                        PlayerInfo.fromProfile(uuid, name).setBanned(false);
+                        PlayerInfo.fromProfile(uuid, name).pardon(null);
                     });
         }, 0L, 6000L);
     }

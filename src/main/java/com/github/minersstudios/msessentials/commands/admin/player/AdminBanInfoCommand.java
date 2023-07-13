@@ -1,10 +1,10 @@
 package com.github.minersstudios.msessentials.commands.admin.player;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
-import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -114,7 +114,8 @@ public class AdminBanInfoCommand {
                 }
 
                 Date date = Date.from(instant);
-                BanEntry banEntry = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(playerInfo.getNickname());
+                BanList<PlayerProfile> banList = Bukkit.getBanList(BanList.Type.PROFILE);
+                var banEntry = banList.getBanEntry(playerInfo.getPlayerProfile());
 
                 playerInfo.setBannedTo(date);
 

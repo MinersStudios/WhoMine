@@ -2,8 +2,8 @@ package com.github.minersstudios.msessentials.listeners.player;
 
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.Config;
+import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
@@ -11,7 +11,6 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -74,7 +73,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
             );
         }
 
-        if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) {
+        if (!playerInfo.isWhiteListed()) {
             event.disallow(
                     AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST,
                     leaveMessageFormat.args(

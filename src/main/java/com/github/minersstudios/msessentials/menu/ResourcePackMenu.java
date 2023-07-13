@@ -103,7 +103,7 @@ public class ResourcePackMenu {
                     player.closeInventory();
 
                     if (playerInfo.isInWorldDark()) {
-                        playerInfo.initJoin();
+                        playerInfo.handleJoin();
                     }
                 });
 

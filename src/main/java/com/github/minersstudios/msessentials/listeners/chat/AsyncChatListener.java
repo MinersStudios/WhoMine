@@ -30,7 +30,7 @@ public class AsyncChatListener implements Listener {
         if (playerInfo.isInWorldDark() || !playerInfo.isAuthenticated()) return;
 
         if (playerInfo.isMuted() && playerInfo.getMutedTo().isBefore(Instant.now())) {
-            playerInfo.setMuted(false, null);
+            playerInfo.unmute(null);
         }
 
         if (playerInfo.isMuted()) {

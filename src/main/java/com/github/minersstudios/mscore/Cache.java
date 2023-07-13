@@ -3,17 +3,16 @@ package com.github.minersstudios.mscore;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.mscore.collections.DualMap;
 import com.github.minersstudios.mscore.collections.HashDualMap;
-import com.github.minersstudios.mscore.utils.SignMenu;
 import com.github.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.github.minersstudios.msitem.items.CustomItem;
 import com.github.minersstudios.msitem.items.RenameableItem;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.InetAddress;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Cache for all custom data
@@ -28,7 +27,4 @@ public final class Cache {
     public final @NotNull DualMap<String, Integer, RenameableItem> renameableItemMap = new HashDualMap<>();
     public final @NotNull List<RenameableItem> renameableItemsMenu = new ArrayList<>();
     public final @NotNull List<Recipe> customItemRecipes = new ArrayList<>();
-    public final Map<InetAddress, String> timezoneCache = new ConcurrentHashMap<>();
-    public final Map<String, UUID> playerUUIDs = new HashMap<>();
-    public final Map<Player, SignMenu> signMenuMap = new HashMap<>();
 }

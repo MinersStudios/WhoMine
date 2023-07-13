@@ -87,7 +87,7 @@ public class ResourcePack {
         Type.LITE.resourcePack = new ResourcePack(liteHash, liteUrl);
 
         if (!hasNoUpdates) {
-            YamlConfiguration configYaml = YamlConfiguration.loadConfiguration(config.getFile());
+            YamlConfiguration configYaml = config.getConfig();
 
             configYaml.set("resource-pack.version", tagName);
             configYaml.set("resource-pack.full.hash", fullHash);
@@ -96,7 +96,7 @@ public class ResourcePack {
             deleteResourcePackFile(config.fullFileName);
             deleteResourcePackFile(config.liteFileName);
 
-            config.save(configYaml);
+            config.save();
         }
     }
 

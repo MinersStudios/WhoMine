@@ -99,7 +99,7 @@ public final class LanguageFile {
      * @return TranslatableComponent with translation from {@link #registry} or key if translation is not found
      * @see #renderTranslation(String)
      */
-    public static @NotNull Component renderTranslationComponent(@NotNull String key) {
+    public static @NotNull TranslatableComponent renderTranslationComponent(@NotNull String key) {
         return Component.translatable(key, renderTranslation(key));
     }
 

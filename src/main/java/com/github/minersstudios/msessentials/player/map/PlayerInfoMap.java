@@ -2,6 +2,7 @@ package com.github.minersstudios.msessentials.player.map;
 
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -49,10 +50,7 @@ public class PlayerInfoMap {
      * @return {@link PlayerInfo} of player
      */
     public @NotNull PlayerInfo get(@NotNull Player player) {
-        return this.map.computeIfAbsent(
-                player.getUniqueId(),
-                uuid -> new PlayerInfo(player)
-        );
+        return this.get(player.getUniqueId(), player.getName());
     }
 
     /**
@@ -68,7 +66,7 @@ public class PlayerInfoMap {
         UUID uuid = offlinePlayer.getUniqueId();
         String nickname = offlinePlayer.getName();
 
-        return nickname == null ? null : this.get(uuid, nickname);
+        return StringUtils.isBlank(nickname) ? null : this.get(uuid, nickname);
     }
 
     /**

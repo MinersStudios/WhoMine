@@ -167,7 +167,7 @@ public class RegistrationProcess {
         if (playerSettings.getResourcePackType() == ResourcePack.Type.NULL) {
             MSEssentials.getInstance().runTask(() -> ResourcePackMenu.open(this.player));
         } else if (playerSettings.getResourcePackType() == ResourcePack.Type.NONE) {
-            MSEssentials.getInstance().runTask(this.playerInfo::initJoin);
+            MSEssentials.getInstance().runTask(this.playerInfo::handleJoin);
         } else {
             ResourcePack.setResourcePack(this.playerInfo);
         }

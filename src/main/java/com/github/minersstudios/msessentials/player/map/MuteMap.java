@@ -30,14 +30,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Mute map with {@link UUID} and its {@link Params}.
+ * Mute map with {@link UUID} and its {@link MuteEntry}.
  * All mutes stored in the "config/minersstudios/MSEssentials/muted_players.json" file.
  *
- * @see Params
+ * @see MuteEntry
  */
 public class MuteMap {
     private final File file;
-    private final Map<UUID, Params> map = new ConcurrentHashMap<>();
+    private final Map<UUID, MuteEntry> map = new ConcurrentHashMap<>();
 
     private static final Gson GSON =
             new GsonBuilder()
@@ -46,7 +46,7 @@ public class MuteMap {
             .create();
 
     /**
-     * Mute map with {@link UUID} and its {@link Params}.
+     * Mute map with {@link UUID} and its {@link MuteEntry}.
      * Loads mutes from the file.
      */
     public MuteMap() {
@@ -55,12 +55,12 @@ public class MuteMap {
     }
 
     /**
-     * Gets mute parameters
+     * Gets mute entry of the player from the map
      *
      * @param player Probably muted player
      * @return Creation and expiration date, reason and source of mute
      */
-    public @Nullable Params getParams(@NotNull OfflinePlayer player) {
+    public @Nullable MuteEntry getMuteEntry(@NotNull OfflinePlayer player) {
         return this.map.get(player.getUniqueId());
     }
 
@@ -90,7 +90,7 @@ public class MuteMap {
         Instant created = Instant.now();
         UUID uuid = player.getUniqueId();
 
-        this.map.put(uuid, Params.create(created, expiration, reason, source));
+        this.map.put(uuid, MuteEntry.create(created, expiration, reason, source));
         this.saveFile();
     }
 
@@ -137,7 +137,7 @@ public class MuteMap {
     /**
      * @return An unmodifiable view of the mappings contained in this map
      */
-    public @NotNull @UnmodifiableView Set<Map.Entry<UUID, Params>> entrySet() {
+    public @NotNull @UnmodifiableView Set<Map.Entry<UUID, MuteEntry>> entrySet() {
         return Set.copyOf(this.map.entrySet());
     }
 
@@ -151,9 +151,9 @@ public class MuteMap {
             this.createFile();
         } else {
             try {
-                Type mapType = new TypeToken<Map<UUID, Params>>() {}.getType();
+                Type mapType = new TypeToken<Map<UUID, MuteEntry>>() {}.getType();
                 String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
-                Map<UUID, Params> jsonMap = GSON.fromJson(json, mapType);
+                Map<UUID, MuteEntry> jsonMap = GSON.fromJson(json, mapType);
 
                 if (jsonMap == null) {
                     this.createBackupFile();
@@ -213,95 +213,6 @@ public class MuteMap {
             GSON.toJson(this.map, writer);
         } catch (IOException e) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to save muted players", e);
-        }
-    }
-
-    /**
-     * Mute parameters, used in {@link MuteMap}
-     * <br>
-     * Parameters:
-     * <ul>
-     *     <li>created - date when the player was muted</li>
-     *     <li>expiration - date when the player will be unmuted</li>
-     *     <li>reason - mute reason</li>
-     *     <li>source - mute source, could be a player's nickname or CONSOLE</li>
-     * </ul>
-     *
-     * @see MuteMap
-     */
-    public static class Params {
-        private final Instant created;
-        private final Instant expiration;
-        private final String reason;
-        private final String source;
-
-        private Params(
-                Instant created,
-                Instant expiration,
-                String reason,
-                String source
-        ) {
-            this.created = created;
-            this.expiration = expiration;
-            this.reason = reason;
-            this.source = source;
-        }
-
-        /**
-         * Creates a new {@link Params} with the specified parameters
-         *
-         * @param created    Date when the player was muted
-         * @param expiration Date when the player will be unmuted
-         * @param reason     Mute reason
-         * @param source     Mute source, could be a player's nickname or CONSOLE
-         * @return New {@link Params}
-         */
-        @Contract(value = "_, _, _, _ -> new")
-        public static @NotNull Params create(
-                @NotNull Instant created,
-                @NotNull Instant expiration,
-                @NotNull String reason,
-                @NotNull String source
-        ) {
-            return new Params(created, expiration, reason, source);
-        }
-
-        /**
-         * @return Date when the player was muted
-         */
-        public Instant getCreated() {
-            return this.created;
-        }
-
-        /**
-         * @return Date when the player will be unmuted
-         */
-        public Instant getExpiration() {
-            return this.expiration;
-        }
-
-        /**
-         * @return Mute reason
-         */
-        public String getReason() {
-            return this.reason;
-        }
-
-        /**
-         * @return Mute source, could be a player's nickname or CONSOLE
-         */
-        public String getSource() {
-            return this.source;
-        }
-
-        /**
-         * @return True if created, expiration, reason, source are not null
-         */
-        public boolean isValidate() {
-            return this.created != null
-                    && this.expiration != null
-                    && this.reason != null
-                    && this.source != null;
         }
     }
 }

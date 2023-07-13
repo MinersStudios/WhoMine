@@ -30,7 +30,7 @@ public class PlayerResourcePackStatusListener implements Listener {
             case SUCCESSFULLY_LOADED -> {
                 ChatUtils.sendFine(Component.translatable("ms.resource_pack.successfully_loaded", nickname));
                 if (playerInfo.isInWorldDark()) {
-                    playerInfo.initJoin();
+                    playerInfo.handleJoin();
                 }
             }
             case FAILED_DOWNLOAD -> {

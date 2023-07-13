@@ -11,19 +11,16 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class MSCore extends MSPlugin {
     private static MSCore singleton;
-    private static Cache cache;
     private static Config config;
 
-    @Override
-    public void load() {
-        cache = new Cache();
-    }
+    private static final Cache CACHE = new Cache();
 
     @Override
     public void enable() {
         singleton = this;
-        config = new Config();
+        config = new Config(this.getConfigFile());
 
+        config.reload();
         LanguageFile.loadLanguage(config.languageUrl, config.languageCode);
     }
 
@@ -32,15 +29,26 @@ public final class MSCore extends MSPlugin {
         LanguageFile.unloadLanguage();
     }
 
-    public static @NotNull MSCore getInstance() {
+    /**
+     * @return The instance of the plugin,
+     *         or null if the plugin is not enabled
+     */
+    public static @NotNull MSCore getInstance() throws NullPointerException {
         return singleton;
     }
 
-    public static @NotNull Cache getCache() {
-        return cache;
+    /**
+     * @return The configuration of the plugin,
+     *         or null if the plugin is not enabled
+     */
+    public static @NotNull Config getConfiguration() throws NullPointerException {
+        return config;
     }
 
-    public static @NotNull Config getConfiguration() {
-        return config;
+    /**
+     * @return The cache of the plugin
+     */
+    public static @NotNull Cache getCache() {
+        return CACHE;
     }
 }

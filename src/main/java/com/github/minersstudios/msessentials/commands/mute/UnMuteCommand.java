@@ -8,6 +8,7 @@ import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.map.IDMap;
+import com.github.minersstudios.msessentials.player.map.MuteEntry;
 import com.github.minersstudios.msessentials.player.map.MuteMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -56,7 +57,7 @@ public class UnMuteCommand implements MSCommandExecutor {
             return true;
         }
 
-        playerInfo.setMuted(false, sender);
+        playerInfo.unmute(sender);
         return true;
     }
 
@@ -78,8 +79,8 @@ public class UnMuteCommand implements MSCommandExecutor {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
                     String nickname = offlinePlayer.getName();
 
-                    MuteMap.Params params = muteMap.getParams(offlinePlayer);
-                    if (params != null && params.getExpiration().isBefore(Instant.now())) continue;
+                    MuteEntry muteEntry = muteMap.getMuteEntry(offlinePlayer);
+                    if (muteEntry != null && muteEntry.getExpiration().isBefore(Instant.now())) continue;
 
                     int id = idMap.getID(uuid, false, false);
                     if (id != -1) {
