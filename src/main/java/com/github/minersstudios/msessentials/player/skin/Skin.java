@@ -21,11 +21,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Skin class to create skins from values and signatures or image links.
@@ -109,6 +114,63 @@ public class Skin {
     }
 
     /**
+     * Serializes the skin into a map.
+     * The map contains the name, value, and signature of the skin.
+     * Used to save the skin to a yaml file.
+     *
+     * @return A map containing the name, value, and signature of the skin
+     * @see #deserialize(String)
+     */
+    public static @NotNull Map<String, String> serialize(@NotNull Skin skin) {
+        Map<String, String> serialized = new HashMap<>();
+
+        serialized.put("name", skin.getName());
+        serialized.put("value", skin.getValue());
+        serialized.put("signature", skin.getSignature());
+        return serialized;
+    }
+
+    /**
+     * Deserializes a skin from a map.
+     * The map must contain the name, value, and signature of the skin.
+     * Used to load the skin from a yaml file.
+     *
+     * @param string Map string containing the name, value, and signature of the skin.
+     *               Example of string : "name=a, value=b, signature=c"
+     * @return The skin if the map contains the name, value, and signature of the skin
+     *         and the skin is valid, otherwise null
+     * @see #serialize(Skin)
+     * @see #create(String, String, String)
+     */
+    public static @Nullable Skin deserialize(@NotNull String string) {
+        Map<String, String> map = new HashMap<>();
+        Matcher matcher = Pattern.compile("(name|value|signature)=([^,}]+)").matcher(string);
+
+        while (matcher.find()) {
+            map.put(matcher.group(1).toLowerCase(Locale.ROOT), matcher.group(2));
+        }
+
+        if (map.size() != 3) return null;
+
+        String name = map.get("name");
+        String value = map.get("value");
+        String signature = map.get("signature");
+
+        if (
+                name == null
+                || value == null
+                || signature == null
+        ) return null;
+
+        try {
+            return Skin.create(name, value, signature);
+        } catch (IllegalArgumentException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to deserialize skin: " + name, e);
+            return null;
+        }
+    }
+
+    /**
      * @return The name of the skin
      */
     public @NotNull String getName() {
@@ -149,8 +211,10 @@ public class Skin {
      * @param skin Skin to be checked
      * @return True if the skin's name, value, and signature are equal
      */
-    public boolean equals(@NotNull Skin skin) {
-        return this.name.equalsIgnoreCase(skin.getName())
+    @Contract("null -> false")
+    public boolean equals(@Nullable Skin skin) {
+        return skin != null
+                && this.name.equalsIgnoreCase(skin.getName())
                 && this.value.equals(skin.getValue())
                 && this.signature.equals(skin.getSignature());
     }

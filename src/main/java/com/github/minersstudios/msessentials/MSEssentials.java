@@ -13,6 +13,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
+import org.bukkit.ban.ProfileBanList;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
@@ -24,10 +25,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public final class MSEssentials extends MSPlugin {
     private static MSEssentials singleton;
@@ -78,7 +76,6 @@ public final class MSEssentials extends MSPlugin {
         config = new Config(this.getConfigFile());
 
         config.reload();
-        System.out.println(config.toString());
         this.setLoadedCustoms(true);
 
         this.runTaskTimerAsync(
@@ -101,10 +98,11 @@ public final class MSEssentials extends MSPlugin {
         }, 0L, 50L);
 
         this.runTaskTimerAsync(() -> {
-            BanList<PlayerProfile> banned = server.getBanList(BanList.Type.PROFILE);
+            ProfileBanList banList = server.getBanList(BanList.Type.PROFILE);
+            Set<BanEntry<PlayerProfile>> entries = banList.getEntries();
             Instant currentInstant = Instant.now();
 
-            banned.getEntries().stream()
+            entries.stream()
                     .filter(entry -> {
                         Date expiration = entry.getExpiration();
                         return !ignoreBanSet.contains(entry)

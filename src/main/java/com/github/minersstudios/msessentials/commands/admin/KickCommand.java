@@ -5,7 +5,6 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.tabcompleters.AllLocalPlayers;
-import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
@@ -17,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslationComponent;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
@@ -47,7 +47,7 @@ public class KickCommand implements MSCommandExecutor {
 
         Component reason = args.length > 1
                 ? text(ChatUtils.extractMessage(args, 1))
-                : MSPlayerUtils.DEFAULT_KICK_REASON;
+                : renderTranslationComponent("ms.command.kick.default_reason");
 
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 

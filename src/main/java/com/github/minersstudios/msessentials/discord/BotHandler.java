@@ -40,7 +40,6 @@ public class BotHandler {
         this.user = event.getAuthor();
         this.userId = this.user.getIdLong();
         this.playerInfo = PlayerInfo.fromDiscord(this.userId);
-        this.handleMessage(event.getMessage());
     }
 
     public @NotNull User getUser() {

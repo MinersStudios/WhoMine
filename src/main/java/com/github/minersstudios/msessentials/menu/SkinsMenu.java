@@ -7,6 +7,7 @@ import com.github.minersstudios.mscore.inventory.actions.ButtonClickAction;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.skin.Skin;
+import com.github.minersstudios.msessentials.utils.MessageUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,8 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
 import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslationComponent;
 import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 public class SkinsMenu {
     private static final Component TITLE = Component.translatable("ms.menu.skins.title", ChatUtils.DEFAULT_STYLE);
@@ -73,10 +77,30 @@ public class SkinsMenu {
         ButtonClickAction deleteClickAction = (event, inv) -> {
             Player player = (Player) event.getWhoClicked();
             PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
-            int selectedPartIndex = (int) inv.args().get(0);
 
             try {
-                playerInfo.getPlayerFile().removeSkin(selectedPartIndex);
+                Skin selectedSkin = playerInfo.getPlayerFile().getSkin((int) inv.args().get(0));
+                if (selectedSkin == null) return;
+                Component skinName = text(selectedSkin.getName());
+
+                playerInfo.getPlayerFile().removeSkin(selectedSkin);
+                ChatUtils.sendFine(
+                        player,
+                        translatable(
+                                "ms.discord.skin.successfully_removed.minecraft",
+                                skinName
+                        )
+                );
+                playerInfo.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+                        renderTranslation(
+                                translatable(
+                                        "ms.discord.skin.successfully_removed",
+                                        skinName,
+                                        playerInfo.getDefaultName(),
+                                        text(playerInfo.getNickname())
+                                )
+                        )
+                ));
             } catch (Exception e) {
                 ChatUtils.sendError(player, Component.translatable("ms.error.something_went_wrong"));
             }

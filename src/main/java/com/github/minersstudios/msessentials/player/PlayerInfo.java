@@ -18,7 +18,6 @@ import com.github.minersstudios.msessentials.utils.MessageUtils;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import fr.xephi.authme.api.v3.AuthMeApi;
-import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -46,6 +45,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
+import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslationComponent;
 import static com.github.minersstudios.msessentials.MSEssentials.*;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.ME;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.TODO;
@@ -522,18 +522,23 @@ public class PlayerInfo {
     /**
      * Sets player skin
      *
-     * @param skin Skin to set
+     * @param skin Skin to set, null to reset
      */
-    public void setSkin(@NotNull Skin skin) {
+    public void setSkin(@Nullable Skin skin) {
         Player player = this.getOnlinePlayer();
 
         if (player == null) return;
 
-        PlayerUtils.setSkin(
-                player,
-                skin.getValue(),
-                skin.getSignature()
-        );
+        if (skin == null) {
+            PlayerUtils.setSkin(player, null, null);
+        } else {
+            PlayerUtils.setSkin(
+                    player,
+                    skin.getValue(),
+                    skin.getSignature()
+            );
+        }
+
         this.playerFile.getPlayerSettings().setSkin(skin);
         this.playerFile.save();
     }
@@ -785,6 +790,26 @@ public class PlayerInfo {
                 ChatUtils.sendWarning(player, translatable("ms.command.unmute.receiver.message"));
             }
         }
+
+        if (this.isLinked()) {
+            this.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+                    renderTranslation(
+                            value
+                            ? translatable(
+                                    "ms.discord.muted",
+                                    this.defaultName,
+                                    text(this.nickname),
+                                    text(reason),
+                                    text(DateUtils.getSenderDate(date, player))
+                            )
+                            : translatable(
+                                    "ms.discord.unmuted",
+                                    this.defaultName,
+                                    text(this.nickname)
+                            )
+                    )
+            ));
+        }
     }
 
     /**
@@ -810,7 +835,7 @@ public class PlayerInfo {
 
     /**
      * @return The ban reason of the player from {@link BanList.Type#PROFILE}
-     *         or {@link MSPlayerUtils#DEFAULT_BAN_REASON} if the reason is null
+     *         or "ms.command.ban.default_reason" if the reason is null
      * @throws IllegalStateException If the player is not banned,
      *                               check {@link #isBanned()} first
      * @see BanEntry#getReason()
@@ -821,7 +846,7 @@ public class PlayerInfo {
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
 
         String reason = banEntry.getReason();
-        return reason == null ? MSPlayerUtils.DEFAULT_BAN_REASON : text(reason);
+        return reason == null ? renderTranslationComponent("ms.command.ban.default_reason") : text(reason);
     }
 
     /**
@@ -1054,35 +1079,23 @@ public class PlayerInfo {
         }
 
         if (this.isLinked()) {
-            long id = this.getDiscordID();
-
-            getInstance().runTaskAsync(
-                    () -> {
-                        JDA jda = DiscordUtil.getJda();
-                        User user = jda.getUserById(id);
-
-                        if (user != null) {
-                            user.openPrivateChannel().complete().sendMessageEmbeds(
-                                    MessageUtils.craftEmbed(
-                                            renderTranslation(
-                                                    value
-                                                    ? translatable(
-                                                            "ms.discord.unbanned",
-                                                            this.defaultName,
-                                                            text(commandSender.getName()),
-                                                            text(reason),
-                                                            text(DateUtils.getSenderDate(date, player))
-                                                    )
-                                                    : translatable(
-                                                            "ms.discord.banned",
-                                                            this.defaultName,
-                                                            text(commandSender.getName())
-                                                    )
-                                            ))
-                            ).queue();
-                        }
-                    }
-            );
+            this.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+                    renderTranslation(
+                            value
+                            ? translatable(
+                                    "ms.discord.banned",
+                                    this.defaultName,
+                                    text(this.nickname),
+                                    text(reason),
+                                    text(DateUtils.getSenderDate(date, player))
+                            )
+                            : translatable(
+                                    "ms.discord.unbanned",
+                                    this.defaultName,
+                                    text(this.nickname)
+                            )
+                    )
+            ));
         }
     }
 
@@ -1298,7 +1311,7 @@ public class PlayerInfo {
     public void createPlayerFile() {
         if (this.playerFile.exists()) return;
 
-        this.playerFile.getYamlConfiguration().set("name.nickname", this.nickname);
+        this.playerFile.getConfig().set("name.nickname", this.nickname);
 
         if (this.getOnlinePlayer() != null) {
             this.playerFile.addIp(

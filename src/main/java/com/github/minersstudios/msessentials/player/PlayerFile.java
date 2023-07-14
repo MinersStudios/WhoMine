@@ -5,6 +5,7 @@ import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.skin.Skin;
 import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -19,10 +20,7 @@ import org.jetbrains.annotations.Range;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
+import java.util.*;
 
 import static com.github.minersstudios.msessentials.MSEssentials.getInstance;
 
@@ -34,8 +32,8 @@ import static com.github.minersstudios.msessentials.MSEssentials.getInstance;
  * @see PlayerInfo
  */
 public class PlayerFile {
-    private final @NotNull File dataFile;
-    private final @NotNull YamlConfiguration yamlConfiguration;
+    private final @NotNull File file;
+    private final @NotNull YamlConfiguration config;
 
     private @NotNull PlayerName playerName;
     private @NotNull Pronouns pronouns;
@@ -49,31 +47,31 @@ public class PlayerFile {
     private @Nullable Location lastLeaveLocation;
     private @Nullable Location lastDeathLocation;
 
-    public PlayerFile(
-            @NotNull File dataFile,
-            @NotNull YamlConfiguration yamlConfiguration
+    private PlayerFile(
+            @NotNull File file,
+            @NotNull YamlConfiguration config
     ) {
-        this.dataFile = dataFile;
-        this.yamlConfiguration = yamlConfiguration;
+        this.file = file;
+        this.config = config;
 
         this.playerName = PlayerName.create(
-                yamlConfiguration.getString("name.nickname", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.nickname"))),
-                yamlConfiguration.getString("name.first-name", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.first_name"))),
-                yamlConfiguration.getString("name.last-name", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.last_name"))),
-                yamlConfiguration.getString("name.patronymic", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.patronymic")))
+                config.getString("name.nickname", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.nickname"))),
+                config.getString("name.first-name", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.first_name"))),
+                config.getString("name.last-name", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.last_name"))),
+                config.getString("name.patronymic", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.patronymic")))
         );
-        this.pronouns = Pronouns.valueOf(yamlConfiguration.getString("pronouns", "HE"));
-        this.ipList = yamlConfiguration.getStringList("ip-list");
-        this.gameMode = GameMode.valueOf(yamlConfiguration.getString("game-params.game-mode", "SURVIVAL"));
-        this.health = yamlConfiguration.getDouble("game-params.health", 20.0d);
-        this.air = yamlConfiguration.getInt("game-params.air", 300);
-        this.firstJoin = Instant.ofEpochMilli(yamlConfiguration.getLong("first-join", System.currentTimeMillis()));
+        this.pronouns = Pronouns.valueOf(config.getString("pronouns", "HE"));
+        this.ipList = config.getStringList("ip-list");
+        this.gameMode = GameMode.valueOf(config.getString("game-params.game-mode", "SURVIVAL"));
+        this.health = config.getDouble("game-params.health", 20.0d);
+        this.air = config.getInt("game-params.air", 300);
+        this.firstJoin = Instant.ofEpochMilli(config.getLong("first-join", System.currentTimeMillis()));
 
         World overworld = MSEssentials.getOverworld();
         Location spawnLocation = overworld.getSpawnLocation();
 
-        ConfigurationSection lastLeaveSection = this.yamlConfiguration.getConfigurationSection("locations.last-leave-location");
-        String lastLeaveWorldName = this.yamlConfiguration.getString("locations.last-leave-location.world", "");
+        ConfigurationSection lastLeaveSection = this.config.getConfigurationSection("locations.last-leave-location");
+        String lastLeaveWorldName = this.config.getString("locations.last-leave-location.world", "");
         World lastLeaveWorld = Bukkit.getWorld(lastLeaveWorldName);
         this.lastLeaveLocation = lastLeaveSection == null
                 ? null
@@ -86,8 +84,8 @@ public class PlayerFile {
                 (float) lastLeaveSection.getDouble("pitch", spawnLocation.getPitch())
         );
 
-        ConfigurationSection lastDeathSection = this.yamlConfiguration.getConfigurationSection("locations.last-death-location");
-        String lastDeathWorldName = this.yamlConfiguration.getString("locations.last-death-location.world", "");
+        ConfigurationSection lastDeathSection = this.config.getConfigurationSection("locations.last-death-location");
+        String lastDeathWorldName = this.config.getString("locations.last-death-location.world", "");
         World lastDeathWorld = Bukkit.getWorld(lastDeathWorldName);
         this.lastDeathLocation = lastDeathSection == null
                 ? null
@@ -100,26 +98,7 @@ public class PlayerFile {
                 (float) lastDeathSection.getDouble("pitch")
         );
 
-        ConfigurationSection skinsSection = this.yamlConfiguration.getConfigurationSection("skins");
-        if (skinsSection != null) {
-            for (var key : skinsSection.getKeys(false)) {
-                ConfigurationSection skinSection = skinsSection.getConfigurationSection(key);
-
-                if (skinSection == null) continue;
-
-                String name = skinSection.getString("name");
-                String value = skinSection.getString("value");
-                String signature = skinSection.getString("signature");
-
-                if (name == null || value == null || signature == null) continue;
-
-                try {
-                    this.skins.add(Skin.create(name, value, signature));
-                } catch (IllegalArgumentException e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Can't load skin : \"" + name + "\" for player : " + this.playerName.getNickname(), e);
-                }
-            }
-        }
+        this.skins.addAll(this.deserializeSkinsSection());
 
         this.playerSettings = new PlayerSettings(this);
     }
@@ -134,11 +113,11 @@ public class PlayerFile {
     }
 
     public @NotNull File getFile() {
-        return this.dataFile;
+        return this.file;
     }
 
-    public @NotNull YamlConfiguration getYamlConfiguration() {
-        return this.yamlConfiguration;
+    public @NotNull YamlConfiguration getConfig() {
+        return this.config;
     }
 
     public @NotNull PlayerName getPlayerName() {
@@ -151,7 +130,7 @@ public class PlayerFile {
     }
 
     public void updateName() {
-        ConfigurationSection section = this.yamlConfiguration.createSection("name");
+        ConfigurationSection section = this.config.createSection("name");
         section.set("nickname", this.playerName.getNickname());
         section.set("first-name", this.playerName.getFirstName());
         section.set("last-name", this.playerName.getLastName());
@@ -159,9 +138,9 @@ public class PlayerFile {
     }
 
     public boolean isNoName() {
-        return this.yamlConfiguration.getString("name.first-name") == null
-                || this.yamlConfiguration.getString("name.last-name") == null
-                || this.yamlConfiguration.getString("name.patronymic") == null;
+        return this.config.getString("name.first-name") == null
+                || this.config.getString("name.last-name") == null
+                || this.config.getString("name.patronymic") == null;
     }
 
     public @NotNull Pronouns getPronouns() {
@@ -170,7 +149,7 @@ public class PlayerFile {
 
     public void setPronouns(@NotNull Pronouns pronouns) {
         this.pronouns = pronouns;
-        this.yamlConfiguration.set("pronouns", pronouns.name());
+        this.config.set("pronouns", pronouns.name());
     }
 
     public void addIp(@Nullable String ip) {
@@ -183,7 +162,7 @@ public class PlayerFile {
     }
 
     public void saveIpList() {
-        this.yamlConfiguration.set("ip-list", this.ipList);
+        this.config.set("ip-list", this.ipList);
     }
 
     public @NotNull List<Skin> getSkins() {
@@ -191,12 +170,12 @@ public class PlayerFile {
     }
 
     public @Nullable Skin getSkin(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        return this.skins.get(index);
+        return index >= this.skins.size() ? null : this.skins.get(index);
     }
 
     @Contract("null -> null")
     public @Nullable Skin getSkin(@Nullable String name) {
-        return name == null
+        return StringUtils.isBlank(name)
                 ? null
                 : this.skins.stream()
                 .filter(skin -> skin.getName().equalsIgnoreCase(name))
@@ -218,12 +197,8 @@ public class PlayerFile {
     ) throws IndexOutOfBoundsException {
         if (this.containsSkin(skin)) return false;
 
-        String sectionName = "skins." + index;
-
         this.skins.set(index, skin);
-        this.yamlConfiguration.set(sectionName + ".name", skin.getName());
-        this.yamlConfiguration.set(sectionName + ".value", skin.getValue());
-        this.yamlConfiguration.set(sectionName + ".signature", skin.getSignature());
+        this.serializeSkinsSection();
         this.save();
 
         return true;
@@ -232,12 +207,8 @@ public class PlayerFile {
     public boolean addSkin(@NotNull Skin skin) {
         if (!this.hasAvailableSkinSlot()) return false;
 
-        String sectionName = "skins." + this.skins.size();
-
         this.skins.add(skin);
-        this.yamlConfiguration.set(sectionName + ".name", skin.getName());
-        this.yamlConfiguration.set(sectionName + ".value", skin.getValue());
-        this.yamlConfiguration.set(sectionName + ".signature", skin.getSignature());
+        this.serializeSkinsSection();
         this.save();
 
         return true;
@@ -251,13 +222,20 @@ public class PlayerFile {
     }
 
     public void removeSkin(@NotNull Skin skin) throws IllegalArgumentException {
-        String sectionName = "skins." + skin.getName();
+        Preconditions.checkArgument(this.containsSkin(skin), "Skin not found");
 
-        Preconditions.checkArgument(this.skins.remove(skin), "Skin not found");
-        this.yamlConfiguration.set(sectionName + ".name", null);
-        this.yamlConfiguration.set(sectionName + ".value", null);
-        this.yamlConfiguration.set(sectionName + ".signature", null);
-        this.yamlConfiguration.set(sectionName, null);
+        Skin currentSkin = this.playerSettings.getSkin();
+
+        if (skin.equals(currentSkin)) {
+            PlayerInfo playerInfo = PlayerInfo.fromNickname(this.playerName.getNickname());
+
+            if (playerInfo != null) {
+                playerInfo.setSkin(null);
+            }
+        }
+
+        this.skins.remove(skin);
+        this.serializeSkinsSection();
         this.save();
     }
 
@@ -279,7 +257,7 @@ public class PlayerFile {
 
     public void setGameMode(@NotNull GameMode gameMode) {
         this.gameMode = gameMode;
-        this.yamlConfiguration.set("game-params.game-mode", gameMode.name());
+        this.config.set("game-params.game-mode", gameMode.name());
     }
 
     public double getHealth() {
@@ -288,7 +266,7 @@ public class PlayerFile {
 
     public void setHealth(double health) {
         this.health = health;
-        this.yamlConfiguration.set("game-params.health", health);
+        this.config.set("game-params.health", health);
     }
 
     public int getAir() {
@@ -297,7 +275,7 @@ public class PlayerFile {
 
     public void setAir(int air) {
         this.air = air;
-        this.yamlConfiguration.set("game-params.air", air);
+        this.config.set("game-params.air", air);
     }
 
     public @NotNull PlayerSettings getPlayerSettings() {
@@ -310,7 +288,7 @@ public class PlayerFile {
 
     public void setFirstJoin(@NotNull Instant firstJoin) {
         this.firstJoin = firstJoin;
-        this.yamlConfiguration.set("first-join", firstJoin.toEpochMilli());
+        this.config.set("first-join", firstJoin.toEpochMilli());
     }
 
     public @Nullable Location getLastLeaveLocation() {
@@ -320,7 +298,7 @@ public class PlayerFile {
     public void setLastLeaveLocation(@Nullable Location leaveLocation) {
         this.lastLeaveLocation = leaveLocation;
         setLocation(
-                this.yamlConfiguration.createSection("locations.last-leave-location"),
+                this.config.createSection("locations.last-leave-location"),
                 leaveLocation
         );
     }
@@ -332,7 +310,7 @@ public class PlayerFile {
     public void setLastDeathLocation(@Nullable Location deathLocation) {
         this.lastDeathLocation = deathLocation;
         setLocation(
-                this.yamlConfiguration.createSection("locations.last-death-location"),
+                this.config.createSection("locations.last-death-location"),
                 deathLocation
         );
     }
@@ -358,14 +336,31 @@ public class PlayerFile {
     }
 
     public boolean exists() {
-        return this.dataFile.exists();
+        return this.file.exists();
     }
 
     public void save() {
         try {
-            this.yamlConfiguration.save(this.dataFile);
+            this.config.save(this.file);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    public void serializeSkinsSection() {
+        this.config.set(
+                "skins",
+                this.skins.stream().map(Skin::serialize).toList()
+        );
+    }
+
+    public @NotNull List<Skin> deserializeSkinsSection() {
+        return this.config
+                .getList("skins", Collections.emptyList())
+                .stream()
+                .filter(Map.class::isInstance)
+                .map(skin -> Skin.deserialize(skin.toString()))
+                .filter(Objects::nonNull)
+                .toList();
     }
 }

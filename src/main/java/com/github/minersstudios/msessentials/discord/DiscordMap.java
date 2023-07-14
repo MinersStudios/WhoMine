@@ -80,6 +80,8 @@ public class DiscordMap {
      *
      * @param id     The id of the linking discord player
      * @param player The linking player
+     * @see #put(long, UUID, String)
+     * @see #put(long, Params)
      */
     public void put(
             long id,
@@ -94,19 +96,31 @@ public class DiscordMap {
      * @param id       The id of the linking discord player
      * @param uuid     The uuid of the linking player
      * @param nickname The nickname of the linking player
+     * @see #put(long, Params)
      */
     public void put(
             long id,
             @NotNull UUID uuid,
             @NotNull String nickname
     ) {
-        Params params = Params.create(uuid, nickname);
+        this.put(id, Params.create(uuid, nickname));
+    }
 
+    /**
+     * Links the player with the params
+     *
+     * @param id     The id of the linking discord player
+     * @param params The params of the linking player
+     */
+    public void put(
+            long id,
+            @NotNull Params params
+    ) {
         this.map.entrySet().stream()
-        .filter(entry -> entry.getValue().equals(params))
-        .map(Map.Entry::getKey)
-        .findFirst()
-        .ifPresent(this.map::remove);
+                .filter(entry -> entry.getValue().equals(params))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .ifPresent(this.map::remove);
 
         this.map.put(id, params);
         this.saveFile();
@@ -171,7 +185,7 @@ public class DiscordMap {
      * @return True if the player is linked
      */
     public boolean containsPlayer(@NotNull Params params) {
-        return this.map.containsValue(params);
+        return this.getId(params) != -1L;
     }
 
     /**

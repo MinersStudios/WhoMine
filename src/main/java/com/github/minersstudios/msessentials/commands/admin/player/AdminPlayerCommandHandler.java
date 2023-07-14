@@ -11,7 +11,6 @@ import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.player.skin.Skin;
 import com.github.minersstudios.msessentials.tabcompleters.AllPlayers;
 import com.github.minersstudios.msessentials.utils.IDUtils;
-import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -26,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -96,8 +96,8 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
             "remove",
             "add"
     );
-    private static final List<String> TAB_4_BAN_INFO_REASON = List.of(MSPlayerUtils.DEFAULT_BAN_REASON_STRING);
-    private static final List<String> TAB_4_MUTE_INFO_REASON = List.of(MSPlayerUtils.DEFAULT_MUTE_REASON_STRING);
+    private final List<String> TAB_4_BAN_INFO_REASON = List.of(renderTranslation("ms.command.ban.default_reason"));
+    private final List<String> TAB_4_MUTE_INFO_REASON = List.of(renderTranslation("ms.command.mute.default_reason"));
     private static final List<String> TAB_4_NAME_EMPTY = List.of("empty");
     private static final CommandNode<?> COMMAND_NODE =
             literal("player")

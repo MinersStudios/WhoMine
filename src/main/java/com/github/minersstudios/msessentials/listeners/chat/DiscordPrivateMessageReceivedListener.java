@@ -15,9 +15,11 @@ public class DiscordPrivateMessageReceivedListener {
         BotHandler handler = handlerMap.get(userID);
 
         if (handler == null) {
-            handlerMap.put(userID, new BotHandler(event));
-        } else {
-            handler.handleMessage(event.getMessage());
+            handler = new BotHandler(event);
+
+            handlerMap.put(userID, handler);
         }
+
+        handler.handleMessage(event.getMessage());
     }
 }

@@ -24,7 +24,7 @@ public class PlayerSettings {
             @NotNull PlayerFile playerFile
     ) {
         this.playerFile = playerFile;
-        this.config = playerFile.getYamlConfiguration();
+        this.config = playerFile.getConfig();
 
         ResourcePack.Type resourcePackType = null;
         try {
@@ -34,13 +34,7 @@ public class PlayerSettings {
         }
         this.resourcePackType = new Parameter<>("settings.resource-pack.resource-pack-type", resourcePackType);
 
-        String skinIndex = this.config.getString("settings.skin");
-        this.skin = new Parameter<>(
-                "settings.skin",
-                skinIndex == null
-                ? null
-                : this.playerFile.getSkin(Integer.parseInt(skinIndex))
-        );
+        this.skin = new Parameter<>("settings.skin", this.playerFile.getSkin(this.config.getString("settings.skin", "")));
     }
 
     public @NotNull Parameter<ResourcePack.Type> getResourcePackParam() {
@@ -75,7 +69,7 @@ public class PlayerSettings {
                 this.config,
                 skin == null
                 ? null
-                : this.playerFile.getSkinIndex(skin)
+                : skin.getName()
         );
     }
 
@@ -101,13 +95,13 @@ public class PlayerSettings {
 
         public void setForYaml(
                 @NotNull YamlConfiguration yamlConfiguration,
-                Object value
+                @Nullable Object value
         ) {
             yamlConfiguration.set(this.path, value);
         }
 
         public void saveForFile(@NotNull PlayerFile playerFile) {
-            this.setForYaml(playerFile.getYamlConfiguration());
+            this.setForYaml(playerFile.getConfig());
             playerFile.save();
         }
 
@@ -116,7 +110,7 @@ public class PlayerSettings {
                 Object value
         ) {
             this.setForYaml(
-                    playerFile.getYamlConfiguration(),
+                    playerFile.getConfig(),
                     value
             );
             playerFile.save();

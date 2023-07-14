@@ -18,6 +18,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -136,6 +137,8 @@ public final class PlayerUtils {
     /**
      * Sets player's skin with specified value and signature.
      * Also updates the skin for all players on the server.
+     * If wanted to reset the skin, set both value and signature
+     * to null.
      *
      * @param player    Player whose skin will be set
      * @param value     Value of the skin
@@ -143,8 +146,8 @@ public final class PlayerUtils {
      */
     public static void setSkin(
             @NotNull Player player,
-            @NotNull String value,
-            @NotNull String signature
+            @Nullable String value,
+            @Nullable String signature
     ) {
         MinecraftServer minecraftServer = MinecraftServer.getServer();
         Entity vehicle = player.getVehicle();
@@ -161,7 +164,12 @@ public final class PlayerUtils {
             propertyMap.remove("textures", oldProperty);
         }
 
-        propertyMap.put("textures", new Property("textures", value, signature));
+        if (
+                !StringUtils.isBlank(value)
+                && !StringUtils.isBlank(signature)
+        ) {
+            propertyMap.put("textures", new Property("textures", value, signature));
+        }
 
         if (!serverPlayer.sentListPacket) {
             serverPlayer.gameProfile = gameProfile;

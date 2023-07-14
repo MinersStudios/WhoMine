@@ -24,7 +24,7 @@ public class AdminNameCommand {
             @NotNull PlayerInfo playerInfo
     ) {
         PlayerFile playerFile = playerInfo.getPlayerFile();
-        YamlConfiguration yamlConfiguration = playerFile.getYamlConfiguration();
+        YamlConfiguration yamlConfiguration = playerFile.getConfig();
         PlayerName playerName = playerFile.getPlayerName();
         boolean haveArg = args.length >= 4;
         String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";

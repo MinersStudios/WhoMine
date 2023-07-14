@@ -7,7 +7,6 @@ import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.map.IDMap;
-import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -63,7 +63,7 @@ public class BanCommand implements MSCommandExecutor {
 
         String reason = args.length > 2
                 ? ChatUtils.extractMessage(args, 2)
-                : MSPlayerUtils.DEFAULT_BAN_REASON_STRING;
+                : renderTranslation("ms.command.ban.default_reason");
 
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 

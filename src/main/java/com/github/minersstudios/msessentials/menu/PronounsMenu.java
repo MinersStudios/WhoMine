@@ -104,7 +104,7 @@ public class PronounsMenu {
                     Player player = (Player) event.getPlayer();
                     PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
-                    if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") == null) {
+                    if (playerInfo.getPlayerFile().getConfig().getString("pronouns") == null) {
                         MSEssentials.getInstance().runTask(() -> player.openInventory(inventory));
                     } else {
                         new RegistrationProcess().setPronouns(player, playerInfo);

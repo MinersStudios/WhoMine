@@ -53,7 +53,7 @@ public class PlayerJoinListener implements Listener {
                     new RegistrationProcess().registerPlayer(playerInfo);
                 } else {
                     task.cancel();
-                    if (playerFile.getYamlConfiguration().getString("pronouns") == null) {
+                    if (playerFile.getConfig().getString("pronouns") == null) {
                         PronounsMenu.open(player);
                     } else {
                         if (playerFile.getPlayerSettings().getResourcePackType() == ResourcePack.Type.NONE) {
