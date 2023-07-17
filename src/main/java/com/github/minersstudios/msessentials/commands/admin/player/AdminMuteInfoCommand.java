@@ -1,10 +1,11 @@
 package com.github.minersstudios.msessentials.commands.admin.player;
 
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.player.map.MuteMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
+import com.github.minersstudios.msessentials.player.map.MuteMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ public class AdminMuteInfoCommand {
         String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     sender,
                     muted
                             ? translatable(
@@ -50,7 +51,7 @@ public class AdminMuteInfoCommand {
         }
 
         if (!muted) {
-            ChatUtils.sendError(
+            MSLogger.severe(
                     sender,
                     translatable(
                             "ms.command.player.mute_info.not_muted",
@@ -66,7 +67,7 @@ public class AdminMuteInfoCommand {
         switch (paramString) {
             case "reason" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable(
                                     "ms.command.player.mute_info.get.reason",
@@ -81,7 +82,7 @@ public class AdminMuteInfoCommand {
                 String reason = ChatUtils.extractMessage(args, 3);
 
                 muteMap.put(playerInfo.getOfflinePlayer(), playerInfo.getMutedTo(), reason, sender.getName());
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         sender,
                         translatable(
                                 "ms.command.player.mute_info.set.reason",
@@ -94,7 +95,7 @@ public class AdminMuteInfoCommand {
             }
             case "time" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable(
                                     "ms.command.player.mute_info.get.time_to",
@@ -109,12 +110,12 @@ public class AdminMuteInfoCommand {
                 Instant instant = DateUtils.getDateFromString(paramArgString, false);
 
                 if (instant == null) {
-                    ChatUtils.sendError(sender, Component.translatable("ms.error.format"));
+                    MSLogger.severe(sender, Component.translatable("ms.error.format"));
                     return true;
                 }
 
                 muteMap.put(playerInfo.getOfflinePlayer(), instant, playerInfo.getMuteReason(), sender.getName());
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         sender,
                         translatable(
                                 "ms.command.player.mute_info.set.time_to",

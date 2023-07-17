@@ -1,6 +1,7 @@
 package com.github.minersstudios.mscore.config;
 
 import com.github.minersstudios.mscore.MSCore;
+import com.github.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -20,11 +21,15 @@ public final class Config extends MSConfig {
      * Configuration constructor, automatically loads the yaml configuration
      * from the specified file and initializes the variables of the class
      *
+     * @param plugin The plugin instance of the configuration
      * @param file The config file, where the configuration is stored
      * @throws IllegalArgumentException If the given file does not exist
      */
-    public Config(@NotNull File file) throws IllegalArgumentException {
-        super(file);
+    public Config(
+            @NotNull MSPlugin plugin,
+            @NotNull File file
+    ) throws IllegalArgumentException {
+        super(plugin, file);
     }
 
     /**

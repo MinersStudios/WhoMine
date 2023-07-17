@@ -1,6 +1,6 @@
 package com.github.minersstudios.msessentials.player.map;
 
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.google.gson.Gson;
@@ -23,7 +23,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * ID map with {@link UUID} and its ID.
@@ -230,7 +229,7 @@ public class IDMap {
                     if (id != null) {
                         this.map.put(uuid, id);
                     } else {
-                        ChatUtils.sendError("Failed to read the player id : " + uuid.toString() + " in \"ids.json\"");
+                        MSLogger.severe("Failed to read the player id : " + uuid.toString() + " in \"ids.json\"");
                     }
                 });
             } catch (Exception e) {
@@ -249,7 +248,7 @@ public class IDMap {
                 this.saveFile();
             }
         } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to create a new \"ids.json\" file", e);
+            MSLogger.log(Level.SEVERE, "Failed to create a new \"ids.json\" file", e);
         }
     }
 
@@ -258,16 +257,15 @@ public class IDMap {
      */
     private void createBackupFile() {
         File backupFile = new File(this.file.getParent(), this.file.getName() + ".OLD");
-        Logger logger = Bukkit.getLogger();
 
         try {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to create \"ids.json.OLD\" backup file", e);
+            MSLogger.log(Level.SEVERE, "Failed to create \"ids.json.OLD\" backup file", e);
         }
 
-        logger.log(Level.SEVERE, "Failed to read the \"ids.json\" file, creating a new file");
+        MSLogger.log(Level.SEVERE, "Failed to read the \"ids.json\" file, creating a new file");
     }
 
     /**
@@ -277,7 +275,7 @@ public class IDMap {
         try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
         } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to save ids", e);
+            MSLogger.log(Level.SEVERE, "Failed to save ids", e);
         }
     }
 }

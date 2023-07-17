@@ -1,7 +1,7 @@
 package com.github.minersstudios.msitem.commands;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msitem.items.CustomItem;
 import com.github.minersstudios.msitem.items.RenameableItem;
 import com.github.minersstudios.msitem.items.Typed;
@@ -23,7 +23,7 @@ public class GiveCommand {
             Player player = Bukkit.getPlayer(args[1]);
 
             if (player == null) {
-                ChatUtils.sendError(sender, translatable("ms.error.player_not_found"));
+                MSLogger.severe(sender, translatable("ms.error.player_not_found"));
                 return true;
             }
 
@@ -33,7 +33,7 @@ public class GiveCommand {
 
             if (customItem == null) {
                 if (renameableItem == null) {
-                    ChatUtils.sendError(sender, translatable("ms.command.msitem.give.wrong_item"));
+                    MSLogger.severe(sender, translatable("ms.command.msitem.give.wrong_item"));
                     return true;
                 } else {
                     itemStack = renameableItem.getResultItemStack();
@@ -58,7 +58,7 @@ public class GiveCommand {
                     try {
                         amount = Integer.parseInt(args[args.length - 1]);
                     } catch (NumberFormatException ignore) {
-                        ChatUtils.sendError(sender, translatable("ms.error.wrong_format"));
+                        MSLogger.severe(sender, translatable("ms.error.wrong_format"));
                         return true;
                     }
                 }
@@ -66,7 +66,7 @@ public class GiveCommand {
 
             itemStack.setAmount(amount);
             player.getInventory().addItem(itemStack);
-            ChatUtils.sendInfo(
+            MSLogger.info(
                     sender,
                     translatable(
                             "ms.command.msitem.give.success",
@@ -78,7 +78,7 @@ public class GiveCommand {
             return true;
         }
 
-        ChatUtils.sendWarning(sender, translatable("ms.error.name_length"));
+        MSLogger.warning(sender, translatable("ms.error.name_length"));
         return true;
     }
 }

@@ -2,6 +2,7 @@ package com.github.minersstudios.msessentials.commands.admin;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.tabcompleters.AllLocalPlayers;
@@ -52,7 +53,7 @@ public class KickCommand implements MSCommandExecutor {
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
+            MSLogger.severe(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
@@ -62,7 +63,7 @@ public class KickCommand implements MSCommandExecutor {
                         Component.translatable("ms.command.kick.message.receiver.subtitle", reason)
                 )
         ) {
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     sender,
                     Component.translatable("ms.command.kick.message.sender").args(
                             playerInfo.getGrayIDGreenName(),
@@ -73,7 +74,7 @@ public class KickCommand implements MSCommandExecutor {
             return true;
         }
 
-        ChatUtils.sendWarning(sender, Component.translatable("ms.error.player_not_online"));
+        MSLogger.warning(sender, Component.translatable("ms.error.player_not_online"));
         return true;
     }
 

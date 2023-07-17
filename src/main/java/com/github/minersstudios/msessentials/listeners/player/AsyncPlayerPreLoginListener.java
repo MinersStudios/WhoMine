@@ -1,7 +1,7 @@
 package com.github.minersstudios.msessentials.listeners.player;
 
 import com.github.minersstudios.mscore.listener.MSListener;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.Config;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerFile;
@@ -14,14 +14,14 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
 
 @MSListener
-public class AsyncPlayerPreLoginListener implements Listener {
+public class AsyncPlayerPreLoginListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
@@ -40,7 +40,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
             playerFile.addIp(hostAddress);
             playerFile.save();
 
-            ChatUtils.sendWarning(
+            MSLogger.warning(
                     Component.translatable(
                             "ms.info.player_added_ip",
                             playerInfo.getGrayIDGoldName(),
@@ -50,7 +50,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
             );
         }
 
-        if (!MSEssentials.getInstance().isLoadedCustoms()) {
+        if (!this.getPlugin().isLoadedCustoms()) {
             event.disallow(
                     AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                     leaveMessageFormat.args(

@@ -110,7 +110,7 @@ public final class Commodore {
         }
 
         for (var alias : aliases) {
-            CommandNode<?> targetNode = node.getLiteral().equals(alias)
+            var targetNode = node.getLiteral().equals(alias)
                     ? node
                     : literal(alias)
                     .redirect((CommandNode<Object>) node)

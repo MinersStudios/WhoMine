@@ -1,6 +1,6 @@
 package com.github.minersstudios.msessentials.commands.admin.msessentials;
 
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.MSEssentials;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -15,7 +15,7 @@ public class UpdateMutesCommand {
 
         MSEssentials.getCache().muteMap.reloadMutes();
 
-        ChatUtils.sendFine(
+        MSLogger.fine(
                 sender,
                 Component.translatable(
                         "ms.command.msessentials.update_mutes.success",

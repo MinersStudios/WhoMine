@@ -1,6 +1,6 @@
 package com.github.minersstudios.msessentials.commands.admin.player;
 
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.PlayerSettings;
@@ -27,7 +27,7 @@ public class AdminSettingsCommand {
             @NotNull PlayerInfo playerInfo
     ) {
         if (args.length < 3) {
-            ChatUtils.sendError(sender, translatable("ms.command.player.settings.use_one_of"));
+            MSLogger.severe(sender, translatable("ms.command.player.settings.use_one_of"));
             return true;
         }
 
@@ -42,7 +42,7 @@ public class AdminSettingsCommand {
             case "resourcepack-type" -> {
                 if (!haveArg) {
                     ResourcePack.Type type = playerSettings.getResourcePackType();
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable(
                                     "ms.command.player.settings.get.resourcepack_type",
@@ -63,7 +63,7 @@ public class AdminSettingsCommand {
                 };
 
                 if (type == null) {
-                    ChatUtils.sendError(
+                    MSLogger.severe(
                             sender,
                             translatable(
                                     "ms.command.player.settings.resourcepack_type_use_one_of",
@@ -83,7 +83,7 @@ public class AdminSettingsCommand {
                     );
                 }
 
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         sender,
                         translatable(
                                 "ms.command.player.settings.set.resourcepack_type",
@@ -99,7 +99,7 @@ public class AdminSettingsCommand {
                     Skin skin = playerSettings.getSkin();
 
                     if (skin == null) {
-                        ChatUtils.sendWarning(
+                        MSLogger.warning(
                                 sender,
                                 translatable(
                                         "ms.command.player.settings.get.no_skin",
@@ -108,7 +108,7 @@ public class AdminSettingsCommand {
                                 )
                         );
                     } else {
-                        ChatUtils.sendFine(
+                        MSLogger.fine(
                                 sender,
                                 translatable(
                                         "ms.command.player.settings.get.skin",
@@ -129,7 +129,7 @@ public class AdminSettingsCommand {
                         Skin skin = playerFile.getSkin(skinName);
 
                         if (skin == null) {
-                            ChatUtils.sendError(
+                            MSLogger.severe(
                                     sender,
                                     translatable(
                                             "ms.command.player.settings.skin_not_found",
@@ -139,7 +139,7 @@ public class AdminSettingsCommand {
                         } else {
                             if (paramArgString.equals("set")) {
                                 playerInfo.setSkin(skin);
-                                ChatUtils.sendFine(
+                                MSLogger.fine(
                                         sender,
                                         translatable(
                                                 "ms.command.player.settings.set.skin",
@@ -150,7 +150,7 @@ public class AdminSettingsCommand {
                                 );
                             } else {
                                 playerFile.removeSkin(skin);
-                                ChatUtils.sendFine(
+                                MSLogger.fine(
                                         sender,
                                         translatable(
                                                 "ms.command.player.settings.remove.skin",
@@ -161,7 +161,7 @@ public class AdminSettingsCommand {
                                 );
 
                                 if (player != null) {
-                                    ChatUtils.sendFine(
+                                    MSLogger.fine(
                                             player,
                                             translatable(
                                                     "ms.discord.skin.successfully_removed.minecraft",
@@ -199,7 +199,7 @@ public class AdminSettingsCommand {
 
                                 if (skin != null) {
                                     playerFile.addSkin(skin);
-                                    ChatUtils.sendFine(
+                                    MSLogger.fine(
                                             sender,
                                             translatable(
                                                     "ms.command.player.settings.add.skin",
@@ -210,7 +210,7 @@ public class AdminSettingsCommand {
                                     );
 
                                     if (player != null) {
-                                        ChatUtils.sendFine(
+                                        MSLogger.fine(
                                                 player,
                                                 translatable(
                                                         "ms.discord.skin.successfully_added.minecraft",
@@ -234,7 +234,7 @@ public class AdminSettingsCommand {
                             } catch (IllegalArgumentException ignored) {}
                         }
 
-                        ChatUtils.sendError(
+                        MSLogger.severe(
                                 sender,
                                 translatable(
                                         "ms.command.player.settings.add.skin.error",
@@ -246,13 +246,13 @@ public class AdminSettingsCommand {
                         return true;
                     }
                     default -> {
-                        ChatUtils.sendError(sender, translatable("ms.command.player.settings.skin.use_one_of"));
+                        MSLogger.severe(sender, translatable("ms.command.player.settings.skin.use_one_of"));
                         return true;
                     }
                 }
             }
             default -> {
-                ChatUtils.sendError(sender, translatable("ms.command.player.settings.use_one_of"));
+                MSLogger.severe(sender, translatable("ms.command.player.settings.use_one_of"));
                 return true;
             }
         }

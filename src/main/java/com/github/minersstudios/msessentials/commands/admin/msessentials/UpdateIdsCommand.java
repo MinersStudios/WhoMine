@@ -1,6 +1,6 @@
 package com.github.minersstudios.msessentials.commands.admin.msessentials;
 
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
@@ -19,7 +19,7 @@ public class UpdateIdsCommand {
         cache.idMap.reloadIds();
         cache.playerInfoMap.playerInfos().forEach(PlayerInfo::initNames);
 
-        ChatUtils.sendFine(
+        MSLogger.fine(
                 sender,
                 Component.translatable(
                         "ms.command.msessentials.update_ids.success",

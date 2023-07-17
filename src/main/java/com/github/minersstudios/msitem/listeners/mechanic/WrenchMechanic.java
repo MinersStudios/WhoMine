@@ -18,7 +18,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @MSListener
-public class WrenchMechanic implements Listener {
+public class WrenchMechanic extends AbstractMSListener {
     private Player player;
     private Location location;
     private ItemStack itemInMainHand;

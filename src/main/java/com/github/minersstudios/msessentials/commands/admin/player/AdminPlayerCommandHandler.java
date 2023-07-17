@@ -2,7 +2,7 @@ package com.github.minersstudios.msessentials.commands.admin.player;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
@@ -212,7 +212,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
+            MSLogger.severe(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 

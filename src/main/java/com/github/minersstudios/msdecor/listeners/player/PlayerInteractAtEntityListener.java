@@ -3,12 +3,12 @@ package com.github.minersstudios.msdecor.listeners.player;
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.MSDecorUtils;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerInteractAtEntityListener implements Listener {
+public class PlayerInteractAtEntityListener extends AbstractMSListener {
 
     @EventHandler
     public void onPlayerInteractAtEntity(@NotNull PlayerInteractAtEntityEvent event) {

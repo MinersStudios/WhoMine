@@ -2,18 +2,17 @@ package com.github.minersstudios.msessentials.commands.admin;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
-import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
+import com.github.minersstudios.msessentials.player.map.IDMap;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -60,8 +59,8 @@ public class WhitelistCommand implements MSCommandExecutor {
         if (args.length == 0) return false;
 
         if (args[0].equalsIgnoreCase("reload")) {
-            Bukkit.reloadWhitelist();
-            ChatUtils.sendFine(sender, Component.translatable("ms.command.white_list.reload"));
+            sender.getServer().reloadWhitelist();
+            MSLogger.fine(sender, Component.translatable("ms.command.white_list.reload"));
             return true;
         }
 
@@ -71,7 +70,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 
         if (args.length > 1 && IDUtils.matchesIDRegex(args[1])) {
             if (args[0].equalsIgnoreCase("add")) {
-                ChatUtils.sendWarning(sender, Component.translatable("ms.command.white_list.add.nickname_warning"));
+                MSLogger.warning(sender, Component.translatable("ms.command.white_list.add.nickname_warning"));
                 return true;
             }
 
@@ -80,14 +79,14 @@ public class WhitelistCommand implements MSCommandExecutor {
                 OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[1]);
 
                 if (offlinePlayer == null || offlinePlayer.getName() == null) {
-                    ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
+                    MSLogger.severe(sender, Component.translatable("ms.error.id_not_found"));
                     return true;
                 }
 
                 PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 
                 if (playerInfo.setWhiteListed(false)) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             removedFormat.args(
                                     playerInfo.getGrayIDGreenName(),
@@ -97,7 +96,7 @@ public class WhitelistCommand implements MSCommandExecutor {
                     return true;
                 }
 
-                ChatUtils.sendWarning(
+                MSLogger.warning(
                         sender,
                         alreadyFormat.args(
                                 playerInfo.getGrayIDGoldName(),
@@ -112,7 +111,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[1]);
 
             if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
+                MSLogger.severe(sender, Component.translatable("ms.error.player_not_found"));
                 return true;
             }
 
@@ -120,7 +119,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 
             if (args[0].equalsIgnoreCase("add")) {
                 if (playerInfo.setWhiteListed(true)) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             Component.translatable(
                                     "ms.command.white_list.add.sender.message",
@@ -131,7 +130,7 @@ public class WhitelistCommand implements MSCommandExecutor {
                     return true;
                 }
 
-                ChatUtils.sendWarning(
+                MSLogger.warning(
                         sender,
                         alreadyFormat.args(
                                 playerInfo.getGrayIDGoldName(),
@@ -142,7 +141,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             }
             if (args[0].equalsIgnoreCase("remove")) {
                 if (playerInfo.setWhiteListed(false)) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             removedFormat.args(
                                     playerInfo.getGrayIDGreenName(),
@@ -152,7 +151,7 @@ public class WhitelistCommand implements MSCommandExecutor {
                     return true;
                 }
 
-                ChatUtils.sendWarning(
+                MSLogger.warning(
                         sender,
                         Component.translatable(
                                 "ms.command.white_list.remove.not_found",
@@ -165,7 +164,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             return false;
         }
 
-        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
+        MSLogger.warning(sender, Component.translatable("ms.error.name_length"));
         return true;
     }
 
@@ -181,7 +180,7 @@ public class WhitelistCommand implements MSCommandExecutor {
         if (args.length == 1) {
             return TAB;
         } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
-            for (var offlinePlayer : Bukkit.getWhitelistedPlayers()) {
+            for (var offlinePlayer : sender.getServer().getWhitelistedPlayers()) {
                 PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), args[1]);
                 int id = playerInfo.getID(false, false);
 

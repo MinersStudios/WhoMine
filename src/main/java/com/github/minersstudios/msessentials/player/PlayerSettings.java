@@ -1,7 +1,7 @@
 package com.github.minersstudios.msessentials.player;
 
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.player.skin.Skin;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +30,7 @@ public class PlayerSettings {
         try {
             resourcePackType = ResourcePack.Type.valueOf(this.config.getString("settings.resource-pack.resource-pack-type", "NULL"));
         } catch (IllegalArgumentException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Incorrect resource-pack type in : " + playerFile.getFile().getName(), e);
+            MSLogger.log(Level.SEVERE, "Incorrect resource-pack type in : " + playerFile.getFile().getName(), e);
         }
         this.resourcePackType = new Parameter<>("settings.resource-pack.resource-pack-type", resourcePackType);
 

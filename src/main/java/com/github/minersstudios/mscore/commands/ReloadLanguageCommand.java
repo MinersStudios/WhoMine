@@ -1,7 +1,7 @@
 package com.github.minersstudios.mscore.commands;
 
 import com.github.minersstudios.mscore.config.LanguageFile;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ public class ReloadLanguageCommand {
         long time = System.currentTimeMillis();
 
         LanguageFile.reloadLanguage();
-        ChatUtils.sendFine(
+        MSLogger.fine(
                 sender,
                 Component.translatable(
                         "ms.command.mscore.reload_language.success",

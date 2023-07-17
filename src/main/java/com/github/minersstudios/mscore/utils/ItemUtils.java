@@ -1,7 +1,6 @@
 package com.github.minersstudios.mscore.utils;
 
 import com.github.minersstudios.msitem.items.DamageableItem;
-import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -144,7 +143,7 @@ public final class ItemUtils {
 
         if (damageableItem == null) {
             PlayerItemDamageEvent event = new PlayerItemDamageEvent(holder, item, damage, originalDamage);
-            Bukkit.getPluginManager().callEvent(event);
+            holder.getServer().getPluginManager().callEvent(event);
         }
 
         if (

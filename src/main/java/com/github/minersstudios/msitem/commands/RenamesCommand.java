@@ -2,7 +2,7 @@ package com.github.minersstudios.msitem.commands;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msitem.items.RenamesMenu;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
@@ -26,7 +26,7 @@ public class RenamesCommand implements MSCommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
         if (args.length > 0) return false;
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
+            MSLogger.severe(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 

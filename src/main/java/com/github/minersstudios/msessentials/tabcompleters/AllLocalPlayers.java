@@ -1,7 +1,6 @@
 package com.github.minersstudios.msessentials.tabcompleters;
 
 import com.github.minersstudios.msessentials.player.PlayerInfo;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -23,7 +22,7 @@ public class AllLocalPlayers implements TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            for (var player : Bukkit.getOnlinePlayers()) {
+            for (var player : sender.getServer().getOnlinePlayers()) {
                 PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
                 if (playerInfo.isOnline()) {

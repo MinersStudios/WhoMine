@@ -22,12 +22,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerShowEntityEvent;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -120,8 +122,8 @@ public final class PlayerUtils {
         GameProfile profile = new GameProfile(
                 offlinePlayer.getUniqueId(),
                 offlinePlayer.getName() != null
-                        ? offlinePlayer.getName()
-                        : offlinePlayer.getUniqueId().toString()
+                ? offlinePlayer.getName()
+                : offlinePlayer.getUniqueId().toString()
         );
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
         ServerLevel worldServer = server.getLevel(Level.OVERWORLD);
@@ -288,10 +290,11 @@ public final class PlayerUtils {
             @NotNull UUID uuid,
             @NotNull String name
     ) {
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        Server server = Bukkit.getServer();
+        OfflinePlayer offlinePlayer = server.getOfflinePlayer(uuid);
 
         if (offlinePlayer.getName() == null) {
-            CraftServer craftServer = (CraftServer) Bukkit.getServer();
+            CraftServer craftServer = (CraftServer) server;
             GameProfile gameProfile = new GameProfile(uuid, name);
 
             return craftServer.getOfflinePlayer(gameProfile);
@@ -338,6 +341,7 @@ public final class PlayerUtils {
             @NotNull ServerPlayer forWho,
             @NotNull ServerPlayer serverPlayer
     ) {
+        PluginManager pluginManager = serverPlayer.getBukkitEntity().getServer().getPluginManager();
         ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
         ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(serverPlayer));
         ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
@@ -349,6 +353,6 @@ public final class PlayerUtils {
             entry.updatePlayer(forWho);
         }
 
-        Bukkit.getPluginManager().callEvent(event);
+        pluginManager.callEvent(event);
     }
 }

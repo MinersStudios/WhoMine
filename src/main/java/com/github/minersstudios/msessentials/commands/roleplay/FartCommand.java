@@ -2,6 +2,7 @@ package com.github.minersstudios.msessentials.commands.roleplay;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.BlockUtils;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.MSDecorUtils;
@@ -47,14 +48,14 @@ public class FartCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
+            MSLogger.severe(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 
         PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (playerInfo.isMuted()) {
-            ChatUtils.sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));
+            MSLogger.warning(player, Component.translatable("ms.command.mute.already.receiver"));
             return true;
         }
 

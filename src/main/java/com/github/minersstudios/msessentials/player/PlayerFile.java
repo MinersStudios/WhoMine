@@ -3,6 +3,7 @@ package com.github.minersstudios.msessentials.player;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.skin.Skin;
+import com.github.minersstudios.msessentials.world.WorldDark;
 import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
@@ -322,7 +323,7 @@ public class PlayerFile {
         boolean isNull = location == null;
 
         if (!isNull) {
-            if (location.getWorld().equals(MSEssentials.getWorldDark())) {
+            if (WorldDark.isInWorldDark(location)) {
                 throw new IllegalArgumentException("The world cannot be world_dark");
             }
         }

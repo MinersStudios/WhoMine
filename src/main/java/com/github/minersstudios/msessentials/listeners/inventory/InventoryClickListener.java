@@ -1,14 +1,15 @@
 package com.github.minersstudios.msessentials.listeners.inventory;
 
 import com.github.minersstudios.mscore.listener.MSListener;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.MSEssentials;
+import com.github.minersstudios.msessentials.world.WorldDark;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 
 @MSListener
-public class InventoryClickListener implements Listener {
+public class InventoryClickListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryClick(@NotNull InventoryClickEvent event) {
@@ -30,7 +31,7 @@ public class InventoryClickListener implements Listener {
 
         if (clickedInventory == null) return;
 
-        if (player.getWorld().equals(MSEssentials.getWorldDark())) {
+        if (WorldDark.isInWorldDark(player)) {
             event.setCancelled(true);
         }
 
@@ -57,7 +58,7 @@ public class InventoryClickListener implements Listener {
 
             if (remove) {
                 clickedInventory.setItem(slot, new ItemStack(Material.AIR));
-                ChatUtils.sendWarning(
+                MSLogger.warning(
                         Component.translatable(
                                 "ms.info.player_item_removed",
                                 text(player.getName()),

@@ -3,12 +3,12 @@ package com.github.minersstudios.msessentials.listeners.player;
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerQuitListener implements Listener {
+public class PlayerQuitListener extends AbstractMSListener {
 
     @EventHandler
     public void onPlayerQuit(@NotNull PlayerQuitEvent event) {

@@ -2,6 +2,7 @@ package com.github.minersstudios.msessentials.commands.roleplay;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -38,7 +39,7 @@ public class DoCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
+            MSLogger.severe(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 
@@ -46,7 +47,7 @@ public class DoCommand implements MSCommandExecutor {
 
         if (args.length == 0) return false;
         if (playerInfo.isMuted()) {
-            ChatUtils.sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));
+            MSLogger.warning(player, Component.translatable("ms.command.mute.already.receiver"));
             return true;
         }
 

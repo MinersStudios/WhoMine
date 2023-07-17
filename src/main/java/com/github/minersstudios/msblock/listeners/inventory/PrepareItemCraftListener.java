@@ -6,7 +6,7 @@ import com.github.minersstudios.mscore.utils.MSBlockUtils;
 import com.github.minersstudios.mscore.utils.MSDecorUtils;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 @MSListener
-public class PrepareItemCraftListener implements Listener {
+public class PrepareItemCraftListener extends AbstractMSListener {
 
     @EventHandler
     public void onPrepareItemCraft(@NotNull PrepareItemCraftEvent event) {

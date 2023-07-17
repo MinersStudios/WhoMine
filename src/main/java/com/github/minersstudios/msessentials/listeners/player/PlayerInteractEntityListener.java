@@ -11,7 +11,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ import java.util.List;
 import static net.kyori.adventure.text.Component.*;
 
 @MSListener
-public class PlayerInteractEntityListener implements Listener {
+public class PlayerInteractEntityListener extends AbstractMSListener {
     private final SecureRandom random = new SecureRandom();
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

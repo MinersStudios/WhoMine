@@ -2,17 +2,17 @@ package com.github.minersstudios.msessentials.commands.teleport;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
-import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msessentials.MSEssentials;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
+import com.github.minersstudios.msessentials.world.WorldDark;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -67,7 +67,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
+            MSLogger.severe(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
@@ -75,14 +75,14 @@ public class WorldTeleportCommand implements MSCommandExecutor {
         Player player = offlinePlayer.getPlayer();
 
         if (player == null) {
-            ChatUtils.sendWarning(sender, Component.translatable("ms.error.player_not_online"));
+            MSLogger.warning(sender, Component.translatable("ms.error.player_not_online"));
             return true;
         }
 
-        World world = Bukkit.getWorld(args[1]);
+        World world = sender.getServer().getWorld(args[1]);
 
         if (world == null) {
-            ChatUtils.sendWarning(sender, Component.translatable("ms.command.world_teleport.world_not_found"));
+            MSLogger.warning(sender, Component.translatable("ms.command.world_teleport.world_not_found"));
             return true;
         }
 
@@ -108,22 +108,27 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             }
 
             if (x > 29999984 || z > 29999984) {
-                ChatUtils.sendWarning(sender, Component.translatable("ms.command.world_teleport.too_big_coordinates"));
+                MSLogger.warning(sender, Component.translatable("ms.command.world_teleport.too_big_coordinates"));
                 return true;
             }
         }
 
-        player.teleportAsync(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN);
-        ChatUtils.sendFine(
-                sender,
-                Component.translatable(
-                        "ms.command.world_teleport.sender.message",
-                        playerInfo.getGrayIDGreenName(),
-                        text(playerInfo.getNickname()),
-                        text(world.getName()),
-                        text(x),
-                        text(y),
-                        text(z)
+        double finalX = x;
+        double finalY = y;
+        double finalZ = z;
+
+        player.teleportAsync(new Location(world, finalX, finalY, finalZ), PlayerTeleportEvent.TeleportCause.PLUGIN).thenRun(
+                () -> MSLogger.info(
+                        sender,
+                        Component.translatable(
+                                "ms.command.world_teleport.sender.message",
+                                playerInfo.getGrayIDGreenName(),
+                                text(playerInfo.getNickname()),
+                                text(world.getName()),
+                                text(finalX),
+                                text(finalY),
+                                text(finalZ)
+                        )
                 )
         );
         return true;
@@ -137,10 +142,11 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         List<String> completions = new ArrayList<>();
+        Server server = sender.getServer();
 
         switch (args.length) {
             case 1 -> {
-                for (var player : Bukkit.getOnlinePlayers()) {
+                for (var player : server.getOnlinePlayers()) {
                     PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
                     int id = playerInfo.getID(false, false);
 
@@ -152,8 +158,8 @@ public class WorldTeleportCommand implements MSCommandExecutor {
                 }
             }
             case 2 -> {
-                for (var world : Bukkit.getWorlds()) {
-                    if (world.equals(MSEssentials.getWorldDark())) continue;
+                for (var world : server.getWorlds()) {
+                    if (world == WorldDark.getInstance()) continue;
                     completions.add(world.getName());
                 }
             }

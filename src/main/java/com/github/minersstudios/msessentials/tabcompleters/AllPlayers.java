@@ -1,7 +1,6 @@
 package com.github.minersstudios.msessentials.tabcompleters;
 
 import com.github.minersstudios.msessentials.MSEssentials;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -24,7 +23,7 @@ public class AllPlayers implements TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            for (var offlinePlayer : Bukkit.getOfflinePlayers()) {
+            for (var offlinePlayer : sender.getServer().getOfflinePlayers()) {
                 String nickname = offlinePlayer.getName();
 
                 if (nickname == null) continue;

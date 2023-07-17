@@ -5,12 +5,12 @@ import com.github.minersstudios.mscore.utils.MSDecorUtils;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class HangingBreakListener implements Listener {
+public class HangingBreakListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onHangingBreak(@NotNull HangingBreakEvent event) {

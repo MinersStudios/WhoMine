@@ -2,6 +2,7 @@ package com.github.minersstudios.msessentials;
 
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.config.MSConfig;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import com.github.minersstudios.msessentials.anomalies.Anomaly;
 import com.github.minersstudios.msessentials.anomalies.tasks.MainAnomalyActionsTask;
@@ -19,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Configuration loader class.
@@ -46,11 +46,15 @@ public final class Config extends MSConfig {
      * Configuration constructor, automatically loads the yaml configuration
      * from the specified file and initializes the variables of the class
      *
+     * @param plugin The plugin instance of the configuration
      * @param file The config file, where the configuration is stored
      * @throws IllegalArgumentException If the given file does not exist
      */
-    public Config(@NotNull File file) throws IllegalArgumentException {
-        super(file);
+    public Config(
+            @NotNull MSEssentials plugin,
+            @NotNull File file
+    ) throws IllegalArgumentException {
+        super(plugin, file);
     }
 
     /**
@@ -58,10 +62,8 @@ public final class Config extends MSConfig {
      */
     @Override
     public void reloadVariables() {
-        MSEssentials plugin = MSEssentials.getInstance();
         Cache cache = MSEssentials.getCache();
-        Logger logger = plugin.getLogger();
-        File pluginFolder = plugin.getPluginFolder();
+        File pluginFolder = this.plugin.getPluginFolder();
 
         this.developerMode = this.config.getBoolean("developer-mode", false);
         this.anomalyCheckRate = this.config.getLong("anomaly-check-rate", 100L);
@@ -86,17 +88,17 @@ public final class Config extends MSConfig {
         cache.playerAnomalyActionMap.clear();
         cache.anomalies.clear();
 
-        plugin.saveResource("anomalies/example.yml", true);
+        this.plugin.saveResource("anomalies/example.yml", true);
         File consoleDataFile = new File(pluginFolder, "players/console.yml");
         if (!consoleDataFile.exists()) {
-            plugin.saveResource("players/console.yml", false);
+            this.plugin.saveResource("players/console.yml", false);
         }
 
         cache.consolePlayerInfo = new PlayerInfo(UUID.randomUUID(), "$Console");
 
-        plugin.runTaskAsync(ResourcePack::init);
+        this.plugin.runTaskAsync(ResourcePack::init);
 
-        plugin.runTaskAsync(() -> {
+        this.plugin.runTaskAsync(() -> {
             try (var path = Files.walk(Paths.get(pluginFolder + "/anomalies"))) {
                 path
                 .filter(file -> {
@@ -111,17 +113,17 @@ public final class Config extends MSConfig {
                     cache.anomalies.put(anomaly.getNamespacedKey(), anomaly);
                 });
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "An error occurred while loading anomalies!", e);
+                MSLogger.log(Level.SEVERE, "An error occurred while loading anomalies!", e);
             }
         });
 
-        cache.bukkitTasks.add(plugin.runTaskTimer(
+        cache.bukkitTasks.add(this.plugin.runTaskTimer(
                 new MainAnomalyActionsTask(),
                 0L,
                 this.anomalyCheckRate
         ));
 
-        cache.bukkitTasks.add(plugin.runTaskTimer(
+        cache.bukkitTasks.add(this.plugin.runTaskTimer(
                 new ParticleTask(),
                 0L,
                 this.anomalyParticlesCheckRate
@@ -133,7 +135,7 @@ public final class Config extends MSConfig {
         var customDecorRecipes = msCoreCache.customDecorRecipes;
         var customItemRecipes = msCoreCache.customItemRecipes;
 
-        plugin.runTaskTimer(task -> {
+        this.plugin.runTaskTimer(task -> {
             if (
                     MSPluginUtils.isLoadedCustoms()
                     && !customBlockRecipes.isEmpty()
@@ -147,7 +149,7 @@ public final class Config extends MSConfig {
             }
         }, 0L, 10L);
 
-        plugin.saveDefaultConfig();
-        plugin.reloadConfig();
+        this.plugin.saveDefaultConfig();
+        this.plugin.reloadConfig();
     }
 }

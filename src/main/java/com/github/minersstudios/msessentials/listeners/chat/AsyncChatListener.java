@@ -1,6 +1,8 @@
 package com.github.minersstudios.msessentials.listeners.chat;
 
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import com.github.minersstudios.mscore.listener.MSListener;
+import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.chat.ChatBuffer;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
@@ -9,16 +11,16 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
-import static com.github.minersstudios.mscore.utils.ChatUtils.*;
+import static com.github.minersstudios.mscore.logger.MSLogger.severe;
+import static com.github.minersstudios.mscore.logger.MSLogger.warning;
 import static net.kyori.adventure.text.Component.text;
 
 @MSListener
-public class AsyncChatListener implements Listener {
+public class AsyncChatListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onAsyncChat(@NotNull AsyncChatEvent event) {
@@ -34,11 +36,11 @@ public class AsyncChatListener implements Listener {
         }
 
         if (playerInfo.isMuted()) {
-            sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));
+            warning(player, Component.translatable("ms.command.mute.already.receiver"));
             return;
         }
 
-        String message = serializeLegacyComponent(event.originalMessage());
+        String message = ChatUtils.serializeLegacyComponent(event.originalMessage());
 
         if (message.startsWith("!")) {
             message = message.substring(1).trim();
@@ -66,7 +68,7 @@ public class AsyncChatListener implements Listener {
                         speech = message.substring(0, message.indexOf('*')).trim();
 
                 if (action.length() == 0 || speech.length() == 0) {
-                    sendError(player, "Используй: * [речь] * [действие]");
+                    severe(player, "Используй: * [речь] * [действие]");
                 } else {
                     MessageUtils.sendRPEventMessage(player, text(speech), text(action), MessageUtils.RolePlayActionType.TODO);
                 }

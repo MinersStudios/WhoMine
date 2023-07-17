@@ -6,10 +6,6 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,13 +13,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 import static net.kyori.adventure.text.format.TextDecoration.*;
 
 public final class ChatUtils {
-    private static final ConsoleCommandSender CONSOLE_SENDER = Bukkit.getConsoleSender();
-
     /**
      * Default style for components.
      * <br>
@@ -68,6 +63,12 @@ public final class ChatUtils {
             STRIKETHROUGH.withState(false),
             UNDERLINED.withState(false)
     );
+    public static final char COLOR_CHAR = '§';
+    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-FK-ORX]");
+
+    public static @NotNull String stripColor(@NotNull String input) {
+        return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
+    }
 
     @Contract(value = " -> fail")
     private ChatUtils() {
@@ -75,231 +76,13 @@ public final class ChatUtils {
     }
 
     /**
-     * Sends info message to console
-     *
-     * @param message Info message {@link String}
-     */
-    public static void sendInfo(@NotNull String message) {
-        sendInfo(null, message);
-    }
-
-    /**
-     * Sends info message to target
-     *
-     * @param target  Target, if null sends to console
-     * @param message Info message {@link String}
-     */
-    public static void sendInfo(
-            @Nullable Object target,
-            @NotNull String message
-    ) {
-        sendInfo(target, Component.text(message));
-    }
-
-    /**
-     * Sends info message to console
-     *
-     * @param message Info message {@link Component}
-     */
-    public static void sendInfo(@NotNull Component message) {
-        sendInfo(null, message);
-    }
-
-    /**
-     * Sends info message to target
-     *
-     * @param target  Target, if null sends to console
-     * @param message Info message {@link Component}
-     */
-    public static void sendInfo(
-            @Nullable Object target,
-            @NotNull Component message
-    ) {
-        if (target instanceof Player player) {
-            player.sendMessage(Component.text(" ").append(message));
-        } else if (
-                target instanceof CommandSender sender
-                && !(sender instanceof ConsoleCommandSender)
-        ) {
-            sender.sendMessage(Component.text(" ").append(message));
-        } else {
-            CONSOLE_SENDER.sendMessage(message);
-        }
-    }
-
-    /**
-     * Sends fine message to console
-     *
-     * @param message Fine message {@link String}
-     */
-    public static void sendFine(@NotNull String message) {
-        sendFine(null, message);
-    }
-
-    /**
-     * Sends fine message to target
-     *
-     * @param target  Target, if null sends to console
-     * @param message Fine message {@link String}
-     */
-    public static void sendFine(
-            @Nullable Object target,
-            @NotNull String message
-    ) {
-        sendFine(target, Component.text(message));
-    }
-
-    /**
-     * Sends fine message to console
-     *
-     * @param message Fine message {@link Component}
-     */
-    public static void sendFine(@NotNull Component message) {
-        sendFine(null, message);
-    }
-
-    /**
-     * Sends fine message to target
-     *
-     * @param target  Target, if null sends to console
-     * @param message Fine message {@link Component}
-     */
-    public static void sendFine(
-            @Nullable Object target,
-            @NotNull Component message
-    ) {
-        Component coloredMessage = message.color(GREEN);
-
-        if (target instanceof Player player) {
-            player.sendMessage(Badges.GREEN_EXCLAMATION_MARK.append(coloredMessage));
-        } else if (
-                target instanceof CommandSender sender
-                && !(sender instanceof ConsoleCommandSender)
-        ) {
-            sender.sendMessage(coloredMessage);
-        } else {
-            CONSOLE_SENDER.sendMessage(coloredMessage);
-        }
-    }
-
-    /**
-     * Sends warning message to console
-     *
-     * @param message Warning message {@link String}
-     */
-    public static void sendWarning(@NotNull String message) {
-        sendWarning(null, message);
-    }
-
-    /**
-     * Sends warning message to target
-     *
-     * @param target  Target, if null sends to console
-     * @param message Warning message {@link String}
-     */
-    public static void sendWarning(
-            @Nullable Object target,
-            @NotNull String message
-    ) {
-        sendWarning(target, Component.text(message));
-    }
-
-    /**
-     * Sends warning message to console
-     *
-     * @param message Warning message {@link Component}
-     */
-    public static void sendWarning(@NotNull Component message) {
-        sendWarning(null, message);
-    }
-
-    /**
-     * Sends warning message to target
-     *
-     * @param target  Target, if null sends to console
-     * @param message Warning message {@link Component}
-     */
-    public static void sendWarning(
-            @Nullable Object target,
-            @NotNull Component message
-    ) {
-        Component coloredMessage = message.color(GOLD);
-
-        if (target instanceof Player player) {
-            player.sendMessage(Badges.YELLOW_EXCLAMATION_MARK.append(coloredMessage));
-        } else if (
-                target instanceof CommandSender sender
-                && !(sender instanceof ConsoleCommandSender)
-        ) {
-            sender.sendMessage(coloredMessage);
-        } else {
-            CONSOLE_SENDER.sendMessage(coloredMessage);
-        }
-    }
-
-    /**
-     * Sends error message to console
-     *
-     * @param message Error message {@link String}
-     */
-    public static void sendError(@NotNull String message) {
-        sendError(null, message);
-    }
-
-    /**
-     * Sends error message to target
-     *
-     * @param target  Target, if null sends to console
-     * @param message Error message {@link String}
-     */
-    public static void sendError(
-            @Nullable Object target,
-            @NotNull String message
-    ) {
-        sendError(target, Component.text(message));
-    }
-
-    /**
-     * Sends error message to console
-     *
-     * @param message Error message {@link Component}
-     */
-    public static void sendError(@NotNull Component message) {
-        sendError(null, message);
-    }
-
-    /**
-     * Sends error message to target
-     *
-     * @param target  Target, if null sends to console
-     * @param message Error message {@link Component}
-     */
-    public static void sendError(
-            @Nullable Object target,
-            @NotNull Component message
-    ) {
-        Component coloredMessage = message.color(RED);
-
-        if (target instanceof Player player) {
-            player.sendMessage(Badges.RED_EXCLAMATION_MARK.append(coloredMessage));
-        } else if (
-                target instanceof CommandSender sender
-                && !(sender instanceof ConsoleCommandSender)
-        ) {
-            sender.sendMessage(coloredMessage);
-        } else {
-            CONSOLE_SENDER.sendMessage(coloredMessage);
-        }
-    }
-
-    /**
      * Extracts message from array of arguments
      * <br>
      * Example:
      * <br>
-     *      <code>
-     *          extractMessage(new String[]{"Hello", "Sir.", "PackmanDude"}, 1);
-     *      </code>
+     * <code>
+     *     extractMessage(new String[]{"Hello", "Sir.", "PackmanDude"}, 1);
+     * </code>
      * <br>
      * - will return "Sir. PackmanDude"
      *

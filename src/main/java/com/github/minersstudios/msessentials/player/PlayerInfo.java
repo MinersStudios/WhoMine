@@ -1,7 +1,8 @@
 package com.github.minersstudios.msessentials.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
+import com.github.minersstudios.mscore.utils.BlockUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msessentials.Cache;
@@ -15,6 +16,7 @@ import com.github.minersstudios.msessentials.player.skin.Skin;
 import com.github.minersstudios.msessentials.utils.IDUtils;
 import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
+import com.github.minersstudios.msessentials.world.WorldDark;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import fr.xephi.authme.api.v3.AuthMeApi;
@@ -43,6 +45,7 @@ import java.net.InetAddress;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
 import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslationComponent;
@@ -69,6 +72,7 @@ public class PlayerInfo {
     private final @NotNull PlayerProfile profile;
     private final @NotNull OfflinePlayer offlinePlayer;
     private @NotNull PlayerFile playerFile;
+    private final @NotNull CraftServer server;
 
     private Component defaultName;
     private Component goldenName;
@@ -90,6 +94,7 @@ public class PlayerInfo {
         this.profile = PlayerUtils.craftProfile(uuid, nickname);
         this.playerFile = PlayerFile.loadConfig(uuid, nickname);
         this.offlinePlayer = PlayerUtils.getOfflinePlayer(uuid, nickname);
+        this.server = (CraftServer) Bukkit.getServer();
 
         this.initNames();
     }
@@ -191,7 +196,7 @@ public class PlayerInfo {
      * Gets player info from {@link Cache#playerInfoMap}
      * by {@link OfflinePlayer} object, which was retrieved
      * by the specified player {@link UUID} with
-     * {@link Bukkit#getOfflinePlayer(UUID)}.
+     * {@link Server#getOfflinePlayer(UUID)}.
      * If the player info is not cached, a new player info
      * is created with the player file and settings
      * if the file exists, or a new player information
@@ -300,9 +305,17 @@ public class PlayerInfo {
     /**
      * @return Online player object if the player is online,
      *         or null if the player is offline
+     * @see Server#getPlayer(UUID)
      */
     public @Nullable Player getOnlinePlayer() {
-        return Bukkit.getPlayer(this.uuid);
+        return this.server.getPlayer(this.uuid);
+    }
+
+    /**
+     * @return The player's {@link Server}
+     */
+    public @NotNull Server getServer() {
+        return this.server;
     }
 
     /**
@@ -366,7 +379,7 @@ public class PlayerInfo {
     /**
      * Sets last leave location to the specified location,
      * only works if the player is online and not in
-     * {@link MSEssentials#getWorldDark()}
+     * {@link WorldDark}
      *
      * @param location The location to set as the last leave location
      */
@@ -391,18 +404,15 @@ public class PlayerInfo {
     /**
      * Sets last death location to the specified location,
      * only works if the world specified in the location
-     * is not {@link MSEssentials#getWorldDark()}
+     * is not {@link WorldDark}
      *
      * @param location The location to set as the last death location
      */
     public void setLastDeathLocation(@Nullable Location location) {
-        if (
-                location != null &&
-                location.getWorld().equals(MSEssentials.getWorldDark())
-        ) return;
-
-        this.playerFile.setLastDeathLocation(location);
-        this.playerFile.save();
+        if (!WorldDark.isInWorldDark(location)) {
+            this.playerFile.setLastDeathLocation(location);
+            this.playerFile.save();
+        }
     }
 
     /**
@@ -429,9 +439,9 @@ public class PlayerInfo {
 
         if (
                 player == null
-                        || (player.getVehicle() != null
-                        && player.getVehicle().getType() != EntityType.ARMOR_STAND)
-                        || this.isSitting()
+                || (player.getVehicle() != null
+                && player.getVehicle().getType() != EntityType.ARMOR_STAND)
+                || this.isSitting()
         ) return;
 
         player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 0.2d, 0.0d), ArmorStand.class, (armorStand) -> {
@@ -472,25 +482,30 @@ public class PlayerInfo {
 
         if (
                 player == null
-                        || (player.getVehicle() != null
-                        && player.getVehicle().getType() != EntityType.ARMOR_STAND)
-                        || !isSitting()
+                || (player.getVehicle() != null
+                && player.getVehicle().getType() != EntityType.ARMOR_STAND)
+                || !isSitting()
         ) return;
 
         ArmorStand armorStand = getCache().seats.remove(player);
         Location playerLoc = player.getLocation();
-        Location getUpLocation = armorStand.getLocation().add(0.0d, 0.5d, 0.0d);
+        Location getUpLocation = armorStand.getLocation().add(0.0d, 0.25d, 0.0d);
+
+        if (!BlockUtils.REPLACE.contains(getUpLocation.getBlock().getType())) {
+            getUpLocation.add(getUpLocation.getDirection().multiply(0.75d));
+        }
 
         getUpLocation.setYaw(playerLoc.getYaw());
         getUpLocation.setPitch(playerLoc.getPitch());
         armorStand.remove();
-        player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
-        if (message == null) {
-            sendRPEventMessage(player, this.playerFile.getPronouns().getUnSitMessage(), ME);
-        } else {
-            sendRPEventMessage(player, message, text("вставая"), TODO);
-        }
+        player.teleportAsync(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN).thenRun(() -> {
+            if (message == null) {
+                sendRPEventMessage(player, this.playerFile.getPronouns().getUnSitMessage(), ME);
+            } else {
+                sendRPEventMessage(player, message, text("вставая"), TODO);
+            }
+        });
     }
 
     /**
@@ -500,10 +515,10 @@ public class PlayerInfo {
      * @return True if the player was added/removed successfully
      */
     public boolean setWhiteListed(boolean value) {
-        CraftServer craftServer = (CraftServer) Bukkit.getServer();
+        CraftServer craftServer = this.server;
         UserWhiteList userWhiteList = craftServer.getServer().getPlayerList().getWhiteList();
         GameProfile gameProfile = new GameProfile(this.uuid, this.nickname);
-        boolean contains = Bukkit.getWhitelistedPlayers().contains(this.offlinePlayer);
+        boolean contains = craftServer.getWhitelistedPlayers().contains(this.offlinePlayer);
 
         if (value) {
             if (contains) return false;
@@ -725,12 +740,12 @@ public class PlayerInfo {
         MuteMap muteMap = getCache().muteMap;
 
         if (sender == null) {
-            sender = Bukkit.getConsoleSender();
+            sender = this.server.getConsoleSender();
         }
 
         if (value) {
             if (this.isMuted()) {
-                ChatUtils.sendWarning(
+                MSLogger.warning(
                         sender,
                         translatable(
                                 "ms.command.mute.already.sender",
@@ -742,7 +757,7 @@ public class PlayerInfo {
             }
 
             muteMap.put(this.offlinePlayer, date, reason, sender.getName());
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     sender,
                     translatable(
                             "ms.command.mute.message.sender",
@@ -754,7 +769,7 @@ public class PlayerInfo {
             );
 
             if (player != null) {
-                ChatUtils.sendWarning(
+                MSLogger.warning(
                         player,
                         translatable(
                                 "ms.command.mute.message.receiver",
@@ -765,7 +780,7 @@ public class PlayerInfo {
             }
         } else {
             if (!this.isMuted()) {
-                ChatUtils.sendWarning(
+                MSLogger.warning(
                         sender,
                         translatable(
                                 "ms.command.unmute.not_muted",
@@ -777,7 +792,7 @@ public class PlayerInfo {
             }
 
             muteMap.remove(this.offlinePlayer);
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     sender,
                     translatable(
                             "ms.command.unmute.sender.message",
@@ -787,7 +802,7 @@ public class PlayerInfo {
             );
 
             if (player != null) {
-                ChatUtils.sendWarning(player, translatable("ms.command.unmute.receiver.message"));
+                MSLogger.warning(player, translatable("ms.command.unmute.receiver.message"));
             }
         }
 
@@ -829,7 +844,7 @@ public class PlayerInfo {
      * @return The ban entry of the player from {@link BanList.Type#PROFILE}
      */
     public @Nullable BanEntry<PlayerProfile> getBanEntry() {
-        BanList<PlayerProfile> banList = Bukkit.getBanList(BanList.Type.PROFILE);
+        BanList<PlayerProfile> banList = this.server.getBanList(BanList.Type.PROFILE);
         return banList.getBanEntry(this.profile);
     }
 
@@ -1018,13 +1033,13 @@ public class PlayerInfo {
             @NotNull String reason,
             @Nullable CommandSender sender
     ) {
-        BanList<PlayerProfile> banList = Bukkit.getBanList(BanList.Type.PROFILE);
+        BanList<PlayerProfile> banList = this.server.getBanList(BanList.Type.PROFILE);
         Player player = this.getOnlinePlayer();
-        CommandSender commandSender = sender == null ? Bukkit.getConsoleSender() : sender;
+        CommandSender commandSender = sender == null ? this.server.getConsoleSender() : sender;
 
         if (value) {
             if (this.isBanned()) {
-                ChatUtils.sendWarning(
+                MSLogger.warning(
                         sender,
                         translatable(
                                 "ms.command.ban.already.sender",
@@ -1044,7 +1059,7 @@ public class PlayerInfo {
                             text(DateUtils.getSenderDate(date, player))
                     )
             );
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     sender,
                     translatable(
                             "ms.command.ban.message.sender",
@@ -1056,7 +1071,7 @@ public class PlayerInfo {
             );
         } else {
             if (!this.isBanned()) {
-                ChatUtils.sendWarning(
+                MSLogger.warning(
                         sender,
                         translatable(
                                 "ms.command.unban.not_banned",
@@ -1068,7 +1083,7 @@ public class PlayerInfo {
             }
 
             banList.pardon(this.profile);
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     sender,
                     translatable(
                             "ms.command.unban.message.sender",
@@ -1156,7 +1171,7 @@ public class PlayerInfo {
      * @see OfflinePlayer#isWhitelisted()
      */
     public boolean isWhiteListed() {
-        return Bukkit.getWhitelistedPlayers().contains(this.offlinePlayer);
+        return this.server.getWhitelistedPlayers().contains(this.offlinePlayer);
     }
 
     /**
@@ -1184,11 +1199,10 @@ public class PlayerInfo {
 
     /**
      * @return True if the player is online
-     *         and in the {@link MSEssentials#getWorldDark()}
+     *         and in the {@link WorldDark}
      */
     public boolean isInWorldDark() {
-        Player player = this.getOnlinePlayer();
-        return player != null && player.getWorld().equals(getWorldDark());
+        return WorldDark.isInWorldDark(this.getOnlinePlayer());
     }
 
     /**
@@ -1229,9 +1243,7 @@ public class PlayerInfo {
         player.setHealth(this.playerFile.getHealth());
         player.setRemainingAir(this.playerFile.getAir());
 
-        this.teleportToLastLeaveLocation();
-
-        getInstance().runTaskAsync(() -> sendJoinMessage(this));
+        this.teleportToLastLeaveLocation().thenRun(() -> sendJoinMessage(this));
     }
 
     /**
@@ -1263,9 +1275,10 @@ public class PlayerInfo {
     /**
      * Teleports the player to the last leave location
      */
-    public void teleportToLastLeaveLocation() {
+    public @NotNull CompletableFuture<Boolean> teleportToLastLeaveLocation() {
         Player player = this.getOnlinePlayer();
-        if (player == null) return;
+
+        if (player == null) return CompletableFuture.completedFuture(false);
 
         getInstance().runTask(() -> {
             if (player.getGameMode() == GameMode.SPECTATOR) {
@@ -1274,7 +1287,7 @@ public class PlayerInfo {
         });
 
         Location location = this.playerFile.getLastLeaveLocation();
-        player.teleportAsync(
+        return player.teleportAsync(
                 location == null ? getOverworld().getSpawnLocation() : location,
                 PlayerTeleportEvent.TeleportCause.PLUGIN
         );
@@ -1283,10 +1296,10 @@ public class PlayerInfo {
     /**
      * Teleports the player to the last death location
      */
-    public void teleportToLastDeathLocation() {
+    public @NotNull CompletableFuture<Boolean> teleportToLastDeathLocation() {
         Player player = this.getOnlinePlayer();
 
-        if (player == null) return;
+        if (player == null) return CompletableFuture.completedFuture(false);
 
         getInstance().runTask(() -> {
             if (player.getGameMode() == GameMode.SPECTATOR) {
@@ -1295,7 +1308,7 @@ public class PlayerInfo {
         });
 
         Location location = this.playerFile.getLastDeathLocation();
-        player.teleportAsync(
+        return player.teleportAsync(
                 location == null ? getOverworld().getSpawnLocation() : location,
                 PlayerTeleportEvent.TeleportCause.PLUGIN
         );
@@ -1323,7 +1336,7 @@ public class PlayerInfo {
         }
 
         this.playerFile.save();
-        ChatUtils.sendFine(
+        MSLogger.fine(
                 translatable(
                         "ms.info.player_file_created",
                         text(this.nickname),
@@ -1422,7 +1435,7 @@ public class PlayerInfo {
      * Saves the player's health, air, game mode
      * and last leave location to the player's file,
      * if the player is online and not in the
-     * {@link MSEssentials#getWorldDark()}
+     * {@link WorldDark}
      */
     public void savePlayerDataParams() {
         Player player = this.getOnlinePlayer();

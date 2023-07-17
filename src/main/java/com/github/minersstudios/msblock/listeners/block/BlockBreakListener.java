@@ -17,14 +17,14 @@ import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class BlockBreakListener implements Listener {
+public class BlockBreakListener extends AbstractMSListener {
 
     @EventHandler
     public void onBlockBreak(@NotNull BlockBreakEvent event) {

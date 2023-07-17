@@ -1,6 +1,6 @@
 package com.github.minersstudios.msitem;
 
-import com.github.minersstudios.mscore.MSPlugin;
+import com.github.minersstudios.mscore.plugin.MSPlugin;
 import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import com.github.minersstudios.msitem.items.CustomItem;
 import com.github.minersstudios.msitem.items.RenamesMenu;

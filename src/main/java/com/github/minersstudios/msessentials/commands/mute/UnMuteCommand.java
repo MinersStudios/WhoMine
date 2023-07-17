@@ -2,7 +2,7 @@ package com.github.minersstudios.msessentials.commands.mute;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
@@ -13,7 +13,6 @@ import com.github.minersstudios.msessentials.player.map.MuteMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -53,7 +52,7 @@ public class UnMuteCommand implements MSCommandExecutor {
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
+            MSLogger.severe(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
@@ -76,7 +75,7 @@ public class UnMuteCommand implements MSCommandExecutor {
                 IDMap idMap = cache.idMap;
 
                 for (var uuid : muteMap.uuidSet()) {
-                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+                    OfflinePlayer offlinePlayer = sender.getServer().getOfflinePlayer(uuid);
                     String nickname = offlinePlayer.getName();
 
                     MuteEntry muteEntry = muteMap.getMuteEntry(offlinePlayer);

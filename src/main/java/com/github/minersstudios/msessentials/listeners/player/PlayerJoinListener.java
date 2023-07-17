@@ -1,24 +1,22 @@
 package com.github.minersstudios.msessentials.listeners.player;
 
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import com.github.minersstudios.mscore.listener.MSListener;
-import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.menu.PronounsMenu;
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.RegistrationProcess;
 import com.github.minersstudios.msessentials.player.ResourcePack;
+import com.github.minersstudios.msessentials.world.WorldDark;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerJoinListener implements Listener {
+public class PlayerJoinListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
@@ -31,17 +29,17 @@ public class PlayerJoinListener implements Listener {
         player.displayName(playerInfo.getDefaultName());
 
         if (player.isDead()) {
-            MSEssentials.getInstance().runTaskLater(() -> {
+            this.getPlugin().runTaskLater(() -> {
                 player.spigot().respawn();
-                player.teleport(new Location(MSEssentials.getWorldDark(), 0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                WorldDark.teleportToDarkWorld(player);
                 player.setGameMode(GameMode.SPECTATOR);
             }, 8L);
         } else {
             player.setGameMode(GameMode.SPECTATOR);
-            MSEssentials.getInstance().runTask(() -> player.setSpectatorTarget(MSEssentials.getDarkEntity()));
+            WorldDark.teleportToDarkWorld(player);
         }
 
-        MSEssentials.getInstance().runTaskTimer(task -> {
+        this.getPlugin().runTaskTimer(task -> {
             if (!player.isOnline()) task.cancel();
             if (playerInfo.isAuthenticated() && !player.isDead()) {
                 if (

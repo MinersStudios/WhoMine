@@ -9,14 +9,14 @@ import com.github.minersstudios.msitem.items.RenameableItem;
 import com.github.minersstudios.msitem.utils.CustomItemUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PrepareAnvilListener implements Listener {
+public class PrepareAnvilListener extends AbstractMSListener {
 
     @EventHandler
     public void onPrepareAnvil(@NotNull PrepareAnvilEvent event) {

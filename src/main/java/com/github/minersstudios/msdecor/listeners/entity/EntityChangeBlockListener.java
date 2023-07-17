@@ -5,13 +5,13 @@ import com.github.minersstudios.mscore.utils.MSDecorUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class EntityChangeBlockListener implements Listener {
+public class EntityChangeBlockListener extends AbstractMSListener {
 
     @EventHandler
     public void onEntityChangeBlock(@NotNull EntityChangeBlockEvent event) {

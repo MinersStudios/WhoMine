@@ -13,12 +13,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class LampsMechanic implements Listener {
+public class LampsMechanic extends AbstractMSListener {
 
     @EventHandler
     public void onInteractWithArmorStand(@NotNull PlayerInteractAtEntityEvent event) {

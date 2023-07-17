@@ -1,7 +1,7 @@
 package com.github.minersstudios.msdecor.commands;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.github.minersstudios.msdecor.customdecor.Typed;
 import net.kyori.adventure.text.Component;
@@ -27,12 +27,12 @@ public class GiveCommand {
             CustomDecorData customDecorData = MSCore.getCache().customDecorMap.getByPrimaryKey(args[2]);
 
             if (player == null) {
-                ChatUtils.sendError(sender, translatable("ms.error.player_not_found"));
+                MSLogger.severe(sender, translatable("ms.error.player_not_found"));
                 return true;
             }
 
             if (customDecorData == null) {
-                ChatUtils.sendError(sender, translatable("ms.command.msdecor.give.wrong_decor"));
+                MSLogger.severe(sender, translatable("ms.command.msdecor.give.wrong_decor"));
                 return true;
             }
 
@@ -41,7 +41,7 @@ public class GiveCommand {
                     try {
                         amount = Integer.parseInt(args[args.length - 1]);
                     } catch (NumberFormatException ignore) {
-                        ChatUtils.sendError(sender, translatable("ms.error.wrong_format"));
+                        MSLogger.severe(sender, translatable("ms.error.wrong_format"));
                         return true;
                     }
                 }
@@ -64,7 +64,7 @@ public class GiveCommand {
             itemStack.setAmount(amount);
 
             player.getInventory().addItem(itemStack);
-            ChatUtils.sendInfo(
+            MSLogger.info(
                     sender,
                     translatable(
                             "ms.command.msdecor.give.success",
@@ -76,7 +76,7 @@ public class GiveCommand {
             return true;
         }
 
-        ChatUtils.sendWarning(sender, translatable("ms.error.name_length"));
+        MSLogger.warning(sender, translatable("ms.error.name_length"));
         return true;
     }
 }

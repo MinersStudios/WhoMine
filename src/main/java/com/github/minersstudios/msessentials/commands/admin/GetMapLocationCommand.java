@@ -2,7 +2,7 @@ package com.github.minersstudios.msessentials.commands.admin;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
@@ -39,19 +39,19 @@ public class GetMapLocationCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
+            MSLogger.severe(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 
         if (!(player.getInventory().getItemInMainHand().getItemMeta() instanceof MapMeta mapMeta)) {
-            ChatUtils.sendWarning(player, Component.translatable("ms.command.get_map_location.no_map_in_right_hand"));
+            MSLogger.warning(player, Component.translatable("ms.command.get_map_location.no_map_in_right_hand"));
             return true;
         }
 
         MapView mapView = mapMeta.getMapView();
 
         if (mapView == null || mapView.getWorld() == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.something_went_wrong"));
+            MSLogger.severe(sender, Component.translatable("ms.error.something_went_wrong"));
             return true;
         }
 
@@ -59,7 +59,7 @@ public class GetMapLocationCommand implements MSCommandExecutor {
         int z = mapView.getCenterZ();
         int y = mapView.getWorld().getHighestBlockYAt(x, z) + 1;
 
-        ChatUtils.sendWarning(
+        MSLogger.warning(
                 player,
                 Component.translatable(
                         "ms.command.get_map_location.format",

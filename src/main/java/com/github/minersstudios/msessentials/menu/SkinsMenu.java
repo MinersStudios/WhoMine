@@ -4,6 +4,7 @@ import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
 import com.github.minersstudios.mscore.inventory.SingleInventory;
 import com.github.minersstudios.mscore.inventory.actions.ButtonClickAction;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.skin.Skin;
@@ -84,7 +85,7 @@ public class SkinsMenu {
                 Component skinName = text(selectedSkin.getName());
 
                 playerInfo.getPlayerFile().removeSkin(selectedSkin);
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         player,
                         translatable(
                                 "ms.discord.skin.successfully_removed.minecraft",
@@ -102,7 +103,7 @@ public class SkinsMenu {
                         )
                 ));
             } catch (Exception e) {
-                ChatUtils.sendError(player, Component.translatable("ms.error.something_went_wrong"));
+                MSLogger.severe(player, Component.translatable("ms.error.something_went_wrong"));
             }
 
             open(player);

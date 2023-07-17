@@ -2,6 +2,7 @@ package com.github.minersstudios.msessentials.commands.other;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
@@ -56,7 +57,7 @@ public class PrivateMessageCommand implements MSCommandExecutor {
                 : MSEssentials.getConsolePlayerInfo();
 
         if (senderInfo.isMuted()) {
-            ChatUtils.sendWarning(sender, Component.translatable("ms.command.mute.already.receiver"));
+            MSLogger.warning(sender, Component.translatable("ms.command.mute.already.receiver"));
             return true;
         }
 
@@ -65,12 +66,12 @@ public class PrivateMessageCommand implements MSCommandExecutor {
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
+            MSLogger.severe(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
         if (!playerInfo.isOnline() && !sender.hasPermission("msessentials.*")) {
-            ChatUtils.sendWarning(sender, Component.translatable("ms.error.player_not_online"));
+            MSLogger.warning(sender, Component.translatable("ms.error.player_not_online"));
             return true;
         }
 

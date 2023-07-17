@@ -1,8 +1,9 @@
 package com.github.minersstudios.mscore.config;
 
+import com.github.minersstudios.mscore.logger.MSLogger;
+import com.github.minersstudios.mscore.plugin.MSPlugin;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,7 @@ import java.util.logging.Level;
  * Use {@link #reloadVariables()} to reload variables.
  */
 public abstract class MSConfig {
+    protected final @NotNull MSPlugin plugin;
     protected final @NotNull File file;
     protected final @NotNull YamlConfiguration config;
 
@@ -27,14 +29,26 @@ public abstract class MSConfig {
      * Configuration constructor.
      * All variables must be initialized in {@link #reloadVariables()}.
      *
+     * @param plugin The plugin instance of the configuration
      * @param file The config file, where the configuration is stored
      * @throws IllegalArgumentException If the given file does not exist
      */
-    public MSConfig(@NotNull File file) throws IllegalArgumentException {
+    public MSConfig(
+            @NotNull MSPlugin plugin,
+            @NotNull File file
+    ) throws IllegalArgumentException {
         Preconditions.checkArgument(file.exists(), "The given file does not exist!");
 
+        this.plugin = plugin;
         this.file = file;
         this.config = new YamlConfiguration();
+    }
+
+    /**
+     * @return The plugin instance of the configuration
+     */
+    public final @NotNull MSPlugin getPlugin() {
+        return this.plugin;
     }
 
     /**
@@ -65,8 +79,8 @@ public abstract class MSConfig {
             this.reloadYaml();
             this.reloadVariables();
             return true;
-        } catch (Exception e) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while loading the config!", e);
+        } catch (ConfigurationException e) {
+            MSLogger.log(Level.SEVERE, "An error occurred while loading the config!", e);
             return false;
         }
     }
@@ -102,7 +116,7 @@ public abstract class MSConfig {
             this.config.save(this.file);
             return true;
         } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving the config!", e);
+            MSLogger.log(Level.SEVERE, "An error occurred while saving the config!", e);
             return false;
         }
     }

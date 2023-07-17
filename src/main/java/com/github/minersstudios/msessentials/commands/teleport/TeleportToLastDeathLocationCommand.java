@@ -2,7 +2,7 @@ package com.github.minersstudios.msessentials.commands.teleport;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.tabcompleters.AllLocalPlayers;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -54,7 +54,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
+            MSLogger.severe(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
@@ -62,14 +62,14 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
         TranslatableComponent playerNotOnline = Component.translatable("ms.error.player_not_online");
 
         if (offlinePlayer.getPlayer() == null) {
-            ChatUtils.sendWarning(sender, playerNotOnline);
+            MSLogger.warning(sender, playerNotOnline);
             return true;
         }
 
         Location lastDeathLocation = playerInfo.getPlayerFile().getLastDeathLocation();
 
         if (lastDeathLocation == null) {
-            ChatUtils.sendWarning(
+            MSLogger.warning(
                     sender,
                     Component.translatable(
                             "ms.command.teleport_to_last_death.no_position",
@@ -80,15 +80,27 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
             return true;
         }
 
-        playerInfo.teleportToLastDeathLocation();
-        ChatUtils.sendFine(
-                sender,
-                Component.translatable(
-                        "ms.command.teleport_to_last_death.sender.message",
-                        playerInfo.getGrayIDGreenName(),
-                        text(playerInfo.getNickname())
-                )
-        );
+        playerInfo.teleportToLastDeathLocation().thenAccept(result -> {
+            if (result) {
+                MSLogger.fine(
+                        sender,
+                        Component.translatable(
+                                "ms.command.teleport_to_last_death.sender.message",
+                                playerInfo.getGrayIDGreenName(),
+                                text(playerInfo.getNickname())
+                        )
+                );
+            } else {
+                MSLogger.warning(
+                        sender,
+                        Component.translatable(
+                                "ms.command.teleport_to_last_death.no_position",
+                                playerInfo.getGrayIDGoldName(),
+                                text(playerInfo.getNickname())
+                        )
+                );
+            }
+        });
         return true;
     }
 

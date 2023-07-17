@@ -1,6 +1,6 @@
 package com.github.minersstudios.msessentials.commands.admin.player;
 
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
@@ -23,7 +23,7 @@ public class AdminGameParamsCommand {
             @NotNull PlayerInfo playerInfo
     ) {
         if (args.length < 3) {
-            ChatUtils.sendError(sender, translatable("ms.command.player.game_params.use_one_of"));
+            MSLogger.severe(sender, translatable("ms.command.player.game_params.use_one_of"));
             return true;
         }
 
@@ -37,7 +37,7 @@ public class AdminGameParamsCommand {
         switch (paramString) {
             case "game-mode" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable(
                                     player == null ? "ms.command.player.game_params.get.game_mode" : "ms.command.player.game_params.get.game_mode_full",
@@ -54,7 +54,7 @@ public class AdminGameParamsCommand {
                 try {
                     gameMode = GameMode.valueOf(paramArgString.toUpperCase(Locale.ROOT));
                 } catch (IllegalArgumentException ignore) {
-                    ChatUtils.sendError(sender, translatable("ms.command.player.game_params.game_mode_use_one_of"));
+                    MSLogger.severe(sender, translatable("ms.command.player.game_params.game_mode_use_one_of"));
                     return true;
                 }
 
@@ -64,7 +64,7 @@ public class AdminGameParamsCommand {
 
                 playerFile.setGameMode(gameMode);
                 playerFile.save();
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         sender,
                         translatable(
                                 "ms.command.player.game_params.set.game_mode",
@@ -77,7 +77,7 @@ public class AdminGameParamsCommand {
             }
             case "health" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable(
                                     player == null ? "ms.command.player.game_params.get.health" : "ms.command.player.game_params.get.health_full",
@@ -94,7 +94,7 @@ public class AdminGameParamsCommand {
                 try {
                     health = Double.parseDouble(paramArgString);
                 } catch (NumberFormatException ignore) {
-                    ChatUtils.sendError(sender, wrongFormat);
+                    MSLogger.severe(sender, wrongFormat);
                     return true;
                 }
 
@@ -104,7 +104,7 @@ public class AdminGameParamsCommand {
 
                 playerFile.setHealth(health);
                 playerFile.save();
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         sender,
                         translatable(
                                 "ms.command.player.game_params.set.health",
@@ -117,7 +117,7 @@ public class AdminGameParamsCommand {
             }
             case "air" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable(
                                     player == null ? "ms.command.player.game_params.get.air" : "ms.command.player.game_params.get.air_full",
@@ -133,7 +133,7 @@ public class AdminGameParamsCommand {
                 try {
                     air = Integer.parseInt(paramArgString);
                 } catch (NumberFormatException ignore) {
-                    ChatUtils.sendError(sender, wrongFormat);
+                    MSLogger.severe(sender, wrongFormat);
                     return true;
                 }
 
@@ -143,7 +143,7 @@ public class AdminGameParamsCommand {
 
                 playerFile.setAir(air);
                 playerFile.save();
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         sender,
                         translatable(
                                 "ms.command.player.game_params.set.air",

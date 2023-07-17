@@ -1,7 +1,7 @@
 package com.github.minersstudios.msessentials.discord;
 
 import com.github.minersstudios.mscore.inventory.CustomInventory;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
@@ -231,7 +231,7 @@ public class BotHandler {
                     getInstance().runTask(() -> onlinePlayer.closeInventory());
                 }
 
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         onlinePlayer,
                         translatable(
                                 "ms.command.discord.link.success",
@@ -283,7 +283,7 @@ public class BotHandler {
 
             Player player = this.playerInfo.getOnlinePlayer();
             if (player != null) {
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         player,
                         translatable(
                                 "ms.discord.skin.successfully_added.minecraft",
@@ -337,7 +337,7 @@ public class BotHandler {
                 );
 
                 if (player != null) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             player,
                             translatable(
                                     "ms.discord.skin.successfully_edited.minecraft",
@@ -486,7 +486,7 @@ public class BotHandler {
                     );
 
                     if (player != null) {
-                        ChatUtils.sendFine(
+                        MSLogger.fine(
                                 player,
                                 translatable(
                                         "ms.discord.skin.successfully_edited.minecraft",
@@ -550,7 +550,7 @@ public class BotHandler {
             );
 
             if (player != null) {
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         player,
                         translatable(
                                 "ms.discord.skin.successfully_renamed.minecraft",
@@ -578,7 +578,7 @@ public class BotHandler {
         ));
 
         if (player != null) {
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     player,
                     translatable(
                             "ms.discord.skin.successfully_removed.minecraft",

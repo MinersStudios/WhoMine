@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -43,7 +43,7 @@ import java.security.SecureRandom;
 import java.util.Set;
 
 @MSListener
-public class PlayerInteractListener implements Listener {
+public class PlayerInteractListener extends AbstractMSListener {
     private Block blockAtFace;
     private Location interactionPoint;
     private InteractionHand interactionHand;

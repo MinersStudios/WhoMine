@@ -2,7 +2,7 @@ package com.github.minersstudios.msblock.commands;
 
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -26,12 +26,12 @@ public class GiveCommand {
             CustomBlockData customBlockData = MSCore.getCache().customBlockMap.getByPrimaryKey(args[2]);
 
             if (player == null) {
-                ChatUtils.sendError(sender, translatable("ms.error.player_not_found"));
+                MSLogger.severe(sender, translatable("ms.error.player_not_found"));
                 return true;
             }
 
             if (customBlockData == null) {
-                ChatUtils.sendError(sender, translatable("ms.command.msblock.give.wrong_block"));
+                MSLogger.severe(sender, translatable("ms.command.msblock.give.wrong_block"));
                 return true;
             }
 
@@ -39,7 +39,7 @@ public class GiveCommand {
                 try {
                     amount = Integer.parseInt(args[3]);
                 } catch (NumberFormatException ignore) {
-                    ChatUtils.sendError(sender, translatable("ms.error.wrong_format"));
+                    MSLogger.severe(sender, translatable("ms.error.wrong_format"));
                     return true;
                 }
             }
@@ -49,7 +49,7 @@ public class GiveCommand {
             itemStack.setAmount(amount);
 
             player.getInventory().addItem(itemStack);
-            ChatUtils.sendInfo(
+            MSLogger.info(
                     sender,
                     translatable(
                             "ms.command.msblock.give.success",
@@ -61,7 +61,7 @@ public class GiveCommand {
             return true;
         }
 
-        ChatUtils.sendWarning(sender, translatable("ms.error.name_length"));
+        MSLogger.warning(sender, translatable("ms.error.name_length"));
         return true;
     }
 }

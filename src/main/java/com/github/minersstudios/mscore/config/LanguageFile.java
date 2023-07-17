@@ -1,6 +1,7 @@
 package com.github.minersstudios.mscore.config;
 
 import com.github.minersstudios.mscore.MSCore;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,13 +14,16 @@ import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.TranslationRegistry;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.logging.Level;
 
 /**
  * Language file loader
@@ -46,6 +50,34 @@ public final class LanguageFile {
     }
 
     /**
+     * @return The source URL of the language repository
+     */
+    public @NotNull String getSourceUrl() {
+        return this.sourceUrl;
+    }
+
+    /**
+     * @return The language code of the language file
+     */
+    public @NotNull String getLanguageCode() {
+        return this.languageCode;
+    }
+
+    /**
+     * @return The language file
+     */
+    public @NotNull File getFile() {
+        return this.file;
+    }
+
+    /**
+     * @return The translation registry of the language file
+     */
+    public @NotNull TranslationRegistry getRegistry() {
+        return registry;
+    }
+
+    /**
      * Loads the translations from the language file to {@link GlobalTranslator}.
      * If the language file does not exist, it will be downloaded from the language repository
      *
@@ -65,7 +97,7 @@ public final class LanguageFile {
         );
         GlobalTranslator.translator().addSource(registry);
 
-        ChatUtils.sendFine("Loaded language file: " + languageFile.file.getName() + " in " + (System.currentTimeMillis() - time) + "ms");
+        MSLogger.fine("Loaded language file: " + languageFile.file.getName() + " in " + (System.currentTimeMillis() - time) + "ms");
     }
 
     /**
@@ -151,7 +183,7 @@ public final class LanguageFile {
             ) {
                 in.transferTo(out);
             } catch (IOException e) {
-                ChatUtils.sendError("Failed to download language file: " + link);
+                MSLogger.log(Level.SEVERE, "Failed to download language file: " + link, e);
             }
         }
 
@@ -172,8 +204,8 @@ public final class LanguageFile {
 
             return element.getAsJsonObject();
         } catch (IOException | JsonSyntaxException e) {
-            ChatUtils.sendError("Failed to load corrupted language file: " + this.languageCode + ".json");
-            ChatUtils.sendError("Creating backup file and trying to load language file again");
+            MSLogger.severe("Failed to load corrupted language file: " + this.languageCode + ".json");
+            MSLogger.severe("Creating backup file and trying to load language file again");
 
             this.createBackupFile();
             this.file = this.loadFile();

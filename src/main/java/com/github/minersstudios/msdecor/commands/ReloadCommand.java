@@ -1,10 +1,10 @@
 package com.github.minersstudios.msdecor.commands;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msdecor.MSDecor;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -16,7 +16,8 @@ public class ReloadCommand {
 
     public static void runCommand(@NotNull CommandSender sender) {
         long time = System.currentTimeMillis();
-        Iterator<Recipe> crafts = Bukkit.recipeIterator();
+        Server server = sender.getServer();
+        Iterator<Recipe> crafts = server.recipeIterator();
 
         while (crafts.hasNext()) {
             Recipe recipe = crafts.next();
@@ -25,13 +26,13 @@ public class ReloadCommand {
                     recipe instanceof ShapedRecipe shapedRecipe
                     && "msdecor".equals(shapedRecipe.getKey().getNamespace())
             ) {
-                Bukkit.removeRecipe(shapedRecipe.getKey());
+                server.removeRecipe(shapedRecipe.getKey());
             }
         }
 
         MSCore.getCache().customDecorRecipes.clear();
         MSDecor.reloadConfigs();
-        ChatUtils.sendFine(
+        MSLogger.fine(
                 sender,
                 Component.translatable(
                         "ms.command.msdecor.reload.success",

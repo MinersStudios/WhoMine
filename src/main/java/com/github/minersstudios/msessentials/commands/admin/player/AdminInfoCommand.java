@@ -1,6 +1,6 @@
 package com.github.minersstudios.msessentials.commands.admin.player;
 
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
@@ -31,7 +31,7 @@ public class AdminInfoCommand {
             lastDeathLocation = new Location(MSEssentials.getOverworld(), 0, 0, 0);
         }
 
-        ChatUtils.sendInfo(sender,
+        MSLogger.info(sender,
                 "UUID : " + playerInfo.getOfflinePlayer().getUniqueId()
                 + "\n ID : " + playerInfo.getID(false, false)
                 + "\n Nickname : " + playerName.getNickname()

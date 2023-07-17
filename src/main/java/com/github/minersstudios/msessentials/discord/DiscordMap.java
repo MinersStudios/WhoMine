@@ -1,12 +1,11 @@
 package com.github.minersstudios.msessentials.discord;
 
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +26,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Discord linking map with discord user id and its player's {@link Params}.
@@ -250,7 +248,7 @@ public class DiscordMap {
                     if (params != null && params.isValidate()) {
                         this.map.put(id, params);
                     } else {
-                        ChatUtils.sendError("Failed to read the discord params : " + id.toString() + " in \"discord_links.json\"");
+                        MSLogger.severe("Failed to read the discord params : " + id.toString() + " in \"discord_links.json\"");
                     }
                 });
             } catch (Exception e) {
@@ -269,7 +267,7 @@ public class DiscordMap {
                 this.saveFile();
             }
         } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to create a new \"discord_links.json\" file", e);
+            MSLogger.log(Level.SEVERE, "Failed to create a new \"discord_links.json\" file", e);
         }
     }
 
@@ -278,16 +276,15 @@ public class DiscordMap {
      */
     private void createBackupFile() {
         File backupFile = new File(this.file.getParent(), this.file.getName() + ".OLD");
-        Logger logger = Bukkit.getLogger();
 
         try {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to create \"discord_links.json.OLD\" backup file", e);
+            MSLogger.log(Level.SEVERE, "Failed to create \"discord_links.json.OLD\" backup file", e);
         }
 
-        logger.log(Level.SEVERE, "Failed to read the \"discord_links.json\" file, creating a new file");
+        MSLogger.log(Level.SEVERE, "Failed to read the \"discord_links.json\" file, creating a new file");
     }
 
     /**
@@ -297,7 +294,7 @@ public class DiscordMap {
         try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
         } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to save \"discord_links.json\" file", e);
+            MSLogger.log(Level.SEVERE, "Failed to save \"discord_links.json\" file", e);
         }
     }
 

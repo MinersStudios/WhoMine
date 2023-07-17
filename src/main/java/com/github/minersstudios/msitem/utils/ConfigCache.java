@@ -1,6 +1,7 @@
 package com.github.minersstudios.msitem.utils;
 
 import com.github.minersstudios.mscore.MSCore;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msitem.MSItem;
 import com.github.minersstudios.msitem.items.CustomItem;
 import com.github.minersstudios.msitem.items.RenameableItem;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 public final class ConfigCache {
     public final @NotNull File configFile;
@@ -50,62 +52,62 @@ public final class ConfigCache {
 
         try (var path = Files.walk(Paths.get(MSItem.getInstance().getPluginFolder() + "/items"))) {
             path
-                    .filter(Files::isRegularFile)
-                    .map(Path::toFile)
-                    .forEach(file -> {
-                        String fileName = file.getName();
-                        if (fileName.equalsIgnoreCase("example.yml")) return;
-                        YamlConfiguration renameableItemConfig = YamlConfiguration.loadConfiguration(file);
+            .filter(Files::isRegularFile)
+            .map(Path::toFile)
+            .forEach(file -> {
+                String fileName = file.getName();
+                if (fileName.equalsIgnoreCase("example.yml")) return;
+                YamlConfiguration renameableItemConfig = YamlConfiguration.loadConfiguration(file);
 
-                        var materialsString = renameableItemConfig.getStringList("material");
-                        if (materialsString.isEmpty()) {
-                            materialsString.add(renameableItemConfig.getString("material"));
-                        }
+                var materialsString = renameableItemConfig.getStringList("material");
+                if (materialsString.isEmpty()) {
+                    materialsString.add(renameableItemConfig.getString("material"));
+                }
 
-                        var materials = new ArrayList<Material>();
-                        for (var material : materialsString) {
-                            materials.add(Material.valueOf(material));
-                        }
+                var materials = new ArrayList<Material>();
+                for (var material : materialsString) {
+                    materials.add(Material.valueOf(material));
+                }
 
-                        var renameableItemStacks = new ArrayList<ItemStack>();
-                        for (var material : materials) {
-                            renameableItemStacks.add(new ItemStack(material));
-                        }
+                var renameableItemStacks = new ArrayList<ItemStack>();
+                for (var material : materials) {
+                    renameableItemStacks.add(new ItemStack(material));
+                }
 
-                        ItemStack resultItemStack = new ItemStack(materials.get(0));
-                        ItemMeta itemMeta = resultItemStack.getItemMeta();
-						var lore = renameableItemConfig.getStringList("lore");
+                ItemStack resultItemStack = new ItemStack(materials.get(0));
+                ItemMeta itemMeta = resultItemStack.getItemMeta();
+				var lore = renameableItemConfig.getStringList("lore");
 
-                        if (!lore.isEmpty()) {
-							var loreComponentList = new ArrayList<Component>();
+                if (!lore.isEmpty()) {
+					var loreComponentList = new ArrayList<Component>();
 
-                            for (var text : lore) {
-                                loreComponentList.add(Component.text(text));
-                            }
+                    for (var text : lore) {
+                        loreComponentList.add(Component.text(text));
+                    }
 
-                            itemMeta.lore(loreComponentList);
-                        }
+                    itemMeta.lore(loreComponentList);
+                }
 
-                        itemMeta.setCustomModelData(renameableItemConfig.getInt("custom-model-data"));
-                        resultItemStack.setItemMeta(itemMeta);
+                itemMeta.setCustomModelData(renameableItemConfig.getInt("custom-model-data"));
+                resultItemStack.setItemMeta(itemMeta);
 
-                        var offlinePlayers = new HashSet<OfflinePlayer>();
-                        for (var uuid : renameableItemConfig.getStringList("whitelist")) {
-                            offlinePlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
-                        }
+                var offlinePlayers = new HashSet<OfflinePlayer>();
+                for (var uuid : renameableItemConfig.getStringList("whitelist")) {
+                    offlinePlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
+                }
 
-                        RenameableItem renameableItem = new RenameableItem(
-                                new NamespacedKey(MSItem.getInstance(), Objects.requireNonNull(renameableItemConfig.getString("namespaced-key"), fileName + " namespaced-key must be NotNull!")),
-                                Objects.requireNonNull(renameableItemConfig.getString("rename-text"), fileName + " rename-text must be NotNull!"),
-                                renameableItemStacks,
-                                resultItemStack,
-                                renameableItemConfig.getBoolean("show-in-rename-menu"),
-                                offlinePlayers
-                        );
-                        MSCore.getCache().renameableItemMap.put(renameableItem.getNamespacedKey().getKey(), itemMeta.getCustomModelData(), renameableItem);
-                    });
+                RenameableItem renameableItem = new RenameableItem(
+                        new NamespacedKey(MSItem.getInstance(), Objects.requireNonNull(renameableItemConfig.getString("namespaced-key"), fileName + " namespaced-key must be NotNull!")),
+                        Objects.requireNonNull(renameableItemConfig.getString("rename-text"), fileName + " rename-text must be NotNull!"),
+                        renameableItemStacks,
+                        resultItemStack,
+                        renameableItemConfig.getBoolean("show-in-rename-menu"),
+                        offlinePlayers
+                );
+                MSCore.getCache().renameableItemMap.put(renameableItem.getNamespacedKey().getKey(), itemMeta.getCustomModelData(), renameableItem);
+            });
         } catch (IOException e) {
-            Bukkit.getLogger().severe(e.getMessage());
+            MSLogger.log(Level.SEVERE, "Error while loading items folder!", e);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.github.minersstudios.msessentials.player;
 
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.Config;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
@@ -9,7 +10,6 @@ import com.google.gson.JsonParser;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 import org.apache.commons.io.IOUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -114,9 +114,9 @@ public class ResourcePack {
             .forEach(
                     file -> {
                         if (file.delete()) {
-                            Bukkit.getLogger().log(Level.INFO, "File deleted: " + file.getAbsolutePath());
+                            MSLogger.log(Level.INFO, "File deleted: " + file.getAbsolutePath());
                         } else {
-                            Bukkit.getLogger().log(Level.WARNING, "Failed to delete file: " + file.getAbsolutePath());
+                            MSLogger.log(Level.WARNING, "Failed to delete file: " + file.getAbsolutePath());
                         }
                     }
             );
@@ -214,7 +214,7 @@ public class ResourcePack {
             if (configTagName == null) {
                 throw new NullPointerException("Apparently the API rate limit has been exceeded\nRequest URL : " + uri);
             } else {
-                Bukkit.getLogger().log(Level.SEVERE, "Apparently the API rate limit has been exceeded. Plugin will use existing version\nRequest URL : " + uri, e);
+                MSLogger.log(Level.SEVERE, "Apparently the API rate limit has been exceeded. Plugin will use existing version\nRequest URL : " + uri, e);
                 return Map.entry(false, configTagName);
             }
         }

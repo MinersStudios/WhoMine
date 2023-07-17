@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings("UnstableApiUsage")
 @MSListener
-public class CardBoxMechanic implements Listener {
+public class CardBoxMechanic extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryMoveItem(@NotNull InventoryMoveItemEvent event) {

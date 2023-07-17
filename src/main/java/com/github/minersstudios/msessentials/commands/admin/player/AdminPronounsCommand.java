@@ -1,6 +1,6 @@
 package com.github.minersstudios.msessentials.commands.admin.player;
 
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.Pronouns;
@@ -23,7 +23,7 @@ public class AdminPronounsCommand {
         PlayerFile playerFile = playerInfo.getPlayerFile();
 
         if (args.length == 2) {
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     sender,
                     translatable(
                             "ms.command.player.pronouns.get",
@@ -40,7 +40,7 @@ public class AdminPronounsCommand {
             try {
                 pronouns = Pronouns.valueOf(pronounsString.toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException ignore) {
-                ChatUtils.sendError(
+                MSLogger.severe(
                         sender,
                         translatable(
                                 "ms.command.player.pronouns.use_one_of",
@@ -52,7 +52,7 @@ public class AdminPronounsCommand {
 
             playerFile.setPronouns(pronouns);
             playerFile.save();
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     sender,
                     translatable(
                             "ms.command.player.pronouns.set",

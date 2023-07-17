@@ -1,6 +1,6 @@
 package com.github.minersstudios.msessentials.commands.other.discord;
 
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
@@ -23,7 +23,7 @@ public class UnlinkCommand {
         long id = playerInfo.unlinkDiscord();
 
         if (id == -1L) {
-            ChatUtils.sendWarning(sender, translatable("ms.command.discord.unlink.no_links"));
+            MSLogger.warning(sender, translatable("ms.command.discord.unlink.no_links"));
             return;
         }
 
@@ -45,7 +45,7 @@ public class UnlinkCommand {
                         ).queue();
                     }
 
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable(
                                     "ms.command.discord.unlink.minecraft.success",

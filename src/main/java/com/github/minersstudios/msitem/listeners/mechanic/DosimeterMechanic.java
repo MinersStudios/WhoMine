@@ -10,7 +10,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 @MSListener
-public class DosimeterMechanic implements Listener {
+public class DosimeterMechanic extends AbstractMSListener {
 
     @EventHandler
     public void onPlayerSwapHandItems(@NotNull PlayerSwapHandItemsEvent event) {
@@ -78,7 +78,7 @@ public class DosimeterMechanic implements Listener {
             return;
         }
 
-        MSItem.getInstance().runTask(() -> {
+        this.getPlugin().runTask(() -> {
             if (dosimeterItem.equals(playerInventory.getItem(newEquipmentSlot))) {
                 MSItem.getConfigCache().dosimeterPlayers.put(player, newEquipmentSlot);
             } else if (

@@ -2,6 +2,7 @@ package com.github.minersstudios.msessentials.commands.ban;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msessentials.MSEssentials;
@@ -11,7 +12,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
@@ -57,7 +57,7 @@ public class BanCommand implements MSCommandExecutor {
         Instant date = DateUtils.getDateFromString(args[1], false);
 
         if (date == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.format"));
+            MSLogger.severe(sender, Component.translatable("ms.error.format"));
             return true;
         }
 
@@ -68,7 +68,7 @@ public class BanCommand implements MSCommandExecutor {
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
+            MSLogger.severe(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
@@ -88,7 +88,7 @@ public class BanCommand implements MSCommandExecutor {
 
         switch (args.length) {
             case 1 -> {
-                for (var offlinePlayer : Bukkit.getOfflinePlayers()) {
+                for (var offlinePlayer : sender.getServer().getOfflinePlayers()) {
                     String nickname = offlinePlayer.getName();
                     UUID uuid = offlinePlayer.getUniqueId();
 

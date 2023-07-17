@@ -2,7 +2,7 @@ package com.github.minersstudios.msessentials.commands.other;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
@@ -33,7 +33,7 @@ public class ResourcePackCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
+            MSLogger.severe(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 

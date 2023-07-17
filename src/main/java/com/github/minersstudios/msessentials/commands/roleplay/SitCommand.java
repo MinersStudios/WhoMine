@@ -2,6 +2,7 @@ package com.github.minersstudios.msessentials.commands.roleplay;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -37,14 +38,14 @@ public class SitCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
+            MSLogger.severe(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 
         PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
-            ChatUtils.sendWarning(player, Component.translatable("ms.command.sit.in_air"));
+            MSLogger.warning(player, Component.translatable("ms.command.sit.in_air"));
             return true;
         }
 

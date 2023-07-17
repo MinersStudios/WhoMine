@@ -1,7 +1,7 @@
 package com.github.minersstudios.mscore.commands;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ public class ReloadConfigCommand {
         long time = System.currentTimeMillis();
 
         MSCore.getConfiguration().reload();
-        ChatUtils.sendFine(
+        MSLogger.fine(
                 sender,
                 Component.translatable(
                         "ms.command.mscore.reload_config.success",

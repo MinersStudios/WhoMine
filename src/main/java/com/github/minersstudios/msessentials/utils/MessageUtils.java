@@ -5,6 +5,7 @@ import com.github.minersstudios.mscore.utils.Badges;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.Config;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
+import com.github.minersstudios.msessentials.world.WorldDark;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.EmbedType;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
-import static com.github.minersstudios.mscore.utils.ChatUtils.sendInfo;
+import static com.github.minersstudios.mscore.logger.MSLogger.info;
 import static com.github.minersstudios.mscore.utils.ChatUtils.serializeLegacyComponent;
 import static com.github.minersstudios.msessentials.utils.MessageUtils.Colors.*;
 import static github.scarsz.discordsrv.util.DiscordUtil.getTextChannelById;
@@ -46,8 +47,8 @@ public final class MessageUtils {
      */
     public static void sendGlobalMessage(@NotNull Component message) {
         Bukkit.getOnlinePlayers().stream()
-                .filter(player -> !player.getWorld().equals(MSEssentials.getWorldDark()))
-                .forEach(player -> player.sendMessage(message));
+        .filter(player -> !WorldDark.isInWorldDark(player))
+        .forEach(player -> player.sendMessage(message));
     }
 
     /**
@@ -99,7 +100,7 @@ public final class MessageUtils {
             MSEssentials.getInstance().runTaskAsync(
                     () -> sendMessage(getTextChannelById(config.discordLocalChannelId), stringLocalMessage)
             );
-            sendInfo(localMessage);
+            info(localMessage);
             return;
         }
 
@@ -119,7 +120,7 @@ public final class MessageUtils {
             sendMessage(getTextChannelById(config.discordGlobalChannelId), stringGlobalMessage.replaceFirst("\\[WM]", ""));
             sendMessage(getTextChannelById(config.discordLocalChannelId), stringGlobalMessage);
         });
-        sendInfo(globalMessage);
+        info(globalMessage);
     }
 
     /**
@@ -170,7 +171,7 @@ public final class MessageUtils {
             MSCore.getInstance().runTaskAsync(
                     () -> sendMessage(getTextChannelById(MSEssentials.getConfiguration().discordLocalChannelId), privateMessageString)
             );
-            sendInfo(privateMessage);
+            info(privateMessage);
             return true;
         }
         return false;
@@ -228,7 +229,7 @@ public final class MessageUtils {
         MSCore.getInstance().runTaskAsync(
                 () -> sendMessage(getTextChannelById(config.discordLocalChannelId), serializeLegacyComponent(fullMessage))
         );
-        sendInfo(fullMessage);
+        info(fullMessage);
     }
 
     public static void sendRPEventMessage(
@@ -276,9 +277,9 @@ public final class MessageUtils {
             sendActionMessage(killed, getTextChannelById(config.discordGlobalChannelId), stringDeathMessage, 16757024);
             sendActionMessage(killed, getTextChannelById(config.discordLocalChannelId), stringDeathMessage, 16757024);
         });
-        sendInfo(deathMessage);
+        info(deathMessage);
 
-        sendInfo(
+        info(
                 Component.translatable(
                         "ms.info.player_death_info",
                         killedInfo.getDefaultName(),
@@ -319,7 +320,7 @@ public final class MessageUtils {
             sendActionMessage(player, getTextChannelById(config.discordGlobalChannelId), stringJoinMessage, 65280);
             sendActionMessage(player, getTextChannelById(config.discordLocalChannelId), stringJoinMessage, 65280);
         });
-        sendInfo(joinMessage);
+        info(joinMessage);
     }
 
     /**
@@ -346,7 +347,7 @@ public final class MessageUtils {
            sendActionMessage(player, getTextChannelById(config.discordGlobalChannelId), stringQuitMessage, 16711680);
            sendActionMessage(player, getTextChannelById(config.discordLocalChannelId), stringQuitMessage, 16711680);
         });
-        sendInfo(quitMessage);
+        info(quitMessage);
     }
 
     public static @NotNull MessageEmbed craftEmbed(@NotNull String description) {

@@ -1,18 +1,20 @@
-package com.github.minersstudios.mscore;
+package com.github.minersstudios.mscore.plugin;
 
+import com.github.minersstudios.mscore.Cache;
 import com.github.minersstudios.mscore.command.Commodore;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import com.github.minersstudios.mscore.listener.MSListener;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.Listener;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -31,7 +33,6 @@ import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Represents a Java plugin and its main class.
@@ -48,7 +49,7 @@ public abstract class MSPlugin extends JavaPlugin {
     private final File configFile = new File(this.pluginFolder, "config.yml");
     private final Set<String> classNames = new HashSet<>();
     private final Map<MSCommand, MSCommandExecutor> msCommands = new HashMap<>();
-    private final Set<Listener> listeners = new HashSet<>();
+    private final Set<AbstractMSListener> msListeners = new HashSet<>();
     private Commodore commodore;
     private FileConfiguration newConfig;
     private boolean loadedCustoms;
@@ -81,6 +82,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see #loadClassNames()
      * @see #loadCommands()
      * @see #loadListeners()
+     * @see #load()
      */
     @Override
     public final void onLoad() {
@@ -105,6 +107,7 @@ public abstract class MSPlugin extends JavaPlugin {
      *
      * @see #registerCommands()
      * @see #registerListeners()
+     * @see #enable()
      */
     @Override
     public final void onEnable() {
@@ -116,13 +119,14 @@ public abstract class MSPlugin extends JavaPlugin {
 
         this.enable();
 
-        ChatUtils.sendFine("[" + this.getName() + "] Enabled in " + (System.currentTimeMillis() - time) + "ms");
+        MSLogger.fine("[" + this.getName() + "] Enabled in " + (System.currentTimeMillis() - time) + "ms");
     }
 
     /**
      * Called when this plugin is disabled.
      * After that, it calls the disable() method.
      * Also logs the time it took to disable the plugin.
+     * @see #disable()
      */
     @Override
     public final void onDisable() {
@@ -130,10 +134,13 @@ public abstract class MSPlugin extends JavaPlugin {
 
         this.disable();
 
-        ChatUtils.sendFine("[" + this.getName() + "] Disabled in " + (System.currentTimeMillis() - time) + "ms");
+        MSLogger.fine("[" + this.getName() + "] Disabled in " + (System.currentTimeMillis() - time) + "ms");
     }
 
     /**
+     * Called after a plugin is loaded but before it has been enabled.
+     * When multiple plugins are loaded, the load() for all plugins
+     * is called before any enable() is called.
      * Same as {@link JavaPlugin#onLoad()}
      *
      * @see MSPlugin#onLoad()
@@ -141,6 +148,7 @@ public abstract class MSPlugin extends JavaPlugin {
     public void load() {}
 
     /**
+     * Called when this plugin is enabled.
      * Same as {@link JavaPlugin#onEnable()}
      *
      * @see MSPlugin#onEnable()
@@ -148,6 +156,7 @@ public abstract class MSPlugin extends JavaPlugin {
     public void enable() {}
 
     /**
+     * Called when this plugin is disabled.
      * Same as {@link JavaPlugin#onDisable()}
      *
      * @see MSPlugin#onDisable()
@@ -168,8 +177,8 @@ public abstract class MSPlugin extends JavaPlugin {
     /**
      * @return The unmodifiable set of listeners
      */
-    public final @NotNull @Unmodifiable Set<Listener> getListeners() {
-        return Set.copyOf(this.listeners);
+    public final @NotNull @Unmodifiable Set<AbstractMSListener> getListeners() {
+        return Set.copyOf(this.msListeners);
     }
 
     /**
@@ -262,7 +271,7 @@ public abstract class MSPlugin extends JavaPlugin {
         try {
             this.getConfig().save(this.configFile);
         } catch (IOException e) {
-            this.getLogger().log(Level.SEVERE, "Could not save config to " + this.configFile, e);
+            MSLogger.log(Level.SEVERE, "Could not save config to " + this.configFile, e);
         }
     }
 
@@ -292,7 +301,6 @@ public abstract class MSPlugin extends JavaPlugin {
 
         Preconditions.checkNotNull(in, "The embedded resource '" + path + "' cannot be found");
 
-        Logger logger = this.getLogger();
         String dirPath = path.substring(0, Math.max(path.lastIndexOf('/'), 0));
         File outFile = new File(this.pluginFolder, path);
         File outDir = new File(this.pluginFolder, dirPath);
@@ -300,7 +308,7 @@ public abstract class MSPlugin extends JavaPlugin {
         String outDirName = outDir.getName();
 
         if (!outDir.exists() && !outDir.mkdirs()) {
-            logger.log(Level.WARNING, "Directory " + outDirName + " creation failed");
+            MSLogger.log(Level.WARNING, "Directory " + outDirName + " creation failed");
         }
 
         if (!outFile.exists() || replace) {
@@ -315,10 +323,10 @@ public abstract class MSPlugin extends JavaPlugin {
                     out.write(buffer, 0, read);
                 }
             } catch (IOException ex) {
-                this.getLogger().log(Level.SEVERE, "Could not save " + outFileName + " to " + outFile, ex);
+                MSLogger.log(Level.SEVERE, "Could not save " + outFileName + " to " + outFile, ex);
             }
         } else {
-            this.getLogger().log(Level.WARNING, "Could not save " + outFileName + " to " + outFile + " because " + outFileName + " already exists.");
+            MSLogger.warning("Could not save " + outFileName + " to " + outFile + " because " + outFileName + " already exists.");
         }
     }
 
@@ -340,24 +348,24 @@ public abstract class MSPlugin extends JavaPlugin {
      * All commands must be implemented using {@link MSCommandExecutor}.
      *
      * @see MSCommand
+     * @see MSCommandExecutor
+     * @see #registerCommands()
      */
     private void loadCommands() {
-        Logger logger = this.getLogger();
-
         this.classNames.stream().parallel().forEach(className -> {
             try {
-                Class<?> clazz = this.getClassLoader().loadClass(className);
+                var clazz = this.getClassLoader().loadClass(className);
                 MSCommand msCommand = clazz.getAnnotation(MSCommand.class);
 
                 if (msCommand != null) {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof MSCommandExecutor msCommandExecutor) {
                         this.msCommands.put(msCommand, msCommandExecutor);
                     } else {
-                        logger.log(Level.WARNING, "Loaded command that is not instance of MSCommandExecutor (" + className + ")");
+                        MSLogger.warning("Loaded command that is not instance of MSCommandExecutor (" + className + ")");
                     }
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Failed to load command", e);
+                MSLogger.log(Level.SEVERE, "Failed to load command", e);
             }
         });
     }
@@ -367,6 +375,9 @@ public abstract class MSPlugin extends JavaPlugin {
      * All commands must be implemented using {@link MSCommandExecutor}.
      *
      * @see MSCommand
+     * @see MSCommandExecutor
+     * @see #loadCommands()
+     * @see #registerCommand(MSCommand, MSCommandExecutor)
      */
     public void registerCommands() {
         this.msCommands.forEach(this::registerCommand);
@@ -374,56 +385,63 @@ public abstract class MSPlugin extends JavaPlugin {
 
     /**
      * Loads all listeners annotated with {@link MSListener} the project.
-     * All listeners must be implemented using {@link Listener}.
+     * All listeners must be extended using {@link AbstractMSListener}.
      *
      * @see MSListener
+     * @see AbstractMSListener
+     * @see #registerListeners()
      */
     private void loadListeners() {
-        Logger logger = this.getLogger();
-
         this.classNames.stream().parallel().forEach(className -> {
             try {
-                Class<?> clazz = this.getClassLoader().loadClass(className);
+                var clazz = this.getClassLoader().loadClass(className);
 
                 if (clazz.isAnnotationPresent(MSListener.class)) {
-                    if (clazz.getDeclaredConstructor().newInstance() instanceof Listener listener) {
-                        this.listeners.add(listener);
+                    if (clazz.getDeclaredConstructor().newInstance() instanceof AbstractMSListener listener) {
+                        this.msListeners.add(listener);
                     } else {
-                        logger.log(Level.WARNING, "Registered listener that is not instance of Listener (" + className + ")");
+                        MSLogger.warning("Registered listener that is not instance of AbstractMSListener (" + className + ")");
                     }
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Failed to load listener", e);
+                MSLogger.log(Level.SEVERE, "Failed to load listener", e);
             }
         });
     }
 
     /**
      * Registers all listeners in the project that is annotated with {@link MSListener}.
-     * All listeners must be implemented using {@link Listener}.
+     * All listeners must be extended using {@link AbstractMSListener}.
      *
      * @see MSListener
+     * @see #loadListeners()
      */
     public void registerListeners() {
-        PluginManager pluginManager = this.getServer().getPluginManager();
-        this.listeners.forEach(listener -> pluginManager.registerEvents(listener, this));
+        this.msListeners.forEach(listener -> listener.register(this));
     }
 
     /**
+     * Registers a command with the plugin
+     *
      * @param msCommand Command to be registered
      * @param executor  Command executor
+     * @see MSCommand
+     * @see MSCommandExecutor
+     * @see #loadCommands()
+     * @see #registerCommands()
      */
     public final void registerCommand(
             @NotNull MSCommand msCommand,
             @NotNull MSCommandExecutor executor
-    ) throws IllegalArgumentException {
+    ) {
         String name = msCommand.command();
         CommandNode<?> commandNode = executor.getCommandNode();
         PluginCommand bukkitCommand = this.getCommand(name);
         PluginCommand pluginCommand = bukkitCommand == null ? createCommand(name) : bukkitCommand;
+        Server server = this.getServer();
 
         if (pluginCommand == null) {
-            this.getLogger().log(Level.SEVERE, "Failed to register command : " + name);
+            MSLogger.log(Level.SEVERE, "Failed to register command : " + name);
             return;
         }
 
@@ -445,13 +463,13 @@ public abstract class MSPlugin extends JavaPlugin {
         }
 
         if (!permissionStr.isEmpty()) {
-            PluginManager pluginManager = this.getServer().getPluginManager();
+            PluginManager pluginManager = server.getPluginManager();
             var children = new HashMap<String, Boolean>();
             String[] keys = msCommand.permissionParentKeys();
             boolean[] values = msCommand.permissionParentValues();
 
             if (keys.length != values.length) {
-                this.getLogger().severe("Permission and boolean array lengths do not match in command : " + name);
+                MSLogger.severe("Permission and boolean array lengths do not match in command : " + name);
             } else {
                 for (int i = 0; i < keys.length; i++) {
                     children.put(keys[i], values[i]);
@@ -473,7 +491,7 @@ public abstract class MSPlugin extends JavaPlugin {
             this.commodore.register(pluginCommand, (LiteralCommandNode<?>) commandNode, pluginCommand::testPermissionSilent);
         }
 
-        this.getServer().getCommandMap().register(this.getName(), pluginCommand);
+        server.getCommandMap().register(this.getName(), pluginCommand);
     }
 
     /**
@@ -486,7 +504,7 @@ public abstract class MSPlugin extends JavaPlugin {
         try {
             return COMMAND_CONSTRUCTOR.newInstance(command, this);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            this.getLogger().log(Level.WARNING, "Failed to create command : " + command, e);
+            MSLogger.log(Level.SEVERE, "Failed to create command : " + command, e);
             return null;
         }
     }

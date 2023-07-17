@@ -11,12 +11,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerMoveListener implements Listener {
+public class PlayerMoveListener extends AbstractMSListener {
 
     @EventHandler
     public void onPlayerMove(@NotNull PlayerMoveEvent event) {

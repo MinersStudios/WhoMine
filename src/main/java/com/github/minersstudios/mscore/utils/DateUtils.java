@@ -1,6 +1,6 @@
 package com.github.minersstudios.mscore.utils;
 
-import org.bukkit.Bukkit;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -91,7 +91,7 @@ public final class DateUtils {
 
             return timezone;
         } catch (IOException e) {
-            Bukkit.getLogger().log(Level.WARNING, e.getMessage(), e);
+            MSLogger.log(Level.WARNING, e.getMessage(), e);
             return DEFAULT_TIMEZONE;
         }
     }

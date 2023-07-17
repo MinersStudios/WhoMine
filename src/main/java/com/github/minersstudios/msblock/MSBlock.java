@@ -4,7 +4,8 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.listeners.block.PacketBlockDigListener;
 import com.github.minersstudios.msblock.utils.ConfigCache;
-import com.github.minersstudios.mscore.MSPlugin;
+import com.github.minersstudios.mscore.logger.MSLogger;
+import com.github.minersstudios.mscore.plugin.MSPlugin;
 import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
@@ -33,7 +34,7 @@ public final class MSBlock extends MSPlugin {
             try {
                 paperConfig.save(paperGlobalConfig);
             } catch (IOException e) {
-                this.getLogger().log(Level.SEVERE, "Failed to save paper-global.yml with " + noteBlockUpdates + " enabled", e);
+                MSLogger.log(Level.SEVERE, "Failed to save paper-global.yml with " + noteBlockUpdates + " enabled", e);
             }
 
             server.paperConfigurations.reloadConfigs(server);

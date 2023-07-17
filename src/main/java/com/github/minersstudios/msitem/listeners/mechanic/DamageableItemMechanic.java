@@ -4,13 +4,13 @@ import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ItemUtils;
 import com.github.minersstudios.msitem.items.DamageableItem;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class DamageableItemMechanic implements Listener {
+public class DamageableItemMechanic extends AbstractMSListener {
 
     @EventHandler
     public void onPlayerItemDamage(@NotNull PlayerItemDamageEvent event) {

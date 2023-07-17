@@ -4,7 +4,7 @@ import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 
 @MSListener
-public class PlayerEditBookListener implements Listener {
+public class PlayerEditBookListener extends AbstractMSListener {
 
     @EventHandler
     public void onPlayerEditBook(@NotNull PlayerEditBookEvent event) {

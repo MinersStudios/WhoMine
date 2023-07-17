@@ -7,7 +7,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +16,7 @@ import java.util.Locale;
 import static net.kyori.adventure.text.Component.text;
 
 @MSListener
-public class PlayerAdvancementDoneListener implements Listener {
+public class PlayerAdvancementDoneListener extends AbstractMSListener {
 
     @EventHandler
     public void onPlayerAdvancementDone(@NotNull PlayerAdvancementDoneEvent event) {

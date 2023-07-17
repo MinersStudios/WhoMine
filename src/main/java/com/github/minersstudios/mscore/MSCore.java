@@ -2,6 +2,7 @@ package com.github.minersstudios.mscore;
 
 import com.github.minersstudios.mscore.config.Config;
 import com.github.minersstudios.mscore.config.LanguageFile;
+import com.github.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -18,7 +19,7 @@ public final class MSCore extends MSPlugin {
     @Override
     public void enable() {
         singleton = this;
-        config = new Config(this.getConfigFile());
+        config = new Config(this, this.getConfigFile());
 
         config.reload();
         LanguageFile.loadLanguage(config.languageUrl, config.languageCode);
@@ -30,16 +31,16 @@ public final class MSCore extends MSPlugin {
     }
 
     /**
-     * @return The instance of the plugin,
-     *         or null if the plugin is not enabled
+     * @return The instance of the plugin
+     * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull MSCore getInstance() throws NullPointerException {
         return singleton;
     }
 
     /**
-     * @return The configuration of the plugin,
-     *         or null if the plugin is not enabled
+     * @return The configuration of the plugin
+     * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull Config getConfiguration() throws NullPointerException {
         return config;

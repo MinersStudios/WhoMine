@@ -1,15 +1,15 @@
 package com.github.minersstudios.mscore.listeners.inventory;
 
 import com.github.minersstudios.mscore.inventory.CustomInventory;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import com.github.minersstudios.mscore.listener.MSListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryDragListener implements Listener {
+public class InventoryDragListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryDrag(@NotNull InventoryDragEvent event) {

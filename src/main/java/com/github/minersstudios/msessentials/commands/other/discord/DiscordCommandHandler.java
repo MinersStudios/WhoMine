@@ -2,7 +2,7 @@ package com.github.minersstudios.msessentials.commands.other.discord;
 
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -55,7 +55,7 @@ public class DiscordCommandHandler implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, translatable("ms.error.only_player_command"));
+            MSLogger.severe(sender, translatable("ms.error.only_player_command"));
             return true;
         }
 
@@ -70,7 +70,7 @@ public class DiscordCommandHandler implements MSCommandExecutor {
                 }
             }
         } else {
-            ChatUtils.sendWarning(sender, DISCORD_MESSAGE);
+            MSLogger.warning(sender, DISCORD_MESSAGE);
         }
         return true;
     }

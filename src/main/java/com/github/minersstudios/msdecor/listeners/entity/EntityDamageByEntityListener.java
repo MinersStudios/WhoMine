@@ -10,12 +10,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class EntityDamageByEntityListener implements Listener {
+public class EntityDamageByEntityListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {

@@ -1,6 +1,6 @@
 package com.github.minersstudios.msessentials.commands.admin.player;
 
-import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.player.PlayerFile;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.player.PlayerName;
@@ -31,7 +31,7 @@ public class AdminNameCommand {
         String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     sender,
                     translatable(
                             "ms.command.player.name.about",
@@ -50,7 +50,7 @@ public class AdminNameCommand {
                 && !"empty".equals(paramArgString)
                 && !MSPlayerUtils.matchesNameRegex(paramArgString)
         ) {
-            ChatUtils.sendError(sender, Component.translatable("ms.error.format"));
+            MSLogger.severe(sender, Component.translatable("ms.error.format"));
             return true;
         }
 
@@ -58,7 +58,7 @@ public class AdminNameCommand {
             case "reset" -> {
                 if (haveArg) return false;
 
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         sender,
                         translatable(
                                 "ms.command.player.name.full_reset.sender",
@@ -81,7 +81,7 @@ public class AdminNameCommand {
             }
             case "first-name" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable("ms.command.player.name.get.first_name", text(playerName.getFirstName()))
                     );
@@ -92,7 +92,7 @@ public class AdminNameCommand {
             }
             case "last-name" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable("ms.command.player.name.get.last_name", text(playerName.getLastName()))
                     );
@@ -103,7 +103,7 @@ public class AdminNameCommand {
             }
             case "patronymic" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable("ms.command.player.name.get.patronymic", text(playerName.getPatronymic()))
                     );
@@ -117,7 +117,7 @@ public class AdminNameCommand {
         playerFile.updateName();
         playerFile.save();
         playerInfo.initNames();
-        ChatUtils.sendFine(
+        MSLogger.fine(
                 sender,
                 translatable(
                         "ms.command.player.name.now_full",

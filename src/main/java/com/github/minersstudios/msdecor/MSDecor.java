@@ -1,6 +1,6 @@
 package com.github.minersstudios.msdecor;
 
-import com.github.minersstudios.mscore.MSPlugin;
+import com.github.minersstudios.mscore.plugin.MSPlugin;
 import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import com.github.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.github.minersstudios.msdecor.utils.ConfigCache;

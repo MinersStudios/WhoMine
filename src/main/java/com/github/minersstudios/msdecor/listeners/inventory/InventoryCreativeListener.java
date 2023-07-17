@@ -9,7 +9,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryCreativeListener implements Listener {
+public class InventoryCreativeListener extends AbstractMSListener {
 
     @EventHandler
     public void onInventoryCreative(@NotNull InventoryCreativeEvent event) {

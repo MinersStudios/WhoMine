@@ -1,6 +1,5 @@
 package com.github.minersstudios.mscore.utils;
 
-import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.mscore.MSCore;
 import org.bukkit.NamespacedKey;
@@ -12,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class MSBlockUtils {
-    public static final NamespacedKey CUSTOM_BLOCK_TYPE_NAMESPACED_KEY = new NamespacedKey(MSBlock.getInstance(), "type");
+    public static final NamespacedKey CUSTOM_BLOCK_TYPE_NAMESPACED_KEY = new NamespacedKey("msblock", "type");
     public static final String NAMESPACED_KEY_REGEX = "msblock:(\\w+)";
 
     @Contract(value = " -> fail")

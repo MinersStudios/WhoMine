@@ -1,7 +1,7 @@
 package com.github.minersstudios.msessentials.listeners.chat;
 
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.Badges;
-import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
@@ -40,7 +40,7 @@ public class DiscordGuildMessagePreProcessListener {
                 .append(text(message.getContentDisplay(), TextColor.color(202, 202, 255)));
 
         MessageUtils.sendGlobalMessage(messageComponent);
-        ChatUtils.sendInfo(messageComponent);
+        MSLogger.info(messageComponent);
     }
 
     private static @NotNull String replaceReplyPlaceholders(

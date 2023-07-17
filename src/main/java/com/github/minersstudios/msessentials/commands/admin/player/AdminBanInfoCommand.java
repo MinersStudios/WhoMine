@@ -1,12 +1,12 @@
 package com.github.minersstudios.msessentials.commands.admin.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.BanList;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,7 @@ public class AdminBanInfoCommand {
         String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
-            ChatUtils.sendFine(
+            MSLogger.fine(
                     sender,
                     banned
                     ? translatable(
@@ -52,7 +52,7 @@ public class AdminBanInfoCommand {
         }
 
         if (!banned) {
-            ChatUtils.sendError(
+            MSLogger.severe(
                     sender,
                     translatable(
                             "ms.command.player.ban_info.not_banned",
@@ -66,7 +66,7 @@ public class AdminBanInfoCommand {
         switch (paramString) {
             case "reason" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable(
                                     "ms.command.player.ban_info.get.reason",
@@ -81,7 +81,7 @@ public class AdminBanInfoCommand {
                 String reason = ChatUtils.extractMessage(args, 3);
 
                 playerInfo.setBanReason(reason);
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         sender,
                         translatable(
                                 "ms.command.player.ban_info.set.reason",
@@ -94,7 +94,7 @@ public class AdminBanInfoCommand {
             }
             case "time" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(
+                    MSLogger.fine(
                             sender,
                             translatable(
                                     "ms.command.player.ban_info.get.time_to",
@@ -109,12 +109,12 @@ public class AdminBanInfoCommand {
                 Instant instant = DateUtils.getDateFromString(paramArgString, false);
 
                 if (instant == null) {
-                    ChatUtils.sendError(sender, Component.translatable("ms.error.wrong_format"));
+                    MSLogger.severe(sender, Component.translatable("ms.error.wrong_format"));
                     return true;
                 }
 
                 Date date = Date.from(instant);
-                BanList<PlayerProfile> banList = Bukkit.getBanList(BanList.Type.PROFILE);
+                BanList<PlayerProfile> banList = sender.getServer().getBanList(BanList.Type.PROFILE);
                 var banEntry = banList.getBanEntry(playerInfo.getPlayerProfile());
 
                 playerInfo.setBannedTo(date);
@@ -124,7 +124,7 @@ public class AdminBanInfoCommand {
                     banEntry.save();
                 }
 
-                ChatUtils.sendFine(
+                MSLogger.fine(
                         sender,
                         translatable(
                                 "ms.command.player.ban_info.set.time_to",

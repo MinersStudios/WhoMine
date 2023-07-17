@@ -13,7 +13,7 @@ import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.github.minersstudios.mscore.listener.AbstractMSListener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +21,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class BrazierMechanic implements Listener {
+public class BrazierMechanic extends AbstractMSListener {
 
     @EventHandler
     public void onPlayerInteractAtEntity(@NotNull PlayerInteractAtEntityEvent event) {
