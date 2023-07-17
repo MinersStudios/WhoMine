@@ -1,0 +1,23 @@
+name: $name
+version: $version
+description: $description
+authors: [ $authors ]
+contributors: [ $contributors ]
+website: $website
+
+main: $main
+api-version: $apiVersion
+dependencies:
+  - name: MSEssentials
+    version: $version
+  - name: MSItem
+    version: $version
+  - name: MSDecor
+    version: $version
+  - name: MSBlock
+    version: $version
+load-before:
+  - name: MSEssentials
+  - name: MSBlock
+  - name: MSItem
+  - name: MSDecor

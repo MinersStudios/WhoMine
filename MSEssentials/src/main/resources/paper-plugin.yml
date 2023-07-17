@@ -1,0 +1,28 @@
+name: $name
+version: $version
+description: $description
+authors: [ $authors ]
+contributors: [ $contributors ]
+website: $website
+
+main: $main
+api-version: $apiVersion
+dependencies:
+  - name: MSCore
+    version: $version
+  - name: MSItem
+    version: $version
+  - name: MSBlock
+    version: $version
+  - name: MSDecor
+    version: $version
+  - name: AuthMe
+    version: 5.6.0-SNAPSHOT
+  - name: ProtocolLib
+    version: 5.0.0
+  - name: DiscordSRV
+    version: 1.23.0
+load-after:
+  - name: AuthMe
+  - name: ProtocolLib
+  - name: DiscordSRV

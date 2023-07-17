@@ -1,5 +1,6 @@
 plugins {
     java
+    kotlin("jvm") version "1.9.0"
     id("io.papermc.paperweight.userdev") version "1.5.5"
 }
 
@@ -8,6 +9,7 @@ version = "1.0.0"
 val apiVersion = "'1.20'"
 val website = "https://minersstudios.github.io"
 val authors = listOf("MinersStudios", "p0loskun")
+val contributors = listOf("PackmanDude")
 
 allprojects {
     apply(plugin = "java")
@@ -19,18 +21,9 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven {
-            name = "playpro-repo"
-            url = uri("https://maven.playpro.com")
-        }
-        maven {
-            name = "m2-dv8tion"
-            url = uri("https://m2.dv8tion.net/releases")
-        }
-        maven {
-            name = "codemc-repo"
-            url = uri("https://repo.codemc.org/repository/maven-public/")
-        }
+        maven("https://maven.playpro.com")
+        maven("https://m2.dv8tion.net/releases")
+        maven("https://repo.codemc.org/repository/maven-public/")
         maven("https://nexus.scarsz.me/content/groups/public/")
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://repo.dmulloy2.net/repository/public/")
@@ -94,6 +87,7 @@ subprojects {
                 srcDir("../src/main/java")
                 include("**/$lowercaseName/**")
             }
+
             resources {
                 srcDir("${project.name}/src/main/resources")
             }
@@ -115,13 +109,14 @@ subprojects {
                     "version" to rootProject.version,
                     "description" to description,
                     "authors" to authors.joinToString(", "),
+                    "contributors" to contributors.joinToString(", "),
                     "website" to website,
                     "apiVersion" to apiVersion,
-                    "main" to "${rootProject.group}.$lowercaseName.${project.name}",
+                    "main" to "${rootProject.group}.$lowercaseName.${project.name}"
             )
 
             inputs.properties(props)
-            filesMatching("plugin.yml") {
+            filesMatching("paper-plugin.yml") {
                 expand(props)
             }
         }
