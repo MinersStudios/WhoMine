@@ -16,7 +16,9 @@ public class PlayerTeleportListener extends AbstractMSListener {
         Player player = event.getPlayer();
         PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
-        playerInfo.unsetSitting();
+        if (playerInfo.isSitting()) {
+            playerInfo.unsetSitting();
+        }
 
         if (
                 event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE

@@ -26,21 +26,17 @@ public class PlayerAdvancementDoneListener extends AbstractMSListener {
 
         AdvancementDisplay.Frame frame = advancementDisplay.frame();
         PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(event.getPlayer());
+        Component title = advancementDisplay.title();
+        Component description = advancementDisplay.description();
 
         event.message(
                 Component.space()
                 .append(Component.translatable(
                 "chat.type.advancement." + frame.name().toLowerCase(Locale.ROOT),
                 playerInfo.getDefaultName(),
-                text("[")
-                .append(advancementDisplay.title())
-                .append(text("]"))
-                .color(frame.color())
-                .hoverEvent(HoverEvent.showText(
-                advancementDisplay.title()
-                .append(Component.newline().append(advancementDisplay.description()))
-                .color(frame.color())
-                ))).color(NamedTextColor.GRAY))
+                text("[").append(title).append(text("]")).color(frame.color())
+                .hoverEvent(HoverEvent.showText(title.append(Component.newline().append(description)).color(frame.color()))))
+                .color(NamedTextColor.GRAY))
         );
     }
 }

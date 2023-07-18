@@ -13,6 +13,7 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSListener
 public class PlayerEditBookListener extends AbstractMSListener {
+    private static final Component ANONYMOUS_AUTHOR = Component.translatable("ms.book.anonymous");
 
     @EventHandler
     public void onPlayerEditBook(@NotNull PlayerEditBookEvent event) {
@@ -25,7 +26,7 @@ public class PlayerEditBookListener extends AbstractMSListener {
 
         event.setNewBookMeta(bookMeta
                 .author(isAnon
-                        ? Component.translatable("ms.book.anonymous")
+                        ? ANONYMOUS_AUTHOR
                         : playerInfo.getDefaultName()
                 ).title(isAnon
                         ? text(title.substring(1))

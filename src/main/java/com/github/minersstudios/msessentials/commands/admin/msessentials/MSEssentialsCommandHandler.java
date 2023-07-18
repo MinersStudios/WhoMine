@@ -65,6 +65,8 @@ public class MSEssentialsCommandHandler implements MSCommandExecutor {
                     return false;
                 }
             }
+        } else {
+            return false;
         }
         return true;
     }

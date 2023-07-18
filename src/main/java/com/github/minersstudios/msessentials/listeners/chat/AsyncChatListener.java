@@ -8,6 +8,7 @@ import com.github.minersstudios.msessentials.player.PlayerInfo;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +22,7 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSListener
 public class AsyncChatListener extends AbstractMSListener {
+    private static final TranslatableComponent MUTED = Component.translatable("ms.command.mute.already.receiver");
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onAsyncChat(@NotNull AsyncChatEvent event) {
@@ -36,7 +38,7 @@ public class AsyncChatListener extends AbstractMSListener {
         }
 
         if (playerInfo.isMuted()) {
-            warning(player, Component.translatable("ms.command.mute.already.receiver"));
+            warning(player, MUTED);
             return;
         }
 

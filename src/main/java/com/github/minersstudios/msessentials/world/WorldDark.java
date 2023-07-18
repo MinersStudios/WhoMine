@@ -9,6 +9,7 @@ import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * World dark singleton.
@@ -33,6 +35,7 @@ public class WorldDark extends CraftWorld {
     private static WorldDark singleton = null;
     private static ItemFrame darkEntity = null;
 
+    private static final String WORLD_NAME = "world_dark";
     private static final ChunkGenerator CHUNK_GENERATOR = new ChunkGenerator() {};
     private static final BiomeProvider BIOME_PROVIDER = new BiomeProvider() {
         @Override
@@ -86,7 +89,7 @@ public class WorldDark extends CraftWorld {
      */
     @Contract("null -> false")
     public static boolean isInWorldDark(@Nullable Location location) {
-        return location != null && location.getWorld() == singleton;
+        return location != null && location.getWorld().getName().equals(WORLD_NAME);
     }
 
     /**
@@ -95,7 +98,7 @@ public class WorldDark extends CraftWorld {
      */
     @Contract("null -> false")
     public static boolean isInWorldDark(@Nullable Entity entity) {
-        return entity != null && entity.getWorld() == singleton;
+        return entity != null && entity.getWorld().getName().equals(WORLD_NAME);
     }
 
     /**
@@ -103,10 +106,11 @@ public class WorldDark extends CraftWorld {
      *
      * @param player Player to teleport
      */
-    public static void teleportToDarkWorld(@NotNull Player player) {
-        player.teleportAsync(singleton.getSpawnLocation()).thenRun(() -> {
+    public static @NotNull CompletableFuture<Boolean> teleportToDarkWorld(@NotNull Player player) {
+        return player.teleportAsync(singleton.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN).thenApply(bool -> {
             player.setGameMode(GameMode.SPECTATOR);
             player.setSpectatorTarget(darkEntity);
+            return bool;
         });
     }
 
@@ -137,7 +141,7 @@ public class WorldDark extends CraftWorld {
      * @throws UnsupportedOperationException If world dark is not successfully created
      */
     private static @NotNull ServerLevel create() throws UnsupportedOperationException {
-        World world = new WorldCreator("world_dark")
+        World world = new WorldCreator(WORLD_NAME)
                 .generator(CHUNK_GENERATOR)
                 .biomeProvider(BIOME_PROVIDER)
                 .environment(ENVIRONMENT)

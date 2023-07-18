@@ -5,6 +5,7 @@ import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.world.WorldDark;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +21,7 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSListener
 public class InventoryClickListener extends AbstractMSListener {
+    private static final TranslatableComponent REMOVED_ITEM = Component.translatable("ms.info.player_item_removed");
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryClick(@NotNull InventoryClickEvent event) {
@@ -59,9 +61,8 @@ public class InventoryClickListener extends AbstractMSListener {
             if (remove) {
                 clickedInventory.setItem(slot, new ItemStack(Material.AIR));
                 MSLogger.warning(
-                        Component.translatable(
-                                "ms.info.player_item_removed",
-                                text(player.getName()),
+                        REMOVED_ITEM.args(
+                                player.name(),
                                 text(currentItem.toString())
                         )
                 );

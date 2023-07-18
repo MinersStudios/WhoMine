@@ -43,6 +43,8 @@ public class MSCoreCommandHandler implements MSCommandExecutor {
                     return false;
                 }
             }
+        } else {
+            return false;
         }
         return true;
     }

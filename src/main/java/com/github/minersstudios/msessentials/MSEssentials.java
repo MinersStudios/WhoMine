@@ -14,6 +14,7 @@ import com.github.minersstudios.msessentials.tasks.SeatsTask;
 import com.github.minersstudios.msessentials.world.WorldDark;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
@@ -29,6 +30,9 @@ public final class MSEssentials extends MSPlugin {
     private static World overworld;
     private static Scoreboard scoreboardHideTags;
     private static Team scoreboardHideTagsTeam;
+
+    private static final TranslatableComponent DISABLE_TITLE = Component.translatable("ms.on_disable.message.title");
+    private static final TranslatableComponent DISABLE_SUBTITLE = Component.translatable("ms.on_disable.message.subtitle");
 
     @Override
     public void enable() {
@@ -69,12 +73,9 @@ public final class MSEssentials extends MSPlugin {
         var onlinePlayers = this.getServer().getOnlinePlayers();
 
         if (!playerInfoMap.isEmpty() && !onlinePlayers.isEmpty()) {
-            Component title = Component.translatable("ms.on_disable.message.title");
-            Component subtitle = Component.translatable("ms.on_disable.message.subtitle");
-
             onlinePlayers.stream()
             .map(playerInfoMap::get)
-            .forEach(playerInfo -> playerInfo.kickPlayer(title, subtitle));
+            .forEach(playerInfo -> playerInfo.kickPlayer(DISABLE_TITLE, DISABLE_SUBTITLE));
         }
 
         cache.bukkitTasks.forEach(BukkitTask::cancel);

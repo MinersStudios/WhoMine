@@ -57,24 +57,23 @@ public class KickCommand implements MSCommandExecutor {
             return true;
         }
 
-        if (
-                playerInfo.kickPlayer(
-                        Component.translatable("ms.command.kick.message.receiver.title"),
-                        Component.translatable("ms.command.kick.message.receiver.subtitle", reason)
-                )
-        ) {
-            MSLogger.fine(
-                    sender,
-                    Component.translatable("ms.command.kick.message.sender").args(
-                            playerInfo.getGrayIDGreenName(),
-                            text(playerInfo.getNickname()),
-                            reason
-                    )
-            );
+        if (playerInfo.isOnline(true)) {
+            MSLogger.warning(sender, Component.translatable("ms.error.player_not_online"));
             return true;
         }
 
-        MSLogger.warning(sender, Component.translatable("ms.error.player_not_online"));
+        playerInfo.kickPlayer(
+                Component.translatable("ms.command.kick.message.receiver.title"),
+                Component.translatable("ms.command.kick.message.receiver.subtitle", reason)
+        );
+        MSLogger.fine(
+                sender,
+                Component.translatable("ms.command.kick.message.sender").args(
+                        playerInfo.getGrayIDGreenName(),
+                        text(playerInfo.getNickname()),
+                        reason
+                )
+        );
         return true;
     }
 

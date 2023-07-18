@@ -4,10 +4,10 @@ import com.github.minersstudios.mscore.config.LanguageFile;
 import com.github.minersstudios.mscore.utils.SignMenu;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.menu.PronounsMenu;
-import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.github.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.github.minersstudios.msessentials.utils.MessageUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -29,6 +29,28 @@ public class RegistrationProcess {
     private PlayerInfo playerInfo;
     private Location playerLocation;
 
+    private static final TranslatableComponent M_0 = translatable("ms.registration.message.0");
+    private static final TranslatableComponent M_1 = translatable("ms.registration.message.1");
+    private static final TranslatableComponent M_2 = translatable("ms.registration.message.2");
+    private static final TranslatableComponent M_3 = translatable("ms.registration.message.3");
+    private static final TranslatableComponent M_4 = translatable("ms.registration.message.4");
+    private static final TranslatableComponent M_5 = translatable("ms.registration.message.5");
+    private static final TranslatableComponent M_6 = translatable("ms.registration.message.6");
+    private static final TranslatableComponent M_7 = translatable("ms.registration.message.7");
+    private static final TranslatableComponent M_8 = translatable("ms.registration.message.8");
+    private static final TranslatableComponent M_9 = translatable("ms.registration.message.9");
+    private static final TranslatableComponent M_10 = translatable("ms.registration.message.10");
+    private static final TranslatableComponent M_11 = translatable("ms.registration.message.11");
+    private static final TranslatableComponent M_12 = translatable("ms.registration.message.12");
+    private static final TranslatableComponent M_13 = translatable("ms.registration.message.13");
+    private static final TranslatableComponent M_14 = translatable("ms.registration.message.14");
+    private static final TranslatableComponent M_15 = translatable("ms.registration.message.15");
+    private static final TranslatableComponent M_16 = translatable("ms.registration.message.16");
+    private static final TranslatableComponent M_17 = translatable("ms.registration.message.17");
+    private static final TranslatableComponent ONLY_CYRILLIC = translatable("ms.registration.only_cyrillic", NamedTextColor.GOLD);
+    private static final TranslatableComponent LOCAL_FORMAT = translatable("ms.chat.local.format");
+    private static final TranslatableComponent ANONYMOUS_NAME = translatable("ms.registration.anonymous.name");
+
     public void registerPlayer(@NotNull PlayerInfo playerInfo) {
         this.playerInfo = playerInfo;
         this.player = playerInfo.getOnlinePlayer();
@@ -39,13 +61,13 @@ public class RegistrationProcess {
         this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, SoundCategory.MUSIC, 0.15f, 1.25f);
         playerInfo.createPlayerFile();
 
-        this.sendDialogueMessage(translatable("ms.registration.message.0"), 100L);
-        this.sendDialogueMessage(translatable("ms.registration.message.1"), 150L);
-        this.sendDialogueMessage(translatable("ms.registration.message.2"), 225L);
-        this.sendDialogueMessage(translatable("ms.registration.message.3"), 300L);
-        this.sendDialogueMessage(translatable("ms.registration.message.4"), 350L);
-        this.sendDialogueMessage(translatable("ms.registration.message.5"), 400L);
-        this.sendDialogueMessage(translatable("ms.registration.message.6"), 450L);
+        this.sendDialogueMessage(M_0, 100L);
+        this.sendDialogueMessage(M_1, 150L);
+        this.sendDialogueMessage(M_2, 225L);
+        this.sendDialogueMessage(M_3, 300L);
+        this.sendDialogueMessage(M_4, 350L);
+        this.sendDialogueMessage(M_5, 400L);
+        this.sendDialogueMessage(M_6, 450L);
 
         MSEssentials.getInstance().runTaskLater(this::setFirstname, 550L);
     }
@@ -66,10 +88,10 @@ public class RegistrationProcess {
 
                     this.playerInfo.getPlayerFile().getPlayerName().setFirstName(firstname);
 
-                    this.sendDialogueMessage(translatable("ms.registration.message.7"), 25L);
-                    this.sendDialogueMessage(translatable("ms.registration.message.8"), 100L);
-                    this.sendDialogueMessage(translatable("ms.registration.message.9"), 225L);
-                    this.sendDialogueMessage(translatable("ms.registration.message.10"), 300L);
+                    this.sendDialogueMessage(M_7, 25L);
+                    this.sendDialogueMessage(M_8, 100L);
+                    this.sendDialogueMessage(M_9, 225L);
+                    this.sendDialogueMessage(M_10, 300L);
 
                     MSEssentials.getInstance().runTaskLater(this::setLastname, 375L);
                     return true;
@@ -119,8 +141,7 @@ public class RegistrationProcess {
                     this.playerInfo.initNames();
 
                     this.sendDialogueMessage(
-                            translatable(
-                                    "ms.registration.message.11",
+                            M_11.args(
                                     text(this.playerInfo.getID(true, false)),
                                     text(name.getFirstName()),
                                     text(name.getLastName()),
@@ -128,8 +149,8 @@ public class RegistrationProcess {
                             ),
                             25L
                     );
-                    this.sendDialogueMessage(translatable("ms.registration.message.12"), 100L);
-                    this.sendDialogueMessage(translatable("ms.registration.message.13"), 150L);
+                    this.sendDialogueMessage(M_12, 100L);
+                    this.sendDialogueMessage(M_13, 150L);
 
                     MSEssentials.getInstance().runTaskLater(() -> PronounsMenu.open(this.player), 225L);
                     return true;
@@ -145,12 +166,11 @@ public class RegistrationProcess {
         this.playerInfo = playerInfo;
         Pronouns pronouns = this.playerInfo.getPlayerFile().getPronouns();
 
-        this.sendDialogueMessage(translatable("ms.registration.message.14"), 25L);
-        this.sendDialogueMessage(translatable("ms.registration.message.15"), 75L);
-        this.sendDialogueMessage(translatable("ms.registration.message.16"), 125L);
+        this.sendDialogueMessage(M_14, 25L);
+        this.sendDialogueMessage(M_15, 75L);
+        this.sendDialogueMessage(M_16, 125L);
         this.sendDialogueMessage(
-                translatable(
-                        "ms.registration.message.17",
+                M_17.args(
                         pronouns.getPronouns(),
                         pronouns.getTraveler()
                 ),
@@ -161,20 +181,12 @@ public class RegistrationProcess {
     }
 
     private void setOther() {
-        PlayerSettings playerSettings = this.playerInfo.getPlayerFile().getPlayerSettings();
         this.player.displayName(this.playerInfo.getDefaultName());
-
-        if (playerSettings.getResourcePackType() == ResourcePack.Type.NULL) {
-            MSEssentials.getInstance().runTask(() -> ResourcePackMenu.open(this.player));
-        } else if (playerSettings.getResourcePackType() == ResourcePack.Type.NONE) {
-            MSEssentials.getInstance().runTask(this.playerInfo::handleJoin);
-        } else {
-            ResourcePack.setResourcePack(this.playerInfo);
-        }
+        this.playerInfo.handleJoin();
     }
 
     private void sendWarningMessage() {
-        this.player.sendMessage(translatable("ms.registration.only_cyrillic", NamedTextColor.GOLD));
+        this.player.sendMessage(ONLY_CYRILLIC);
     }
 
     private void sendDialogueMessage(
@@ -183,9 +195,8 @@ public class RegistrationProcess {
     ) {
         MSEssentials.getInstance().runTaskLater(() -> {
             this.player.sendMessage(
-                    translatable(
-                            "ms.chat.local.format",
-                            translatable("ms.registration.anonymous.name"),
+                    LOCAL_FORMAT.args(
+                            ANONYMOUS_NAME,
                             message.color(MessageUtils.Colors.CHAT_COLOR_SECONDARY)
                     ).color(MessageUtils.Colors.CHAT_COLOR_PRIMARY)
             );

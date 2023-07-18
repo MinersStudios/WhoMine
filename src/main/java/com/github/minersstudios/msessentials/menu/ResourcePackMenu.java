@@ -118,7 +118,11 @@ public class ResourcePackMenu {
                     playerSettings.save();
                     playClickSound(player);
                     player.closeInventory();
-                    ResourcePack.setResourcePack(playerInfo);
+                    playerInfo.handleResourcePack().thenAccept(bool -> {
+                        if (bool && playerInfo.isInWorldDark()) {
+                            playerInfo.handleJoin();
+                        }
+                    });
                 });
 
         InventoryButton liteButton = InventoryButton.create()
@@ -132,7 +136,11 @@ public class ResourcePackMenu {
                     playerSettings.save();
                     playClickSound(player);
                     player.closeInventory();
-                    ResourcePack.setResourcePack(playerInfo);
+                    playerInfo.handleResourcePack().thenAccept(bool -> {
+                        if (bool && playerInfo.isInWorldDark()) {
+                            playerInfo.handleJoin();
+                        }
+                    });
                 });
 
         INVENTORY = SingleInventory.single(TITLE, 1)

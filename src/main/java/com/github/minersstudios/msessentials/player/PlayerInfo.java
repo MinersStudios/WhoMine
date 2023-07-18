@@ -1,6 +1,7 @@
 package com.github.minersstudios.msessentials.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.logger.MSLogger;
 import com.github.minersstudios.mscore.utils.BlockUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
@@ -9,6 +10,8 @@ import com.github.minersstudios.msessentials.Cache;
 import com.github.minersstudios.msessentials.MSEssentials;
 import com.github.minersstudios.msessentials.discord.BotHandler;
 import com.github.minersstudios.msessentials.discord.DiscordMap;
+import com.github.minersstudios.msessentials.menu.PronounsMenu;
+import com.github.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.github.minersstudios.msessentials.player.map.MuteEntry;
 import com.github.minersstudios.msessentials.player.map.MuteMap;
 import com.github.minersstudios.msessentials.player.map.PlayerInfoMap;
@@ -24,7 +27,9 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.server.players.UserWhiteList;
 import net.minecraft.server.players.UserWhiteListEntry;
@@ -35,8 +40,10 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +53,8 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 
 import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslation;
 import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslationComponent;
@@ -73,11 +82,25 @@ public class PlayerInfo {
     private final @NotNull OfflinePlayer offlinePlayer;
     private @NotNull PlayerFile playerFile;
     private final @NotNull CraftServer server;
+    private CompletableFuture<PlayerResourcePackStatusEvent.Status> resourcePackStatus;
 
     private Component defaultName;
     private Component goldenName;
     private Component grayIDGoldName;
     private Component grayIDGreenName;
+
+    private BukkitTask joinTask;
+
+    private static final TranslatableComponent RP_SUCCESSFULLY_LOADED = Component.translatable("ms.resource_pack.successfully_loaded");
+    private static final TranslatableComponent RP_FAILED_DOWNLOAD_CONSOLE = Component.translatable("ms.resource_pack.failed_download.console");
+    private static final TranslatableComponent RP_FAILED_DOWNLOAD_TITLE = Component.translatable("ms.resource_pack.failed_download.receiver.title");
+    private static final TranslatableComponent RP_FAILED_DOWNLOAD_SUBTITLE = Component.translatable("ms.resource_pack.failed_download.receiver.subtitle");
+    private static final TranslatableComponent RP_DECLINED_CONSOLE = Component.translatable("ms.resource_pack.declined.console");
+    private static final TranslatableComponent RP_DECLINED_TITLE = Component.translatable("ms.resource_pack.declined.receiver.title");
+    private static final TranslatableComponent RP_DECLINED_SUBTITLE = Component.translatable("ms.resource_pack.declined.receiver.subtitle");
+    private static final TranslatableComponent SERVER_NOT_LOADED_TITLE = Component.translatable("ms.server_not_fully_loaded.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
+    private static final TranslatableComponent SERVER_NOT_LOADED_SUBTITLE = Component.translatable("ms.server_not_fully_loaded.subtitle").color(NamedTextColor.GRAY);
+
 
     /**
      * Player info constructor
@@ -385,11 +408,8 @@ public class PlayerInfo {
      */
     public void setLastLeaveLocation(@Nullable Location location) {
         Player player = this.getOnlinePlayer();
-
-        if (
-                player == null
-                || this.isInWorldDark()
-        ) return;
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+        Preconditions.checkArgument(!WorldDark.isInWorldDark(location), "Cannot set last leave location in WorldDark");
 
         this.playerFile.setLastLeaveLocation(
                 player.isDead()
@@ -436,10 +456,10 @@ public class PlayerInfo {
             @Nullable Component message
     ) {
         Player player = this.getOnlinePlayer();
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
         if (
-                player == null
-                || (player.getVehicle() != null
+                (player.getVehicle() != null
                 && player.getVehicle().getType() != EntityType.ARMOR_STAND)
                 || this.isSitting()
         ) return;
@@ -475,14 +495,14 @@ public class PlayerInfo {
      * Unsets the player from sit position
      * with the given message
      *
-     * @param message Message to send on unsit
+     * @param message Message to send on player get up
      */
     public void unsetSitting(@Nullable Component message) {
         Player player = this.getOnlinePlayer();
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
         if (
-                player == null
-                || (player.getVehicle() != null
+                (player.getVehicle() != null
                 && player.getVehicle().getType() != EntityType.ARMOR_STAND)
                 || !isSitting()
         ) return;
@@ -499,7 +519,7 @@ public class PlayerInfo {
         getUpLocation.setPitch(playerLoc.getPitch());
         armorStand.remove();
 
-        player.teleportAsync(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN).thenRun(() -> {
+        player.teleportAsync(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN).thenAccept(bool -> {
             if (message == null) {
                 sendRPEventMessage(player, this.playerFile.getPronouns().getUnSitMessage(), ME);
             } else {
@@ -541,8 +561,7 @@ public class PlayerInfo {
      */
     public void setSkin(@Nullable Skin skin) {
         Player player = this.getOnlinePlayer();
-
-        if (player == null) return;
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
         if (skin == null) {
             PlayerUtils.setSkin(player, null, null);
@@ -602,6 +621,56 @@ public class PlayerInfo {
 
         discordMap.remove(id);
         return id;
+    }
+
+    /**
+     * Sets player's resource pack
+     *
+     * @param link    The URL from which the client will download the resource pack
+     * @param hash    A 40 character hexadecimal and lowercase SHA-1 digest of the resource pack file
+     * @param force   Marks if the resource pack should be required by the client
+     * @param message A Prompt to be displayed in the client request
+     * @return Player's resource pack status future,
+     *         the future completes in {@link PlayerResourcePackStatusEvent}
+     * @see Player#setResourcePack(String, String, boolean, Component)
+     * @see #completeResourcePackFuture(PlayerResourcePackStatusEvent.Status)
+     */
+    public @NotNull CompletableFuture<PlayerResourcePackStatusEvent.Status> setResourcePackAsync(
+            @NotNull String link,
+            @NotNull String hash,
+            boolean force,
+            @Nullable Component message
+    ) {
+        Player player = this.getOnlinePlayer();
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+
+        this.resourcePackStatus = new CompletableFuture<>();
+
+        player.setResourcePack(link, hash, force, message);
+
+        getInstance().runTaskLater(() -> {
+            if (!this.resourcePackStatus.isDone()) {
+                this.resourcePackStatus.completeExceptionally(
+                        new TimeoutException("PlayerResourcePackStatusEvent not handled within the expected time")
+                );
+            }
+        }, 6000L);
+
+        return this.resourcePackStatus;
+    }
+
+    /**
+     * Sets player's resource pack status future
+     * to the specified status and completes it.
+     * If the future is not set or already completed,
+     * nothing will happen
+     *
+     * @param status Player's resource pack status
+     * @see #setResourcePackAsync(String, String, boolean, Component)
+     */
+    public void completeResourcePackFuture(@NotNull PlayerResourcePackStatusEvent.Status status) {
+        if (this.resourcePackStatus == null || this.resourcePackStatus.isDone()) return;
+        this.resourcePackStatus.complete(status);
     }
 
     /**
@@ -874,6 +943,7 @@ public class PlayerInfo {
         var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        
         banEntry.setReason(reason);
         banEntry.save();
     }
@@ -901,6 +971,7 @@ public class PlayerInfo {
         var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        
         banEntry.setSource(source);
         banEntry.save();
     }
@@ -1011,6 +1082,7 @@ public class PlayerInfo {
         var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        
         banEntry.setExpiration(expiration);
         banEntry.save();
     }
@@ -1143,6 +1215,16 @@ public class PlayerInfo {
     }
 
     /**
+     * @return True if the player is registered,
+     *         i.e. the player file exists and has a name
+     * @see PlayerFile#exists()
+     * @see PlayerFile#isNoName()
+     */
+    public boolean isRegistered() {
+        return this.playerFile.exists() && !this.playerFile.isNoName();
+    }
+
+    /**
      * @return True if the player is vanished
      */
     public boolean isVanished() {
@@ -1225,25 +1307,27 @@ public class PlayerInfo {
 
     /**
      * Handles the player's join.
-     * Sets the player's skin, game mode, health and air.
-     * Also teleports the player to the last leave location,
-     * and sends the join message to all players.
+     * Starts the join task, which checks if the player
+     * is online, authenticated, and not dead. If the player
+     * is not online, the task is cancelled. If the player
+     * is not authenticated or dead, the task will be repeated.
+     *
+     * @see #handleJoinTask()
      */
     public void handleJoin() {
         Player player = this.getOnlinePlayer();
-        if (player == null) return;
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
-        Skin currentSkin = this.getCurrentSkin();
+        if (this.joinTask != null && !this.joinTask.isCancelled()) return;
 
-        if (currentSkin != null) {
-            this.setSkin(currentSkin);
-        }
+        getInstance().runTaskTimer(task -> {
+            this.joinTask = task;
 
-        player.setGameMode(this.playerFile.getGameMode());
-        player.setHealth(this.playerFile.getHealth());
-        player.setRemainingAir(this.playerFile.getAir());
+            if (!player.isOnline()) task.cancel();
+            if (!this.isAuthenticated() || player.isDead()) return;
 
-        this.teleportToLastLeaveLocation().thenRun(() -> sendJoinMessage(this));
+            this.handleJoinTask();
+        }, 0L, 1L);
     }
 
     /**
@@ -1255,7 +1339,7 @@ public class PlayerInfo {
      */
     public void handleQuit() {
         Player player = this.getOnlinePlayer();
-        if (player == null) return;
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
         this.unsetSitting();
 
@@ -1273,45 +1357,122 @@ public class PlayerInfo {
     }
 
     /**
+     * @return A future that will be completed with the result of the operation
+     * @see #setResourcePackAsync(String, String, boolean, Component)
+     */
+    public @NotNull CompletableFuture<Boolean> handleResourcePack() {
+        Player player = this.getOnlinePlayer();
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+
+        PlayerSettings playerSettings = this.playerFile.getPlayerSettings();
+        ResourcePack.Type type = playerSettings.getResourcePackType();
+
+        if (!ResourcePack.isResourcePackLoaded()) {
+            this.kickPlayer(SERVER_NOT_LOADED_TITLE, SERVER_NOT_LOADED_SUBTITLE);
+            return CompletableFuture.completedFuture(false);
+        }
+
+        switch (type) {
+            case NONE -> {
+                return CompletableFuture.completedFuture(true);
+            }
+            case NULL -> {
+                getInstance().runTaskTimer(task -> {
+                    if (player.getOpenInventory().getTopInventory() instanceof CustomInventory) {
+                        task.cancel();
+                        return;
+                    }
+
+                    ResourcePackMenu.open(player);
+                }, 0L, 5L);
+                return CompletableFuture.completedFuture(false);
+            }
+            default -> {
+                return this.setResourcePackAsync(type.getUrl(), type.getHash(), true, null)
+                        .thenApply(status -> {
+                            switch (status) {
+                                case SUCCESSFULLY_LOADED -> {
+                                    MSLogger.fine(RP_SUCCESSFULLY_LOADED.args(text(this.nickname)));
+                                    return true;
+                                }
+                                case FAILED_DOWNLOAD -> {
+                                    playerSettings.setResourcePackType(ResourcePack.Type.NONE);
+                                    playerSettings.save();
+
+                                    MSLogger.warning(RP_FAILED_DOWNLOAD_CONSOLE.args(text(this.nickname)));
+                                    this.kickPlayer(RP_FAILED_DOWNLOAD_TITLE, RP_FAILED_DOWNLOAD_SUBTITLE);
+                                }
+                                case DECLINED -> {
+                                    MSLogger.warning(RP_DECLINED_CONSOLE.args(text(this.nickname)));
+                                    this.kickPlayer(RP_DECLINED_TITLE, RP_DECLINED_SUBTITLE);
+                                }
+                            }
+                            return false;
+                        })
+                        .exceptionally(
+                                throwable -> {
+                                    MSLogger.log(Level.SEVERE, "An error occurred while sending the resource pack to " + this.nickname, throwable);
+                                    return false;
+                                }
+                        );
+            }
+        }
+    }
+
+    /**
      * Teleports the player to the last leave location
+     * or to the bed spawn location if the last leave location is null
+     * or to the world spawn location if the bed spawn location is null
+     *
+     * @return A future that will be completed with the result of the teleport
      */
     public @NotNull CompletableFuture<Boolean> teleportToLastLeaveLocation() {
         Player player = this.getOnlinePlayer();
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
-        if (player == null) return CompletableFuture.completedFuture(false);
-
-        getInstance().runTask(() -> {
-            if (player.getGameMode() == GameMode.SPECTATOR) {
-                player.setSpectatorTarget(null);
-            }
-        });
+        if (player.getGameMode() == GameMode.SPECTATOR) {
+            getInstance().runTask(() -> player.setSpectatorTarget(null));
+        }
 
         Location location = this.playerFile.getLastLeaveLocation();
-        return player.teleportAsync(
-                location == null ? getOverworld().getSpawnLocation() : location,
-                PlayerTeleportEvent.TeleportCause.PLUGIN
-        );
+
+        if (location == null) {
+            location = player.getBedSpawnLocation();
+
+            if (location == null) {
+                location = getOverworld().getSpawnLocation();
+            }
+        }
+
+        return player.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
     /**
      * Teleports the player to the last death location
+     * or to the bed spawn location if the last leave location is null
+     * or to the world spawn location if the bed spawn location is null
+     *
+     * @return A future that will be completed with the result of the teleport
      */
     public @NotNull CompletableFuture<Boolean> teleportToLastDeathLocation() {
         Player player = this.getOnlinePlayer();
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
-        if (player == null) return CompletableFuture.completedFuture(false);
-
-        getInstance().runTask(() -> {
-            if (player.getGameMode() == GameMode.SPECTATOR) {
-                player.setSpectatorTarget(null);
-            }
-        });
+        if (player.getGameMode() == GameMode.SPECTATOR) {
+            getInstance().runTask(() -> player.setSpectatorTarget(null));
+        }
 
         Location location = this.playerFile.getLastDeathLocation();
-        return player.teleportAsync(
-                location == null ? getOverworld().getSpawnLocation() : location,
-                PlayerTeleportEvent.TeleportCause.PLUGIN
-        );
+
+        if (location == null) {
+            location = player.getBedSpawnLocation();
+
+            if (location == null) {
+                location = getOverworld().getSpawnLocation();
+            }
+        }
+
+        return player.teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
     /**
@@ -1350,19 +1511,13 @@ public class PlayerInfo {
      *
      * @param title  Title of the kick message
      * @param reason Reason of the kick message
-     * @return True if the player was kicked successfully
      */
-    public boolean kickPlayer(
+    public void kickPlayer(
             @NotNull Component title,
             @NotNull Component reason
     ) {
         Player player = this.getOnlinePlayer();
-
-        if (
-                player == null
-                || !player.isOnline()
-                || player.getPlayer() == null
-        ) return false;
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
         this.handleQuit();
         player.kick(
@@ -1372,7 +1527,6 @@ public class PlayerInfo {
                         reason.color(NamedTextColor.GRAY)
                 ).color(NamedTextColor.DARK_GRAY)
         );
-        return true;
     }
 
     /**
@@ -1439,11 +1593,9 @@ public class PlayerInfo {
      */
     public void savePlayerDataParams() {
         Player player = this.getOnlinePlayer();
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
-        if (
-                player == null
-                || this.isInWorldDark()
-        ) return;
+        if (this.isInWorldDark()) return;
 
         double health = player.getHealth();
         int air = player.getRemainingAir();
@@ -1461,7 +1613,8 @@ public class PlayerInfo {
      */
     public void hideNameTag() {
         Player player = this.getOnlinePlayer();
-        if (player == null) return;
+
+        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
         MSPlayerUtils.hideNameTag(player);
     }
 
@@ -1481,5 +1634,41 @@ public class PlayerInfo {
      */
     public @Nullable Player loadPlayerData() {
         return PlayerUtils.loadPlayer(this.offlinePlayer);
+    }
+
+    /**
+     * Sets the player's skin, game mode, health and air.
+     * Also teleports the player to the last leave location,
+     * and sends the join message to all players. If the player
+     * is not registered, then the registration process will be
+     * started.
+     *
+     * @see #handleJoin()
+     */
+    private void handleJoinTask() {
+        Player player = this.getOnlinePlayer();
+
+        this.joinTask.cancel();
+
+        if (player == null) return;
+        if (!this.isRegistered()) {
+            new RegistrationProcess().registerPlayer(this);
+        } else {
+            if (this.playerFile.getConfig().getString("pronouns") == null) {
+                PronounsMenu.open(player);
+            } else {
+                Skin currentSkin = this.getCurrentSkin();
+
+                if (currentSkin != null) {
+                    this.setSkin(currentSkin);
+                }
+
+                player.setGameMode(this.playerFile.getGameMode());
+                player.setHealth(this.playerFile.getHealth());
+                player.setRemainingAir(this.playerFile.getAir());
+
+                this.teleportToLastLeaveLocation().thenRun(() -> sendJoinMessage(this));
+            }
+        }
     }
 }
