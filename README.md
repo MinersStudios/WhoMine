@@ -18,7 +18,7 @@
       <img alt="GitHub code size in bytes" src="https://staging.shields.io/github/languages/code-size/MinersStudios/WhoMine?style=for-the-badge&color=000000">
     </a>
   <br><br><br>
-<a href="https://github.com/MinersStudios/WMDocs">
+  <a href="https://github.com/MinersStudios/WMDocs">
     <img alt="WhoMine documentation" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMDocs&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
   </a>
   <a href="https://github.com/MinersStudios/msTextures">

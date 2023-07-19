@@ -18,11 +18,8 @@ dependencies:
     version: $version
   - name: AuthMe
     version: 5.6.0-SNAPSHOT
-  - name: ProtocolLib
-    version: 5.0.0
   - name: DiscordSRV
     version: 1.23.0
 load-after:
   - name: AuthMe
-  - name: ProtocolLib
   - name: DiscordSRV

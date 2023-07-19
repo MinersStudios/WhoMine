@@ -4,10 +4,10 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.5.5"
 }
 
-group = "com.github.minersstudios"
+group = "com.minersstudios"
 version = "1.0.0"
 val apiVersion = "'1.20'"
-val website = "https://minersstudios.github.io"
+val website = "https://minersstudios.com"
 val authors = listOf("MinersStudios", "p0loskun")
 val contributors = listOf("PackmanDude")
 
@@ -21,11 +21,11 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://maven.playpro.com")
         maven("https://m2.dv8tion.net/releases")
-        maven("https://repo.codemc.org/repository/maven-public/")
         maven("https://nexus.scarsz.me/content/groups/public/")
-        maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://repo.codemc.org/repository/maven-public/")
         maven("https://repo.dmulloy2.net/repository/public/")
     }
 
@@ -34,7 +34,7 @@ allprojects {
         compileOnly("net.coreprotect:coreprotect:21.3")
         compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
         compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
-        compileOnly("com.discordsrv:discordsrv:1.26.0")
+        compileOnly("com.discordsrv:discordsrv:1.26.3-SNAPSHOT")
     }
 
     sourceSets {

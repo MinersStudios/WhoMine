@@ -16,8 +16,12 @@ dependencies:
     version: $version
   - name: MSBlock
     version: $version
+  - name: ProtocolLib
+    version: 5.0.0
 load-before:
   - name: MSEssentials
   - name: MSBlock
   - name: MSItem
   - name: MSDecor
+load-after:
+  - name: ProtocolLib

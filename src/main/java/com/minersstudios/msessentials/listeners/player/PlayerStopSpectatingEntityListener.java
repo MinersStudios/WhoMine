@@ -1,0 +1,19 @@
+package com.minersstudios.msessentials.listeners.player;
+
+import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
+import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.msessentials.world.WorldDark;
+import com.minersstudios.mscore.listener.AbstractMSListener;
+import org.bukkit.event.EventHandler;
+import org.jetbrains.annotations.NotNull;
+
+@MSListener
+public class PlayerStopSpectatingEntityListener extends AbstractMSListener {
+
+    @EventHandler
+    public void onPlayerStopSpectatingEntity(@NotNull PlayerStopSpectatingEntityEvent event) {
+        if (WorldDark.isInWorldDark(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+}
