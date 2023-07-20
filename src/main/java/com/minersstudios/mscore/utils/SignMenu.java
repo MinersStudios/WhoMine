@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.utils;
 
-import com.minersstudios.mscore.MSCore;
 import com.google.common.collect.Lists;
+import com.minersstudios.mscore.MSCore;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -18,9 +18,8 @@ import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,8 +120,8 @@ public final class SignMenu {
     /**
      * @return The text of the sign
      */
-    public @NotNull @UnmodifiableView List<Component> getText() {
-        return Collections.unmodifiableList(this.text);
+    public @NotNull @Unmodifiable List<Component> getText() {
+        return List.copyOf(this.text);
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.utils;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.mscore.MSCore;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -65,7 +65,7 @@ public final class MSBlockUtils {
      * @throws MSCustomNotFoundException If {@link CustomBlockData} is not found
      */
     public static @NotNull CustomBlockData getCustomBlockData(@NotNull String key) throws MSCustomNotFoundException {
-        CustomBlockData customBlockData = MSCore.getCache().customBlockMap.getByPrimaryKey(key);
+        CustomBlockData customBlockData = MSPlugin.getGlobalCache().customBlockMap.getByPrimaryKey(key);
         if (customBlockData == null) {
             throw new MSCustomNotFoundException("Custom block is not found : " + key);
         }

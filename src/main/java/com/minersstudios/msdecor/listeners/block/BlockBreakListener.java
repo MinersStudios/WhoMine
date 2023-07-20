@@ -1,10 +1,10 @@
 package com.minersstudios.msdecor.listeners.block;
 
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.MSDecorUtils;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.jetbrains.annotations.NotNull;
 

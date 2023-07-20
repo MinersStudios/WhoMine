@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -143,21 +143,21 @@ public class PlayerInfoMap {
     /**
      * @return An unmodifiable view of the UUIDs contained in this map
      */
-    public @NotNull @UnmodifiableView Set<UUID> uuidSet() {
+    public @NotNull @Unmodifiable Set<UUID> uuidSet() {
         return Set.copyOf(this.map.keySet());
     }
 
     /**
      * @return An unmodifiable view of the player info contained in this map
      */
-    public @NotNull @UnmodifiableView Collection<PlayerInfo> playerInfos() {
+    public @NotNull @Unmodifiable Collection<PlayerInfo> playerInfos() {
         return Collections.unmodifiableCollection(this.map.values());
     }
 
     /**
      * @return An unmodifiable view of the mappings contained in this map
      */
-    public @NotNull @UnmodifiableView Set<Map.Entry<UUID, PlayerInfo>> entrySet() {
+    public @NotNull @Unmodifiable Set<Map.Entry<UUID, PlayerInfo>> entrySet() {
         return Set.copyOf(this.map.entrySet());
     }
 }

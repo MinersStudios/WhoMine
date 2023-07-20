@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.listeners.mechanic;
 
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.ItemUtils;
 import com.minersstudios.mscore.utils.MSDecorUtils;
@@ -18,7 +18,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;

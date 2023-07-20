@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.commands;
 
-import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.RenameableItem;
 import com.minersstudios.msitem.items.Typed;
@@ -28,8 +28,8 @@ public class GiveCommand {
             }
 
             ItemStack itemStack;
-            RenameableItem renameableItem = MSCore.getCache().renameableItemMap.getByPrimaryKey(args[2]);
-            CustomItem customItem = MSCore.getCache().customItemMap.getByPrimaryKey(args[2]);
+            RenameableItem renameableItem = MSPlugin.getGlobalCache().renameableItemMap.getByPrimaryKey(args[2]);
+            CustomItem customItem = MSPlugin.getGlobalCache().customItemMap.getByPrimaryKey(args[2]);
 
             if (customItem == null) {
                 if (renameableItem == null) {

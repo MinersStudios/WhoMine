@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.utils;
 
-import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.RenameableItem;
@@ -104,7 +104,7 @@ public final class ConfigCache {
                         renameableItemConfig.getBoolean("show-in-rename-menu"),
                         offlinePlayers
                 );
-                MSCore.getCache().renameableItemMap.put(renameableItem.getNamespacedKey().getKey(), itemMeta.getCustomModelData(), renameableItem);
+                MSPlugin.getGlobalCache().renameableItemMap.put(renameableItem.getNamespacedKey().getKey(), itemMeta.getCustomModelData(), renameableItem);
             });
         } catch (IOException e) {
             MSLogger.log(Level.SEVERE, "Error while loading items folder!", e);

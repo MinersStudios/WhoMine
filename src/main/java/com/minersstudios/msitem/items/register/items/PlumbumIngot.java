@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.items.register.items;
 
-import com.minersstudios.mscore.MSCore;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSBlockUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
@@ -39,7 +39,7 @@ public class PlumbumIngot implements CustomItem {
 
     @Override
     public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        ItemStack input = Objects.requireNonNull(MSCore.getCache().customItemMap.getByPrimaryKey("raw_plumbum")).getItemStack();
+        ItemStack input = Objects.requireNonNull(MSPlugin.getGlobalCache().customItemMap.getByPrimaryKey("raw_plumbum")).getItemStack();
         FurnaceRecipe furnaceRecipe = new FurnaceRecipe(
                 new NamespacedKey(MSItem.getInstance(), "plumbum_ingot_furnace"),
                 this.itemStack,

@@ -1,8 +1,8 @@
 package com.minersstudios.msdecor.customdecor;
 
-import com.minersstudios.mscore.MSCore;
-import com.minersstudios.msdecor.MSDecor;
 import com.google.common.collect.Lists;
+import com.minersstudios.mscore.plugin.MSPlugin;
+import com.minersstudios.msdecor.MSDecor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockFace;
@@ -56,14 +56,14 @@ public interface CustomDecorData extends Cloneable {
     default void register(boolean regRecipes) {
         if (this instanceof Typed typed) {
             for (var type : typed.getTypes()) {
-                MSCore.getCache().customDecorMap.put(
+                MSPlugin.getGlobalCache().customDecorMap.put(
                         type.getNamespacedKey().getKey(),
                         type.getCustomModelData(),
                         typed.createCustomDecorData(type)
                 );
             }
         } else {
-            MSCore.getCache().customDecorMap.put(
+            MSPlugin.getGlobalCache().customDecorMap.put(
                     this.getNamespacedKey().getKey(),
                     this.getItemStack().getItemMeta().getCustomModelData(),
                     this
@@ -87,7 +87,7 @@ public interface CustomDecorData extends Cloneable {
                 Bukkit.addRecipe(recipe);
 
                 if (this.isShowInCraftsMenu()) {
-                    MSCore.getCache().customDecorRecipes.add(recipe);
+                    MSPlugin.getGlobalCache().customDecorRecipes.add(recipe);
                 }
             }
         }

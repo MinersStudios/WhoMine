@@ -1,6 +1,6 @@
 package com.minersstudios.msdecor.listeners.mechanic;
 
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.MSBlockUtils;
 import com.minersstudios.mscore.utils.MSDecorUtils;
 import com.minersstudios.msdecor.customdecor.register.other.Poop;
@@ -10,7 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;

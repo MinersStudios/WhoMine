@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.listeners.mechanic;
 
-import com.minersstudios.mscore.listener.AbstractMSListener;
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.MSItemUtils;
 import com.minersstudios.msitem.items.register.items.Cocaine;
 import org.bukkit.event.EventHandler;

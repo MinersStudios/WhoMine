@@ -1,13 +1,13 @@
 package com.minersstudios.msitem.listeners.mechanic;
 
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.MSItemUtils;
 import com.minersstudios.msitem.items.register.items.BanSword;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;

@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.listeners.inventory;
 
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.world.WorldDark;
@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;

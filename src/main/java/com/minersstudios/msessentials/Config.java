@@ -1,8 +1,8 @@
 package com.minersstudios.msessentials;
 
-import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.config.MSConfig;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utils.MSPluginUtils;
 import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msessentials.anomalies.tasks.MainAnomalyActionsTask;
@@ -120,11 +120,11 @@ public final class Config extends MSConfig {
         cache.bukkitTasks.add(this.plugin.runTaskTimer(new MainAnomalyActionsTask(), 0L, this.anomalyCheckRate));
         cache.bukkitTasks.add(this.plugin.runTaskTimer(new ParticleTask(), 0L, this.anomalyParticlesCheckRate));
 
-        com.minersstudios.mscore.Cache msCoreCache = MSCore.getCache();
+        com.minersstudios.mscore.Cache globalCache = MSPlugin.getGlobalCache();
 
-        var customBlockRecipes = msCoreCache.customBlockRecipes;
-        var customDecorRecipes = msCoreCache.customDecorRecipes;
-        var customItemRecipes = msCoreCache.customItemRecipes;
+        var customBlockRecipes = globalCache.customBlockRecipes;
+        var customDecorRecipes = globalCache.customDecorRecipes;
+        var customItemRecipes = globalCache.customItemRecipes;
 
         this.plugin.runTaskTimer(task -> {
             if (

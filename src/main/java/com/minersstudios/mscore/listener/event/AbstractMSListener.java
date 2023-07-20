@@ -1,11 +1,12 @@
-package com.minersstudios.mscore.listener;
+package com.minersstudios.mscore.listener.event;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * This class used for extending listeners with the {@link MSListener} annotation
+ * This class used for extending listeners with the
+ * {@link MSListener} annotation
  *
  * @see MSListener
  * @see MSPlugin#registerListeners()
@@ -13,13 +14,15 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractMSListener implements Listener {
     private MSPlugin plugin;
 
+    private static final String TO_STRING_FORMAT = "%s{plugin=%s}";
+
     /**
      * @return The plugin for this listener or null if not set
      * @throws IllegalStateException If this listener is not registered
      * @see #register(MSPlugin)
      * @see MSPlugin#registerListeners()
      */
-    public @NotNull MSPlugin getPlugin() throws IllegalStateException {
+    public final @NotNull MSPlugin getPlugin() throws IllegalStateException {
         if (!this.isRegistered()) {
             throw new IllegalStateException("Listener " + this + " not registered!");
         }
@@ -30,7 +33,7 @@ public abstract class AbstractMSListener implements Listener {
     /**
      * @return True if this listener is registered to a plugin
      */
-    public boolean isRegistered() {
+    public final boolean isRegistered() {
         return this.plugin != null && this.plugin.getListeners().contains(this);
     }
 
@@ -39,7 +42,7 @@ public abstract class AbstractMSListener implements Listener {
      *
      * @param plugin The plugin to register this listener to
      */
-    public void register(@NotNull MSPlugin plugin) {
+    public final void register(@NotNull MSPlugin plugin) {
         if (this.isRegistered()) {
             throw new IllegalStateException("Listener " + this + " already registered!");
         }
@@ -54,6 +57,10 @@ public abstract class AbstractMSListener implements Listener {
      */
     @Override
     public @NotNull String toString() {
-        return this.getClass().getSimpleName() + "{plugin=" + this.plugin + "}";
+        return String.format(
+                TO_STRING_FORMAT,
+                this.getClass().getSimpleName(),
+                this.plugin
+        );
     }
 }

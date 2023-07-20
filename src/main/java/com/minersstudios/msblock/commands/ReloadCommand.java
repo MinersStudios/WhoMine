@@ -2,8 +2,8 @@ package com.minersstudios.msblock.commands;
 
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.mscore.Cache;
-import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -31,7 +31,7 @@ public class ReloadCommand {
             }
         }
 
-        Cache cache = MSCore.getCache();
+        Cache cache = MSPlugin.getGlobalCache();
         cache.customBlockMap.clear();
         cache.cachedNoteBlockData.clear();
         cache.customBlockRecipes.clear();

@@ -1,11 +1,11 @@
 package com.minersstudios.msblock.listeners.block;
 
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.block.NotePlayEvent;
 import org.jetbrains.annotations.NotNull;
 

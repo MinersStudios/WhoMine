@@ -18,8 +18,5 @@ dependencies:
     version: $version
   - name: CoreProtect
     version: 21.3
-  - name: ProtocolLib
-    version: 5.0.0
 load-after:
   - name: CoreProtect
-  - name: ProtocolLib

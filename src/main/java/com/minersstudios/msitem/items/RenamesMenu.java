@@ -1,11 +1,11 @@
 package com.minersstudios.msitem.items;
 
-import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.inventory.ElementPagedInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.PagedInventory;
 import com.minersstudios.mscore.inventory.SingleInventory;
 import com.minersstudios.mscore.inventory.actions.ButtonClickAction;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
 import com.minersstudios.msitem.MSItem;
@@ -105,7 +105,7 @@ public class RenamesMenu {
     public static void update() {
         var elements = new ArrayList<InventoryButton>();
 
-        for (var renameableItem : MSCore.getCache().renameableItemsMenu) {
+        for (var renameableItem : MSPlugin.getGlobalCache().renameableItemsMenu) {
             ItemStack resultItem = renameableItem.getResultItemStack();
 
             elements.add(InventoryButton.create()

@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static com.minersstudios.mscore.MSCore.getCache;
+import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
 
 public interface CustomItem extends Cloneable {
     @NotNull
@@ -45,7 +45,7 @@ public interface CustomItem extends Cloneable {
 
         if (this instanceof Typed typed) {
             for (var type : typed.getTypes()) {
-                getCache().customItemMap.put(
+                getGlobalCache().customItemMap.put(
                         type.getNamespacedKey().getKey(),
                         type.getCustomModelData(),
                         typed.createCustomItem(type)
@@ -56,7 +56,7 @@ public interface CustomItem extends Cloneable {
                 ItemStack itemStack = renameable.createRenamedItem(renameable.getItemStack(), item.getRenameText());
 
                 if (itemStack != null) {
-                    getCache().customItemMap.put(item.getKey(), item.getCustomModelData(), this);
+                    getGlobalCache().customItemMap.put(item.getKey(), item.getCustomModelData(), this);
                     new RenameableItem(
                             new NamespacedKey(MSItem.getInstance(), this.getNamespacedKey().getKey() + "." + item.getKey()),
                             item.getRenameText(),
@@ -68,7 +68,7 @@ public interface CustomItem extends Cloneable {
                 }
             }
         } else {
-            getCache().customItemMap.put(
+            getGlobalCache().customItemMap.put(
                     this.getNamespacedKey().getKey(),
                     this.getItemStack().getItemMeta().getCustomModelData(),
                     this
@@ -93,7 +93,7 @@ public interface CustomItem extends Cloneable {
 
                 Bukkit.addRecipe(recipe);
                 if (entry.getValue()) {
-                    getCache().customItemRecipes.add(recipe);
+                    getGlobalCache().customItemRecipes.add(recipe);
                 }
             }
         }

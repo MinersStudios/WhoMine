@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.items;
 
-import com.minersstudios.mscore.MSCore;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utils.MSItemUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
@@ -48,7 +48,7 @@ public class RenameableItem {
         this.resultItemStack.setItemMeta(itemMeta);
         this.whiteList.addAll(whiteList);
         if (showInRenameMenu) {
-            MSCore.getCache().renameableItemsMenu.add(this);
+            MSPlugin.getGlobalCache().renameableItemsMenu.add(this);
         }
     }
 

@@ -1,8 +1,8 @@
 package com.minersstudios.msitem.commands;
 
 import com.minersstudios.mscore.Cache;
-import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msitem.MSItem;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
@@ -20,7 +20,7 @@ public class ReloadCommand {
         long time = System.currentTimeMillis();
         Server server = sender.getServer();
         Iterator<Recipe> crafts = server.recipeIterator();
-        Cache cache = MSCore.getCache();
+        Cache cache = MSPlugin.getGlobalCache();
 
         while (crafts.hasNext()) {
             Recipe recipe = crafts.next();

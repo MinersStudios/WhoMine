@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.commands;
 
-import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.customdecor.Typed;
 import net.kyori.adventure.text.Component;
@@ -24,7 +24,7 @@ public class GiveCommand {
         if (args[1].length() > 2) {
             int amount = 1;
             Player player = Bukkit.getPlayer(args[1]);
-            CustomDecorData customDecorData = MSCore.getCache().customDecorMap.getByPrimaryKey(args[2]);
+            CustomDecorData customDecorData = MSPlugin.getGlobalCache().customDecorMap.getByPrimaryKey(args[2]);
 
             if (player == null) {
                 MSLogger.severe(sender, translatable("ms.error.player_not_found"));

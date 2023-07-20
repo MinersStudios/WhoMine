@@ -1,6 +1,6 @@
 package com.minersstudios.msdecor.listeners.mechanic;
 
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.MSDecorUtils;
 import com.minersstudios.msdecor.customdecor.register.decorations.street.IronTrashcan;
 import com.minersstudios.msdecor.utils.CustomDecorUtils;
@@ -10,7 +10,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;

@@ -26,13 +26,11 @@ allprojects {
         maven("https://m2.dv8tion.net/releases")
         maven("https://nexus.scarsz.me/content/groups/public/")
         maven("https://repo.codemc.org/repository/maven-public/")
-        maven("https://repo.dmulloy2.net/repository/public/")
     }
 
     dependencies {
         paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
         compileOnly("net.coreprotect:coreprotect:21.3")
-        compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
         compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
         compileOnly("com.discordsrv:discordsrv:1.26.3-SNAPSHOT")
     }

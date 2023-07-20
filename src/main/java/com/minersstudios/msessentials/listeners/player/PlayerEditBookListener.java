@@ -1,10 +1,10 @@
 package com.minersstudios.msessentials.listeners.player;
 
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;

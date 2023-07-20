@@ -180,8 +180,10 @@ public class RegistrationProcess {
     }
 
     private void setOther() {
-        this.player.displayName(this.playerInfo.getDefaultName());
-        this.playerInfo.handleJoin();
+        if (this.player.isOnline()) {
+            this.player.displayName(this.playerInfo.getDefaultName());
+            this.playerInfo.handleJoin();
+        }
     }
 
     private void sendWarningMessage() {

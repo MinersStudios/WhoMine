@@ -2,8 +2,8 @@ package com.minersstudios.mscore.listeners.inventory;
 
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
-import com.minersstudios.mscore.listener.AbstractMSListener;
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.ClickType;

@@ -2,9 +2,9 @@ package com.minersstudios.msblock.listeners.player;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.utils.PlayerUtils;
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.BlockUtils;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;

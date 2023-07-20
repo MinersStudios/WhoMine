@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.minersstudios.mscore.MSCore.getCache;
+import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -60,11 +60,11 @@ public class CommandHandler implements MSCommandExecutor {
                 }
             }
             case 3 -> {
-                completions.addAll(getCache().customItemMap.primaryKeySet());
-                completions.addAll(getCache().renameableItemMap.primaryKeySet());
+                completions.addAll(getGlobalCache().customItemMap.primaryKeySet());
+                completions.addAll(getGlobalCache().renameableItemMap.primaryKeySet());
             }
             case 4 -> {
-                CustomItem customItem = getCache().customItemMap.getByPrimaryKey(args[2]);
+                CustomItem customItem = getGlobalCache().customItemMap.getByPrimaryKey(args[2]);
                 if (customItem instanceof Typed typed) {
                     for (var type : typed.getTypes()) {
                         completions.add(type.getNamespacedKey().getKey());

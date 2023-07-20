@@ -1,19 +1,24 @@
 package com.minersstudios.msblock.listeners.block;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.BlockPosition;
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.utils.CustomBlockUtils;
-import com.minersstudios.mscore.utils.BlockUtils;
 import com.minersstudios.msblock.utils.PlayerUtils;
+import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
+import com.minersstudios.mscore.listener.packet.MSPacketListener;
+import com.minersstudios.mscore.packet.PacketContainer;
+import com.minersstudios.mscore.packet.PacketEvent;
+import com.minersstudios.mscore.packet.PacketType;
+import com.minersstudios.mscore.utils.BlockUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerConnectionListener;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
@@ -22,26 +27,35 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import static com.comphenix.protocol.ProtocolLibrary.getProtocolManager;
+import static net.minecraft.network.protocol.game.ServerboundPlayerActionPacket.Action.*;
 
-public class PacketBlockDigListener extends PacketAdapter {
+@MSPacketListener
+public class PacketBlockDigListener extends AbstractMSPacketListener {
 
     public PacketBlockDigListener() {
-        super(MSBlock.getInstance(), PacketType.Play.Client.BLOCK_DIG);
+        super(PacketType.Play.Server.PLAYER_ACTION);
     }
 
     @Override
-    public void onPacketReceiving(@NotNull PacketEvent event) {
+    public void onPacketReceive(@NotNull PacketEvent event) {
         Player player = event.getPlayer();
-        if (player == null || !player.isOnline() || player.getGameMode() != GameMode.SURVIVAL) return;
-        PacketContainer packet = event.getPacket();
-        EnumWrappers.PlayerDigType digType = packet.getPlayerDigTypes().read(0);
-        BlockPosition blockPosition = packet.getBlockPositionModifier().read(0);
-        Block block = blockPosition.toLocation(player.getWorld()).getBlock();
+        PacketContainer container = event.getPacketContainer();
+
+        if (
+                player == null
+                || !player.isOnline()
+                || player.getGameMode() != GameMode.SURVIVAL
+                || !(container.getPacket() instanceof ServerboundPlayerActionPacket packet)
+        ) return;
+
+        ServerboundPlayerActionPacket.Action action = packet.getAction();
+        BlockPos blockPos = packet.getPos();
+        Location location = new Location(player.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        Block block = location.getBlock();
         boolean hasSlowDigging = player.hasPotionEffect(PotionEffectType.SLOW_DIGGING);
 
         MSBlock.getInstance().runTask(() -> {
-            if (digType == EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) {
+            if (action == START_DESTROY_BLOCK) {
                 if (block.getBlockData() instanceof NoteBlock noteBlock) {
                     if (CustomBlockUtils.hasPlayer(player)) {
                         CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
@@ -76,7 +90,7 @@ public class PacketBlockDigListener extends PacketAdapter {
                                     !(!MSBlock.getConfigCache().farAway.contains(player)
                                     && (((CraftPlayer) player).getHandle().swinging || wasFarAway))
                             ) {
-                                playZeroBreakStage(blockPosition);
+                                PacketBlockDigListener.this.playBreakStage(blockPos, -1);
                                 CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
                             }
 
@@ -89,15 +103,12 @@ public class PacketBlockDigListener extends PacketAdapter {
                             if (this.progress > this.currentStage++ * 0.1f) {
                                 this.currentStage = (int) Math.floor(this.progress * 10.0f);
                                 if (this.currentStage <= 9) {
-                                    PacketContainer packetContainer = getProtocolManager().createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
-                                    packetContainer.getIntegers().write(0, 0).write(1, this.currentStage - 1);
-                                    packetContainer.getBlockPositionModifier().write(0, blockPosition);
-                                    getProtocolManager().broadcastServerPacket(packetContainer);
+                                    PacketBlockDigListener.this.playBreakStage(blockPos, this.currentStage);
                                 }
                             }
 
                             if (this.progress > 1.0f) {
-                                playZeroBreakStage(blockPosition);
+                                PacketBlockDigListener.this.playBreakStage(blockPos, -1);
                                 new CustomBlock(block, player, customBlockData).breakCustomBlock();
                             }
                         }
@@ -136,7 +147,7 @@ public class PacketBlockDigListener extends PacketAdapter {
                                     !(!MSBlock.getConfigCache().farAway.contains(player)
                                     && (((CraftPlayer) player).getHandle().swinging || wasFarAway))
                             ) {
-                                playZeroBreakStage(blockPosition);
+                                PacketBlockDigListener.this.playBreakStage(blockPos, -1);
                                 CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
                             }
 
@@ -147,27 +158,32 @@ public class PacketBlockDigListener extends PacketAdapter {
                         }
                     }, 0L, 1L));
                 }
-            } else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && CustomBlockUtils.hasBlock(block)) {
-                playZeroBreakStage(blockPosition);
+            } else if (action == STOP_DESTROY_BLOCK && CustomBlockUtils.hasBlock(block)) {
+                this.playBreakStage(blockPos, -1);
                 CustomBlockUtils.cancelAllTasksWithThisBlock(block);
             } else if (
-                    digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK
+                    action == ABORT_DESTROY_BLOCK
                     && CustomBlockUtils.hasBlock(block)
                     && !MSBlock.getConfigCache().farAway.contains(player)
             ) {
                 Block targetBlock = PlayerUtils.getTargetBlock(player);
                 if (PlayerUtils.getTargetEntity(player, targetBlock) == null && targetBlock != null) {
-                    playZeroBreakStage(blockPosition);
+                    this.playBreakStage(blockPos, -1);
                     CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
                 }
             }
         });
     }
 
-    private static void playZeroBreakStage(@NotNull BlockPosition blockPosition) {
-        PacketContainer packetContainer = getProtocolManager().createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
-        packetContainer.getIntegers().write(0, 0).write(1, -1);
-        packetContainer.getBlockPositionModifier().write(0, blockPosition);
-        getProtocolManager().broadcastServerPacket(packetContainer);
+    private void playBreakStage(
+            @NotNull BlockPos blockPos,
+            int stage
+    ) {
+        ServerConnectionListener connectionListener = MinecraftServer.getServer().getConnection();
+        ClientboundBlockDestructionPacket packet = new ClientboundBlockDestructionPacket(0, blockPos, stage);
+
+        if (connectionListener != null) {
+            connectionListener.getConnections().forEach(connection -> connection.send(packet));
+        }
     }
 }

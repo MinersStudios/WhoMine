@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.utils;
 
-import com.minersstudios.mscore.MSCore;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msitem.items.RenameableItem;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +22,7 @@ public final class CustomItemUtils {
                 || renameText == null
         ) return null;
 
-        for (var renameableItem : MSCore.getCache().renameableItemMap.values()) {
+        for (var renameableItem : MSPlugin.getGlobalCache().renameableItemMap.values()) {
             for (var renameableItemStack : renameableItem.getRenameableItemStacks()) {
                 if (
                         renameableItemStack.getType() == itemStack.getType()

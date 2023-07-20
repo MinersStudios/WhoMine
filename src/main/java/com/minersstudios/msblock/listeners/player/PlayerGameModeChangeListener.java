@@ -2,8 +2,8 @@ package com.minersstudios.msblock.listeners.player;
 
 import com.minersstudios.msblock.utils.CustomBlockUtils;
 import com.minersstudios.msblock.utils.PlayerUtils;
-import com.minersstudios.mscore.listener.AbstractMSListener;
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;

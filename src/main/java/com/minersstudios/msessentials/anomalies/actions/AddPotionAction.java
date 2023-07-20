@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class AddPotionAction extends AnomalyAction {
     /**
      * @return Unmodifiable list of potion effects to add to player when action is performed
      */
-    public @NotNull @UnmodifiableView List<PotionEffect> getPotionEffects() {
+    public @NotNull @Unmodifiable List<PotionEffect> getPotionEffects() {
         return List.copyOf(this.potionEffects);
     }
 }

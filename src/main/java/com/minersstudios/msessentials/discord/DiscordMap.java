@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -213,14 +213,14 @@ public class DiscordMap {
     /**
      * @return An unmodifiable view of the ids contained in this map
      */
-    public @NotNull @UnmodifiableView Set<Long> idSet() {
+    public @NotNull @Unmodifiable Set<Long> idSet() {
         return Set.copyOf(this.map.keySet());
     }
 
     /**
      * @return An unmodifiable view of the mappings contained in this map
      */
-    public @NotNull @UnmodifiableView Set<Map.Entry<Long, Params>> entrySet() {
+    public @NotNull @Unmodifiable Set<Map.Entry<Long, Params>> entrySet() {
         return Set.copyOf(this.map.entrySet());
     }
 

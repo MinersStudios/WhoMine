@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.listeners.player;
 
-import com.minersstudios.mscore.listener.AbstractMSListener;
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.world.WorldDark;
 import net.kyori.adventure.text.Component;

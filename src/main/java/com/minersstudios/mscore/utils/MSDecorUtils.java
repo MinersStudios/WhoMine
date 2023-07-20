@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.utils;
 
-import com.minersstudios.mscore.MSCore;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
@@ -165,7 +165,7 @@ public final class MSDecorUtils {
      * @throws MSCustomNotFoundException If {@link CustomDecorData} is not found
      */
     public static @NotNull CustomDecorData getCustomDecorData(@NotNull String key) throws MSCustomNotFoundException {
-        CustomDecorData customDecorData = MSCore.getCache().customDecorMap.getByPrimaryKey(key);
+        CustomDecorData customDecorData = MSPlugin.getGlobalCache().customDecorMap.getByPrimaryKey(key);
         if (customDecorData == null) {
             throw new MSCustomNotFoundException("Custom decor is not found : " + key);
         }

@@ -1,8 +1,8 @@
 package com.minersstudios.msdecor.commands;
 
-import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.customdecor.Typed;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -60,9 +60,9 @@ public class CommandHandler implements MSCommandExecutor {
                     completions.add(player.getName());
                 }
             }
-            case 3 -> completions.addAll(MSCore.getCache().customDecorMap.primaryKeySet());
+            case 3 -> completions.addAll(MSPlugin.getGlobalCache().customDecorMap.primaryKeySet());
             case 4 -> {
-                CustomDecorData customDecorData = MSCore.getCache().customDecorMap.getByPrimaryKey(args[2]);
+                CustomDecorData customDecorData = MSPlugin.getGlobalCache().customDecorMap.getByPrimaryKey(args[2]);
                 if (customDecorData instanceof Typed typed) {
                     for (var type : typed.getTypes()) {
                         completions.add(type.getNamespacedKey().getKey());

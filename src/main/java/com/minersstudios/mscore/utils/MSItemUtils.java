@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.utils;
 
-import com.minersstudios.mscore.MSCore;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.RenameableItem;
@@ -78,7 +78,7 @@ public final class MSItemUtils {
      * @throws MSCustomNotFoundException If {@link CustomItem} is not found
      */
     public static @NotNull CustomItem getCustomItem(@NotNull String key) throws MSCustomNotFoundException {
-        CustomItem customItem = MSCore.getCache().customItemMap.getByPrimaryKey(key);
+        CustomItem customItem = MSPlugin.getGlobalCache().customItemMap.getByPrimaryKey(key);
         if (customItem == null) {
             throw new MSCustomNotFoundException("Custom item is not found : " + key);
         }

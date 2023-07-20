@@ -1,8 +1,6 @@
 package com.minersstudios.msblock;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.listeners.block.PacketBlockDigListener;
 import com.minersstudios.msblock.utils.ConfigCache;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
@@ -48,8 +46,6 @@ public final class MSBlock extends MSPlugin {
         coreProtectAPI = CoreProtect.getInstance().getAPI();
 
         reloadConfigs();
-
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketBlockDigListener());
     }
 
     public static void reloadConfigs() {

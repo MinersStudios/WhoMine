@@ -10,7 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -128,14 +128,14 @@ public class MuteMap {
     /**
      * @return An unmodifiable view of the UUIDs contained in this map
      */
-    public @NotNull @UnmodifiableView Set<UUID> uuidSet() {
+    public @NotNull @Unmodifiable Set<UUID> uuidSet() {
         return Set.copyOf(this.map.keySet());
     }
 
     /**
      * @return An unmodifiable view of the mappings contained in this map
      */
-    public @NotNull @UnmodifiableView Set<Map.Entry<UUID, MuteEntry>> entrySet() {
+    public @NotNull @Unmodifiable Set<Map.Entry<UUID, MuteEntry>> entrySet() {
         return Set.copyOf(this.map.entrySet());
     }
 

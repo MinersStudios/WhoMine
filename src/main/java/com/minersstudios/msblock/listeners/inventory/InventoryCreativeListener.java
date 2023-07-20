@@ -2,8 +2,8 @@ package com.minersstudios.msblock.listeners.inventory;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.utils.PlayerUtils;
-import com.minersstudios.mscore.listener.AbstractMSListener;
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;

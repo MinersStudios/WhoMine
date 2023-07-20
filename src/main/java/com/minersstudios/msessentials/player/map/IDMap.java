@@ -10,7 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,8 +47,8 @@ public class IDMap {
      *
      * @return map with {@link UUID} and its ID
      */
-    public @NotNull @UnmodifiableView Map<UUID, Integer> getMap() {
-        return Collections.unmodifiableMap(this.map);
+    public @NotNull @Unmodifiable Map<UUID, Integer> getMap() {
+        return Map.copyOf(this.map);
     }
 
     /**
@@ -161,21 +161,21 @@ public class IDMap {
     /**
      * @return An unmodifiable view of the UUIDs contained in this map
      */
-    public @NotNull @UnmodifiableView Set<UUID> uuidSet() {
+    public @NotNull @Unmodifiable Set<UUID> uuidSet() {
         return Set.copyOf(this.map.keySet());
     }
 
     /**
      * @return An unmodifiable view of the ids contained in this map
      */
-    public @NotNull @UnmodifiableView Collection<Integer> ids() {
+    public @Unmodifiable Collection<Integer> ids() {
         return Collections.unmodifiableCollection(this.map.values());
     }
 
     /**
      * @return An unmodifiable view of the mappings contained in this map
      */
-    public @NotNull @UnmodifiableView Set<Map.Entry<UUID, Integer>> entrySet() {
+    public @NotNull @Unmodifiable Set<Map.Entry<UUID, Integer>> entrySet() {
         return Set.copyOf(this.map.entrySet());
     }
 

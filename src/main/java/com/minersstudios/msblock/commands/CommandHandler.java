@@ -2,7 +2,7 @@ package com.minersstudios.msblock.commands;
 
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.MSCore;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -65,7 +65,7 @@ public class CommandHandler implements MSCommandExecutor {
                 completions.add("give");
             }
             case 2 -> Bukkit.getOnlinePlayers().forEach(player -> completions.add(player.getName()));
-            case 3 -> completions.addAll(MSCore.getCache().customBlockMap.primaryKeySet());
+            case 3 -> completions.addAll(MSPlugin.getGlobalCache().customBlockMap.primaryKeySet());
         }
         return completions;
     }

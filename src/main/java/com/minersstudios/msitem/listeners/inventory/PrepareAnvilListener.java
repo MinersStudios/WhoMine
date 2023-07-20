@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.listeners.inventory;
 
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.MSBlockUtils;
 import com.minersstudios.mscore.utils.MSDecorUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
@@ -9,7 +9,7 @@ import com.minersstudios.msitem.items.RenameableItem;
 import com.minersstudios.msitem.utils.CustomItemUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

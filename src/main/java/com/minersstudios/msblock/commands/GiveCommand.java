@@ -1,8 +1,8 @@
 package com.minersstudios.msblock.commands;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -23,7 +23,7 @@ public class GiveCommand {
         if (args[1].length() > 2) {
             int amount = 1;
             Player player = Bukkit.getPlayer(args[1]);
-            CustomBlockData customBlockData = MSCore.getCache().customBlockMap.getByPrimaryKey(args[2]);
+            CustomBlockData customBlockData = MSPlugin.getGlobalCache().customBlockMap.getByPrimaryKey(args[2]);
 
             if (player == null) {
                 MSLogger.severe(sender, translatable("ms.error.player_not_found"));

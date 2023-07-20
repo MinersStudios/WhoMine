@@ -1,10 +1,10 @@
 package com.minersstudios.msblock.customblock;
 
 import com.minersstudios.msblock.MSBlock;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSBlockUtils;
 import com.minersstudios.mscore.utils.MSCustomUtils;
-import com.minersstudios.mscore.MSCore;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.NoteBlock;
@@ -180,20 +180,20 @@ public class CustomBlockData implements Cloneable {
             @NotNull Note note,
             boolean powered
     ) {
-        return MSCore.getCache().cachedNoteBlockData.getOrDefault(
+        return MSPlugin.getGlobalCache().cachedNoteBlockData.getOrDefault(
                 new NoteBlockData(instrument, note, powered).toInt(), DEFAULT
         );
     }
 
     @Contract("_ -> new")
     public static @NotNull CustomBlockData fromCustomModelData(int cmd) {
-        CustomBlockData customBlockData = MSCore.getCache().customBlockMap.getBySecondaryKey(cmd);
+        CustomBlockData customBlockData = MSPlugin.getGlobalCache().customBlockMap.getBySecondaryKey(cmd);
         return customBlockData == null ? DEFAULT : customBlockData;
     }
 
     @Contract("_ -> new")
     public static @NotNull CustomBlockData fromKey(@NotNull String key) {
-        CustomBlockData customBlockData = MSCore.getCache().customBlockMap.getByPrimaryKey(key);
+        CustomBlockData customBlockData = MSPlugin.getGlobalCache().customBlockMap.getByPrimaryKey(key);
         return customBlockData == null ? DEFAULT : customBlockData;
     }
 
@@ -459,7 +459,7 @@ public class CustomBlockData implements Cloneable {
             ingredientMap.keySet().forEach(character -> shapedRecipe.setIngredient(character, ingredientMap.get(character)));
 
             if (this.isShowInCraftsMenu()) {
-                MSCore.getCache().customBlockRecipes.add(shapedRecipe);
+                MSPlugin.getGlobalCache().customBlockRecipes.add(shapedRecipe);
             }
 
             Bukkit.addRecipe(shapedRecipe);

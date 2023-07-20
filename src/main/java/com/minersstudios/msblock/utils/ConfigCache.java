@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static com.minersstudios.mscore.MSCore.getCache;
+import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
 
 public final class ConfigCache {
     public final @NotNull String
@@ -42,8 +42,8 @@ public final class ConfigCache {
     }
 
     public void loadBlocks() {
-        var customBlockMap = getCache().customBlockMap;
-        var cachedNoteBlockData = getCache().cachedNoteBlockData;
+        var customBlockMap = getGlobalCache().customBlockMap;
+        var cachedNoteBlockData = getGlobalCache().cachedNoteBlockData;
 
         try (var paths = Files.walk(Paths.get(MSBlock.getInstance().getPluginFolder() + "/blocks"))) {
             paths

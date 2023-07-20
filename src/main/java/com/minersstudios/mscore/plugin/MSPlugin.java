@@ -1,14 +1,17 @@
 package com.minersstudios.mscore.plugin;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
 import com.minersstudios.mscore.Cache;
 import com.minersstudios.mscore.command.Commodore;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.listener.AbstractMSListener;
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
+import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
+import com.minersstudios.mscore.packet.PacketEvent;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import org.bukkit.Server;
@@ -50,9 +53,12 @@ public abstract class MSPlugin extends JavaPlugin {
     private final Set<String> classNames = new HashSet<>();
     private final Map<MSCommand, MSCommandExecutor> msCommands = new HashMap<>();
     private final Set<AbstractMSListener> msListeners = new HashSet<>();
+    private final Set<AbstractMSPacketListener> msPacketListeners = new HashSet<>();
     private Commodore commodore;
     private FileConfiguration newConfig;
     private boolean loadedCustoms;
+
+    private static Cache globalCache;
 
     private static final Field DATA_FOLDER_FIELD;
     private static final Constructor<PluginCommand> COMMAND_CONSTRUCTOR;
@@ -82,13 +88,17 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see #loadClassNames()
      * @see #loadCommands()
      * @see #loadListeners()
+     * @see #loadPacketListeners()
      * @see #load()
      */
     @Override
     public final void onLoad() {
+        globalCache = new Cache();
+
         this.loadClassNames();
         this.loadCommands();
         this.loadListeners();
+        this.loadPacketListeners();
 
         try {
             DATA_FOLDER_FIELD.set(this, this.pluginFolder);
@@ -107,6 +117,7 @@ public abstract class MSPlugin extends JavaPlugin {
      *
      * @see #registerCommands()
      * @see #registerListeners()
+     * @see #registerPacketListeners()
      * @see #enable()
      */
     @Override
@@ -116,6 +127,7 @@ public abstract class MSPlugin extends JavaPlugin {
 
         this.registerCommands();
         this.registerListeners();
+        this.registerPacketListeners();
 
         this.enable();
 
@@ -175,10 +187,17 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * @return The unmodifiable set of listeners
+     * @return The unmodifiable set of event listeners
      */
     public final @NotNull @Unmodifiable Set<AbstractMSListener> getListeners() {
         return Set.copyOf(this.msListeners);
+    }
+
+    /**
+     * @return The unmodifiable set of packet listeners
+     */
+    public final @NotNull @Unmodifiable Set<AbstractMSPacketListener> getPacketListeners() {
+        return Set.copyOf(this.msPacketListeners);
     }
 
     /**
@@ -217,20 +236,6 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * Used in :
-     * <ul>
-     *     <li>msBlock({@link Cache#customBlockMap})</li>
-     *     <li>msDecor({@link Cache#customDecorMap})</li>
-     *     <li>msItem({@link Cache#customItemMap})</li>
-     * </ul>
-     *
-     * @return True if the plugin has loaded the customs to the cache
-     */
-    public final boolean isLoadedCustoms() {
-        return this.loadedCustoms;
-    }
-
-    /**
      * Gets a {@link FileConfiguration} for this plugin, read through
      * "config.yml"
      * <br>
@@ -245,6 +250,27 @@ public abstract class MSPlugin extends JavaPlugin {
             this.reloadConfig();
         }
         return this.newConfig;
+    }
+
+    /**
+     * @return The cache of the MSPlugins
+     */
+    public static @NotNull Cache getGlobalCache() {
+        return globalCache;
+    }
+
+    /**
+     * Used in :
+     * <ul>
+     *     <li>msBlock({@link Cache#customBlockMap})</li>
+     *     <li>msDecor({@link Cache#customDecorMap})</li>
+     *     <li>msItem({@link Cache#customItemMap})</li>
+     * </ul>
+     *
+     * @return True if the plugin has loaded the customs to the cache
+     */
+    public final boolean isLoadedCustoms() {
+        return this.loadedCustoms;
     }
 
     /**
@@ -384,8 +410,9 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * Loads all listeners annotated with {@link MSListener} the project.
-     * All listeners must be extended using {@link AbstractMSListener}.
+     * Loads all event listeners annotated with {@link MSListener}
+     * the project. All listeners must be extended using
+     * {@link AbstractMSListener}.
      *
      * @see MSListener
      * @see AbstractMSListener
@@ -410,14 +437,81 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
-     * Registers all listeners in the project that is annotated with {@link MSListener}.
-     * All listeners must be extended using {@link AbstractMSListener}.
+     * Registers all event listeners in the project that
+     * is annotated with {@link MSListener}. All listeners
+     * must be extended using {@link AbstractMSListener}.
      *
      * @see MSListener
      * @see #loadListeners()
      */
     public void registerListeners() {
         this.msListeners.forEach(listener -> listener.register(this));
+    }
+
+    /**
+     * Loads all packet listeners annotated with
+     * {@link MSPacketListener} the project. All listeners
+     * must be extended using {@link AbstractMSPacketListener}.
+     *
+     * @see MSPacketListener
+     * @see AbstractMSPacketListener
+     * @see #registerPacketListeners()
+     */
+    private void loadPacketListeners() {
+        this.classNames.stream().parallel().forEach(className -> {
+            try {
+                var clazz = this.getClassLoader().loadClass(className);
+
+                if (clazz.isAnnotationPresent(MSPacketListener.class)) {
+                    if (clazz.getDeclaredConstructor().newInstance() instanceof AbstractMSPacketListener listener) {
+                        this.msPacketListeners.add(listener);
+                    } else {
+                        MSLogger.warning("Registered packet listener that is not instance of AbstractMSPacketListener (" + className + ")");
+                    }
+                }
+            } catch (Exception e) {
+                MSLogger.log(Level.SEVERE, "Failed to load listener", e);
+            }
+        });
+    }
+
+    /**
+     * Registers all packet listeners in the project that
+     * is annotated with {@link MSPacketListener}. All listeners
+     * must be extended using {@link AbstractMSPacketListener}.
+     *
+     * @see MSPacketListener
+     * @see AbstractMSPacketListener
+     * @see #loadPacketListeners()
+     */
+    public void registerPacketListeners() {
+        this.msPacketListeners.forEach(listener -> listener.register(this));
+    }
+
+    /**
+     * Calls a packet event to all registered packet listeners
+     * with the whitelist containing the packet type of the event
+     *
+     * @param event Packet event to be called
+     * @see PacketEvent
+     */
+    public void callPacketReceiveEvent(@NotNull PacketEvent event) {
+        globalCache.msPacketListeners.stream().parallel()
+        .filter(listener -> listener.getWhiteList().contains(event.getPacketContainer().getType()))
+        .forEach(listener -> listener.onPacketReceive(event));
+    }
+
+    /**
+     * Calls a packet event to all registered packet listeners
+     * with the whitelist containing the packet type of the event
+     *
+     * @param event Packet event to be called
+     * @see PacketEvent
+     */
+    public void callPacketSendEvent(@NotNull PacketEvent event) {
+        globalCache.msPacketListeners.stream().parallel()
+        .filter(listener -> listener.getWhiteList().contains(event.getPacketContainer().getType()))
+        .forEach(listener -> listener.onPacketSend(event));
     }
 
     /**

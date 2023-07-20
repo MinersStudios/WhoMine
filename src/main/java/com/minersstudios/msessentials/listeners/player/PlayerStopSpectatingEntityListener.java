@@ -1,9 +1,9 @@
 package com.minersstudios.msessentials.listeners.player;
 
 import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
-import com.minersstudios.mscore.listener.MSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.msessentials.world.WorldDark;
-import com.minersstudios.mscore.listener.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
 
