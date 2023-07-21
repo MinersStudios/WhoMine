@@ -1,7 +1,8 @@
 package com.minersstudios.mscore.utils;
 
+import com.minersstudios.mscore.GlobalCache;
+import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.events.CustomDecorPlaceEvent;
@@ -15,14 +16,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+import java.util.regex.Pattern;
+
+/**
+ * Utility class for {@link CustomDecorData}
+ * and {@link CustomDecor}
+ */
 public final class MSDecorUtils {
-    public static final NamespacedKey CUSTOM_DECOR_TYPE_NAMESPACED_KEY = new NamespacedKey(MSDecor.getInstance(), "type");
-    public static final String NAMESPACED_KEY_REGEX = "msdecor:(\\w+)";
+    public static final NamespacedKey CUSTOM_DECOR_TYPE_NAMESPACED_KEY = new NamespacedKey("msdecor", "type");
+    public static final String NAMESPACED_KEY_REGEX = "(msdecor):(\\w+)";
+    public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
     public static final String ENTITY_TAG_NAME = "customDecor";
 
     @Contract(value = " -> fail")
@@ -31,15 +41,65 @@ public final class MSDecorUtils {
     }
 
     /**
+     * Gets {@link CustomDecorData} item stack from key from
+     * {@link GlobalCache#customDecorMap} by using
+     * {@link #getCustomDecorData(String)} method
+     *
+     * @param key {@link CustomDecorData} key string
+     * @return Optional of {@link ItemStack} object
+     *         or empty optional if not found
+     * @see #getCustomDecorData(String)
+     * @see CustomDecorData#getItemStack()
+     */
+    public static @NotNull Optional<ItemStack> getCustomDecorItem(@Nullable String key) {
+        return getCustomDecorData(key).map(CustomDecorData::getItemStack);
+    }
+
+    /**
+     * Gets {@link CustomDecorData} from {@link ItemStack} from
+     * {@link GlobalCache#customDecorMap} by using persistent data
+     * container of item and {@link #getCustomDecorData(String)}
+     * method
+     *
+     * @param itemStack {@link ItemStack} to be checked
+     * @return Optional of {@link CustomDecorData} object
+     *         or empty optional if not found
+     * @see #getCustomDecorData(String)
+     */
+    public static @NotNull Optional<CustomDecorData> getCustomDecorData(@Nullable ItemStack itemStack) {
+        if (itemStack == null) return Optional.empty();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) return Optional.empty();
+        String key = itemMeta.getPersistentDataContainer().get(CUSTOM_DECOR_TYPE_NAMESPACED_KEY, PersistentDataType.STRING);
+        return getCustomDecorData(key);
+    }
+
+    /**
+     * Gets {@link CustomDecorData} from key from
+     * {@link GlobalCache#customDecorMap}
+     *
+     * @param key {@link CustomDecorData} key string
+     * @return Optional of {@link CustomDecorData} object
+     *         or empty optional if not found
+     */
+    public static @NotNull Optional<CustomDecorData> getCustomDecorData(@Nullable String key) {
+        return key == null
+                ? Optional.empty()
+                : Optional.ofNullable(MSPlugin.getGlobalCache().customDecorMap.getByPrimaryKey(key));
+    }
+
+    /**
      * Places custom decor.
      * Calls {@link CustomDecorPlaceEvent} when returns true.
      *
      * @param block     Block instead of which decor will be installed
      * @param player    Player who places decor
-     * @param key       {@link CustomDecorData} namespaced key string, example - (msdecor:example)
+     * @param key       {@link CustomDecorData} key string,
+     *                  example - (example)
      * @param blockFace Side on which decor will be placed
-     * @throws MSCustomNotFoundException If {@link CustomDecorData} is not found
      * @see CustomDecorPlaceEvent
+     * @see #placeCustomDecor(Block, Player, String, BlockFace, EquipmentSlot, Component)
+     * @see CustomDecor#setCustomDecor(BlockFace, EquipmentSlot, Component)
      */
     public static void placeCustomDecor(
             @NotNull Block block,
@@ -56,11 +116,13 @@ public final class MSDecorUtils {
      *
      * @param block     Block instead of which decor will be installed
      * @param player    Player who places decor
-     * @param key       {@link CustomDecorData} namespaced key string, example - (msdecor:example)
+     * @param key       {@link CustomDecorData} key string,
+     *                  example - (example)
      * @param blockFace Side on which decor will be placed
      * @param hand      Hand that was involved
-     * @throws MSCustomNotFoundException If {@link CustomDecorData} is not found
      * @see CustomDecorPlaceEvent
+     * @see #placeCustomDecor(Block, Player, String, BlockFace, EquipmentSlot, Component)
+     * @see CustomDecor#setCustomDecor(BlockFace, EquipmentSlot, Component)
      */
     public static void placeCustomDecor(
             @NotNull Block block,
@@ -78,12 +140,13 @@ public final class MSDecorUtils {
      *
      * @param block      Block instead of which decor will be installed
      * @param player     Player who places decor
-     * @param key        {@link CustomDecorData} namespaced key string, example - (msdecor:example)
+     * @param key        {@link CustomDecorData} key string,
+     *                   example - (example)
      * @param blockFace  Side on which decor will be placed
      * @param hand       Hand that was involved
      * @param customName Custom name of decor
-     * @throws MSCustomNotFoundException If {@link CustomDecorData} is not found
      * @see CustomDecorPlaceEvent
+     * @see CustomDecor#setCustomDecor(BlockFace, EquipmentSlot, Component)
      */
     public static void placeCustomDecor(
             @NotNull Block block,
@@ -92,28 +155,38 @@ public final class MSDecorUtils {
             @NotNull BlockFace blockFace,
             @Nullable EquipmentSlot hand,
             @Nullable Component customName
-    ) throws MSCustomNotFoundException {
-        CustomDecorData customDecorData = MSDecorUtils.getCustomDecorData(key);
-        CustomDecor customDecor = new CustomDecor(block, player, customDecorData);
+    ) {
+        var customDecorData = MSDecorUtils.getCustomDecorData(key);
 
-        customDecor.setCustomDecor(blockFace, hand, customName);
+        if (customDecorData.isEmpty()) {
+            MSLogger.warning("Custom decor data with key: " + key + " not found");
+            return;
+        }
+
+        new CustomDecor(block, player, customDecorData.get())
+                .setCustomDecor(blockFace, hand, customName);
     }
 
     /**
-     * @param material Material of block
-     * @return True if the material is used as a decor HitBox
+     * @param material Material of block to check
+     * @return True if the material is used
+     *         as a decor {@link CustomDecorData.HitBox}
      */
     @Contract("null -> false")
     public static boolean isCustomDecorMaterial(@Nullable Material material) {
-        return material != null && switch (material) {
+        return material != null
+                && switch (material) {
             case BARRIER, STRUCTURE_VOID, LIGHT -> true;
             default -> false;
         };
     }
 
     /**
-     * @param entity The entity
-     * @return True if the entity has the "customDecor" tag
+     * Checks if the entity has the {@link #ENTITY_TAG_NAME} tag
+     * in {@link Entity#getScoreboardTags()}
+     *
+     * @param entity The entity to check
+     * @return True if the entity has the {@link #ENTITY_TAG_NAME} tag
      */
     @Contract("null -> false")
     public static boolean isCustomDecorEntity(@Nullable Entity entity) {
@@ -121,8 +194,12 @@ public final class MSDecorUtils {
     }
 
     /**
-     * @param itemStack Item
-     * @return True if item is {@link CustomDecorData}
+     * Checks if item has {@link #CUSTOM_DECOR_TYPE_NAMESPACED_KEY}
+     * in {@link PersistentDataContainer} of item
+     *
+     * @param itemStack Item to be checked
+     * @return True if item is {@link CustomDecorData} item
+     * @see CustomDecorData
      */
     @Contract("null -> false")
     public static boolean isCustomDecor(@Nullable ItemStack itemStack) {
@@ -132,52 +209,11 @@ public final class MSDecorUtils {
     }
 
     /**
-     * Gets {@link CustomDecorData} item stack from key
-     *
-     * @param key {@link CustomDecorData} key string
-     * @return {@link CustomDecorData} item stack
-     * @throws MSCustomNotFoundException If {@link CustomDecorData} is not found
-     */
-    public static @NotNull ItemStack getCustomDecorItem(@NotNull String key) throws MSCustomNotFoundException {
-        return getCustomDecorData(key).getItemStack();
-    }
-
-    /**
-     * Gets {@link CustomDecorData} from {@link ItemStack}
-     *
-     * @param itemStack {@link ItemStack}
-     * @return {@link CustomDecorData} object
-     * @throws MSCustomNotFoundException If {@link CustomDecorData} is not found
-     */
-    public static @Nullable CustomDecorData getCustomDecorData(@Nullable ItemStack itemStack) throws MSCustomNotFoundException {
-        if (itemStack == null) return null;
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta == null) return null;
-        String key = itemMeta.getPersistentDataContainer().get(CUSTOM_DECOR_TYPE_NAMESPACED_KEY, PersistentDataType.STRING);
-        return key == null ? null : getCustomDecorData(key);
-    }
-
-    /**
-     * Gets {@link CustomDecorData} from key
-     *
-     * @param key {@link CustomDecorData} Key string
-     * @return {@link CustomDecorData} object
-     * @throws MSCustomNotFoundException If {@link CustomDecorData} is not found
-     */
-    public static @NotNull CustomDecorData getCustomDecorData(@NotNull String key) throws MSCustomNotFoundException {
-        CustomDecorData customDecorData = MSPlugin.getGlobalCache().customDecorMap.getByPrimaryKey(key);
-        if (customDecorData == null) {
-            throw new MSCustomNotFoundException("Custom decor is not found : " + key);
-        }
-        return customDecorData;
-    }
-
-    /**
      * @param string String to be checked
-     * @return True if string matches {@link MSDecorUtils#NAMESPACED_KEY_REGEX} regex
+     * @return True if string matches {@link #NAMESPACED_KEY_REGEX} regex
      */
     @Contract(value = "null -> false", pure = true)
     public static boolean matchesNamespacedKey(@Nullable String string) {
-        return string != null && string.matches(NAMESPACED_KEY_REGEX);
+        return string != null && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }
 }

@@ -36,7 +36,7 @@ public class InventoryCreativeListener extends AbstractMSListener {
 
             for (var nearbyEntity : clickedBlock.getWorld().getNearbyEntities(clickedBlock.getLocation().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
                 if (nearbyEntity instanceof ItemFrame itemFrame && itemFrame.getItem().getItemMeta() != null) {
-                    customDecorData = CustomDecorUtils.getCustomDecorDataByEntity(itemFrame);
+                    customDecorData = CustomDecorUtils.getCustomDecorDataByEntity(itemFrame).orElse(null);
                     itemStack = itemFrame.getItem();
                     itemMeta = itemStack.getItemMeta();
                     itemMeta.displayName(nearbyEntity.name());
@@ -46,7 +46,7 @@ public class InventoryCreativeListener extends AbstractMSListener {
             if (customDecorData == null) {
                 for (var nearbyEntity : clickedBlock.getWorld().getNearbyEntities(clickedBlock.getLocation().toCenterLocation(), 0.2d, 0.3d, 0.2d)) {
                     if (nearbyEntity instanceof ArmorStand armorStand && armorStand.getEquipment().getHelmet() != null) {
-                        customDecorData = CustomDecorUtils.getCustomDecorDataByEntity(armorStand);
+                        customDecorData = CustomDecorUtils.getCustomDecorDataByEntity(armorStand).orElse(null);
                         itemStack = armorStand.getEquipment().getHelmet();
                     }
                 }

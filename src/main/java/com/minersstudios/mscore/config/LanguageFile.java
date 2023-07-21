@@ -32,35 +32,45 @@ import java.util.logging.Level;
  * All downloaded language files are stored in the "/config/minersstudios/language" folder
  */
 public final class LanguageFile {
-    private final String sourceUrl;
-    private final String languageCode;
+    private final String user;
+    private final String repo;
+    private final String code;
     private final JsonObject translations;
     private File file;
 
     private static TranslationRegistry registry = TranslationRegistry.create(Key.key("ms"));
 
     private LanguageFile(
-            @NotNull String sourceUrl,
-            @NotNull String languageCode
+            @NotNull String user,
+            @NotNull String repo,
+            @NotNull String code
     ) {
-        this.sourceUrl = sourceUrl;
-        this.languageCode = languageCode;
+        this.user = user;
+        this.repo = repo;
+        this.code = code;
         this.file = this.loadFile();
         this.translations = this.loadTranslations();
     }
 
     /**
-     * @return The source URL of the language repository
+     * @return The user of the language repository
      */
-    public @NotNull String getSourceUrl() {
-        return this.sourceUrl;
+    public @NotNull String getUser() {
+        return this.user;
+    }
+
+    /**
+     * @return The repository from which the language file is downloaded
+     */
+    public @NotNull String getRepo() {
+        return this.repo;
     }
 
     /**
      * @return The language code of the language file
      */
-    public @NotNull String getLanguageCode() {
-        return this.languageCode;
+    public @NotNull String getCode() {
+        return this.code;
     }
 
     /**
@@ -78,18 +88,22 @@ public final class LanguageFile {
     }
 
     /**
-     * Loads the translations from the language file to {@link GlobalTranslator}.
-     * If the language file does not exist, it will be downloaded from the language repository
+     * Loads the translations from the language file to
+     * {@link GlobalTranslator}. If the language file does
+     * not exist, it will be downloaded from the language
+     * repository.
      *
-     * @param sourceUrl    URL of the language repository
-     * @param languageCode Language code
+     * @param user The user of the language repository
+     * @param repo The repository from which the language file is downloaded
+     * @param code Language code
      */
     public static void loadLanguage(
-            @NotNull String sourceUrl,
-            @NotNull String languageCode
+            @NotNull String user,
+            @NotNull String repo,
+            @NotNull String code
     ) {
         long time = System.currentTimeMillis();
-        LanguageFile languageFile = new LanguageFile(sourceUrl, languageCode);
+        LanguageFile languageFile = new LanguageFile(user, repo, code);
 
         Locale locale = Locale.US;
         languageFile.translations.entrySet().forEach(
@@ -112,13 +126,13 @@ public final class LanguageFile {
      * Reloads language file
      *
      * @see #unloadLanguage()
-     * @see #loadLanguage(String, String)
+     * @see #loadLanguage(String, String, String)
      */
     public static void reloadLanguage() {
         Config config = MSCore.getConfiguration();
 
         unloadLanguage();
-        loadLanguage(config.languageUrl, config.languageCode);
+        loadLanguage(config.languageUser, config.languageRepo, config.languageCode);
     }
 
     /**
@@ -172,10 +186,10 @@ public final class LanguageFile {
             throw new RuntimeException("Failed to create language folder");
         }
 
-        File langFile = new File(langFolder, this.languageCode + ".json");
+        File langFile = new File(langFolder, this.code + ".json");
 
         if (!langFile.exists()) {
-            String link = this.sourceUrl + this.languageCode + ".json";
+            String link = "https://github.com/" + this.user + '/' + this.repo + "/raw/release/lang/" + this.code + ".json";
 
             try (
                     var in = new URL(link).openStream();
@@ -204,7 +218,7 @@ public final class LanguageFile {
 
             return element.getAsJsonObject();
         } catch (IOException | JsonSyntaxException e) {
-            MSLogger.severe("Failed to load corrupted language file: " + this.languageCode + ".json");
+            MSLogger.severe("Failed to load corrupted language file: " + this.code + ".json");
             MSLogger.severe("Creating backup file and trying to load language file again");
 
             this.createBackupFile();

@@ -58,7 +58,7 @@ public interface CustomItem extends Cloneable {
                 if (itemStack != null) {
                     getGlobalCache().customItemMap.put(item.getKey(), item.getCustomModelData(), this);
                     new RenameableItem(
-                            new NamespacedKey(MSItem.getInstance(), this.getNamespacedKey().getKey() + "." + item.getKey()),
+                            new NamespacedKey("msitems", this.getNamespacedKey().getKey() + "." + item.getKey()),
                             item.getRenameText(),
                             Lists.newArrayList(getItemStack()),
                             itemStack,

@@ -32,7 +32,7 @@ public class InventoryClickListener extends AbstractMSListener {
                 && event.getSlotType() == InventoryType.SlotType.ARMOR
                 && cursorItem != null
                 && !cursorItem.getType().isAir()
-                && MSItemUtils.getCustomItem(cursorItem) instanceof Wearable
+                && MSItemUtils.getCustomItem(cursorItem).orElse(null) instanceof Wearable
         ) {
             if (
                     currentItem != null
@@ -47,11 +47,12 @@ public class InventoryClickListener extends AbstractMSListener {
 
         if (
                 clickedInventory != null
+                && currentItem != null
                 && event.isShiftClick()
                 && clickedInventory.getType() == InventoryType.PLAYER
                 && player.getOpenInventory().getType() == InventoryType.CRAFTING
                 && inventory.getHelmet() == null
-                && MSItemUtils.getCustomItem(currentItem) instanceof Wearable
+                && MSItemUtils.getCustomItem(currentItem).orElse(null) instanceof Wearable
         ) {
             event.setCancelled(true);
             this.getPlugin().runTask(() -> {

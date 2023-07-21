@@ -198,7 +198,7 @@ public class PlayerInfo {
      * Gets player info from {@link Cache#playerInfoMap}
      * by {@link OfflinePlayer} object, which was retrieved
      * by the specified player nickname with
-     * {@link PlayerUtils#getOfflinePlayerByNick(String)}.
+     * {@link Server#getOfflinePlayer(String)}.
      * If the player info is not cached, a new player info
      * is created with the player file and settings
      * if the file exists, or a new player information
@@ -211,7 +211,7 @@ public class PlayerInfo {
      * @see #fromOfflinePlayer(OfflinePlayer)
      */
     public static @Nullable PlayerInfo fromNickname(@NotNull String nickname) {
-        return nickname.isBlank() ? null : fromOfflinePlayer(PlayerUtils.getOfflinePlayerByNick(nickname));
+        return nickname.isBlank() ? null : fromOfflinePlayer(Bukkit.getOfflinePlayer(nickname));
     }
 
     /**

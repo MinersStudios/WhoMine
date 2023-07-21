@@ -114,7 +114,7 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
                         }
                     }, 0L, 1L));
                 } else {
-                    if (CustomBlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getBlockData())) {
+                    if (CustomBlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getType())) {
                         CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
                     }
                     if (hasSlowDigging) {
@@ -122,7 +122,7 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
                     }
                 }
 
-                if (BlockUtils.isWoodenSound(block.getBlockData())) {
+                if (BlockUtils.isWoodenSound(block.getType())) {
                     if (CustomBlockUtils.hasPlayer(player)) {
                         CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
                     }

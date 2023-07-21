@@ -44,7 +44,10 @@ public class DosimeterMechanic extends AbstractMSListener {
         if (equipmentSlot == EquipmentSlot.HAND) {
             ItemStack dosimeterItem = player.getInventory().getItem(event.getPreviousSlot());
 
-            if (!(MSItemUtils.getCustomItem(dosimeterItem) instanceof Dosimeter dosimeter)) return;
+            if (
+                    dosimeterItem == null
+                    || !(MSItemUtils.getCustomItem(dosimeterItem).orElse(null) instanceof Dosimeter dosimeter)
+            ) return;
 
             dosimeter.setItemStack(dosimeterItem);
             dosimeter.setEnabled(false);
@@ -63,7 +66,7 @@ public class DosimeterMechanic extends AbstractMSListener {
         if (equipmentSlot == null) return;
 
         ItemStack dosimeterItem = playerInventory.getItem(equipmentSlot);
-        if (!(MSItemUtils.getCustomItem(dosimeterItem) instanceof Dosimeter dosimeter)) return;
+        if (!(MSItemUtils.getCustomItem(dosimeterItem).orElse(null) instanceof Dosimeter dosimeter)) return;
         EquipmentSlot newEquipmentSlot = equipmentSlot == EquipmentSlot.HAND ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
 
         if (
@@ -104,8 +107,8 @@ public class DosimeterMechanic extends AbstractMSListener {
             ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
             if (
-                    MSItemUtils.getCustomItem(itemStack) instanceof Dosimeter
-                    || !(MSItemUtils.getCustomItem(drop) instanceof Dosimeter dosimeter)
+                    MSItemUtils.getCustomItem(itemStack).orElse(null) instanceof Dosimeter
+                    || !(MSItemUtils.getCustomItem(drop).orElse(null) instanceof Dosimeter dosimeter)
             ) return;
 
             dosimeter.setItemStack(drop);
@@ -121,7 +124,7 @@ public class DosimeterMechanic extends AbstractMSListener {
         if (equipmentSlot == null) return;
         ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
-        if (MSItemUtils.getCustomItem(itemStack) instanceof Dosimeter dosimeter) {
+        if (MSItemUtils.getCustomItem(itemStack).orElse(null) instanceof Dosimeter dosimeter) {
             dosimeter.setItemStack(itemStack);
             dosimeter.setEnabled(false);
         }
@@ -136,7 +139,7 @@ public class DosimeterMechanic extends AbstractMSListener {
         if (hand == null || !hand.isHand()) return;
         ItemStack itemInHand = inventory.getItem(hand);
 
-        if (MSItemUtils.getCustomItem(itemInHand) instanceof Dosimeter dosimeter) {
+        if (MSItemUtils.getCustomItem(itemInHand).orElse(null) instanceof Dosimeter dosimeter) {
             event.setCancelled(true);
             dosimeter.setItemStack(itemInHand);
             dosimeter.setEnabled(!dosimeter.isEnabled());
@@ -160,7 +163,7 @@ public class DosimeterMechanic extends AbstractMSListener {
                         Player player = entry.getKey();
                         ItemStack itemStack = player.getInventory().getItem(entry.getValue());
 
-                        if (MSItemUtils.getCustomItem(itemStack) instanceof Dosimeter dosimeter) {
+                        if (MSItemUtils.getCustomItem(itemStack).orElse(null) instanceof Dosimeter dosimeter) {
                             dosimeter.setItemStack(itemStack);
 
                             if (dosimeter.isEnabled()) {

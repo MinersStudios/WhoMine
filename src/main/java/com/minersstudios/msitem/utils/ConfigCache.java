@@ -97,7 +97,7 @@ public final class ConfigCache {
                 }
 
                 RenameableItem renameableItem = new RenameableItem(
-                        new NamespacedKey(MSItem.getInstance(), Objects.requireNonNull(renameableItemConfig.getString("namespaced-key"), fileName + " namespaced-key must be NotNull!")),
+                        new NamespacedKey("msitems", Objects.requireNonNull(renameableItemConfig.getString("namespaced-key"), fileName + " namespaced-key must be NotNull!")),
                         Objects.requireNonNull(renameableItemConfig.getString("rename-text"), fileName + " rename-text must be NotNull!"),
                         renameableItemStacks,
                         resultItemStack,

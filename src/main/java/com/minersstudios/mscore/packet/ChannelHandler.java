@@ -176,7 +176,7 @@ public class ChannelHandler extends ChannelDuplexHandler {
      *
      * @param player The player to remove the ChannelHandler for
      */
-    public static void removePlayer(@NotNull Player player) {
+    public static void uninjectPlayer(@NotNull Player player) {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         ChannelPipeline pipeline = serverPlayer.connection.connection.channel.pipeline();
         var registeredHandlers = pipeline.names();

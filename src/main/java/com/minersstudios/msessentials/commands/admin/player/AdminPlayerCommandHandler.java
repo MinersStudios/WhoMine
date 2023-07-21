@@ -5,7 +5,6 @@ import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.config.LanguageFile;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.utils.DateUtils;
-import com.minersstudios.mscore.utils.PlayerUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.map.IDMap;
@@ -326,7 +325,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                             IDMap idMap = MSEssentials.getCache().idMap;
                             offlinePlayer = idMap.getPlayerByID(args[0]);
                         } else if (args[0].length() > 2) {
-                            offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+                            offlinePlayer = sender.getServer().getOfflinePlayer(args[0]);
                         }
 
                         if (offlinePlayer == null) return EMPTY_TAB;

@@ -50,13 +50,13 @@ public class WrenchMechanic extends AbstractMSListener {
 
         if (
                 event.getHand() == EquipmentSlot.HAND
-                 && MSItemUtils.getCustomItem(this.itemInMainHand) instanceof Wrench
+                 && MSItemUtils.getCustomItem(this.itemInMainHand).orElse(null) instanceof Wrench
         ) {
             event.setCancelled(Tag.DIRT.isTagged(clickedBlock.getType()));
 
             if (
                     MSDecorUtils.isCustomDecorMaterial(clickedBlock.getType())
-                    && CustomDecorUtils.getCustomDecorDataByLocation(this.location) instanceof Wrenchable wrenchable
+                    && CustomDecorUtils.getCustomDecorDataByLocation(this.location).orElse(null) instanceof Wrenchable wrenchable
             ) {
                 if (wrenchable instanceof Sittable && !this.player.isSneaking()) return;
 
@@ -89,8 +89,8 @@ public class WrenchMechanic extends AbstractMSListener {
 
         if (
                 event.getHand() == EquipmentSlot.HAND
-                && MSItemUtils.getCustomItem(this.itemInMainHand) instanceof Wrench
-                && CustomDecorUtils.getCustomDecorDataByEntity(entity) instanceof Wrenchable wrenchable
+                && MSItemUtils.getCustomItem(this.itemInMainHand).orElse(null) instanceof Wrench
+                && CustomDecorUtils.getCustomDecorDataByEntity(entity).orElse(null) instanceof Wrenchable wrenchable
         ) {
             this.use(entity, wrenchable);
         }

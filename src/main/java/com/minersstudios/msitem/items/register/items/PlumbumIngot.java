@@ -1,10 +1,10 @@
 package com.minersstudios.msitem.items.register.items;
 
+import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSBlockUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -24,7 +24,7 @@ public class PlumbumIngot implements CustomItem {
     private @Nullable List<Map.Entry<Recipe, Boolean>> recipes;
 
     public PlumbumIngot() {
-        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "plumbum_ingot");
+        this.namespacedKey = new NamespacedKey("msitems", "plumbum_ingot");
         this.itemStack = new ItemStack(Material.PAPER);
         ItemMeta itemMeta = this.itemStack.getItemMeta();
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Свинцовый слиток"));
@@ -41,23 +41,32 @@ public class PlumbumIngot implements CustomItem {
     public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
         ItemStack input = Objects.requireNonNull(MSPlugin.getGlobalCache().customItemMap.getByPrimaryKey("raw_plumbum")).getItemStack();
         FurnaceRecipe furnaceRecipe = new FurnaceRecipe(
-                new NamespacedKey(MSItem.getInstance(), "plumbum_ingot_furnace"),
+                new NamespacedKey("msitems", "plumbum_ingot_furnace"),
                 this.itemStack,
                 new RecipeChoice.ExactChoice(input),
                 0.7f,
                 200
         );
         BlastingRecipe blastingRecipe = new BlastingRecipe(
-                new NamespacedKey(MSItem.getInstance(), "plumbum_ingot_blast"),
+                new NamespacedKey("msitems", "plumbum_ingot_blast"),
                 this.itemStack,
                 new RecipeChoice.ExactChoice(input),
                 0.7f,
                 100
         );
-        ItemStack plumbumBlock = MSBlockUtils.getCustomBlockItem("plumbum_block");
-        ShapedRecipe blockShapedRecipe = new ShapedRecipe(new NamespacedKey(MSItem.getInstance(), "plumbum_ingot_from_block"), this.itemStack.clone().add(8))
+        var plumbumBlock = MSBlockUtils.getCustomBlockItem("plumbum_block");
+
+        if (plumbumBlock.isEmpty()) {
+            MSLogger.warning("Can't find custom block with key: plumbum_block");
+            return this.recipes = List.of(
+                    Map.entry(furnaceRecipe, false),
+                    Map.entry(blastingRecipe, false)
+            );
+        }
+
+        ShapedRecipe blockShapedRecipe = new ShapedRecipe(new NamespacedKey("msitems", "plumbum_ingot_from_block"), this.itemStack.clone().add(8))
                 .shape("I")
-                .setIngredient('I', new RecipeChoice.ExactChoice(plumbumBlock));
+                .setIngredient('I', new RecipeChoice.ExactChoice(plumbumBlock.get()));
         return this.recipes = List.of(
                 Map.entry(furnaceRecipe, false),
                 Map.entry(blastingRecipe, false),

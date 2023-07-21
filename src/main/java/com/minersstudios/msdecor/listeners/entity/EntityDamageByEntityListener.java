@@ -1,16 +1,15 @@
 package com.minersstudios.msdecor.listeners.entity;
 
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.MSDecorUtils;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.utils.CustomDecorUtils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,9 +32,9 @@ public class EntityDamageByEntityListener extends AbstractMSListener {
                 && player.getGameMode() != GameMode.CREATIVE)
         ) return;
 
-        CustomDecorData customDecorData = CustomDecorUtils.getCustomDecorDataByEntity(entity);
-        if (customDecorData != null) {
-            new CustomDecor(entity.getLocation().getBlock(), player, customDecorData).breakCustomDecor();
-        }
+        CustomDecorUtils.getCustomDecorDataByEntity(entity)
+        .ifPresent(
+                customDecorData -> new CustomDecor(entity.getLocation().getBlock(), player, customDecorData).breakCustomDecor()
+        );
     }
 }

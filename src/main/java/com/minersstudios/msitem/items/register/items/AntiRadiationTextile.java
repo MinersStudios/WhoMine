@@ -1,8 +1,8 @@
 package com.minersstudios.msitem.items.register.items;
 
+import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -14,6 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class AntiRadiationTextile implements CustomItem {
     private @Nullable List<Map.Entry<Recipe, Boolean>> recipes;
 
     public AntiRadiationTextile() {
-        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "anti_radiation_textile");
+        this.namespacedKey = new NamespacedKey("msitems", "anti_radiation_textile");
         this.itemStack = new ItemStack(Material.PAPER);
         ItemMeta itemMeta = this.itemStack.getItemMeta();
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Антирадиационная ткань"));
@@ -38,14 +39,20 @@ public class AntiRadiationTextile implements CustomItem {
 
     @Override
     public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        ItemStack plumbumIngot = MSItemUtils.getCustomItemItemStack("plumbum_ingot");
+        var plumbumIngot = MSItemUtils.getCustomItemItemStack("plumbum_ingot");
+
+        if (plumbumIngot.isEmpty()) {
+            MSLogger.warning("Can't find custom item with key: plumbum_ingot");
+            return this.recipes = Collections.emptyList();
+        }
+
         ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
                 .shape(
                         "WSW",
                         "SIS",
                         "WSW"
                 )
-                .setIngredient('I', plumbumIngot)
+                .setIngredient('I', plumbumIngot.get())
                 .setIngredient('W', Material.YELLOW_WOOL)
                 .setIngredient('S', Material.STRING);
         return this.recipes = List.of(Map.entry(shapedRecipe, true));

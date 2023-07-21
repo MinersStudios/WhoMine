@@ -1,8 +1,8 @@
 package com.minersstudios.msitem.items.register.items;
 
+import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +24,10 @@ public class Dosimeter implements CustomItem {
     private @NotNull ItemStack itemStack;
     private @Nullable List<Map.Entry<Recipe, Boolean>> recipes;
 
-    public static final @NotNull NamespacedKey DOSIMETER = new NamespacedKey(MSItem.getInstance(), "dosimeter");
+    public static final @NotNull NamespacedKey DOSIMETER = new NamespacedKey("msitems", "dosimeter");
 
     public Dosimeter() {
-        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "dosimeter");
+        this.namespacedKey = new NamespacedKey("msitems", "dosimeter");
         this.itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
         ItemMeta itemMeta = this.itemStack.getItemMeta();
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Дозиметр радиации"));
@@ -83,14 +84,20 @@ public class Dosimeter implements CustomItem {
 
     @Override
     public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        ItemStack plumbumIngot = MSItemUtils.getCustomItemItemStack("plumbum_ingot");
+        var plumbumIngot = MSItemUtils.getCustomItemItemStack("plumbum_ingot");
+
+        if (plumbumIngot.isEmpty()) {
+            MSLogger.warning("Can't find custom item with key: plumbum_ingot");
+            return this.recipes = Collections.emptyList();
+        }
+
         ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
                 .shape(
                         "III",
                         "ILI",
                         "IRI"
                 )
-                .setIngredient('I', plumbumIngot)
+                .setIngredient('I', plumbumIngot.get())
                 .setIngredient('L', Material.REDSTONE_LAMP)
                 .setIngredient('R', Material.REDSTONE_TORCH);
         return this.recipes = List.of(Map.entry(shapedRecipe, true));

@@ -14,7 +14,8 @@ import java.time.format.DateTimeFormatter;
  */
 public final class Config extends MSConfig {
     public String languageCode;
-    public String languageUrl;
+    public String languageUser;
+    public String languageRepo;
     public DateTimeFormatter timeFormatter;
 
     /**
@@ -42,6 +43,7 @@ public final class Config extends MSConfig {
     public void reloadVariables() {
         this.timeFormatter = DateTimeFormatter.ofPattern(this.yaml.getString("date-format", "EEE, yyyy-MM-dd HH:mm z"));
         this.languageCode = this.yaml.getString("language.code", "ru_ru");
-        this.languageUrl = this.yaml.getString("language.url", "https://github.com/minersstudios/mstranslations/raw/release/lang/");
+        this.languageUser = this.yaml.getString("language.user", "MinersStudios");
+        this.languageRepo = this.yaml.getString("language.repo", "MSTranslations");
     }
 }

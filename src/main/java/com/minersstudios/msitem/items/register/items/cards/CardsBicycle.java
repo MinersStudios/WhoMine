@@ -1,11 +1,10 @@
 package com.minersstudios.msitem.items.register.items.cards;
 
+import com.google.common.collect.Lists;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.Typed;
-import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -148,7 +147,7 @@ public class CardsBicycle implements Typed {
     );
 
     public CardsBicycle() {
-        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "card_box_bicycle");
+        this.namespacedKey = new NamespacedKey("msitems", "card_box_bicycle");
         this.itemStack = Boxes.BOX_BLUE_1.getItemStack();
 
     }
@@ -156,7 +155,7 @@ public class CardsBicycle implements Typed {
     @Override
     public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
         //<editor-fold desc="Recipes">
-        ShapedRecipe blue1 = new ShapedRecipe(new NamespacedKey(MSItem.getInstance(), "card_box_bicycle_blue_1"), Boxes.BOX_BLUE_1.getItemStack())
+        ShapedRecipe blue1 = new ShapedRecipe(new NamespacedKey("msitems", "card_box_bicycle_blue_1"), Boxes.BOX_BLUE_1.getItemStack())
                 .shape(
                         "DSD",
                         "SPS",
@@ -164,7 +163,7 @@ public class CardsBicycle implements Typed {
                 ).setIngredient('D', Material.BLUE_DYE)
                 .setIngredient('S', Material.STRING)
                 .setIngredient('P', Material.PAPER);
-        ShapedRecipe blue2 = new ShapedRecipe(new NamespacedKey(MSItem.getInstance(), "card_box_bicycle_blue_2"), Boxes.BOX_BLUE_2.getItemStack())
+        ShapedRecipe blue2 = new ShapedRecipe(new NamespacedKey("msitems", "card_box_bicycle_blue_2"), Boxes.BOX_BLUE_2.getItemStack())
                 .shape(
                         "DSD",
                         "SPS",
@@ -173,7 +172,7 @@ public class CardsBicycle implements Typed {
                 .setIngredient('S', Material.STRING)
                 .setIngredient('P', Material.PAPER)
                 .setIngredient('I', Material.IRON_INGOT);
-        ShapedRecipe red1 = new ShapedRecipe(new NamespacedKey(MSItem.getInstance(), "card_box_bicycle_red_1"), Boxes.BOX_RED_1.getItemStack())
+        ShapedRecipe red1 = new ShapedRecipe(new NamespacedKey("msitems", "card_box_bicycle_red_1"), Boxes.BOX_RED_1.getItemStack())
                 .shape(
                         "DSD",
                         "SPS",
@@ -181,7 +180,7 @@ public class CardsBicycle implements Typed {
                 ).setIngredient('D', Material.RED_DYE)
                 .setIngredient('S', Material.STRING)
                 .setIngredient('P', Material.PAPER);
-        ShapedRecipe red2 = new ShapedRecipe(new NamespacedKey(MSItem.getInstance(), "card_box_bicycle_red_2"), Boxes.BOX_RED_2.getItemStack())
+        ShapedRecipe red2 = new ShapedRecipe(new NamespacedKey("msitems", "card_box_bicycle_red_2"), Boxes.BOX_RED_2.getItemStack())
                 .shape(
                         "DSD",
                         "SPS",
@@ -308,7 +307,7 @@ public class CardsBicycle implements Typed {
                 @NotNull Component itemName,
                 @NotNull List<ItemStack> cardItems
         ) {
-            this.namespacedKey = new NamespacedKey(MSItem.getInstance(), this.name().toLowerCase(Locale.ROOT) + "_card_box_bicycle");
+            this.namespacedKey = new NamespacedKey("msitems", this.name().toLowerCase(Locale.ROOT) + "_card_box_bicycle");
             this.customModelData = customModelData;
             this.itemName = itemName;
             this.itemStack = new ItemStack(Material.BUNDLE);

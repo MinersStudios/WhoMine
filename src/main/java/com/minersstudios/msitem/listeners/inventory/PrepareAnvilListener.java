@@ -25,7 +25,7 @@ public class PrepareAnvilListener extends AbstractMSListener {
         String renameText = event.getInventory().getRenameText();
 
         if (resultItem == null || firstItem == null) return;
-        if (MSItemUtils.getCustomItem(resultItem) instanceof Renameable renameable) {
+        if (MSItemUtils.getCustomItem(resultItem).orElse(null) instanceof Renameable renameable) {
             ItemStack renameableItem = renameable.createRenamedItem(resultItem, renameText);
 
             if (renameableItem != null) {

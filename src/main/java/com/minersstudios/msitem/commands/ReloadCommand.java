@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.commands;
 
-import com.minersstudios.mscore.Cache;
+import com.minersstudios.mscore.GlobalCache;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msitem.MSItem;
@@ -20,16 +20,16 @@ public class ReloadCommand {
         long time = System.currentTimeMillis();
         Server server = sender.getServer();
         Iterator<Recipe> crafts = server.recipeIterator();
-        Cache cache = MSPlugin.getGlobalCache();
+        GlobalCache cache = MSPlugin.getGlobalCache();
 
         while (crafts.hasNext()) {
             Recipe recipe = crafts.next();
 
             if (
                     recipe instanceof Keyed keyed
-                    && keyed.key().namespace().equals("msitem")
+                    && keyed.key().namespace().equals("msitems")
             ) {
-                server.removeRecipe(new NamespacedKey(MSItem.getInstance(), keyed.key().value()));
+                server.removeRecipe(new NamespacedKey("msitems", keyed.key().value()));
             }
         }
 

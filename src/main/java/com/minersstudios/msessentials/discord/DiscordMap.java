@@ -263,7 +263,10 @@ public class DiscordMap {
      */
     private void createFile() {
         try {
-            if (this.file.createNewFile()) {
+            if (
+                    this.file.getParentFile().mkdirs()
+                    && this.file.createNewFile()
+            ) {
                 this.saveFile();
             }
         } catch (IOException e) {

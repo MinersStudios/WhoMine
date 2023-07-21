@@ -3,7 +3,6 @@ package com.minersstudios.msitem.items.register.cosmetics;
 import com.minersstudios.mscore.utils.Badges;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.Renameable;
 import com.minersstudios.msitem.items.Wearable;
@@ -21,7 +20,10 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 public class LeatherHat implements Renameable, Wearable {
     private @NotNull NamespacedKey namespacedKey;
@@ -29,7 +31,7 @@ public class LeatherHat implements Renameable, Wearable {
     private @Nullable List<Map.Entry<Recipe, Boolean>> recipes;
 
     public LeatherHat() {
-        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "leather_hat");
+        this.namespacedKey = new NamespacedKey("msitems", "leather_hat");
         this.itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
         ItemMeta itemMeta = this.itemStack.getItemMeta();
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Кожаная шляпа"));

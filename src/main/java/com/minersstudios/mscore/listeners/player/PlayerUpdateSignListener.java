@@ -2,7 +2,6 @@ package com.minersstudios.mscore.listeners.player;
 
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
-import com.minersstudios.mscore.packet.PacketContainer;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.utils.SignMenu;
@@ -19,17 +18,13 @@ public class PlayerUpdateSignListener extends AbstractMSPacketListener {
 
     @Override
     public void onPacketReceive(@NotNull PacketEvent event) {
-        PacketContainer packetContainer = event.getPacketContainer();
         Player player = event.getPlayer();
+        SignMenu menu = SignMenu.getSignMenu(player);
 
         if (
-                SignMenu.SIGN_MENU_MAP.isEmpty()
-                || !SignMenu.SIGN_MENU_MAP.containsKey(player)
-        ) return;
-
-        SignMenu menu = SignMenu.SIGN_MENU_MAP.remove(player);
-
-        if (packetContainer.getPacket() instanceof ServerboundSignUpdatePacket packet) {
+                menu != null
+                && event.getPacketContainer().getPacket() instanceof ServerboundSignUpdatePacket packet
+        ) {
             if (!menu.getResponse().test(player, packet.getLines())) {
                 this.getPlugin().runTaskLater(() -> menu.open(player), 2L);
             } else {

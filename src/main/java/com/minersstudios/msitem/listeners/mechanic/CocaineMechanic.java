@@ -19,7 +19,7 @@ public class CocaineMechanic extends AbstractMSListener {
 
         if (
                 !(itemStack.getItemMeta() instanceof PotionMeta)
-                || !(MSItemUtils.getCustomItem(itemStack) instanceof Cocaine)
+                || !(MSItemUtils.getCustomItem(itemStack).orElse(null) instanceof Cocaine)
         ) return;
 
         this.getPlugin().runTask(

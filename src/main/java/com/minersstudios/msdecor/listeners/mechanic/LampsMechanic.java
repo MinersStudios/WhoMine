@@ -25,7 +25,7 @@ public class LampsMechanic extends AbstractMSListener {
         if (!(event.getRightClicked() instanceof ArmorStand armorStand)) return;
 
         Block block = armorStand.getLocation().getBlock();
-        CustomDecorData customDecorData = CustomDecorUtils.getCustomDecorDataByEntity(armorStand);
+        CustomDecorData customDecorData = CustomDecorUtils.getCustomDecorDataByEntity(armorStand).orElse(null);
 
         if (
                 (customDecorData instanceof SmallLamp

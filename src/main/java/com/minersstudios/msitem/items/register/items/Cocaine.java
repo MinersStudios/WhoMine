@@ -2,7 +2,6 @@ package com.minersstudios.msitem.items.register.items;
 
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -26,7 +25,7 @@ public class Cocaine implements CustomItem {
     private @Nullable List<Map.Entry<Recipe, Boolean>> recipes;
 
     public Cocaine() {
-        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "cocaine");
+        this.namespacedKey = new NamespacedKey("msitems", "cocaine");
         this.itemStack = new ItemStack(Material.POTION);
         PotionMeta potionMeta = (PotionMeta) this.itemStack.getItemMeta();
         potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 3600, 1), true);

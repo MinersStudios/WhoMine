@@ -29,7 +29,7 @@ public class PlayerMoveListener extends AbstractMSListener {
                 && player.getGameMode() != GameMode.SPECTATOR
                 && !player.isFlying()
                 && !player.isSneaking()
-                && (bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getBlockData()))
+                && (bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getType()))
         ) {
             Location from = event.getFrom().clone();
             Location to = event.getTo().clone();

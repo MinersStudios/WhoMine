@@ -36,7 +36,7 @@ public class TrashcanMechanic extends AbstractMSListener {
         if (
                 MSDecorUtils.isCustomDecorMaterial(clickedBlock.getType())
                 && (!itemInMainHand.getType().isBlock() || itemInMainHand.getType() == Material.AIR)
-                && CustomDecorUtils.getCustomDecorDataByLocation(location) instanceof IronTrashcan
+                && CustomDecorUtils.getCustomDecorDataByLocation(location).orElse(null) instanceof IronTrashcan
         ) {
             event.setCancelled(true);
             player.swingMainHand();

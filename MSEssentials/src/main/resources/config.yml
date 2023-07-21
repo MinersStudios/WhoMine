@@ -14,8 +14,8 @@ resource-pack:
   user: minersstudios
   repo: mstextures
   full:
-    file-name: full-msTextures-%s.zip
+    file-name: FULL-MSTextures-%s.zip
     hash:
   lite:
-    file-name: lite-msTextures-%s.zip
+    file-name: LITE-MSTextures-%s.zip
     hash:

@@ -28,7 +28,7 @@ public class BlockPlaceListener extends AbstractMSListener {
             event.setCancelled(true);
         }
 
-        if (BlockUtils.isWoodenSound(block.getBlockData())) {
+        if (BlockUtils.isWoodenSound(block.getType())) {
             CustomBlockData.DEFAULT.getSoundGroup().playPlaceSound(block.getLocation().toCenterLocation());
         }
 

@@ -34,7 +34,7 @@ public class CoolArmchair implements Sittable, Wrenchable {
                 "block.wool.break", 0.75f, 1.0f
         );
         this.hitBox = HitBox.SOLID_FRAME;
-        this.height = 0.65d;
+        this.height = 0.55d;
     }
 
     @Override

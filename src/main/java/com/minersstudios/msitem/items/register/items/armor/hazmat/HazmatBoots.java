@@ -1,8 +1,8 @@
 package com.minersstudios.msitem.items.register.items.armor.hazmat;
 
+import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.DamageableItem;
 import org.bukkit.Color;
@@ -16,6 +16,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -27,7 +28,7 @@ public class HazmatBoots extends DamageableItem implements CustomItem {
 
     public HazmatBoots() {
         super(Material.LEATHER_BOOTS.getMaxDurability(), 140);
-        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "hazmat_boots");
+        this.namespacedKey = new NamespacedKey("msitems", "hazmat_boots");
         this.itemStack = new ItemStack(Material.LEATHER_BOOTS);
         LeatherArmorMeta itemMeta = (LeatherArmorMeta) this.itemStack.getItemMeta();
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Антирадиационные ботинки"));
@@ -52,15 +53,21 @@ public class HazmatBoots extends DamageableItem implements CustomItem {
 
     @Override
     public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        ItemStack textile = MSItemUtils.getCustomItemItemStack("anti_radiation_textile");
-        ItemStack plumbumIngot = MSItemUtils.getCustomItemItemStack("plumbum_ingot");
+        var textile = MSItemUtils.getCustomItemItemStack("anti_radiation_textile");
+        var plumbumIngot = MSItemUtils.getCustomItemItemStack("plumbum_ingot");
+
+        if (textile.isEmpty() || plumbumIngot.isEmpty()) {
+            MSLogger.warning("Can't find custom item with key: anti_radiation_textile or plumbum_ingot");
+            return this.recipes = Collections.emptyList();
+        }
+
         ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
                 .shape(
                         "T T",
                         "P P"
                 )
-                .setIngredient('T', textile)
-                .setIngredient('P', plumbumIngot);
+                .setIngredient('T', textile.get())
+                .setIngredient('P', plumbumIngot.get());
         return this.recipes = List.of(Map.entry(shapedRecipe, true));
     }
 

@@ -1,18 +1,25 @@
 package com.minersstudios.mscore.utils;
 
 import com.google.common.collect.Sets;
+import net.minecraft.world.level.block.SoundType;
 import org.bukkit.Material;
 import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.v1_20_R1.CraftSoundGroup;
 import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * Utility class for blocks
+ */
 public final class BlockUtils {
     public static final Set<Material> REPLACE = Sets.newHashSet(
             //<editor-fold desc="Replace materials">
@@ -41,7 +48,15 @@ public final class BlockUtils {
             //</editor-fold>
     );
 
-    public static final SoundGroup WOOD_SOUND_GROUP = Material.OAK_FENCE.createBlockData().getSoundGroup();
+    public static Set<Material> WOOD_SOUND_MATERIAL_SET;
+
+    static {
+        SoundGroup woodSoundGroup = CraftSoundGroup.getSoundGroup(SoundType.WOOD);
+        WOOD_SOUND_MATERIAL_SET =
+                Arrays.stream(Material.values())
+                .filter(material -> material.isBlock() && material.createBlockData().getSoundGroup() == woodSoundGroup)
+                .collect(Collectors.toUnmodifiableSet());
+    }
 
     @Contract(value = " -> fail")
     private BlockUtils() {
@@ -67,7 +82,8 @@ public final class BlockUtils {
     }
 
     /**
-     * @param material Material that will be used to get the {@link BlockData}
+     * @param material Material that will be used
+     *                 to get the {@link BlockData}
      * @return {@link BlockData} from {@link Material}
      */
     public static @Nullable BlockData getBlockDataByMaterial(@NotNull Material material) {
@@ -79,11 +95,11 @@ public final class BlockUtils {
     }
 
     /**
-     * @param blockData Block data from which sounds will be extracted
+     * @param material Material that will be checked
      * @return True if material has wood sound
      */
-    public static boolean isWoodenSound(@NotNull BlockData blockData) {
-        return blockData.getMaterial() != Material.NOTE_BLOCK
-                && WOOD_SOUND_GROUP.equals(blockData.getSoundGroup());
+    public static boolean isWoodenSound(@NotNull Material material) {
+        return material != Material.NOTE_BLOCK
+                && WOOD_SOUND_MATERIAL_SET.contains(material);
     }
 }

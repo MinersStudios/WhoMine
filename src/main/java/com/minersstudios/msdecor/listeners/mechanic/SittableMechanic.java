@@ -54,7 +54,7 @@ public class SittableMechanic extends AbstractMSListener {
                 && event.getHand() == EquipmentSlot.HAND
                 && gameMode != GameMode.SPECTATOR
                 && !clickedBlock.getRelative(BlockFace.UP).getType().isSolid()
-                && CustomDecorUtils.getCustomDecorDataByLocation(clickedBlock.getLocation()) instanceof Sittable sittable
+                && CustomDecorUtils.getCustomDecorDataByLocation(clickedBlock.getLocation()).orElse(null) instanceof Sittable sittable
         ) {
             event.setCancelled(true);
             Location sitLocation = clickedBlock.getLocation().clone().add(0.5d, sittable.getHeight(), 0.5d);

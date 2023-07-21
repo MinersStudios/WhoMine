@@ -1,9 +1,9 @@
 package com.minersstudios.msitem.items.register.items;
 
+import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSBlockUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -25,7 +25,7 @@ public class RawPlumbum implements CustomItem {
     private @Nullable List<Map.Entry<Recipe, Boolean>> recipes;
 
     public RawPlumbum() {
-        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "raw_plumbum");
+        this.namespacedKey = new NamespacedKey("msitems", "raw_plumbum");
         this.itemStack = new ItemStack(Material.PAPER);
         ItemMeta itemMeta = this.itemStack.getItemMeta();
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Рудной свинец"));
@@ -47,10 +47,18 @@ public class RawPlumbum implements CustomItem {
                         " I "
                 ).setIngredient('I', Material.RAW_IRON)
                 .setIngredient('B', Material.WATER_BUCKET);
-        ItemStack rawPlumbumBlock = MSBlockUtils.getCustomBlockItem("raw_plumbum_block");
-        ShapedRecipe blockShapedRecipe = new ShapedRecipe(new NamespacedKey(MSItem.getInstance(), "raw_plumbum_from_block"), this.itemStack.clone().add(8))
+        var rawPlumbumBlock = MSBlockUtils.getCustomBlockItem("raw_plumbum_block");
+
+        if (rawPlumbumBlock.isEmpty()) {
+            MSLogger.warning("Can't find custom block with key: raw_plumbum_block");
+            return this.recipes = List.of(
+                    Map.entry(shapedRecipe, true)
+            );
+        }
+
+        ShapedRecipe blockShapedRecipe = new ShapedRecipe(new NamespacedKey("msitems", "raw_plumbum_from_block"), this.itemStack.clone().add(8))
                 .shape("I")
-                .setIngredient('I', new RecipeChoice.ExactChoice(rawPlumbumBlock));
+                .setIngredient('I', new RecipeChoice.ExactChoice(rawPlumbumBlock.get()));
         return this.recipes = List.of(
                 Map.entry(shapedRecipe, true),
                 Map.entry(blockShapedRecipe, true)

@@ -16,7 +16,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@SuppressWarnings({"unused", "UnusedReturnValue"})
+/**
+ * Utility class for {@link ItemStack} and {@link ItemMeta}
+ */
 public final class ItemUtils {
 
     @Contract(value = " -> fail")
@@ -27,7 +29,8 @@ public final class ItemUtils {
     /**
      * @param first  First {@link ItemStack}
      * @param second Second {@link ItemStack}
-     * @return True if the CustomModelData and {@link Material} of the two items are the same
+     * @return True if the CustomModelData and {@link Material}
+     *         of the two items are the same
      */
     @Contract("null, null -> false")
     public static boolean isSimilarItemStacks(
@@ -49,11 +52,11 @@ public final class ItemUtils {
     }
 
     /**
-     * @param list List of items
-     * @param item Item that will be checked for its presence in the list
+     * @param list List of items that will be checked
+     * @param item Item that will be checked
+     *             for its presence in the list
      * @return True if the list contains the item
-     * <br>
-     * Uses the {@link #isSimilarItemStacks(ItemStack, ItemStack)} method for this
+     * @see #isSimilarItemStacks(ItemStack, ItemStack)
      */
     @Contract("_, null -> false")
     public static boolean isListContainsItem(
@@ -71,8 +74,10 @@ public final class ItemUtils {
      * Deals one point of damage to the specified item
      *
      * @param holder Player who is holding the item
-     * @param item   The item
-     * @return False if the {@link ItemMeta} of the item is not an instance of {@link Damageable}
+     * @param item   The item to damage
+     * @return False if the {@link ItemMeta} of the item
+     *         is not an instance of {@link Damageable}
+     * @see #damageItem(Player, ItemStack, int)
      */
     @Contract("_, null -> false")
     public static boolean damageItem(
@@ -86,9 +91,11 @@ public final class ItemUtils {
      * Damages the specified item with specified damage
      *
      * @param holder         Player who is holding the item
-     * @param item           The item
+     * @param item           The item to damage
      * @param originalDamage Damage you want to inflict on the item
-     * @return False if the {@link ItemMeta} of the item is not an instance of {@link Damageable}
+     * @return False if the {@link ItemMeta} of the item
+     *         is not an instance of {@link Damageable}
+     * @see #damageItem(Player, EquipmentSlot, ItemStack, int)
      */
     @Contract("_, null, _ -> false")
     public static boolean damageItem(
@@ -103,10 +110,12 @@ public final class ItemUtils {
      * Damages the specified item with specified damage
      *
      * @param holder         Player who is holding the item
-     * @param slot           Slot where the player is holding the item (used for item break effect)
-     * @param item           The item
+     * @param slot           Slot where the player is holding the item
+     *                       (used for item break effect)
+     * @param item           The item to damage
      * @param originalDamage Damage you want to inflict on the item
-     * @return False if the {@link ItemMeta} of the item is not an instance of {@link Damageable}
+     * @return False if the {@link ItemMeta} of the item
+     *         is not an instance of {@link Damageable}
      */
     @Contract("_, _, null, _ -> false")
     public static boolean damageItem(

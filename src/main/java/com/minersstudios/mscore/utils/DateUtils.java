@@ -22,15 +22,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import static com.minersstudios.mscore.MSCore.getConfiguration;
 
 public final class DateUtils {
-    public static final String CHRONO_REGEX = "\\d+[smhdMy]";
-
     private static final ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
     private static final String DEFAULT_TIMEZONE = DEFAULT_ZONE_ID.toString();
     private static final Map<InetAddress, String> TIMEZONE_CACHE = new ConcurrentHashMap<>();
+
+    public static final String CHRONO_REGEX = "\\d+[smhdMy]";
+    public static final Pattern CHRONO_PATTERN = Pattern.compile(CHRONO_REGEX);
 
     @Contract(value = " -> fail")
     private DateUtils() {
@@ -38,33 +40,12 @@ public final class DateUtils {
     }
 
     /**
-     * Gets date from string
-     *
-     * @param date    Date to be converted
-     * @param address Address
-     * @return String date format
-     */
-    public static @NotNull String getDate(
-            @NotNull Instant date,
-            @Nullable InetAddress address
-    ) {
-        if (address == null) {
-            return date.atZone(DEFAULT_ZONE_ID).format(getConfiguration().timeFormatter);
-        }
-
-        String timeZone = getTimezone(address);
-        return date.atZone(
-                ZoneId.of(timeZone.equalsIgnoreCase("Europe/Kyiv")
-                        ? "Europe/Kiev"
-                        : timeZone
-                )).format(getConfiguration().timeFormatter);
-    }
-
-    /**
      * Gets timezone from ip
      *
-     * @param ip IP address
-     * @return Timezone from ip
+     * @param ip IP address to get timezone from
+     * @return Timezone from ip or default timezone
+     *         if ip is null or failed to get timezone
+     *         from ip
      */
     public static @NotNull String getTimezone(@NotNull InetAddress ip) {
         String cachedTimezone = TIMEZONE_CACHE.get(ip);
@@ -91,17 +72,43 @@ public final class DateUtils {
 
             return timezone;
         } catch (IOException e) {
-            MSLogger.log(Level.WARNING, e.getMessage(), e);
+            MSLogger.log(Level.WARNING, "Failed to get timezone from ip " + ip.getHostAddress(), e);
             return DEFAULT_TIMEZONE;
         }
     }
 
     /**
-     * Gets date with player time zone
+     * Gets date from string
+     *
+     * @param date    Date to be converted
+     * @param address Address to get time zone from
+     * @return String date format with address time zone
+     */
+    public static @NotNull String getDate(
+            @NotNull Instant date,
+            @Nullable InetAddress address
+    ) {
+        if (address == null) {
+            return date.atZone(DEFAULT_ZONE_ID).format(getConfiguration().timeFormatter);
+        }
+
+        String timeZone = getTimezone(address);
+        return date.atZone(
+                ZoneId.of(timeZone.equalsIgnoreCase("Europe/Kyiv")
+                        ? "Europe/Kiev"
+                        : timeZone
+                )).format(getConfiguration().timeFormatter);
+    }
+
+    /**
+     * Gets date with sender time zone
      *
      * @param date   Date to be converted
-     * @param sender Command sender
-     * @return string date format
+     * @param sender Command sender to get time zone from
+     * @return String date format with sender time zone
+     *         or default time zone if sender is null
+     *         or sender is not a player
+     * @see #getDate(Instant, InetAddress)
      */
     public static @NotNull String getSenderDate(
             @NotNull Instant date,
@@ -125,7 +132,8 @@ public final class DateUtils {
      * Used for command tab completer
      *
      * @param input Number of time
-     * @return Time suggestions
+     * @return Time suggestions or empty list
+     *         if the input does not match the regex
      */
     public static @NotNull List<String> getTimeSuggestions(@NotNull String input) {
         var suggestions = new ArrayList<String>();
@@ -144,11 +152,29 @@ public final class DateUtils {
      * <br>
      * Regex : \d+[smhdMy]
      *
-     * @param string         Time
+     * @param string Time string
+     * @return Date with time added
+     * @throws NumberFormatException If the string does not contain a parsable long
+     * @throws DateTimeException     If the chrono unit value is too big and the
+     *                               addition cannot be made
+     * @throws ArithmeticException   If numeric overflow occurs
+     * @see #getDateFromString(String, boolean)
+     */
+    public static @Nullable Instant getDateFromString(@NotNull String string) throws NumberFormatException, DateTimeException, ArithmeticException {
+        return getDateFromString(string, true);
+    }
+
+    /**
+     * Gets a date with time added
+     * <br>
+     * Regex : \d+[smhdMy]
+     *
+     * @param string         Time string
      * @param throwException If true, an exception will be thrown
      * @return Date with time added
      * @throws NumberFormatException If the string does not contain a parsable long
-     * @throws DateTimeException     If the chrono unit value is too big and the addition cannot be made
+     * @throws DateTimeException     If the chrono unit value is too big and the
+     *                               addition cannot be made
      * @throws ArithmeticException   If numeric overflow occurs
      */
     public static @Nullable Instant getDateFromString(
@@ -177,26 +203,11 @@ public final class DateUtils {
     }
 
     /**
-     * Gets a date with time added
-     * <br>
-     * Regex : \d+[smhdMy]
-     *
-     * @param string Time
-     * @return Date with time added
-     * @throws NumberFormatException If the string does not contain a parsable long
-     * @throws DateTimeException     If the chrono unit value is too big and the addition cannot be made
-     * @throws ArithmeticException   If numeric overflow occurs
-     */
-    public static @Nullable Instant getDateFromString(@NotNull String string) throws NumberFormatException, DateTimeException, ArithmeticException {
-        return getDateFromString(string, true);
-    }
-
-    /**
      * @param string String to be checked
      * @return True if the string matches the {@link #CHRONO_REGEX} regex
      */
     @Contract(value = "null -> false", pure = true)
     public static boolean matchesChrono(@Nullable String string) {
-        return string != null && string.matches(CHRONO_REGEX);
+        return string != null && CHRONO_PATTERN.matcher(string).matches();
     }
 }

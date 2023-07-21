@@ -36,7 +36,7 @@ public class BrazierMechanic extends AbstractMSListener {
         if (
                 (heldItem.getType() != Material.FLINT_AND_STEEL
                 && !heldItem.getType().toString().endsWith("_SHOVEL"))
-                || !(MSDecorUtils.getCustomDecorData(helmet) instanceof Brazier brazier)
+                || !(MSDecorUtils.getCustomDecorData(helmet).orElse(null) instanceof Brazier brazier)
                 || !(block.getBlockData() instanceof Levelled levelled)
                 || !(heldItem.getItemMeta() instanceof Damageable itemMeta)
         ) return;

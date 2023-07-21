@@ -443,7 +443,7 @@ public class CustomBlockData implements Cloneable {
                 try {
                     itemStack = new ItemStack(Material.valueOf(itemStr));
                 } catch (IllegalArgumentException ignored) {
-                    itemStack = MSCustomUtils.getItemStack(itemStr);
+                    itemStack = MSCustomUtils.getItemStack(itemStr).orElse(null);
                 }
 
                 ingredientMap.put(key.toCharArray()[0], itemStack);

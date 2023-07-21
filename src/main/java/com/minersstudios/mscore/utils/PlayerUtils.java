@@ -3,7 +3,6 @@ package com.minersstudios.mscore.utils;
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.google.common.base.Charsets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -15,14 +14,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
@@ -33,20 +29,14 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Utility class for {@link Player}
+ */
 public final class PlayerUtils {
-    public static final @NotNull String UUID_URL = "https://api.mojang.com/users/profiles/minecraft/";
-
-    private static final Map<String, UUID> UUID_CACHE = new HashMap<>();
 
     @Contract(value = " -> fail")
     private PlayerUtils() {
@@ -56,7 +46,8 @@ public final class PlayerUtils {
     /**
      * Sets player to a seated position underneath him
      *
-     * @param player player
+     * @param player Player that will sit
+     * @see #setSitting(Player, Location, Component)
      */
     public static void setSitting(@NotNull Player player) {
         setSitting(player, player.getLocation(), null);
@@ -65,8 +56,9 @@ public final class PlayerUtils {
     /**
      * Sets player to a seated position in specified location
      *
-     * @param player   Player
+     * @param player   Player that will sit
      * @param location Location where the player will sit
+     * @see #setSitting(Player, Location, Component)
      */
     public static void setSitting(
             @NotNull Player player,
@@ -76,11 +68,14 @@ public final class PlayerUtils {
     }
 
     /**
-     * Sets player to a seated position in specified location with message
+     * Sets player to a seated position in specified location
+     * with message
      *
-     * @param player   Player
+     * @param player   Player that will sit
      * @param location Location where the player will sit
-     * @param message  Message
+     * @param message  Message that will be sent to the players
+     *                 around the player who is sitting
+     * @see PlayerInfo#setSitting(Location, Component)
      */
     public static void setSitting(
             @NotNull Player player,
@@ -93,7 +88,9 @@ public final class PlayerUtils {
     /**
      * Unsets the sitting position of the player
      *
-     * @param player  Player who is currently sitting
+     * @param player Player who is currently sitting
+     *               and will be unset
+     * @see #unsetSitting(Player, Component)
      */
     public static void unsetSitting(@NotNull Player player) {
         unsetSitting(player, null);
@@ -103,7 +100,10 @@ public final class PlayerUtils {
      * Unsets the sitting position of the player with message
      *
      * @param player  Player who is currently sitting
-     * @param message Message
+     *                and will be unset
+     * @param message Message that will be sent to the players
+     *                around the player who is sitting
+     * @see PlayerInfo#unsetSitting(Component)
      */
     public static void unsetSitting(
             @NotNull Player player,
@@ -113,6 +113,13 @@ public final class PlayerUtils {
     }
 
     /**
+     * Loads the players current location, health, inventory, motion, and
+     * other information from the [uuid].dat file, in the
+     * [level-name]/playerdata/ folder.
+     * <p>
+     * Note: This will overwrite the players current inventory, health,
+     * motion, etc., with the state from the saved dat file.
+     *
      * @param offlinePlayer Offline player whose data will be loaded
      * @return Online player from offline player
      */
@@ -125,11 +132,8 @@ public final class PlayerUtils {
                 ? offlinePlayer.getName()
                 : offlinePlayer.getUniqueId().toString()
         );
-        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        ServerLevel worldServer = server.getLevel(Level.OVERWORLD);
-
-        if (worldServer == null) return null;
-
+        MinecraftServer server = MinecraftServer.getServer();
+        ServerLevel worldServer = server.overworld();
         Player online = new ServerPlayer(server, worldServer, profile).getBukkitEntity();
 
         online.loadData();
@@ -229,92 +233,34 @@ public final class PlayerUtils {
     }
 
     /**
-     * Gets UUID from player nickname
+     * Creates an offline player based on their UUID and name
      *
-     * @param nickname Player nickname
-     * @return Player UUID
-     */
-    public static @Nullable UUID getUUID(@NotNull String nickname) {
-        UUID uuid = UUID_CACHE.get(nickname);
-
-        if (uuid != null) return uuid;
-
-        if (Bukkit.getOnlineMode()) {
-            try {
-                URL url = new URL(UUID_URL + nickname);
-                String jsonString = IOUtils.toString(url, Charset.defaultCharset());
-
-                if (jsonString.isEmpty()) return null;
-
-                JSONObject jsonObject = (JSONObject) JSONValue.parseWithException(jsonString);
-                String uuidString = jsonObject.get("id").toString();
-                uuid = UUID.fromString(
-                        uuidString.replaceFirst(
-                                "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
-                                "$1-$2-$3-$4-$5"
-                        )
-                );
-            } catch (Exception ignored) {
-                return null;
-            }
-        } else {
-            byte[] bytes = ("OfflinePlayer:" + nickname).getBytes(Charsets.UTF_8);
-            uuid = UUID.nameUUIDFromBytes(bytes);
-        }
-
-        UUID_CACHE.put(nickname, uuid);
-        return uuid;
-    }
-
-    /**
-     * Gets offline player by nickname
-     *
-     * @param nickname Player nickname
-     * @return Offline player
-     */
-    public static @Nullable OfflinePlayer getOfflinePlayerByNick(@NotNull String nickname) {
-        UUID uuid = getUUID(nickname);
-        return uuid != null
-                ? getOfflinePlayer(uuid, nickname)
-                : null;
-    }
-
-    /**
-     * Gets offline player by uuid and nickname
-     *
-     * @param uuid Player unique id
-     * @param name Player nickname
-     * @return Offline player
+     * @param uuid The UUID of the player
+     * @param name The name of the player
+     * @return The offline player corresponding to the UUID and name
      */
     public static @NotNull OfflinePlayer getOfflinePlayer(
             @NotNull UUID uuid,
             @NotNull String name
     ) {
-        Server server = Bukkit.getServer();
-        OfflinePlayer offlinePlayer = server.getOfflinePlayer(uuid);
+        CraftServer craftServer = (CraftServer) Bukkit.getServer();
+        GameProfile gameProfile = new GameProfile(uuid, name);
 
-        if (offlinePlayer.getName() == null) {
-            CraftServer craftServer = (CraftServer) server;
-            GameProfile gameProfile = new GameProfile(uuid, name);
-
-            return craftServer.getOfflinePlayer(gameProfile);
-        }
-
-        return offlinePlayer;
+        return craftServer.getOfflinePlayer(gameProfile);
     }
 
     /**
-     * Gets player profile by uuid and nickname
+     * Creates a player profile based on the provided UUID and nickname
      *
-     * @param uuid     Player unique id
-     * @param nickname Player nickname
-     * @return Player profile
+     * @param uuid     The UUID of the player
+     * @param nickname The nickname of the player
+     * @return New player profile object
      * @throws IllegalArgumentException If uuid and nickname are both null or empty
      */
     @Contract("_, _ -> new")
     public static @NotNull PlayerProfile craftProfile(
-            @NotNull UUID uuid,
-            @NotNull String nickname
+            @Nullable UUID uuid,
+            @Nullable String nickname
     ) throws IllegalArgumentException {
         return new CraftPlayerProfile(uuid, nickname);
     }
@@ -343,14 +289,17 @@ public final class PlayerUtils {
     ) {
         PluginManager pluginManager = serverPlayer.getBukkitEntity().getServer().getPluginManager();
         ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
+        ChunkMap.TrackedEntity trackedEntity = tracker.entityMap.get(serverPlayer.getId());
         ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(serverPlayer));
-        ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
         Event event = new PlayerShowEntityEvent(forWho.getBukkitEntity(), serverPlayer.getBukkitEntity());
 
         forWho.connection.send(packet);
 
-        if (entry != null && !entry.seenBy.contains(forWho.connection)) {
-            entry.updatePlayer(forWho);
+        if (
+                trackedEntity != null
+                && !trackedEntity.seenBy.contains(forWho.connection)
+        ) {
+            trackedEntity.updatePlayer(forWho);
         }
 
         pluginManager.callEvent(event);

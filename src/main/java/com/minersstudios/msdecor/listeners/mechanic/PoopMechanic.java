@@ -1,5 +1,6 @@
 package com.minersstudios.msdecor.listeners.mechanic;
 
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.MSBlockUtils;
 import com.minersstudios.mscore.utils.MSDecorUtils;
@@ -10,7 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -49,9 +49,16 @@ public class PoopMechanic extends AbstractMSListener {
                 && !player.isSneaking()
                 && clickedBlock.getBlockData() instanceof Levelled levelled
                 && (!itemInHand.getType().isBlock() || itemInHand.getType() == Material.AIR)
-                && MSDecorUtils.getCustomDecorData(itemInHand) instanceof Poop
                 && levelled.getLevel() < levelled.getMaximumLevel()
         ) {
+
+            var optional = MSDecorUtils.getCustomDecorData(itemInHand);
+
+            if (
+                    optional.isEmpty()
+                    || !(optional.get() instanceof Poop)
+            ) return;
+
             levelled.setLevel(levelled.getLevel() + 1);
             clickedBlock.setBlockData(levelled);
             player.swingHand(hand);

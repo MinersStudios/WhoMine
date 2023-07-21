@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials;
 
+import com.minersstudios.mscore.GlobalCache;
 import com.minersstudios.mscore.config.MSConfig;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
@@ -72,11 +73,11 @@ public final class Config extends MSConfig {
         this.discordGlobalChannelId = this.yaml.getString("chat.global.discord-channel-id");
         this.discordLocalChannelId = this.yaml.getString("chat.local.discord-channel-id");
         this.version = this.yaml.getString("resource-pack.version");
-        this.user = this.yaml.getString("resource-pack.user");
-        this.repo = this.yaml.getString("resource-pack.repo");
-        this.fullFileName = this.yaml.getString("resource-pack.full.file-name");
+        this.user = this.yaml.getString("resource-pack.user", "MinersStudios");
+        this.repo = this.yaml.getString("resource-pack.repo", "MSTextures");
+        this.fullFileName = this.yaml.getString("resource-pack.full.file-name", "FULL-MSTextures-%s.zip");
         this.fullHash = this.yaml.getString("resource-pack.full.hash");
-        this.liteFileName = this.yaml.getString("resource-pack.lite.file-name");
+        this.liteFileName = this.yaml.getString("resource-pack.lite.file-name", "LITE-MSTextures-%s.zip");
         this.liteHash = this.yaml.getString("resource-pack.lite.hash");
         this.mineSkinApiKey = this.yaml.getString("skin.mine-skin-api-key");
 
@@ -120,7 +121,7 @@ public final class Config extends MSConfig {
         cache.bukkitTasks.add(this.plugin.runTaskTimer(new MainAnomalyActionsTask(), 0L, this.anomalyCheckRate));
         cache.bukkitTasks.add(this.plugin.runTaskTimer(new ParticleTask(), 0L, this.anomalyParticlesCheckRate));
 
-        com.minersstudios.mscore.Cache globalCache = MSPlugin.getGlobalCache();
+        GlobalCache globalCache = MSPlugin.getGlobalCache();
 
         var customBlockRecipes = globalCache.customBlockRecipes;
         var customDecorRecipes = globalCache.customDecorRecipes;

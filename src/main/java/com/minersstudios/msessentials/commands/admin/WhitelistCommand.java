@@ -3,7 +3,6 @@ package com.minersstudios.msessentials.commands.admin;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.utils.PlayerUtils;
 import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -14,6 +13,7 @@ import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
@@ -58,8 +58,10 @@ public class WhitelistCommand implements MSCommandExecutor {
     ) {
         if (args.length == 0) return false;
 
+        Server server = sender.getServer();
+
         if (args[0].equalsIgnoreCase("reload")) {
-            sender.getServer().reloadWhitelist();
+            server.reloadWhitelist();
             MSLogger.fine(sender, Component.translatable("ms.command.white_list.reload"));
             return true;
         }
@@ -108,13 +110,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             return false;
         }
         if (args.length > 1 && args[1].length() > 2) {
-            OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[1]);
-
-            if (offlinePlayer == null) {
-                MSLogger.severe(sender, Component.translatable("ms.error.player_not_found"));
-                return true;
-            }
-
+            OfflinePlayer offlinePlayer = server.getOfflinePlayer(args[1]);
             PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), args[1]);
 
             if (args[0].equalsIgnoreCase("add")) {

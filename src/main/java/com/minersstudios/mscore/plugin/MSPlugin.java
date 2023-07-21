@@ -2,7 +2,7 @@ package com.minersstudios.mscore.plugin;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
-import com.minersstudios.mscore.Cache;
+import com.minersstudios.mscore.GlobalCache;
 import com.minersstudios.mscore.command.Commodore;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
@@ -12,6 +12,8 @@ import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.packet.PacketEvent;
+import com.minersstudios.mscore.packet.PacketRegistry;
+import com.minersstudios.mscore.utils.BlockUtils;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import org.bukkit.Server;
@@ -46,7 +48,6 @@ import java.util.logging.Level;
  * @see #enable()
  * @see #disable()
  */
-@SuppressWarnings("EmptyMethod")
 public abstract class MSPlugin extends JavaPlugin {
     private final File pluginFolder = new File("config/minersstudios/" + this.getName() + "/");
     private final File configFile = new File(this.pluginFolder, "config.yml");
@@ -58,7 +59,7 @@ public abstract class MSPlugin extends JavaPlugin {
     private FileConfiguration newConfig;
     private boolean loadedCustoms;
 
-    private static Cache globalCache;
+    private static final GlobalCache GLOBAL_CACHE = new GlobalCache();
 
     private static final Field DATA_FOLDER_FIELD;
     private static final Constructor<PluginCommand> COMMAND_CONSTRUCTOR;
@@ -75,6 +76,9 @@ public abstract class MSPlugin extends JavaPlugin {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Could not find command constructor", e);
         }
+
+        initClass(PacketRegistry.class);
+        initClass(BlockUtils.class);
     }
 
     /**
@@ -93,8 +97,6 @@ public abstract class MSPlugin extends JavaPlugin {
      */
     @Override
     public final void onLoad() {
-        globalCache = new Cache();
-
         this.loadClassNames();
         this.loadCommands();
         this.loadListeners();
@@ -255,16 +257,16 @@ public abstract class MSPlugin extends JavaPlugin {
     /**
      * @return The cache of the MSPlugins
      */
-    public static @NotNull Cache getGlobalCache() {
-        return globalCache;
+    public static @NotNull GlobalCache getGlobalCache() {
+        return GLOBAL_CACHE;
     }
 
     /**
      * Used in :
      * <ul>
-     *     <li>msBlock({@link Cache#customBlockMap})</li>
-     *     <li>msDecor({@link Cache#customDecorMap})</li>
-     *     <li>msItem({@link Cache#customItemMap})</li>
+     *     <li>MSBlock({@link GlobalCache#customBlockMap})</li>
+     *     <li>MSDecor({@link GlobalCache#customDecorMap})</li>
+     *     <li>MSItem({@link GlobalCache#customItemMap})</li>
      * </ul>
      *
      * @return True if the plugin has loaded the customs to the cache
@@ -387,7 +389,7 @@ public abstract class MSPlugin extends JavaPlugin {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof MSCommandExecutor msCommandExecutor) {
                         this.msCommands.put(msCommand, msCommandExecutor);
                     } else {
-                        MSLogger.warning("Loaded command that is not instance of MSCommandExecutor (" + className + ")");
+                        MSLogger.warning("Annotated class with MSCommand is not instance of MSCommandExecutor (" + className + ")");
                     }
                 }
             } catch (Exception e) {
@@ -427,7 +429,7 @@ public abstract class MSPlugin extends JavaPlugin {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof AbstractMSListener listener) {
                         this.msListeners.add(listener);
                     } else {
-                        MSLogger.warning("Registered listener that is not instance of AbstractMSListener (" + className + ")");
+                        MSLogger.warning("Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")");
                     }
                 }
             } catch (Exception e) {
@@ -466,7 +468,7 @@ public abstract class MSPlugin extends JavaPlugin {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof AbstractMSPacketListener listener) {
                         this.msPacketListeners.add(listener);
                     } else {
-                        MSLogger.warning("Registered packet listener that is not instance of AbstractMSPacketListener (" + className + ")");
+                        MSLogger.warning("Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")");
                     }
                 }
             } catch (Exception e) {
@@ -496,7 +498,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see PacketEvent
      */
     public void callPacketReceiveEvent(@NotNull PacketEvent event) {
-        globalCache.msPacketListeners.stream().parallel()
+        GLOBAL_CACHE.msPacketListeners.stream().parallel()
         .filter(listener -> listener.getWhiteList().contains(event.getPacketContainer().getType()))
         .forEach(listener -> listener.onPacketReceive(event));
     }
@@ -509,7 +511,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see PacketEvent
      */
     public void callPacketSendEvent(@NotNull PacketEvent event) {
-        globalCache.msPacketListeners.stream().parallel()
+        GLOBAL_CACHE.msPacketListeners.stream().parallel()
         .filter(listener -> listener.getWhiteList().contains(event.getPacketContainer().getType()))
         .forEach(listener -> listener.onPacketSend(event));
     }
@@ -809,6 +811,20 @@ public abstract class MSPlugin extends JavaPlugin {
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Initializes the class with the given name
+     *
+     * @param clazz The class to load
+     * @see Class#forName(String)
+     */
+    private static void initClass(@NotNull Class<?> clazz) {
+        try {
+            Class.forName(clazz.getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Could not init class " + clazz.getName(), e);
         }
     }
 }

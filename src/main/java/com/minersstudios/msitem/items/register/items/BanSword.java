@@ -2,7 +2,6 @@ package com.minersstudios.msitem.items.register.items;
 
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -24,7 +23,7 @@ public class BanSword implements CustomItem {
     private @NotNull ItemStack itemStack;
 
     public BanSword() {
-        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "ban_sword");
+        this.namespacedKey = new NamespacedKey("msitems", "ban_sword");
         this.itemStack = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta itemMeta = this.itemStack.getItemMeta();
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Бан-меч"));

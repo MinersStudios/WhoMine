@@ -24,7 +24,7 @@ public class BlockDamageListener extends AbstractMSListener {
         Block block = event.getBlock();
         Location blockLocation = block.getLocation().toCenterLocation();
 
-        if (BlockUtils.isWoodenSound(block.getBlockData())) {
+        if (BlockUtils.isWoodenSound(block.getType())) {
             CustomBlockData.DEFAULT.getSoundGroup().playHitSound(blockLocation);
         }
 

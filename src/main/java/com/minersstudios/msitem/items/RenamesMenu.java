@@ -200,7 +200,7 @@ public class RenamesMenu {
             @NotNull String renameText,
             boolean hasExp
     ) {
-        if (MSItemUtils.getCustomItem(itemStack) instanceof Renameable renameable) {
+        if (MSItemUtils.getCustomItem(itemStack).orElse(null) instanceof Renameable renameable) {
             inventory.setItem(currentRenamedItemSlot, renameable.createRenamedItem(itemStack, renameText));
             if (!hasExp) {
                 inventory.setItem(redCrossSlot, createRedCross());

@@ -13,11 +13,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 import static net.kyori.adventure.text.format.TextDecoration.*;
 
+/**
+ * Utility class for text-related operations
+ */
 public final class ChatUtils {
     /**
      * Default style for components.
@@ -63,12 +65,6 @@ public final class ChatUtils {
             STRIKETHROUGH.withState(false),
             UNDERLINED.withState(false)
     );
-    public static final char COLOR_CHAR = '§';
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-FK-ORX]");
-
-    public static @NotNull String stripColor(@NotNull String input) {
-        return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
-    }
 
     @Contract(value = " -> fail")
     private ChatUtils() {
@@ -154,7 +150,9 @@ public final class ChatUtils {
     }
 
     /**
-     * Deserializes component from legacy string with hex colors and unusual X repeated character hex format enabled
+     * Deserializes component from legacy string with
+     * hex colors and unusual X repeated character hex
+     * format enabled
      *
      * @param text Text to be deserialized
      * @return Deserialized component

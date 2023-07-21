@@ -36,7 +36,7 @@ public class BlockBreakListener extends AbstractMSListener {
         Block bottomBlock = event.getBlock().getRelative(BlockFace.DOWN);
         Location blockLocation = block.getLocation().toCenterLocation();
 
-        if (BlockUtils.isWoodenSound(block.getBlockData())) {
+        if (BlockUtils.isWoodenSound(block.getType())) {
             CustomBlockData.DEFAULT.getSoundGroup().playBreakSound(blockLocation);
         }
 

@@ -12,6 +12,6 @@ public class PlayerQuitListener extends AbstractMSListener {
 
     @EventHandler
     public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
-        ChannelHandler.removePlayer(event.getPlayer());
+        ChannelHandler.uninjectPlayer(event.getPlayer());
     }
 }

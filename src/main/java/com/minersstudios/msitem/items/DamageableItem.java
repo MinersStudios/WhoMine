@@ -1,7 +1,6 @@
 package com.minersstudios.msitem.items;
 
 import com.minersstudios.mscore.utils.ChatUtils;
-import com.minersstudios.msitem.MSItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -16,10 +15,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class DamageableItem {
-    public static final NamespacedKey MAX_DAMAGE_NAMESPACED_KEY = new NamespacedKey(MSItem.getInstance(), "max_damage");
-    public static final NamespacedKey REAL_DAMAGE_NAMESPACED_KEY = new NamespacedKey(MSItem.getInstance(), "real_damage");
+    public static final NamespacedKey MAX_DAMAGE_NAMESPACED_KEY = new NamespacedKey("msitems", "max_damage");
+    public static final NamespacedKey REAL_DAMAGE_NAMESPACED_KEY = new NamespacedKey("msitems", "real_damage");
 
     protected final int defaultDamage;
     protected int maxDamage;

@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public final class CustomDecorUtils {
 
     @Contract(value = " -> fail")
@@ -21,7 +23,7 @@ public final class CustomDecorUtils {
         throw new IllegalStateException("Utility class");
     }
 
-    public static @Nullable CustomDecorData getCustomDecorDataByLocation(@NotNull Location location) {
+    public static @NotNull Optional<CustomDecorData> getCustomDecorDataByLocation(@NotNull Location location) {
         for (var nearbyEntity : location.getWorld().getNearbyEntities(location.clone().add(0.5d, 0.0d, 0.5d), 0.2d, 0.3d, 0.2d)) {
             if (nearbyEntity instanceof ArmorStand armorStand) {
                 return getCustomDecorDataByEntity(armorStand);
@@ -33,31 +35,33 @@ public final class CustomDecorUtils {
                 return getCustomDecorDataByEntity(itemFrame);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    @Contract("null -> null")
-    public static @Nullable CustomDecorData getCustomDecorDataByEntity(@Nullable Entity entity) {
-        if (!MSDecorUtils.isCustomDecorEntity(entity)) return null;
-        if (entity instanceof ArmorStand armorStand) {
-            return MSDecorUtils.getCustomDecorData(armorStand.getEquipment().getHelmet());
-        } else if (entity instanceof ItemFrame itemFrame) {
-            return MSDecorUtils.getCustomDecorData(itemFrame.getItem());
-        }
-        return null;
+    public static @NotNull Optional<CustomDecorData> getCustomDecorDataByEntity(@Nullable Entity entity) {
+        return !MSDecorUtils.isCustomDecorEntity(entity)
+                ? Optional.empty()
+                : entity instanceof ArmorStand armorStand
+                ? MSDecorUtils.getCustomDecorData(armorStand.getEquipment().getHelmet())
+                : entity instanceof ItemFrame itemFrame
+                ? MSDecorUtils.getCustomDecorData(itemFrame.getItem())
+                : Optional.empty();
     }
 
-    @Contract("null, _ -> null")
-    public static @Nullable CustomDecorData getCustomDecorDataWithFace(@Nullable ItemStack itemStack, @Nullable BlockFace blockFace) {
-        CustomDecorData customDecorData = MSDecorUtils.getCustomDecorData(itemStack);
+    public static @NotNull Optional<CustomDecorData> getCustomDecorDataWithFace(
+            @Nullable ItemStack itemStack,
+            @Nullable BlockFace blockFace
+    ) {
+        var customDecorData = MSDecorUtils.getCustomDecorData(itemStack);
 
-        if (customDecorData instanceof FaceableByType faceableByType) {
+        if (customDecorData.orElse(null) instanceof FaceableByType faceableByType) {
             Typed.Type type = faceableByType.getTypeByFace(blockFace);
 
             if (type != null) {
-                return faceableByType.createCustomDecorData(type);
+                return Optional.of(faceableByType.createCustomDecorData(type));
             }
         }
+
         return customDecorData;
     }
 }

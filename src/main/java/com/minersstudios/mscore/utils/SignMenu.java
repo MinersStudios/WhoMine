@@ -1,7 +1,6 @@
 package com.minersstudios.mscore.utils;
 
 import com.google.common.collect.Lists;
-import com.minersstudios.mscore.MSCore;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -18,6 +17,7 @@ import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.HashMap;
@@ -35,20 +35,19 @@ public final class SignMenu {
     private BiPredicate<Player, String[]> response;
     private Location location;
 
-    public static final Map<Player, SignMenu> SIGN_MENU_MAP = new HashMap<>();
+    private static final Map<Player, SignMenu> SIGN_MENU_MAP = new HashMap<>();
 
     private SignMenu(@NotNull List<Component> text) {
         this.text = text;
     }
 
     /**
-     * Creates a new {@link SignMenu} instance with the given text
+     * Creates a new {@link SignMenu} instance with the given text.
+     * The response handler is called when the player clicks the done button.
      * <br>
-     * The response handler is called when the player clicks the done button
-     * <br><br>
-     * Returning true will close the sign editor
+     * Returning true will close the sign editor.
      * <br>
-     * Returning false will keep the sign editor open
+     * Returning false will keep the sign editor open.
      *
      * @param first    The first line of the sign
      * @param second   The second line of the sign
@@ -71,9 +70,41 @@ public final class SignMenu {
     }
 
     /**
-     * Opens the sign for the player
-     * <br>
-     * It creates a fake sign, sends it to the player, and then opens the sign editor
+     * @param player The player who has the sign menu open
+     * @return SignMenu opened by the player,
+     *         or null if the player does not have a SignMenu open
+     */
+    public static @Nullable SignMenu getSignMenu(@NotNull Player player) {
+        return SIGN_MENU_MAP.get(player);
+    }
+
+    /**
+     * @return The text of the sign
+     */
+    public @NotNull @Unmodifiable List<Component> getText() {
+        return List.copyOf(this.text);
+    }
+
+    /**
+     * Uses ProtocolLib to get the response of the sign
+     *
+     * @return The response of the sign
+     */
+    public @NotNull BiPredicate<Player, String[]> getResponse() {
+        return this.response;
+    }
+
+    /**
+     * @return The location of the sign
+     */
+    public @NotNull Location getLocation() {
+        return this.location;
+    }
+
+    /**
+     * Opens the sign for the player. It creates
+     * a fake sign, sends it to the player, and
+     * then opens the sign editor.
      *
      * @param player The player
      */
@@ -102,41 +133,15 @@ public final class SignMenu {
     }
 
     /**
-     * Closes the sign for the player
-     * <br>
-     * It sends a block change packet to the player to reset the sign
+     * Closes the sign for the player. It sends
+     * a block change packet to the player to
+     * reset the sign.
      *
-     * @param player The player
+     * @param player The player to close the sign for
      */
     public void close(@NotNull Player player) {
-        SIGN_MENU_MAP.remove(player);
-        MSCore.getInstance().runTask(() -> {
-            if (player.isOnline()) {
-                player.sendBlockChange(this.location, this.location.getBlock().getBlockData());
-            }
-        });
-    }
-
-    /**
-     * @return The text of the sign
-     */
-    public @NotNull @Unmodifiable List<Component> getText() {
-        return List.copyOf(this.text);
-    }
-
-    /**
-     * Uses ProtocolLib to get the response of the sign
-     *
-     * @return The response of the sign
-     */
-    public @NotNull BiPredicate<Player, String[]> getResponse() {
-        return this.response;
-    }
-
-    /**
-     * @return The location of the sign
-     */
-    public @NotNull Location getLocation() {
-        return this.location;
+        if (SIGN_MENU_MAP.remove(player) != null) {
+            player.sendBlockChange(this.location, this.location.getBlock().getBlockData());
+        }
     }
 }

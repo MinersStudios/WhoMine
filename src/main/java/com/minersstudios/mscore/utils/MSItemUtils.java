@@ -1,21 +1,29 @@
 package com.minersstudios.mscore.utils;
 
+import com.minersstudios.mscore.GlobalCache;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.RenameableItem;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+import java.util.regex.Pattern;
+
+/**
+ * Utility class for {@link CustomItem}
+ */
 public final class MSItemUtils {
-    public static final NamespacedKey CUSTOM_ITEM_TYPE_NAMESPACED_KEY = new NamespacedKey(MSItem.getInstance(), "type");
-    public static final NamespacedKey CUSTOM_ITEM_RENAMEABLE_NAMESPACED_KEY = new NamespacedKey(MSItem.getInstance(), "renameable");
-    public static final String NAMESPACED_KEY_REGEX = "msitem:(\\w+)";
+    public static final NamespacedKey CUSTOM_ITEM_TYPE_NAMESPACED_KEY = new NamespacedKey("msitems", "type");
+    public static final NamespacedKey CUSTOM_ITEM_RENAMEABLE_NAMESPACED_KEY = new NamespacedKey("msitems", "renameable");
+    public static final String NAMESPACED_KEY_REGEX = "(msitems):(\\w+)";
+    public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(value = " -> fail")
     private MSItemUtils() {
@@ -23,8 +31,60 @@ public final class MSItemUtils {
     }
 
     /**
-     * @param itemStack Item
-     * @return True if item is {@link CustomItem}
+     * Gets {@link CustomItem} item stack from key from
+     * {@link GlobalCache#customItemMap} by using
+     * {@link #getCustomItem(String)} method
+     *
+     * @param key {@link CustomItem} key string
+     * @return Optional of {@link ItemStack} object
+     *         or empty optional if not found
+     * @see #getCustomItem(String)
+     * @see CustomItem#getItemStack()
+     */
+    public static @NotNull Optional<ItemStack> getCustomItemItemStack(@Nullable String key) {
+        return getCustomItem(key).map(CustomItem::getItemStack);
+    }
+
+    /**
+     * Gets {@link CustomItem} from {@link ItemStack} from
+     * {@link GlobalCache#customItemMap} by using persistent data
+     * container of item and {@link #getCustomItem(String)}
+     * method
+     *
+     * @param itemStack {@link ItemStack} to be checked
+     * @return Optional of {@link CustomItem} object
+     *         or empty optional if not found
+     * @see #getCustomItem(String)
+     */
+    public static @NotNull Optional<CustomItem> getCustomItem(@Nullable ItemStack itemStack) {
+        if (itemStack == null) return Optional.empty();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) return Optional.empty();
+        String key = itemMeta.getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_NAMESPACED_KEY, PersistentDataType.STRING);
+        return getCustomItem(key);
+    }
+
+    /**
+     * Gets {@link CustomItem} from key from
+     * {@link GlobalCache#customItemMap}
+     *
+     * @param key {@link CustomItem} key string
+     * @return Optional of {@link CustomItem} object
+     *         or empty optional if not found
+     */
+    public static @NotNull Optional<CustomItem> getCustomItem(@Nullable String key) {
+        return key == null
+                ? Optional.empty()
+                : Optional.ofNullable(MSPlugin.getGlobalCache().customItemMap.getByPrimaryKey(key));
+    }
+
+    /**
+     * Checks if item has {@link #CUSTOM_ITEM_TYPE_NAMESPACED_KEY}
+     * in {@link PersistentDataContainer} of item
+     *
+     * @param itemStack Item to be checked
+     * @return True if item is {@link CustomItem} item
+     * @see CustomItem
      */
     @Contract("null -> false")
     public static boolean isCustomItem(@Nullable ItemStack itemStack) {
@@ -34,8 +94,12 @@ public final class MSItemUtils {
     }
 
     /**
-     * @param itemStack Item
-     * @return True if item is {@link RenameableItem}
+     * Checks if item has {@link #CUSTOM_ITEM_RENAMEABLE_NAMESPACED_KEY}
+     * in {@link PersistentDataContainer} of item
+     *
+     * @param itemStack Item to be checked
+     * @return True if item is {@link RenameableItem} item
+     * @see RenameableItem
      */
     @Contract("null -> false")
     public static boolean isRenameableItem(@Nullable ItemStack itemStack) {
@@ -45,52 +109,11 @@ public final class MSItemUtils {
     }
 
     /**
-     * Gets {@link CustomItem} item stack from key
-     *
-     * @param key {@link CustomItem} key string
-     * @return {@link CustomItem} item stack
-     */
-    public static @NotNull ItemStack getCustomItemItemStack(@NotNull String key) throws MSCustomNotFoundException {
-        return getCustomItem(key).getItemStack();
-    }
-
-    /**
-     * Gets {@link CustomItem} from {@link ItemStack}
-     *
-     * @param itemStack {@link ItemStack}
-     * @return {@link CustomItem} object
-     * @throws MSCustomNotFoundException If {@link CustomItem} is not found
-     */
-    @Contract("null -> null")
-    public static @Nullable CustomItem getCustomItem(@Nullable ItemStack itemStack) throws MSCustomNotFoundException {
-        if (itemStack == null) return null;
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta == null) return null;
-        String key = itemMeta.getPersistentDataContainer().get(CUSTOM_ITEM_TYPE_NAMESPACED_KEY, PersistentDataType.STRING);
-        return key == null ? null : getCustomItem(key);
-    }
-
-    /**
-     * Gets {@link CustomItem} from key
-     *
-     * @param key {@link CustomItem} key string
-     * @return {@link CustomItem} object
-     * @throws MSCustomNotFoundException If {@link CustomItem} is not found
-     */
-    public static @NotNull CustomItem getCustomItem(@NotNull String key) throws MSCustomNotFoundException {
-        CustomItem customItem = MSPlugin.getGlobalCache().customItemMap.getByPrimaryKey(key);
-        if (customItem == null) {
-            throw new MSCustomNotFoundException("Custom item is not found : " + key);
-        }
-        return customItem;
-    }
-
-    /**
      * @param string String to be checked
-     * @return True if string matches {@link MSItemUtils#NAMESPACED_KEY_REGEX} regex
+     * @return True if string matches {@link #NAMESPACED_KEY_REGEX} regex
      */
     @Contract(value = "null -> false", pure = true)
     public static boolean matchesNamespacedKey(@Nullable String string) {
-        return string != null && string.matches(NAMESPACED_KEY_REGEX);
+        return string != null && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }
 }

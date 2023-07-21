@@ -1,9 +1,8 @@
 package com.minersstudios.mscore.config;
 
+import com.google.common.base.Joiner;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +36,12 @@ public abstract class MSConfig {
             @NotNull MSPlugin plugin,
             @NotNull File file
     ) throws IllegalArgumentException {
-        Preconditions.checkArgument(file.exists(), "The given file does not exist!");
-
         this.plugin = plugin;
         this.file = file;
         this.yaml = new YamlConfiguration();
+
+        plugin.saveDefaultConfig();
+        plugin.reloadConfig();
     }
 
     /**

@@ -65,7 +65,7 @@ public class PlayerInteractListener extends AbstractMSListener {
                 || gameMode == GameMode.SURVIVAL && clickedBlock.getType() == Material.STRUCTURE_VOID
                 || gameMode == GameMode.CREATIVE)
         ) {
-            CustomDecorData customDecorData = CustomDecorUtils.getCustomDecorDataByLocation(clickedBlock.getLocation());
+            CustomDecorData customDecorData = CustomDecorUtils.getCustomDecorDataByLocation(clickedBlock.getLocation()).orElse(null);
             if (customDecorData == null) return;
             new CustomDecor(clickedBlock, player, customDecorData).breakCustomDecor();
         }
@@ -100,7 +100,7 @@ public class PlayerInteractListener extends AbstractMSListener {
                 ) || clickedBlock.getType() == Material.NOTE_BLOCK)
                 && BlockUtils.REPLACE.contains(clickedBlock.getRelative(blockFace).getType())
         ) {
-            CustomDecorData customDecorData = CustomDecorUtils.getCustomDecorDataWithFace(itemInHand, blockFace);
+            CustomDecorData customDecorData = CustomDecorUtils.getCustomDecorDataWithFace(itemInHand, blockFace).orElse(null);
             if (customDecorData == null) return;
 
             for (var nearbyEntity : player.getWorld().getNearbyEntities(replaceableBlock.getLocation().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {

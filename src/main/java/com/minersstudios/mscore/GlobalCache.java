@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Cache for all custom data
  */
-public final class Cache {
+public final class GlobalCache {
     public final @NotNull DualMap<String, Integer, CustomDecorData> customDecorMap = new HashDualMap<>();
     public final @NotNull List<Recipe> customDecorRecipes = new ArrayList<>();
     public final @NotNull DualMap<String, Integer, CustomBlockData> customBlockMap = new HashDualMap<>();

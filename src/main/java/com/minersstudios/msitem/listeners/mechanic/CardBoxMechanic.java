@@ -1,14 +1,13 @@
 package com.minersstudios.msitem.listeners.mechanic;
 
+import com.google.common.collect.Lists;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.ItemUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
 import com.minersstudios.msitem.items.register.items.cards.CardsBicycle;
-import com.google.common.collect.Lists;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-@SuppressWarnings("UnstableApiUsage")
 @MSListener
 public class CardBoxMechanic extends AbstractMSListener {
 
@@ -28,7 +26,7 @@ public class CardBoxMechanic extends AbstractMSListener {
     public void onInventoryMoveItem(@NotNull InventoryMoveItemEvent event) {
         if (
                 event.getDestination().getType() == InventoryType.SHULKER_BOX
-                && MSItemUtils.getCustomItem(event.getItem()) instanceof CardsBicycle
+                && MSItemUtils.getCustomItem(event.getItem()).orElse(null) instanceof CardsBicycle
         ) {
             event.setCancelled(true);
         }
@@ -38,7 +36,7 @@ public class CardBoxMechanic extends AbstractMSListener {
     public void onInventoryDrag(@NotNull InventoryDragEvent event) {
         if (
                 event.getInventory().getType() == InventoryType.SHULKER_BOX
-                && MSItemUtils.getCustomItem(event.getOldCursor()) instanceof CardsBicycle
+                && MSItemUtils.getCustomItem(event.getOldCursor()).orElse(null) instanceof CardsBicycle
         ) {
             event.setCancelled(true);
         }
@@ -53,10 +51,10 @@ public class CardBoxMechanic extends AbstractMSListener {
         if (
                 (clickedInventory != null
                 && clickedInventory.getType() == InventoryType.SHULKER_BOX
-                && MSItemUtils.getCustomItem(cursorItem) instanceof CardsBicycle)
+                && MSItemUtils.getCustomItem(cursorItem).orElse(null) instanceof CardsBicycle)
                 || (event.isShiftClick()
                 && event.getWhoClicked().getOpenInventory().getType() == InventoryType.SHULKER_BOX
-                && MSItemUtils.getCustomItem(currentItem) instanceof CardsBicycle)
+                && MSItemUtils.getCustomItem(currentItem).orElse(null) instanceof CardsBicycle)
         ) {
             event.setCancelled(true);
         }
@@ -64,12 +62,12 @@ public class CardBoxMechanic extends AbstractMSListener {
         if (cursorItem == null || currentItem == null || !event.isRightClick()) return;
         if (
                 !cursorItem.getType().isAir()
-                && MSItemUtils.getCustomItem(currentItem) instanceof CardsBicycle
+                && MSItemUtils.getCustomItem(currentItem).orElse(null) instanceof CardsBicycle
         ) {
             addCardToCardBox(event, currentItem, cursorItem);
         } else if (
                 !currentItem.getType().isAir()
-                && MSItemUtils.getCustomItem(cursorItem) instanceof CardsBicycle
+                && MSItemUtils.getCustomItem(cursorItem).orElse(null) instanceof CardsBicycle
         ) {
             addCardToCardBox(event, cursorItem, currentItem);
         }
@@ -96,7 +94,6 @@ public class CardBoxMechanic extends AbstractMSListener {
             }
         }
 
-        ((Player) event.getWhoClicked()).updateInventory();
         event.setCancelled(true);
     }
 }

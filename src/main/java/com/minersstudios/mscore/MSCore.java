@@ -27,7 +27,7 @@ public final class MSCore extends MSPlugin {
         config = new Config(this, this.getConfigFile());
 
         config.reload();
-        LanguageFile.loadLanguage(config.languageUrl, config.languageCode);
+        LanguageFile.loadLanguage(config.languageUser, config.languageRepo, config.languageCode);
         this.regPacketListeners();
     }
 
@@ -59,7 +59,8 @@ public final class MSCore extends MSPlugin {
      */
     private void regPacketListeners() {
         ServerConnectionListener connectionListener = MinecraftServer.getServer().getConnection();
-        assert connectionListener != null;
+
+        if (connectionListener == null) return;
 
         for (var connection : connectionListener.getConnections()) {
             ChannelPipeline pipeline = connection.channel.pipeline();

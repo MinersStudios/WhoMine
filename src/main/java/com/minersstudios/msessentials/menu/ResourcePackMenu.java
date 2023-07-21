@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.menu;
 
+import com.minersstudios.mscore.config.LanguageFile;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.SingleInventory;
@@ -8,7 +9,6 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerSettings;
 import com.minersstudios.msessentials.player.ResourcePack;
-import com.minersstudios.mscore.config.LanguageFile;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;

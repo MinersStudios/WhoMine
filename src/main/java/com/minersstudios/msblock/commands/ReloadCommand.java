@@ -1,7 +1,7 @@
 package com.minersstudios.msblock.commands;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.mscore.Cache;
+import com.minersstudios.mscore.GlobalCache;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import net.kyori.adventure.text.Component;
@@ -31,7 +31,7 @@ public class ReloadCommand {
             }
         }
 
-        Cache cache = MSPlugin.getGlobalCache();
+        GlobalCache cache = MSPlugin.getGlobalCache();
         cache.customBlockMap.clear();
         cache.cachedNoteBlockData.clear();
         cache.customBlockRecipes.clear();

@@ -2,7 +2,6 @@ package com.minersstudios.msitem.items.register.items;
 
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.DamageableItem;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,7 +25,7 @@ public class Wrench extends DamageableItem implements CustomItem {
 
     public Wrench() {
         super(Material.IRON_SHOVEL.getMaxDurability(), 300);
-        this.namespacedKey = new NamespacedKey(MSItem.getInstance(), "wrench");
+        this.namespacedKey = new NamespacedKey("msitems", "wrench");
         this.itemStack = new ItemStack(Material.IRON_SHOVEL);
         ItemMeta itemMeta = this.itemStack.getItemMeta();
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Гаечный ключ"));

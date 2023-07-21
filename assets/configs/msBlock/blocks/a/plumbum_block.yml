@@ -18,7 +18,7 @@ craft:
     - "PPP"
     - "PPP"
   material-list:
-    P: "msitem:plumbum_ingot"
+    P: "msitems:plumbum_ingot"
 placing:
   normal:
     instrument: BIT
