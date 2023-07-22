@@ -406,18 +406,10 @@ public class PlayerInfo {
      * @param location The location to set as the last leave location
      */
     public void setLastLeaveLocation(@Nullable Location location) {
-        Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
-        Preconditions.checkArgument(!WorldDark.isInWorldDark(location), "Cannot set last leave location in WorldDark");
-
-        this.playerFile.setLastLeaveLocation(
-                player.isDead()
-                ? player.getBedSpawnLocation() != null
-                ? player.getBedSpawnLocation()
-                : MSEssentials.getOverworld().getSpawnLocation()
-                : location
-        );
-        this.playerFile.save();
+        if (!WorldDark.isInWorldDark(location)) {
+            this.playerFile.setLastLeaveLocation(location);
+            this.playerFile.save();
+        }
     }
 
     /**
@@ -455,7 +447,7 @@ public class PlayerInfo {
             @Nullable Component message
     ) {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+        if (player == null) return;
 
         if (
                 (player.getVehicle() != null
@@ -498,7 +490,7 @@ public class PlayerInfo {
      */
     public void unsetSitting(@Nullable Component message) {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+        if (player == null) return;
 
         if (
                 (player.getVehicle() != null
@@ -560,16 +552,17 @@ public class PlayerInfo {
      */
     public void setSkin(@Nullable Skin skin) {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
-        if (skin == null) {
-            PlayerUtils.setSkin(player, null, null);
-        } else {
-            PlayerUtils.setSkin(
-                    player,
-                    skin.getValue(),
-                    skin.getSignature()
-            );
+        if (player != null) {
+            if (skin == null) {
+                PlayerUtils.setSkin(player, null, null);
+            } else {
+                PlayerUtils.setSkin(
+                        player,
+                        skin.getValue(),
+                        skin.getSignature()
+                );
+            }
         }
 
         this.playerFile.getPlayerSettings().setSkin(skin);
@@ -641,7 +634,7 @@ public class PlayerInfo {
             @Nullable Component message
     ) {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+        if (player == null) return CompletableFuture.completedFuture(null);
 
         var resourcePackStatus = new CompletableFuture<PlayerResourcePackStatusEvent.Status>();
         this.resourcePackStatus = resourcePackStatus;
@@ -1211,7 +1204,7 @@ public class PlayerInfo {
      * @return True if the player isn't in dark_world and hasn't vanished
      */
     public boolean isOnline(boolean ignoreWorld) {
-        Player player = this.offlinePlayer.getPlayer();
+        Player player = this.getOnlinePlayer();
         return player != null
                 && (ignoreWorld || !this.isInWorldDark())
                 && !this.isVanished();
@@ -1319,9 +1312,11 @@ public class PlayerInfo {
      */
     public void handleJoin() {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
-        if (this.joinTask != null && !this.joinTask.isCancelled()) return;
+        if (
+                player == null
+                || this.joinTask != null && !this.joinTask.isCancelled()
+        ) return;
 
         MSEssentials.getInstance().runTaskTimer(task -> {
             this.joinTask = task;
@@ -1341,7 +1336,7 @@ public class PlayerInfo {
      */
     public void handleQuit() {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+        if (player == null) return;
 
         this.unsetSitting();
 
@@ -1368,7 +1363,7 @@ public class PlayerInfo {
      */
     public @NotNull CompletableFuture<Boolean> handleResourcePack() {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+        if (player == null) return CompletableFuture.completedFuture(false);
 
         PlayerSettings playerSettings = this.playerFile.getPlayerSettings();
         ResourcePack.Type type = playerSettings.getResourcePackType();
@@ -1435,7 +1430,7 @@ public class PlayerInfo {
      */
     public @NotNull CompletableFuture<Boolean> teleportToLastLeaveLocation() {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+        if (player == null) return CompletableFuture.completedFuture(false);
 
         if (player.getGameMode() == GameMode.SPECTATOR) {
             MSEssentials.getInstance().runTask(() -> player.setSpectatorTarget(null));
@@ -1463,7 +1458,7 @@ public class PlayerInfo {
      */
     public @NotNull CompletableFuture<Boolean> teleportToLastDeathLocation() {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+        if (player == null) return CompletableFuture.completedFuture(false);
 
         if (player.getGameMode() == GameMode.SPECTATOR) {
             MSEssentials.getInstance().runTask(() -> player.setSpectatorTarget(null));
@@ -1524,7 +1519,7 @@ public class PlayerInfo {
             @NotNull Component reason
     ) {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
+        if (player == null) return;
 
         this.handleQuit();
         player.kick(
@@ -1600,14 +1595,22 @@ public class PlayerInfo {
      */
     public void savePlayerDataParams() {
         Player player = this.getOnlinePlayer();
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
 
-        if (this.isInWorldDark()) return;
+        if (
+                player == null
+                || this.isInWorldDark()
+        ) return;
 
         double health = player.getHealth();
         int air = player.getRemainingAir();
 
-        this.setLastLeaveLocation(player.getLocation());
+        this.playerFile.setLastLeaveLocation(
+                player.isDead()
+                ? player.getBedSpawnLocation() != null
+                ? player.getBedSpawnLocation()
+                : MSEssentials.getOverworld().getSpawnLocation()
+                : player.getLocation()
+        );
         this.playerFile.setGameMode(player.getGameMode());
         this.playerFile.setHealth(health == 0.0d ? 20.0d : health);
         this.playerFile.setAir(air == 0 && player.isDead() ? 300 : air);
@@ -1619,10 +1622,7 @@ public class PlayerInfo {
      * @see MSPlayerUtils#hideNameTag(Player)
      */
     public void hideNameTag() {
-        Player player = this.getOnlinePlayer();
-
-        Preconditions.checkState(player != null, "Player is offline, check isOnline() first");
-        MSPlayerUtils.hideNameTag(player);
+        MSPlayerUtils.hideNameTag(this.getOnlinePlayer());
     }
 
     /**
@@ -1674,7 +1674,14 @@ public class PlayerInfo {
                 player.setHealth(this.playerFile.getHealth());
                 player.setRemainingAir(this.playerFile.getAir());
 
-                this.teleportToLastLeaveLocation().thenRun(() -> sendJoinMessage(this));
+                this.teleportToLastLeaveLocation().thenAccept(result -> {
+                    if (result) {
+                        sendJoinMessage(this);
+                    } else {
+                        player.kick();
+                        MSLogger.warning("Something went wrong while teleporting " + this.nickname + " to their last leave location");
+                    }
+                });
             }
         }
     }

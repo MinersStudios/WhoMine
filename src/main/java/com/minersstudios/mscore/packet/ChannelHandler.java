@@ -2,16 +2,12 @@ package com.minersstudios.mscore.packet;
 
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.*;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * The ChannelHandler class is responsible for handling
@@ -34,21 +30,12 @@ public class ChannelHandler extends ChannelDuplexHandler {
      * Channel handler constructor
      *
      * @param plugin The plugin associated with this channel handler
-     */
-    public ChannelHandler(@NotNull MSPlugin plugin) {
-        this(plugin, null);
-    }
-
-    /**
-     * Channel handler constructor
-     *
-     * @param plugin The plugin associated with this channel handler
      * @param player The player associated with this channel handler
      *               (can be null)
      */
     public ChannelHandler(
             @NotNull MSPlugin plugin,
-            @Nullable Player player
+            @NotNull Player player
     ) {
         this.plugin = plugin;
         this.player = player;
@@ -64,7 +51,7 @@ public class ChannelHandler extends ChannelDuplexHandler {
     /**
      * @return The player associated with this channel handler
      */
-    public @Nullable Player getPlayer() {
+    public @NotNull Player getPlayer() {
         return this.player;
     }
 
@@ -87,12 +74,8 @@ public class ChannelHandler extends ChannelDuplexHandler {
             PacketType packetType = PacketType.fromClass(packet.getClass());
 
             if (packetType == null) {
-                if (this.player != null) {
-                    this.plugin.runTask(() -> this.player.kick());
-                    MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent by " + this.player.getName());
-                } else {
-                    MSLogger.severe("Unknown packet type: " + packet.getClass().getName());
-                }
+                this.plugin.runTask(() -> this.player.kick());
+                MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent by " + this.player.getName());
                 return;
             }
 
@@ -128,12 +111,8 @@ public class ChannelHandler extends ChannelDuplexHandler {
             PacketType packetType = PacketType.fromClass(packet.getClass());
 
             if (packetType == null) {
-                if (this.player != null) {
-                    this.plugin.runTask(() -> this.player.kick());
-                    MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent to " + this.player.getName());
-                } else {
-                    MSLogger.severe("Unknown packet type: " + packet.getClass().getName());
-                }
+                this.plugin.runTask(() -> this.player.kick());
+                MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent to " + this.player.getName());
                 return;
             }
 
@@ -161,28 +140,26 @@ public class ChannelHandler extends ChannelDuplexHandler {
     ) {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         ChannelPipeline pipeline = serverPlayer.connection.connection.channel.pipeline();
-        var registeredHandlers = pipeline.names();
 
-        if (!registeredHandlers.contains(ChannelHandler.CHANNEL_HANDLER_NAME)) {
+        if (!pipeline.names().contains(ChannelHandler.CHANNEL_HANDLER_NAME)) {
             ChannelHandler channelHandler = new ChannelHandler(plugin, player);
-
             pipeline.addBefore(ChannelHandler.PACKET_HANDLER_NAME, ChannelHandler.CHANNEL_HANDLER_NAME, channelHandler);
         }
     }
 
     /**
-     * Removes the {@link ChannelHandler} for a specific player from
-     * the server networking pipeline
+     * Removes the {@link ChannelHandler} from a specific player
+     * in the server networking pipeline
      *
      * @param player The player to remove the ChannelHandler for
      */
     public static void uninjectPlayer(@NotNull Player player) {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        ChannelPipeline pipeline = serverPlayer.connection.connection.channel.pipeline();
-        var registeredHandlers = pipeline.names();
+        Channel channel = serverPlayer.connection.connection.channel;
+        ChannelPipeline pipeline = channel.pipeline();
 
-        if (registeredHandlers.contains(ChannelHandler.CHANNEL_HANDLER_NAME)) {
-            pipeline.remove(ChannelHandler.CHANNEL_HANDLER_NAME);
+        if (pipeline.names().contains(CHANNEL_HANDLER_NAME)) {
+            channel.eventLoop().execute(() -> pipeline.remove(CHANNEL_HANDLER_NAME));
         }
     }
 }

@@ -92,6 +92,22 @@ public class PacketType {
     }
 
     /**
+     * @return True if the packet is SERVERBOUND,
+     *         false otherwise
+     */
+    public boolean isReceive() {
+        return this.flow == SERVERBOUND;
+    }
+
+    /**
+     * @return True if the packet is CLIENTBOUND,
+     *         false otherwise
+     */
+    public boolean isSend() {
+        return this.flow == CLIENTBOUND;
+    }
+
+    /**
      * @return The string representation of this packet type
      */
     @Override

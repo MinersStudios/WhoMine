@@ -1,10 +1,9 @@
 package com.minersstudios.msessentials.player;
 
+import com.google.common.base.Preconditions;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.world.WorldDark;
-import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -322,12 +321,6 @@ public class PlayerFile {
             @Nullable Location location
     ) {
         boolean isNull = location == null;
-
-        if (!isNull) {
-            if (WorldDark.isInWorldDark(location)) {
-                throw new IllegalArgumentException("The world cannot be world_dark");
-            }
-        }
 
         section.set("world", isNull ? null : location.getWorld().getName());
         section.set("x", isNull ? null : location.getX());

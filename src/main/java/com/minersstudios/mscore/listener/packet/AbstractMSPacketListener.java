@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.listener.packet;
 
+import com.google.common.base.Preconditions;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.plugin.MSPlugin;
@@ -19,9 +20,10 @@ import java.util.Set;
  */
 public abstract class AbstractMSPacketListener {
     private MSPlugin plugin;
-    private final Set<PacketType> whiteList = new HashSet<>();
+    private final Set<PacketType> sendWhiteList = new HashSet<>();
+    private final Set<PacketType> receiveWhiteList = new HashSet<>();
 
-    private static final String TO_STRING_FORMAT = "%s{plugin=%s, whitelist=%s}";
+    private static final String TO_STRING_FORMAT = "%s{plugin=%s, sendWhiteList=%s, receiveWhiteList=%s}";
 
     /**
      * Packet listener constructor
@@ -29,16 +31,21 @@ public abstract class AbstractMSPacketListener {
      * @param first The first packet type to listen to
      * @param other The other packet types to listen to (optional)
      * @see PacketType
-     * @see #getWhiteList()
      */
     public AbstractMSPacketListener(
-            PacketType first,
+            @NotNull PacketType first,
             PacketType @NotNull ... other
     ) {
-        Set<PacketType> whitelist = Set.of(other);
+        Set<PacketType> whitelist = new HashSet<>(Set.of(other));
+        whitelist.add(first);
 
-        this.whiteList.add(first);
-        this.whiteList.addAll(whitelist);
+        for (var packetType : whitelist) {
+            if (packetType.isReceive()) {
+                this.receiveWhiteList.add(packetType);
+            } else {
+                this.sendWhiteList.add(packetType);
+            }
+        }
     }
 
     /**
@@ -48,19 +55,24 @@ public abstract class AbstractMSPacketListener {
      * @see MSPlugin#registerPacketListeners()
      */
     public final @NotNull MSPlugin getPlugin() throws IllegalStateException {
-        if (!this.isRegistered()) {
-            throw new IllegalStateException("Packet listener " + this + " not registered!");
-        }
-
+        Preconditions.checkState(this.isRegistered(), "Packet listener " + this + " not registered!");
         return this.plugin;
     }
 
     /**
-     * @return The packet types that this listener listens to
+     * @return Types of received packets listened to by this listener
      * @see PacketType
      */
-    public final @NotNull @Unmodifiable Set<PacketType> getWhiteList() {
-        return Set.copyOf(this.whiteList);
+    public final @NotNull @Unmodifiable Set<PacketType> getReceiveWhiteList() {
+        return Set.copyOf(this.receiveWhiteList);
+    }
+
+    /**
+     * @return Types of sent packets listened to by this listener
+     * @see PacketType
+     */
+    public final @NotNull @Unmodifiable Set<PacketType> getSendWhiteList() {
+        return Set.copyOf(this.sendWhiteList);
     }
 
     /**
@@ -76,12 +88,10 @@ public abstract class AbstractMSPacketListener {
      * @param plugin The plugin to register this listener to
      */
     public final void register(@NotNull MSPlugin plugin) {
-        if (this.isRegistered()) {
-            throw new IllegalStateException("Packet listener " + this + " already registered!");
-        }
+        Preconditions.checkState(!this.isRegistered(), "Packet listener " + this + " already registered!");
 
         this.plugin = plugin;
-        MSPlugin.getGlobalCache().msPacketListeners.add(this);
+        MSPlugin.getGlobalCache().packetListenersMap.addListener(this);
     }
 
     /**
@@ -111,7 +121,8 @@ public abstract class AbstractMSPacketListener {
                 TO_STRING_FORMAT,
                 this.getClass().getSimpleName(),
                 this.plugin,
-                Arrays.toString(this.whiteList.toArray())
+                Arrays.toString(this.sendWhiteList.toArray()),
+                Arrays.toString(this.receiveWhiteList.toArray())
         );
     }
 }

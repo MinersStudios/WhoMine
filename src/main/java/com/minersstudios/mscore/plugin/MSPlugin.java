@@ -12,7 +12,9 @@ import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.packet.PacketEvent;
+import com.minersstudios.mscore.packet.PacketListenersMap;
 import com.minersstudios.mscore.packet.PacketRegistry;
+import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.utils.BlockUtils;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -498,9 +500,12 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see PacketEvent
      */
     public void callPacketReceiveEvent(@NotNull PacketEvent event) {
-        GLOBAL_CACHE.msPacketListeners.stream().parallel()
-        .filter(listener -> listener.getWhiteList().contains(event.getPacketContainer().getType()))
-        .forEach(listener -> listener.onPacketReceive(event));
+        PacketType packetType = event.getPacketContainer().getType();
+        PacketListenersMap listenersMap = GLOBAL_CACHE.packetListenersMap;
+
+        if (listenersMap.containsPacketType(packetType)) {
+            listenersMap.getListeners(packetType).forEach(listener -> listener.onPacketReceive(event));
+        }
     }
 
     /**
@@ -511,9 +516,12 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see PacketEvent
      */
     public void callPacketSendEvent(@NotNull PacketEvent event) {
-        GLOBAL_CACHE.msPacketListeners.stream().parallel()
-        .filter(listener -> listener.getWhiteList().contains(event.getPacketContainer().getType()))
-        .forEach(listener -> listener.onPacketSend(event));
+        PacketType packetType = event.getPacketContainer().getType();
+        PacketListenersMap listenersMap = GLOBAL_CACHE.packetListenersMap;
+
+        if (listenersMap.containsPacketType(packetType)) {
+            listenersMap.getListeners(packetType).forEach(listener -> listener.onPacketSend(event));
+        }
     }
 
     /**

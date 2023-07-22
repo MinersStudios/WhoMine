@@ -3,7 +3,6 @@ package com.minersstudios.mscore.packet;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a packet event. It contains the packet container
@@ -26,7 +25,7 @@ public class PacketEvent implements Cancellable {
      */
     public PacketEvent(
             @NotNull PacketContainer packetContainer,
-            @Nullable Player player
+            @NotNull Player player
     ) {
         this.packetContainer = packetContainer;
         this.player = player;
@@ -41,9 +40,8 @@ public class PacketEvent implements Cancellable {
 
     /**
      * @return The player who sent or received the packet
-     * @throws NullPointerException If the player is null
      */
-    public Player getPlayer() throws NullPointerException {
+    public @NotNull Player getPlayer() {
         return this.player;
     }
 

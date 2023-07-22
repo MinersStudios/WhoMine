@@ -80,8 +80,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
             return true;
         }
 
-        playerInfo.teleportToLastDeathLocation().thenAccept(result -> {
-            if (result) {
+        playerInfo.teleportToLastDeathLocation().thenRun(() ->
                 MSLogger.fine(
                         sender,
                         Component.translatable(
@@ -89,18 +88,8 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname())
                         )
-                );
-            } else {
-                MSLogger.warning(
-                        sender,
-                        Component.translatable(
-                                "ms.command.teleport_to_last_death.no_position",
-                                playerInfo.getGrayIDGoldName(),
-                                text(playerInfo.getNickname())
-                        )
-                );
-            }
-        });
+                )
+        );
         return true;
     }
 

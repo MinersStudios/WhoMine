@@ -24,9 +24,11 @@ public final class MSPlayerUtils {
      *
      * @param player the player
      */
-    public static void hideNameTag(@NotNull Player player) {
-        MSEssentials.getScoreboardHideTagsTeam().addEntry(player.getName());
-        player.setScoreboard(MSEssentials.getScoreboardHideTags());
+    public static void hideNameTag(@Nullable Player player) {
+        if (player != null) {
+            MSEssentials.getScoreboardHideTagsTeam().addEntry(player.getName());
+            player.setScoreboard(MSEssentials.getScoreboardHideTags());
+        }
     }
 
     @Contract(value = "null -> false", pure = true)

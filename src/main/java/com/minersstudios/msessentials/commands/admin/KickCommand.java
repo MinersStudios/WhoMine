@@ -57,7 +57,7 @@ public class KickCommand implements MSCommandExecutor {
             return true;
         }
 
-        if (playerInfo.isOnline(true)) {
+        if (!playerInfo.isOnline(true)) {
             MSLogger.warning(sender, Component.translatable("ms.error.player_not_online"));
             return true;
         }
