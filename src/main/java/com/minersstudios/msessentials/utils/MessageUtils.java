@@ -31,8 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import static com.minersstudios.msessentials.utils.MessageUtils.Colors.*;
 import static github.scarsz.discordsrv.util.DiscordUtil.getTextChannelById;
 import static github.scarsz.discordsrv.util.DiscordUtil.sendMessage;
-import static net.kyori.adventure.text.Component.space;
-import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.*;
 
 public final class MessageUtils {
 
@@ -195,14 +194,14 @@ public final class MessageUtils {
         PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(sender);
         Component fullMessage = switch (rolePlayActionType) {
             case DO ->
-                    Component.text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
+                    text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
                     .append(action.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY))
-                    .append(Component.text(" * | ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY))
+                    .append(text(" * | ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY))
                     .append(playerInfo.getGrayIDGoldName());
             case IT ->
-                    Component.text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
+                    text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
                     .append(action.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY))
-                    .append(Component.text(" *", RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
+                    .append(text(" *", RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
             case TODO ->
                     text("* ")
                     .color(RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
@@ -213,16 +212,16 @@ public final class MessageUtils {
                     .color(RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
                     .append(space())
                     .append(playerInfo.getGrayIDGoldName())
-                    .append(Component.text(", ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY))
+                    .append(text(", ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY))
                     .append(action
                     .color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY))
-                    .append(Component.text(" *", RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
+                    .append(text(" *", RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
             default ->
-                    Component.text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
+                    text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
                     .append(playerInfo.getGrayIDGoldName())
                     .append(space()
                     .append(action.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY)))
-                    .append(Component.text(" *", RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
+                    .append(text(" *", RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
         };
 
         sendLocalMessage(Badges.YELLOW_EXCLAMATION_MARK.append(fullMessage), sender.getLocation(), config.localChatRadius);
@@ -280,7 +279,7 @@ public final class MessageUtils {
         MSLogger.info(deathMessage);
 
         MSLogger.info(
-                Component.translatable(
+                translatable(
                         "ms.info.player_death_info",
                         killedInfo.getDefaultName(),
                         text(killed.getName()),

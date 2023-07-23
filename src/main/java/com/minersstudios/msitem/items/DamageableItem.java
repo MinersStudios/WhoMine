@@ -15,13 +15,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-public class DamageableItem {
-    public static final NamespacedKey MAX_DAMAGE_NAMESPACED_KEY = new NamespacedKey("msitems", "max_damage");
-    public static final NamespacedKey REAL_DAMAGE_NAMESPACED_KEY = new NamespacedKey("msitems", "real_damage");
+import static net.kyori.adventure.text.Component.*;
 
+public class DamageableItem {
     protected final int defaultDamage;
     protected int maxDamage;
     protected int realDamage;
+
+    public static final NamespacedKey MAX_DAMAGE_NAMESPACED_KEY = new NamespacedKey("msitems", "max_damage");
+    public static final NamespacedKey REAL_DAMAGE_NAMESPACED_KEY = new NamespacedKey("msitems", "real_damage");
+
+    private static final TranslatableComponent DURABILITY = translatable("item.durability");
 
     public DamageableItem(
             int defaultDamage,
@@ -80,14 +84,13 @@ public class DamageableItem {
             }
         }
 
-        newLore.add(Component.empty());
+        newLore.add(empty());
         newLore.add(
-                Component.translatable(
-                                "item.durability",
-                                Component.text(this.maxDamage - this.realDamage),
-                                Component.text(this.maxDamage)
-                        ).style(ChatUtils.COLORLESS_DEFAULT_STYLE)
-                        .color(NamedTextColor.GRAY)
+                DURABILITY.args(
+                        text(this.maxDamage - this.realDamage),
+                        text(this.maxDamage)
+                ).style(ChatUtils.COLORLESS_DEFAULT_STYLE)
+                .color(NamedTextColor.GRAY)
         );
         damageable.lore(newLore);
 

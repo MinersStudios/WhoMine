@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.msessentials.commands.other.discord.DiscordCommandHandler;
+import com.minersstudios.msessentials.commands.player.DiscordCommand;
 import com.minersstudios.msessentials.listeners.chat.DiscordGuildMessagePreProcessListener;
 import com.minersstudios.msessentials.listeners.chat.DiscordPrivateMessageReceivedListener;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -12,42 +12,40 @@ import com.minersstudios.msessentials.tasks.PlayerListTask;
 import com.minersstudios.msessentials.tasks.SeatsTask;
 import com.minersstudios.msessentials.world.WorldDark;
 import github.scarsz.discordsrv.DiscordSRV;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Server;
-import org.bukkit.World;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 
-public final class MSEssentials extends MSPlugin {
-    private static MSEssentials singleton;
-    private static Cache cache;
-    private static Config config;
-    private static World overworld;
-    private static Scoreboard scoreboardHideTags;
-    private static Team scoreboardHideTagsTeam;
+import static net.kyori.adventure.text.Component.translatable;
 
-    private static final TranslatableComponent DISABLE_TITLE = Component.translatable("ms.on_disable.message.title");
-    private static final TranslatableComponent DISABLE_SUBTITLE = Component.translatable("ms.on_disable.message.subtitle");
+public final class MSEssentials extends MSPlugin {
+    private static MSEssentials instance;
+    private Cache cache;
+    private Config config;
+    private Scoreboard scoreboardHideTags;
+    private Team scoreboardHideTagsTeam;
+
+    private static final TranslatableComponent DISABLE_TITLE = translatable("ms.on_disable.message.title");
+    private static final TranslatableComponent DISABLE_SUBTITLE = translatable("ms.on_disable.message.subtitle");
 
     @Override
     public void enable() {
-        singleton = this;
-        cache = new Cache();
         Server server = this.getServer();
-        overworld = server.getWorlds().get(0);
-        scoreboardHideTags = server.getScoreboardManager().getNewScoreboard();
-        scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("hide_tags");
+        instance = this;
+        this.cache = new Cache();
+        this.scoreboardHideTags = server.getScoreboardManager().getNewScoreboard();
+        this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam("hide_tags");
 
-        scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-        scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
+        this.scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+        this.scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 
         PluginCommand command = DiscordSRV.getPlugin().getCommand("discord");
         if (command != null) {
-            command.setExecutor(new DiscordCommandHandler());
+            command.setExecutor(new DiscordCommand());
         }
 
         DiscordSRV.api.subscribe(new DiscordGuildMessagePreProcessListener());
@@ -55,9 +53,9 @@ public final class MSEssentials extends MSPlugin {
 
         this.runTask(WorldDark::init);
 
-        config = new Config(this, this.getConfigFile());
+        this.config = new Config(this, this.getConfigFile());
 
-        config.reload();
+        this.config.reload();
         this.setLoadedCustoms(true);
 
         this.runTaskTimer(new SeatsTask(), 0L, 1L);
@@ -68,7 +66,7 @@ public final class MSEssentials extends MSPlugin {
 
     @Override
     public void disable() {
-        PlayerInfoMap playerInfoMap = cache.playerInfoMap;
+        PlayerInfoMap playerInfoMap = this.cache.playerInfoMap;
         var onlinePlayers = this.getServer().getOnlinePlayers();
 
         if (!playerInfoMap.isEmpty() && !onlinePlayers.isEmpty()) {
@@ -77,7 +75,7 @@ public final class MSEssentials extends MSPlugin {
             .forEach(playerInfo -> playerInfo.kickPlayer(DISABLE_TITLE, DISABLE_SUBTITLE));
         }
 
-        cache.bukkitTasks.forEach(BukkitTask::cancel);
+        this.cache.bukkitTasks.forEach(BukkitTask::cancel);
     }
 
     /**
@@ -85,7 +83,7 @@ public final class MSEssentials extends MSPlugin {
      * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull MSEssentials getInstance() throws NullPointerException {
-        return singleton;
+        return instance;
     }
 
     /**
@@ -93,7 +91,7 @@ public final class MSEssentials extends MSPlugin {
      * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull Cache getCache() throws NullPointerException {
-        return cache;
+        return instance.cache;
     }
 
     /**
@@ -101,15 +99,7 @@ public final class MSEssentials extends MSPlugin {
      * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull Config getConfiguration() throws NullPointerException {
-        return config;
-    }
-
-    /**
-     * @return The overworld of the server
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static @NotNull World getOverworld() throws NullPointerException {
-        return overworld;
+        return instance.config;
     }
 
     /**
@@ -117,7 +107,7 @@ public final class MSEssentials extends MSPlugin {
      * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull PlayerInfo getConsolePlayerInfo() throws NullPointerException {
-        return cache.consolePlayerInfo;
+        return instance.cache.consolePlayerInfo;
     }
 
     /**
@@ -125,7 +115,7 @@ public final class MSEssentials extends MSPlugin {
      * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull Scoreboard getScoreboardHideTags() throws NullPointerException {
-        return scoreboardHideTags;
+        return instance.scoreboardHideTags;
     }
 
     /**
@@ -133,6 +123,6 @@ public final class MSEssentials extends MSPlugin {
      * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull Team getScoreboardHideTagsTeam() throws NullPointerException {
-        return scoreboardHideTagsTeam;
+        return instance.scoreboardHideTagsTeam;
     }
 }

@@ -224,7 +224,7 @@ public class SoundGroup implements Cloneable {
         if (this.placeSound.equalsIgnoreCase("block.wood.place")) {
             world.playSound(
                     location,
-                    MSBlock.getConfigCache().woodSoundPlace,
+                    MSBlock.getConfiguration().woodSoundPlace,
                     this.placeSoundCategory,
                     this.placeSoundVolume,
                     this.random.nextFloat() * 0.1f + this.placeSoundPitch
@@ -247,7 +247,7 @@ public class SoundGroup implements Cloneable {
         if (this.breakSound.equalsIgnoreCase("block.wood.break")) {
             world.playSound(
                     location,
-                    MSBlock.getConfigCache().woodSoundBreak,
+                    MSBlock.getConfiguration().woodSoundBreak,
                     this.breakSoundCategory,
                     this.breakSoundVolume,
                     this.random.nextFloat() * 0.1f + this.breakSoundPitch
@@ -270,7 +270,7 @@ public class SoundGroup implements Cloneable {
         if (this.hitSound.equalsIgnoreCase("block.wood.hit")) {
             world.playSound(
                     location,
-                    MSBlock.getConfigCache().woodSoundHit,
+                    MSBlock.getConfiguration().woodSoundHit,
                     this.hitSoundCategory,
                     this.hitSoundVolume,
                     this.random.nextFloat() * 0.1f + this.hitSoundPitch
@@ -293,7 +293,7 @@ public class SoundGroup implements Cloneable {
         if (this.stepSound.equalsIgnoreCase("block.wood.step")) {
             world.playSound(
                     location,
-                    MSBlock.getConfigCache().woodSoundStep,
+                    MSBlock.getConfiguration().woodSoundStep,
                     this.stepSoundCategory,
                     this.stepSoundVolume,
                     this.random.nextFloat() * 0.1f + this.stepSoundPitch

@@ -47,7 +47,7 @@ public class CommandHandler implements MSCommandExecutor {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
         List<String> completions = new ArrayList<>();
         switch (args.length) {
             case 1 -> {

@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomBlockRightClickEvent extends CustomBlockEvent implements Cancellable {
@@ -15,22 +14,20 @@ public class CustomBlockRightClickEvent extends CustomBlockEvent implements Canc
     protected boolean cancel;
 
     protected final @NotNull Player player;
-    protected final @NotNull ItemStack itemStack;
     protected final @NotNull EquipmentSlot hand;
     protected final @NotNull BlockFace blockFace;
     protected final @NotNull Location interactionPoint;
 
     public CustomBlockRightClickEvent(
-            final @NotNull CustomBlock damagedCustomBlock,
-            final @NotNull Player player,
-            final @NotNull ItemStack itemStack,
-            final @NotNull EquipmentSlot hand,
-            final @NotNull BlockFace blockFace,
-            final @NotNull Location interactionPoint
+            @NotNull CustomBlock damagedCustomBlock,
+            @NotNull Player player,
+            @NotNull EquipmentSlot hand,
+            @NotNull BlockFace blockFace,
+            @NotNull Location interactionPoint
     ) {
         super(damagedCustomBlock);
+
         this.player = player;
-        this.itemStack = itemStack;
         this.hand = hand;
         this.blockFace = blockFace;
         this.interactionPoint = interactionPoint;
@@ -54,15 +51,6 @@ public class CustomBlockRightClickEvent extends CustomBlockEvent implements Canc
      */
     public @NotNull Player getPlayer() {
         return this.player;
-    }
-
-    /**
-     * Gets the ItemStack for the item currently in the player's hand
-     *
-     * @return The ItemStack for the item currently in the player's hand
-     */
-    public @NotNull ItemStack getItemInHand() {
-        return this.itemStack;
     }
 
     /**

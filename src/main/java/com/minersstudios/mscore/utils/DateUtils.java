@@ -206,7 +206,7 @@ public final class DateUtils {
      * @param string String to be checked
      * @return True if the string matches the {@link #CHRONO_REGEX} regex
      */
-    @Contract(value = "null -> false", pure = true)
+    @Contract(value = "null -> false")
     public static boolean matchesChrono(@Nullable String string) {
         return string != null && CHRONO_PATTERN.matcher(string).matches();
     }

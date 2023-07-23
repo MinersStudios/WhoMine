@@ -5,7 +5,7 @@ import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 @MSCommand(
         command = "getmaplocation",
@@ -26,10 +27,16 @@ import static net.kyori.adventure.text.Component.text;
         usage = " ꀑ §cИспользуй: /<command>",
         description = "Добывает координаты карты, находящейся в руке",
         permission = "msessentials.maplocation",
-        permissionDefault = PermissionDefault.OP
+        permissionDefault = PermissionDefault.OP,
+        playerOnly = true
 )
 public class GetMapLocationCommand implements MSCommandExecutor {
     private static final CommandNode<?> COMMAND_NODE = LiteralArgumentBuilder.literal("getmaplocation").build();
+
+    private static final TranslatableComponent NO_MAP_IN_RIGHT_HAND = translatable("ms.command.get_map_location.no_map_in_right_hand");
+    private static final TranslatableComponent SOMETHING_WENT_WRONG = translatable("ms.error.something_went_wrong");
+    private static final TranslatableComponent GET_MAP_LOCATION_FORMAT = translatable("ms.command.get_map_location.format");
+    private static final TranslatableComponent COMMAND_BUTTON_TEXT = translatable("ms.command.get_map_location.command_button_text");
 
     @Override
     public boolean onCommand(
@@ -38,20 +45,17 @@ public class GetMapLocationCommand implements MSCommandExecutor {
             @NotNull String label,
             String @NotNull ... args
     ) {
-        if (!(sender instanceof Player player)) {
-            MSLogger.severe(sender, Component.translatable("ms.error.only_player_command"));
-            return true;
-        }
+        Player player = (Player) sender;
 
         if (!(player.getInventory().getItemInMainHand().getItemMeta() instanceof MapMeta mapMeta)) {
-            MSLogger.warning(player, Component.translatable("ms.command.get_map_location.no_map_in_right_hand"));
+            MSLogger.warning(player, NO_MAP_IN_RIGHT_HAND);
             return true;
         }
 
         MapView mapView = mapMeta.getMapView();
 
         if (mapView == null || mapView.getWorld() == null) {
-            MSLogger.severe(sender, Component.translatable("ms.error.something_went_wrong"));
+            MSLogger.severe(sender, SOMETHING_WENT_WRONG);
             return true;
         }
 
@@ -61,13 +65,12 @@ public class GetMapLocationCommand implements MSCommandExecutor {
 
         MSLogger.warning(
                 player,
-                Component.translatable(
-                        "ms.command.get_map_location.format",
+                GET_MAP_LOCATION_FORMAT.args(
                         text(mapView.getWorld().getName(), NamedTextColor.WHITE),
                         text(x, NamedTextColor.WHITE),
                         text(y, NamedTextColor.WHITE),
                         text(z, NamedTextColor.WHITE),
-                        Component.translatable("ms.command.get_map_location.command_button_text")
+                        COMMAND_BUTTON_TEXT
                         .decorate(TextDecoration.BOLD)
                         .clickEvent(ClickEvent.runCommand("/tp " + x + " " + y + " " + z))
                 )

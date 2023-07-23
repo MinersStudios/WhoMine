@@ -25,7 +25,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 public class SkinsMenu {
-    private static final Component TITLE = Component.translatable("ms.menu.skins.title", ChatUtils.DEFAULT_STYLE);
+    private static final Component TITLE = translatable("ms.menu.skins.title", ChatUtils.DEFAULT_STYLE);
     private static final InventoryButton EMPTY_BUTTON = InventoryButton.create().item(new ItemStack(Material.AIR));
     private static final InventoryButton APPLY_BUTTON;
     private static final InventoryButton APPLY_BUTTON_NO_CMD;
@@ -101,7 +101,7 @@ public class SkinsMenu {
                         )
                 ));
             } catch (Exception e) {
-                MSLogger.severe(player, Component.translatable("ms.error.something_went_wrong"));
+                MSLogger.severe(player, translatable("ms.error.something_went_wrong"));
             }
 
             open(player);

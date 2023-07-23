@@ -41,7 +41,6 @@ public abstract class MSConfig {
         this.yaml = new YamlConfiguration();
 
         plugin.saveDefaultConfig();
-        plugin.reloadConfig();
     }
 
     /**
@@ -74,8 +73,9 @@ public abstract class MSConfig {
      * @see #reloadYaml()
      * @see #reloadVariables()
      */
-    public final boolean reload() {
+    public boolean reload() {
         try {
+            this.plugin.saveDefaultConfig();
             this.reloadYaml();
             this.reloadVariables();
             return true;
@@ -90,7 +90,7 @@ public abstract class MSConfig {
      *
      * @throws ConfigurationException If the config file cannot be read or is not a valid Configuration
      */
-    public final void reloadYaml() throws ConfigurationException {
+    public void reloadYaml() throws ConfigurationException {
         try {
             this.yaml.load(this.file);
         } catch (IOException e) {
@@ -101,7 +101,7 @@ public abstract class MSConfig {
     }
 
     /**
-     * Reloads plugin variables
+     * Reloads config variables
      */
     public abstract void reloadVariables();
 
@@ -111,7 +111,7 @@ public abstract class MSConfig {
      * @return True if the config was saved successfully, or false
      *         when the given file cannot be written to for any reason
      */
-    public final boolean save() {
+    public boolean save() {
         try {
             this.yaml.save(this.file);
             return true;

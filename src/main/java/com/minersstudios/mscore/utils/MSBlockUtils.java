@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.utils;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.mscore.GlobalCache;
+import com.minersstudios.mscore.plugin.GlobalCache;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -93,9 +93,9 @@ public final class MSBlockUtils {
 
     /**
      * @param string String to be checked
-     * @return True if string matches {@link #NAMESPACED_KEY_REGEX} regex
+     * @return True if string matches {@link #NAMESPACED_KEY_REGEX}
      */
-    @Contract(value = "null -> false", pure = true)
+    @Contract(value = "null -> false")
     public static boolean matchesNamespacedKey(@Nullable String string) {
         return string != null && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }

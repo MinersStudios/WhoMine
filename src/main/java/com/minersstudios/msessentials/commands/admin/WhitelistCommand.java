@@ -3,16 +3,10 @@ package com.minersstudios.msessentials.commands.admin;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.msessentials.Cache;
-import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.player.map.IDMap;
-import com.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -26,6 +20,7 @@ import java.util.List;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 @MSCommand(
         command = "whitelist",
@@ -49,6 +44,13 @@ public class WhitelistCommand implements MSCommandExecutor {
             .then(literal("reload"))
             .build();
 
+    private static final TranslatableComponent RELOAD = translatable("ms.command.white_list.reload");
+    private static final TranslatableComponent ADDED_FORMAT = translatable("ms.command.white_list.add.sender.message");
+    private static final TranslatableComponent REMOVED_FORMAT = translatable("ms.command.white_list.remove.sender.message");
+    private static final TranslatableComponent REMOVE_NOT_FOUND_FORMAT = translatable("ms.command.white_list.remove.not_found");
+    private static final TranslatableComponent ALREADY_FORMAT = translatable("ms.command.white_list.add.already");
+    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
+
     @Override
     public boolean onCommand(
             @NotNull CommandSender sender,
@@ -59,68 +61,31 @@ public class WhitelistCommand implements MSCommandExecutor {
         if (args.length == 0) return false;
 
         Server server = sender.getServer();
+        String actionArg = args[0];
+        String playerArg = args.length == 2 ? args[1] : null;
 
-        if (args[0].equalsIgnoreCase("reload")) {
-            server.reloadWhitelist();
-            MSLogger.fine(sender, Component.translatable("ms.command.white_list.reload"));
-            return true;
-        }
-
-        Cache cache = MSEssentials.getCache();
-        TranslatableComponent removedFormat = Component.translatable("ms.command.white_list.remove.sender.message");
-        TranslatableComponent alreadyFormat = Component.translatable("ms.command.white_list.add.already");
-
-        if (args.length > 1 && IDUtils.matchesIDRegex(args[1])) {
-            if (args[0].equalsIgnoreCase("add")) {
-                MSLogger.warning(sender, Component.translatable("ms.command.white_list.add.nickname_warning"));
+        switch (actionArg) {
+            case "reload" -> {
+                server.reloadWhitelist();
+                MSLogger.fine(sender, RELOAD);
                 return true;
             }
+            case "add" -> {
+                if (playerArg == null) return false;
 
-            if (args[0].equalsIgnoreCase("remove")) {
-                IDMap idMap = cache.idMap;
-                OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[1]);
+                PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
 
-                if (offlinePlayer == null || offlinePlayer.getName() == null) {
-                    MSLogger.severe(sender, Component.translatable("ms.error.id_not_found"));
+                if (playerInfo == null) {
+                    MSLogger.severe(sender, PLAYER_NOT_FOUND);
                     return true;
                 }
 
-                PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), offlinePlayer.getName());
-
-                if (playerInfo.setWhiteListed(false)) {
-                    MSLogger.fine(
-                            sender,
-                            removedFormat.args(
-                                    playerInfo.getGrayIDGreenName(),
-                                    text(offlinePlayer.getName())
-                            )
-                    );
-                    return true;
-                }
-
-                MSLogger.warning(
-                        sender,
-                        alreadyFormat.args(
-                                playerInfo.getGrayIDGoldName(),
-                                text(offlinePlayer.getName())
-                        )
-                );
-                return true;
-            }
-            return false;
-        }
-        if (args.length > 1 && args[1].length() > 2) {
-            OfflinePlayer offlinePlayer = server.getOfflinePlayer(args[1]);
-            PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), args[1]);
-
-            if (args[0].equalsIgnoreCase("add")) {
                 if (playerInfo.setWhiteListed(true)) {
                     MSLogger.fine(
                             sender,
-                            Component.translatable(
-                                    "ms.command.white_list.add.sender.message",
+                            ADDED_FORMAT.args(
                                     playerInfo.getGrayIDGreenName(),
-                                    text(args[1])
+                                    text(playerInfo.getNickname())
                             )
                     );
                     return true;
@@ -128,20 +93,29 @@ public class WhitelistCommand implements MSCommandExecutor {
 
                 MSLogger.warning(
                         sender,
-                        alreadyFormat.args(
+                        ALREADY_FORMAT.args(
                                 playerInfo.getGrayIDGoldName(),
-                                text(args[1])
+                                text(playerInfo.getNickname())
                         )
                 );
                 return true;
             }
-            if (args[0].equalsIgnoreCase("remove")) {
+            case "remove" -> {
+                if (playerArg == null) return false;
+
+                PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
+
+                if (playerInfo == null) {
+                    MSLogger.severe(sender, PLAYER_NOT_FOUND);
+                    return true;
+                }
+
                 if (playerInfo.setWhiteListed(false)) {
                     MSLogger.fine(
                             sender,
-                            removedFormat.args(
+                            REMOVED_FORMAT.args(
                                     playerInfo.getGrayIDGreenName(),
-                                    text(args[1])
+                                    text(playerInfo.getNickname())
                             )
                     );
                     return true;
@@ -149,45 +123,48 @@ public class WhitelistCommand implements MSCommandExecutor {
 
                 MSLogger.warning(
                         sender,
-                        Component.translatable(
-                                "ms.command.white_list.remove.not_found",
+                        REMOVE_NOT_FOUND_FORMAT.args(
                                 playerInfo.getGrayIDGoldName(),
-                                text(args[1])
+                                text(playerArg)
                         )
                 );
                 return true;
             }
-            return false;
+            default -> {
+                return false;
+            }
         }
-
-        MSLogger.warning(sender, Component.translatable("ms.error.name_length"));
-        return true;
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(
+    public @NotNull List<String> onTabComplete(
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String label,
             String @NotNull ... args
     ) {
-        List<String> completions = new ArrayList<>();
+        return switch (args.length) {
+            case 1 -> TAB;
+            case 2 -> {
+                var completions = new ArrayList<String>();
 
-        if (args.length == 1) {
-            return TAB;
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
-            for (var offlinePlayer : sender.getServer().getWhitelistedPlayers()) {
-                PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), args[1]);
-                int id = playerInfo.getID(false, false);
+                if (args[0].equals("remove")) {
+                    for (var offlinePlayer : sender.getServer().getWhitelistedPlayers()) {
+                        PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), args[1]);
+                        int id = playerInfo.getID(false, false);
 
-                if (id != -1) {
-                    completions.add(String.valueOf(id));
+                        if (id != -1) {
+                            completions.add(String.valueOf(id));
+                        }
+
+                        completions.add(offlinePlayer.getName());
+                    }
                 }
 
-                completions.add(offlinePlayer.getName());
+                yield completions;
             }
-        }
-        return completions;
+            default -> EMPTY_TAB;
+        };
     }
 
     @Override

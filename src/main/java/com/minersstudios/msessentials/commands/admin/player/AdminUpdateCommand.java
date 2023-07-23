@@ -2,11 +2,15 @@ package com.minersstudios.msessentials.commands.admin.player;
 
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
+
 public class AdminUpdateCommand {
+    private static final TranslatableComponent UPDATE_SUCCESS = translatable("ms.command.player.update.success");
 
     public static boolean runCommand(
             @NotNull CommandSender sender,
@@ -15,10 +19,9 @@ public class AdminUpdateCommand {
         playerInfo.update();
         MSLogger.fine(
                 sender,
-                Component.translatable(
-                        "ms.command.player.update.success",
+                UPDATE_SUCCESS.args(
                         playerInfo.getGrayIDGreenName(),
-                        Component.text(playerInfo.getNickname())
+                        text(playerInfo.getNickname())
                 )
         );
         return true;

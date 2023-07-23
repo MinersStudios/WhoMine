@@ -20,6 +20,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static net.kyori.adventure.text.Component.text;
+
 public class IronTrashcan implements CustomDecorData {
     private @NotNull NamespacedKey namespacedKey;
     private @NotNull ItemStack itemStack;
@@ -27,7 +29,7 @@ public class IronTrashcan implements CustomDecorData {
     private @NotNull HitBox hitBox;
     private @Nullable Facing facing;
     private @Nullable List<Recipe> recipes;
-    public static final Component INV_NAME = Component.text("Мусорка").color(NamedTextColor.DARK_GRAY);
+    public static final Component INV_NAME = text("Мусорка").color(NamedTextColor.DARK_GRAY);
 
     public IronTrashcan() {
         this.namespacedKey = new NamespacedKey(MSDecor.getInstance(), "iron_trashcan");

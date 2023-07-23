@@ -23,13 +23,13 @@ public class PlayerMoveListener extends AbstractMSListener {
         Player player = event.getPlayer();
         Block bottomBlock = player.getLocation().subtract(0.0d, 0.5d, 0.0d).getBlock();
         Location bottomBlockLocation = bottomBlock.getLocation().toCenterLocation();
+        Material bottomBlockType = bottomBlock.getType();
 
         if (
-                bottomBlock.getType().isSolid()
-                && player.getGameMode() != GameMode.SPECTATOR
+                player.getGameMode() != GameMode.SPECTATOR
                 && !player.isFlying()
                 && !player.isSneaking()
-                && (bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getType()))
+                && BlockUtils.isWoodenSound(bottomBlockType)
         ) {
             Location from = event.getFrom().clone();
             Location to = event.getTo().clone();

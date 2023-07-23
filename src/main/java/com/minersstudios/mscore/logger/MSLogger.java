@@ -1,9 +1,12 @@
 package com.minersstudios.mscore.logger;
 
+import com.minersstudios.mscore.config.LanguageFile;
 import com.minersstudios.mscore.utils.Badges;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 /**
@@ -176,7 +180,7 @@ public final class MSLogger {
             @Nullable Object target,
             @NotNull String message
     ) {
-        info(target, Component.text(message));
+        info(target, text(message));
     }
 
     /**
@@ -202,12 +206,20 @@ public final class MSLogger {
             @NotNull Component message
     ) {
         if (
-                target instanceof CommandSender sender
-                && !(sender instanceof ConsoleCommandSender)
+                target instanceof ConsoleCommandSender
+                || target == null
         ) {
-            sender.sendMessage(Component.text(" ").append(message));
-        } else {
             log(Level.INFO, message);
+        } else if (target instanceof BlockCommandSender sender) {
+            sender.sendMessage(
+                    message instanceof TranslatableComponent translatableComponent
+                    ? LanguageFile.renderTranslationComponent(translatableComponent)
+                    : message
+            );
+        } else if (target instanceof CommandSender sender) {
+            sender.sendMessage(text(" ").append(message));
+        } else {
+            throw new IllegalArgumentException("Target must be a CommandSender or null!");
         }
     }
 
@@ -234,7 +246,7 @@ public final class MSLogger {
             @Nullable Object target,
             @NotNull String message
     ) {
-        fine(target, Component.text(message));
+        fine(target, text(message));
     }
 
     /**
@@ -265,12 +277,20 @@ public final class MSLogger {
             @NotNull Component message
     ) {
         if (
-                target instanceof CommandSender sender
-                && !(sender instanceof ConsoleCommandSender)
+                target instanceof ConsoleCommandSender
+                || target == null
         ) {
+            log(Level.INFO, message.color(GREEN));
+        } else if (target instanceof BlockCommandSender sender) {
+            sender.sendMessage(
+                    message instanceof TranslatableComponent translatableComponent
+                    ? LanguageFile.renderTranslationComponent(translatableComponent)
+                    : message
+            );
+        } else if (target instanceof CommandSender sender) {
             sender.sendMessage(Badges.GREEN_EXCLAMATION_MARK.append(message.color(GREEN)));
         } else {
-            log(Level.INFO, message.color(GREEN));
+            throw new IllegalArgumentException("Target must be a CommandSender or null!");
         }
     }
 
@@ -295,7 +315,7 @@ public final class MSLogger {
             @Nullable Object target,
             @NotNull String message
     ) {
-        warning(target, Component.text(message));
+        warning(target, text(message));
     }
 
     /**
@@ -324,12 +344,20 @@ public final class MSLogger {
             @NotNull Component message
     ) {
         if (
-                target instanceof CommandSender sender
-                && !(sender instanceof ConsoleCommandSender)
+                target instanceof ConsoleCommandSender
+                || target == null
         ) {
+            log(Level.WARNING, message);
+        } else if (target instanceof BlockCommandSender sender) {
+            sender.sendMessage(
+                    message instanceof TranslatableComponent translatableComponent
+                    ? LanguageFile.renderTranslationComponent(translatableComponent)
+                    : message
+            );
+        } else if (target instanceof CommandSender sender) {
             sender.sendMessage(Badges.YELLOW_EXCLAMATION_MARK.append(message.color(GOLD)));
         } else {
-            log(Level.WARNING, message);
+            throw new IllegalArgumentException("Target must be a CommandSender or null!");
         }
     }
 
@@ -354,7 +382,7 @@ public final class MSLogger {
             @Nullable Object target,
             @NotNull String message
     ) {
-        severe(target, Component.text(message));
+        severe(target, text(message));
     }
 
     /**
@@ -383,12 +411,20 @@ public final class MSLogger {
             @NotNull Component message
     ) {
         if (
-                target instanceof CommandSender sender
-                && !(sender instanceof ConsoleCommandSender)
+                target instanceof ConsoleCommandSender
+                || target == null
         ) {
+            log(Level.SEVERE, message);
+        } else if (target instanceof BlockCommandSender sender) {
+            sender.sendMessage(
+                    message instanceof TranslatableComponent translatableComponent
+                    ? LanguageFile.renderTranslationComponent(translatableComponent)
+                    : message
+            );
+        } else if (target instanceof CommandSender sender) {
             sender.sendMessage(Badges.RED_EXCLAMATION_MARK.append(message.color(RED)));
         } else {
-            log(Level.SEVERE, message);
+            throw new IllegalArgumentException("Target must be a CommandSender or null!");
         }
     }
 }

@@ -5,7 +5,7 @@ import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.DateUtils;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.BanList;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +18,14 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 public class AdminBanInfoCommand {
+    private static final TranslatableComponent WRONG_FORMAT = translatable("ms.error.wrong_format");
+    private static final TranslatableComponent BAN_INFO_FORMAT = translatable("ms.command.player.ban_info.info");
+    private static final TranslatableComponent BAN_INFO_NOT_BANNED_FORMAT = translatable("ms.command.player.ban_info.not_banned");
+    private static final TranslatableComponent BAN_INFO_INFO_NOT_BANNED_FORMAT = translatable("ms.command.player.ban_info.info_not_banned");
+    private static final TranslatableComponent BAN_INFO_GET_REASON_FORMAT = translatable("ms.command.player.ban_info.get.reason");
+    private static final TranslatableComponent BAN_INFO_SET_REASON_FORMAT = translatable("ms.command.player.ban_info.set.reason");
+    private static final TranslatableComponent BAN_INFO_GET_TIME_TO_FORMAT = translatable("ms.command.player.ban_info.get.time_to");
+    private static final TranslatableComponent BAN_INFO_SET_TIME_TO_FORMAT = translatable("ms.command.player.ban_info.set.time_to");
 
     public static boolean runCommand(
             @NotNull CommandSender sender,
@@ -33,8 +41,7 @@ public class AdminBanInfoCommand {
             MSLogger.fine(
                     sender,
                     banned
-                    ? translatable(
-                            "ms.command.player.ban_info.info",
+                    ? BAN_INFO_FORMAT.args(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(playerInfo.getBannedBy()),
@@ -42,8 +49,7 @@ public class AdminBanInfoCommand {
                             playerInfo.getBannedFrom(sender),
                             playerInfo.getBannedTo(sender)
                     )
-                    : translatable(
-                            "ms.command.player.ban_info.info_not_banned",
+                    : BAN_INFO_INFO_NOT_BANNED_FORMAT.args(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname())
                     )
@@ -54,8 +60,7 @@ public class AdminBanInfoCommand {
         if (!banned) {
             MSLogger.severe(
                     sender,
-                    translatable(
-                            "ms.command.player.ban_info.not_banned",
+                    BAN_INFO_NOT_BANNED_FORMAT.args(
                             playerInfo.getDefaultName(),
                             text(playerInfo.getNickname())
                     )
@@ -68,8 +73,7 @@ public class AdminBanInfoCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            translatable(
-                                    "ms.command.player.ban_info.get.reason",
+                            BAN_INFO_GET_REASON_FORMAT.args(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     playerInfo.getBanReason()
@@ -83,8 +87,7 @@ public class AdminBanInfoCommand {
                 playerInfo.setBanReason(reason);
                 MSLogger.fine(
                         sender,
-                        translatable(
-                                "ms.command.player.ban_info.set.reason",
+                        BAN_INFO_SET_REASON_FORMAT.args(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(reason)
@@ -96,8 +99,7 @@ public class AdminBanInfoCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            translatable(
-                                    "ms.command.player.ban_info.get.time_to",
+                            BAN_INFO_GET_TIME_TO_FORMAT.args(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     playerInfo.getBannedTo(sender)
@@ -109,7 +111,7 @@ public class AdminBanInfoCommand {
                 Instant instant = DateUtils.getDateFromString(paramArgString, false);
 
                 if (instant == null) {
-                    MSLogger.severe(sender, Component.translatable("ms.error.wrong_format"));
+                    MSLogger.severe(sender, WRONG_FORMAT);
                     return true;
                 }
 
@@ -126,8 +128,7 @@ public class AdminBanInfoCommand {
 
                 MSLogger.fine(
                         sender,
-                        translatable(
-                                "ms.command.player.ban_info.set.time_to",
+                        BAN_INFO_SET_TIME_TO_FORMAT.args(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(DateUtils.getSenderDate(instant, sender))

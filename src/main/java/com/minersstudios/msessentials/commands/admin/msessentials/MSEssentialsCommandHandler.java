@@ -56,29 +56,23 @@ public class MSEssentialsCommandHandler implements MSCommandExecutor {
             @NotNull String label,
             String @NotNull ... args
     ) {
-        if (args.length == 1) {
-            switch (args[0]) {
-                case "reload" -> ReloadCommand.runCommand(sender);
-                case "updateids" -> UpdateIdsCommand.runCommand(sender);
-                case "updatemutes" -> UpdateMutesCommand.runCommand(sender);
-                default -> {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
+        return args.length != 0
+                && switch (args[0]) {
+                    case "reload" -> ReloadCommand.runCommand(sender);
+                    case "updateids" -> UpdateIdsCommand.runCommand(sender);
+                    case "updatemutes" -> UpdateMutesCommand.runCommand(sender);
+                    default -> false;
+                };
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(
+    public @NotNull List<String> onTabComplete(
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String label,
             String @NotNull ... args
     ) {
-        return TAB;
+        return args.length == 1 ? TAB : EMPTY_TAB;
     }
 
     @Override

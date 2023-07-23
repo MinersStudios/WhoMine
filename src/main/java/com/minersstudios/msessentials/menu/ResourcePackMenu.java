@@ -9,7 +9,6 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerSettings;
 import com.minersstudios.msessentials.player.ResourcePack;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -21,8 +20,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static net.kyori.adventure.text.Component.translatable;
+
 public class ResourcePackMenu {
-    private static final Component TITLE = Component.translatable("ms.menu.resource_pack.title");
     private static final CustomInventory INVENTORY;
 
     static {
@@ -90,8 +90,8 @@ public class ResourcePackMenu {
 
                     if (playerSettings.getResourcePackType() != ResourcePack.Type.NULL && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
                         playerInfo.kickPlayer(
-                                Component.translatable("ms.menu.resource_pack.button.none.kick.title"),
-                                Component.translatable("ms.menu.resource_pack.button.none.kick.subtitle")
+                                translatable("ms.menu.resource_pack.button.none.kick.title"),
+                                translatable("ms.menu.resource_pack.button.none.kick.subtitle")
                         );
                     }
 
@@ -141,7 +141,7 @@ public class ResourcePackMenu {
                     });
                 });
 
-        INVENTORY = SingleInventory.single(TITLE, 1)
+        INVENTORY = SingleInventory.single(translatable("ms.menu.resource_pack.title", ChatUtils.DEFAULT_STYLE), 1)
                 .buttonAt(0, noneButton)
                 .buttonAt(1, noneButton)
                 .buttonAt(2, fullButton)

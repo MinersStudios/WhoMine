@@ -8,7 +8,7 @@ import com.minersstudios.msessentials.player.PlayerSettings;
 import com.minersstudios.msessentials.player.ResourcePack;
 import com.minersstudios.msessentials.player.skin.Skin;
 import com.minersstudios.msessentials.utils.MessageUtils;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +20,8 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 public class AdminSettingsCommand {
+    private static final TranslatableComponent USE_ONE_OF = translatable("ms.command.player.settings.use_one_of");
+    private static final TranslatableComponent USE_ONE_OF_RESOURCEPACK_TYPE = translatable("ms.command.player.settings.resourcepack_type_use_one_of");
 
     public static boolean runCommand(
             @NotNull CommandSender sender,
@@ -27,7 +29,7 @@ public class AdminSettingsCommand {
             @NotNull PlayerInfo playerInfo
     ) {
         if (args.length < 3) {
-            MSLogger.severe(sender, translatable("ms.command.player.settings.use_one_of"));
+            MSLogger.severe(sender, USE_ONE_OF);
             return true;
         }
 
@@ -65,10 +67,11 @@ public class AdminSettingsCommand {
                 if (type == null) {
                     MSLogger.severe(
                             sender,
-                            translatable(
-                                    "ms.command.player.settings.resourcepack_type_use_one_of",
-                                    text(Arrays.toString(ResourcePack.Type.values()).toLowerCase().replaceAll("[\\[\\]]", ""))
-                            )
+                            USE_ONE_OF_RESOURCEPACK_TYPE.args(text(
+                                    Arrays.toString(ResourcePack.Type.values())
+                                    .toLowerCase()
+                                    .replaceAll("[\\[\\]]", "")
+                            ))
                     );
                     return true;
                 }
@@ -78,8 +81,8 @@ public class AdminSettingsCommand {
 
                 if (type == ResourcePack.Type.NONE || type == ResourcePack.Type.NULL) {
                     playerInfo.kickPlayer(
-                            Component.translatable("ms.menu.resource_pack.button.none.kick.title"),
-                            Component.translatable("ms.menu.resource_pack.button.none.kick.subtitle")
+                            translatable("ms.menu.resource_pack.button.none.kick.title"),
+                            translatable("ms.menu.resource_pack.button.none.kick.subtitle")
                     );
                 }
 

@@ -4,6 +4,7 @@ name:
   last-name: Иванов
   patronymic: Иваныч
 pronouns: HE/SHE/THEY
+first-join: 0
 ip-list:
   - 0.0.0.0
 game-params:
@@ -13,7 +14,10 @@ game-params:
 settings:
   resource-pack-type: FULL/LITE/NONE
   skin: Default
-first-join: 0
+skins:
+  - name: Default
+    signature: a
+    value: b
 locations:
   last-death-location:
     world: overworld
@@ -29,7 +33,3 @@ locations:
     z: 0.0
     yaw: 0.0
     pitch: 0.0
-skins:
-  - name: Default
-    signature: a
-    value: b

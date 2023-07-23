@@ -4,6 +4,7 @@ name:
   last-name: ""
   patronymic: ""
 pronouns: THEY
+first-join: 0
 ip-list:
   - 0.0.0.0
 game-params:
@@ -12,7 +13,6 @@ game-params:
   air: 300
 settings:
   resource-pack-type: NONE
-first-join: 0
 mute:
   muted: false
   reason: null

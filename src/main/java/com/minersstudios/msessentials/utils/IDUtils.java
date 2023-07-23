@@ -4,6 +4,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Utility class for IDs
+ */
 public final class IDUtils {
     public static final @NotNull String ID_REGEX = "-?\\d+";
 
@@ -25,7 +28,11 @@ public final class IDUtils {
         }
     }
 
-    @Contract(value = "null -> false", pure = true)
+    /**
+     * @param string String to be checked
+     * @return True if string matches {@link #ID_REGEX}
+     */
+    @Contract(value = "null -> false")
     public static boolean matchesIDRegex(@Nullable String string) {
         return string != null && string.matches(ID_REGEX);
     }

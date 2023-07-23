@@ -164,7 +164,7 @@ public class CustomBlockData implements Cloneable {
         customBlockData.config = config;
 
         if (config.getConfigurationSection("craft") != null) {
-            MSBlock.getConfigCache().recipeBlocks.add(customBlockData);
+            MSBlock.getCache().recipeBlocks.add(customBlockData);
         }
 
         return customBlockData;

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 import static net.kyori.adventure.text.format.TextDecoration.*;
 
@@ -102,7 +103,7 @@ public final class ChatUtils {
      */
     @Contract("_ -> new")
     public static @NotNull Component createDefaultStyledText(@NotNull String text) {
-        return Component.text().append(Component.text(text).style(DEFAULT_STYLE)).build();
+        return text().append(text(text).style(DEFAULT_STYLE)).build();
     }
 
     /**
@@ -195,7 +196,7 @@ public final class ChatUtils {
         var components = new ArrayList<Component>();
 
         for (var string : strings) {
-            Component component = Component.text(string);
+            Component component = text(string);
             components.add(
                     style == null
                     ? component

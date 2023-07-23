@@ -1,16 +1,15 @@
 package com.minersstudios.msitem.listeners.mechanic;
 
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.MSItemUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.items.register.items.Dosimeter;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
@@ -22,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static net.kyori.adventure.text.Component.text;
 
 @MSListener
 public class DosimeterMechanic extends AbstractMSListener {
@@ -188,9 +189,9 @@ public class DosimeterMechanic extends AbstractMSListener {
                                 dosimeter.setItemStack(itemStack);
                                 dosimeter.setScreenTypeByRadius(radii, radius);
                                 player.sendActionBar(
-                                        Component.text("Уровень радиации : ")
-                                                .append(Component.text(radiusToLevel(radii, radius, player.getLocation())))
-                                                .append(Component.text(" мк3в/ч"))
+                                        text("Уровень радиации : ")
+                                        .append(text(radiusToLevel(radii, radius, player.getLocation())))
+                                        .append(text(" мк3в/ч"))
                                 );
                                 return;
                             }

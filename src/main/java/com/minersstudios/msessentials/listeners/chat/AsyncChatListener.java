@@ -8,7 +8,6 @@ import com.minersstudios.msessentials.chat.ChatBuffer;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.utils.MessageUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,11 +19,12 @@ import java.time.Instant;
 import static com.minersstudios.mscore.logger.MSLogger.severe;
 import static com.minersstudios.mscore.logger.MSLogger.warning;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
 public class AsyncChatListener extends AbstractMSListener {
-    private static final TranslatableComponent MUTED = Component.translatable("ms.command.mute.already.receiver");
-    private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = Component.translatable("ms.warning.you_cant_do_this_now");
+    private static final TranslatableComponent MUTED = translatable("ms.command.mute.already.receiver");
+    private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = translatable("ms.warning.you_cant_do_this_now");
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onAsyncChat(@NotNull AsyncChatEvent event) {

@@ -2,7 +2,6 @@ package com.minersstudios.mscore.plugin;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
-import com.minersstudios.mscore.GlobalCache;
 import com.minersstudios.mscore.command.Commodore;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
@@ -82,102 +81,6 @@ public abstract class MSPlugin extends JavaPlugin {
         initClass(PacketRegistry.class);
         initClass(BlockUtils.class);
     }
-
-    /**
-     * Called after a plugin is loaded but before it has been enabled.
-     * When multiple plugins are loaded, the onLoad() for all plugins is
-     * called before any onEnable() is called.
-     * Sets the plugin folder to "/config/minersstudios/PLUGIN_NAME".
-     * Also loads the config from the new folder, class names, command instances and listener instances.
-     * After that, it calls the load() method.
-     *
-     * @see #loadClassNames()
-     * @see #loadCommands()
-     * @see #loadListeners()
-     * @see #loadPacketListeners()
-     * @see #load()
-     */
-    @Override
-    public final void onLoad() {
-        this.loadClassNames();
-        this.loadCommands();
-        this.loadListeners();
-        this.loadPacketListeners();
-
-        try {
-            DATA_FOLDER_FIELD.set(this, this.pluginFolder);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Could not set data folder", e);
-        }
-
-        this.load();
-    }
-
-    /**
-     * Called when this plugin is enabled.
-     * Registers all commands and listeners.
-     * After that, it calls the enable() method.
-     * Also logs the time it took to enable the plugin.
-     *
-     * @see #registerCommands()
-     * @see #registerListeners()
-     * @see #registerPacketListeners()
-     * @see #enable()
-     */
-    @Override
-    public final void onEnable() {
-        long time = System.currentTimeMillis();
-        this.commodore = new Commodore(this);
-
-        this.registerCommands();
-        this.registerListeners();
-        this.registerPacketListeners();
-
-        this.enable();
-
-        MSLogger.fine("[" + this.getName() + "] Enabled in " + (System.currentTimeMillis() - time) + "ms");
-    }
-
-    /**
-     * Called when this plugin is disabled.
-     * After that, it calls the disable() method.
-     * Also logs the time it took to disable the plugin.
-     * @see #disable()
-     */
-    @Override
-    public final void onDisable() {
-        long time = System.currentTimeMillis();
-
-        this.disable();
-
-        MSLogger.fine("[" + this.getName() + "] Disabled in " + (System.currentTimeMillis() - time) + "ms");
-    }
-
-    /**
-     * Called after a plugin is loaded but before it has been enabled.
-     * When multiple plugins are loaded, the load() for all plugins
-     * is called before any enable() is called.
-     * Same as {@link JavaPlugin#onLoad()}
-     *
-     * @see MSPlugin#onLoad()
-     */
-    public void load() {}
-
-    /**
-     * Called when this plugin is enabled.
-     * Same as {@link JavaPlugin#onEnable()}
-     *
-     * @see MSPlugin#onEnable()
-     */
-    public void enable() {}
-
-    /**
-     * Called when this plugin is disabled.
-     * Same as {@link JavaPlugin#onDisable()}
-     *
-     * @see MSPlugin#onDisable()
-     */
-    public void disable() {}
 
     /**
      * Gets the names of all plugin classes, similar to the package string
@@ -276,6 +179,102 @@ public abstract class MSPlugin extends JavaPlugin {
     public final boolean isLoadedCustoms() {
         return this.loadedCustoms;
     }
+
+    /**
+     * Called after a plugin is loaded but before it has been enabled.
+     * When multiple plugins are loaded, the onLoad() for all plugins is
+     * called before any onEnable() is called.
+     * Sets the plugin folder to "/config/minersstudios/PLUGIN_NAME".
+     * Also loads the config from the new folder, class names, command instances and listener instances.
+     * After that, it calls the load() method.
+     *
+     * @see #loadClassNames()
+     * @see #loadCommands()
+     * @see #loadListeners()
+     * @see #loadPacketListeners()
+     * @see #load()
+     */
+    @Override
+    public final void onLoad() {
+        this.loadClassNames();
+        this.loadCommands();
+        this.loadListeners();
+        this.loadPacketListeners();
+
+        try {
+            DATA_FOLDER_FIELD.set(this, this.pluginFolder);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Could not set data folder", e);
+        }
+
+        this.load();
+    }
+
+    /**
+     * Called when this plugin is enabled.
+     * Registers all commands and listeners.
+     * After that, it calls the enable() method.
+     * Also logs the time it took to enable the plugin.
+     *
+     * @see #registerCommands()
+     * @see #registerListeners()
+     * @see #registerPacketListeners()
+     * @see #enable()
+     */
+    @Override
+    public final void onEnable() {
+        long time = System.currentTimeMillis();
+        this.commodore = new Commodore(this);
+
+        this.registerCommands();
+        this.registerListeners();
+        this.registerPacketListeners();
+
+        this.enable();
+
+        MSLogger.fine("[" + this.getName() + "] Enabled in " + (System.currentTimeMillis() - time) + "ms");
+    }
+
+    /**
+     * Called when this plugin is disabled.
+     * After that, it calls the disable() method.
+     * Also logs the time it took to disable the plugin.
+     * @see #disable()
+     */
+    @Override
+    public final void onDisable() {
+        long time = System.currentTimeMillis();
+
+        this.disable();
+
+        MSLogger.fine("[" + this.getName() + "] Disabled in " + (System.currentTimeMillis() - time) + "ms");
+    }
+
+    /**
+     * Called after a plugin is loaded but before it has been enabled.
+     * When multiple plugins are loaded, the load() for all plugins
+     * is called before any enable() is called.
+     * Same as {@link JavaPlugin#onLoad()}
+     *
+     * @see MSPlugin#onLoad()
+     */
+    public void load() {}
+
+    /**
+     * Called when this plugin is enabled.
+     * Same as {@link JavaPlugin#onEnable()}
+     *
+     * @see MSPlugin#onEnable()
+     */
+    public void enable() {}
+
+    /**
+     * Called when this plugin is disabled.
+     * Same as {@link JavaPlugin#onDisable()}
+     *
+     * @see MSPlugin#onDisable()
+     */
+    public void disable() {}
 
     /**
      * Discards any data in {@link #getConfig()} and reloads from disk.
@@ -501,7 +500,7 @@ public abstract class MSPlugin extends JavaPlugin {
      */
     public void callPacketReceiveEvent(@NotNull PacketEvent event) {
         PacketType packetType = event.getPacketContainer().getType();
-        PacketListenersMap listenersMap = GLOBAL_CACHE.packetListenersMap;
+        PacketListenersMap listenersMap = GLOBAL_CACHE.packetListenerMap;
 
         if (listenersMap.containsPacketType(packetType)) {
             listenersMap.getListeners(packetType).forEach(listener -> listener.onPacketReceive(event));
@@ -517,7 +516,7 @@ public abstract class MSPlugin extends JavaPlugin {
      */
     public void callPacketSendEvent(@NotNull PacketEvent event) {
         PacketType packetType = event.getPacketContainer().getType();
-        PacketListenersMap listenersMap = GLOBAL_CACHE.packetListenersMap;
+        PacketListenersMap listenersMap = GLOBAL_CACHE.packetListenerMap;
 
         if (listenersMap.containsPacketType(packetType)) {
             listenersMap.getListeners(packetType).forEach(listener -> listener.onPacketSend(event));
@@ -586,6 +585,10 @@ public abstract class MSPlugin extends JavaPlugin {
             }
 
             pluginCommand.setPermission(permissionStr);
+        }
+
+        if (msCommand.playerOnly()) {
+            GLOBAL_CACHE.onlyPlayerCommandSet.add(name);
         }
 
         pluginCommand.setExecutor(executor);

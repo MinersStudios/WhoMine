@@ -61,4 +61,10 @@ public @interface MSCommand {
      * @return Command permission parent values
      */
     boolean[] permissionParentValues() default {};
+
+    /**
+     * @return True if command can be executed only by player,
+     *         default is false
+     */
+    boolean playerOnly() default false;
 }

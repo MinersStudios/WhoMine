@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.utils;
 
-import com.minersstudios.mscore.GlobalCache;
+import com.minersstudios.mscore.plugin.GlobalCache;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.RenameableItem;
@@ -110,9 +110,9 @@ public final class MSItemUtils {
 
     /**
      * @param string String to be checked
-     * @return True if string matches {@link #NAMESPACED_KEY_REGEX} regex
+     * @return True if string matches {@link #NAMESPACED_KEY_REGEX}
      */
-    @Contract(value = "null -> false", pure = true)
+    @Contract(value = "null -> false")
     public static boolean matchesNamespacedKey(@Nullable String string) {
         return string != null && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }

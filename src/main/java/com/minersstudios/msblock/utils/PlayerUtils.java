@@ -79,20 +79,6 @@ public final class PlayerUtils {
         }
     }
 
-    /**
-     * Gets interaction location
-     *
-     * @param location    the start location
-     * @param maxDistance the maximum distance
-     * @return interaction Location or null if rayTraceResult == null || hit block == null
-     */
-    public static @Nullable Location getInteractionPoint(@NotNull Location location, int maxDistance) {
-        if (location.getWorld() == null) return null;
-        RayTraceResult rayTraceResult = location.getWorld().rayTraceBlocks(location, location.getDirection(), maxDistance, FluidCollisionMode.NEVER, true);
-        return rayTraceResult == null
-                || rayTraceResult.getHitBlock() == null ? null
-                : rayTraceResult.getHitPosition().subtract(rayTraceResult.getHitBlock().getLocation().toVector()).toLocation(location.getWorld());
-    }
 
     /**
      * @param player player
@@ -124,18 +110,18 @@ public final class PlayerUtils {
     }
 
     public static void addSteps(@NotNull Player player, double distance) {
-        MSBlock.getConfigCache().steps.put(player, distance);
+        MSBlock.getCache().steps.put(player, distance);
     }
 
     public static void removeSteps(@NotNull Player player) {
-        MSBlock.getConfigCache().steps.remove(player);
+        MSBlock.getCache().steps.remove(player);
     }
 
     public static boolean containsSteps(@NotNull Player player) {
-        return MSBlock.getConfigCache().steps.containsKey(player);
+        return MSBlock.getCache().steps.containsKey(player);
     }
 
     public static double getStepDistance(@NotNull Player player) {
-        return MSBlock.getConfigCache().steps.get(player);
+        return MSBlock.getCache().steps.get(player);
     }
 }

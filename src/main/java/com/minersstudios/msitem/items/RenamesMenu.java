@@ -10,7 +10,6 @@ import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.MSItemUtils;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.utils.CustomItemUtils;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -31,6 +30,7 @@ import java.util.stream.IntStream;
 
 import static com.minersstudios.mscore.inventory.InventoryButton.playClickSound;
 import static com.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
+import static net.kyori.adventure.text.Component.text;
 
 public class RenamesMenu {
     public static final int
@@ -270,7 +270,7 @@ public class RenamesMenu {
     private static @NotNull ItemStack createRedCross() {
         ItemStack itemStack = new ItemStack(Material.PAPER);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.displayName(Component.text("Вам не хватает 1 уровня опыта", ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
+        itemMeta.displayName(text("Вам не хватает 1 уровня опыта", ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
         itemMeta.setCustomModelData(5003);
         itemStack.setItemMeta(itemMeta);
         return itemStack;

@@ -7,7 +7,6 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.ResourcePack;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -18,19 +17,20 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
 public class AsyncPlayerPreLoginListener extends AbstractMSListener {
-    private static final TranslatableComponent LEAVE_MESSAGE_FORMAT = Component.translatable("ms.format.leave.message").color(NamedTextColor.DARK_GRAY);
-    private static final TranslatableComponent WHITELIST_TITLE = Component.translatable("ms.pre_login.whitelisted.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
-    private static final TranslatableComponent WHITELIST_SUBTITLE = Component.translatable("ms.pre_login.whitelisted.subtitle").color(NamedTextColor.GRAY);
-    private static final TranslatableComponent BAN_TITLE = Component.translatable("ms.pre_login.banned.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
-    private static final TranslatableComponent BAN_SUBTITLE = Component.translatable("ms.pre_login.banned.subtitle").color(NamedTextColor.GRAY);
-    private static final TranslatableComponent SERVER_NOT_LOADED_TITLE = Component.translatable("ms.server_not_fully_loaded.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
-    private static final TranslatableComponent SERVER_NOT_LOADED_SUBTITLE = Component.translatable("ms.server_not_fully_loaded.subtitle").color(NamedTextColor.GRAY);
-    private static final TranslatableComponent TECH_WORKS_TITLE = Component.translatable("ms.pre_login.tech_works.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
-    private static final TranslatableComponent TECH_WORKS_SUBTITLE = Component.translatable("ms.pre_login.tech_works.subtitle").color(NamedTextColor.GRAY);
-    private static final TranslatableComponent IP_ADDED = Component.translatable("ms.info.player_added_ip");
+    private static final TranslatableComponent LEAVE_MESSAGE_FORMAT = translatable("ms.format.leave.message").color(NamedTextColor.DARK_GRAY);
+    private static final TranslatableComponent WHITELIST_TITLE = translatable("ms.pre_login.whitelisted.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
+    private static final TranslatableComponent WHITELIST_SUBTITLE = translatable("ms.pre_login.whitelisted.subtitle").color(NamedTextColor.GRAY);
+    private static final TranslatableComponent BAN_TITLE = translatable("ms.pre_login.banned.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
+    private static final TranslatableComponent BAN_SUBTITLE = translatable("ms.pre_login.banned.subtitle").color(NamedTextColor.GRAY);
+    private static final TranslatableComponent SERVER_NOT_LOADED_TITLE = translatable("ms.server_not_fully_loaded.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
+    private static final TranslatableComponent SERVER_NOT_LOADED_SUBTITLE = translatable("ms.server_not_fully_loaded.subtitle").color(NamedTextColor.GRAY);
+    private static final TranslatableComponent TECH_WORKS_TITLE = translatable("ms.pre_login.tech_works.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
+    private static final TranslatableComponent TECH_WORKS_SUBTITLE = translatable("ms.pre_login.tech_works.subtitle").color(NamedTextColor.GRAY);
+    private static final TranslatableComponent IP_ADDED = translatable("ms.info.player_added_ip");
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {

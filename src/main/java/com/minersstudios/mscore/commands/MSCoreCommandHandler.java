@@ -35,22 +35,15 @@ public class MSCoreCommandHandler implements MSCommandExecutor {
             @NotNull String label,
             String @NotNull ... args
     ) {
-        if (args.length == 1) {
-            switch (args[0]) {
-                case "reloadlanguage" -> ReloadLanguageCommand.runCommand(sender);
-                case "reloadconfig" -> ReloadConfigCommand.runCommand(sender);
-                default -> {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
+        return switch (args[0]) {
+            case "reloadlanguage" -> ReloadLanguageCommand.runCommand(sender);
+            case "reloadconfig" -> ReloadConfigCommand.runCommand(sender);
+            default -> false;
+        };
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(
+    public @NotNull List<String> onTabComplete(
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String label,

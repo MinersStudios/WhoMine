@@ -26,13 +26,13 @@ public interface DualMap<P, S, V> {
 
     V removeBySecondaryKey(S secondary);
 
-    @Contract(value = "null -> false", pure = true)
+    @Contract(value = "null -> false")
     boolean containsPrimaryKey(P primary);
 
-    @Contract(value = "null -> false", pure = true)
+    @Contract(value = "null -> false")
     boolean containsSecondaryKey(S secondary);
 
-    @Contract(value = "null -> false", pure = true)
+    @Contract(value = "null -> false")
     boolean containsValue(V value);
 
     void clear();

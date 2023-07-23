@@ -19,12 +19,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static net.kyori.adventure.text.Component.translatable;
+
 public class CraftsMenu {
     public static final int RESULT_SLOT = 15;
 
-    private static final Component CATEGORIES_TITLE = Component.translatable("ms.menu.crafts.categories.title", ChatUtils.DEFAULT_STYLE);
-    private static final Component CRAFTS_TITLE = Component.translatable("ms.menu.crafts.category.title", ChatUtils.DEFAULT_STYLE);
-    private static final Component CRAFT_TITLE = Component.translatable("ms.menu.crafts.craft.title", ChatUtils.DEFAULT_STYLE);
+    private static final Component CATEGORIES_TITLE = translatable("ms.menu.crafts.categories.title", ChatUtils.DEFAULT_STYLE);
+    private static final Component CRAFTS_TITLE = translatable("ms.menu.crafts.category.title", ChatUtils.DEFAULT_STYLE);
+    private static final Component CRAFT_TITLE = translatable("ms.menu.crafts.craft.title", ChatUtils.DEFAULT_STYLE);
 
     private static final InventoryButton CRAFTS_QUIT_BUTTON;
     private static final InventoryButton CRAFTS_PREVIOUS_BUTTON;

@@ -1,10 +1,7 @@
 package com.minersstudios.msblock;
 
-import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.utils.ConfigCache;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.utils.MSPluginUtils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.minecraft.server.MinecraftServer;
@@ -17,8 +14,9 @@ import java.util.logging.Level;
 
 public final class MSBlock extends MSPlugin {
     private static MSBlock instance;
-    private static ConfigCache configCache;
-    private static CoreProtectAPI coreProtectAPI;
+    private CoreProtectAPI coreProtectAPI;
+    private Cache cache;
+    private Config config;
 
     @Override
     public void load() {
@@ -43,38 +41,42 @@ public final class MSBlock extends MSPlugin {
     @Override
     public void enable() {
         instance = this;
-        coreProtectAPI = CoreProtect.getInstance().getAPI();
+        this.coreProtectAPI = CoreProtect.getInstance().getAPI();
+        this.cache = new Cache();
+        this.config = new Config(this, this.getConfigFile());
 
-        reloadConfigs();
+        this.config.reload();
     }
 
-    public static void reloadConfigs() {
-        instance.saveResource("blocks/example.yml", true);
-        instance.saveDefaultConfig();
-        instance.reloadConfig();
-        configCache = new ConfigCache();
-
-        configCache.loadBlocks();
-        instance.setLoadedCustoms(true);
-
-        instance.runTaskTimer(task -> {
-            if (MSPluginUtils.isLoadedCustoms()) {
-                configCache.recipeBlocks.forEach(CustomBlockData::registerRecipes);
-                configCache.recipeBlocks.clear();
-                task.cancel();
-            }
-        }, 0L, 10L);
-    }
-
-    public static @NotNull MSBlock getInstance() {
+    /**
+     * @return The instance of the plugin,
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static @NotNull MSBlock getInstance() throws NullPointerException {
         return instance;
     }
 
-    public static @NotNull ConfigCache getConfigCache() {
-        return configCache;
+    /**
+     * @return The cache of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static @NotNull Cache getCache() throws NullPointerException {
+        return instance.cache;
     }
 
-    public static @NotNull CoreProtectAPI getCoreProtectAPI() {
-        return coreProtectAPI;
+    /**
+     * @return The configuration of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static @NotNull Config getConfiguration() throws NullPointerException {
+        return instance.config;
+    }
+
+    /**
+     * @return The CoreProtectAPI instance
+     * @throws NullPointerException If the {@link CoreProtect} is not enabled
+     */
+    public static @NotNull CoreProtectAPI getCoreProtectAPI() throws NullPointerException {
+        return instance.coreProtectAPI;
     }
 }

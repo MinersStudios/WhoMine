@@ -246,7 +246,7 @@ public class Skin {
      * @param string String to be checked
      * @return True if string matches {@link #NAME_REGEX}
      */
-    @Contract(value = "null -> false", pure = true)
+    @Contract(value = "null -> false")
     public static boolean matchesNameRegex(@Nullable String string) {
         return string != null && string.matches(NAME_REGEX);
     }

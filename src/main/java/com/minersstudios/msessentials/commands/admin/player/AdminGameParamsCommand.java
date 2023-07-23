@@ -3,7 +3,6 @@ package com.minersstudios.msessentials.commands.admin.player;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
@@ -16,6 +15,18 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 public class AdminGameParamsCommand {
+    private static final TranslatableComponent WRONG_FORMAT = translatable("ms.error.wrong_format");
+    private static final TranslatableComponent USE_ONE_OF = translatable("ms.command.player.game_params.use_one_of");
+    private static final TranslatableComponent GAME_MODE_USE_ONE_OF = translatable("ms.command.player.game_params.game_mode_use_one_of");
+    private static final TranslatableComponent GET_GAME_MODE = translatable("ms.command.player.game_params.get.game_mode");
+    private static final TranslatableComponent GET_GAME_MODE_FULL = translatable("ms.command.player.game_params.get.game_mode_full");
+    private static final TranslatableComponent SET_GAME_MODE = translatable("ms.command.player.game_params.set.game_mode");
+    private static final TranslatableComponent GET_HEALTH = translatable("ms.command.player.game_params.get.health");
+    private static final TranslatableComponent GET_HEALTH_FULL = translatable("ms.command.player.game_params.get.health_full");
+    private static final TranslatableComponent SET_HEALTH = translatable("ms.command.player.game_params.set.health");
+    private static final TranslatableComponent GET_AIR = translatable("ms.command.player.game_params.get.air");
+    private static final TranslatableComponent GET_AIR_FULL = translatable("ms.command.player.game_params.get.air_full");
+    private static final TranslatableComponent SET_AIR = translatable("ms.command.player.game_params.set.air");
 
     public static boolean runCommand(
             @NotNull CommandSender sender,
@@ -23,7 +34,7 @@ public class AdminGameParamsCommand {
             @NotNull PlayerInfo playerInfo
     ) {
         if (args.length < 3) {
-            MSLogger.severe(sender, translatable("ms.command.player.game_params.use_one_of"));
+            MSLogger.severe(sender, USE_ONE_OF);
             return true;
         }
 
@@ -32,19 +43,23 @@ public class AdminGameParamsCommand {
         String paramString = args[2].toLowerCase(Locale.ROOT);
         String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
         Player player = playerInfo.getOnlinePlayer();
-        TranslatableComponent wrongFormat = Component.translatable("ms.error.wrong_format");
 
         switch (paramString) {
             case "game-mode" -> {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            translatable(
-                                    player == null ? "ms.command.player.game_params.get.game_mode" : "ms.command.player.game_params.get.game_mode_full",
+                            player == null
+                            ? GET_GAME_MODE.args(
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(playerInfo.getNickname()),
+                                    text(playerFile.getGameMode().name().toLowerCase(Locale.ROOT))
+                            )
+                            : GET_GAME_MODE_FULL.args(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerFile.getGameMode().name().toLowerCase(Locale.ROOT)),
-                                    player == null ? text() : text(player.getGameMode().name().toLowerCase(Locale.ROOT))
+                                    text(player.getGameMode().name().toLowerCase(Locale.ROOT))
                             )
                     );
                     return true;
@@ -54,7 +69,7 @@ public class AdminGameParamsCommand {
                 try {
                     gameMode = GameMode.valueOf(paramArgString.toUpperCase(Locale.ROOT));
                 } catch (IllegalArgumentException ignore) {
-                    MSLogger.severe(sender, translatable("ms.command.player.game_params.game_mode_use_one_of"));
+                    MSLogger.severe(sender, GAME_MODE_USE_ONE_OF);
                     return true;
                 }
 
@@ -66,8 +81,7 @@ public class AdminGameParamsCommand {
                 playerFile.save();
                 MSLogger.fine(
                         sender,
-                        translatable(
-                                "ms.command.player.game_params.set.game_mode",
+                        SET_GAME_MODE.args(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(paramArgString)
@@ -79,12 +93,17 @@ public class AdminGameParamsCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            translatable(
-                                    player == null ? "ms.command.player.game_params.get.health" : "ms.command.player.game_params.get.health_full",
+                            player == null
+                            ? GET_HEALTH.args(
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(playerInfo.getNickname()),
+                                    text(Double.toString(playerFile.getHealth()))
+                            )
+                            : GET_HEALTH_FULL.args(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(Double.toString(playerFile.getHealth())),
-                                    player == null ? text() : text(Double.toString(player.getHealth()))
+                                    text(Double.toString(player.getHealth()))
                             )
                     );
                     return true;
@@ -94,7 +113,7 @@ public class AdminGameParamsCommand {
                 try {
                     health = Double.parseDouble(paramArgString);
                 } catch (NumberFormatException ignore) {
-                    MSLogger.severe(sender, wrongFormat);
+                    MSLogger.severe(sender, WRONG_FORMAT);
                     return true;
                 }
 
@@ -106,8 +125,7 @@ public class AdminGameParamsCommand {
                 playerFile.save();
                 MSLogger.fine(
                         sender,
-                        translatable(
-                                "ms.command.player.game_params.set.health",
+                        SET_HEALTH.args(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(paramArgString)
@@ -119,12 +137,17 @@ public class AdminGameParamsCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            translatable(
-                                    player == null ? "ms.command.player.game_params.get.air" : "ms.command.player.game_params.get.air_full",
+                            player == null
+                            ? GET_AIR.args(
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(playerInfo.getNickname()),
+                                    text(playerFile.getAir())
+                            )
+                            : GET_AIR_FULL.args(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerFile.getAir()),
-                                    player == null ? text() : text(player.getRemainingAir())
+                                    text(player.getRemainingAir())
                             )
                     );
                     return true;
@@ -133,7 +156,7 @@ public class AdminGameParamsCommand {
                 try {
                     air = Integer.parseInt(paramArgString);
                 } catch (NumberFormatException ignore) {
-                    MSLogger.severe(sender, wrongFormat);
+                    MSLogger.severe(sender, WRONG_FORMAT);
                     return true;
                 }
 
@@ -145,8 +168,7 @@ public class AdminGameParamsCommand {
                 playerFile.save();
                 MSLogger.fine(
                         sender,
-                        translatable(
-                                "ms.command.player.game_params.set.air",
+                        SET_AIR.args(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(paramArgString)

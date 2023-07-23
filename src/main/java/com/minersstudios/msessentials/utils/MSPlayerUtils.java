@@ -1,6 +1,8 @@
 package com.minersstudios.msessentials.utils;
 
 import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.msessentials.player.PlayerInfo;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -8,6 +10,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Utility class for players
+ */
 @SuppressWarnings({"BooleanMethodIsAlwaysInverted"})
 public final class MSPlayerUtils {
     /**
@@ -31,7 +39,34 @@ public final class MSPlayerUtils {
         }
     }
 
-    @Contract(value = "null -> false", pure = true)
+    /**
+     * @return A list of all online players' names and IDs
+     */
+    public static @NotNull List<String> getLocalPlayerNames() {
+        List<String> completions = new ArrayList<>();
+
+        for (var player : Bukkit.getOnlinePlayers()) {
+            PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+
+            if (playerInfo.isOnline()) {
+                int id = playerInfo.getID(false, false);
+
+                if (id != -1) {
+                    completions.add(String.valueOf(id));
+                }
+
+                completions.add(player.getName());
+            }
+        }
+
+        return completions;
+    }
+
+    /**
+     * @param string String to be checked
+     * @return True if string matches {@link #NAME_REGEX}
+     */
+    @Contract(value = "null -> false")
     public static boolean matchesNameRegex(@Nullable String string) {
         return string != null && string.matches(NAME_REGEX);
     }

@@ -1,10 +1,8 @@
 package com.minersstudios.msessentials.player;
 
 import com.google.common.base.Preconditions;
-import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.skin.Skin;
-import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -22,7 +20,9 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 
+import static com.minersstudios.mscore.utils.ChatUtils.serializeLegacyComponent;
 import static com.minersstudios.msessentials.MSEssentials.getInstance;
+import static net.kyori.adventure.text.Component.translatable;
 
 /**
  * Player file with player data, settings, etc.
@@ -56,10 +56,10 @@ public class PlayerFile {
         this.config = config;
 
         this.playerName = PlayerName.create(
-                config.getString("name.nickname", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.nickname"))),
-                config.getString("name.first-name", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.first_name"))),
-                config.getString("name.last-name", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.last_name"))),
-                config.getString("name.patronymic", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.patronymic")))
+                config.getString("name.nickname", serializeLegacyComponent(translatable("ms.player.name.nickname"))),
+                config.getString("name.first-name", serializeLegacyComponent(translatable("ms.player.name.first_name"))),
+                config.getString("name.last-name", serializeLegacyComponent(translatable("ms.player.name.last_name"))),
+                config.getString("name.patronymic", serializeLegacyComponent(translatable("ms.player.name.patronymic")))
         );
         this.pronouns = Pronouns.valueOf(config.getString("pronouns", "HE"));
         this.ipList = config.getStringList("ip-list");
@@ -68,16 +68,16 @@ public class PlayerFile {
         this.air = config.getInt("game-params.air", 300);
         this.firstJoin = Instant.ofEpochMilli(config.getLong("first-join", System.currentTimeMillis()));
 
-        World overworld = MSEssentials.getOverworld();
-        Location spawnLocation = overworld.getSpawnLocation();
-
         ConfigurationSection lastLeaveSection = this.config.getConfigurationSection("locations.last-leave-location");
         String lastLeaveWorldName = this.config.getString("locations.last-leave-location.world", "");
         World lastLeaveWorld = Bukkit.getWorld(lastLeaveWorldName);
+        Location spawnLocation = MSEssentials.getConfiguration().spawnLocation;
+        World spawnWorld = spawnLocation.getWorld();
+
         this.lastLeaveLocation = lastLeaveSection == null
                 ? null
                 : new Location(
-                lastLeaveWorld == null ? overworld : lastLeaveWorld,
+                lastLeaveWorld == null ? spawnWorld : lastLeaveWorld,
                 lastLeaveSection.getDouble("x", spawnLocation.getX()),
                 lastLeaveSection.getDouble("y", spawnLocation.getY()),
                 lastLeaveSection.getDouble("z", spawnLocation.getZ()),
@@ -91,7 +91,7 @@ public class PlayerFile {
         this.lastDeathLocation = lastDeathSection == null
                 ? null
                 : new Location(
-                lastDeathWorld == null ? overworld : lastDeathWorld,
+                lastDeathWorld == null ? spawnWorld : lastDeathWorld,
                 lastDeathSection.getDouble("x"),
                 lastDeathSection.getDouble("y"),
                 lastDeathSection.getDouble("z"),

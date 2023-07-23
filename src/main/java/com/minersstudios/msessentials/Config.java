@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials;
 
-import com.minersstudios.mscore.GlobalCache;
+import com.minersstudios.mscore.plugin.GlobalCache;
 import com.minersstudios.mscore.config.MSConfig;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
@@ -11,6 +11,8 @@ import com.minersstudios.msessentials.anomalies.tasks.ParticleTask;
 import com.minersstudios.msessentials.menu.CraftsMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.ResourcePack;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,10 +44,10 @@ public final class Config extends MSConfig {
     public String liteHash;
     public double localChatRadius;
     public String mineSkinApiKey;
+    public Location spawnLocation;
 
     /**
-     * Configuration constructor, automatically loads the yaml configuration
-     * from the specified file and initializes the variables of the class
+     * Configuration constructor
      *
      * @param plugin The plugin instance of the configuration
      * @param file The config file, where the configuration is stored
@@ -81,6 +83,28 @@ public final class Config extends MSConfig {
         this.liteHash = this.yaml.getString("resource-pack.lite.hash");
         this.mineSkinApiKey = this.yaml.getString("skin.mine-skin-api-key");
 
+        String spawnLocationWorldName = this.yaml.getString("spawn-location.world", "");
+        World spawnLocationWorld = this.plugin.getServer().getWorld(spawnLocationWorldName);
+        double spawnLocationX = this.yaml.getDouble("spawn-location.x");
+        double spawnLocationY = this.yaml.getDouble("spawn-location.y");
+        double spawnLocationZ = this.yaml.getDouble("spawn-location.z");
+        float spawnLocationYaw = (float) this.yaml.getDouble("spawn-location.yaw");
+        float spawnLocationPitch = (float) this.yaml.getDouble("spawn-location.pitch");
+
+        if (spawnLocationWorld == null) {
+            MSLogger.warning("World \"" + spawnLocationWorldName + "\" not found!\nUsing default spawn location!");
+            this.spawnLocation = this.plugin.getServer().getWorlds().get(0).getSpawnLocation();
+        } else {
+           this.spawnLocation = new Location(
+                   spawnLocationWorld,
+                    spawnLocationX,
+                    spawnLocationY,
+                    spawnLocationZ,
+                    spawnLocationYaw,
+                    spawnLocationPitch
+            );
+        }
+
         if (!cache.bukkitTasks.isEmpty()) {
             cache.bukkitTasks.forEach(BukkitTask::cancel);
         }
@@ -105,7 +129,7 @@ public final class Config extends MSConfig {
                 .filter(file -> {
                     String fileName = file.getFileName().toString();
                     return Files.isRegularFile(file)
-                            && !fileName.equals("example.yml")
+                            && !fileName.equalsIgnoreCase("example.yml")
                             && fileName.endsWith(".yml");
                 })
                 .map(Path::toFile)
@@ -140,8 +164,5 @@ public final class Config extends MSConfig {
                 task.cancel();
             }
         }, 0L, 10L);
-
-        this.plugin.saveDefaultConfig();
-        this.plugin.reloadConfig();
     }
 }

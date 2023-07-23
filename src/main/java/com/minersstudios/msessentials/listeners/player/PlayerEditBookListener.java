@@ -10,10 +10,11 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
 public class PlayerEditBookListener extends AbstractMSListener {
-    private static final Component ANONYMOUS_AUTHOR = Component.translatable("ms.book.anonymous");
+    private static final Component ANONYMOUS_AUTHOR = translatable("ms.book.anonymous");
 
     @EventHandler
     public void onPlayerEditBook(@NotNull PlayerEditBookEvent event) {

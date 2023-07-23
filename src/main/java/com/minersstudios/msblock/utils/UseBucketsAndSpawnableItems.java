@@ -35,7 +35,12 @@ public final class UseBucketsAndSpawnableItems {
      * @param blockFace  block face
      * @param itemInHand item in hand
      */
-    public UseBucketsAndSpawnableItems(@NotNull Player player, @NotNull Block block, @NotNull BlockFace blockFace, @NotNull ItemStack itemInHand) {
+    public UseBucketsAndSpawnableItems(
+            @NotNull Player player,
+            @NotNull Block block,
+            @NotNull BlockFace blockFace,
+            @NotNull ItemStack itemInHand
+    ) {
         this.player = player;
         this.world = player.getWorld();
         this.block = block;

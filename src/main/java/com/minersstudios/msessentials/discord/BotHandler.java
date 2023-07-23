@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.discord;
 
+import com.minersstudios.mscore.config.LanguageFile;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
@@ -7,11 +8,9 @@ import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
 import com.minersstudios.msessentials.utils.MessageUtils;
-import com.minersstudios.mscore.config.LanguageFile;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -235,7 +234,7 @@ public class BotHandler {
                         onlinePlayer,
                         translatable(
                                 "ms.command.discord.link.success",
-                                Component.text(this.user.getName())
+                                text(this.user.getName())
                         )
                 );
             }

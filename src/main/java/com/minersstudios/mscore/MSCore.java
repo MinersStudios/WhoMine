@@ -12,16 +12,16 @@ import org.jetbrains.annotations.NotNull;
  * @see MSPlugin
  */
 public final class MSCore extends MSPlugin {
-    private static MSCore singleton;
-    private static Config config;
+    private static MSCore instance;
+    private Config config;
 
     @Override
     public void enable() {
-        singleton = this;
-        config = new Config(this, this.getConfigFile());
+        instance = this;
+        this.config = new Config(this, this.getConfigFile());
 
-        config.reload();
-        LanguageFile.loadLanguage(config.languageUser, config.languageRepo, config.languageCode);
+        this.config.reload();
+        LanguageFile.loadLanguage(this.config.languageUser, this.config.languageRepo, this.config.languageCode);
         this.getServer().getOnlinePlayers().forEach(player -> ChannelHandler.injectPlayer(player, this));
     }
 
@@ -36,7 +36,7 @@ public final class MSCore extends MSPlugin {
      * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull MSCore getInstance() throws NullPointerException {
-        return singleton;
+        return instance;
     }
 
     /**
@@ -44,6 +44,6 @@ public final class MSCore extends MSPlugin {
      * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull Config getConfiguration() throws NullPointerException {
-        return config;
+        return instance.config;
     }
 }

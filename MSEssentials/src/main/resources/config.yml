@@ -1,6 +1,13 @@
 developer-mode: false
 anomaly-check-rate: 100
 anomaly-particles-check-rate: 10
+spawn-location:
+  world:
+  x:
+  y:
+  z:
+  yaw:
+  pitch:
 skin:
   mine-skin-api-key: ''
 chat:

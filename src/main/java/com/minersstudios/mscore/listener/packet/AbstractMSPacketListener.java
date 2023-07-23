@@ -91,7 +91,7 @@ public abstract class AbstractMSPacketListener {
         Preconditions.checkState(!this.isRegistered(), "Packet listener " + this + " already registered!");
 
         this.plugin = plugin;
-        MSPlugin.getGlobalCache().packetListenersMap.addListener(this);
+        MSPlugin.getGlobalCache().packetListenerMap.addListener(this);
     }
 
     /**

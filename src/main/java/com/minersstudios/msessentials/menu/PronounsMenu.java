@@ -20,8 +20,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import static net.kyori.adventure.text.Component.translatable;
+
 public class PronounsMenu {
-    private static final Component TITLE = Component.translatable("ms.menu.pronouns.title", ChatUtils.DEFAULT_STYLE);
     private static final CustomInventory INVENTORY;
 
     static {
@@ -88,7 +89,7 @@ public class PronounsMenu {
                     player.closeInventory();
                 });
 
-        INVENTORY = SingleInventory.single(TITLE, 1)
+        INVENTORY = SingleInventory.single(translatable("ms.menu.pronouns.title", ChatUtils.DEFAULT_STYLE), 1)
                 .buttonAt(0, heButton)
                 .buttonAt(1, heButton)
                 .buttonAt(2, heButton)

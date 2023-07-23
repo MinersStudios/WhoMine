@@ -5,7 +5,7 @@ import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerName;
 import com.minersstudios.msessentials.utils.MSPlayerUtils;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,6 +17,15 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 public class AdminNameCommand {
+    private static final TranslatableComponent WRONG_FORMAT = translatable("ms.error.wrong_format");
+    private static final TranslatableComponent ABOUT_FORMAT = translatable("ms.command.player.name.about");
+    private static final TranslatableComponent FULL_RESET_SENDER = translatable("ms.command.player.name.full_reset.sender");
+    private static final TranslatableComponent FULL_RESET_TITLE = translatable("ms.command.player.name.full_reset.receiver.title");
+    private static final TranslatableComponent FULL_RESET_SUBTITLE = translatable("ms.command.player.name.full_reset.receiver.subtitle");
+    private static final TranslatableComponent GET_FIRST_NAME = translatable("ms.command.player.name.get.first_name");
+    private static final TranslatableComponent GET_LAST_NAME = translatable("ms.command.player.name.get.last_name");
+    private static final TranslatableComponent GET_PATRONYMIC = translatable("ms.command.player.name.get.patronymic");
+    private static final TranslatableComponent NOW_FULL = translatable("ms.command.player.name.now_full");
 
     public static boolean runCommand(
             @NotNull CommandSender sender,
@@ -24,7 +33,7 @@ public class AdminNameCommand {
             @NotNull PlayerInfo playerInfo
     ) {
         PlayerFile playerFile = playerInfo.getPlayerFile();
-        YamlConfiguration yamlConfiguration = playerFile.getConfig();
+        YamlConfiguration yaml = playerFile.getConfig();
         PlayerName playerName = playerFile.getPlayerName();
         boolean haveArg = args.length >= 4;
         String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
@@ -33,8 +42,7 @@ public class AdminNameCommand {
         if (args.length == 2) {
             MSLogger.fine(
                     sender,
-                    translatable(
-                            "ms.command.player.name.about",
+                    ABOUT_FORMAT.args(
                             playerInfo.getGrayIDGreenName()
                             .appendSpace()
                             .append(text(playerName.getPatronymic(), NamedTextColor.GREEN)),
@@ -50,7 +58,7 @@ public class AdminNameCommand {
                 && !"empty".equals(paramArgString)
                 && !MSPlayerUtils.matchesNameRegex(paramArgString)
         ) {
-            MSLogger.severe(sender, Component.translatable("ms.error.format"));
+            MSLogger.severe(sender, WRONG_FORMAT);
             return true;
         }
 
@@ -60,31 +68,24 @@ public class AdminNameCommand {
 
                 MSLogger.fine(
                         sender,
-                        translatable(
-                                "ms.command.player.name.full_reset.sender",
+                        FULL_RESET_SENDER.args(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname())
                         )
                 );
 
-                yamlConfiguration.set("name.first-name", null);
-                yamlConfiguration.set("name.last-name", null);
-                yamlConfiguration.set("name.patronymic", null);
-                yamlConfiguration.set("pronouns", null);
+                yaml.set("name.first-name", null);
+                yaml.set("name.last-name", null);
+                yaml.set("name.patronymic", null);
+                yaml.set("pronouns", null);
                 playerFile.save();
                 playerInfo.initNames();
-                playerInfo.kickPlayer(
-                        translatable("ms.command.player.name.full_reset.receiver.title"),
-                        translatable("ms.command.player.name.full_reset.receiver.subtitle")
-                );
+                playerInfo.kickPlayer(FULL_RESET_TITLE, FULL_RESET_SUBTITLE);
                 return true;
             }
             case "first-name" -> {
                 if (!haveArg) {
-                    MSLogger.fine(
-                            sender,
-                            translatable("ms.command.player.name.get.first_name", text(playerName.getFirstName()))
-                    );
+                    MSLogger.fine(sender, GET_FIRST_NAME.args(text(playerName.getFirstName())));
                     return true;
                 }
 
@@ -92,10 +93,7 @@ public class AdminNameCommand {
             }
             case "last-name" -> {
                 if (!haveArg) {
-                    MSLogger.fine(
-                            sender,
-                            translatable("ms.command.player.name.get.last_name", text(playerName.getLastName()))
-                    );
+                    MSLogger.fine(sender, GET_LAST_NAME.args(text(playerName.getLastName())));
                     return true;
                 }
 
@@ -103,10 +101,7 @@ public class AdminNameCommand {
             }
             case "patronymic" -> {
                 if (!haveArg) {
-                    MSLogger.fine(
-                            sender,
-                            translatable("ms.command.player.name.get.patronymic", text(playerName.getPatronymic()))
-                    );
+                    MSLogger.fine(sender, GET_PATRONYMIC.args(text(playerName.getPatronymic())));
                     return true;
                 }
 
@@ -119,8 +114,7 @@ public class AdminNameCommand {
         playerInfo.initNames();
         MSLogger.fine(
                 sender,
-                translatable(
-                        "ms.command.player.name.now_full",
+                NOW_FULL.args(
                         playerInfo.getGrayIDGreenName()
                         .appendSpace()
                         .append(text(playerName.getPatronymic(), NamedTextColor.GREEN))

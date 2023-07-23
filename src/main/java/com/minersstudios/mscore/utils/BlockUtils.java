@@ -48,13 +48,17 @@ public final class BlockUtils {
             //</editor-fold>
     );
 
-    public static Set<Material> WOOD_SOUND_MATERIAL_SET;
+    public static final Set<Material> WOOD_SOUND_MATERIAL_SET;
 
     static {
         SoundGroup woodSoundGroup = CraftSoundGroup.getSoundGroup(SoundType.WOOD);
         WOOD_SOUND_MATERIAL_SET =
                 Arrays.stream(Material.values())
-                .filter(material -> material.isBlock() && material.createBlockData().getSoundGroup() == woodSoundGroup)
+                .filter(material ->
+                        !material.isLegacy()
+                        && material.isBlock()
+                        && material.createBlockData().getSoundGroup() == woodSoundGroup
+                )
                 .collect(Collectors.toUnmodifiableSet());
     }
 
@@ -99,7 +103,6 @@ public final class BlockUtils {
      * @return True if material has wood sound
      */
     public static boolean isWoodenSound(@NotNull Material material) {
-        return material != Material.NOTE_BLOCK
-                && WOOD_SOUND_MATERIAL_SET.contains(material);
+        return WOOD_SOUND_MATERIAL_SET.contains(material);
     }
 }

@@ -84,6 +84,15 @@ public class WorldDark extends CraftWorld {
     }
 
     /**
+     * @param world World to check
+     * @return True if world is world dark, false otherwise
+     */
+    @Contract("null -> false")
+    public static boolean isWorldDark(@Nullable World world) {
+        return world != null && world.getName().equals(WORLD_NAME);
+    }
+
+    /**
      * @param location Location to check
      * @return True if location is in world dark, false otherwise
      */
@@ -102,7 +111,7 @@ public class WorldDark extends CraftWorld {
     }
 
     /**
-     * Teleports player to world dark and sets spectating dark entity.
+     * Teleports player to world dark and sets spectating dark entity
      *
      * @param player Player to teleport
      */

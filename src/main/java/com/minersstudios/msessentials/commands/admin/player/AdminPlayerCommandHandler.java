@@ -9,13 +9,12 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.map.IDMap;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.tabcompleters.AllPlayers;
 import com.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -23,10 +22,13 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
+import static net.kyori.adventure.text.Component.translatable;
 
 @MSCommand(
         command = "player",
@@ -199,6 +201,8 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                     )
             ).build();
 
+    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
+
     @Override
     public boolean onCommand(
             @NotNull CommandSender sender,
@@ -211,7 +215,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
         PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
-            MSLogger.severe(sender, Component.translatable("ms.error.player_not_found"));
+            MSLogger.severe(sender, PLAYER_NOT_FOUND);
             return true;
         }
 
@@ -230,7 +234,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(
+    public @NotNull List<String> onTabComplete(
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String label,
@@ -238,7 +242,26 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
     ) {
         switch (args.length) {
             case 1 -> {
-                return new AllPlayers().onTabComplete(sender, command, label, args);
+                List<String> completions = new ArrayList<>();
+
+                for (var offlinePlayer : sender.getServer().getOfflinePlayers()) {
+                    String nickname = offlinePlayer.getName();
+
+                    if (nickname == null) continue;
+
+                    UUID uuid = offlinePlayer.getUniqueId();
+                    int id = MSEssentials.getCache().idMap.getID(uuid, false, false);
+
+                    if (id != -1) {
+                        completions.add(String.valueOf(id));
+                    }
+
+                    if (offlinePlayer.hasPlayedBefore()) {
+                        completions.add(nickname);
+                    }
+                }
+
+                return completions;
             }
             case 2 -> {
                 return TAB_2;

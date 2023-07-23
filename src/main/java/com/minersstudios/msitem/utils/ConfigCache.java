@@ -34,6 +34,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+import static net.kyori.adventure.text.Component.text;
+
 public final class ConfigCache {
     public final @NotNull File configFile;
     public final @NotNull YamlConfiguration configYaml;
@@ -82,7 +84,7 @@ public final class ConfigCache {
 					var loreComponentList = new ArrayList<Component>();
 
                     for (var text : lore) {
-                        loreComponentList.add(Component.text(text));
+                        loreComponentList.add(text(text));
                     }
 
                     itemMeta.lore(loreComponentList);

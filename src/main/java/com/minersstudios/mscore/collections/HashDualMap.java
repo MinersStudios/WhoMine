@@ -71,19 +71,19 @@ public class HashDualMap<P, S, V> implements DualMap<P, S, V> {
     }
 
     @Override
-    @Contract(value = "null -> false", pure = true)
+    @Contract(value = "null -> false")
     public boolean containsPrimaryKey(@Nullable P primary) {
         return primary != null && this.map.containsKey(primary);
     }
 
     @Override
-    @Contract(value = "null -> false", pure = true)
+    @Contract(value = "null -> false")
     public boolean containsSecondaryKey(@Nullable S secondary) {
         return secondary != null && this.secondaryKeySet().contains(secondary);
     }
 
     @Override
-    @Contract(value = "null -> false", pure = true)
+    @Contract(value = "null -> false")
     public boolean containsValue(@Nullable V value) {
         return value != null && this.values().contains(value);
     }

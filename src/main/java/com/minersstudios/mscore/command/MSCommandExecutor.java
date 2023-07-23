@@ -71,7 +71,7 @@ public interface MSCommandExecutor extends CommandExecutor, TabCompleter {
      * @return A List of possible completions for the final argument, or null to default to the command executor
      */
     @Override
-    default @Nullable List<String> onTabComplete(
+    default @NotNull List<String> onTabComplete(
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String label,

@@ -7,6 +7,7 @@ import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.BlockUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
@@ -20,20 +21,24 @@ public class BlockDamageListener extends AbstractMSListener {
 
     @EventHandler
     public void onBlockDamage(@NotNull BlockDamageEvent event) {
-        Player player = event.getPlayer();
         Block block = event.getBlock();
+        Material blockType = block.getType();
         Location blockLocation = block.getLocation().toCenterLocation();
 
-        if (BlockUtils.isWoodenSound(block.getType())) {
+        if (
+                blockType != Material.NOTE_BLOCK
+                && BlockUtils.isWoodenSound(blockType)
+        ) {
             CustomBlockData.DEFAULT.getSoundGroup().playHitSound(blockLocation);
         }
 
         if (block.getBlockData() instanceof NoteBlock noteBlock) {
+            Player player = event.getPlayer();
             CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
-            CustomBlockDamageEvent customBlockDamageEvent = new CustomBlockDamageEvent(new CustomBlock(block, player, customBlockData), player, event.getItemInHand());
+            CustomBlockDamageEvent damageEvent = new CustomBlockDamageEvent(new CustomBlock(block, player, customBlockData), player, event.getItemInHand());
 
-            Bukkit.getPluginManager().callEvent(customBlockDamageEvent);
-            if (customBlockDamageEvent.isCancelled()) return;
+            Bukkit.getPluginManager().callEvent(damageEvent);
+            if (damageEvent.isCancelled()) return;
             customBlockData.getSoundGroup().playHitSound(blockLocation);
         }
     }

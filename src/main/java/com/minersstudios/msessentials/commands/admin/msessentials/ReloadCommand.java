@@ -2,24 +2,21 @@ package com.minersstudios.msessentials.commands.admin.msessentials;
 
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 public class ReloadCommand {
+    private static final TranslatableComponent RELOAD_SUCCESS = translatable("ms.command.msessentials.reload.success");
 
-    public static void runCommand(@NotNull CommandSender sender) {
+    public static boolean runCommand(@NotNull CommandSender sender) {
         long time = System.currentTimeMillis();
 
         MSEssentials.getConfiguration().reload();
-        MSLogger.fine(
-                sender,
-                Component.translatable(
-                        "ms.command.msessentials.reload.success",
-                        text(System.currentTimeMillis() - time)
-                )
-        );
+        MSLogger.fine(sender, RELOAD_SUCCESS.args(text(System.currentTimeMillis() - time)));
+        return true;
     }
 }

@@ -25,6 +25,8 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.logging.Level;
 
+import static net.kyori.adventure.text.Component.translatable;
+
 /**
  * Language file loader
  * <br>
@@ -146,7 +148,17 @@ public final class LanguageFile {
      * @see #renderTranslation(String)
      */
     public static @NotNull TranslatableComponent renderTranslationComponent(@NotNull String key) {
-        return Component.translatable(key, renderTranslation(key));
+        return translatable(key, renderTranslation(key));
+    }
+
+    /**
+     * Renders the translation from {@link GlobalTranslator} as {@link Component}
+     *
+     * @param translatable TranslatableComponent to render
+     * @return Translated component or key if translation is not found
+     */
+    public static @NotNull Component renderTranslationComponent(@NotNull TranslatableComponent translatable) {
+        return GlobalTranslator.render(translatable, Locale.US);
     }
 
     /**
@@ -169,8 +181,7 @@ public final class LanguageFile {
      * @return Translated string or key if translation is not found
      */
     public static @NotNull String renderTranslation(@NotNull TranslatableComponent translatable) {
-        Component rendered = GlobalTranslator.render(translatable, Locale.US);
-        return ChatUtils.serializePlainComponent(rendered);
+        return ChatUtils.serializePlainComponent(renderTranslationComponent(translatable));
     }
 
     /**

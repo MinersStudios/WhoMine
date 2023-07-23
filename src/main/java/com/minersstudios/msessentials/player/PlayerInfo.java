@@ -88,17 +88,17 @@ public class PlayerInfo {
 
     private BukkitTask joinTask;
 
-    private static final TranslatableComponent RP_SUCCESSFULLY_LOADED = Component.translatable("ms.resource_pack.successfully_loaded");
-    private static final TranslatableComponent RP_FAILED_DOWNLOAD_CONSOLE = Component.translatable("ms.resource_pack.failed_download.console");
-    private static final TranslatableComponent RP_FAILED_DOWNLOAD_TITLE = Component.translatable("ms.resource_pack.failed_download.receiver.title");
-    private static final TranslatableComponent RP_FAILED_DOWNLOAD_SUBTITLE = Component.translatable("ms.resource_pack.failed_download.receiver.subtitle");
-    private static final TranslatableComponent RP_DECLINED_CONSOLE = Component.translatable("ms.resource_pack.declined.console");
-    private static final TranslatableComponent RP_DECLINED_TITLE = Component.translatable("ms.resource_pack.declined.receiver.title");
-    private static final TranslatableComponent RP_DECLINED_SUBTITLE = Component.translatable("ms.resource_pack.declined.receiver.subtitle");
-    private static final TranslatableComponent SERVER_NOT_LOADED_TITLE = Component.translatable("ms.server_not_fully_loaded.title");
-    private static final TranslatableComponent SERVER_NOT_LOADED_SUBTITLE = Component.translatable("ms.server_not_fully_loaded.subtitle");
-    private static final TranslatableComponent SOMETHING_WENT_WRONG_TITLE = Component.translatable("ms.something_went_wrong.title");
-    private static final TranslatableComponent SOMETHING_WENT_WRONG_SUBTITLE = Component.translatable("ms.something_went_wrong.subtitle");
+    private static final TranslatableComponent RP_SUCCESSFULLY_LOADED = translatable("ms.resource_pack.successfully_loaded");
+    private static final TranslatableComponent RP_FAILED_DOWNLOAD_CONSOLE = translatable("ms.resource_pack.failed_download.console");
+    private static final TranslatableComponent RP_FAILED_DOWNLOAD_TITLE = translatable("ms.resource_pack.failed_download.receiver.title");
+    private static final TranslatableComponent RP_FAILED_DOWNLOAD_SUBTITLE = translatable("ms.resource_pack.failed_download.receiver.subtitle");
+    private static final TranslatableComponent RP_DECLINED_CONSOLE = translatable("ms.resource_pack.declined.console");
+    private static final TranslatableComponent RP_DECLINED_TITLE = translatable("ms.resource_pack.declined.receiver.title");
+    private static final TranslatableComponent RP_DECLINED_SUBTITLE = translatable("ms.resource_pack.declined.receiver.subtitle");
+    private static final TranslatableComponent SERVER_NOT_LOADED_TITLE = translatable("ms.server_not_fully_loaded.title");
+    private static final TranslatableComponent SERVER_NOT_LOADED_SUBTITLE = translatable("ms.server_not_fully_loaded.subtitle");
+    private static final TranslatableComponent SOMETHING_WENT_WRONG_TITLE = translatable("ms.something_went_wrong.title");
+    private static final TranslatableComponent SOMETHING_WENT_WRONG_SUBTITLE = translatable("ms.something_went_wrong.subtitle");
 
 
     /**
@@ -713,7 +713,7 @@ public class PlayerInfo {
      * @see MuteEntry#getCreated()
      */
     public @NotNull Component getMutedFrom(@NotNull CommandSender sender) throws IllegalStateException {
-        return Component.text(DateUtils.getSenderDate(this.getMutedFrom(), sender));
+        return text(DateUtils.getSenderDate(this.getMutedFrom(), sender));
     }
 
     /**
@@ -1442,7 +1442,7 @@ public class PlayerInfo {
             location = player.getBedSpawnLocation();
 
             if (location == null) {
-                location = MSEssentials.getOverworld().getSpawnLocation();
+                location = MSEssentials.getConfiguration().spawnLocation;
             }
         }
 
@@ -1470,7 +1470,7 @@ public class PlayerInfo {
             location = player.getBedSpawnLocation();
 
             if (location == null) {
-                location = MSEssentials.getOverworld().getSpawnLocation();
+                location = MSEssentials.getConfiguration().spawnLocation;
             }
         }
 
@@ -1608,7 +1608,7 @@ public class PlayerInfo {
                 player.isDead()
                 ? player.getBedSpawnLocation() != null
                 ? player.getBedSpawnLocation()
-                : MSEssentials.getOverworld().getSpawnLocation()
+                : MSEssentials.getConfiguration().spawnLocation
                 : player.getLocation()
         );
         this.playerFile.setGameMode(player.getGameMode());

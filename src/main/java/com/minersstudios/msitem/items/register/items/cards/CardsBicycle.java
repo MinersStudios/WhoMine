@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static net.kyori.adventure.text.Component.text;
+
 public class CardsBicycle implements Typed {
     private @NotNull NamespacedKey namespacedKey;
     private @NotNull ItemStack itemStack;
@@ -266,7 +268,7 @@ public class CardsBicycle implements Typed {
         BOX_BLUE_1(
                 1,
                 ChatUtils.createDefaultStyledText("Синяя колода карт ")
-                        .append(Component.text("\"Bicycle\"")
+                        .append(text("\"Bicycle\"")
                                 .style(ChatUtils.DEFAULT_STYLE))
                         .decorate(TextDecoration.BOLD),
                 BLUE_CARD_ITEMS
@@ -274,7 +276,7 @@ public class CardsBicycle implements Typed {
         BOX_BLUE_2(
                 2,
                 ChatUtils.createDefaultStyledText("Синяя колода карт ")
-                        .append(Component.text("\"Bicycle\"")
+                        .append(text("\"Bicycle\"")
                                 .style(ChatUtils.DEFAULT_STYLE))
                         .decorate(TextDecoration.BOLD),
                 BLUE_CARD_ITEMS
@@ -282,7 +284,7 @@ public class CardsBicycle implements Typed {
         BOX_RED_1(
                 3,
                 ChatUtils.createDefaultStyledText("Красная колода карт ")
-                        .append(Component.text("\"Bicycle\"")
+                        .append(text("\"Bicycle\"")
                                 .style(ChatUtils.DEFAULT_STYLE))
                         .decorate(TextDecoration.BOLD),
                 RED_CARD_ITEMS
@@ -290,8 +292,8 @@ public class CardsBicycle implements Typed {
         BOX_RED_2(
                 4,
                 ChatUtils.createDefaultStyledText("Красная колода карт ")
-                        .append(Component.text("\"Bicycle\"")
-                                .style(ChatUtils.DEFAULT_STYLE))
+                        .append(text("\"Bicycle\"")
+                        .style(ChatUtils.DEFAULT_STYLE))
                         .decorate(TextDecoration.BOLD),
                 RED_CARD_ITEMS
         );

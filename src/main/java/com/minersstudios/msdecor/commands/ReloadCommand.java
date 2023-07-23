@@ -3,7 +3,7 @@ package com.minersstudios.msdecor.commands;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msdecor.MSDecor;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.Recipe;
@@ -12,7 +12,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
+
 public class ReloadCommand {
+    private static final TranslatableComponent RELOAD_SUCCESS = translatable("ms.command.msdecor.reload.success");
 
     public static void runCommand(@NotNull CommandSender sender) {
         long time = System.currentTimeMillis();
@@ -32,12 +36,6 @@ public class ReloadCommand {
 
         MSPlugin.getGlobalCache().customDecorRecipes.clear();
         MSDecor.reloadConfigs();
-        MSLogger.fine(
-                sender,
-                Component.translatable(
-                        "ms.command.msdecor.reload.success",
-                        Component.text(System.currentTimeMillis() - time)
-                )
-        );
+        MSLogger.fine(sender, RELOAD_SUCCESS.args(text(System.currentTimeMillis() - time)));
     }
 }

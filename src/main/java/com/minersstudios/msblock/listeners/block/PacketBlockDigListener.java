@@ -19,6 +19,7 @@ import net.minecraft.server.network.ServerConnectionListener;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
@@ -42,9 +43,7 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
         PacketContainer container = event.getPacketContainer();
 
         if (
-                player == null
-                || !player.isOnline()
-                || player.getGameMode() != GameMode.SURVIVAL
+                player.getGameMode() != GameMode.SURVIVAL
                 || !(container.getPacket() instanceof ServerboundPlayerActionPacket packet)
         ) return;
 
@@ -67,7 +66,7 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
 
                     CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
                     float digSpeed = customBlockData.getCalculatedDigSpeed(player);
-                    MSBlock.getConfigCache().blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
+                    MSBlock.getCache().blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
                         float ticks = 0.0f;
                         float progress = 0.0f;
                         int currentStage = 0;
@@ -78,16 +77,16 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
                             boolean wasFarAway = false;
 
                             if (PlayerUtils.getTargetEntity(player, targetBlock) != null || targetBlock == null) {
-                                MSBlock.getConfigCache().farAway.add(player);
+                                MSBlock.getCache().farAway.add(player);
                                 return;
-                            } else if (MSBlock.getConfigCache().farAway.contains(player)) {
-                                MSBlock.getConfigCache().farAway.remove(player);
+                            } else if (MSBlock.getCache().farAway.contains(player)) {
+                                MSBlock.getCache().farAway.remove(player);
                                 wasFarAway = true;
                             }
 
                             if (!targetBlock.equals(block)) return;
                             if (
-                                    !(!MSBlock.getConfigCache().farAway.contains(player)
+                                    !(!MSBlock.getCache().farAway.contains(player)
                                     && (((CraftPlayer) player).getHandle().swinging || wasFarAway))
                             ) {
                                 PacketBlockDigListener.this.playBreakStage(blockPos, -1);
@@ -96,7 +95,7 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
 
                             this.ticks++;
                             this.progress += digSpeed;
-                            if (this.ticks % 4.0f == 0.0f && !MSBlock.getConfigCache().farAway.contains(player)) {
+                            if (this.ticks % 4.0f == 0.0f && !MSBlock.getCache().farAway.contains(player)) {
                                 customBlockData.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
                             }
 
@@ -114,19 +113,26 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
                         }
                     }, 0L, 1L));
                 } else {
-                    if (CustomBlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getType())) {
+                    if (
+                            CustomBlockUtils.hasPlayer(player)
+                            && !BlockUtils.isWoodenSound(block.getType())
+                    ) {
                         CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
                     }
+
                     if (hasSlowDigging) {
                         player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
                     }
                 }
 
-                if (BlockUtils.isWoodenSound(block.getType())) {
+                if (
+                        block.getType() != Material.NOTE_BLOCK
+                        && BlockUtils.isWoodenSound(block.getType())
+                ) {
                     if (CustomBlockUtils.hasPlayer(player)) {
                         CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
                     }
-                    MSBlock.getConfigCache().blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
+                    MSBlock.getCache().blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
                         float ticks = 0.0f;
 
                         @Override
@@ -135,16 +141,16 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
                             boolean wasFarAway = false;
 
                             if (PlayerUtils.getTargetEntity(player, targetBlock) != null || targetBlock == null) {
-                                MSBlock.getConfigCache().farAway.add(player);
+                                MSBlock.getCache().farAway.add(player);
                                 return;
-                            } else if (MSBlock.getConfigCache().farAway.contains(player)) {
-                                MSBlock.getConfigCache().farAway.remove(player);
+                            } else if (MSBlock.getCache().farAway.contains(player)) {
+                                MSBlock.getCache().farAway.remove(player);
                                 wasFarAway = true;
                             }
 
                             if (!targetBlock.equals(block)) return;
                             if (
-                                    !(!MSBlock.getConfigCache().farAway.contains(player)
+                                    !(!MSBlock.getCache().farAway.contains(player)
                                     && (((CraftPlayer) player).getHandle().swinging || wasFarAway))
                             ) {
                                 PacketBlockDigListener.this.playBreakStage(blockPos, -1);
@@ -164,7 +170,7 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
             } else if (
                     action == ABORT_DESTROY_BLOCK
                     && CustomBlockUtils.hasBlock(block)
-                    && !MSBlock.getConfigCache().farAway.contains(player)
+                    && !MSBlock.getCache().farAway.contains(player)
             ) {
                 Block targetBlock = PlayerUtils.getTargetBlock(player);
                 if (PlayerUtils.getTargetEntity(player, targetBlock) == null && targetBlock != null) {
