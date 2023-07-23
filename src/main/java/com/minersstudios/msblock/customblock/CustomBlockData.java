@@ -153,7 +153,7 @@ public class CustomBlockData implements Cloneable {
                 craftNoteBlockData(config),
                 craftPlaceableMaterials(config),
                 SoundGroup.fromConfigSection(sounds),
-                PlacingType.valueOf(config.getString("placing.placing-type", "BY_BLOCK_FACE")),
+                PlacingType.fromValue(config.getString("placing.placing-type")),
                 craftBlockFaceMap(config),
                 craftBlockAxisMap(config),
                 config.getBoolean("craft.show-in-crafts-menu", false),
@@ -485,6 +485,15 @@ public class CustomBlockData implements Cloneable {
     }
 
     public enum PlacingType {
-        BY_BLOCK_FACE, BY_EYE_POSITION
+        BY_BLOCK_FACE, BY_EYE_POSITION;
+
+        public static @Nullable PlacingType fromValue(@Nullable String value) {
+            if (value == null) return null;
+            try {
+                return PlacingType.valueOf(value.toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
     }
 }
