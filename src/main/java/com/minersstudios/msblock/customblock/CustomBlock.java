@@ -3,7 +3,6 @@ package com.minersstudios.msblock.customblock;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.events.CustomBlockBreakEvent;
 import com.minersstudios.msblock.events.CustomBlockPlaceEvent;
-import com.minersstudios.msblock.utils.CustomBlockUtils;
 import com.minersstudios.mscore.utils.BlockUtils;
 import com.minersstudios.mscore.utils.ItemUtils;
 import net.minecraft.world.level.LevelAccessor;
@@ -22,29 +21,30 @@ import org.jetbrains.annotations.Nullable;
 
 public class CustomBlock implements Cloneable {
     private final @NotNull Block block;
-    private final @NotNull Player player;
     private final @NotNull CustomBlockData customBlockData;
 
     public CustomBlock(
             @NotNull Block block,
-            @NotNull Player player,
             @NotNull CustomBlockData customBlockData
     ) {
         this.block = block;
-        this.player = player;
         this.customBlockData = customBlockData;
     }
 
-    public void setCustomBlock(@NotNull EquipmentSlot hand) {
-        this.setCustomBlock(hand, null, null);
+    public void setCustomBlock(
+            @NotNull Player player,
+            @NotNull EquipmentSlot hand
+    ) {
+        this.setCustomBlock(player, hand, null, null);
     }
 
     public void setCustomBlock(
+            @NotNull Player player,
             @NotNull EquipmentSlot hand,
             @Nullable BlockFace blockFace,
             @Nullable Axis axis
     ) {
-        CustomBlockPlaceEvent event = new CustomBlockPlaceEvent(this, this.block.getState(), this.player, hand);
+        CustomBlockPlaceEvent event = new CustomBlockPlaceEvent(this, this.block.getState(), player, hand);
         Bukkit.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
@@ -67,32 +67,28 @@ public class CustomBlock implements Cloneable {
 
             this.block.setBlockData(noteBlock);
             this.customBlockData.getSoundGroup().playPlaceSound(this.block.getLocation().toCenterLocation());
-            this.player.swingHand(hand);
-            MSBlock.getCoreProtectAPI().logPlacement(this.player.getName(), this.block.getLocation(), Material.NOTE_BLOCK, noteBlock);
+            player.swingHand(hand);
+            MSBlock.getCoreProtectAPI().logPlacement(player.getName(), this.block.getLocation(), Material.NOTE_BLOCK, noteBlock);
             BlockUtils.removeBlocksAround(this.block);
 
-            if (this.player.getGameMode() == GameMode.SURVIVAL) {
-                ItemStack itemInHand = this.player.getInventory().getItem(hand);
+            if (player.getGameMode() == GameMode.SURVIVAL) {
+                ItemStack itemInHand = player.getInventory().getItem(hand);
                 itemInHand.setAmount(itemInHand.getAmount() - 1);
             }
         });
     }
 
-    public void breakCustomBlock() {
-        CustomBlockBreakEvent event = new CustomBlockBreakEvent(this, this.player);
+    public void breakCustomBlock(@NotNull Player player) {
+        CustomBlockBreakEvent event = new CustomBlockBreakEvent(this, player);
         Bukkit.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
 
         Location blockLocation = this.block.getLocation();
         World world = this.block.getWorld();
-        ItemStack itemInMainHand = this.player.getInventory().getItemInMainHand();
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
-        if (!CustomBlockUtils.hasBlock(this.block)) return;
-
-        MSBlock.getInstance().runTask(
-                () -> CustomBlockUtils.cancelAllTasksWithThisBlock(this.block)
-        );
+        MSBlock.getCache().diggingMap.removeAll(this.block);
 
         CraftBlock craftBlock = (CraftBlock) this.block;
         LevelAccessor levelAccessor = craftBlock.getHandle();
@@ -104,7 +100,7 @@ public class CustomBlock implements Cloneable {
                 net.minecraft.world.level.block.Block.getId(blockState)
         );
         this.customBlockData.getSoundGroup().playBreakSound(this.block.getLocation().toCenterLocation());
-        MSBlock.getCoreProtectAPI().logRemoval(this.player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
+        MSBlock.getCoreProtectAPI().logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
         this.block.setType(Material.AIR);
 
         if (
@@ -123,16 +119,12 @@ public class CustomBlock implements Cloneable {
         }
 
         if (ToolType.fromItemStack(itemInMainHand) != ToolType.HAND) {
-            ItemUtils.damageItem(this.player, itemInMainHand);
+            ItemUtils.damageItem(player, itemInMainHand);
         }
     }
 
     public @NotNull Block getReplacedBlock() {
         return this.block;
-    }
-
-    public @NotNull Player getPlayer() {
-        return this.player;
     }
 
     public @NotNull CustomBlockData getCustomBlockData() {

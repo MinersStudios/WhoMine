@@ -5,7 +5,7 @@ import com.minersstudios.mscore.utils.ChatUtils;
 import com.minersstudios.mscore.utils.DateUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.player.map.MuteMap;
+import com.minersstudios.msessentials.player.collection.MuteMap;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;

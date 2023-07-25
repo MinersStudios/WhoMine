@@ -5,9 +5,9 @@ import com.minersstudios.msessentials.commands.player.DiscordCommand;
 import com.minersstudios.msessentials.listeners.chat.DiscordGuildMessagePreProcessListener;
 import com.minersstudios.msessentials.listeners.chat.DiscordPrivateMessageReceivedListener;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.player.map.PlayerInfoMap;
+import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.tasks.BanListTask;
-import com.minersstudios.msessentials.tasks.MuteListTask;
+import com.minersstudios.msessentials.tasks.MuteMapTask;
 import com.minersstudios.msessentials.tasks.PlayerListTask;
 import com.minersstudios.msessentials.tasks.SeatsTask;
 import com.minersstudios.msessentials.world.WorldDark;
@@ -60,7 +60,7 @@ public final class MSEssentials extends MSPlugin {
 
         this.runTaskTimer(new SeatsTask(), 0L, 1L);
         this.runTaskTimer(new PlayerListTask(), 6000L, 6000L);
-        this.runTaskTimerAsync(new MuteListTask(), 0L, 50L);
+        this.runTaskTimerAsync(new MuteMapTask(), 0L, 50L);
         this.runTaskTimerAsync(new BanListTask(), 0L, 6000L);
     }
 

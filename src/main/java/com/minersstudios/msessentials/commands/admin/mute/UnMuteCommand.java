@@ -7,7 +7,7 @@ import com.minersstudios.mscore.utils.DateUtils;
 import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.player.map.MuteMap;
+import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;

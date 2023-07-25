@@ -1,6 +1,5 @@
 package com.minersstudios.msblock.utils;
 
-import com.minersstudios.msblock.MSBlock;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
@@ -107,21 +106,5 @@ public final class PlayerUtils {
                 && eyeLocation.distance(targetBlock.getLocation()) <= eyeLocation.distance(targetEntity.getLocation())
                 ? null
                 : targetEntity;
-    }
-
-    public static void addSteps(@NotNull Player player, double distance) {
-        MSBlock.getCache().steps.put(player, distance);
-    }
-
-    public static void removeSteps(@NotNull Player player) {
-        MSBlock.getCache().steps.remove(player);
-    }
-
-    public static boolean containsSteps(@NotNull Player player) {
-        return MSBlock.getCache().steps.containsKey(player);
-    }
-
-    public static double getStepDistance(@NotNull Player player) {
-        return MSBlock.getCache().steps.get(player);
     }
 }

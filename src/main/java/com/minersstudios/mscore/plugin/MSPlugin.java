@@ -11,7 +11,7 @@ import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.packet.PacketEvent;
-import com.minersstudios.mscore.packet.PacketListenersMap;
+import com.minersstudios.mscore.packet.collection.PacketListenersMap;
 import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.utils.BlockUtils;

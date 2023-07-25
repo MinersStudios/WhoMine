@@ -1,13 +1,13 @@
 package com.minersstudios.msblock.listeners.player;
 
+import com.minersstudios.msblock.MSBlock;
+import com.minersstudios.msblock.collection.StepMap;
 import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.utils.PlayerUtils;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.utils.BlockUtils;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
@@ -23,13 +23,13 @@ public class PlayerMoveListener extends AbstractMSListener {
         Player player = event.getPlayer();
         Block bottomBlock = player.getLocation().subtract(0.0d, 0.5d, 0.0d).getBlock();
         Location bottomBlockLocation = bottomBlock.getLocation().toCenterLocation();
-        Material bottomBlockType = bottomBlock.getType();
+        StepMap stepMap = MSBlock.getCache().stepMap;
 
         if (
                 player.getGameMode() != GameMode.SPECTATOR
                 && !player.isFlying()
                 && !player.isSneaking()
-                && BlockUtils.isWoodenSound(bottomBlockType)
+                && BlockUtils.isWoodenSound(bottomBlock.getType())
         ) {
             Location from = event.getFrom().clone();
             Location to = event.getTo().clone();
@@ -38,12 +38,11 @@ public class PlayerMoveListener extends AbstractMSListener {
             to.setY(0.0d);
 
             double distance = from.distance(to);
-            if (distance == 0.0d) return;
-            double fullDistance = PlayerUtils.containsSteps(player) ? PlayerUtils.getStepDistance(player) + distance : 1.0d;
 
-            PlayerUtils.addSteps(player, fullDistance > 1.25d ? 0.0d : fullDistance);
-
-            if (fullDistance > 1.25d) {
+            if (
+                    distance != 0.0d
+                    && stepMap.addDistance(player, distance)
+            ) {
                 if (bottomBlock.getBlockData() instanceof NoteBlock noteBlock) {
                     CustomBlockData.fromNoteBlock(noteBlock).getSoundGroup().playStepSound(bottomBlockLocation);
                 } else {
@@ -51,7 +50,7 @@ public class PlayerMoveListener extends AbstractMSListener {
                 }
             }
         } else {
-            PlayerUtils.removeSteps(player);
+            stepMap.remove(player);
         }
     }
 }

@@ -1,9 +1,10 @@
-package com.minersstudios.mscore.packet;
+package com.minersstudios.mscore.packet.collection;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
+import com.minersstudios.mscore.packet.PacketType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -219,6 +220,15 @@ public class PacketListenersMap {
     }
 
     /**
+     * Checks if the map is empty (contains no packet listeners)
+     *
+     * @return True if the map is empty
+     */
+    public boolean isEmpty() {
+        return this.receiveWhiteList.isEmpty() && this.sendWhiteList.isEmpty();
+    }
+
+    /**
      * Clears the map by removing all packet listeners.
      */
     public void clear() {
@@ -250,14 +260,5 @@ public class PacketListenersMap {
      */
     public int listenersSize() {
         return this.listeners().size();
-    }
-
-    /**
-     * Checks if the map is empty (contains no packet listeners)
-     *
-     * @return True if the map is empty
-     */
-    public boolean isEmpty() {
-        return this.receiveWhiteList.isEmpty() && this.sendWhiteList.isEmpty();
     }
 }

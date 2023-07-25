@@ -14,9 +14,8 @@ import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.discord.DiscordMap;
 import com.minersstudios.msessentials.menu.PronounsMenu;
 import com.minersstudios.msessentials.menu.ResourcePackMenu;
-import com.minersstudios.msessentials.player.map.MuteEntry;
-import com.minersstudios.msessentials.player.map.MuteMap;
-import com.minersstudios.msessentials.player.map.PlayerInfoMap;
+import com.minersstudios.msessentials.player.collection.MuteMap;
+import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.player.skin.Skin;
 import com.minersstudios.msessentials.utils.IDUtils;
 import com.minersstudios.msessentials.utils.MSPlayerUtils;
@@ -673,7 +672,7 @@ public class PlayerInfo {
      * @return Player's mute params from {@link Cache#muteMap}
      * @see MuteMap#getMuteEntry(OfflinePlayer)
      */
-    public @Nullable MuteEntry getMuteEntry() {
+    public @Nullable MuteMap.Entry getMuteEntry() {
         return MSEssentials.getCache().muteMap.getMuteEntry(this.offlinePlayer);
     }
 
@@ -681,10 +680,10 @@ public class PlayerInfo {
      * @return Player's mute reason from {@link Cache#muteMap} params
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
-     * @see MuteEntry#getReason()
+     * @see MuteMap.Entry#getReason()
      */
     public @NotNull String getMuteReason() throws IllegalStateException {
-        MuteEntry muteEntry = this.getMuteEntry();
+        MuteMap.Entry muteEntry = this.getMuteEntry();
 
         Preconditions.checkArgument(muteEntry != null, "Player is not muted");
         return muteEntry.getReason();
@@ -694,10 +693,10 @@ public class PlayerInfo {
      * @return Player's mute source from {@link Cache#muteMap} params
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
-     * @see MuteEntry#getSource()
+     * @see MuteMap.Entry#getSource()
      */
     public @NotNull String getMutedBy() throws IllegalStateException {
-        MuteEntry muteEntry = this.getMuteEntry();
+        MuteMap.Entry muteEntry = this.getMuteEntry();
 
         Preconditions.checkArgument(muteEntry != null, "Player is not muted");
         return muteEntry.getSource();
@@ -710,7 +709,7 @@ public class PlayerInfo {
      *         if the sender's time zone cannot be obtained
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
-     * @see MuteEntry#getCreated()
+     * @see MuteMap.Entry#getCreated()
      */
     public @NotNull Component getMutedFrom(@NotNull CommandSender sender) throws IllegalStateException {
         return text(DateUtils.getSenderDate(this.getMutedFrom(), sender));
@@ -723,7 +722,7 @@ public class PlayerInfo {
      *         if the time zone cannot be obtained
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
-     * @see MuteEntry#getCreated()
+     * @see MuteMap.Entry#getCreated()
      */
     public @NotNull Component getMutedFrom(@NotNull InetAddress address) throws IllegalStateException {
         return text(DateUtils.getDate(this.getMutedFrom(), address));
@@ -733,10 +732,10 @@ public class PlayerInfo {
      * @return Date when the player was muted from {@link Cache#muteMap}
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
-     * @see MuteEntry#getCreated()
+     * @see MuteMap.Entry#getCreated()
      */
     public @NotNull Instant getMutedFrom() throws IllegalStateException {
-        MuteEntry muteEntry = this.getMuteEntry();
+        MuteMap.Entry muteEntry = this.getMuteEntry();
 
         Preconditions.checkArgument(muteEntry != null, "Player is not muted");
         return muteEntry.getCreated();
@@ -749,7 +748,7 @@ public class PlayerInfo {
      *         if the sender's time zone cannot be obtained
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
-     * @see MuteEntry#getExpiration()
+     * @see MuteMap.Entry#getExpiration()
      */
     public @NotNull Component getMutedTo(@NotNull CommandSender sender) throws IllegalStateException {
         return text(DateUtils.getSenderDate(this.getMutedTo(), sender));
@@ -762,7 +761,7 @@ public class PlayerInfo {
      *         if the time zone cannot be obtained
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
-     * @see MuteEntry#getExpiration()
+     * @see MuteMap.Entry#getExpiration()
      */
     public @NotNull Component getMutedTo(@NotNull InetAddress address) throws IllegalStateException {
         return text(DateUtils.getDate(this.getMutedTo(), address));
@@ -772,10 +771,10 @@ public class PlayerInfo {
      * @return Date when the player will be unmuted from {@link Cache#muteMap}
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
-     * @see MuteEntry#getExpiration()
+     * @see MuteMap.Entry#getExpiration()
      */
     public @NotNull Instant getMutedTo() throws IllegalStateException {
-        MuteEntry muteEntry = this.getMuteEntry();
+        MuteMap.Entry muteEntry = this.getMuteEntry();
 
         Preconditions.checkArgument(muteEntry != null, "Player is not muted");
         return muteEntry.getExpiration();

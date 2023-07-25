@@ -1,4 +1,4 @@
-package com.minersstudios.msessentials.player.map;
+package com.minersstudios.msessentials.player.collection;
 
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;

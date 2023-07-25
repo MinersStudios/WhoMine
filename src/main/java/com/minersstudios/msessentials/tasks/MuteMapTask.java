@@ -9,7 +9,7 @@ import org.bukkit.OfflinePlayer;
 import java.time.Instant;
 import java.util.Objects;
 
-public class MuteListTask implements Runnable {
+public class MuteMapTask implements Runnable {
 
     @Override
     public void run() {

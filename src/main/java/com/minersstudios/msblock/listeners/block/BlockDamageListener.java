@@ -35,7 +35,8 @@ public class BlockDamageListener extends AbstractMSListener {
         if (block.getBlockData() instanceof NoteBlock noteBlock) {
             Player player = event.getPlayer();
             CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
-            CustomBlockDamageEvent damageEvent = new CustomBlockDamageEvent(new CustomBlock(block, player, customBlockData), player, event.getItemInHand());
+            CustomBlock customBlock = new CustomBlock(block, customBlockData);
+            CustomBlockDamageEvent damageEvent = new CustomBlockDamageEvent(customBlock, player, event.getItemInHand());
 
             Bukkit.getPluginManager().callEvent(damageEvent);
             if (damageEvent.isCancelled()) return;

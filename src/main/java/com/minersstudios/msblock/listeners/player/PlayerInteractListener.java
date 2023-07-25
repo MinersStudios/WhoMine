@@ -215,7 +215,7 @@ public class PlayerInteractListener extends AbstractMSListener {
             CustomBlockData clickedCustomBlockData = CustomBlockData.fromNoteBlock(noteBlock);
 
             if (blockType == Material.NOTE_BLOCK) {
-                CustomBlock customBlock = new CustomBlock(clickedBlock, player, clickedCustomBlockData);
+                CustomBlock customBlock = new CustomBlock(clickedBlock, clickedCustomBlockData);
                 CustomBlockRightClickEvent rightClickEvent = new CustomBlockRightClickEvent(customBlock, player, hand, blockFace, interactionPoint);
 
                 Bukkit.getPluginManager().callEvent(rightClickEvent);
@@ -251,10 +251,10 @@ public class PlayerInteractListener extends AbstractMSListener {
 
             CustomBlockData customBlockData = CustomBlockData.fromCustomModelData(itemInHand.getItemMeta().getCustomModelData());
             CustomBlockData.PlacingType placingType = customBlockData.getPlacingType();
-            CustomBlock customBlock = new CustomBlock(replaceableBlock, player, customBlockData);
+            CustomBlock customBlock = new CustomBlock(replaceableBlock, customBlockData);
 
             if (placingType == null) {
-                customBlock.setCustomBlock(hand);
+                customBlock.setCustomBlock(player, hand);
                 return;
             }
 
@@ -266,13 +266,13 @@ public class PlayerInteractListener extends AbstractMSListener {
 
             if (blockFaces != null) {
                 switch (placingType) {
-                    case BY_BLOCK_FACE -> customBlock.setCustomBlock(hand, blockFace, null);
-                    case BY_EYE_POSITION -> customBlock.setCustomBlock(hand, getBlockFaceByEyes(yaw, pitch, blockFaces), null);
+                    case BY_BLOCK_FACE -> customBlock.setCustomBlock(player, hand, blockFace, null);
+                    case BY_EYE_POSITION -> customBlock.setCustomBlock(player, hand, getBlockFaceByEyes(yaw, pitch, blockFaces), null);
                 }
             } else if (blockAxes != null) {
                 switch (placingType) {
-                    case BY_BLOCK_FACE -> customBlock.setCustomBlock(hand, null, getAxis(interactionPoint.getX(), interactionPoint.getZ()));
-                    case BY_EYE_POSITION -> customBlock.setCustomBlock(hand, null, getAxisByEyes(yaw, pitch, blockAxes));
+                    case BY_BLOCK_FACE -> customBlock.setCustomBlock(player, hand, null, getAxis(interactionPoint.getX(), interactionPoint.getZ()));
+                    case BY_EYE_POSITION -> customBlock.setCustomBlock(player, hand, null, getAxisByEyes(yaw, pitch, blockAxes));
                 }
             }
         }

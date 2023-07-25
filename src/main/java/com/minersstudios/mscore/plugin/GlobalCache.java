@@ -3,7 +3,7 @@ package com.minersstudios.mscore.plugin;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.mscore.collections.DualMap;
 import com.minersstudios.mscore.collections.HashDualMap;
-import com.minersstudios.mscore.packet.PacketListenersMap;
+import com.minersstudios.mscore.packet.collection.PacketListenersMap;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.RenameableItem;

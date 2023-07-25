@@ -38,8 +38,8 @@ public class BlockPlaceListener extends AbstractMSListener {
         }
 
         if (blockType == Material.NOTE_BLOCK) {
-            new CustomBlock(block, player, DEFAULT)
-                    .setCustomBlock(event.getHand());
+            new CustomBlock(block, DEFAULT)
+                    .setCustomBlock(player, event.getHand());
         }
     }
 }

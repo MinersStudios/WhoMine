@@ -7,7 +7,7 @@ import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.utils.DateUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.player.map.IDMap;
+import com.minersstudios.msessentials.player.collection.IDMap;
 import com.minersstudios.msessentials.player.skin.Skin;
 import com.minersstudios.msessentials.utils.IDUtils;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
