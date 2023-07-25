@@ -56,8 +56,7 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
 
         DiggingMap diggingMap = MSBlock.getCache().diggingMap;
         BlockPos blockPos = packet.getPos();
-        Location location = new Location(player.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
-        Block block = location.getBlock();
+        Block block = new Location(player.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ()).getBlock();
         boolean hasSlowDigging = player.hasPotionEffect(PotionEffectType.SLOW_DIGGING);
 
         this.getPlugin().runTask(() -> {
