@@ -12,10 +12,9 @@ import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.utils.BlockUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerConnectionListener;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -55,180 +54,181 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
         ) return;
 
         DiggingMap diggingMap = MSBlock.getCache().diggingMap;
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        ServerLevel serverLevel = serverPlayer.serverLevel();
         BlockPos blockPos = packet.getPos();
-        Block block = new Location(player.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ()).getBlock();
+        Location blockLocation = new Location(player.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        Block block = blockLocation.getBlock();
         boolean hasSlowDigging = player.hasPotionEffect(PotionEffectType.SLOW_DIGGING);
 
-        this.getPlugin().runTask(() -> {
-            switch (action) {
-                case START_DESTROY_BLOCK -> {
-                    if (block.getBlockData() instanceof NoteBlock noteBlock) {
-                        diggingMap.removeAll(player);
+        switch (action) {
+            case START_DESTROY_BLOCK -> {
+                if (block.getBlockData() instanceof NoteBlock noteBlock) {
+                    diggingMap.removeAll(player);
 
-                        if (!hasSlowDigging) {
-                           player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));
-                        }
-
-                        CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
-                        float digSpeed = customBlockData.getCalculatedDigSpeed(player);
-
-                        DiggingMap.Entry entry = DiggingMap.Entry.create(player);
-
-                        diggingMap.put(block, entry.taskId(
-                                this.getPlugin().runTaskTimer(new Runnable() {
-                                    float ticks = 0.0f;
-                                    float progress = 0.0f;
-
-                                    @Override
-                                    public void run() {
-                                        Block targetBlock = PlayerUtils.getTargetBlock(player);
-                                        boolean wasFarAway = false;
-
-                                        if (PlayerUtils.getTargetEntity(player, targetBlock) != null || targetBlock == null) {
-                                            entry.farAway(true);
-                                            return;
-                                        } else if (entry.farAway()) {
-                                            entry.farAway(false);
-                                            wasFarAway = true;
-                                        }
-
-                                        if (!targetBlock.equals(block)) return;
-                                        if (
-                                                !(!entry.farAway()
-                                                && (((CraftPlayer) player).getHandle().swinging || wasFarAway))
-                                        ) {
-                                            PacketBlockDigListener.this.playBreakStage(blockPos, -1);
-                                            diggingMap.removeAll(player);
-                                        }
-
-                                        this.ticks++;
-                                        this.progress += digSpeed;
-
-                                        if (
-                                                this.ticks % 4.0f == 0.0f
-                                                && !entry.farAway()
-                                        ) {
-                                            customBlockData.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
-                                        }
-
-                                        if (this.progress > entry.stage() * 0.1f) {
-                                            entry.stage((int) Math.floor(this.progress * 10.0f));
-
-                                            if (
-                                                    entry.stage() <= 9
-                                                    && entry.isStageTheBiggest(block)
-                                            ) {
-                                                PacketBlockDigListener.this.playBreakStage(blockPos, entry.stage());
-                                            }
-                                        }
-
-                                        if (this.progress > 1.0f) {
-                                            PacketBlockDigListener.this.playBreakStage(blockPos, -1);
-                                            new CustomBlock(block, customBlockData)
-                                                    .breakCustomBlock(player);
-                                        }
-                                    }
-                                }, 0L, 1L).getTaskId())
-                        );
-                    } else {
-                        DiggingMap.Entry entry = diggingMap.getBiggestStageEntry(block);
-
-                        if (
-                                entry != null
-                                && !BlockUtils.isWoodenSound(block.getType())
-                        ) {
-                            diggingMap.removeAll(entry);
-                        }
-
-                        if (hasSlowDigging) {
-                           player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
-                        }
+                    if (!hasSlowDigging) {
+                        this.getPlugin().runTask(() -> player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false)));
                     }
 
-                    if (
-                            block.getType() != Material.NOTE_BLOCK
-                            && BlockUtils.isWoodenSound(block.getType())
-                    ) {
-                        diggingMap.removeAll(player);
+                    CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
+                    float digSpeed = customBlockData.getCalculatedDigSpeed(player);
 
-                        DiggingMap.Entry entry = DiggingMap.Entry.create(player);
+                    DiggingMap.Entry entry = DiggingMap.Entry.create(player);
 
-                        diggingMap.put(block, entry.taskId(
-                                this.getPlugin().runTaskTimer(new Runnable() {
-                                    float ticks = 0.0f;
+                    diggingMap.put(block, entry.taskId(
+                            this.getPlugin().runTaskTimer(new Runnable() {
+                                float ticks = 0.0f;
+                                float progress = 0.0f;
 
-                                    @Override
-                                    public void run() {
-                                        Block targetBlock = PlayerUtils.getTargetBlock(player);
-                                        boolean wasFarAway = false;
+                                @Override
+                                public void run() {
+                                    if (!block.equals(blockLocation.getBlock())) {
+                                        diggingMap.remove(block, entry);
+                                    }
 
-                                        if (
-                                                PlayerUtils.getTargetEntity(player, targetBlock) != null
-                                                || targetBlock == null
-                                        ) {
-                                            entry.farAway(true);
-                                            return;
-                                        } else if (entry.farAway()) {
-                                            entry.farAway(false);
-                                            wasFarAway = true;
+                                    Block targetBlock = PlayerUtils.getTargetBlock(player);
+                                    boolean wasFarAway = false;
+
+                                    if (PlayerUtils.getTargetEntity(player, targetBlock) != null || targetBlock == null) {
+                                        entry.farAway(true);
+                                        return;
+                                    } else if (entry.farAway()) {
+                                        entry.farAway(false);
+                                        wasFarAway = true;
+                                    }
+
+                                    if (!targetBlock.equals(block)) return;
+                                    if (
+                                            !(!entry.farAway()
+                                            && (serverPlayer.swinging || wasFarAway))
+                                    ) {
+                                        if (entry.isStageTheBiggest(block)) {
+                                            serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, -1);
                                         }
 
-                                        if (!targetBlock.equals(block)) return;
+                                        diggingMap.removeAll(player);
+                                    }
+
+                                    this.ticks++;
+                                    this.progress += digSpeed;
+
+                                    if (
+                                            this.ticks % 4.0f == 0.0f
+                                            && !entry.farAway()
+                                    ) {
+                                        customBlockData.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
+                                    }
+
+                                    if (this.progress > entry.stage() * 0.1f) {
+                                        entry.stage((int) Math.floor(this.progress * 10.0f));
+
                                         if (
-                                                !(!entry.farAway()
-                                                && (((CraftPlayer) player).getHandle().swinging || wasFarAway))
+                                                entry.stage() <= 9
+                                                && entry.isStageTheBiggest(block)
                                         ) {
-                                            PacketBlockDigListener.this.playBreakStage(blockPos, -1);
-                                            diggingMap.removeAll(player);
-                                        }
-
-                                        this.ticks++;
-
-                                        if (this.ticks % 4.0f == 0.0f) {
-                                            CustomBlockData.DEFAULT.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
+                                            serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, entry.stage());
                                         }
                                     }
-                                }, 0L, 1L).getTaskId())
-                        );
-                    }
-                }
-                case ABORT_DESTROY_BLOCK -> {
+
+                                    if (this.progress > 1.0f) {
+                                        serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, -1);
+                                        new CustomBlock(block, customBlockData)
+                                                .breakCustomBlock(player);
+                                    }
+                                }
+                            }, 0L, 1L).getTaskId())
+                    );
+                } else {
                     DiggingMap.Entry entry = diggingMap.getBiggestStageEntry(block);
 
                     if (
                             entry != null
-                            && !entry.farAway()
+                            && !BlockUtils.isWoodenSound(block.getType())
                     ) {
-                        Block targetBlock = PlayerUtils.getTargetBlock(player);
+                        diggingMap.removeAll(entry);
+                    }
 
+                    if (hasSlowDigging) {
+                        this.getPlugin().runTask(() -> player.removePotionEffect(PotionEffectType.SLOW_DIGGING));
+                    }
+                }
+
+                if (
+                        block.getType() != Material.NOTE_BLOCK
+                        && BlockUtils.isWoodenSound(block.getType())
+                ) {
+                    diggingMap.removeAll(player);
+
+                    DiggingMap.Entry entry = DiggingMap.Entry.create(player);
+
+                    diggingMap.put(block, entry.taskId(
+                            this.getPlugin().runTaskTimer(new Runnable() {
+                                float ticks = 0.0f;
+
+                                @Override
+                                public void run() {
+                                    if (!block.equals(blockLocation.getBlock())) {
+                                        diggingMap.remove(block, entry);
+                                    }
+
+                                    Block targetBlock = PlayerUtils.getTargetBlock(player);
+                                    boolean wasFarAway = false;
+
+                                    if (
+                                            PlayerUtils.getTargetEntity(player, targetBlock) != null
+                                            || targetBlock == null
+                                    ) {
+                                        entry.farAway(true);
+                                        return;
+                                    } else if (entry.farAway()) {
+                                        entry.farAway(false);
+                                        wasFarAway = true;
+                                    }
+
+                                    if (!targetBlock.equals(block)) return;
+                                    if (
+                                            !(!entry.farAway()
+                                            && (serverPlayer.swinging || wasFarAway))
+                                    ) {
+                                        diggingMap.removeAll(player);
+                                    }
+
+                                    this.ticks++;
+
+                                    if (this.ticks % 4.0f == 0.0f) {
+                                        CustomBlockData.DEFAULT.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
+                                    }
+                                }
+                            }, 0L, 1L).getTaskId())
+                    );
+                }
+            }
+            case ABORT_DESTROY_BLOCK -> {
+                DiggingMap.Entry entry = diggingMap.getEntry(block, player);
+
+                if (
+                        entry != null
+                        && !entry.farAway()
+                ) {
+                    Block targetBlock = PlayerUtils.getTargetBlock(player);
+
+                    this.getPlugin().runTask(() -> {
                         if (
                                 PlayerUtils.getTargetEntity(player, targetBlock) == null
                                 && targetBlock != null
                         ) {
-                            this.playBreakStage(blockPos, -1);
-                            diggingMap.removeAll(player);
+                            serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, -1);
+                            diggingMap.remove(block, entry);
                         }
-                    }
-                }
-                case STOP_DESTROY_BLOCK -> {
-                    if (diggingMap.containsBlock(block)) {
-                        this.playBreakStage(blockPos, -1);
-                        diggingMap.removeAll(block);
-                    }
+                    });
                 }
             }
-        });
-    }
-
-    private void playBreakStage(
-            @NotNull BlockPos blockPos,
-            int stage
-    ) {
-        ServerConnectionListener connectionListener = MinecraftServer.getServer().getConnection();
-        ClientboundBlockDestructionPacket packet = new ClientboundBlockDestructionPacket(0, blockPos, stage);
-
-        if (connectionListener != null) {
-            connectionListener.getConnections().forEach(connection -> connection.send(packet));
+            case STOP_DESTROY_BLOCK -> {
+                if (diggingMap.containsBlock(block)) {
+                    this.getPlugin().runTask(() -> serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, -1));
+                    diggingMap.removeAll(block);
+                }
+            }
         }
     }
 }

@@ -1334,7 +1334,19 @@ public class PlayerInfo {
      * to all players, if the player is not located in the dark world.
      */
     public void handleQuit() {
-        Player player = this.getOnlinePlayer();
+        this.handleQuit(this.getOnlinePlayer());
+    }
+
+    /**
+     * Handles the player's quit.
+     * Unsets the player's sitting, ejects the player from
+     * the vehicle, removes the player from the anomaly action map,
+     * and saves the player's data. After that, sends the quit message
+     * to all players, if the player is not located in the dark world.
+     *
+     * @param player The player, who quit
+     */
+    public void handleQuit(@Nullable Player player) {
         if (player == null) return;
 
         this.unsetSitting();
@@ -1517,10 +1529,24 @@ public class PlayerInfo {
             @NotNull Component title,
             @NotNull Component reason
     ) {
-        Player player = this.getOnlinePlayer();
+        this.kickPlayer(this.getOnlinePlayer(), title, reason);
+    }
+
+    /**
+     * Kicks the player from the server
+     *
+     * @param player Player to kick
+     * @param title  Title of the kick message
+     * @param reason Reason of the kick message
+     */
+    public void kickPlayer(
+            @Nullable Player player,
+            @NotNull Component title,
+            @NotNull Component reason
+    ) {
         if (player == null) return;
 
-        this.handleQuit();
+        this.handleQuit(player);
         player.kick(
                 translatable(
                         "ms.format.leave.message",

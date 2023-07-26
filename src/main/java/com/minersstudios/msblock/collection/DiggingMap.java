@@ -54,6 +54,22 @@ public class DiggingMap {
     }
 
     /**
+     * @param block  The block for which to retrieve the digging entry
+     * @param player The player for which to retrieve the digging entry
+     * @return The digging entry associated with the block and player,
+     *         or null if no entry is found for the block and player
+     */
+    public @Nullable Entry getEntry(
+            @NotNull Block block,
+            @NotNull Player player
+    ) {
+        return this.entries(block).stream()
+                .filter(entry -> entry.player.equals(player))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
      * @param block The block for which to retrieve the digging entry
      *              with the highest stage
      * @return The digging entry with the highest stage for the block,
@@ -114,7 +130,7 @@ public class DiggingMap {
      * @param diggingEntry The digging entry to associate with the block
      * @see Entry
      */
-    public void put(
+    public synchronized void put(
             @NotNull Block block,
             @NotNull Entry diggingEntry
     ) {
@@ -136,7 +152,7 @@ public class DiggingMap {
      * @see Entry
      * @see Entry#cancelTask()
      */
-    public void remove(
+    public synchronized void remove(
             @NotNull Block block,
             @NotNull Entry diggingEntry
     ) {
@@ -164,7 +180,7 @@ public class DiggingMap {
      * @see Entry
      * @see Entry#cancelTask()
      */
-    public void remove(
+    public synchronized void remove(
             @NotNull Block block,
             @NotNull Player player
     ) {
@@ -183,7 +199,7 @@ public class DiggingMap {
      * @see Entry
      * @see Entry#cancelTask()
      */
-    public void removeAll(@NotNull Block block) {
+    public synchronized void removeAll(@NotNull Block block) {
         var entries = this.diggingBlockMap.remove(block);
 
         if (entries != null) {
@@ -201,7 +217,7 @@ public class DiggingMap {
      * @see Entry#cancelTask()
      * @see #remove(Block, Entry)
      */
-    public void removeAll(@NotNull Entry diggingEntry) {
+    public synchronized void removeAll(@NotNull Entry diggingEntry) {
         this.entries().stream()
         .filter(entry -> entry.getValue().equals(diggingEntry))
         .forEach(entry -> this.remove(entry.getKey(), entry.getValue()));
@@ -217,7 +233,7 @@ public class DiggingMap {
      * @see Entry#cancelTask()
      * @see #remove(Block, Entry)
      */
-    public void removeAll(@NotNull Player player) {
+    public synchronized void removeAll(@NotNull Player player) {
         this.entries().stream()
         .filter(entry -> entry.getValue().player.equals(player))
         .forEach(entry -> this.remove(entry.getKey(), entry.getValue()));
@@ -267,7 +283,7 @@ public class DiggingMap {
      * Clears all blocks and their associated digging entries from
      * the DiggingMap
      */
-    public void clear() {
+    public synchronized void clear() {
         this.diggingBlockMap.clear();
     }
 

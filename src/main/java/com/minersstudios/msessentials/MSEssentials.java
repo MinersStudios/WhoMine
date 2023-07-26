@@ -69,10 +69,11 @@ public final class MSEssentials extends MSPlugin {
         PlayerInfoMap playerInfoMap = this.cache.playerInfoMap;
         var onlinePlayers = this.getServer().getOnlinePlayers();
 
-        if (!playerInfoMap.isEmpty() && !onlinePlayers.isEmpty()) {
-            onlinePlayers.stream()
-            .map(playerInfoMap::get)
-            .forEach(playerInfo -> playerInfo.kickPlayer(DISABLE_TITLE, DISABLE_SUBTITLE));
+        if (
+                !playerInfoMap.isEmpty()
+                && !onlinePlayers.isEmpty()
+        ) {
+            onlinePlayers.forEach(player -> playerInfoMap.get(player).kickPlayer(player, DISABLE_TITLE, DISABLE_SUBTITLE));
         }
 
         this.cache.bukkitTasks.forEach(BukkitTask::cancel);
