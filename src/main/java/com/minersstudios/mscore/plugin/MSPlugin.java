@@ -11,9 +11,10 @@ import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.packet.PacketEvent;
-import com.minersstudios.mscore.packet.collection.PacketListenersMap;
 import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
+import com.minersstudios.mscore.packet.collection.PacketListenersMap;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.utils.BlockUtils;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -73,6 +74,11 @@ public abstract class MSPlugin extends JavaPlugin {
         }
 
         GLOBAL_CONFIG.reload();
+        LanguageFile.loadLanguage(
+                GLOBAL_CONFIG.languageUser,
+                GLOBAL_CONFIG.languageRepo,
+                GLOBAL_CONFIG.languageCode
+        );
 
         try {
             DATA_FOLDER_FIELD = JavaPlugin.class.getDeclaredField("dataFolder");
@@ -853,7 +859,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * @param clazz The class to load
      * @see Class#forName(String)
      */
-    private static void initClass(@NotNull Class<?> clazz) {
+    protected static void initClass(@NotNull Class<?> clazz) {
         try {
             Class.forName(clazz.getName());
         } catch (ClassNotFoundException e) {

@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.menu;
 
-import com.minersstudios.mscore.config.LanguageFile;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.SingleInventory;

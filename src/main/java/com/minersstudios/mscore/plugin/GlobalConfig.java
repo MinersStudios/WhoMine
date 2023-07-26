@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.plugin;
 
-import com.minersstudios.mscore.config.LanguageFile;
-import com.minersstudios.mscore.config.MSConfig;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
+import com.minersstudios.mscore.plugin.config.MSConfig;
 
 import java.io.File;
 import java.time.format.DateTimeFormatter;

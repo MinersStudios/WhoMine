@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.player;
 
-import com.minersstudios.mscore.config.LanguageFile;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.utils.SignMenu;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.menu.PronounsMenu;

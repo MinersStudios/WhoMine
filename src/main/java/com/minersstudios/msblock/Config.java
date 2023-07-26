@@ -2,7 +2,7 @@ package com.minersstudios.msblock;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.NoteBlockData;
-import com.minersstudios.mscore.config.MSConfig;
+import com.minersstudios.mscore.plugin.config.MSConfig;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.utils.MSPluginUtils;
 import org.bukkit.configuration.file.YamlConfiguration;

@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.config;
+package com.minersstudios.mscore.plugin.config;
 
 import com.google.common.base.Joiner;
 import com.minersstudios.mscore.logger.MSLogger;

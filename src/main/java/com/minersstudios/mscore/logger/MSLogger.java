@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.logger;
 
-import com.minersstudios.mscore.config.LanguageFile;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.utils.Badges;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;

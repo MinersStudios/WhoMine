@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.config;
+package com.minersstudios.mscore.plugin.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -18,12 +18,14 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.translatable;
@@ -42,6 +44,18 @@ public final class LanguageFile {
     private File file;
 
     private static TranslationRegistry registry = TranslationRegistry.create(Key.key("ms"));
+    private static final Field TRANSLATIONS_FIELD;
+
+    static {
+        try {
+            var registryImplClass = Class.forName("net.kyori.adventure.translation.TranslationRegistryImpl");
+            TRANSLATIONS_FIELD = registryImplClass.getDeclaredField("translations");
+
+            TRANSLATIONS_FIELD.setAccessible(true);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize LanguageFile", e);
+        }
+    }
 
     private LanguageFile(
             @NotNull String user,
@@ -110,7 +124,16 @@ public final class LanguageFile {
 
         Locale locale = Locale.US;
         languageFile.translations.entrySet().forEach(
-                entry -> registry.register(entry.getKey(), locale, new MessageFormat(entry.getValue().getAsString()))
+                entry -> {
+                    String key = entry.getKey();
+                    String value = entry.getValue().getAsString();
+
+                    if (registry.contains(key)) {
+                        registry.unregister(key);
+                    }
+
+                    registry.register(key, locale, new MessageFormat(value));
+                }
         );
         GlobalTranslator.translator().addSource(registry);
 
@@ -183,6 +206,19 @@ public final class LanguageFile {
      */
     public static @NotNull String renderTranslation(@NotNull TranslatableComponent translatable) {
         return ChatUtils.serializePlainComponent(renderTranslationComponent(translatable));
+    }
+
+    /**
+     * @return True if language is loaded
+     *         (if {@link #registry} is not empty)
+     */
+    public static boolean isLoaded() {
+        try {
+            return !((Map<?, ?>) TRANSLATIONS_FIELD.get(registry)).isEmpty();
+        } catch (IllegalAccessException e) {
+            MSLogger.log(Level.SEVERE, "Failed to check if language is loaded", e);
+            return false;
+        }
     }
 
     /**

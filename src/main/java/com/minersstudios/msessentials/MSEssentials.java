@@ -4,6 +4,7 @@ import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.commands.player.DiscordCommand;
 import com.minersstudios.msessentials.listeners.chat.DiscordGuildMessagePreProcessListener;
 import com.minersstudios.msessentials.listeners.chat.DiscordPrivateMessageReceivedListener;
+import com.minersstudios.msessentials.menu.*;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.tasks.BanListTask;
@@ -31,6 +32,14 @@ public final class MSEssentials extends MSPlugin {
 
     private static final TranslatableComponent DISABLE_TITLE = translatable("ms.on_disable.message.title");
     private static final TranslatableComponent DISABLE_SUBTITLE = translatable("ms.on_disable.message.subtitle");
+
+    static {
+        initClass(CraftsMenu.class);
+        initClass(DiscordLinkCodeMenu.class);
+        initClass(PronounsMenu.class);
+        initClass(ResourcePackMenu.class);
+        initClass(SkinsMenu.class);
+    }
 
     @Override
     public void enable() {

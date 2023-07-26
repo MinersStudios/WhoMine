@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.player;
 
 
-import com.minersstudios.mscore.config.LanguageFile;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 

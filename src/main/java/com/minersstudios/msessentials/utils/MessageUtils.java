@@ -6,7 +6,7 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.world.WorldDark;
-import com.minersstudios.mscore.config.LanguageFile;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.utils.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;

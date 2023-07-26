@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.commands.player;
 
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.config.LanguageFile;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;

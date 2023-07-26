@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.discord;
 
-import com.minersstudios.mscore.config.LanguageFile;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;

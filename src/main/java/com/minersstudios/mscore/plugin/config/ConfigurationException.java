@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.config;
+package com.minersstudios.mscore.plugin.config;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

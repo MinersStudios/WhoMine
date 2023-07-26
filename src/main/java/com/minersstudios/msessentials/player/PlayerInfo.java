@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Preconditions;
-import com.minersstudios.mscore.config.LanguageFile;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.utils.BlockUtils;

@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials;
 
 import com.minersstudios.mscore.plugin.GlobalCache;
-import com.minersstudios.mscore.config.MSConfig;
+import com.minersstudios.mscore.plugin.config.MSConfig;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utils.MSPluginUtils;
