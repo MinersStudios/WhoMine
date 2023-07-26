@@ -63,7 +63,7 @@ public class GiveCommand {
         itemStack.setAmount(amount);
 
         player.getInventory().addItem(itemStack);
-        MSLogger.info(
+        MSLogger.fine(
                 sender,
                 GIVE_SUCCESS.args(
                         text(amount),

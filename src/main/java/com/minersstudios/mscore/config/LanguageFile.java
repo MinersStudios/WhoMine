@@ -1,12 +1,13 @@
 package com.minersstudios.mscore.config;
 
-import com.minersstudios.mscore.MSCore;
-import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.utils.ChatUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.GlobalConfig;
+import com.minersstudios.mscore.plugin.MSPlugin;
+import com.minersstudios.mscore.utils.ChatUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -131,7 +132,7 @@ public final class LanguageFile {
      * @see #loadLanguage(String, String, String)
      */
     public static void reloadLanguage() {
-        Config config = MSCore.getConfiguration();
+        GlobalConfig config = MSPlugin.getGlobalConfig();
 
         unloadLanguage();
         loadLanguage(config.languageUser, config.languageRepo, config.languageCode);

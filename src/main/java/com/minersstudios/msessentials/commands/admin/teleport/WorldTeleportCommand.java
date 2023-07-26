@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
@@ -54,8 +53,6 @@ public class WorldTeleportCommand implements MSCommandExecutor {
                     )
             ).build();
 
-    private static final String COORDINATES_REGEX = "^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$";
-    private static final Pattern COORDINATES_PATTERN = Pattern.compile(COORDINATES_REGEX);
     private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
     private static final TranslatableComponent WORLD_NOT_FOUND = translatable("ms.command.world_teleport.world_not_found");
     private static final TranslatableComponent TOO_BIG_COORDINATES = translatable("ms.command.world_teleport.too_big_coordinates");
@@ -94,13 +91,6 @@ public class WorldTeleportCommand implements MSCommandExecutor {
         double x, y, z;
 
         if (args.length > 2) {
-            if (
-                    args.length != 5
-                    || !COORDINATES_PATTERN.matcher(args[2]).matches()
-                    || !COORDINATES_PATTERN.matcher(args[3]).matches()
-                    || !COORDINATES_PATTERN.matcher(args[4]).matches()
-            ) return false;
-
             try {
                 x = Double.parseDouble(args[2]);
                 y = Double.parseDouble(args[3]);
@@ -122,7 +112,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 
         player.teleportAsync(new Location(world, x, y, z))
         .thenRun(
-            () -> MSLogger.info(
+            () -> MSLogger.fine(
                     sender,
                     TELEPORT_SUCCESS.args(
                             playerInfo.getGrayIDGreenName(),
@@ -169,9 +159,9 @@ public class WorldTeleportCommand implements MSCommandExecutor {
                         case 4 -> playerLoc.y();
                         default -> playerLoc.z();
                     };
-                    double rounded = Math.round(coordinate * 100) / 100.0;
+                    double roundedCoordinate = Math.round(coordinate * 100.0d) / 100.0d;
 
-                    yield List.of(String.valueOf(rounded));
+                    yield List.of(String.valueOf(roundedCoordinate));
                 }
 
                 yield EMPTY_TAB;

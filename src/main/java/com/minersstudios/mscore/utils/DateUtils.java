@@ -1,6 +1,7 @@
 package com.minersstudios.mscore.utils;
 
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -23,8 +24,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-
-import static com.minersstudios.mscore.MSCore.getConfiguration;
 
 public final class DateUtils {
     private static final ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
@@ -89,7 +88,7 @@ public final class DateUtils {
             @Nullable InetAddress address
     ) {
         if (address == null) {
-            return date.atZone(DEFAULT_ZONE_ID).format(getConfiguration().timeFormatter);
+            return date.atZone(DEFAULT_ZONE_ID).format(MSPlugin.getGlobalConfig().timeFormatter);
         }
 
         String timeZone = getTimezone(address);
@@ -97,7 +96,7 @@ public final class DateUtils {
                 ZoneId.of(timeZone.equalsIgnoreCase("Europe/Kyiv")
                         ? "Europe/Kiev"
                         : timeZone
-                )).format(getConfiguration().timeFormatter);
+                )).format(MSPlugin.getGlobalConfig().timeFormatter);
     }
 
     /**

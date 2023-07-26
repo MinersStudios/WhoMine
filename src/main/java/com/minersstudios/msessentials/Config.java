@@ -11,6 +11,7 @@ import com.minersstudios.msessentials.anomalies.tasks.ParticleTask;
 import com.minersstudios.msessentials.menu.CraftsMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.ResourcePack;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitTask;
@@ -30,6 +31,8 @@ import java.util.logging.Level;
  * Use {@link #reload()} to reload configuration and {@link #save()} to save configuration.
  */
 public final class Config extends MSConfig {
+    private final MSEssentials plugin;
+
     public long anomalyCheckRate;
     public long anomalyParticlesCheckRate;
     public boolean developerMode;
@@ -57,7 +60,8 @@ public final class Config extends MSConfig {
             @NotNull MSEssentials plugin,
             @NotNull File file
     ) throws IllegalArgumentException {
-        super(plugin, file);
+        super(file);
+        this.plugin = plugin;
     }
 
     /**
@@ -97,11 +101,11 @@ public final class Config extends MSConfig {
         } else {
            this.spawnLocation = new Location(
                    spawnLocationWorld,
-                    spawnLocationX,
-                    spawnLocationY,
-                    spawnLocationZ,
-                    spawnLocationYaw,
-                    spawnLocationPitch
+                   spawnLocationX,
+                   spawnLocationY,
+                   spawnLocationZ,
+                   spawnLocationYaw,
+                   spawnLocationPitch
             );
         }
 
@@ -164,5 +168,35 @@ public final class Config extends MSConfig {
                 task.cancel();
             }
         }, 0L, 10L);
+    }
+
+    /**
+     * Reloads default config variables
+     */
+    @Override
+    public void reloadDefaultVariables() {
+        this.setIfNotExists("developer-mode", false);
+        this.setIfNotExists("anomaly-check-rate", 100L);
+        this.setIfNotExists("anomaly-particles-check-rate", 10L);
+        this.setIfNotExists("chat.local.radius", 25.0d);
+        this.setIfNotExists("chat.global.discord-channel-id", -1);
+        this.setIfNotExists("chat.local.discord-channel-id", -1);
+        this.setIfNotExists("resource-pack.version", "");
+        this.setIfNotExists("resource-pack.user", "MinersStudios");
+        this.setIfNotExists("resource-pack.repo", "MSTextures");
+        this.setIfNotExists("resource-pack.full.file-name", "FULL-MSTextures-%s.zip");
+        this.setIfNotExists("resource-pack.full.hash", "");
+        this.setIfNotExists("resource-pack.lite.file-name", "LITE-MSTextures-%s.zip");
+        this.setIfNotExists("resource-pack.lite.hash", "");
+        this.setIfNotExists("skin.mine-skin-api-key", "");
+
+        Location mainWorldSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
+
+        this.setIfNotExists("spawn-location.world", mainWorldSpawn.getWorld().getName());
+        this.setIfNotExists("spawn-location.x", mainWorldSpawn.x());
+        this.setIfNotExists("spawn-location.y", mainWorldSpawn.y());
+        this.setIfNotExists("spawn-location.z", mainWorldSpawn.z());
+        this.setIfNotExists("spawn-location.yaw", mainWorldSpawn.getYaw());
+        this.setIfNotExists("spawn-location.pitch", mainWorldSpawn.getPitch());
     }
 }

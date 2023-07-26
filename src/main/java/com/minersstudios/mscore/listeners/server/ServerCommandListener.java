@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.listener.server;
+package com.minersstudios.mscore.listeners.server;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;

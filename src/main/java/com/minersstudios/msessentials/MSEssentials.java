@@ -60,8 +60,8 @@ public final class MSEssentials extends MSPlugin {
 
         this.runTaskTimer(new SeatsTask(), 0L, 1L);
         this.runTaskTimer(new PlayerListTask(), 6000L, 6000L);
-        this.runTaskTimerAsync(new MuteMapTask(), 0L, 50L);
-        this.runTaskTimerAsync(new BanListTask(), 0L, 6000L);
+        this.runTaskTimer(new MuteMapTask(), 0L, 50L);
+        this.runTaskTimer(new BanListTask(), 0L, 6000L);
     }
 
     @Override

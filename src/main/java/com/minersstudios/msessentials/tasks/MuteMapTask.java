@@ -17,7 +17,7 @@ public class MuteMapTask implements Runnable {
         if (cache.muteMap.isEmpty()) return;
         Instant currentInstant = Instant.now();
 
-        cache.muteMap.entrySet().stream()
+        cache.muteMap.entrySet().stream().parallel()
         .filter(entry -> entry.getValue().getExpiration().isBefore(currentInstant))
         .forEach(entry -> {
             OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());

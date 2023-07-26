@@ -4,7 +4,6 @@ import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.NoteBlockData;
 import com.minersstudios.mscore.config.MSConfig;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utils.MSPluginUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +18,8 @@ import java.util.logging.Level;
 import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
 
 public final class Config extends MSConfig {
+    private final MSBlock plugin;
+
     public String woodSoundPlace;
     public String woodSoundBreak;
     public String woodSoundStep;
@@ -27,15 +28,15 @@ public final class Config extends MSConfig {
     /**
      * Configuration constructor
      *
-     * @param plugin The plugin instance of the configuration
      * @param file   The config file, where the configuration is stored
      * @throws IllegalArgumentException If the given file does not exist
      */
     public Config(
-            @NotNull MSPlugin plugin,
+            @NotNull MSBlock plugin,
             @NotNull File file
     ) throws IllegalArgumentException {
-        super(plugin, file);
+        super(file);
+        this.plugin = plugin;
     }
 
     /**
@@ -43,15 +44,16 @@ public final class Config extends MSConfig {
      */
     @Override
     public void reloadVariables() {
-        this.woodSoundPlace = this.yaml.getString("wood-sound.place", "custom.block.wood.place");
-        this.woodSoundBreak = this.yaml.getString("wood-sound.break", "custom.block.wood.break");
-        this.woodSoundStep = this.yaml.getString("wood-sound.step", "custom.block.wood.step");
-        this.woodSoundHit = this.yaml.getString("wood-sound.hit", "custom.block.wood.hit");
+        this.woodSoundPlace = this.yaml.getString("wood-sound.place");
+        this.woodSoundBreak = this.yaml.getString("wood-sound.break");
+        this.woodSoundStep = this.yaml.getString("wood-sound.step");
+        this.woodSoundHit = this.yaml.getString("wood-sound.hit");
 
         var recipeBlocks = MSBlock.getCache().recipeBlocks;
 
+        this.plugin.saveResource("blocks/example.yml", true);
         this.loadBlocks();
-        this.getPlugin().runTaskTimer(task -> {
+        this.plugin.runTaskTimer(task -> {
             if (MSPluginUtils.isLoadedCustoms()) {
                 recipeBlocks.forEach(CustomBlockData::registerRecipes);
                 recipeBlocks.clear();
@@ -60,11 +62,22 @@ public final class Config extends MSConfig {
         }, 0L, 10L);
     }
 
+    /**
+     * Reloads default config variables
+     */
+    @Override
+    public void reloadDefaultVariables() {
+        this.setIfNotExists("wood-sound.place", "custom.block.wood.place");
+        this.setIfNotExists("wood-sound.break", "custom.block.wood.break");
+        this.setIfNotExists("wood-sound.step", "custom.block.wood.step");
+        this.setIfNotExists("wood-sound.hit", "custom.block.wood.hit");
+    }
+
     private void loadBlocks() {
         var customBlockMap = getGlobalCache().customBlockMap;
         var cachedNoteBlockData = getGlobalCache().cachedNoteBlockData;
 
-        try (var path = Files.walk(Paths.get(this.getPlugin().getPluginFolder() + "/blocks"))) {
+        try (var path = Files.walk(Paths.get(this.file.getParent() + "/blocks"))) {
             path
             .filter(file -> {
                 String fileName = file.getFileName().toString();
@@ -94,7 +107,7 @@ public final class Config extends MSConfig {
                 }
             });
 
-            this.getPlugin().setLoadedCustoms(true);
+            this.plugin.setLoadedCustoms(true);
         } catch (IOException e) {
             MSLogger.log(Level.SEVERE, "An error occurred while loading blocks", e);
         }

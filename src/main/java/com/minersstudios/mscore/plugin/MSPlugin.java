@@ -50,7 +50,7 @@ import java.util.logging.Level;
  * @see #disable()
  */
 public abstract class MSPlugin extends JavaPlugin {
-    private final File pluginFolder = new File("config/minersstudios/" + this.getName() + "/");
+    private final File pluginFolder = new File(GLOBAL_FOLDER, this.getName() + '/');
     private final File configFile = new File(this.pluginFolder, "config.yml");
     private final Set<String> classNames = new HashSet<>();
     private final Map<MSCommand, MSCommandExecutor> msCommands = new HashMap<>();
@@ -60,12 +60,20 @@ public abstract class MSPlugin extends JavaPlugin {
     private FileConfiguration newConfig;
     private boolean loadedCustoms;
 
-    private static final GlobalCache GLOBAL_CACHE = new GlobalCache();
-
     private static final Field DATA_FOLDER_FIELD;
     private static final Constructor<PluginCommand> COMMAND_CONSTRUCTOR;
 
+    protected static final File GLOBAL_FOLDER = new File("config/minersstudios/");
+    protected static final GlobalCache GLOBAL_CACHE = new GlobalCache();
+    protected static final GlobalConfig GLOBAL_CONFIG = new GlobalConfig();
+
     static {
+        if (GLOBAL_FOLDER.mkdirs()) {
+            MSLogger.info("The global folder was created");
+        }
+
+        GLOBAL_CONFIG.reload();
+
         try {
             DATA_FOLDER_FIELD = JavaPlugin.class.getDeclaredField("dataFolder");
             COMMAND_CONSTRUCTOR = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
@@ -160,10 +168,24 @@ public abstract class MSPlugin extends JavaPlugin {
     }
 
     /**
+     * @return The global folder of the MSPlugins
+     */
+    public static @NotNull File getGlobalFolder() {
+        return GLOBAL_FOLDER;
+    }
+
+    /**
      * @return The cache of the MSPlugins
      */
     public static @NotNull GlobalCache getGlobalCache() {
         return GLOBAL_CACHE;
+    }
+
+    /**
+     * @return The global config of the MSPlugins
+     */
+    public static @NotNull GlobalConfig getGlobalConfig() {
+        return GLOBAL_CONFIG;
     }
 
     /**

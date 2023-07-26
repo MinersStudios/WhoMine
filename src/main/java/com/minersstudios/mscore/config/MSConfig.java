@@ -2,10 +2,10 @@ package com.minersstudios.mscore.config;
 
 import com.google.common.base.Joiner;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.plugin.MSPlugin;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,6 @@ import java.util.logging.Level;
  * Use {@link #reloadVariables()} to reload variables.
  */
 public abstract class MSConfig {
-    protected final @NotNull MSPlugin plugin;
     protected final @NotNull File file;
     protected final @NotNull YamlConfiguration yaml;
 
@@ -28,26 +27,12 @@ public abstract class MSConfig {
      * Configuration constructor.
      * All variables must be initialized in {@link #reloadVariables()}.
      *
-     * @param plugin The plugin instance of the configuration
      * @param file The config file, where the configuration is stored
      * @throws IllegalArgumentException If the given file does not exist
      */
-    public MSConfig(
-            @NotNull MSPlugin plugin,
-            @NotNull File file
-    ) throws IllegalArgumentException {
-        this.plugin = plugin;
+    public MSConfig(@NotNull File file) throws IllegalArgumentException {
         this.file = file;
         this.yaml = new YamlConfiguration();
-
-        plugin.saveDefaultConfig();
-    }
-
-    /**
-     * @return The plugin instance of the configuration
-     */
-    public final @NotNull MSPlugin getPlugin() {
-        return this.plugin;
     }
 
     /**
@@ -65,6 +50,22 @@ public abstract class MSConfig {
     }
 
     /**
+     * Sets the value of the given path to the given value.
+     * If the path does not exist, it will be created.
+     *
+     * @param path  The path of the value
+     * @param value The value to set
+     */
+    public void setIfNotExists(
+            @NotNull String path,
+            @Nullable Object value
+    ) {
+        if (!this.yaml.isSet(path)) {
+            this.yaml.set(path, value);
+        }
+    }
+
+    /**
      * Reloads {@link #yaml} and variables from file.
      * The yaml configuration is reloaded first, then the variables.
      *
@@ -75,8 +76,7 @@ public abstract class MSConfig {
      */
     public boolean reload() {
         try {
-            this.plugin.saveDefaultConfig();
-            this.reloadYaml();
+            this.saveDefaultConfig();
             this.reloadVariables();
             return true;
         } catch (ConfigurationException e) {
@@ -102,8 +102,17 @@ public abstract class MSConfig {
 
     /**
      * Reloads config variables
+     *
+     * @see #reload()
      */
     public abstract void reloadVariables();
+
+    /**
+     * Reloads default config variables
+     *
+     * @see #saveDefaultConfig()
+     */
+    public abstract void reloadDefaultVariables();
 
     /**
      * Saves the config file
@@ -118,6 +127,35 @@ public abstract class MSConfig {
         } catch (IOException e) {
             MSLogger.log(Level.SEVERE, "An error occurred while saving the config!", e);
             return false;
+        }
+    }
+
+    /**
+     * Saves the default config file with default values.
+     * The default values are set in {@link #reloadDefaultVariables()}.
+     *
+     * @see #reloadDefaultVariables()
+     * @see #save()
+     */
+    public void saveDefaultConfig() throws ConfigurationException {
+        try {
+            if (!this.file.exists()) {
+                if (this.file.getParentFile().mkdirs()) {
+                    MSLogger.info("The config directory : " + this.file.getParentFile() + " was created");
+                }
+
+                if (this.file.createNewFile()) {
+                    MSLogger.info("The config file : " + this.file + " was created");
+                }
+            }
+
+            this.reloadYaml();
+            this.reloadDefaultVariables();
+            this.yaml.save(this.file);
+        } catch (IOException e) {
+            throw new ConfigurationException("The config file : " + this.file + " cannot be written to", e);
+        } catch (ConfigurationException e) {
+            throw new ConfigurationException("The config file : " + this.file + " cannot be read", e);
         }
     }
 

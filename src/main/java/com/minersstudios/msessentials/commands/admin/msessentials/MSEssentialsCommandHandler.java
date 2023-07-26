@@ -27,9 +27,11 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
                 "msessentials.maplocation",
                 "msessentials.whitelist",
                 "msessentials.teleporttolastdeathlocation",
-                "msessentials.worldteleport"
+                "msessentials.worldteleport",
+                "msessentials.setserverspawn"
         },
         permissionParentValues = {
+                true,
                 true,
                 true,
                 true,

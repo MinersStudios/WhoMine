@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.commands;
 
-import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,7 @@ public class ReloadConfigCommand {
     public static boolean runCommand(@NotNull CommandSender sender) {
         long time = System.currentTimeMillis();
 
-        MSCore.getConfiguration().reload();
+        MSPlugin.getGlobalConfig().reload();
         MSLogger.fine(sender, RELOAD_CONFIG_SUCCESS.args(text(System.currentTimeMillis() - time)));
         return true;
     }
