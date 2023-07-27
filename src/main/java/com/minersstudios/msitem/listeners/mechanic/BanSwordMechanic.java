@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.listeners.mechanic;
 
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.MSItemUtils;
+import com.minersstudios.mscore.util.MSItemUtils;
 import com.minersstudios.msitem.items.register.items.BanSword;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

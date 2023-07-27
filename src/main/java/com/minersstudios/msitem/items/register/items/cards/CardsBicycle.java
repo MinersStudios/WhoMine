@@ -1,8 +1,8 @@
 package com.minersstudios.msitem.items.register.items.cards;
 
 import com.google.common.collect.Lists;
-import com.minersstudios.mscore.utils.ChatUtils;
-import com.minersstudios.mscore.utils.MSItemUtils;
+import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.util.MSItemUtils;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.Typed;
 import net.kyori.adventure.text.Component;

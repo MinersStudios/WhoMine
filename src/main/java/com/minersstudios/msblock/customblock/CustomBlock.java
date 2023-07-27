@@ -3,8 +3,8 @@ package com.minersstudios.msblock.customblock;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.events.CustomBlockBreakEvent;
 import com.minersstudios.msblock.events.CustomBlockPlaceEvent;
-import com.minersstudios.mscore.utils.BlockUtils;
-import com.minersstudios.mscore.utils.ItemUtils;
+import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.ItemUtils;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.*;
@@ -87,6 +87,7 @@ public class CustomBlock implements Cloneable {
         Location blockLocation = this.block.getLocation();
         World world = this.block.getWorld();
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        Material mainHandMaterial = itemInMainHand.getType();
 
         MSBlock.getCache().diggingMap.removeAll(this.block);
 
@@ -104,7 +105,7 @@ public class CustomBlock implements Cloneable {
         this.block.setType(Material.AIR);
 
         if (
-                (!this.customBlockData.isForceTool() || this.customBlockData.getToolType() == ToolType.fromItemStack(itemInMainHand))
+                (!this.customBlockData.isForceTool() || this.customBlockData.getToolType() == ToolType.fromMaterial(mainHandMaterial))
                  && this.customBlockData != CustomBlockData.DEFAULT
         ) {
             if (this.customBlockData.isDropsDefaultItem()) {
@@ -118,7 +119,7 @@ public class CustomBlock implements Cloneable {
             world.dropItemNaturally(blockLocation, new ItemStack(Material.NOTE_BLOCK));
         }
 
-        if (ToolType.fromItemStack(itemInMainHand) != ToolType.HAND) {
+        if (ToolType.fromMaterial(mainHandMaterial) != ToolType.HAND) {
             ItemUtils.damageItem(player, itemInMainHand);
         }
     }

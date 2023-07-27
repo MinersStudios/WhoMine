@@ -335,15 +335,6 @@ public class DiggingMap {
         private int stage;
         private boolean farAway;
 
-        /**
-         * Private constructor for the Entry class
-         *
-         * @param player  The player associated with the digging entry
-         * @param taskId  The task ID associated with the digging entry
-         * @param stage   The current stage of the digging process
-         * @param farAway A boolean indicating whether the player is
-         *                far away from the block being dug
-         */
         private Entry(
                 @NotNull Player player,
                 int taskId,
@@ -513,8 +504,9 @@ public class DiggingMap {
          * Cancels the task associated with this Entry. If the task ID
          * is valid, it cancels the scheduled task using Bukkit's scheduler.
          * After cancellation, the task ID is set to -1.
-         * @see BukkitScheduler#cancelTask(int)
+         *
          * @throws NullPointerException If the server is not running
+         * @see BukkitScheduler#cancelTask(int)
          */
         public void cancelTask() throws NullPointerException {
             if (this.taskId != -1) {

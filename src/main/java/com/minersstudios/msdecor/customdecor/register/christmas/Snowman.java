@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.customdecor.register.christmas;
 
 import com.google.common.collect.Lists;
-import com.minersstudios.mscore.utils.Badges;
+import com.minersstudios.mscore.util.Badges;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.customdecor.SoundGroup;

@@ -2,7 +2,7 @@ package com.minersstudios.msitem.listeners.mechanic;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.MSItemUtils;
+import com.minersstudios.mscore.util.MSItemUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msitem.MSItem;

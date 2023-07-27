@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.GlobalConfig;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.utils.ChatUtils;
+import com.minersstudios.mscore.util.ChatUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;

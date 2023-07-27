@@ -4,7 +4,7 @@ import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.SingleInventory;
-import com.minersstudios.mscore.utils.ChatUtils;
+import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerSettings;

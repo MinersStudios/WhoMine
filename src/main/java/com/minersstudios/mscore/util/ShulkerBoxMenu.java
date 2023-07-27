@@ -1,4 +1,4 @@
-package com.minersstudios.msblock.utils;
+package com.minersstudios.mscore.util;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;

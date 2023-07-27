@@ -1,7 +1,7 @@
-package com.minersstudios.msblock.utils;
+package com.minersstudios.msblock.util;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.mscore.utils.BlockUtils;
+import com.minersstudios.mscore.util.BlockUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -73,21 +73,24 @@ public final class UseBucketsAndSpawnableItems {
      * @return random axolotl color variant
      */
     private @NotNull Axolotl.Variant randomVariant() {
-        return Axolotl.Variant.values()[this.random.nextInt(Axolotl.Variant.values().length)];
+        Axolotl.Variant[] variants = Axolotl.Variant.values();
+        return variants[this.random.nextInt(variants.length)];
     }
 
     /**
      * @return random tropical fish body pattern variant
      */
     private @NotNull TropicalFish.Pattern randomPattern() {
-        return TropicalFish.Pattern.values()[this.random.nextInt(TropicalFish.Pattern.values().length)];
+        TropicalFish.Pattern[] patterns = TropicalFish.Pattern.values();
+        return patterns[this.random.nextInt(patterns.length)];
     }
 
     /**
      * @return random tropical fish body color variant
      */
     private @NotNull DyeColor randomBodyColor() {
-        return DyeColor.values()[this.random.nextInt(DyeColor.values().length)];
+        DyeColor[] dyeColors = DyeColor.values();
+        return dyeColors[this.random.nextInt(dyeColors.length)];
     }
 
     /**
@@ -107,7 +110,9 @@ public final class UseBucketsAndSpawnableItems {
         Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
         RayTraceResult rayTraceEntities = this.world.rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
         RayTraceResult rayTraceBlocks = this.world.rayTraceBlocks(eyeLocation, eyeLocation.getDirection(), 4.5d);
-        assert rayTraceBlocks != null;
+
+        if (rayTraceBlocks == null) return;
+
         Location summonLocation = rayTraceBlocks.getHitPosition().toLocation(this.world);
 
         for (Entity nearbyEntity : this.world.getNearbyEntities(summonLocation, 0.5d, 0.5d, 0.5d)) {
@@ -155,7 +160,9 @@ public final class UseBucketsAndSpawnableItems {
      */
     private void setPainting() {
         if (this.checkForEntities()) return;
+
         this.world.spawn(this.blockLocation, Painting.class, painting -> painting.setFacingDirection(this.blockFace, true));
+
         if (this.player.getGameMode() != GameMode.CREATIVE) {
             this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
         }
@@ -178,15 +185,11 @@ public final class UseBucketsAndSpawnableItems {
     private void setTropicalFish() {
         this.world.spawn(this.blockLocation, TropicalFish.class, tropicalFish -> {
             if (this.itemInHand.getItemMeta() instanceof TropicalFishBucketMeta tropicalFishBucketMeta) {
-                if (tropicalFishBucketMeta.hasVariant()) {
-                    tropicalFish.setBodyColor(tropicalFishBucketMeta.getBodyColor());
-                    tropicalFish.setPattern(tropicalFishBucketMeta.getPattern());
-                    tropicalFish.setPatternColor(tropicalFishBucketMeta.getPatternColor());
-                } else {
-                    tropicalFish.setBodyColor(this.randomBodyColor());
-                    tropicalFish.setPattern(this.randomPattern());
-                    tropicalFish.setPatternColor(this.randomBodyColor());
-                }
+                boolean hasVariant = tropicalFishBucketMeta.hasVariant();
+
+                tropicalFish.setBodyColor(hasVariant ? tropicalFishBucketMeta.getBodyColor() : this.randomBodyColor());
+                tropicalFish.setPattern(hasVariant ? tropicalFishBucketMeta.getPattern() : this.randomPattern());
+                tropicalFish.setPatternColor(hasVariant ? tropicalFishBucketMeta.getPatternColor() : this.randomBodyColor());
             }
         });
         this.setWater();
@@ -217,18 +220,22 @@ public final class UseBucketsAndSpawnableItems {
      */
     private void useEmptyBucket() {
         BlockData blockData = this.block.getBlockData();
+        Location blockLocation = this.block.getLocation();
+        GameMode gameMode = this.player.getGameMode();
+        String playerName = this.player.getName();
+        Material itemMaterial = this.itemInHand.getType();
 
         if (
                 this.block.getType() == Material.LAVA
                 && blockData instanceof Levelled levelled
                 && levelled.getLevel() == levelled.getMinimumLevel()
         ) {
-            MSBlock.getCoreProtectAPI().logRemoval(this.player.getName(), this.block.getLocation(), Material.LAVA, blockData);
-            this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
+            MSBlock.getCoreProtectAPI().logRemoval(playerName, blockLocation, Material.LAVA, blockData);
+            this.world.playSound(blockLocation, Sound.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
             this.itemInHand.setType(
-                    this.player.getGameMode() == GameMode.SURVIVAL
-                            ? Material.LAVA_BUCKET
-                            : this.itemInHand.getType()
+                    gameMode == GameMode.SURVIVAL
+                    ? Material.LAVA_BUCKET
+                    : itemMaterial
             );
             this.block.setType(Material.AIR);
         } else {
@@ -244,25 +251,30 @@ public final class UseBucketsAndSpawnableItems {
                 return;
             }
 
-            MSBlock.getCoreProtectAPI().logRemoval(this.player.getName(), this.block.getLocation(), Material.WATER, blockData);
-            this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
+            MSBlock.getCoreProtectAPI().logRemoval(playerName, blockLocation, Material.WATER, blockData);
+            this.world.playSound(blockLocation, Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
             this.itemInHand.setType(
-                    this.player.getGameMode() == GameMode.SURVIVAL
-                            ? Material.WATER_BUCKET
-                            : this.itemInHand.getType()
+                    gameMode == GameMode.SURVIVAL
+                    ? Material.WATER_BUCKET
+                    : itemMaterial
             );
         }
     }
 
     private void setLava() {
         if (this.block.getType().isSolid()) return;
+
+        Location blockLocation = this.block.getLocation();
+
         this.block.setType(Material.LAVA);
-        this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
-        MSBlock.getCoreProtectAPI().logPlacement(this.player.getName(), this.block.getLocation(), Material.LAVA, this.block.getBlockData());
+        this.world.playSound(blockLocation, Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
+        MSBlock.getCoreProtectAPI().logPlacement(this.player.getName(), blockLocation, Material.LAVA, this.block.getBlockData());
         setBucketIfSurvival();
     }
 
     private void setWater() {
+        Location blockLocation = this.block.getLocation();
+
         if (this.block.getBlockData() instanceof Waterlogged waterlogged) {
             waterlogged.setWaterlogged(true);
             this.block.setBlockData(waterlogged);
@@ -270,8 +282,8 @@ public final class UseBucketsAndSpawnableItems {
             this.block.setType(Material.WATER);
         }
 
-        this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
-        MSBlock.getCoreProtectAPI().logPlacement(player.getName(), this.block.getLocation(), Material.WATER, this.block.getBlockData());
+        this.world.playSound(blockLocation, Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
+        MSBlock.getCoreProtectAPI().logPlacement(player.getName(), blockLocation, Material.WATER, this.block.getBlockData());
         this.setBucketIfSurvival();
     }
 }

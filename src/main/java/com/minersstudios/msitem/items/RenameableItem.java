@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.items;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.utils.MSItemUtils;
+import com.minersstudios.mscore.util.MSItemUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
+import static com.minersstudios.mscore.util.ChatUtils.createDefaultStyledText;
 
 public class RenameableItem {
     private @NotNull NamespacedKey namespacedKey;

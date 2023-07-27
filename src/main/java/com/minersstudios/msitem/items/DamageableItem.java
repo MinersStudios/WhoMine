@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.items;
 
-import com.minersstudios.mscore.utils.ChatUtils;
+import com.minersstudios.mscore.util.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;

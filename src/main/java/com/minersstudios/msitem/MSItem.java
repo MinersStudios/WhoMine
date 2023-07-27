@@ -1,7 +1,7 @@
 package com.minersstudios.msitem;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.utils.MSPluginUtils;
+import com.minersstudios.mscore.util.MSPluginUtils;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.RenamesMenu;
 import com.minersstudios.msitem.listeners.mechanic.DosimeterMechanic;

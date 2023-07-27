@@ -15,9 +15,9 @@ import org.jetbrains.annotations.NotNull;
  * @see Cancellable
  */
 public class PacketEvent implements Cancellable {
-    private final PacketContainer packetContainer;
-    private final Player player;
-    private boolean cancelled;
+    protected final PacketContainer packetContainer;
+    protected final Player player;
+    protected boolean cancelled;
 
     /**
      * @param packetContainer The packet container

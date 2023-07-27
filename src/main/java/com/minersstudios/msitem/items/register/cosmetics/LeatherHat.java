@@ -1,8 +1,8 @@
 package com.minersstudios.msitem.items.register.cosmetics;
 
-import com.minersstudios.mscore.utils.Badges;
-import com.minersstudios.mscore.utils.ChatUtils;
-import com.minersstudios.mscore.utils.MSItemUtils;
+import com.minersstudios.mscore.util.Badges;
+import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.util.MSItemUtils;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.Renameable;
 import com.minersstudios.msitem.items.Wearable;

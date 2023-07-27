@@ -1,8 +1,8 @@
 package com.minersstudios.msessentials.commands.admin.player;
 
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.utils.ChatUtils;
-import com.minersstudios.mscore.utils.DateUtils;
+import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.util.DateUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.MuteMap;

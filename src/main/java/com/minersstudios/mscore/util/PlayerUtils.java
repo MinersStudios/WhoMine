@@ -1,7 +1,9 @@
-package com.minersstudios.mscore.utils;
+package com.minersstudios.mscore.util;
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.destroystokyo.paper.profile.PlayerProfile;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -14,29 +16,60 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.biome.BiomeManager;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerShowEntityEvent;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 /**
  * Utility class for {@link Player}
  */
 public final class PlayerUtils {
+    private static final ImmutableSet<EntityType> MOB_FILTER = Sets.immutableEnumSet(
+            //<editor-fold desc="Ignorable mob types">
+            EntityType.DROPPED_ITEM,
+            EntityType.ARROW,
+            EntityType.SPECTRAL_ARROW,
+            EntityType.AREA_EFFECT_CLOUD,
+            EntityType.DRAGON_FIREBALL,
+            EntityType.EGG,
+            EntityType.FISHING_HOOK,
+            EntityType.WITHER_SKULL,
+            EntityType.TRIDENT,
+            EntityType.SNOWBALL,
+            EntityType.SMALL_FIREBALL,
+            EntityType.FIREBALL,
+            EntityType.FIREWORK,
+            EntityType.SPLASH_POTION,
+            EntityType.THROWN_EXP_BOTTLE,
+            EntityType.EXPERIENCE_ORB,
+            EntityType.LLAMA_SPIT,
+            EntityType.LIGHTNING
+            //</editor-fold>
+    );
 
     @Contract(value = " -> fail")
     private PlayerUtils() {
@@ -263,6 +296,88 @@ public final class PlayerUtils {
             @Nullable String nickname
     ) throws IllegalArgumentException {
         return new CraftPlayerProfile(uuid, nickname);
+    }
+
+    /**
+     * Opens the shulker box for the player without animation
+     * and block updates
+     *
+     * @param player     The player to open the shulker box
+     * @param shulkerBox The shulker box to open
+     */
+    public static void openShulkerBoxSilent(
+            @NotNull Player player,
+            @NotNull ShulkerBox shulkerBox,
+            boolean playSound
+    ) {
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        Container inventory = ((CraftInventory) shulkerBox.getInventory()).getInventory();
+
+        if (inventory != null && !serverPlayer.isSpectator()) {
+            int syncId = serverPlayer.nextContainerCounter();
+            ShulkerBoxMenu shulkerBoxMenu = new ShulkerBoxMenu(syncId, serverPlayer.getInventory(), inventory);
+            AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(serverPlayer, shulkerBoxMenu, false);
+
+            container.setTitle(((MenuProvider) inventory).getDisplayName());
+
+            serverPlayer.containerMenu = container;
+
+            if (playSound) {
+                shulkerBox.getWorld().playSound(shulkerBox.getLocation(), Sound.BLOCK_SHULKER_BOX_OPEN, SoundCategory.BLOCKS, 0.5f, serverPlayer.getRandom().nextFloat() * 0.1f + 0.9f);
+            }
+
+            if (!serverPlayer.isImmobile()) {
+                ClientboundOpenScreenPacket packet = new ClientboundOpenScreenPacket(syncId, MenuType.SHULKER_BOX, container.getTitle());
+                serverPlayer.connection.send(packet);
+            }
+
+            serverPlayer.initMenu(container);
+        }
+    }
+
+
+    /**
+     * @param player The player to get the target block
+     *               from
+     * @return The target block
+     */
+    public static @Nullable Block getTargetBlock(@NotNull Player player) {
+        Location eyeLocation = player.getEyeLocation();
+        RayTraceResult rayTraceResult = player.getWorld().rayTraceBlocks(
+                eyeLocation,
+                eyeLocation.getDirection(),
+                4.5d,
+                FluidCollisionMode.NEVER,
+                false
+        );
+        return rayTraceResult != null
+                ? rayTraceResult.getHitBlock()
+                : null;
+    }
+
+    /**
+     * @param player      The player to get the target entity
+     *                    from
+     * @param targetBlock The target block
+     * @return The target entity
+     */
+    public static @Nullable Entity getTargetEntity(
+            @NotNull Player player,
+            @Nullable Block targetBlock
+    ) {
+        Location eyeLocation = player.getEyeLocation();
+        Predicate<Entity> filter = entity -> entity != player && !MOB_FILTER.contains(entity.getType());
+        RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
+
+        if (rayTraceResult == null) return null;
+
+        Entity targetEntity = rayTraceResult.getHitEntity();
+
+        return targetBlock != null
+                && targetEntity != null
+                && eyeLocation.distance(targetBlock.getLocation()) <= eyeLocation.distance(targetEntity.getLocation())
+                ? null
+                : targetEntity;
     }
 
     private static void unregisterEntity(

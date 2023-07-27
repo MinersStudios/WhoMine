@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.utils.MSPluginUtils;
+import com.minersstudios.mscore.util.MSPluginUtils;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.utils.ConfigCache;
 import net.coreprotect.CoreProtect;

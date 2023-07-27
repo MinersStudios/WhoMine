@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StepMap {
     private final Map<Player, Double> stepMap = new ConcurrentHashMap<>();
 
-    private static final double FINAL_STEP = 1.25d;
+    private static final double FINAL_STEP = 1.5d;
 
     /**
      * @param player The player for which to retrieve the distance

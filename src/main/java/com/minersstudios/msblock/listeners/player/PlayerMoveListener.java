@@ -1,11 +1,10 @@
 package com.minersstudios.msblock.listeners.player;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.collection.StepMap;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.BlockUtils;
+import com.minersstudios.mscore.util.BlockUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -21,36 +20,28 @@ public class PlayerMoveListener extends AbstractMSListener {
     @EventHandler
     public void onPlayerMove(@NotNull PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        Block bottomBlock = player.getLocation().subtract(0.0d, 0.5d, 0.0d).getBlock();
-        Location bottomBlockLocation = bottomBlock.getLocation().toCenterLocation();
-        StepMap stepMap = MSBlock.getCache().stepMap;
+        Block block = player.getLocation().subtract(0.0d, 0.5d, 0.0d).getBlock();
 
         if (
                 player.getGameMode() != GameMode.SPECTATOR
                 && !player.isFlying()
                 && !player.isSneaking()
-                && BlockUtils.isWoodenSound(bottomBlock.getType())
         ) {
-            Location from = event.getFrom().clone();
-            Location to = event.getTo().clone();
-
-            from.setY(0.0d);
-            to.setY(0.0d);
-
-            double distance = from.distance(to);
+            double distance = event.getFrom().distance(event.getTo());
 
             if (
                     distance != 0.0d
-                    && stepMap.addDistance(player, distance)
+                    && MSBlock.getCache().stepMap.addDistance(player, distance)
+                    && BlockUtils.isWoodenSound(block.getType())
             ) {
-                if (bottomBlock.getBlockData() instanceof NoteBlock noteBlock) {
-                    CustomBlockData.fromNoteBlock(noteBlock).getSoundGroup().playStepSound(bottomBlockLocation);
+                Location stepLocation = block.getLocation().toCenterLocation();
+
+                if (block.getBlockData() instanceof NoteBlock noteBlock) {
+                    CustomBlockData.fromNoteBlock(noteBlock).getSoundGroup().playStepSound(stepLocation);
                 } else {
-                    CustomBlockData.DEFAULT.getSoundGroup().playStepSound(bottomBlockLocation);
+                    CustomBlockData.DEFAULT.getSoundGroup().playStepSound(stepLocation);
                 }
             }
-        } else {
-            stepMap.remove(player);
         }
     }
 }

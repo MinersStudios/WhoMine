@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.utils;
+package com.minersstudios.mscore.util;
 
 import com.minersstudios.msitem.items.DamageableItem;
 import org.bukkit.EntityEffect;

@@ -7,7 +7,6 @@ import com.minersstudios.msessentials.utils.MessageUtils;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.security.SecureRandom;
-import java.util.List;
 
 @MSListener
 public class PlayerInteractEntityListener extends AbstractMSListener {
@@ -55,7 +53,7 @@ public class PlayerInteractEntityListener extends AbstractMSListener {
                     && !whoClicked.isSneaking()
                     && helmet.getType() == Material.SADDLE
             ) {
-                List<Entity> passengers = clickedPlayer.getPassengers();
+                var passengers = clickedPlayer.getPassengers();
 
                 if (passengers.isEmpty()) {
                     clickedPlayer.addPassenger(whoClicked);

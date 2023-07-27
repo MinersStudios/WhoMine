@@ -1,9 +1,9 @@
 package com.minersstudios.msitem.listeners.inventory;
 
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.MSBlockUtils;
-import com.minersstudios.mscore.utils.MSDecorUtils;
-import com.minersstudios.mscore.utils.MSItemUtils;
+import com.minersstudios.mscore.util.MSBlockUtils;
+import com.minersstudios.mscore.util.MSDecorUtils;
+import com.minersstudios.mscore.util.MSItemUtils;
 import com.minersstudios.msitem.items.Renameable;
 import com.minersstudios.msitem.items.RenameableItem;
 import com.minersstudios.msitem.utils.CustomItemUtils;

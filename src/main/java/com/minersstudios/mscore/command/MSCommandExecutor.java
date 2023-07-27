@@ -15,11 +15,15 @@ import java.util.List;
  * Represents a class which contains a bunch of methods for handling commands
  */
 public interface MSCommandExecutor extends CommandExecutor, TabCompleter {
+    /**
+     * An empty tab completion list. Used when no tab completion is needed
+     * or when the tab completion is handled by the command executor itself.
+     */
     List<String> EMPTY_TAB = Collections.emptyList();
 
     /**
-     * Executes the given command, returning its success.
-     * If false is returned, then the "usage" plugin.yml entry for this command
+     * Executes the given command, returning its success. If false is
+     * returned, then the "usage" plugin.yml entry for this command
      * (if defined) will be sent to the player
      *
      * @param sender  Source of the command
@@ -39,18 +43,18 @@ public interface MSCommandExecutor extends CommandExecutor, TabCompleter {
      * Returns the components and its definition for better tab completion
      * <br>
      * <b>Example:</b>
-     * <pre>
-     *     literal("example")
-     *     .then(
-     *           literal("someLiteralArgument1")
-     *           .then(argument("some string argument", StringArgumentType.greedyString())))
-     *     )
-     *     .then(
-     *           literal("someLiteralArgument2")
-     *           .then(argument("some integer argument", IntegerArgumentType.integer())))
-     *     )
-     *     .build();
-     * </pre>
+     * <pre>{@code
+     * literal("example")
+     * .then(
+     *       literal("someLiteralArgument1")
+     *       .then(argument("some string argument", StringArgumentType.greedyString())))
+     * )
+     * .then(
+     *       literal("someLiteralArgument2")
+     *       .then(argument("some integer argument", IntegerArgumentType.integer())))
+     * )
+     * .build();
+     * }</pre>
      *
      * @return CommandNode for {@link Commodore} registration
      */
@@ -59,16 +63,17 @@ public interface MSCommandExecutor extends CommandExecutor, TabCompleter {
     }
 
     /**
-     * Requests a list of possible completions for a command argument.
+     * Requests a list of possible completions for a command argument
      *
-     * @param sender  Source of the command.
-     *                For players tab-completing a command inside a command block,
-     *                this will be the player, not the command block.
+     * @param sender  Source of the command. For players tab-completing
+     *                a command inside a command block, this will be the
+     *                player, not the command block.
      * @param command Command which was executed
      * @param label   Alias of the command which was used
-     * @param args    The arguments passed to the command,
-     *                including final partial argument to be completed
-     * @return A List of possible completions for the final argument, or null to default to the command executor
+     * @param args    The arguments passed to the command, including final
+     *                partial argument to be completed
+     * @return A List of possible completions for the final argument,
+     *         or null to default to the command executor
      */
     @Override
     default @NotNull List<String> onTabComplete(

@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.items;
 
-import com.minersstudios.mscore.utils.MSItemUtils;
+import com.minersstudios.mscore.util.MSItemUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;

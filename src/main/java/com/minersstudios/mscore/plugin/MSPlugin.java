@@ -15,7 +15,7 @@ import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.packet.collection.PacketListenersMap;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.utils.BlockUtils;
+import com.minersstudios.mscore.util.BlockUtils;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import org.bukkit.Server;

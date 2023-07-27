@@ -1,320 +1,373 @@
 package com.minersstudios.msblock.customblock;
 
+import com.minersstudios.msblock.Config;
 import com.minersstudios.msblock.MSBlock;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.security.SecureRandom;
-
+/**
+ * Represents a group of sounds associated with a custom block
+ */
 public class SoundGroup implements Cloneable {
-    private @Nullable String placeSound;
-    private @NotNull SoundCategory placeSoundCategory;
-    private float placeSoundPitch;
-    private float placeSoundVolume;
-    private @Nullable String breakSound;
-    private @NotNull SoundCategory breakSoundCategory;
-    private float breakSoundPitch;
-    private float breakSoundVolume;
-    private @Nullable String hitSound;
-    private @NotNull SoundCategory hitSoundCategory;
-    private float hitSoundPitch;
-    private float hitSoundVolume;
-    private @Nullable String stepSound;
-    private @NotNull SoundCategory stepSoundCategory;
-    private float stepSoundPitch;
-    private float stepSoundVolume;
+    private Sound placeSound;
+    private Sound breakSound;
+    private Sound hitSound;
+    private Sound stepSound;
 
-    private final SecureRandom random = new SecureRandom();
-
+    /**
+     * Constructs a SoundGroup with the specified sounds
+     *
+     * @param placeSound The place sound
+     * @param breakSound The break sound
+     * @param hitSound   The hit sound
+     * @param stepSound  The step sound
+     */
     public SoundGroup(
-            @Nullable String placeSound,
-            @NotNull SoundCategory placeSoundCategory,
-            float placeSoundPitch,
-            float placeSoundVolume,
-            @Nullable String breakSound,
-            @NotNull SoundCategory breakSoundCategory,
-            float breakSoundPitch,
-            float breakSoundVolume,
-            @Nullable String hitSound,
-            @NotNull SoundCategory hitSoundCategory,
-            float hitSoundPitch,
-            float hitSoundVolume,
-            @Nullable String stepSound,
-            @NotNull SoundCategory stepSoundCategory,
-            float stepSoundPitch,
-            float stepSoundVolume
+            @Nullable Sound placeSound,
+            @Nullable Sound breakSound,
+            @Nullable Sound hitSound,
+            @Nullable Sound stepSound
     ) {
         this.placeSound = placeSound;
-        this.placeSoundCategory = placeSoundCategory;
-        this.placeSoundPitch = placeSoundPitch;
-        this.placeSoundVolume = placeSoundVolume;
         this.breakSound = breakSound;
-        this.breakSoundCategory = breakSoundCategory;
-        this.breakSoundPitch = breakSoundPitch;
-        this.breakSoundVolume = breakSoundVolume;
         this.hitSound = hitSound;
-        this.hitSoundCategory = hitSoundCategory;
-        this.hitSoundPitch = hitSoundPitch;
-        this.hitSoundVolume = hitSoundVolume;
         this.stepSound = stepSound;
-        this.stepSoundCategory = stepSoundCategory;
-        this.stepSoundPitch = stepSoundPitch;
-        this.stepSoundVolume = stepSoundVolume;
     }
 
+    /**
+     * Constructs a SoundGroup from the specified configuration section
+     *
+     * @param section The configuration section to get the SoundGroup from
+     * @return The SoundGroup from the specified configuration section
+     * @throws IllegalArgumentException If the {@link SoundCategory} has no
+     *                                  constant with the specified name
+     */
     @Contract("_ -> new")
-    public static @NotNull SoundGroup fromConfigSection(@NotNull ConfigurationSection section) {
+    public static @NotNull SoundGroup fromConfigSection(@NotNull ConfigurationSection section) throws IllegalArgumentException {
         return new SoundGroup(
-                section.getString("place.sound-name"),
-                SoundCategory.valueOf(section.getString("place.sound-category")),
-                (float) section.getDouble("place.pitch"),
-                (float) section.getDouble("place.volume"),
-                section.getString("break.sound-name"),
-                SoundCategory.valueOf(section.getString("break.sound-category")),
-                (float) section.getDouble("break.pitch"),
-                (float) section.getDouble("break.volume"),
-                section.getString("hit.sound-name"),
-                SoundCategory.valueOf(section.getString("hit.sound-category")),
-                (float) section.getDouble("hit.pitch"),
-                (float) section.getDouble("hit.volume"),
-                section.getString("step.sound-name"),
-                SoundCategory.valueOf(section.getString("step.sound-category")),
-                (float) section.getDouble("step.pitch"),
-                (float) section.getDouble("step.volume")
+                Sound.create(
+                        section.getString("place.sound-name"),
+                        SoundCategory.valueOf(section.getString("place.sound-category")),
+                        (float) section.getDouble("place.volume"),
+                        (float) section.getDouble("place.pitch")
+                ),
+                Sound.create(
+                        section.getString("break.sound-name"),
+                        SoundCategory.valueOf(section.getString("break.sound-category")),
+                        (float) section.getDouble("break.volume"),
+                        (float) section.getDouble("break.pitch")
+                ),
+                Sound.create(
+                        section.getString("hit.sound-name"),
+                        SoundCategory.valueOf(section.getString("hit.sound-category")),
+                        (float) section.getDouble("hit.volume"),
+                        (float) section.getDouble("hit.pitch")
+                ),
+                Sound.create(
+                        section.getString("step.sound-name"),
+                        SoundCategory.valueOf(section.getString("step.sound-category")),
+                        (float) section.getDouble("step.volume"),
+                        (float) section.getDouble("step.pitch")
+                )
         );
     }
 
-    public void setPlaceSound(@Nullable String placeSound) {
-        this.placeSound = placeSound;
-    }
-
-    public @Nullable String getPlaceSound() {
+    /**
+     * @return The place sound of this SoundGroup,
+     *         or null if the place sound is not set
+     */
+    public @Nullable Sound getPlaceSound() {
         return this.placeSound;
     }
 
-    public void setPlaceSoundCategory(@NotNull SoundCategory soundCategory) {
-        this.placeSoundCategory = soundCategory;
-    }
-
-    public @NotNull SoundCategory getPlaceSoundCategory() {
-        return this.placeSoundCategory;
-    }
-
-    public void setPlaceSoundPitch(float placeSoundPitch) {
-        this.placeSoundPitch = placeSoundPitch;
-    }
-
-    public float getPlaceSoundPitch() {
-        return this.placeSoundPitch;
-    }
-
-    public void setPlaceSoundVolume(float placeSoundVolume) {
-        this.placeSoundVolume = placeSoundVolume;
-    }
-
-    public float getPlaceSoundVolume() {
-        return this.placeSoundVolume;
-    }
-
-    public void setBreakSound(@Nullable String breakSound) {
-        this.breakSound = breakSound;
-    }
-
-    public @Nullable String getBreakSound() {
+    /**
+     * @return The break sound of this SoundGroup,
+     *         or null if the break sound is not set
+     */
+    public @Nullable Sound getBreakSound() {
         return this.breakSound;
     }
 
-    public void setBreakSoundCategory(@NotNull SoundCategory soundCategory) {
-        this.breakSoundCategory = soundCategory;
-    }
-
-    public @NotNull SoundCategory getBreakSoundCategory() {
-        return this.breakSoundCategory;
-    }
-
-    public void setBreakSoundPitch(float breakSoundPitch) {
-        this.breakSoundPitch = breakSoundPitch;
-    }
-
-    public float getBreakSoundPitch() {
-        return this.breakSoundPitch;
-    }
-
-    public void setBreakSoundVolume(float breakSoundVolume) {
-        this.breakSoundVolume = breakSoundVolume;
-    }
-
-    public float getBreakSoundVolume() {
-        return this.breakSoundVolume;
-    }
-
-    public void setHitSound(@Nullable String hitSound) {
-        this.hitSound = hitSound;
-    }
-
-    public @Nullable String getHitSound() {
+    /**
+     * @return The hit sound of this SoundGroup,
+     *         or null if the hit sound is not set
+     */
+    public @Nullable Sound getHitSound() {
         return this.hitSound;
     }
 
-    public void setHitSoundCategory(@NotNull SoundCategory soundCategory) {
-        this.hitSoundCategory = soundCategory;
-    }
-
-    public @NotNull SoundCategory getHitSoundCategory() {
-        return this.hitSoundCategory;
-    }
-
-    public float getHitSoundPitch() {
-        return this.hitSoundPitch;
-    }
-
-    public void setHitSoundPitch(float hitSoundPitch) {
-        this.hitSoundPitch = hitSoundPitch;
-    }
-
-    public float getHitSoundVolume() {
-        return this.hitSoundVolume;
-    }
-
-    public void setHitSoundVolume(float hitSoundVolume) {
-        this.hitSoundVolume = hitSoundVolume;
-    }
-
-    public void setStepSound(@Nullable String stepSound) {
-        this.stepSound = stepSound;
-    }
-
-    public @Nullable String getStepSound() {
+    /**
+     * @return The step sound of this SoundGroup,
+     *         or null if the step sound is not set
+     */
+    public @Nullable Sound getStepSound() {
         return this.stepSound;
     }
 
-    public void setStepSoundCategory(@NotNull SoundCategory soundCategory) {
-        this.stepSoundCategory = soundCategory;
-    }
-
-    public @NotNull SoundCategory getStepSoundCategory() {
-        return this.stepSoundCategory;
-    }
-
-    public void setStepSoundPitch(float stepSoundPitch) {
-        this.stepSoundPitch = stepSoundPitch;
-    }
-
-    public float getStepSoundPitch() {
-        return this.stepSoundPitch;
-    }
-
-    public void setStepSoundVolume(float stepSoundVolume) {
-        this.stepSoundVolume = stepSoundVolume;
-    }
-
-    public float getStepSoundVolume() {
-        return this.stepSoundVolume;
-    }
-
+    /**
+     * Plays the place sound of this SoundGroup at the specified location.
+     * If the place sound is "block.wood.place", the wood place sound from
+     * the {@link Config} will be played instead. If the place sound is null,
+     * nothing will be played.
+     *
+     * @param location The location to play the place sound at
+     */
     public void playPlaceSound(@NotNull Location location) {
-        World world = location.getWorld();
-
         if (this.placeSound == null) return;
-        if (this.placeSound.equalsIgnoreCase("block.wood.place")) {
-            world.playSound(
-                    location,
-                    MSBlock.getConfiguration().woodSoundPlace,
-                    this.placeSoundCategory,
-                    this.placeSoundVolume,
-                    this.random.nextFloat() * 0.1f + this.placeSoundPitch
-            );
-        } else {
-            world.playSound(
-                    location,
-                    this.placeSound,
-                    this.placeSoundCategory,
-                    this.placeSoundVolume,
-                    this.random.nextFloat() * 0.1f + this.placeSoundPitch
-            );
-        }
+        location.getWorld().playSound(
+                location,
+                this.placeSound.key.equalsIgnoreCase("block.wood.place")
+                ? MSBlock.getConfiguration().woodSoundPlace
+                : this.placeSound.key,
+                this.placeSound.soundCategory,
+                this.placeSound.volume,
+                this.placeSound.pitch
+        );
     }
 
+    /**
+     * Plays the break sound of this SoundGroup at the specified location.
+     * If the break sound is "block.wood.break", the wood break sound from
+     * the {@link Config} will be played instead. If the break sound is null,
+     * nothing will be played.
+     *
+     * @param location The location to play the break sound at
+     */
     public void playBreakSound(@NotNull Location location) {
-        World world = location.getWorld();
-
         if (this.breakSound == null) return;
-        if (this.breakSound.equalsIgnoreCase("block.wood.break")) {
-            world.playSound(
-                    location,
-                    MSBlock.getConfiguration().woodSoundBreak,
-                    this.breakSoundCategory,
-                    this.breakSoundVolume,
-                    this.random.nextFloat() * 0.1f + this.breakSoundPitch
-            );
-        } else {
-            world.playSound(
-                    location,
-                    this.breakSound,
-                    this.breakSoundCategory,
-                    this.breakSoundVolume,
-                    this.random.nextFloat() * 0.1f + this.breakSoundPitch
-            );
-        }
+        location.getWorld().playSound(
+                location,
+                this.breakSound.key.equalsIgnoreCase("block.wood.break")
+                ? MSBlock.getConfiguration().woodSoundBreak
+                : this.breakSound.key,
+                this.breakSound.soundCategory,
+                this.breakSound.volume,
+                this.breakSound.pitch
+        );
     }
 
+    /**
+     * Plays the hit sound of this SoundGroup at the specified location.
+     * If the hit sound is "block.wood.hit", the wood hit sound from
+     * the {@link Config} will be played instead. If the hit sound is null,
+     * nothing will be played.
+     *
+     * @param location The location to play the hit sound at
+     */
     public void playHitSound(@NotNull Location location) {
-        World world = location.getWorld();
-
         if (this.hitSound == null) return;
-        if (this.hitSound.equalsIgnoreCase("block.wood.hit")) {
-            world.playSound(
-                    location,
-                    MSBlock.getConfiguration().woodSoundHit,
-                    this.hitSoundCategory,
-                    this.hitSoundVolume,
-                    this.random.nextFloat() * 0.1f + this.hitSoundPitch
-            );
-        } else {
-            world.playSound(
-                    location,
-                    this.hitSound,
-                    this.hitSoundCategory,
-                    this.hitSoundVolume,
-                    this.random.nextFloat() * 0.1f + this.hitSoundPitch
-            );
-        }
+        location.getWorld().playSound(
+                location,
+                this.hitSound.key.equalsIgnoreCase("block.wood.hit")
+                ? MSBlock.getConfiguration().woodSoundHit
+                : this.hitSound.key,
+                this.hitSound.soundCategory,
+                this.hitSound.volume,
+                this.hitSound.pitch
+        );
     }
 
+    /**
+     * Plays the step sound of this SoundGroup at the specified location.
+     * If the step sound is "block.wood.step", the wood step sound from
+     * the {@link Config} will be played instead. If the step sound is null,
+     * nothing will be played.
+     *
+     * @param location The location to play the step sound at
+     */
     public void playStepSound(@NotNull Location location) {
-        World world = location.getWorld();
-
         if (this.stepSound == null) return;
-        if (this.stepSound.equalsIgnoreCase("block.wood.step")) {
-            world.playSound(
-                    location,
-                    MSBlock.getConfiguration().woodSoundStep,
-                    this.stepSoundCategory,
-                    this.stepSoundVolume,
-                    this.random.nextFloat() * 0.1f + this.stepSoundPitch
-            );
-        } else {
-            world.playSound(
-                    location,
-                    this.stepSound,
-                    this.stepSoundCategory,
-                    this.stepSoundVolume,
-                    this.random.nextFloat() * 0.1f + this.stepSoundPitch
-            );
+        location.getWorld().playSound(
+                location,
+                this.stepSound.key.equalsIgnoreCase("block.wood.step")
+                ? MSBlock.getConfiguration().woodSoundStep
+                : this.stepSound.key,
+                this.stepSound.soundCategory,
+                this.stepSound.volume,
+                this.stepSound.pitch
+        );
+    }
+
+    /**
+     * Creates a clone of this SoundGroup
+     * with the same sounds
+     *
+     * @return A clone of this SoundGroup
+     */
+    @Override
+    public @NotNull SoundGroup clone() {
+        try {
+            SoundGroup clone = (SoundGroup) super.clone();
+            clone.placeSound = this.placeSound == null ? null : this.placeSound.clone();
+            clone.breakSound = this.breakSound == null ? null : this.breakSound.clone();
+            clone.hitSound = this.hitSound == null ? null : this.hitSound.clone();
+            clone.stepSound = this.stepSound == null ? null : this.stepSound.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Failed to clone SoundGroup", e);
         }
     }
 
     @Override
-    public @NotNull SoundGroup clone() {
-        try {
-            return (SoundGroup) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
+    public @NotNull String toString() {
+        return "SoundGroup{" +
+                "placeSound=" + this.placeSound +
+                ", breakSound=" + this.breakSound +
+                ", hitSound=" + this.hitSound +
+                ", stepSound=" + this.stepSound +
+                '}';
+    }
+
+    /**
+     * Represents a sound with :
+     * <ul>
+     *     <li>A key {@link String}</li>
+     *     <li>A {@link SoundCategory}</li>
+     *     <li>A volume float</li>
+     *     <li>A pitch float</li>
+     * </ul>
+     */
+    public static class Sound implements Cloneable {
+        private String key;
+        private SoundCategory soundCategory;
+        private float volume;
+        private float pitch;
+
+        private Sound(
+                @NotNull String key,
+                @NotNull SoundCategory soundCategory,
+                float volume,
+                float pitch
+        ) {
+            this.key = key;
+            this.soundCategory = soundCategory;
+            this.volume = volume;
+            this.pitch = pitch;
+        }
+
+        /**
+         * Creates a new Sound instance
+         *
+         * @param key           The key of the sound
+         * @param soundCategory The sound category of the sound
+         * @param volume        The volume of the sound
+         * @param pitch         The pitch of the sound
+         * @return The created Sound instance,
+         *         or null if the key is blank
+         */
+        public static @Nullable Sound create(
+                @Nullable String key,
+                @NotNull SoundCategory soundCategory,
+                float volume,
+                float pitch
+        ) {
+            return StringUtils.isBlank(key)
+                    ? null
+                    : new Sound(key, soundCategory, volume, pitch);
+        }
+
+        /**
+         * @return The key of this Sound
+         */
+        public @NotNull String key() {
+            return this.key;
+        }
+
+        /**
+         * Sets the key of this Sound
+         *
+         * @param key The key to set
+         * @return This Sound instance with the new key
+         */
+        public @NotNull Sound key(@NotNull String key) {
+            this.key = key;
+            return this;
+        }
+
+        /**
+         * @return The sound category of this Sound
+         */
+        public @NotNull SoundCategory soundCategory() {
+            return this.soundCategory;
+        }
+
+        /**
+         * Sets the sound category of this Sound
+         *
+         * @param soundCategory The sound category to set
+         * @return This Sound instance with the new sound category
+         */
+        public @NotNull Sound soundCategory(@NotNull SoundCategory soundCategory) {
+            this.soundCategory = soundCategory;
+            return this;
+        }
+
+        /**
+         * @return The volume of this Sound
+         */
+        public float volume() {
+            return this.volume;
+        }
+
+        /**
+         * Sets the volume of this Sound
+         *
+         * @param volume The volume to set
+         * @return This Sound instance with the new volume
+         */
+        public @NotNull Sound volume(float volume) {
+            this.volume = volume;
+            return this;
+        }
+
+        /**
+         * @return The pitch of this Sound
+         */
+        public float pitch() {
+            return this.pitch;
+        }
+
+        /**
+         * Sets the pitch of this Sound
+         *
+         * @param pitch The pitch to set
+         * @return This Sound instance with the new pitch
+         */
+        public @NotNull Sound pitch(float pitch) {
+            this.pitch = pitch;
+            return this;
+        }
+
+        /**
+         * Creates a clone of this Sound with the same values
+         *
+         * @return A clone of this Sound
+         */
+        @Override
+        public @NotNull Sound clone() {
+            try {
+                return (Sound) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException("Failed to clone Sound", e);
+            }
+        }
+
+        /**
+         * @return A string representation of this Sound
+         */
+        @Override
+        public @NotNull String toString() {
+            return "Sound{" +
+                    "key='" + this.key + '\'' +
+                    ", soundCategory=" + this.soundCategory +
+                    ", volume=" + this.volume +
+                    ", pitch=" + this.pitch +
+                    '}';
         }
     }
 }

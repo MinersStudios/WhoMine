@@ -1,10 +1,10 @@
-package com.minersstudios.mscore.utils;
+package com.minersstudios.mscore.util;
 
 import com.google.common.collect.ImmutableList;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
 
-import static com.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
+import static com.minersstudios.mscore.util.ChatUtils.createDefaultStyledText;
 
 /**
  * Badges, used for message decoration

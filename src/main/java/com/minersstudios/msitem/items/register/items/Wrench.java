@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.items.register.items;
 
-import com.minersstudios.mscore.utils.ChatUtils;
-import com.minersstudios.mscore.utils.MSItemUtils;
+import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.util.MSItemUtils;
 import com.minersstudios.msitem.items.CustomItem;
 import com.minersstudios.msitem.items.DamageableItem;
 import net.kyori.adventure.text.format.NamedTextColor;

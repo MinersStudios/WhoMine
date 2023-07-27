@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.customdecor.register.furniture.chairs;
 
 import com.google.common.collect.Lists;
-import com.minersstudios.mscore.utils.Badges;
+import com.minersstudios.mscore.util.Badges;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.*;
 import net.kyori.adventure.text.Component;

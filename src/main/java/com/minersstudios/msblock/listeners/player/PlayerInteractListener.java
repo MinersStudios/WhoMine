@@ -6,13 +6,13 @@ import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.events.CustomBlockRightClickEvent;
-import com.minersstudios.msblock.utils.PlayerUtils;
-import com.minersstudios.msblock.utils.UseBucketsAndSpawnableItems;
+import com.minersstudios.msblock.util.UseBucketsAndSpawnableItems;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.BlockUtils;
-import com.minersstudios.mscore.utils.MSBlockUtils;
-import com.minersstudios.mscore.utils.MSDecorUtils;
+import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.MSBlockUtils;
+import com.minersstudios.mscore.util.MSDecorUtils;
+import com.minersstudios.mscore.util.PlayerUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -40,13 +40,10 @@ import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.security.SecureRandom;
 import java.util.Set;
 
 @MSListener
 public class PlayerInteractListener extends AbstractMSListener {
-    private static final SecureRandom RANDOM = new SecureRandom();
-
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
     private static final ImmutableSet<EntityType> IGNORABLE_ENTITIES = Sets.immutableEnumSet(
             //<editor-fold desc="Entities to be ignored when placing a block on their location">
@@ -183,15 +180,14 @@ public class PlayerInteractListener extends AbstractMSListener {
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
         if (
-                event.getAction() == Action.RIGHT_CLICK_BLOCK
-                && Tag.SHULKER_BOXES.isTagged(blockType)
+                Tag.SHULKER_BOXES.isTagged(blockType)
                 && clickedBlock.getRelative(BlockFace.UP).getType() == Material.NOTE_BLOCK
                 && clickedBlock.getState() instanceof ShulkerBox shulkerBox
                 && clickedBlock.getBlockData() instanceof Directional directional
                 && BlockUtils.REPLACE.contains(clickedBlock.getRelative(directional.getFacing()).getType())
         ) {
             event.setCancelled(true);
-            PlayerUtils.openShulkerBoxWithoutAnimation(player, shulkerBox);
+            PlayerUtils.openShulkerBoxSilent(player, shulkerBox, true);
         }
 
         if (MSDecorUtils.isCustomDecor(itemInMainHand)) return;
@@ -448,7 +444,7 @@ public class PlayerInteractListener extends AbstractMSListener {
                 soundGroup.getPlaceSound(),
                 SoundCategory.BLOCKS,
                 soundGroup.getVolume(),
-                RANDOM.nextFloat() * 0.1f + soundGroup.getPitch()
+                serverPlayer.getRandom().nextFloat() * 0.1f + soundGroup.getPitch()
         );
     }
 

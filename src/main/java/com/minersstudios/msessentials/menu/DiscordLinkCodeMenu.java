@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.menu;
 
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.SingleInventory;
-import com.minersstudios.mscore.utils.ChatUtils;
+import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;

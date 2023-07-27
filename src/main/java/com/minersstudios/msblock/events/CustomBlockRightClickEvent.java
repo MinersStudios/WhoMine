@@ -10,14 +10,24 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomBlockRightClickEvent extends CustomBlockEvent implements Cancellable {
-    private static final @NotNull HandlerList HANDLER_LIST = new HandlerList();
-    protected boolean cancel;
+    private static final HandlerList HANDLER_LIST = new HandlerList();
 
-    protected final @NotNull Player player;
-    protected final @NotNull EquipmentSlot hand;
-    protected final @NotNull BlockFace blockFace;
-    protected final @NotNull Location interactionPoint;
+    protected final Player player;
+    protected final EquipmentSlot hand;
+    protected final BlockFace blockFace;
+    protected final Location interactionPoint;
+    protected boolean cancelled;
 
+    /**
+     * Constructs a new CustomBlockRightClickEvent
+     *
+     * @param damagedCustomBlock The custom block involved in this event
+     * @param player             The Player who damaged the custom block
+     * @param hand               The hand which was used to right-click
+     *                           the custom block
+     * @param blockFace          The block face on which the interaction occurred
+     * @param interactionPoint   The exact point at which the interaction occurred
+     */
     public CustomBlockRightClickEvent(
             @NotNull CustomBlock damagedCustomBlock,
             @NotNull Player player,
@@ -26,65 +36,72 @@ public class CustomBlockRightClickEvent extends CustomBlockEvent implements Canc
             @NotNull Location interactionPoint
     ) {
         super(damagedCustomBlock);
-
         this.player = player;
         this.hand = hand;
         this.blockFace = blockFace;
         this.interactionPoint = interactionPoint;
-        this.cancel = false;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return this.cancel;
-    }
-
-    @Override
-    public void setCancelled(boolean cancel) {
-        this.cancel = cancel;
     }
 
     /**
-     * Gets the player who damaged the custom block involved in this event
-     *
-     * @return The Player who damaged the custom block involved in this event
+     * @return The Player who damaged the custom block
+     *         involved in this event
      */
     public @NotNull Player getPlayer() {
         return this.player;
     }
 
     /**
-     * The hand used to perform this interaction
-     *
-     * @return The hand used to interact
+     * @return The hand which was used to right-click the custom block
      */
     public @NotNull EquipmentSlot getHand() {
         return this.hand;
     }
 
     /**
-     * Returns the face of the custom block that was clicked
-     *
-     * @return BlockFace returns the face of the custom block that was clicked
+     * @return The block face on which the interaction occurred
      */
     public @NotNull BlockFace getBlockFace() {
         return this.blockFace;
     }
 
     /**
-     * The exact point at which the interaction occurred
-     *
-     * @return The exact interaction point
+     * @return The exact point at which the interaction occurred
      */
     public @NotNull Location getInteractionPoint() {
         return this.interactionPoint;
     }
 
+    /**
+     * Sets the cancellation state of this event. A cancelled
+     * event will not be executed in the server, but will still
+     * pass to other plugins.
+     *
+     * @param cancel True if you wish to cancel this event
+     */
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancelled = cancel;
+    }
+
+    /**
+     * @return True if this event is cancelled
+     */
+    @Override
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    /**
+     * @return The handler list of this event
+     */
     @Override
     public @NotNull HandlerList getHandlers() {
         return HANDLER_LIST;
     }
 
+    /**
+     * @return The handler list of this event
+     */
     public static @NotNull HandlerList getHandlerList() {
         return HANDLER_LIST;
     }

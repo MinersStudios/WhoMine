@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.logger;
 
 import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.utils.Badges;
+import com.minersstudios.mscore.util.Badges;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;

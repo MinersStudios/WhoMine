@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.anomalies;
 
-import com.minersstudios.mscore.utils.ItemUtils;
+import com.minersstudios.mscore.util.ItemUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;

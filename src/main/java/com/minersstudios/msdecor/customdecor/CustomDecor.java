@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.customdecor;
 
-import com.minersstudios.mscore.utils.BlockUtils;
-import com.minersstudios.mscore.utils.MSDecorUtils;
+import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.events.CustomDecorBreakEvent;
 import com.minersstudios.msdecor.events.CustomDecorPlaceEvent;

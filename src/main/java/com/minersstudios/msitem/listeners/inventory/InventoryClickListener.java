@@ -2,7 +2,7 @@ package com.minersstudios.msitem.listeners.inventory;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.MSItemUtils;
+import com.minersstudios.mscore.util.MSItemUtils;
 import com.minersstudios.msitem.items.Wearable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;

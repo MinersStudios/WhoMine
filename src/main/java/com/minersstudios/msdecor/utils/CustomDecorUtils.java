@@ -1,6 +1,6 @@
 package com.minersstudios.msdecor.utils;
 
-import com.minersstudios.mscore.utils.MSDecorUtils;
+import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.customdecor.FaceableByType;
 import com.minersstudios.msdecor.customdecor.Typed;

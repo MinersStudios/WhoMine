@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.player.skin;
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.utils.ChatUtils;
+import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;

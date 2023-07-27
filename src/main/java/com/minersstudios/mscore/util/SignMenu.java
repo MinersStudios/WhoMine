@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.utils;
+package com.minersstudios.mscore.util;
 
 import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;

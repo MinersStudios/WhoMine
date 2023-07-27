@@ -3,16 +3,15 @@ package com.minersstudios.msblock.listeners.block;
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.events.CustomBlockDamageEvent;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.BlockUtils;
-import org.bukkit.Bukkit;
+import com.minersstudios.mscore.util.BlockUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,9 +37,11 @@ public class BlockDamageListener extends AbstractMSListener {
             CustomBlock customBlock = new CustomBlock(block, customBlockData);
             CustomBlockDamageEvent damageEvent = new CustomBlockDamageEvent(customBlock, player, event.getItemInHand());
 
-            Bukkit.getPluginManager().callEvent(damageEvent);
-            if (damageEvent.isCancelled()) return;
-            customBlockData.getSoundGroup().playHitSound(blockLocation);
+            this.getPlugin().getServer().getPluginManager().callEvent(damageEvent);
+
+            if (!damageEvent.isCancelled()) {
+                customBlockData.getSoundGroup().playHitSound(blockLocation);
+            }
         }
     }
 }

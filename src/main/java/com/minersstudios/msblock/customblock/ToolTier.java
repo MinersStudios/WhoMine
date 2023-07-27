@@ -1,8 +1,12 @@
 package com.minersstudios.msblock.customblock;
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents different tool tiers and their corresponding dig speeds.
+ * Use {@link #fromMaterial(Material)} to get the tool tier of a material.
+ */
 public enum ToolTier {
     HAND(0.1f),
     WOOD(0.3f),
@@ -12,14 +16,24 @@ public enum ToolTier {
     DIAMOND(0.65f),
     NETHERITE(0.8f);
 
-    private final float speed;
+    private final float digSpeed;
 
-    ToolTier(float speed) {
-        this.speed = speed;
+    /**
+     * Constructs a ToolTier with the given dig speed
+     *
+     * @param digSpeed The dig speed of the tool tier
+     */
+    ToolTier(float digSpeed) {
+        this.digSpeed = digSpeed;
     }
 
-    public static @NotNull ToolTier fromItemStack(@NotNull ItemStack itemStack) {
-        return switch (itemStack.getType()) {
+    /**
+     * @param material The material to get the tool tier from
+     * @return The tool tier of the specified material
+     *         or {@link #HAND} if the material is not a tool
+     */
+    public static @NotNull ToolTier fromMaterial(@NotNull Material material) {
+        return switch (material) {
             case
                     WOODEN_PICKAXE,
                     WOODEN_AXE,
@@ -61,7 +75,18 @@ public enum ToolTier {
         };
     }
 
-    public float getSpeed() {
-        return this.speed;
+    /**
+     * @return The dig speed of the tool tier
+     */
+    public float getDigSpeed() {
+        return this.digSpeed;
+    }
+
+    /**
+     * @return The string representation of this tool tier
+     */
+    @Override
+    public @NotNull String toString() {
+        return this.name() + "{digSpeed=" + this.digSpeed + "}";
     }
 }

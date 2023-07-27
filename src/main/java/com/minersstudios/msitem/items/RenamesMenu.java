@@ -6,8 +6,8 @@ import com.minersstudios.mscore.inventory.PagedInventory;
 import com.minersstudios.mscore.inventory.SingleInventory;
 import com.minersstudios.mscore.inventory.actions.ButtonClickAction;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.utils.ChatUtils;
-import com.minersstudios.mscore.utils.MSItemUtils;
+import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.util.MSItemUtils;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.utils.CustomItemUtils;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static com.minersstudios.mscore.inventory.InventoryButton.playClickSound;
-import static com.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
+import static com.minersstudios.mscore.util.ChatUtils.createDefaultStyledText;
 import static net.kyori.adventure.text.Component.text;
 
 public class RenamesMenu {

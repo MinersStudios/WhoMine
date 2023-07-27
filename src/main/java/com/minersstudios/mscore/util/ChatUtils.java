@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.utils;
+package com.minersstudios.mscore.util;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -73,14 +73,13 @@ public final class ChatUtils {
     }
 
     /**
-     * Extracts message from array of arguments
+     * Extracts message from array of arguments. Joins all arguments
+     * starting from the given index with spaces between them.
      * <br>
      * Example:
-     * <br>
-     * <code>
-     *     extractMessage(new String[]{"Hello", "Sir.", "PackmanDude"}, 1);
-     * </code>
-     * <br>
+     * <pre>{@code
+     * extractMessage(new String[]{"Hello", "Sir.", "PackmanDude"}, 1);
+     * }</pre>
      * - will return "Sir. PackmanDude"
      *
      * @param args  Array of words
@@ -175,14 +174,12 @@ public final class ChatUtils {
     }
 
     /**
-     * Converts strings to components
+     * Converts strings to components.
      * <br>
      * Example:
-     * <br>
-     * <code>
-     *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
-     * </code>
-     * <br>
+     * <pre>{@code
+     * convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
+     * }</pre>
      * - will return list of components with text "Hello", "Sir." and "PackmanDude"
      *
      * @param style   Style to be applied to all components
@@ -211,11 +208,9 @@ public final class ChatUtils {
      * Converts strings to components with {@link #DEFAULT_STYLE}
      * <br>
      * Example:
-     * <br>
-     * <code>
+     * <pre>{@code
      *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
-     * </code>
-     * <br>
+     * }</pre>
      * - will return list of components with text "Hello", "Sir." and "PackmanDude"
      *
      * @param strings Strings to be converted to components
@@ -229,11 +224,9 @@ public final class ChatUtils {
      * Converts strings to components with {@link #DEFAULT_STYLE}
      * <br>
      * Example:
-     * <br>
-     * <code>
+     * <pre>{@code
      *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
-     * </code>
-     * <br>
+     * }</pre>
      * - will return list of components with text "Hello", "Sir." and "PackmanDude"
      *
      * @param first First string
@@ -251,11 +244,9 @@ public final class ChatUtils {
      * Converts strings to components
      * <br>
      * Example:
-     * <br>
-     * <code>
+     * <pre>{@code
      *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
-     * </code>
-     * <br>
+     * }</pre>
      * - will return list of components with text "Hello", "Sir." and "PackmanDude"
      *
      * @param style Style to be applied to all components

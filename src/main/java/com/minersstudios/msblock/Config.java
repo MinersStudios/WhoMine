@@ -4,7 +4,7 @@ import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.NoteBlockData;
 import com.minersstudios.mscore.plugin.config.MSConfig;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.utils.MSPluginUtils;
+import com.minersstudios.mscore.util.MSPluginUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -99,11 +99,11 @@ public final class Config extends MSConfig {
 
                     if (map != null) {
                         for (NoteBlockData data : map.values()) {
-                            cachedNoteBlockData.put(data.toInt(), customBlockData);
+                            cachedNoteBlockData.put(data.hashCode(), customBlockData);
                         }
                     }
                 } else {
-                    cachedNoteBlockData.put(noteBlockData.toInt(), customBlockData);
+                    cachedNoteBlockData.put(noteBlockData.hashCode(), customBlockData);
                 }
             });
 

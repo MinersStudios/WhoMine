@@ -1,9 +1,9 @@
 package com.minersstudios.msdecor.listeners.player;
 
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.BlockUtils;
-import com.minersstudios.mscore.utils.MSBlockUtils;
-import com.minersstudios.mscore.utils.MSDecorUtils;
+import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.MSBlockUtils;
+import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.utils.CustomDecorUtils;

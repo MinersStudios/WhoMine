@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.listeners.entity;
 
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.MSDecorUtils;
+import com.minersstudios.mscore.util.MSDecorUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.event.EventHandler;

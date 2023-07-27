@@ -2,9 +2,9 @@ package com.minersstudios.msblock.customblock;
 
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.utils.ChatUtils;
-import com.minersstudios.mscore.utils.MSBlockUtils;
-import com.minersstudios.mscore.utils.MSCustomUtils;
+import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.util.MSBlockUtils;
+import com.minersstudios.mscore.util.MSCustomUtils;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.NoteBlock;
@@ -26,9 +26,9 @@ import java.io.File;
 import java.util.*;
 
 public class CustomBlockData implements Cloneable {
-    public static final CustomBlockData DEFAULT = new CustomBlockData(
+    public static final @NotNull CustomBlockData DEFAULT = new CustomBlockData(
             //<editor-fold desc="Default note block params">
-            new NamespacedKey(MSBlock.getInstance(), "default"),
+            new NamespacedKey("msblock", "default"),
             11.0f,
             0,
             true,
@@ -39,22 +39,30 @@ public class CustomBlockData implements Cloneable {
             new NoteBlockData(Instrument.BIT, new Note(0), false),
             null,
             new SoundGroup(
-                    "block.wood.place",
-                    SoundCategory.BLOCKS,
-                    1.0f,
-                    0.5f,
-                    "block.wood.break",
-                    SoundCategory.BLOCKS,
-                    1.0f,
-                    1.0f,
-                    "block.wood.hit",
-                    SoundCategory.BLOCKS,
-                    0.5f,
-                    0.5f,
-                    "block.wood.step",
-                    SoundCategory.PLAYERS,
-                    0.9f,
-                    0.3f
+                    SoundGroup.Sound.create(
+                            "block.wood.place",
+                            SoundCategory.BLOCKS,
+                            0.5f,
+                            1.0f
+                    ),
+                    SoundGroup.Sound.create(
+                            "block.wood.break",
+                            SoundCategory.BLOCKS,
+                            1.0f,
+                            1.0f
+                    ),
+                    SoundGroup.Sound.create(
+                            "block.wood.hit",
+                            SoundCategory.BLOCKS,
+                            0.5f,
+                            0.5f
+                    ),
+                    SoundGroup.Sound.create(
+                            "block.wood.step",
+                            SoundCategory.PLAYERS,
+                            0.3f,
+                            0.9f
+                    )
             ),
             null,
             null,
@@ -181,7 +189,7 @@ public class CustomBlockData implements Cloneable {
             boolean powered
     ) {
         return MSPlugin.getGlobalCache().cachedNoteBlockData.getOrDefault(
-                new NoteBlockData(instrument, note, powered).toInt(), DEFAULT
+                new NoteBlockData(instrument, note, powered).hashCode(), DEFAULT
         );
     }
 
@@ -279,10 +287,11 @@ public class CustomBlockData implements Cloneable {
     public float getCalculatedDigSpeed(@NotNull Player player) {
         float base = 1.0f;
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        Material material = itemInMainHand.getType();
         PotionEffect potionEffect = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
 
-        if (this.toolType == ToolType.fromItemStack(itemInMainHand)) {
-            base = ToolTier.fromItemStack(itemInMainHand).getSpeed();
+        if (this.toolType == ToolType.fromMaterial(material)) {
+            base = ToolTier.fromMaterial(material).getDigSpeed();
 
             if (itemInMainHand.containsEnchantment(Enchantment.DIG_SPEED)) {
                 base += itemInMainHand.getEnchantmentLevel(Enchantment.DIG_SPEED) * 0.3f;

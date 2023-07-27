@@ -1,13 +1,22 @@
 package com.minersstudios.msblock.customblock;
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents different tool types.
+ * Use {@link #fromMaterial(Material)} to get the tool type of material.
+ */
 public enum ToolType {
     HAND, SWORD, PICKAXE, AXE, SHOVEL, HOE, SHEARS;
 
-    public static @NotNull ToolType fromItemStack(@NotNull ItemStack itemStack) {
-        return switch (itemStack.getType()) {
+    /**
+     * @param material The material to get the tool type from
+     * @return The tool type of the specified material
+     *         or {@link #HAND} if the material is not a tool
+     */
+    public static @NotNull ToolType fromMaterial(@NotNull Material material) {
+        return switch (material) {
             case
                     WOODEN_SWORD,
                     STONE_SWORD,

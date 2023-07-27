@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 
-import static com.minersstudios.mscore.utils.ChatUtils.serializeLegacyComponent;
+import static com.minersstudios.mscore.util.ChatUtils.serializeLegacyComponent;
 import static com.minersstudios.msessentials.MSEssentials.getInstance;
 import static net.kyori.adventure.text.Component.translatable;
 

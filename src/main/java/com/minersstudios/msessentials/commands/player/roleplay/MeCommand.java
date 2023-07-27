@@ -3,7 +3,7 @@ package com.minersstudios.msessentials.commands.player.roleplay;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.utils.ChatUtils;
+import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;

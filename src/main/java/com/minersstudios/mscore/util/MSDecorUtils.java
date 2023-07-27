@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.utils;
+package com.minersstudios.mscore.util;
 
 import com.minersstudios.mscore.plugin.GlobalCache;
 import com.minersstudios.mscore.logger.MSLogger;

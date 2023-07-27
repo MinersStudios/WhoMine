@@ -4,7 +4,7 @@ import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.ToolType;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.BlockUtils;
+import com.minersstudios.mscore.util.BlockUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,16 +49,16 @@ public class BlockBreakListener extends AbstractMSListener {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         Block block = event.getBlock();
         Material blockType = block.getType();
-        CraftBlock craftBlock = (CraftBlock) block;
+        BlockPos blockPosition = ((CraftBlock) block).getPosition();
         Block topBlock = event.getBlock().getRelative(BlockFace.UP);
         Block bottomBlock = event.getBlock().getRelative(BlockFace.DOWN);
-        Location blockLocation = block.getLocation().toCenterLocation();
+        Location blockLocation = block.getLocation();
 
         if (
                 blockType != Material.NOTE_BLOCK
                 && BlockUtils.isWoodenSound(blockType)
         ) {
-            CustomBlockData.DEFAULT.getSoundGroup().playBreakSound(blockLocation);
+            CustomBlockData.DEFAULT.getSoundGroup().playBreakSound(blockLocation.toCenterLocation());
         }
 
         if (block.getBlockData() instanceof NoteBlock noteBlock) {
@@ -69,9 +69,9 @@ public class BlockBreakListener extends AbstractMSListener {
 
             if (
                     gameMode == GameMode.CREATIVE
-                    && destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition())
+                    && destroyBlock(serverPlayer, blockPosition)
             ) {
-                customBlockMaterial.getSoundGroup().playBreakSound(blockLocation);
+                customBlockMaterial.getSoundGroup().playBreakSound(blockLocation.toCenterLocation());
             }
 
             if (
@@ -79,8 +79,8 @@ public class BlockBreakListener extends AbstractMSListener {
                     && gameMode != GameMode.CREATIVE
             ) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));
-                block.getWorld().dropItemNaturally(block.getLocation(), customBlockMaterial.craftItemStack());
-                destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition());
+                block.getWorld().dropItemNaturally(blockLocation, customBlockMaterial.craftItemStack());
+                destroyBlock(serverPlayer, blockPosition);
             }
             return;
         }
@@ -90,16 +90,16 @@ public class BlockBreakListener extends AbstractMSListener {
                 || bottomBlock.getType() == Material.NOTE_BLOCK
         ) {
             event.setCancelled(true);
-            destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition());
+            destroyBlock(serverPlayer, blockPosition);
         }
     }
 
     @SuppressWarnings("DataFlowIssue")
     private static boolean destroyBlock(
-            @NotNull ServerPlayerGameMode gameMode,
             @NotNull ServerPlayer serverPlayer,
             @NotNull BlockPos pos
     ) {
+        ServerPlayerGameMode gameMode = serverPlayer.gameMode;
         BlockState iBlockData = gameMode.level.getBlockState(pos);
         Block bblock = CraftBlock.at(gameMode.level, pos);
         BlockBreakEvent event = new BlockBreakEvent(bblock, serverPlayer.getBukkitEntity());

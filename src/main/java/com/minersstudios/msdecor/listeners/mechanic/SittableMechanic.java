@@ -1,9 +1,9 @@
 package com.minersstudios.msdecor.listeners.mechanic;
 
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.MSBlockUtils;
-import com.minersstudios.mscore.utils.MSDecorUtils;
-import com.minersstudios.mscore.utils.PlayerUtils;
+import com.minersstudios.mscore.util.MSBlockUtils;
+import com.minersstudios.mscore.util.MSDecorUtils;
+import com.minersstudios.mscore.util.PlayerUtils;
 import com.minersstudios.msdecor.customdecor.Sittable;
 import com.minersstudios.msdecor.utils.CustomDecorUtils;
 import org.bukkit.*;

@@ -4,7 +4,7 @@ import com.minersstudios.mscore.plugin.GlobalCache;
 import com.minersstudios.mscore.plugin.config.MSConfig;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.utils.MSPluginUtils;
+import com.minersstudios.mscore.util.MSPluginUtils;
 import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msessentials.anomalies.tasks.MainAnomalyActionsTask;
 import com.minersstudios.msessentials.anomalies.tasks.ParticleTask;

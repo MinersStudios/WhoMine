@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.listeners.mechanic;
 
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.MSDecorUtils;
+import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.customdecor.register.decorations.street.IronTrashcan;
 import com.minersstudios.msdecor.utils.CustomDecorUtils;
 import org.bukkit.*;

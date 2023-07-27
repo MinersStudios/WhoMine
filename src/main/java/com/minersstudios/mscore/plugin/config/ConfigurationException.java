@@ -56,7 +56,7 @@ public class ConfigurationException extends Exception {
     /**
      * Constructs a new ConfigurationException with the
      * specified cause and a detail message of
-     * <code>(cause==null ? null : cause.toString())</code>
+     * {@code (cause == null ? null : cause.toString())}
      *
      * @param cause The cause
      *              (which is saved for later retrieval

@@ -3,7 +3,7 @@ package com.minersstudios.msessentials.listeners.chat;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.utils.ChatUtils;
+import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.chat.ChatBuffer;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.utils.MessageUtils;

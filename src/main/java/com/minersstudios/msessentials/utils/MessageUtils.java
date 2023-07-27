@@ -1,14 +1,14 @@
 package com.minersstudios.msessentials.utils;
 
 import com.minersstudios.mscore.MSCore;
-import com.minersstudios.mscore.utils.Badges;
+import com.minersstudios.mscore.util.Badges;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.world.WorldDark;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.utils.ChatUtils;
+import com.minersstudios.mscore.util.ChatUtils;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.EmbedType;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;

@@ -2,8 +2,8 @@ package com.minersstudios.msessentials.commands.admin.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.utils.ChatUtils;
-import com.minersstudios.mscore.utils.DateUtils;
+import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.util.DateUtils;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.BanList;

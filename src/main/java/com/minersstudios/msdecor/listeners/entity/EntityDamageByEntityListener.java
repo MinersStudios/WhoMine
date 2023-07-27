@@ -2,7 +2,7 @@ package com.minersstudios.msdecor.listeners.entity;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.utils.MSDecorUtils;
+import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
 import com.minersstudios.msdecor.utils.CustomDecorUtils;
 import org.bukkit.GameMode;

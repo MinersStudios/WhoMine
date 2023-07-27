@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.chat;
 
-import com.minersstudios.mscore.utils.Badges;
+import com.minersstudios.mscore.util.Badges;
 import com.minersstudios.msessentials.MSEssentials;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
