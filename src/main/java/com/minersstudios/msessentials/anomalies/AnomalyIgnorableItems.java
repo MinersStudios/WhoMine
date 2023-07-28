@@ -9,7 +9,9 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -96,8 +98,8 @@ public class AnomalyIgnorableItems {
      * @return A map of ignorable items and their equipment slots,
      *         that will protect the player
      */
-    public @NotNull Map<EquipmentSlot, ItemStack> getIncludedItems() {
-        return Map.copyOf(this.includedItems);
+    public @NotNull @UnmodifiableView Map<EquipmentSlot, ItemStack> getIncludedItems() {
+        return Collections.unmodifiableMap(this.includedItems);
     }
 
     /**

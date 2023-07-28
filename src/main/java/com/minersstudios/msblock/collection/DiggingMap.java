@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -90,8 +90,8 @@ public class DiggingMap {
      *         with the block
      * @see Entry
      */
-    public @NotNull @Unmodifiable List<Entry> getDiggingEntries(@NotNull Block block) {
-        return List.copyOf(this.entries(block));
+    public @NotNull @UnmodifiableView Set<Entry> getDiggingEntrySet(@NotNull Block block) {
+        return Collections.unmodifiableSet(this.entries(block));
     }
 
     /**
@@ -99,7 +99,7 @@ public class DiggingMap {
      *         in the DiggingMap
      * @see Entry
      */
-    public @NotNull @Unmodifiable Collection<Entry> diggingEntries() {
+    public @NotNull @UnmodifiableView Collection<Entry> diggingEntries() {
         return this.diggingBlockMap.values().stream()
                 .flatMap(Collection::stream)
                 .toList();
@@ -108,16 +108,16 @@ public class DiggingMap {
     /**
      * @return An unmodifiable set of all blocks present in the DiggingMap
      */
-    public @NotNull @Unmodifiable Set<Block> blockSet() {
-        return Set.copyOf(this.diggingBlockMap.keySet());
+    public @NotNull @UnmodifiableView Set<Block> blockSet() {
+        return Collections.unmodifiableSet(this.diggingBlockMap.keySet());
     }
 
     /**
      * @return An unmodifiable set of map entries containing blocks
      *         and their corresponding digging entries
      */
-    public @NotNull @Unmodifiable Set<Map.Entry<Block, Entry>> entrySet() {
-        return Set.copyOf(this.entries());
+    public @NotNull @UnmodifiableView Set<Map.Entry<Block, Entry>> entrySet() {
+        return Collections.unmodifiableSet(this.entries());
     }
 
     /**

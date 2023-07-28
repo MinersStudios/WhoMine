@@ -4,6 +4,7 @@ import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.NoteBlock;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +33,17 @@ public class NoteBlockData implements Cloneable {
         this.instrument = instrument;
         this.note = note;
         this.powered = powered;
+    }
+
+    /**
+     * Creates a new note block data from values of the given note block
+     *
+     * @param noteBlock The note block to get the note block data from
+     * @return New note block data
+     */
+    @Contract("_ -> new")
+    public static @NotNull NoteBlockData fromNoteBlock(@NotNull NoteBlock noteBlock) {
+        return new NoteBlockData(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
     }
 
     /**
@@ -128,7 +140,8 @@ public class NoteBlockData implements Cloneable {
     }
 
     /**
-     * @return The hash code of the note block data
+     * @return The hash code of the note block data,
+     *         based on the instrument, note and powered state
      */
     @Override
     public int hashCode() {

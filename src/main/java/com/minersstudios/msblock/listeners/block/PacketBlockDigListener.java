@@ -4,6 +4,7 @@ import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.collection.DiggingMap;
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.util.PlayerUtils;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
@@ -70,8 +71,8 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
                         this.getPlugin().runTask(() -> player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false)));
                     }
 
-                    CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
-                    float digSpeed = customBlockData.getCalculatedDigSpeed(player);
+                    CustomBlockData customBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockRegistry.DEFAULT);
+                    float digSpeed = customBlockData.calculateDigSpeed(player);
 
                     DiggingMap.Entry entry = DiggingMap.Entry.create(player);
 
@@ -133,7 +134,7 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
                                     if (this.progress > 1.0f) {
                                         serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, -1);
                                         new CustomBlock(block, customBlockData)
-                                                .breakCustomBlock(player);
+                                                .destroy(player);
                                     }
                                 }
                             }, 0L, 1L).getTaskId())
@@ -196,7 +197,7 @@ public class PacketBlockDigListener extends AbstractMSPacketListener {
                                     this.ticks++;
 
                                     if (this.ticks % 4.0f == 0.0f) {
-                                        CustomBlockData.DEFAULT.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
+                                        CustomBlockRegistry.DEFAULT.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
                                     }
                                 }
                             }, 0L, 1L).getTaskId())

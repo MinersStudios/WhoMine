@@ -6,8 +6,9 @@ import com.minersstudios.msessentials.anomalies.AnomalyIgnorableItems;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,7 +55,7 @@ public class SpawnParticlesAction extends AnomalyAction {
     /**
      * @return Unmodifiable list of particle builders to spawn when player is in anomaly zone
      */
-    public @NotNull @Unmodifiable List<ParticleBuilder> getParticles() {
-        return List.copyOf(this.particleBuilderList);
+    public @NotNull @UnmodifiableView List<ParticleBuilder> getParticles() {
+        return Collections.unmodifiableList(this.particleBuilderList);
     }
 }

@@ -1,8 +1,8 @@
 package com.minersstudios.msblock.commands;
 
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -67,7 +67,7 @@ public class MSBlockCommandHandler implements MSCommandExecutor {
         return switch (args.length) {
             case 1 -> TAB;
             case 2 -> MSPlayerUtils.getLocalPlayerNames();
-            case 3 -> MSPlugin.getGlobalCache().customBlockMap.primaryKeySet().stream().toList();
+            case 3 -> CustomBlockRegistry.keySet().stream().toList();
             default -> EMPTY_TAB;
         };
     }

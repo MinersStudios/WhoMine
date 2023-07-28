@@ -1,8 +1,9 @@
 package com.minersstudios.msdecor.listeners.player;
 
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
-import com.minersstudios.mscore.util.MSBlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
@@ -18,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -79,7 +79,7 @@ public class PlayerInteractListener extends AbstractMSListener {
             event.setCancelled(true);
         }
 
-        if (MSBlockUtils.isCustomBlock(itemInMainHand)) return;
+        if (CustomBlockRegistry.isCustomBlock(itemInMainHand)) return;
 
         if (hand != EquipmentSlot.HAND && MSDecorUtils.isCustomDecor(itemInMainHand)) {
             hand = EquipmentSlot.HAND;

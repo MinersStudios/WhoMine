@@ -6,9 +6,12 @@ import com.google.common.collect.Multimaps;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.packet.PacketType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A utility class representing a mapping of packet types to
@@ -29,7 +32,7 @@ public class PacketListenersMap {
      * @see PacketType
      * @see AbstractMSPacketListener
      */
-    public @NotNull @Unmodifiable Multimap<PacketType, AbstractMSPacketListener> getReceiveWhiteList() {
+    public @NotNull @UnmodifiableView Multimap<PacketType, AbstractMSPacketListener> getReceiveWhiteList() {
         return Multimaps.unmodifiableMultimap(this.receiveWhiteList);
     }
 
@@ -42,7 +45,7 @@ public class PacketListenersMap {
      * @see PacketType
      * @see AbstractMSPacketListener
      */
-    public @NotNull @Unmodifiable Multimap<PacketType, AbstractMSPacketListener> getSendWhiteList() {
+    public @NotNull @UnmodifiableView Multimap<PacketType, AbstractMSPacketListener> getSendWhiteList() {
         return Multimaps.unmodifiableMultimap(this.sendWhiteList);
     }
 
@@ -57,7 +60,7 @@ public class PacketListenersMap {
      * @see AbstractMSPacketListener
      * @see PacketType
      */
-    public @NotNull @Unmodifiable Collection<AbstractMSPacketListener> getListeners(@NotNull PacketType packetType) {
+    public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener> getListeners(@NotNull PacketType packetType) {
         return packetType.isReceive()
                 ? Collections.unmodifiableCollection(this.receiveWhiteList.get(packetType))
                 : Collections.unmodifiableCollection(this.sendWhiteList.get(packetType));
@@ -71,7 +74,7 @@ public class PacketListenersMap {
      *         associated with any packet type
      * @see AbstractMSPacketListener
      */
-    public @NotNull @Unmodifiable Collection<AbstractMSPacketListener> listeners() {
+    public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener> listeners() {
         var listeners = new HashSet<AbstractMSPacketListener>();
 
         listeners.addAll(this.sendWhiteList.values());
@@ -86,7 +89,7 @@ public class PacketListenersMap {
      * @return The unmodifiable collection of all receive packet listeners
      * @see AbstractMSPacketListener
      */
-    public @NotNull @Unmodifiable Collection<AbstractMSPacketListener> receiveListeners() {
+    public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener> receiveListeners() {
         return Collections.unmodifiableCollection(this.receiveWhiteList.values());
     }
 
@@ -96,7 +99,7 @@ public class PacketListenersMap {
      * @return The unmodifiable collection of all send packet listeners
      * @see AbstractMSPacketListener
      */
-    public @NotNull @Unmodifiable Collection<AbstractMSPacketListener> sendListeners() {
+    public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener> sendListeners() {
         return Collections.unmodifiableCollection(this.sendWhiteList.values());
     }
 
@@ -108,13 +111,13 @@ public class PacketListenersMap {
      *         with any packet listener
      * @see PacketType
      */
-    public @NotNull @Unmodifiable Set<PacketType> packetTypeSet() {
+    public @NotNull @UnmodifiableView Set<PacketType> packetTypeSet() {
         var packetTypes = new HashSet<PacketType>();
 
         packetTypes.addAll(this.sendWhiteList.keySet());
         packetTypes.addAll(this.receiveWhiteList.keySet());
 
-        return Set.copyOf(packetTypes);
+        return Collections.unmodifiableSet(packetTypes);
     }
 
     /**
@@ -123,8 +126,8 @@ public class PacketListenersMap {
      * @return The unmodifiable set of all receive packet types
      * @see PacketType
      */
-    public @NotNull @Unmodifiable Set<PacketType> receivePacketTypeSet() {
-        return Set.copyOf(this.receiveWhiteList.keySet());
+    public @NotNull @UnmodifiableView Set<PacketType> receivePacketTypeSet() {
+        return Collections.unmodifiableSet(this.receiveWhiteList.keySet());
     }
 
     /**
@@ -133,8 +136,8 @@ public class PacketListenersMap {
      * @return The unmodifiable set of all send packet types
      * @see PacketType
      */
-    public @NotNull @Unmodifiable Set<PacketType> sendPacketTypeSet() {
-        return Set.copyOf(this.sendWhiteList.keySet());
+    public @NotNull @UnmodifiableView Set<PacketType> sendPacketTypeSet() {
+        return Collections.unmodifiableSet(this.sendWhiteList.keySet());
     }
 
     /**

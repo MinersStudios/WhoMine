@@ -58,16 +58,12 @@ public final class ItemUtils {
      * @return True if the list contains the item
      * @see #isSimilarItemStacks(ItemStack, ItemStack)
      */
-    @Contract("_, null -> false")
     public static boolean isListContainsItem(
             @NotNull List<ItemStack> list,
-            @Nullable ItemStack item
+            @NotNull ItemStack item
     ) {
-        if (list.isEmpty() || item == null) return false;
-        for (var listItem : list) {
-            if (isSimilarItemStacks(listItem, item)) return true;
-        }
-        return false;
+        return !list.isEmpty()
+                && list.stream().anyMatch(listItem -> isSimilarItemStacks(listItem, item));
     }
 
     /**

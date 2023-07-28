@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials;
 
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.plugin.GlobalCache;
 import com.minersstudios.mscore.plugin.config.MSConfig;
 import com.minersstudios.mscore.logger.MSLogger;
@@ -151,7 +152,7 @@ public final class Config extends MSConfig {
 
         GlobalCache globalCache = MSPlugin.getGlobalCache();
 
-        var customBlockRecipes = globalCache.customBlockRecipes;
+        var customBlockRecipes = CustomBlockRegistry.getRecipeList();
         var customDecorRecipes = globalCache.customDecorRecipes;
         var customItemRecipes = globalCache.customItemRecipes;
 

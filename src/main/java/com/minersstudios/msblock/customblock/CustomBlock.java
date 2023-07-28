@@ -5,6 +5,7 @@ import com.minersstudios.msblock.events.CustomBlockBreakEvent;
 import com.minersstudios.msblock.events.CustomBlockPlaceEvent;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.ItemUtils;
+import net.coreprotect.CoreProtectAPI;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.*;
@@ -19,10 +20,24 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CustomBlock implements Cloneable {
-    private final @NotNull Block block;
-    private final @NotNull CustomBlockData customBlockData;
+/**
+ * Represents a custom block which is a block with a custom block data
+ *
+ * @see CustomBlockData
+ * @see #place(Player, EquipmentSlot, BlockFace, Axis)
+ * @see #destroy(Player)
+ */
+public class CustomBlock {
+    private final Block block;
+    private final CustomBlockData customBlockData;
 
+    /**
+     * Custom block constructor which takes the block and custom block data.
+     *
+     * @param block           The block which is a custom block,
+     *                        or will be a custom block after placing
+     * @param customBlockData The custom block data of this custom block
+     */
     public CustomBlock(
             @NotNull Block block,
             @NotNull CustomBlockData customBlockData
@@ -31,14 +46,64 @@ public class CustomBlock implements Cloneable {
         this.customBlockData = customBlockData;
     }
 
-    public void setCustomBlock(
+    /**
+     * @return The block which is a custom block,
+     *         or will be a custom block after placing
+     */
+    public @NotNull Block getBlock() {
+        return this.block;
+    }
+
+    /**
+     * @return The custom block data of this custom block
+     */
+    public @NotNull CustomBlockData getCustomBlockData() {
+        return this.customBlockData;
+    }
+
+    /**
+     * Places the custom block and calls the {@link CustomBlockPlaceEvent},
+     * if the event is cancelled the block won't be placed. Otherwise,
+     * block will be placed with the specified parameters. It will use
+     * default {@link CustomBlockData#getNoteBlockData()}. Also, logs block
+     * place in the CoreProtect and plays the place sound.
+     *
+     * @param player The player who broke the block
+     * @param hand   The hand the player used to break the block
+     * @see CustomBlockPlaceEvent
+     * @see #place(Player, EquipmentSlot, BlockFace, Axis)
+     */
+    public void place(
             @NotNull Player player,
             @NotNull EquipmentSlot hand
     ) {
-        this.setCustomBlock(player, hand, null, null);
+        this.place(player, hand, null, null);
     }
 
-    public void setCustomBlock(
+    /**
+     * Places the custom block and calls the {@link CustomBlockPlaceEvent},
+     * if the event is cancelled the block won't be placed. Otherwise, the
+     * block will be placed with the specified parameters. It will use the
+     * {@link CustomBlockData#getBlockFaceMap()} if the block face is not
+     * null, otherwise it will use the {@link CustomBlockData#getBlockAxisMap()}
+     * if the axis is not null. If both are null, the block will be placed
+     * with the default {@link CustomBlockData#getNoteBlockData()}. Also,
+     * logs the block place in the CoreProtect and plays the place sound.
+     *
+     * @param player    The player who placed the block
+     * @param hand      The hand the player used to place the block
+     * @param blockFace The block face the player placed the block on,
+     *                  null if custom block data doesn't have a
+     *                  {@link CustomBlockData#getBlockFaceMap()}
+     * @param axis      The axis the player placed the block on,
+     *                  null if custom block data doesn't have a
+     *                  {@link CustomBlockData#getBlockAxisMap()}
+     * @see CustomBlockData
+     * @see CustomBlockPlaceEvent
+     * @see CoreProtectAPI#logPlacement(String, Location, Material, org.bukkit.block.data.BlockData)
+     * @see BlockUtils#removeBlocksAround(Block)
+     */
+    public void place(
             @NotNull Player player,
             @NotNull EquipmentSlot hand,
             @Nullable BlockFace blockFace,
@@ -78,7 +143,18 @@ public class CustomBlock implements Cloneable {
         });
     }
 
-    public void breakCustomBlock(@NotNull Player player) {
+    /**
+     * Breaks the custom block and calls the {@link CustomBlockBreakEvent},
+     * if the event is cancelled, the block will not be broken. Otherwise,
+     * drops the item if the player is holding the correct tool, or if
+     * the custom block has {@link CustomBlockData#isForceTool()} set to
+     * false. Also drops experience if the custom block has
+     * {@link CustomBlockData#getExpToDrop()} set to a value greater than 0.
+     * Also plays the break sound and logs the break to CoreProtect.
+     *
+     * @param player The player who broke the block
+     */
+    public void destroy(@NotNull Player player) {
         CustomBlockBreakEvent event = new CustomBlockBreakEvent(this, player);
         Bukkit.getPluginManager().callEvent(event);
 
@@ -106,7 +182,7 @@ public class CustomBlock implements Cloneable {
 
         if (
                 (!this.customBlockData.isForceTool() || this.customBlockData.getToolType() == ToolType.fromMaterial(mainHandMaterial))
-                 && this.customBlockData != CustomBlockData.DEFAULT
+                 && this.customBlockData != CustomBlockRegistry.DEFAULT
         ) {
             if (this.customBlockData.isDropsDefaultItem()) {
                 world.dropItemNaturally(blockLocation, this.customBlockData.craftItemStack());
@@ -115,29 +191,12 @@ public class CustomBlock implements Cloneable {
             if (this.customBlockData.getExpToDrop() != 0) {
                 world.spawn(blockLocation, ExperienceOrb.class).setExperience(this.customBlockData.getExpToDrop());
             }
-        } else if (this.customBlockData == CustomBlockData.DEFAULT) {
+        } else if (this.customBlockData == CustomBlockRegistry.DEFAULT) {
             world.dropItemNaturally(blockLocation, new ItemStack(Material.NOTE_BLOCK));
         }
 
         if (ToolType.fromMaterial(mainHandMaterial) != ToolType.HAND) {
             ItemUtils.damageItem(player, itemInMainHand);
-        }
-    }
-
-    public @NotNull Block getReplacedBlock() {
-        return this.block;
-    }
-
-    public @NotNull CustomBlockData getCustomBlockData() {
-        return this.customBlockData;
-    }
-
-    @Override
-    public @NotNull CustomBlock clone() {
-        try {
-            return (CustomBlock) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
         }
     }
 }

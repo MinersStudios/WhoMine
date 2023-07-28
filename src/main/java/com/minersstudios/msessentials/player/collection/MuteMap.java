@@ -1,16 +1,16 @@
 package com.minersstudios.msessentials.player.collection;
 
-import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.msessentials.MSEssentials;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
 import com.mojang.util.InstantTypeAdapter;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -128,15 +129,15 @@ public class MuteMap {
     /**
      * @return An unmodifiable view of the UUIDs contained in this map
      */
-    public @NotNull @Unmodifiable Set<UUID> uuidSet() {
-        return Set.copyOf(this.map.keySet());
+    public @NotNull @UnmodifiableView Set<UUID> uuidSet() {
+        return Collections.unmodifiableSet(this.map.keySet());
     }
 
     /**
      * @return An unmodifiable view of the mappings contained in this map
      */
-    public @NotNull @Unmodifiable Set<Map.Entry<UUID, Entry>> entrySet() {
-        return Set.copyOf(this.map.entrySet());
+    public @NotNull @UnmodifiableView Set<Map.Entry<UUID, Entry>> entrySet() {
+        return Collections.unmodifiableSet(this.map.entrySet());
     }
 
     /**

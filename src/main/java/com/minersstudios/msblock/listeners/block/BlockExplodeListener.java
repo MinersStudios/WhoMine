@@ -1,6 +1,6 @@
 package com.minersstudios.msblock.listeners.block;
 
-import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import org.bukkit.Material;
@@ -20,7 +20,7 @@ public class BlockExplodeListener extends AbstractMSListener {
             block.setType(Material.AIR);
             block.getWorld().dropItemNaturally(
                     block.getLocation(),
-                    CustomBlockData.fromNoteBlock((NoteBlock) block.getBlockData()).craftItemStack()
+                    CustomBlockRegistry.fromNoteBlock((NoteBlock) block.getBlockData()).orElse(CustomBlockRegistry.DEFAULT).craftItemStack()
             );
         });
     }

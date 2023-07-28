@@ -18,8 +18,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,8 +82,8 @@ public final class SignMenu {
     /**
      * @return The text of the sign
      */
-    public @NotNull @Unmodifiable List<Component> getText() {
-        return List.copyOf(this.text);
+    public @NotNull @UnmodifiableView List<Component> getText() {
+        return Collections.unmodifiableList(this.text);
     }
 
     /**

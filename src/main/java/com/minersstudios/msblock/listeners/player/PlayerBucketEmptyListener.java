@@ -1,8 +1,8 @@
 package com.minersstudios.msblock.listeners.player;
 
-import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.util.MSBlockUtils;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
+import com.minersstudios.mscore.listener.event.MSListener;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,7 +16,7 @@ public class PlayerBucketEmptyListener extends AbstractMSListener {
     public void onPlayerBucketEmpty(@NotNull PlayerBucketEmptyEvent event) {
         if (
                 event.getBlock().getType() == Material.NOTE_BLOCK
-                || MSBlockUtils.isCustomBlock(event.getPlayer().getInventory().getItemInMainHand())
+                || CustomBlockRegistry.isCustomBlock(event.getPlayer().getInventory().getItemInMainHand())
         ) {
             event.setCancelled(true);
         }

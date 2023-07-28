@@ -1,13 +1,10 @@
 package com.minersstudios.msblock.customblock;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.MSBlockUtils;
 import com.minersstudios.mscore.util.MSCustomUtils;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -26,51 +23,6 @@ import java.io.File;
 import java.util.*;
 
 public class CustomBlockData implements Cloneable {
-    public static final @NotNull CustomBlockData DEFAULT = new CustomBlockData(
-            //<editor-fold desc="Default note block params">
-            new NamespacedKey("msblock", "default"),
-            11.0f,
-            0,
-            true,
-            ToolType.AXE,
-            false,
-            null,
-            0,
-            new NoteBlockData(Instrument.BIT, new Note(0), false),
-            null,
-            new SoundGroup(
-                    SoundGroup.Sound.create(
-                            "block.wood.place",
-                            SoundCategory.BLOCKS,
-                            0.5f,
-                            1.0f
-                    ),
-                    SoundGroup.Sound.create(
-                            "block.wood.break",
-                            SoundCategory.BLOCKS,
-                            1.0f,
-                            1.0f
-                    ),
-                    SoundGroup.Sound.create(
-                            "block.wood.hit",
-                            SoundCategory.BLOCKS,
-                            0.5f,
-                            0.5f
-                    ),
-                    SoundGroup.Sound.create(
-                            "block.wood.step",
-                            SoundCategory.PLAYERS,
-                            0.3f,
-                            0.9f
-                    )
-            ),
-            null,
-            null,
-            null,
-            false,
-            null
-            //</editor-fold>
-    );
     private @NotNull NamespacedKey namespacedKey;
     private float digSpeed;
     private int expToDrop;
@@ -178,96 +130,6 @@ public class CustomBlockData implements Cloneable {
         return customBlockData;
     }
 
-    public static @NotNull CustomBlockData fromNoteBlock(@NotNull NoteBlock noteBlock) {
-        return fromInstrumentNotePowered(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
-    }
-
-    @Contract("_, _, _ -> new")
-    public static @NotNull CustomBlockData fromInstrumentNotePowered(
-            @NotNull Instrument instrument,
-            @NotNull Note note,
-            boolean powered
-    ) {
-        return MSPlugin.getGlobalCache().cachedNoteBlockData.getOrDefault(
-                new NoteBlockData(instrument, note, powered).hashCode(), DEFAULT
-        );
-    }
-
-    @Contract("_ -> new")
-    public static @NotNull CustomBlockData fromCustomModelData(int cmd) {
-        CustomBlockData customBlockData = MSPlugin.getGlobalCache().customBlockMap.getBySecondaryKey(cmd);
-        return customBlockData == null ? DEFAULT : customBlockData;
-    }
-
-    @Contract("_ -> new")
-    public static @NotNull CustomBlockData fromKey(@NotNull String key) {
-        CustomBlockData customBlockData = MSPlugin.getGlobalCache().customBlockMap.getByPrimaryKey(key);
-        return customBlockData == null ? DEFAULT : customBlockData;
-    }
-
-    private static @Nullable Set<Material> craftPlaceableMaterials(@NotNull YamlConfiguration config) {
-        var placeableMaterials = new HashSet<Material>();
-
-        for (String material : config.getStringList("placing.placeable-materials")) {
-            placeableMaterials.add(Material.valueOf(material));
-        }
-
-        return placeableMaterials.isEmpty() ? null : placeableMaterials;
-    }
-
-    @Contract("_ -> new")
-    private static @Nullable Map<BlockFace, NoteBlockData> craftBlockFaceMap(@NotNull YamlConfiguration config) {
-        var blockFaceMap = new HashMap<BlockFace, NoteBlockData>();
-        ConfigurationSection configurationSection = config.getConfigurationSection("placing.directional.block-faces");
-
-        if (configurationSection == null) return null;
-
-        for (String blockFace : configurationSection.getKeys(false)) {
-            blockFaceMap.put(
-                    BlockFace.valueOf(blockFace.toUpperCase(Locale.ROOT)),
-                    new NoteBlockData(
-                            Instrument.valueOf(config.getString("placing.directional.block-faces." + blockFace + ".instrument")),
-                            new Note(config.getInt("placing.directional.block-faces." + blockFace + ".note")),
-                            config.getBoolean("placing.directional.block-faces." + blockFace + ".is-powered", false)
-                    )
-            );
-        }
-
-        return blockFaceMap.isEmpty() ? null : blockFaceMap;
-    }
-
-    private static @Nullable Map<Axis, NoteBlockData> craftBlockAxisMap(@NotNull YamlConfiguration config) {
-        var blockAxisMap = new HashMap<Axis, NoteBlockData>();
-        ConfigurationSection configurationSection = config.getConfigurationSection("placing.orientable.axes");
-
-        if (configurationSection == null) return null;
-
-        for (String axis : configurationSection.getKeys(false)) {
-            blockAxisMap.put(
-                    Axis.valueOf(axis.toUpperCase(Locale.ROOT)),
-                    new NoteBlockData(
-                            Instrument.valueOf(config.getString("placing.orientable.axes." + axis + ".instrument")),
-                            new Note(config.getInt("placing.orientable.axes." + axis + ".note")),
-                            config.getBoolean("placing.orientable.axes." + axis + ".is-powered", false)
-                    )
-            );
-        }
-
-        return blockAxisMap.isEmpty() ? null : blockAxisMap;
-    }
-
-    @Contract("_ -> new")
-    private static @Nullable NoteBlockData craftNoteBlockData(@NotNull YamlConfiguration config) {
-        String instrument = config.getString("placing.normal.instrument");
-        return instrument == null
-                ? null
-                : new NoteBlockData(
-                        Instrument.valueOf(instrument),
-                        new Note(config.getInt("placing.normal.note")),
-                        config.getBoolean("placing.normal.is-powered", false)
-                );
-    }
-
     public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
         this.namespacedKey = namespacedKey;
     }
@@ -282,31 +144,6 @@ public class CustomBlockData implements Cloneable {
 
     public float getDigSpeed() {
         return this.digSpeed;
-    }
-
-    public float getCalculatedDigSpeed(@NotNull Player player) {
-        float base = 1.0f;
-        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-        Material material = itemInMainHand.getType();
-        PotionEffect potionEffect = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
-
-        if (this.toolType == ToolType.fromMaterial(material)) {
-            base = ToolTier.fromMaterial(material).getDigSpeed();
-
-            if (itemInMainHand.containsEnchantment(Enchantment.DIG_SPEED)) {
-                base += itemInMainHand.getEnchantmentLevel(Enchantment.DIG_SPEED) * 0.3f;
-            }
-        } else if (this.toolType == ToolType.PICKAXE) {
-            base /= 30.0f;
-        } else {
-            base /= 5.0f;
-        }
-
-        if (potionEffect != null) {
-            base *= (potionEffect.getAmplifier() + 1) * 0.32f;
-        }
-
-        return base / this.digSpeed;
     }
 
     public void setExpToDrop(int expToDrop) {
@@ -421,12 +258,41 @@ public class CustomBlockData implements Cloneable {
         return this.shapedRecipe;
     }
 
+    public float calculateDigSpeed(@NotNull Player player) {
+        float base = 1.0f;
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        Material material = itemInMainHand.getType();
+        PotionEffect potionEffect = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
+
+        if (this.toolType == ToolType.fromMaterial(material)) {
+            base = ToolTier.fromMaterial(material).getDigSpeed();
+
+            if (itemInMainHand.containsEnchantment(Enchantment.DIG_SPEED)) {
+                base += itemInMainHand.getEnchantmentLevel(Enchantment.DIG_SPEED) * 0.3f;
+            }
+        } else if (this.toolType == ToolType.PICKAXE) {
+            base /= 30.0f;
+        } else {
+            base /= 5.0f;
+        }
+
+        if (potionEffect != null) {
+            base *= (potionEffect.getAmplifier() + 1) * 0.32f;
+        }
+
+        return base / this.digSpeed;
+    }
+
     public @NotNull ItemStack craftItemStack() {
+        if (this.itemCustomModelData == 0) {
+            return new ItemStack(Material.NOTE_BLOCK);
+        }
+
         ItemStack itemStack = new ItemStack(Material.PAPER);
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         itemMeta.getPersistentDataContainer().set(
-                MSBlockUtils.CUSTOM_BLOCK_TYPE_NAMESPACED_KEY,
+                CustomBlockRegistry.TYPE_NAMESPACED_KEY,
                 PersistentDataType.STRING,
                 this.namespacedKey.getKey()
         );
@@ -468,7 +334,7 @@ public class CustomBlockData implements Cloneable {
             ingredientMap.keySet().forEach(character -> shapedRecipe.setIngredient(character, ingredientMap.get(character)));
 
             if (this.isShowInCraftsMenu()) {
-                MSPlugin.getGlobalCache().customBlockRecipes.add(shapedRecipe);
+                CustomBlockRegistry.registerRecipe(shapedRecipe);
             }
 
             Bukkit.addRecipe(shapedRecipe);
@@ -491,6 +357,69 @@ public class CustomBlockData implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static @Nullable Set<Material> craftPlaceableMaterials(@NotNull YamlConfiguration config) {
+        var placeableMaterials = new HashSet<Material>();
+
+        for (String material : config.getStringList("placing.placeable-materials")) {
+            placeableMaterials.add(Material.valueOf(material));
+        }
+
+        return placeableMaterials.isEmpty() ? null : placeableMaterials;
+    }
+
+    @Contract("_ -> new")
+    private static @Nullable Map<BlockFace, NoteBlockData> craftBlockFaceMap(@NotNull YamlConfiguration config) {
+        var blockFaceMap = new HashMap<BlockFace, NoteBlockData>();
+        ConfigurationSection configurationSection = config.getConfigurationSection("placing.directional.block-faces");
+
+        if (configurationSection == null) return null;
+
+        for (String blockFace : configurationSection.getKeys(false)) {
+            blockFaceMap.put(
+                    BlockFace.valueOf(blockFace.toUpperCase(Locale.ROOT)),
+                    new NoteBlockData(
+                            Instrument.valueOf(config.getString("placing.directional.block-faces." + blockFace + ".instrument")),
+                            new Note(config.getInt("placing.directional.block-faces." + blockFace + ".note")),
+                            config.getBoolean("placing.directional.block-faces." + blockFace + ".is-powered", false)
+                    )
+            );
+        }
+
+        return blockFaceMap.isEmpty() ? null : blockFaceMap;
+    }
+
+    private static @Nullable Map<Axis, NoteBlockData> craftBlockAxisMap(@NotNull YamlConfiguration config) {
+        var blockAxisMap = new HashMap<Axis, NoteBlockData>();
+        ConfigurationSection configurationSection = config.getConfigurationSection("placing.orientable.axes");
+
+        if (configurationSection == null) return null;
+
+        for (String axis : configurationSection.getKeys(false)) {
+            blockAxisMap.put(
+                    Axis.valueOf(axis.toUpperCase(Locale.ROOT)),
+                    new NoteBlockData(
+                            Instrument.valueOf(config.getString("placing.orientable.axes." + axis + ".instrument")),
+                            new Note(config.getInt("placing.orientable.axes." + axis + ".note")),
+                            config.getBoolean("placing.orientable.axes." + axis + ".is-powered", false)
+                    )
+            );
+        }
+
+        return blockAxisMap.isEmpty() ? null : blockAxisMap;
+    }
+
+    @Contract("_ -> new")
+    private static @Nullable NoteBlockData craftNoteBlockData(@NotNull YamlConfiguration config) {
+        String instrument = config.getString("placing.normal.instrument");
+        return instrument == null
+                ? null
+                : new NoteBlockData(
+                Instrument.valueOf(instrument),
+                new Note(config.getInt("placing.normal.note")),
+                config.getBoolean("placing.normal.is-powered", false)
+        );
     }
 
     public enum PlacingType {

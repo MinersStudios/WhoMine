@@ -6,10 +6,11 @@ import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -115,8 +116,8 @@ public class PacketRegistry {
      *         packet classes as keys and their corresponding
      *         {@link PacketType} as values
      */
-    public static @NotNull @Unmodifiable Map<Class<?>, PacketType> getClassToType() {
-        return Map.copyOf(CLASS_TO_TYPE);
+    public static @NotNull @UnmodifiableView Map<Class<?>, PacketType> getClassToType() {
+        return Collections.unmodifiableMap(CLASS_TO_TYPE);
     }
 
     /**
@@ -128,8 +129,8 @@ public class PacketRegistry {
      *         {@link PacketType} as keys and their corresponding
      *         packet classes as values
      */
-    public static @NotNull @Unmodifiable Map<PacketType, Class<?>> getTypeToClass() {
-        return Map.copyOf(TYPE_TO_CLASS);
+    public static @NotNull @UnmodifiableView Map<PacketType, Class<?>> getTypeToClass() {
+        return Collections.unmodifiableMap(TYPE_TO_CLASS);
     }
 
     /**

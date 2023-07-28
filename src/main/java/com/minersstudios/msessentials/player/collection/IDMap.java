@@ -1,16 +1,16 @@
 package com.minersstudios.msessentials.player.collection;
 
-import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.msessentials.MSEssentials;
-import com.minersstudios.msessentials.utils.IDUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.msessentials.utils.IDUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,8 +47,8 @@ public class IDMap {
      *
      * @return map with {@link UUID} and its ID
      */
-    public @NotNull @Unmodifiable Map<UUID, Integer> getMap() {
-        return Map.copyOf(this.map);
+    public @NotNull @UnmodifiableView Map<UUID, Integer> getMap() {
+        return Collections.unmodifiableMap(this.map);
     }
 
     /**
@@ -161,22 +161,22 @@ public class IDMap {
     /**
      * @return An unmodifiable view of the UUIDs contained in this map
      */
-    public @NotNull @Unmodifiable Set<UUID> uuidSet() {
-        return Set.copyOf(this.map.keySet());
+    public @NotNull @UnmodifiableView Set<UUID> uuidSet() {
+        return Collections.unmodifiableSet(this.map.keySet());
     }
 
     /**
      * @return An unmodifiable view of the ids contained in this map
      */
-    public @Unmodifiable Collection<Integer> ids() {
+    public @UnmodifiableView Collection<Integer> ids() {
         return Collections.unmodifiableCollection(this.map.values());
     }
 
     /**
      * @return An unmodifiable view of the mappings contained in this map
      */
-    public @NotNull @Unmodifiable Set<Map.Entry<UUID, Integer>> entrySet() {
-        return Set.copyOf(this.map.entrySet());
+    public @NotNull @UnmodifiableView Set<Map.Entry<UUID, Integer>> entrySet() {
+        return Collections.unmodifiableSet(this.map.entrySet());
     }
 
     /**

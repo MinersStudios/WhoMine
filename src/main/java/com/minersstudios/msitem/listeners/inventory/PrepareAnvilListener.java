@@ -1,7 +1,8 @@
 package com.minersstudios.msitem.listeners.inventory;
 
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.util.MSBlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.mscore.util.MSItemUtils;
 import com.minersstudios.msitem.items.Renameable;
@@ -9,7 +10,6 @@ import com.minersstudios.msitem.items.RenameableItem;
 import com.minersstudios.msitem.utils.CustomItemUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -44,7 +44,7 @@ public class PrepareAnvilListener extends AbstractMSListener {
                     event.setResult(renamedItem);
                 }
             } else if (
-                    !MSBlockUtils.isCustomBlock(firstItem)
+                    !CustomBlockRegistry.isCustomBlock(firstItem)
                     && !MSDecorUtils.isCustomDecor(firstItem)
                     && !MSItemUtils.isCustomItem(firstItem)
             ) {

@@ -1,10 +1,10 @@
 package com.minersstudios.msblock.listeners.inventory;
 
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.ItemUtils;
-import com.minersstudios.mscore.util.MSBlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -25,7 +25,7 @@ public class PrepareItemCraftListener extends AbstractMSListener {
 
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
             if (
-                    MSBlockUtils.isCustomBlock(itemStack)
+                    CustomBlockRegistry.isCustomBlock(itemStack)
                     && ((recipe instanceof ShapedRecipe shapedRecipe
                     && shapedRecipe.getIngredientMap().values().stream().noneMatch(item -> ItemUtils.isSimilarItemStacks(item, itemStack)))
                     || (!result.hasItemMeta() || !result.getItemMeta().hasCustomModelData()))

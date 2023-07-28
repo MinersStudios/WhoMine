@@ -1,16 +1,16 @@
 package com.minersstudios.msessentials.discord;
 
-import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.msessentials.MSEssentials;
-import com.minersstudios.msessentials.player.PlayerInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.msessentials.player.PlayerInfo;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -213,15 +214,15 @@ public class DiscordMap {
     /**
      * @return An unmodifiable view of the ids contained in this map
      */
-    public @NotNull @Unmodifiable Set<Long> idSet() {
-        return Set.copyOf(this.map.keySet());
+    public @NotNull @UnmodifiableView Set<Long> idSet() {
+        return Collections.unmodifiableSet(this.map.keySet());
     }
 
     /**
      * @return An unmodifiable view of the mappings contained in this map
      */
-    public @NotNull @Unmodifiable Set<Map.Entry<Long, Params>> entrySet() {
-        return Set.copyOf(this.map.entrySet());
+    public @NotNull @UnmodifiableView Set<Map.Entry<Long, Params>> entrySet() {
+        return Collections.unmodifiableSet(this.map.entrySet());
     }
 
     /**

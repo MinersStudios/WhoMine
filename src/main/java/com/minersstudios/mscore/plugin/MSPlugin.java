@@ -29,7 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -103,29 +103,29 @@ public abstract class MSPlugin extends JavaPlugin {
      *
      * @return The unmodifiable set of class names
      */
-    public final @NotNull @Unmodifiable Set<String> getClassNames() {
-        return Set.copyOf(this.classNames);
+    public final @NotNull @UnmodifiableView Set<String> getClassNames() {
+        return Collections.unmodifiableSet(this.classNames);
     }
 
     /**
      * @return The unmodifiable set of event listeners
      */
-    public final @NotNull @Unmodifiable Set<AbstractMSListener> getListeners() {
-        return Set.copyOf(this.msListeners);
+    public final @NotNull @UnmodifiableView Set<AbstractMSListener> getListeners() {
+        return Collections.unmodifiableSet(this.msListeners);
     }
 
     /**
      * @return The unmodifiable set of packet listeners
      */
-    public final @NotNull @Unmodifiable Set<AbstractMSPacketListener> getPacketListeners() {
-        return Set.copyOf(this.msPacketListeners);
+    public final @NotNull @UnmodifiableView Set<AbstractMSPacketListener> getPacketListeners() {
+        return Collections.unmodifiableSet(this.msPacketListeners);
     }
 
     /**
      * @return The unmodifiable map of commands
      */
-    public final @NotNull @Unmodifiable Map<MSCommand, MSCommandExecutor> getCommands() {
-        return Map.copyOf(this.msCommands);
+    public final @NotNull @UnmodifiableView Map<MSCommand, MSCommandExecutor> getCommands() {
+        return Collections.unmodifiableMap(this.msCommands);
     }
 
     /**
@@ -197,9 +197,9 @@ public abstract class MSPlugin extends JavaPlugin {
     /**
      * Used in :
      * <ul>
-     *     <li>MSBlock({@link GlobalCache#customBlockMap})</li>
-     *     <li>MSDecor({@link GlobalCache#customDecorMap})</li>
-     *     <li>MSItem({@link GlobalCache#customItemMap})</li>
+     *     <li>MSBlock</li>
+     *     <li>MSDecor</li>
+     *     <li>MSItem</li>
      * </ul>
      *
      * @return True if the plugin has loaded the customs to the cache

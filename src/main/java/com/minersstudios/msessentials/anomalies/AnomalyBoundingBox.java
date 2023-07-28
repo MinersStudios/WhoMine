@@ -4,12 +4,9 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Bounding box with a list of radii and a map of bounding boxes for each radius.
@@ -69,14 +66,14 @@ public class AnomalyBoundingBox extends BoundingBox {
     /**
      * @return Unmodifiable list of anomaly radii
      */
-    public @NotNull @Unmodifiable List<Double> getRadii() {
-        return List.copyOf(this.radii);
+    public @NotNull @UnmodifiableView List<Double> getRadii() {
+        return Collections.unmodifiableList(this.radii);
     }
 
     /**
      * @return Unmodifiable map of bounding boxes for each radius
      */
-    public @NotNull @Unmodifiable Map<Double, BoundingBox> getRadiusBoundingBoxes() {
-        return Map.copyOf(this.radiusBoundingBoxes);
+    public @NotNull @UnmodifiableView Map<Double, BoundingBox> getRadiusBoundingBoxes() {
+        return Collections.unmodifiableMap(this.radiusBoundingBoxes);
     }
 }

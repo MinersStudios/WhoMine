@@ -34,9 +34,7 @@ public final class MSEssentials extends MSPlugin {
     private static final TranslatableComponent DISABLE_SUBTITLE = translatable("ms.on_disable.message.subtitle");
 
     static {
-        initClass(CraftsMenu.class);
         initClass(DiscordLinkCodeMenu.class);
-        initClass(PronounsMenu.class);
         initClass(ResourcePackMenu.class);
         initClass(SkinsMenu.class);
     }

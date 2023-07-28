@@ -1,7 +1,8 @@
 package com.minersstudios.msdecor.listeners.mechanic;
 
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.util.MSBlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.mscore.util.PlayerUtils;
 import com.minersstudios.msdecor.customdecor.Sittable;
@@ -12,7 +13,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -36,7 +36,7 @@ public class SittableMechanic extends AbstractMSListener {
         EquipmentSlot hand = event.getHand();
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
-        if (MSBlockUtils.isCustomBlock(itemInMainHand)) return;
+        if (CustomBlockRegistry.isCustomBlock(itemInMainHand)) return;
 
         if (hand != EquipmentSlot.HAND && MSDecorUtils.isCustomDecor(itemInMainHand)) {
             hand = EquipmentSlot.HAND;
@@ -49,7 +49,7 @@ public class SittableMechanic extends AbstractMSListener {
                 && !player.isSneaking()
                 && clickedBlock.getType() == Material.BARRIER
                 && (!itemInHand.getType().isBlock() || itemInHand.getType() == Material.AIR)
-                && !MSBlockUtils.isCustomBlock(itemInHand)
+                && !CustomBlockRegistry.isCustomBlock(itemInHand)
                 && !MSDecorUtils.isCustomDecor(itemInHand)
                 && event.getHand() == EquipmentSlot.HAND
                 && gameMode != GameMode.SPECTATOR

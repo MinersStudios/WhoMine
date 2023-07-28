@@ -1,8 +1,7 @@
 package com.minersstudios.msblock.commands;
 
-import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
@@ -43,34 +42,29 @@ public class GiveCommand {
             return true;
         }
 
-        CustomBlockData customBlockData = MSPlugin.getGlobalCache().customBlockMap.getByPrimaryKey(blockArg);
+        CustomBlockRegistry.fromKey(blockArg).ifPresentOrElse(customBlockData -> {
+            int amount;
 
-        if (customBlockData == null) {
-            MSLogger.severe(sender, WRONG_BLOCK);
-            return true;
-        }
+            try {
+                amount = Integer.parseInt(amountArg);
+            } catch (NumberFormatException ignore) {
+                MSLogger.severe(sender, WRONG_FORMAT);
+                return;
+            }
 
-        int amount;
+            ItemStack itemStack = customBlockData.craftItemStack();
+            itemStack.setAmount(amount);
 
-        try {
-            amount = Integer.parseInt(amountArg);
-        } catch (NumberFormatException ignore) {
-            MSLogger.severe(sender, WRONG_FORMAT);
-            return true;
-        }
-
-        ItemStack itemStack = customBlockData.craftItemStack();
-        itemStack.setAmount(amount);
-
-        player.getInventory().addItem(itemStack);
-        MSLogger.fine(
-                sender,
-                GIVE_SUCCESS.args(
-                        text(amount),
-                        itemStack.displayName(),
-                        playerInfo.getDefaultName()
-                )
-        );
+            player.getInventory().addItem(itemStack);
+            MSLogger.fine(
+                    sender,
+                    GIVE_SUCCESS.args(
+                            text(amount),
+                            itemStack.displayName(),
+                            playerInfo.getDefaultName()
+                    )
+            );
+        }, () -> MSLogger.severe(sender, WRONG_BLOCK));
         return true;
     }
 }

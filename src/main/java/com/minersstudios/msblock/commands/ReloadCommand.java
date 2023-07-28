@@ -1,9 +1,8 @@
 package com.minersstudios.msblock.commands;
 
 import com.minersstudios.msblock.MSBlock;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.mscore.plugin.GlobalCache;
-import com.minersstudios.mscore.plugin.MSPlugin;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -22,7 +21,6 @@ public class ReloadCommand {
     public static boolean runCommand(@NotNull CommandSender sender) {
         long time = System.currentTimeMillis();
         Server server = sender.getServer();
-        GlobalCache cache = MSPlugin.getGlobalCache();
         Iterator<Recipe> crafts = server.recipeIterator();
 
         while (crafts.hasNext()) {
@@ -36,9 +34,7 @@ public class ReloadCommand {
             }
         }
 
-        cache.customBlockMap.clear();
-        cache.cachedNoteBlockData.clear();
-        cache.customBlockRecipes.clear();
+        CustomBlockRegistry.unregisterAll();
         MSBlock.getConfiguration().reload();
         MSLogger.fine(sender, RELOAD_SUCCESS.args(text(System.currentTimeMillis() - time)));
         return true;

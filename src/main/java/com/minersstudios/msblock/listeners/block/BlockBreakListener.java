@@ -1,6 +1,7 @@
 package com.minersstudios.msblock.listeners.block;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.msblock.customblock.ToolType;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
@@ -58,11 +59,11 @@ public class BlockBreakListener extends AbstractMSListener {
                 blockType != Material.NOTE_BLOCK
                 && BlockUtils.isWoodenSound(blockType)
         ) {
-            CustomBlockData.DEFAULT.getSoundGroup().playBreakSound(blockLocation.toCenterLocation());
+            CustomBlockRegistry.DEFAULT.getSoundGroup().playBreakSound(blockLocation.toCenterLocation());
         }
 
         if (block.getBlockData() instanceof NoteBlock noteBlock) {
-            CustomBlockData customBlockMaterial = CustomBlockData.fromNoteBlock(noteBlock);
+            CustomBlockData customBlockMaterial = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockRegistry.DEFAULT);
             GameMode gameMode = player.getGameMode();
 
             event.setCancelled(true);

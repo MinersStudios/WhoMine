@@ -1,8 +1,8 @@
 package com.minersstudios.msdecor.listeners.mechanic;
 
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.util.MSBlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.customdecor.register.other.Poop;
 import org.bukkit.GameMode;
@@ -36,7 +36,7 @@ public class PoopMechanic extends AbstractMSListener {
         EquipmentSlot hand = event.getHand();
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
-        if (MSBlockUtils.isCustomBlock(itemInMainHand)) return;
+        if (CustomBlockRegistry.isCustomBlock(itemInMainHand)) return;
 
         if (hand != EquipmentSlot.HAND && MSDecorUtils.isCustomDecor(itemInMainHand)) {
             hand = EquipmentSlot.HAND;

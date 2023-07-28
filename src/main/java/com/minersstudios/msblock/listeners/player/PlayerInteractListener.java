@@ -5,12 +5,12 @@ import com.google.common.collect.Sets;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.msblock.events.CustomBlockRightClickEvent;
 import com.minersstudios.msblock.util.UseBucketsAndSpawnableItems;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
-import com.minersstudios.mscore.util.MSBlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.mscore.util.PlayerUtils;
 import net.minecraft.server.level.ServerPlayer;
@@ -191,7 +191,7 @@ public class PlayerInteractListener extends AbstractMSListener {
         }
 
         if (MSDecorUtils.isCustomDecor(itemInMainHand)) return;
-        if (hand != EquipmentSlot.HAND && MSBlockUtils.isCustomBlock(itemInMainHand)) {
+        if (hand != EquipmentSlot.HAND && CustomBlockRegistry.isCustomBlock(itemInMainHand)) {
             hand = EquipmentSlot.HAND;
         }
 
@@ -205,10 +205,10 @@ public class PlayerInteractListener extends AbstractMSListener {
                 && validGameMode
                 && !itemInHand.getType().isAir()
                 && (hand == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
-                && !MSBlockUtils.isCustomBlock(itemInHand)
+                && !CustomBlockRegistry.isCustomBlock(itemInHand)
                 && interactionPoint != null
         ) {
-            CustomBlockData clickedCustomBlockData = CustomBlockData.fromNoteBlock(noteBlock);
+            CustomBlockData clickedCustomBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElseThrow();
 
             if (blockType == Material.NOTE_BLOCK) {
                 CustomBlock customBlock = new CustomBlock(clickedBlock, clickedCustomBlockData);
@@ -223,7 +223,7 @@ public class PlayerInteractListener extends AbstractMSListener {
         }
 
         if (
-                MSBlockUtils.isCustomBlock(itemInHand)
+                CustomBlockRegistry.isCustomBlock(itemInHand)
                 && (event.getHand() == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
                 && BlockUtils.REPLACE.contains(blockAtFace.getType())
                 && validGameMode
@@ -245,12 +245,12 @@ public class PlayerInteractListener extends AbstractMSListener {
                 if (!IGNORABLE_ENTITIES.contains(nearbyEntity.getType())) return;
             }
 
-            CustomBlockData customBlockData = CustomBlockData.fromCustomModelData(itemInHand.getItemMeta().getCustomModelData());
+            CustomBlockData customBlockData = CustomBlockRegistry.fromCustomModelData(itemInHand.getItemMeta().getCustomModelData()).orElseThrow();
             CustomBlockData.PlacingType placingType = customBlockData.getPlacingType();
             CustomBlock customBlock = new CustomBlock(replaceableBlock, customBlockData);
 
             if (placingType == null) {
-                customBlock.setCustomBlock(player, hand);
+                customBlock.place(player, hand);
                 return;
             }
 
@@ -262,13 +262,13 @@ public class PlayerInteractListener extends AbstractMSListener {
 
             if (blockFaces != null) {
                 switch (placingType) {
-                    case BY_BLOCK_FACE -> customBlock.setCustomBlock(player, hand, blockFace, null);
-                    case BY_EYE_POSITION -> customBlock.setCustomBlock(player, hand, getBlockFaceByEyes(yaw, pitch, blockFaces), null);
+                    case BY_BLOCK_FACE -> customBlock.place(player, hand, blockFace, null);
+                    case BY_EYE_POSITION -> customBlock.place(player, hand, getBlockFaceByEyes(yaw, pitch, blockFaces), null);
                 }
             } else if (blockAxes != null) {
                 switch (placingType) {
-                    case BY_BLOCK_FACE -> customBlock.setCustomBlock(player, hand, null, getAxis(interactionPoint.getX(), interactionPoint.getZ()));
-                    case BY_EYE_POSITION -> customBlock.setCustomBlock(player, hand, null, getAxisByEyes(yaw, pitch, blockAxes));
+                    case BY_BLOCK_FACE -> customBlock.place(player, hand, null, getAxis(interactionPoint.getX(), interactionPoint.getZ()));
+                    case BY_EYE_POSITION -> customBlock.place(player, hand, null, getAxisByEyes(yaw, pitch, blockAxes));
                 }
             }
         }

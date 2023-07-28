@@ -1,6 +1,7 @@
 package com.minersstudios.mscore.util;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msitem.items.CustomItem;
 import org.bukkit.NamespacedKey;
@@ -174,7 +175,7 @@ public final class MSCustomUtils {
      *         or {@link CustomDecorData}
      *         or {@link CustomItem}
      *         or empty optional if not found
-     * @see MSBlockUtils#getCustomBlockData(String)
+     * @see CustomBlockRegistry#fromKey(String)
      * @see MSDecorUtils#getCustomDecorData(String)
      * @see MSItemUtils#getCustomItem(String)
      */
@@ -185,7 +186,7 @@ public final class MSCustomUtils {
         return namespace == null || key == null
                 ? Optional.empty()
                 : switch (namespace) {
-                    case "msblock" -> MSBlockUtils.getCustomBlockData(key);
+                    case "msblock" -> CustomBlockRegistry.fromKey(key);
                     case "msdecor" -> MSDecorUtils.getCustomDecorData(key);
                     case "msitems" -> MSItemUtils.getCustomItem(key);
                     default -> Optional.empty();

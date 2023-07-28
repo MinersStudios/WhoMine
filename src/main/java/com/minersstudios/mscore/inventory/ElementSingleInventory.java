@@ -4,8 +4,10 @@ import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -58,8 +60,8 @@ public class ElementSingleInventory extends CustomInventoryImpl<ElementSingleInv
      * @return Elements of the inventory
      */
     @Contract(" -> new")
-    public @NotNull List<InventoryButton> elements() {
-        return List.copyOf(this.elements);
+    public @NotNull @UnmodifiableView List<InventoryButton> elements() {
+        return Collections.unmodifiableList(this.elements);
     }
 
     /**

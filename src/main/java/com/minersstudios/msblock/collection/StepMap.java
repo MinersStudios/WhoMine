@@ -2,8 +2,9 @@ package com.minersstudios.msblock.collection;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,16 +32,16 @@ public class StepMap {
     /**
      * @return An unmodifiable set of players present in the StepMap
      */
-    public @NotNull @Unmodifiable Set<Player> playerSet() {
-        return Set.copyOf(this.stepMap.keySet());
+    public @NotNull @UnmodifiableView Set<Player> playerSet() {
+        return Collections.unmodifiableSet(this.stepMap.keySet());
     }
 
     /**
      * @return An unmodifiable set of Map entries containing players
      *         and step distances
      */
-    public @NotNull @Unmodifiable Set<Map.Entry<Player, Double>> entrySet() {
-        return Set.copyOf(this.stepMap.entrySet());
+    public @NotNull @UnmodifiableView Set<Map.Entry<Player, Double>> entrySet() {
+        return Collections.unmodifiableSet(this.stepMap.entrySet());
     }
 
     /**

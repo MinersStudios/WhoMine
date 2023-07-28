@@ -1,16 +1,15 @@
 package com.minersstudios.msessentials.player;
 
-import com.minersstudios.mscore.logger.MSLogger;
-import com.minersstudios.msessentials.Config;
-import com.minersstudios.msessentials.MSEssentials;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.msessentials.Config;
+import com.minersstudios.msessentials.MSEssentials;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.HttpException;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -205,7 +204,7 @@ public class ResourcePack {
      * @param repo The name of the repository
      * @return The latest tag name
      */
-    private static @NotNull @Unmodifiable Optional<String> getLatestTagName(
+    private static @NotNull Optional<String> getLatestTagName(
             @NotNull String user,
             @NotNull String repo
     ) {

@@ -18,6 +18,6 @@ public class PlayerTeleportListener extends AbstractMSListener {
         Cache cache = MSBlock.getCache();
 
         cache.diggingMap.removeAll(player);
-        cache.stepMap.remove(player);
+        cache.stepMap.put(player, 0.0d);
     }
 }

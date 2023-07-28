@@ -18,6 +18,5 @@ public class PlayerGameModeChangeListener extends AbstractMSListener {
         Cache cache = MSBlock.getCache();
 
         cache.diggingMap.removeAll(player);
-        cache.stepMap.remove(player);
     }
 }

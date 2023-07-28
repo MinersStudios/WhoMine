@@ -167,7 +167,7 @@ public class PlayerFile {
     }
 
     public @NotNull List<Skin> getSkins() {
-        return List.copyOf(this.skins);
+        return Collections.unmodifiableList(this.skins);
     }
 
     public @Nullable Skin getSkin(@Range(from = 0, to = Integer.MAX_VALUE) int index) {

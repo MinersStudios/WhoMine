@@ -1,9 +1,10 @@
 package com.minersstudios.msblock.listeners.inventory;
 
-import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.PlayerUtils;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
@@ -24,13 +25,14 @@ public class InventoryCreativeListener extends AbstractMSListener {
 
         if (
                 targetBlock == null
+                || event.getCursor().getType() != Material.NOTE_BLOCK
                 || !(targetBlock.getBlockData() instanceof NoteBlock noteBlock)
         ) return;
 
         event.setCancelled(true);
         this.getPlugin().runTask(() -> player.getInventory().setItem(
                 event.getSlot(),
-                CustomBlockData.fromNoteBlock(noteBlock).craftItemStack()
+                CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockRegistry.DEFAULT).craftItemStack()
         ));
     }
 }

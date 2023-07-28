@@ -2,6 +2,7 @@ package com.minersstudios.msblock.listeners.block;
 
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.msblock.events.CustomBlockDamageEvent;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
@@ -28,12 +29,12 @@ public class BlockDamageListener extends AbstractMSListener {
                 blockType != Material.NOTE_BLOCK
                 && BlockUtils.isWoodenSound(blockType)
         ) {
-            CustomBlockData.DEFAULT.getSoundGroup().playHitSound(blockLocation);
+            CustomBlockRegistry.DEFAULT.getSoundGroup().playHitSound(blockLocation);
         }
 
         if (block.getBlockData() instanceof NoteBlock noteBlock) {
             Player player = event.getPlayer();
-            CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
+            CustomBlockData customBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockRegistry.DEFAULT);
             CustomBlock customBlock = new CustomBlock(block, customBlockData);
             CustomBlockDamageEvent damageEvent = new CustomBlockDamageEvent(customBlock, player, event.getItemInHand());
 

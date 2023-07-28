@@ -5,9 +5,10 @@ import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -63,16 +64,16 @@ public abstract class AbstractMSPacketListener {
      * @return Types of received packets listened to by this listener
      * @see PacketType
      */
-    public final @NotNull @Unmodifiable Set<PacketType> getReceiveWhiteList() {
-        return Set.copyOf(this.receiveWhiteList);
+    public final @NotNull @UnmodifiableView Set<PacketType> getReceiveWhiteList() {
+        return Collections.unmodifiableSet(this.receiveWhiteList);
     }
 
     /**
      * @return Types of sent packets listened to by this listener
      * @see PacketType
      */
-    public final @NotNull @Unmodifiable Set<PacketType> getSendWhiteList() {
-        return Set.copyOf(this.sendWhiteList);
+    public final @NotNull @UnmodifiableView Set<PacketType> getSendWhiteList() {
+        return Collections.unmodifiableSet(this.sendWhiteList);
     }
 
     /**

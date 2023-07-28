@@ -1,6 +1,6 @@
 package com.minersstudios.msblock.listeners.block;
 
-import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.msblock.customblock.NoteBlockData;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @MSListener
 public class NotePlayListener extends AbstractMSListener {
-    private static final @NotNull NoteBlockData DEFAULT = Objects.requireNonNull(CustomBlockData.DEFAULT.getNoteBlockData());
+    private static final @NotNull NoteBlockData DEFAULT = Objects.requireNonNull(CustomBlockRegistry.DEFAULT.getNoteBlockData());
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onNotePlay(@NotNull NotePlayEvent event) {

@@ -1,10 +1,10 @@
 package com.minersstudios.msblock.listeners.block;
 
 import com.minersstudios.msblock.customblock.CustomBlock;
+import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
-import com.minersstudios.mscore.util.MSBlockUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static com.minersstudios.msblock.customblock.CustomBlockData.DEFAULT;
+import static com.minersstudios.msblock.customblock.CustomBlockRegistry.DEFAULT;
 
 @MSListener
 public class BlockPlaceListener extends AbstractMSListener {
@@ -25,7 +25,7 @@ public class BlockPlaceListener extends AbstractMSListener {
 
         if (
                 blockType == Material.NOTE_BLOCK
-                || MSBlockUtils.isCustomBlock(player.getInventory().getItemInMainHand())
+                || CustomBlockRegistry.isCustomBlock(player.getInventory().getItemInMainHand())
         ) {
             event.setCancelled(true);
         }
@@ -39,7 +39,7 @@ public class BlockPlaceListener extends AbstractMSListener {
 
         if (blockType == Material.NOTE_BLOCK) {
             new CustomBlock(block, DEFAULT)
-                    .setCustomBlock(player, event.getHand());
+                    .place(player, event.getHand());
         }
     }
 }
