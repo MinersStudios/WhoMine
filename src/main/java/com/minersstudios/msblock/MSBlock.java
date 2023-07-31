@@ -1,18 +1,11 @@
 package com.minersstudios.msblock;
 
-import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.customblock.file.*;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.util.ChatUtils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.minecraft.server.MinecraftServer;
-import org.bukkit.Instrument;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -51,36 +44,6 @@ public final class MSBlock extends MSPlugin {
         this.coreProtectAPI = CoreProtect.getInstance().getAPI();
         this.cache = new Cache();
         this.config = new Config(this, this.getConfigFile());
-
-        ItemStack item = new ItemStack(Material.PAPER, 5);
-        ItemMeta meta = item.getItemMeta();
-        meta.displayName(ChatUtils.createDefaultStyledText("Custom Block"));
-        meta.setCustomModelData(1);
-        item.setItemMeta(meta);
-
-        CustomBlockFile file = CustomBlockFile.create(new File(this.getDataFolder(), "blocks/default0.json"), new CustomBlockData(
-                "default0",
-                new BlockSettings(
-                        11.0f,
-                        new BlockSettings.Tool(
-                                ToolType.AXE,
-                                false
-                        ),
-                        new BlockSettings.Placing(
-                                new PlacingType.Orientable(
-                                        NoteBlockData.fromParams(Instrument.BELL, 0, false),
-                                        NoteBlockData.fromParams(Instrument.BELL, 1, false),
-                                        NoteBlockData.fromParams(Instrument.BELL, 2, false)
-                                )
-                        )
-                ),
-                new DropSettings(
-                        item,
-                        10
-                ),
-                SoundGroup.wood()
-        ));
-        file.create();
 
         this.config.reload();
     }

@@ -48,7 +48,7 @@ public final class Config extends MSConfig {
 
         var recipesToRegister = MSBlock.getCache().recipesToRegister;
 
-        this.plugin.saveResource("blocks/example.yml", true);
+        this.plugin.saveResource("blocks/example.json", true);
         this.loadBlocks();
         this.plugin.runTaskTimer(task -> {
             if (MSPluginUtils.isLoadedCustoms()) {

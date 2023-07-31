@@ -364,7 +364,7 @@ public abstract class MSPlugin extends JavaPlugin {
         String outDirName = outDir.getName();
 
         if (!outDir.exists() && !outDir.mkdirs()) {
-            MSLogger.log(Level.WARNING, "Directory " + outDirName + " creation failed");
+            MSLogger.warning("Directory " + outDirName + " creation failed");
         }
 
         if (!outFile.exists() || replace) {

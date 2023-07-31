@@ -73,7 +73,7 @@ public final class CustomBlockRegistry {
     public static final String NAMESPACE = "msblock";
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(NAMESPACE, "type");
 
-    private static final Map<String, Integer> KEY_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, Set<Integer>> KEY_MAP = new ConcurrentHashMap<>();
     private static final Map<Integer, CustomBlockData> HASH_CODE_MAP = new ConcurrentHashMap<>();
 
     static {
@@ -120,9 +120,13 @@ public final class CustomBlockRegistry {
      * @see #fromHashCode(int)
      */
     public static @NotNull Optional<CustomBlockData> fromKey(@Nullable String key) {
-        return StringUtils.isBlank(key)
+        if (StringUtils.isBlank(key)) return Optional.empty();
+
+        var hashCodes = KEY_MAP.get(key);
+
+        return hashCodes == null || hashCodes.isEmpty()
                 ? Optional.empty()
-                : fromHashCode(KEY_MAP.getOrDefault(key.toLowerCase(Locale.ROOT), -1));
+                : fromHashCode(hashCodes.iterator().next());
     }
 
     /**
@@ -344,6 +348,12 @@ public final class CustomBlockRegistry {
         String key = customBlockData.getKey();
         PlacingType placingType = customBlockData.getBlockSettings().placing().type();
 
+        for (var recipeEntry : customBlockData.getRecipes()) {
+            if (recipeEntry.isShowInCraftsMenu()) {
+                MSBlock.getCache().recipesToRegister.add(customBlockData);
+            }
+        }
+
         if (placingType instanceof PlacingType.Default normal) {
             register(
                     customBlockData,
@@ -420,9 +430,15 @@ public final class CustomBlockRegistry {
             String key
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(!containsHashCode(hashCode), "The hash code " + hashCode + " is already registered! See " + key + " custom block data!");
-        Preconditions.checkArgument(!containsKey(key), "The key " + key + " is already registered! See " + key + " custom block data!");
 
+        if (customBlockData.getBlockSettings().placing().type() instanceof PlacingType.Default) {
+            Preconditions.checkArgument(!containsKey(key), "The key " + key + " is already registered! See " + key + " custom block data!");
+        }
+
+        var hashKeys = KEY_MAP.computeIfAbsent(key, k -> new HashSet<>());
+
+        hashKeys.add(hashCode);
         HASH_CODE_MAP.put(hashCode, customBlockData);
-        KEY_MAP.put(key, hashCode);
+        KEY_MAP.put(key, hashKeys);
     }
 }

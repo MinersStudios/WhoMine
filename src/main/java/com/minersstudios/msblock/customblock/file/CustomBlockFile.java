@@ -4,8 +4,12 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.customblock.file.adapter.*;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.config.ConfigurationException;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.RecipeChoice;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +42,9 @@ public class CustomBlockFile {
 
     private static final Gson GSON =
             new GsonBuilder()
+                    .registerTypeAdapter(Recipe.class, new RecipeAdapter())
+                    .registerTypeAdapter(RecipeChoice.class, new RecipeChoiceAdapter())
+                    .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
                     .registerTypeAdapter(NoteBlockData.class, new NoteBlockDataAdapter())
                     .registerTypeAdapter(PlacingType.class, new PlacingTypeAdapter())
                     .setPrettyPrinting()
@@ -123,13 +130,13 @@ public class CustomBlockFile {
 
         if (!this.file.exists()) {
             throw new ConfigurationException("File not found: " + path);
-        } else {
-            try {
-                String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
-                this.data = GSON.fromJson(json, CustomBlockData.class);
-            } catch (Exception e) {
-                throw new ConfigurationException("Failed to load file: " + path, e);
-            }
+        }
+
+        try {
+            String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
+            this.data = GSON.fromJson(json, CustomBlockData.class);
+        } catch (Exception e) {
+            throw new ConfigurationException("Failed to load file: " + path, e);
         }
     }
 
@@ -139,9 +146,14 @@ public class CustomBlockFile {
      * @see #save()
      */
     public void create() {
+        File directory = this.file.getParentFile();
+
         try {
-            if (this.file.getParentFile().mkdirs()) {
-                MSLogger.log(Level.INFO, "Created a new directory: " + this.file.getParentFile().getAbsolutePath());
+            if (
+                    !directory.exists()
+                    && !directory.mkdirs()
+            ) {
+                MSLogger.warning("Failed to create a new directory: " + directory.getAbsolutePath());
             }
 
             if (this.file.createNewFile()) {
@@ -158,7 +170,6 @@ public class CustomBlockFile {
     public void save() {
         try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.data, writer);
-            MSLogger.log(Level.INFO, "Saved a file: " + this.file.getAbsolutePath());
         } catch (IOException e) {
             MSLogger.log(Level.SEVERE, "Failed to save a file: " + this.file.getAbsolutePath(), e);
         }

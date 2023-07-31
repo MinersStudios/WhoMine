@@ -1,6 +1,7 @@
-package com.minersstudios.msblock.customblock.file;
+package com.minersstudios.msblock.customblock.file.adapter;
 
 import com.google.gson.*;
+import com.minersstudios.msblock.customblock.file.NoteBlockData;
 import org.bukkit.Instrument;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,9 +42,9 @@ public class NoteBlockDataAdapter implements JsonSerializer<NoteBlockData>, Json
     ) {
         JsonObject jsonObject = new JsonObject();
 
-        jsonObject.addProperty("instrument", src.instrument().toString());
-        jsonObject.addProperty("note", src.noteId());
-        jsonObject.addProperty("powered", src.powered());
+        jsonObject.addProperty(INSTRUMENT_KEY, src.instrument().toString());
+        jsonObject.addProperty(NOTE_KEY, src.noteId());
+        jsonObject.addProperty(POWERED_KEY, src.powered());
 
         return jsonObject;
     }

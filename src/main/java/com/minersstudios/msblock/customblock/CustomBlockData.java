@@ -164,11 +164,11 @@ public class CustomBlockData implements Cloneable {
 
     public void registerRecipes() {
         for (var recipeEntry : this.recipeEntries) {
-            Recipe recipe = recipeEntry.recipe();
+            Recipe recipe = recipeEntry.getRecipe();
 
             Bukkit.addRecipe(recipe);
 
-            if (recipeEntry.showInCraftsMenu()) {
+            if (recipeEntry.isShowInCraftsMenu()) {
                 MSPlugin.getGlobalCache().customBlockRecipes.add(recipe);
             }
         }

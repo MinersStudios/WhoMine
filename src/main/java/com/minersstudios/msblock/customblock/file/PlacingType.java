@@ -25,7 +25,7 @@ public interface PlacingType {
     class Directional implements PlacingType {
         private final Map<BlockFace, NoteBlockData> map;
 
-        Directional(@NotNull Map<BlockFace, NoteBlockData> map) {
+        public Directional(@NotNull Map<BlockFace, NoteBlockData> map) {
             this.map = map;
         }
 
@@ -59,7 +59,7 @@ public interface PlacingType {
     class Orientable implements PlacingType {
         private final Map<Axis, NoteBlockData> map;
 
-        Orientable(@NotNull Map<Axis, NoteBlockData> map) {
+        public Orientable(@NotNull Map<Axis, NoteBlockData> map) {
             this.map = map;
         }
 
