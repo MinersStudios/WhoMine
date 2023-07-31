@@ -6,7 +6,7 @@ import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.chat.ChatBuffer;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.utils.MessageUtils;
+import com.minersstudios.msessentials.util.MessageUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.Player;

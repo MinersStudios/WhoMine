@@ -9,12 +9,12 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomBlockPlaceEvent extends CustomBlockEvent implements Cancellable {
-    private static final HandlerList HANDLER_LIST = new HandlerList();
-
+    protected boolean cancelled;
     protected final BlockState replacedBlockState;
     protected final Player player;
     protected final EquipmentSlot hand;
-    protected boolean cancelled;
+
+    private static final HandlerList HANDLER_LIST = new HandlerList();
 
     /**
      * Constructs a new CustomBlockPlaceEvent

@@ -37,8 +37,7 @@ import static net.kyori.adventure.text.Component.translatable;
  * All downloaded language files are stored in the "/config/minersstudios/language" folder
  */
 public final class LanguageFile {
-    private final String user;
-    private final String repo;
+    private final String folderLink;
     private final String code;
     private final JsonObject translations;
     private File file;
@@ -58,29 +57,20 @@ public final class LanguageFile {
     }
 
     private LanguageFile(
-            @NotNull String user,
-            @NotNull String repo,
+            @NotNull String folderLink,
             @NotNull String code
     ) {
-        this.user = user;
-        this.repo = repo;
+        this.folderLink = folderLink;
         this.code = code;
         this.file = this.loadFile();
         this.translations = this.loadTranslations();
     }
 
     /**
-     * @return The user of the language repository
+     * @return The folder link of the language repository
      */
-    public @NotNull String getUser() {
-        return this.user;
-    }
-
-    /**
-     * @return The repository from which the language file is downloaded
-     */
-    public @NotNull String getRepo() {
-        return this.repo;
+    public @NotNull String getFolderLink() {
+        return this.folderLink;
     }
 
     /**
@@ -110,17 +100,15 @@ public final class LanguageFile {
      * not exist, it will be downloaded from the language
      * repository.
      *
-     * @param user The user of the language repository
-     * @param repo The repository from which the language file is downloaded
-     * @param code Language code
+     * @param folderLink The folder link of the language repository
+     * @param code Language code of the language file
      */
     public static void loadLanguage(
-            @NotNull String user,
-            @NotNull String repo,
+            @NotNull String folderLink,
             @NotNull String code
     ) {
         long time = System.currentTimeMillis();
-        LanguageFile languageFile = new LanguageFile(user, repo, code);
+        LanguageFile languageFile = new LanguageFile(folderLink, code);
 
         Locale locale = Locale.US;
         languageFile.translations.entrySet().forEach(
@@ -152,13 +140,13 @@ public final class LanguageFile {
      * Reloads language file
      *
      * @see #unloadLanguage()
-     * @see #loadLanguage(String, String, String)
+     * @see #loadLanguage(String, String)
      */
     public static void reloadLanguage() {
         GlobalConfig config = MSPlugin.getGlobalConfig();
 
         unloadLanguage();
-        loadLanguage(config.languageUser, config.languageRepo, config.languageCode);
+        loadLanguage(config.languageFolderLink, config.languageCode);
     }
 
     /**
@@ -237,7 +225,14 @@ public final class LanguageFile {
         File langFile = new File(langFolder, this.code + ".json");
 
         if (!langFile.exists()) {
-            String link = "https://github.com/" + this.user + '/' + this.repo + "/raw/release/lang/" + this.code + ".json";
+            String link =
+                    this.folderLink
+                    + (
+                            this.folderLink.endsWith("/")
+                            ? ""
+                            : '/'
+                    )
+                    + this.code + ".json";
 
             try (
                     var in = new URL(link).openStream();

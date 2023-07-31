@@ -9,7 +9,7 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.IDMap;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.utils.IDUtils;
+import com.minersstudios.msessentials.util.IDUtils;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;

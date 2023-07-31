@@ -18,9 +18,6 @@ public class InventoryButton {
     private @Nullable ItemStack item;
     private @Nullable ButtonClickAction clickAction;
 
-    /**
-     * Empty button constructor
-     */
     private InventoryButton() {}
 
     /**

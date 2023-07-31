@@ -1,11 +1,11 @@
 package com.minersstudios.msessentials.player;
 
 import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.SignMenu;
+import com.minersstudios.mscore.util.menu.SignMenu;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.menu.PronounsMenu;
-import com.minersstudios.msessentials.utils.MSPlayerUtils;
-import com.minersstudios.msessentials.utils.MessageUtils;
+import com.minersstudios.msessentials.util.MSPlayerUtils;
+import com.minersstudios.msessentials.util.MessageUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;

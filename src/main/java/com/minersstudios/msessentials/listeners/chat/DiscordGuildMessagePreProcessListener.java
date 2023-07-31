@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.listeners.chat;
 
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.util.Badges;
-import com.minersstudios.msessentials.utils.MessageUtils;
+import com.minersstudios.msessentials.util.MessageUtils;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.dependencies.google.common.base.Function;

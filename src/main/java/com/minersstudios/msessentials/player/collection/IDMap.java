@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
-import com.minersstudios.msessentials.utils.IDUtils;
+import com.minersstudios.msessentials.util.IDUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;

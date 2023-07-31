@@ -6,7 +6,7 @@ import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.utils.MSPlayerUtils;
+import com.minersstudios.msessentials.util.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.minersstudios.msessentials.utils.MessageUtils.sendPrivateMessage;
+import static com.minersstudios.msessentials.util.MessageUtils.sendPrivateMessage;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;

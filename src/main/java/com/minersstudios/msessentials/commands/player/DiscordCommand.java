@@ -7,7 +7,7 @@ import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.utils.MessageUtils;
+import com.minersstudios.msessentials.util.MessageUtils;
 import com.mojang.brigadier.tree.CommandNode;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;

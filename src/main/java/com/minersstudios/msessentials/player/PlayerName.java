@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
-import static com.minersstudios.msessentials.utils.MessageUtils.Colors.*;
+import static com.minersstudios.msessentials.util.MessageUtils.Colors.*;
 import static net.kyori.adventure.text.Component.text;
 
 /**

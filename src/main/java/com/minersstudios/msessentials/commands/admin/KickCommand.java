@@ -6,7 +6,7 @@ import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.msessentials.utils.MSPlayerUtils;
+import com.minersstudios.msessentials.util.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;

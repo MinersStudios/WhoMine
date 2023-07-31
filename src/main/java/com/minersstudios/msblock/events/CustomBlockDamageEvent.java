@@ -8,11 +8,11 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomBlockDamageEvent extends CustomBlockEvent implements Cancellable {
-    private static final HandlerList HANDLER_LIST = new HandlerList();
-
+    protected boolean cancelled;
     protected final Player player;
     protected final ItemStack itemStack;
-    protected boolean cancelled;
+
+    private static final HandlerList HANDLER_LIST = new HandlerList();
 
     /**
      * Constructs a new CustomBlockDamageEvent

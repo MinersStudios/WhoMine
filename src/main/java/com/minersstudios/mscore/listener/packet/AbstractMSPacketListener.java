@@ -7,7 +7,6 @@ import com.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,8 +22,6 @@ public abstract class AbstractMSPacketListener {
     private MSPlugin plugin;
     private final Set<PacketType> sendWhiteList = new HashSet<>();
     private final Set<PacketType> receiveWhiteList = new HashSet<>();
-
-    private static final String TO_STRING_FORMAT = "%s{plugin=%s, sendWhiteList=%s, receiveWhiteList=%s}";
 
     /**
      * Packet listener constructor
@@ -118,12 +115,10 @@ public abstract class AbstractMSPacketListener {
      */
     @Override
     public @NotNull String toString() {
-        return String.format(
-                TO_STRING_FORMAT,
-                this.getClass().getSimpleName(),
-                this.plugin,
-                Arrays.toString(this.sendWhiteList.toArray()),
-                Arrays.toString(this.receiveWhiteList.toArray())
-        );
+        return this.getClass().getSimpleName() +
+                "plugin=" + this.plugin +
+                ", sendWhiteList=" + this.sendWhiteList +
+                ", receiveWhiteList=" + this.receiveWhiteList +
+                '}';
     }
 }

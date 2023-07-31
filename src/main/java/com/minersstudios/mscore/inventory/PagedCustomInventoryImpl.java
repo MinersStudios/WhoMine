@@ -17,10 +17,10 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> extends CustomInventoryImpl<S> implements PagedCustomInventory {
-    protected final @NotNull Map<Integer, StaticInventoryButton> staticButtons = new HashMap<>();
-    protected final @NotNull Map<Integer, S> pages = new HashMap<>();
     protected int page;
     protected int pagesSize;
+    protected final @NotNull Map<Integer, StaticInventoryButton> staticButtons = new HashMap<>();
+    protected final @NotNull Map<Integer, S> pages = new HashMap<>();
 
     protected PagedCustomInventoryImpl(
             @NotNull Component title,

@@ -5,10 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,6 +19,43 @@ import java.util.stream.Collectors;
  */
 public class DiggingMap {
     private final Map<Block, Set<Entry>> diggingBlockMap = new ConcurrentHashMap<>();
+
+    /**
+     * @return An unmodifiable set of all digging entries present
+     *         in the DiggingMap
+     * @see Entry
+     */
+    public @NotNull @Unmodifiable Set<Entry> diggingEntrySet() {
+        return this.diggingBlockMap.values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    /**
+     * @return An unmodifiable set of all blocks present in the DiggingMap
+     */
+    public @NotNull @UnmodifiableView Set<Block> blockSet() {
+        return Collections.unmodifiableSet(this.diggingBlockMap.keySet());
+    }
+
+    /**
+     * @return An unmodifiable set of map entries containing blocks
+     *         and their corresponding digging entries
+     */
+    public @NotNull @Unmodifiable Set<Map.Entry<Block, Entry>> entrySet() {
+        return Collections.unmodifiableSet(this.entries());
+    }
+
+    /**
+     * @param block The block for which to retrieve the associated
+     *              digging entries
+     * @return An unmodifiable set of digging entries associated
+     *         with the given block
+     * @see Entry
+     */
+    public @NotNull @Unmodifiable Set<Entry> getDiggingEntrySet(@NotNull Block block) {
+        return Collections.unmodifiableSet(this.entries(block));
+    }
 
     /**
      * @param diggingEntry The digging entry for which to retrieve the
@@ -81,43 +115,6 @@ public class DiggingMap {
         return this.entries(block).stream()
                 .max(Comparator.comparingInt(Entry::stage))
                 .orElse(null);
-    }
-
-    /**
-     * @param block The block for which to retrieve the associated
-     *              digging entries
-     * @return An unmodifiable list of digging entries associated
-     *         with the block
-     * @see Entry
-     */
-    public @NotNull @UnmodifiableView Set<Entry> getDiggingEntrySet(@NotNull Block block) {
-        return Collections.unmodifiableSet(this.entries(block));
-    }
-
-    /**
-     * @return An unmodifiable collection of all digging entries present
-     *         in the DiggingMap
-     * @see Entry
-     */
-    public @NotNull @UnmodifiableView Collection<Entry> diggingEntries() {
-        return this.diggingBlockMap.values().stream()
-                .flatMap(Collection::stream)
-                .toList();
-    }
-
-    /**
-     * @return An unmodifiable set of all blocks present in the DiggingMap
-     */
-    public @NotNull @UnmodifiableView Set<Block> blockSet() {
-        return Collections.unmodifiableSet(this.diggingBlockMap.keySet());
-    }
-
-    /**
-     * @return An unmodifiable set of map entries containing blocks
-     *         and their corresponding digging entries
-     */
-    public @NotNull @UnmodifiableView Set<Map.Entry<Block, Entry>> entrySet() {
-        return Collections.unmodifiableSet(this.entries());
     }
 
     /**

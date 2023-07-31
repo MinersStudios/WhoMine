@@ -37,7 +37,6 @@ public final class Commodore {
     private static final Field ARGUMENTS_FIELD;
     private static final Field CUSTOM_SUGGESTIONS_FIELD;
     private static final Field COMMAND_EXECUTE_FUNCTION_FIELD;
-
     private static final com.mojang.brigadier.Command<?> COMMAND;
     private static final SuggestionProvider<?> SUGGESTION_PROVIDER;
 

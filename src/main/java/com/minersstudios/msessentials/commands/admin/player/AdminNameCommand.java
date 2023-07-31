@@ -4,7 +4,7 @@ import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerName;
-import com.minersstudios.msessentials.utils.MSPlayerUtils;
+import com.minersstudios.msessentials.util.MSPlayerUtils;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;

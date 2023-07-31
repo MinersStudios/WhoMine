@@ -21,55 +21,27 @@ public class StepMap {
     private static final double FINAL_STEP = 1.5d;
 
     /**
-     * @param player The player for which to retrieve the distance
-     * @return The distance associated with the player,
-     *         or 0.0 if the player is not found in the map
-     */
-    public double getDistance(@NotNull Player player) {
-        return this.stepMap.getOrDefault(player, 0.0d);
-    }
-
-    /**
-     * @return An unmodifiable set of players present in the StepMap
+     * @return An unmodifiable view of the player set in the StepMap
      */
     public @NotNull @UnmodifiableView Set<Player> playerSet() {
         return Collections.unmodifiableSet(this.stepMap.keySet());
     }
 
     /**
-     * @return An unmodifiable set of Map entries containing players
-     *         and step distances
+     * @return An unmodifiable view of the map entries containing
+     *         the players and their corresponding step distances
      */
     public @NotNull @UnmodifiableView Set<Map.Entry<Player, Double>> entrySet() {
         return Collections.unmodifiableSet(this.stepMap.entrySet());
     }
 
     /**
-     * Adds or puts the distance associated with the given player
-     * in the StepMap. If the updated distance reaches the final
-     * step threshold, the player is removed from the map and true
-     * is returned.
-     *
-     * @param player   The player for which to add/update the distance
-     * @param distance The distance to be added to the player's
-     *                 current distance
-     * @return True if the updated distance reaches
-     *         or exceeds the final step threshold
-     * @see #isFinalStep(double)
+     * @param player The player for which to retrieve the distance
+     * @return The distance associated with the player,
+     *         or 0.0 if the player is not found in the map
      */
-    public boolean addDistance(
-            @NotNull Player player,
-            double distance
-    ) {
-        double newDistance = this.getDistance(player) + distance;
-
-        if (isFinalStep(newDistance)) {
-            this.stepMap.remove(player);
-            return true;
-        } else {
-            this.stepMap.put(player, newDistance);
-            return false;
-        }
+    public double get(@NotNull Player player) {
+        return this.stepMap.getOrDefault(player, 0.0d);
     }
 
     /**
@@ -101,6 +73,34 @@ public class StepMap {
     public double remove(@NotNull Player player) {
         Double previousDistance = this.stepMap.remove(player);
         return previousDistance == null ? -1.0d : previousDistance;
+    }
+
+    /**
+     * Adds or puts the distance associated with the given player
+     * in the StepMap. If the updated distance reaches the final
+     * step threshold, the player is removed from the map and true
+     * is returned.
+     *
+     * @param player   The player for which to add/update the distance
+     * @param distance The distance to be added to the player's
+     *                 current distance
+     * @return True if the updated distance reaches
+     *         or exceeds the final step threshold
+     * @see #isFinalStep(double)
+     */
+    public boolean addDistance(
+            @NotNull Player player,
+            double distance
+    ) {
+        double newDistance = this.get(player) + distance;
+
+        if (isFinalStep(newDistance)) {
+            this.stepMap.remove(player);
+            return true;
+        } else {
+            this.stepMap.put(player, newDistance);
+            return false;
+        }
     }
 
     /**

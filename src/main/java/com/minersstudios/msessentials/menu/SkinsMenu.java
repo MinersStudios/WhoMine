@@ -9,7 +9,7 @@ import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.utils.MessageUtils;
+import com.minersstudios.msessentials.util.MessageUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

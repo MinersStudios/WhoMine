@@ -1,4 +1,4 @@
-namespaced-key: "example"
+key: "example"
 block-settings:
   dig-speed: 1.0
   drop:

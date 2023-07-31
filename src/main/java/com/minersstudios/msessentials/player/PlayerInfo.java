@@ -17,9 +17,9 @@ import com.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.utils.IDUtils;
-import com.minersstudios.msessentials.utils.MSPlayerUtils;
-import com.minersstudios.msessentials.utils.MessageUtils;
+import com.minersstudios.msessentials.util.IDUtils;
+import com.minersstudios.msessentials.util.MSPlayerUtils;
+import com.minersstudios.msessentials.util.MessageUtils;
 import com.minersstudios.msessentials.world.WorldDark;
 import com.mojang.authlib.GameProfile;
 import fr.xephi.authme.api.v3.AuthMeApi;
@@ -55,9 +55,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 
-import static com.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.ME;
-import static com.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.TODO;
-import static com.minersstudios.msessentials.utils.MessageUtils.*;
+import static com.minersstudios.msessentials.util.MessageUtils.RolePlayActionType.ME;
+import static com.minersstudios.msessentials.util.MessageUtils.RolePlayActionType.TODO;
+import static com.minersstudios.msessentials.util.MessageUtils.*;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 

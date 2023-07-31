@@ -13,8 +13,7 @@ import java.time.format.DateTimeFormatter;
  */
 public final class GlobalConfig extends MSConfig {
     public String languageCode;
-    public String languageUser;
-    public String languageRepo;
+    public String languageFolderLink;
     public DateTimeFormatter timeFormatter;
 
     /**
@@ -34,8 +33,7 @@ public final class GlobalConfig extends MSConfig {
     public void reloadVariables() {
         this.timeFormatter = DateTimeFormatter.ofPattern(this.yaml.getString("date-format", "EEE, yyyy-MM-dd HH:mm z"));
         this.languageCode = this.yaml.getString("language.code", "ru_ru");
-        this.languageUser = this.yaml.getString("language.user", "MinersStudios");
-        this.languageRepo = this.yaml.getString("language.repo", "MSTranslations");
+        this.languageFolderLink = this.yaml.getString("language.folder-link", "https://github.com/MinersStudios/MSTranslations/raw/release/lang/");
     }
 
     /**
@@ -44,7 +42,6 @@ public final class GlobalConfig extends MSConfig {
     public void reloadDefaultVariables() {
         this.setIfNotExists("date-format", "EEE, yyyy-MM-dd HH:mm z");
         this.setIfNotExists("language.code", "ru_ru");
-        this.setIfNotExists("language.user", "MinersStudios");
-        this.setIfNotExists("language.repo", "MSTranslations");
+        this.setIfNotExists("language.folder-link", "https://github.com/MinersStudios/MSTranslations/raw/release/lang/");
     }
 }

@@ -14,8 +14,6 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractMSListener implements Listener {
     private MSPlugin plugin;
 
-    private static final String TO_STRING_FORMAT = "%s{plugin=%s}";
-
     /**
      * @return The plugin for this listener or null if not set
      * @throws IllegalStateException If this listener is not registered
@@ -57,10 +55,8 @@ public abstract class AbstractMSListener implements Listener {
      */
     @Override
     public @NotNull String toString() {
-        return String.format(
-                TO_STRING_FORMAT,
-                this.getClass().getSimpleName(),
-                this.plugin
-        );
+        return this.getClass().getSimpleName() +
+                "{plugin=" + this.plugin +
+                '}';
     }
 }

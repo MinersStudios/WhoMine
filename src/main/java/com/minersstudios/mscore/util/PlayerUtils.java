@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import com.minersstudios.mscore.util.menu.ShulkerBoxMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

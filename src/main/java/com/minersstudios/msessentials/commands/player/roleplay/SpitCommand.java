@@ -19,9 +19,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.ME;
-import static com.minersstudios.msessentials.utils.MessageUtils.RolePlayActionType.TODO;
-import static com.minersstudios.msessentials.utils.MessageUtils.sendRPEventMessage;
+import static com.minersstudios.msessentials.util.MessageUtils.RolePlayActionType.ME;
+import static com.minersstudios.msessentials.util.MessageUtils.RolePlayActionType.TODO;
+import static com.minersstudios.msessentials.util.MessageUtils.sendRPEventMessage;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;

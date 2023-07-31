@@ -7,10 +7,10 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomBlockBreakEvent extends CustomBlockEvent implements Cancellable {
-    private static final HandlerList HANDLER_LIST = new HandlerList();
-
-    protected final Player player;
     protected boolean cancelled;
+    protected final Player player;
+
+    private static final HandlerList HANDLER_LIST = new HandlerList();
 
     /**
      * Constructs a new CustomBlockBreakEvent

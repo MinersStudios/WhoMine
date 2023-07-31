@@ -4,7 +4,7 @@ import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.utils.MSPlayerUtils;
+import com.minersstudios.msessentials.util.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;

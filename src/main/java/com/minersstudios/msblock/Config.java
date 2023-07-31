@@ -5,7 +5,6 @@ import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.config.MSConfig;
 import com.minersstudios.mscore.util.MSPluginUtils;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -47,14 +46,14 @@ public final class Config extends MSConfig {
         this.woodSoundStep = this.yaml.getString("wood-sound.step");
         this.woodSoundHit = this.yaml.getString("wood-sound.hit");
 
-        var recipeBlocks = MSBlock.getCache().recipeBlocks;
+        var recipesToRegister = MSBlock.getCache().recipesToRegister;
 
         this.plugin.saveResource("blocks/example.yml", true);
         this.loadBlocks();
         this.plugin.runTaskTimer(task -> {
             if (MSPluginUtils.isLoadedCustoms()) {
-                recipeBlocks.forEach(CustomBlockData::registerRecipes);
-                recipeBlocks.clear();
+                recipesToRegister.forEach(CustomBlockData::registerRecipes);
+                recipesToRegister.clear();
                 task.cancel();
             }
         }, 0L, 10L);
@@ -77,11 +76,16 @@ public final class Config extends MSConfig {
             .filter(file -> {
                 String fileName = file.getFileName().toString();
                 return Files.isRegularFile(file)
-                        && !fileName.equalsIgnoreCase("example.yml")
-                        && fileName.endsWith(".yml");
+                        && !fileName.equalsIgnoreCase("example.json")
+                        && fileName.endsWith(".json");
             })
             .map(Path::toFile)
-            .forEach(file -> CustomBlockRegistry.registerData(CustomBlockData.fromConfig(file, YamlConfiguration.loadConfiguration(file))));
+            .forEach(file -> {
+                CustomBlockData data = CustomBlockData.fromFile(file);
+                if (data != null) {
+                    CustomBlockRegistry.register(data);
+                }
+            });
 
             this.plugin.setLoadedCustoms(true);
         } catch (IOException e) {

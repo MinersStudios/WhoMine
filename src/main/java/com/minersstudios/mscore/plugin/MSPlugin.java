@@ -75,8 +75,7 @@ public abstract class MSPlugin extends JavaPlugin {
 
         GLOBAL_CONFIG.reload();
         LanguageFile.loadLanguage(
-                GLOBAL_CONFIG.languageUser,
-                GLOBAL_CONFIG.languageRepo,
+                GLOBAL_CONFIG.languageFolderLink,
                 GLOBAL_CONFIG.languageCode
         );
 

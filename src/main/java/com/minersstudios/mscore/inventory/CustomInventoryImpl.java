@@ -30,17 +30,16 @@ import java.util.Map;
  */
 @SuppressWarnings({"unused", "UnusedReturnValue", "unchecked"})
 abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInventoryCustom implements CustomInventory {
-    protected final int size;
     protected @NotNull Map<Integer, InventoryButton> buttons;
     protected @Nullable InventoryAction<InventoryOpenEvent> openAction;
     protected @Nullable InventoryAction<InventoryCloseEvent> closeAction;
     protected @Nullable InventoryAction<InventoryClickEvent> clickAction;
     protected @Nullable InventoryAction<InventoryClickEvent> bottomClickAction;
     protected @NotNull List<Object> args = new ArrayList<>();
-
-    protected static final ItemStack EMPTY_ITEM = new ItemStack(Material.AIR);
+    protected final int size;
 
     protected static final int LAST_SLOT = 53;
+    protected static final ItemStack EMPTY_ITEM = new ItemStack(Material.AIR);
 
     protected CustomInventoryImpl(
             @NotNull Component title,

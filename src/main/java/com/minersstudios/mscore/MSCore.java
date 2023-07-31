@@ -18,7 +18,7 @@ public final class MSCore extends MSPlugin {
         instance = this;
 
         if (!LanguageFile.isLoaded()) {
-            LanguageFile.loadLanguage(GLOBAL_CONFIG.languageUser, GLOBAL_CONFIG.languageRepo, GLOBAL_CONFIG.languageCode);
+            LanguageFile.loadLanguage(GLOBAL_CONFIG.languageFolderLink, GLOBAL_CONFIG.languageCode);
         }
 
         this.getServer().getOnlinePlayers().forEach(player -> ChannelHandler.injectPlayer(player, this));

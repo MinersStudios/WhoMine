@@ -7,7 +7,7 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerSettings;
 import com.minersstudios.msessentials.player.ResourcePack;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.utils.MessageUtils;
+import com.minersstudios.msessentials.util.MessageUtils;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

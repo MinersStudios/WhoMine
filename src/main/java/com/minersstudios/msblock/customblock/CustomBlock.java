@@ -1,6 +1,9 @@
 package com.minersstudios.msblock.customblock;
 
 import com.minersstudios.msblock.MSBlock;
+import com.minersstudios.msblock.customblock.file.BlockSettings;
+import com.minersstudios.msblock.customblock.file.PlacingType;
+import com.minersstudios.msblock.customblock.file.ToolType;
 import com.minersstudios.msblock.events.CustomBlockBreakEvent;
 import com.minersstudios.msblock.events.CustomBlockPlaceEvent;
 import com.minersstudios.mscore.util.BlockUtils;
@@ -11,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
 import org.bukkit.entity.ExperienceOrb;
@@ -64,8 +68,7 @@ public class CustomBlock {
     /**
      * Places the custom block and calls the {@link CustomBlockPlaceEvent},
      * if the event is cancelled the block won't be placed. Otherwise,
-     * block will be placed with the specified parameters. It will use
-     * default {@link CustomBlockData#getNoteBlockData()}. Also, logs block
+     * block will be placed with the specified parameters. Also, logs block
      * place in the CoreProtect and plays the place sound.
      *
      * @param player The player who broke the block
@@ -83,24 +86,18 @@ public class CustomBlock {
     /**
      * Places the custom block and calls the {@link CustomBlockPlaceEvent},
      * if the event is cancelled the block won't be placed. Otherwise, the
-     * block will be placed with the specified parameters. It will use the
-     * {@link CustomBlockData#getBlockFaceMap()} if the block face is not
-     * null, otherwise it will use the {@link CustomBlockData#getBlockAxisMap()}
-     * if the axis is not null. If both are null, the block will be placed
-     * with the default {@link CustomBlockData#getNoteBlockData()}. Also,
-     * logs the block place in the CoreProtect and plays the place sound.
+     * block will be placed with the specified parameters. Also, logs the
+     * block place in the CoreProtect and plays the place sound.
      *
      * @param player    The player who placed the block
      * @param hand      The hand the player used to place the block
      * @param blockFace The block face the player placed the block on,
-     *                  null if custom block data doesn't have a
-     *                  {@link CustomBlockData#getBlockFaceMap()}
+     *                  null if placing type is {@link PlacingType.Directional}
      * @param axis      The axis the player placed the block on,
-     *                  null if custom block data doesn't have a
-     *                  {@link CustomBlockData#getBlockAxisMap()}
+     *                  null if placing type is {@link PlacingType.Orientable}
      * @see CustomBlockData
      * @see CustomBlockPlaceEvent
-     * @see CoreProtectAPI#logPlacement(String, Location, Material, org.bukkit.block.data.BlockData)
+     * @see CoreProtectAPI#logPlacement(String, Location, Material, BlockData)
      * @see BlockUtils#removeBlocksAround(Block)
      */
     public void place(
@@ -108,27 +105,37 @@ public class CustomBlock {
             @NotNull EquipmentSlot hand,
             @Nullable BlockFace blockFace,
             @Nullable Axis axis
-    ) {
+    ) throws IllegalArgumentException {
         CustomBlockPlaceEvent event = new CustomBlockPlaceEvent(this, this.block.getState(), player, hand);
-        Bukkit.getPluginManager().callEvent(event);
+        player.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
-
-        var blockFaceMap = this.customBlockData.getBlockFaceMap();
-        var blockAxisMap = this.customBlockData.getBlockAxisMap();
-
-        if (blockFace != null && blockFaceMap != null) {
-            this.customBlockData.setNoteBlockData(blockFaceMap.get(blockFace));
-        } else if (axis != null && blockAxisMap != null) {
-            this.customBlockData.setNoteBlockData(blockAxisMap.get(axis));
-        }
-
-        if (this.customBlockData.getNoteBlockData() == null) return;
 
         MSBlock.getInstance().runTask(() -> {
             this.block.setType(Material.NOTE_BLOCK);
 
-            NoteBlock noteBlock = this.customBlockData.getNoteBlockData().craftNoteBlock(this.block.getBlockData());
+            String key = this.customBlockData.getKey();
+            BlockData blockData = this.block.getBlockData();
+            NoteBlock noteBlock;
+            PlacingType placingType = this.customBlockData.getBlockSettings().placing().type();
+
+            if (placingType instanceof PlacingType.Default normal) {
+                noteBlock = normal.getNoteBlockData().craftNoteBlock(blockData);
+            } else if (placingType instanceof PlacingType.Directional directional) {
+                if (blockFace == null) {
+                    throw new IllegalArgumentException("Block face is null, but placing type is directional! " + key);
+                }
+
+                noteBlock = directional.getNoteBlockData(blockFace).craftNoteBlock(blockData);
+            } else if (placingType instanceof PlacingType.Orientable orientable) {
+                if (axis == null) {
+                    throw new IllegalArgumentException("Axis is null, but placing type is orientable! " + key);
+                }
+
+                noteBlock = orientable.getNoteBlockData(axis).craftNoteBlock(blockData);
+            } else {
+                throw new IllegalArgumentException("Unknown placing type: " + placingType.getClass().getName());
+            }
 
             this.block.setBlockData(noteBlock);
             this.customBlockData.getSoundGroup().playPlaceSound(this.block.getLocation().toCenterLocation());
@@ -147,16 +154,15 @@ public class CustomBlock {
      * Breaks the custom block and calls the {@link CustomBlockBreakEvent},
      * if the event is cancelled, the block will not be broken. Otherwise,
      * drops the item if the player is holding the correct tool, or if
-     * the custom block has {@link CustomBlockData#isForceTool()} set to
-     * false. Also drops experience if the custom block has
-     * {@link CustomBlockData#getExpToDrop()} set to a value greater than 0.
+     * the custom block has force tool set to false. Also drops experience
+     * if the custom block has exp to drop set to a value greater than 0.
      * Also plays the break sound and logs the break to CoreProtect.
      *
      * @param player The player who broke the block
      */
     public void destroy(@NotNull Player player) {
         CustomBlockBreakEvent event = new CustomBlockBreakEvent(this, player);
-        Bukkit.getPluginManager().callEvent(event);
+        player.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
 
@@ -180,19 +186,15 @@ public class CustomBlock {
         MSBlock.getCoreProtectAPI().logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
         this.block.setType(Material.AIR);
 
-        if (
-                (!this.customBlockData.isForceTool() || this.customBlockData.getToolType() == ToolType.fromMaterial(mainHandMaterial))
-                 && this.customBlockData != CustomBlockRegistry.DEFAULT
-        ) {
-            if (this.customBlockData.isDropsDefaultItem()) {
-                world.dropItemNaturally(blockLocation, this.customBlockData.craftItemStack());
-            }
+        BlockSettings.Tool tool = this.customBlockData.getBlockSettings().tool();
+        int experience = this.customBlockData.getDropSettings().experience();
 
-            if (this.customBlockData.getExpToDrop() != 0) {
-                world.spawn(blockLocation, ExperienceOrb.class).setExperience(this.customBlockData.getExpToDrop());
+        if (!tool.force() || tool.type() == ToolType.fromMaterial(mainHandMaterial)) {
+            world.dropItemNaturally(blockLocation, this.customBlockData.craftItemStack());
+
+            if (experience != 0) {
+                world.spawn(blockLocation, ExperienceOrb.class).setExperience(experience);
             }
-        } else if (this.customBlockData == CustomBlockRegistry.DEFAULT) {
-            world.dropItemNaturally(blockLocation, new ItemStack(Material.NOTE_BLOCK));
         }
 
         if (ToolType.fromMaterial(mainHandMaterial) != ToolType.HAND) {

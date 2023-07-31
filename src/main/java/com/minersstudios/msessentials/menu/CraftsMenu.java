@@ -1,8 +1,8 @@
 package com.minersstudios.msessentials.menu;
 
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.inventory.*;
 import com.minersstudios.mscore.inventory.actions.ButtonClickAction;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -154,7 +154,7 @@ public class CraftsMenu {
     @SuppressWarnings("deprecation")
     public static void putCrafts(
             @NotNull Type type,
-            @NotNull List<Recipe> recipes
+            @NotNull Collection<Recipe> recipes
     ) {
         var elements = new ArrayList<InventoryButton>();
         ElementPagedInventory customInventory = switch (type) {

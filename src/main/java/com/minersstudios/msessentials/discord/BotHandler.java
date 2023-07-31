@@ -7,7 +7,7 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.utils.MessageUtils;
+import com.minersstudios.msessentials.util.MessageUtils;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
