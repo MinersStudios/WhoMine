@@ -23,6 +23,11 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.translatable;
 
+/**
+ * The main class of the MSEssentials plugin
+ *
+ * @see MSPlugin
+ */
 public final class MSEssentials extends MSPlugin {
     private static MSEssentials instance;
     private Cache cache;

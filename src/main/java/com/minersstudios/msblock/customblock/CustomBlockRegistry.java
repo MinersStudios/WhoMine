@@ -248,7 +248,7 @@ public final class CustomBlockRegistry {
     public static boolean containsCustomBlockData(@Nullable CustomBlockData customBlockData) {
         if (customBlockData == null) return false;
 
-        PlacingType placingType = customBlockData.getBlockSettings().placing().type();
+        PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
 
         if (placingType instanceof PlacingType.Default normal) {
             return containsHashCode(normal.getNoteBlockData().hashCode());
@@ -346,13 +346,7 @@ public final class CustomBlockRegistry {
      */
     public static void register(@NotNull CustomBlockData customBlockData) throws IllegalArgumentException, NullPointerException {
         String key = customBlockData.getKey();
-        PlacingType placingType = customBlockData.getBlockSettings().placing().type();
-
-        for (var recipeEntry : customBlockData.getRecipes()) {
-            if (recipeEntry.isShowInCraftsMenu()) {
-                MSBlock.getCache().recipesToRegister.add(customBlockData);
-            }
-        }
+        PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
 
         if (placingType instanceof PlacingType.Default normal) {
             register(
@@ -431,7 +425,7 @@ public final class CustomBlockRegistry {
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(!containsHashCode(hashCode), "The hash code " + hashCode + " is already registered! See " + key + " custom block data!");
 
-        if (customBlockData.getBlockSettings().placing().type() instanceof PlacingType.Default) {
+        if (customBlockData.getBlockSettings().getPlacing().type() instanceof PlacingType.Default) {
             Preconditions.checkArgument(!containsKey(key), "The key " + key + " is already registered! See " + key + " custom block data!");
         }
 

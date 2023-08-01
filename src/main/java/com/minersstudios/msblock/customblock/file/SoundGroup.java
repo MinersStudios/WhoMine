@@ -5,8 +5,6 @@ import com.minersstudios.msblock.MSBlock;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
-import org.bukkit.configuration.ConfigurationSection;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +21,7 @@ public class SoundGroup implements Cloneable {
             SoundGroup.Sound.create(
                     "block.wood.place",
                     SoundCategory.BLOCKS,
-                    0.5f,
+                    1.0f,
                     1.0f
             ),
             SoundGroup.Sound.create(
@@ -40,6 +38,33 @@ public class SoundGroup implements Cloneable {
             ),
             SoundGroup.Sound.create(
                     "block.wood.step",
+                    SoundCategory.PLAYERS,
+                    0.3f,
+                    0.9f
+            )
+    );
+
+    private static final SoundGroup STONE = new SoundGroup(
+            SoundGroup.Sound.create(
+                    "block.stone.place",
+                    SoundCategory.BLOCKS,
+                    0.5f,
+                    1.0f
+            ),
+            SoundGroup.Sound.create(
+                    "block.stone.break",
+                    SoundCategory.BLOCKS,
+                    1.0f,
+                    1.0f
+            ),
+            SoundGroup.Sound.create(
+                    "block.stone.hit",
+                    SoundCategory.BLOCKS,
+                    0.5f,
+                    0.5f
+            ),
+            SoundGroup.Sound.create(
+                    "block.stone.step",
                     SoundCategory.PLAYERS,
                     0.3f,
                     0.9f
@@ -74,41 +99,10 @@ public class SoundGroup implements Cloneable {
     }
 
     /**
-     * Constructs a SoundGroup from the specified configuration section
-     *
-     * @param section The configuration section to get the SoundGroup from
-     * @return The SoundGroup from the specified configuration section
-     * @throws IllegalArgumentException If the {@link SoundCategory} has no
-     *                                  constant with the specified name
+     * @return The sound group for stone blocks
      */
-    @Contract("_ -> new")
-    public static @NotNull SoundGroup fromConfigSection(@NotNull ConfigurationSection section) throws IllegalArgumentException {
-        return new SoundGroup(
-                Sound.create(
-                        section.getString("place.sound-name"),
-                        SoundCategory.valueOf(section.getString("place.sound-category")),
-                        (float) section.getDouble("place.volume"),
-                        (float) section.getDouble("place.pitch")
-                ),
-                Sound.create(
-                        section.getString("break.sound-name"),
-                        SoundCategory.valueOf(section.getString("break.sound-category")),
-                        (float) section.getDouble("break.volume"),
-                        (float) section.getDouble("break.pitch")
-                ),
-                Sound.create(
-                        section.getString("hit.sound-name"),
-                        SoundCategory.valueOf(section.getString("hit.sound-category")),
-                        (float) section.getDouble("hit.volume"),
-                        (float) section.getDouble("hit.pitch")
-                ),
-                Sound.create(
-                        section.getString("step.sound-name"),
-                        SoundCategory.valueOf(section.getString("step.sound-category")),
-                        (float) section.getDouble("step.volume"),
-                        (float) section.getDouble("step.pitch")
-                )
-        );
+    public static @NotNull SoundGroup stone() {
+        return STONE;
     }
 
     /**

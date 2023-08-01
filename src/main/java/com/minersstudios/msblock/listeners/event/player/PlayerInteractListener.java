@@ -6,8 +6,8 @@ import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
-import com.minersstudios.msblock.customblock.file.PlacingType;
 import com.minersstudios.msblock.customblock.file.BlockSettings;
+import com.minersstudios.msblock.customblock.file.PlacingType;
 import com.minersstudios.msblock.events.CustomBlockRightClickEvent;
 import com.minersstudios.msblock.util.UseBucketsAndSpawnableItems;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
@@ -42,7 +42,6 @@ import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Set;
 
 @MSListener
@@ -250,7 +249,7 @@ public class PlayerInteractListener extends AbstractMSListener {
 
             CustomBlockData customBlockData = CustomBlockRegistry.fromItemStack(itemInHand).orElseThrow();
             BlockSettings blockSettings = customBlockData.getBlockSettings();
-            BlockSettings.Placing placing = blockSettings.placing();
+            BlockSettings.Placing placing = blockSettings.getPlacing();
             PlacingType placingType = placing.type();
             CustomBlock customBlock = new CustomBlock(replaceableBlock, customBlockData);
 
@@ -332,11 +331,9 @@ public class PlayerInteractListener extends AbstractMSListener {
 
         if (!BlockUtils.REPLACE.contains(blockAtFace.getType())) return;
 
-        var placeableMaterials = clickedCustomBlockData.getBlockSettings().placing().placeableMaterials();
-        if (
-                placeableMaterials != null
-                && Arrays.stream(placeableMaterials).anyMatch(material -> material == itemInHand.getType())
-        ) {
+        var placeableMaterials = clickedCustomBlockData.getBlockSettings().getPlacing().placeableMaterials();
+
+        if (placeableMaterials.contains(itemInHand.getType())) {
             blockAtFace.setType(itemInHand.getType(), false);
             itemInHand.setAmount(itemInHand.getAmount() - 1);
         }

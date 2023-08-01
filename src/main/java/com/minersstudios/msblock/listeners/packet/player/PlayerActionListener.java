@@ -73,7 +73,7 @@ public class PlayerActionListener extends AbstractMSPacketListener {
                     }
 
                     CustomBlockData customBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault());
-                    float digSpeed = customBlockData.calculateDigSpeed(player);
+                    float digSpeed = customBlockData.getBlockSettings().calculateDigSpeed(player);
 
                     DiggingMap.Entry entry = DiggingMap.Entry.create(player);
 

@@ -7,6 +7,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
 
+/**
+ * Gson adapter for serializing and deserializing NoteBlockData objects.
+ * This adapter handles NoteBlockData serialization by converting it into
+ * a JsonObject, and deserialization by reading the JsonObject and
+ * constructing the corresponding NoteBlockData.
+ * <p>
+ * Serialized output you can see in the "MSBlock/blocks/example.json" file.
+ */
 public class NoteBlockDataAdapter implements JsonSerializer<NoteBlockData>, JsonDeserializer<NoteBlockData> {
     private static final String INSTRUMENT_KEY = "instrument";
     private static final String NOTE_KEY = "note";
@@ -17,19 +25,12 @@ public class NoteBlockDataAdapter implements JsonSerializer<NoteBlockData>, Json
             @NotNull JsonElement json,
             @NotNull Type typeOfT,
             @NotNull JsonDeserializationContext context
-    ) throws JsonParseException {
+    ) throws JsonParseException, IllegalArgumentException {
         JsonObject jsonObject = json.getAsJsonObject();
 
-        String instrumentName = jsonObject.get(INSTRUMENT_KEY).getAsString();
-        Instrument instrument;
+        Instrument instrument = Instrument.valueOf(jsonObject.get(INSTRUMENT_KEY).getAsString());
         byte noteId = jsonObject.get(NOTE_KEY).getAsByte();
         boolean powered = jsonObject.get(POWERED_KEY).getAsBoolean();
-
-        try {
-            instrument = Instrument.valueOf(instrumentName);
-        } catch (IllegalArgumentException e) {
-            throw new JsonParseException("Unknown Instrument: " + instrumentName);
-        }
 
         return NoteBlockData.fromParams(instrument, noteId, powered);
     }
@@ -42,7 +43,7 @@ public class NoteBlockDataAdapter implements JsonSerializer<NoteBlockData>, Json
     ) {
         JsonObject jsonObject = new JsonObject();
 
-        jsonObject.addProperty(INSTRUMENT_KEY, src.instrument().toString());
+        jsonObject.addProperty(INSTRUMENT_KEY, src.instrument().name());
         jsonObject.addProperty(NOTE_KEY, src.noteId());
         jsonObject.addProperty(POWERED_KEY, src.powered());
 

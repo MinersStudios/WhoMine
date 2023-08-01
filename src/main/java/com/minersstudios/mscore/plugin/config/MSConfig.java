@@ -15,6 +15,7 @@ import java.util.logging.Level;
  * Abstract configuration class, which provides a simple way to load
  * and save yaml configurations. Override {@link #reloadVariables()}
  * to reload variables of the extending class.
+ * <p>
  * Use {@link #reload()} to reload configuration and {@link #save()}
  * to save configuration.
  * Use {@link #reloadVariables()} to reload variables.

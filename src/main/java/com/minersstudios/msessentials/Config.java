@@ -27,8 +27,10 @@ import java.util.logging.Level;
 
 /**
  * Configuration loader class.
+ * <p>
  * Use {@link MSEssentials#getConfiguration()} to get configuration instance.
- * Use {@link #reload()} to reload configuration and {@link #save()} to save configuration.
+ * Use {@link #reload()} to reload configuration and {@link #save()} to save
+ * configuration.
  */
 public final class Config extends MSConfig {
     private final MSEssentials plugin;

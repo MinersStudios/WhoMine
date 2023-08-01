@@ -85,7 +85,7 @@ public final class MSCustomUtils {
         return namespace == null || key == null
                 ? Optional.empty()
                 : switch (namespace) {
-                    case "msblock" -> MSBlockUtils.getCustomBlockItem(key);
+                    case CustomBlockRegistry.NAMESPACE -> MSBlockUtils.getCustomBlockItem(key);
                     case "msdecor" -> MSDecorUtils.getCustomDecorItem(key);
                     case "msitems" -> MSItemUtils.getCustomItemItemStack(key);
                     default -> Optional.empty();
@@ -186,7 +186,7 @@ public final class MSCustomUtils {
         return namespace == null || key == null
                 ? Optional.empty()
                 : switch (namespace) {
-                    case "msblock" -> CustomBlockRegistry.fromKey(key);
+                    case CustomBlockRegistry.NAMESPACE -> CustomBlockRegistry.fromKey(key);
                     case "msdecor" -> MSDecorUtils.getCustomDecorData(key);
                     case "msitems" -> MSItemUtils.getCustomItem(key);
                     default -> Optional.empty();

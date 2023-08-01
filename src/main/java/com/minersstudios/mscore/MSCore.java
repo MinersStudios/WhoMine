@@ -6,7 +6,7 @@ import com.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Main class of the plugin
+ * Main class of the MSCore plugin
  *
  * @see MSPlugin
  */

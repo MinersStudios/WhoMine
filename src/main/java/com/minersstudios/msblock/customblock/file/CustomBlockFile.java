@@ -1,12 +1,14 @@
 package com.minersstudios.msblock.customblock.file;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
+import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.file.adapter.*;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.config.ConfigurationException;
+import org.bukkit.NamespacedKey;
+import org.bukkit.SoundCategory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
@@ -42,11 +44,14 @@ public class CustomBlockFile {
 
     private static final Gson GSON =
             new GsonBuilder()
+                    .registerTypeAdapter(NamespacedKey.class, new NamespacedKeyAdapter())
+                    .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
                     .registerTypeAdapter(Recipe.class, new RecipeAdapter())
                     .registerTypeAdapter(RecipeChoice.class, new RecipeChoiceAdapter())
-                    .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
-                    .registerTypeAdapter(NoteBlockData.class, new NoteBlockDataAdapter())
+                    .registerTypeAdapter(SoundCategory.class, new EnumDeserializer<>(SoundCategory.class))
+                    .registerTypeAdapter(ToolType.class, new EnumDeserializer<>(ToolType.class))
                     .registerTypeAdapter(PlacingType.class, new PlacingTypeAdapter())
+                    .registerTypeAdapter(NoteBlockData.class, new NoteBlockDataAdapter())
                     .setPrettyPrinting()
                     .create();
 
@@ -133,34 +138,9 @@ public class CustomBlockFile {
         }
 
         try {
-            String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
-            this.data = GSON.fromJson(json, CustomBlockData.class);
+            this.data = deserialize(Files.readString(this.file.toPath(), StandardCharsets.UTF_8));
         } catch (Exception e) {
-            throw new ConfigurationException("Failed to load file: " + path, e);
-        }
-    }
-
-    /**
-     * Creates a new file and saves the {@link CustomBlockData} to the file
-     *
-     * @see #save()
-     */
-    public void create() {
-        File directory = this.file.getParentFile();
-
-        try {
-            if (
-                    !directory.exists()
-                    && !directory.mkdirs()
-            ) {
-                MSLogger.warning("Failed to create a new directory: " + directory.getAbsolutePath());
-            }
-
-            if (this.file.createNewFile()) {
-                this.save();
-            }
-        } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "Failed to create a new file: " + this.file.getAbsolutePath(), e);
+            throw new ConfigurationException("Failed to load custom block data from file: " + path, e);
         }
     }
 
@@ -168,10 +148,43 @@ public class CustomBlockFile {
      * Saves the {@link CustomBlockData} to the file
      */
     public void save() {
+        File directory = this.file.getParentFile();
+
+        if (
+                !directory.exists()
+                && !directory.mkdirs()
+        ) {
+            MSLogger.warning("Failed to create a new directory: " + directory.getAbsolutePath());
+        }
+
         try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.data, writer);
         } catch (IOException e) {
             MSLogger.log(Level.SEVERE, "Failed to save a file: " + this.file.getAbsolutePath(), e);
         }
+    }
+
+    /**
+     * @return The {@link Gson} instance used to serialize and deserialize
+     *         this custom block file
+     */
+    public static @NotNull Gson getGson() {
+        return GSON;
+    }
+
+    private static @NotNull CustomBlockData deserialize(@NotNull String json) {
+        JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+        JsonElement recipeEntries = jsonObject.get("recipeEntries");
+
+        if (recipeEntries != null) {
+            jsonObject.remove("recipeEntries");
+
+            CustomBlockData data = GSON.fromJson(jsonObject, CustomBlockData.class);
+
+            MSBlock.getCache().recipesToRegister.put(data, recipeEntries);
+            return data;
+        }
+
+        return GSON.fromJson(jsonObject, CustomBlockData.class);
     }
 }

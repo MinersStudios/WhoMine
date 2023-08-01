@@ -3,11 +3,12 @@ package com.minersstudios.msblock.commands;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import net.kyori.adventure.text.TranslatableComponent;
+import org.bukkit.Keyed;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -27,13 +28,14 @@ public class ReloadCommand {
             Recipe recipe = crafts.next();
 
             if (
-                    recipe instanceof ShapedRecipe shapedRecipe
-                    && "msblock".equals(shapedRecipe.getKey().getNamespace())
+                    recipe instanceof Keyed keyed
+                    && CustomBlockRegistry.NAMESPACE.equals(keyed.getKey().getNamespace())
             ) {
-                server.removeRecipe(shapedRecipe.getKey());
+                server.removeRecipe(keyed.getKey());
             }
         }
 
+        MSPlugin.getGlobalCache().customBlockRecipes.clear();
         CustomBlockRegistry.unregisterAll();
         MSBlock.getConfiguration().reload();
         MSLogger.fine(sender, RELOAD_SUCCESS.args(text(System.currentTimeMillis() - time)));

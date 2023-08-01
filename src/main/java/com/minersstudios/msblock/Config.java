@@ -14,6 +14,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 
+/**
+ * Configuration loader class.
+ * <p>
+ * Use {@link MSBlock#getConfiguration()} to get configuration instance.
+ * Use {@link #reload()} to reload configuration and {@link #save()} to
+ * save configuration.
+ */
 public final class Config extends MSConfig {
     private final MSBlock plugin;
 

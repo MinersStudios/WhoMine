@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Range;
 
 /**
  * Represents the data of a note block.
+ * <p>
  * Use {@link #craftNoteBlock(BlockData)} to create
  * a {@link NoteBlock} from the note block data.
  */
@@ -202,7 +203,7 @@ public class NoteBlockData implements Cloneable {
         try {
             return (NoteBlockData) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
+            throw new UnsupportedOperationException(e);
         }
     }
 

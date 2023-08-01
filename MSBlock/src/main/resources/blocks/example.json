@@ -1,336 +1,286 @@
 {
-    "key": "example",
-    "blockSettings": {
-        "hardness": 10.0,
-        "tool": {
-            "type": "AXE",
-            "force": false
-        },
-        "placing": {
-            "type": {
-                "type": "default/orientable/directional",
-                "noteBlockData": {
-                    "NEXT FOR DEFAULT": "USE IT IF YOU DON'T WANT TO USE ORIENTABLE OR DIRECTIONAL",
+  "key": "example",
+  "blockSettings": {
+    "hardness": 10.0,
+    "tool": {
+      "type": "HAND/SWORD/PICKAXE/AXE/SHOVEL/HOE/SHEARS",
+      "force": false
+    },
+    "placing": {
+      "type": {
+        "type": "DEFAULT/ORIENTABLE/DIRECTIONAL",
+        "noteBlockData": {
+          "NEXT FOR DEFAULT": "USE IT IF YOU DON'T WANT TO USE ORIENTABLE OR DIRECTIONAL",
 
-                    "instrument": "BELL",
-                    "note": 0,
-                    "powered": false,
+          "instrument": "BELL",
+          "note": 0,
+          "powered": false,
 
-                    "NEXT FOR ORIENTABLE": "USE IT IF YOU DON'T WANT TO USE DEFAULT OR DIRECTIONAL",
+          "NEXT FOR ORIENTABLE": "USE IT IF YOU DON'T WANT TO USE DEFAULT OR DIRECTIONAL",
 
-                    "X": {
-                        "instrument": "BELL",
-                        "note": 0,
-                        "powered": false
-                    },
-                    "Y": {
-                        "instrument": "BELL",
-                        "note": 1,
-                        "powered": true
-                    },
-                    "Z": {
-                        "instrument": "BELL",
-                        "note": 2,
-                        "powered": false
-                    },
+          "X": {
+            "instrument": "BELL",
+            "note": 0,
+            "powered": false
+          },
+          "Y": {
+            "instrument": "BELL",
+            "note": 1,
+            "powered": true
+          },
+          "Z": {
+            "instrument": "BELL",
+            "note": 2,
+            "powered": false
+          },
 
-                    "NEXT FOR DIRECTIONAL": "USE IT IF YOU DON'T WANT TO USE DEFAULT OR ORIENTABLE",
+          "NEXT FOR DIRECTIONAL": "USE IT IF YOU DON'T WANT TO USE DEFAULT OR ORIENTABLE",
 
-                    "UP": {
-                        "instrument": "BELL",
-                        "note": 0,
-                        "powered": false
-                    },
-                    "DOWN": {
-                        "instrument": "BELL",
-                        "note": 1,
-                        "powered": true
-                    },
-                    "NORTH": {
-                        "instrument": "BELL",
-                        "note": 2,
-                        "powered": false
-                    },
-                    "EAST": {
-                        "instrument": "BELL",
-                        "note": 3,
-                        "powered": true
-                    },
-                    "SOUTH": {
-                        "instrument": "BELL",
-                        "note": 4,
-                        "powered": false
-                    },
-                    "WEST": {
-                        "instrument": "BELL",
-                        "note": 5,
-                        "powered": true
-                    }
+          "UP": {
+            "instrument": "BELL",
+            "note": 0,
+            "powered": false
+          },
+          "DOWN": {
+            "instrument": "BELL",
+            "note": 1,
+            "powered": true
+          },
+          "NORTH": {
+            "instrument": "BELL",
+            "note": 2,
+            "powered": false
+          },
+          "EAST": {
+            "instrument": "BELL",
+            "note": 3,
+            "powered": true
+          },
+          "SOUTH": {
+            "instrument": "BELL",
+            "note": 4,
+            "powered": false
+          },
+          "WEST": {
+            "instrument": "BELL",
+            "note": 5,
+            "powered": true
+          }
+        }
+      },
+      "placeableMaterials": [
+        "GRASS",
+        "FERN"
+      ]
+    }
+  },
+  "dropSettings": {
+    "item": {
+      "type": "PAPER",
+      "amount": 1,
+      "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
+    },
+    "experience": 0
+  },
+  "soundGroup": {
+    "placeSound": {
+      "key": "block.example.place",
+      "category": "BLOCKS",
+      "volume": 1.0,
+      "pitch": 1.0
+    },
+    "breakSound": {
+      "key": "block.example.break",
+      "category": "BLOCKS",
+      "volume": 1.0,
+      "pitch": 1.0
+    },
+    "hitSound": {
+      "key": "block.example.hit",
+      "category": "BLOCKS",
+      "volume": 1.0,
+      "pitch": 1.0
+    },
+    "stepSound": {
+      "key": "block.example.step",
+      "category": "PLAYERS",
+      "volume": 1.0,
+      "pitch": 1.0
+    }
+  },
+  "recipeEntries": [
+    {
+      "recipe": {
+        "type": "SHAPED",
+        "recipe": {
+          "key": "example_shaped",
+          "rows": [
+            " E ",
+            " M ",
+            "CMC"
+          ],
+          "ingredients": {
+            "E": {
+              "type": "EXACT_CHOICE",
+              "choices": [
+                {
+                  "type": "PAPER",
+                  "amount": 1,
+                  "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
                 }
+              ]
             },
-            "placeableMaterials": [
-                "GRASS",
-                "FERN"
+            "M": {
+              "type": "MATERIAL_CHOICE",
+              "choices": [
+                "PAPER"
+              ]
+            },
+            "C": {
+              "type": "CUSTOM_CHOICE",
+              "choices": [
+                "msitems:example"
+              ]
+            }
+          },
+          "group": "example_group",
+          "category": "BUILDING/REDSTONE/EQUIPMENT/MISC"
+        }
+      },
+      "showInCraftsMenu": true
+    },
+    {
+      "recipe": {
+        "type": "SHAPELESS",
+        "recipe": {
+          "key": "example_shapeless",
+          "ingredients": [
+            {
+              "type": "MATERIAL_CHOICE",
+              "choices": [
+                "PAPER"
+              ]
+            },
+            {
+              "type": "MATERIAL_CHOICE",
+              "choices": [
+                "PAPER"
+              ]
+            },
+            {
+              "type": "CUSTOM_CHOICE",
+              "choices": [
+                "msitems:example"
+              ]
+            },
+            {
+              "type": "EXACT_CHOICE",
+              "choices": [
+                {
+                  "type": "PAPER",
+                  "amount": 1,
+                  "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
+                }
+              ]
+            }
+          ],
+          "group": "example_group",
+          "category": "BUILDING/REDSTONE/EQUIPMENT/MISC"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "FURNACE",
+        "recipe": {
+          "key": "example_furnace",
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "PAPER"
             ]
+          },
+          "experience": 0.5,
+          "cookingTime": 200,
+          "group": "example_group",
+          "category": "FOOD/BLOCKS/MISC"
         }
+      },
+      "showInCraftsMenu": false
     },
-    "dropSettings": {
-        "item": {
-            "type": "PAPER",
-            "amount": 1,
-            "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
-        },
-        "experience": 0
-    },
-    "soundGroup": {
-        "placeSound": {
-            "key": "block.example.place",
-            "category": "BLOCKS",
-            "volume": 1.0,
-            "pitch": 1.0
-        },
-        "breakSound": {
-            "key": "block.example.break",
-            "category": "BLOCKS",
-            "volume": 1.0,
-            "pitch": 1.0
-        },
-        "hitSound": {
-            "key": "block.example.hit",
-            "category": "BLOCKS",
-            "volume": 1.0,
-            "pitch": 1.0
-        },
-        "stepSound": {
-            "key": "block.example.step",
-            "category": "PLAYERS",
-            "volume": 1.0,
-            "pitch": 1.0
+    {
+      "recipe": {
+        "type": "BLAST_FURNACE",
+        "recipe": {
+          "key": "example_blast_furnace",
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "PAPER"
+            ]
+          },
+          "experience": 0.5,
+          "cookingTime": 100,
+          "group": "example_group",
+          "category": "FOOD/BLOCKS/MISC"
         }
+      },
+      "showInCraftsMenu": false
     },
-    "recipeEntries": [
-        {
-            "recipe": {
-                "type": "shaped",
-                "recipe": {
-                    "key": {
-                        "namespace": "msblock",
-                        "key": "example_shaped"
-                    },
-                    "output": {
-                        "type": "PAPER",
-                        "amount": 1,
-                        "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
-                    },
-                    "rows": [
-                        " P ",
-                        " O ",
-                        "OOO"
-                    ],
-                    "ingredients": {
-                        "P": {
-                            "type": "EXACT_CHOICE",
-                            "choices": [
-                                {
-                                    "type": "PAPER",
-                                    "amount": 1,
-                                    "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
-                                }
-                            ]
-                        },
-                        "O": {
-                            "type": "MATERIAL_CHOICE",
-                            "choices": [
-                                "PAPER"
-                            ]
-                        }
-                    },
-                    "group": "example_group",
-                    "category": "BUILDING/REDSTONE/EQUIPMENT/MISC"
-                }
-            },
-            "showInCraftsMenu": true
-        },
-        {
-            "recipe": {
-                "type": "shapeless",
-                "recipe": {
-                    "key": {
-                        "namespace": "msblock",
-                        "key": "example_shapeless"
-                    },
-                    "output": {
-                        "type": "PAPER",
-                        "amount": 1,
-                        "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
-                    },
-                    "ingredients": [
-                        {
-                            "type": "MATERIAL_CHOICE",
-                            "choices": [
-                                "PAPER"
-                            ]
-                        },
-                        {
-                            "type": "MATERIAL_CHOICE",
-                            "choices": [
-                                "PAPER"
-                            ]
-                        },
-                        {
-                            "type": "MATERIAL_CHOICE",
-                            "choices": [
-                                "PAPER"
-                            ]
-                        },
-                        {
-                            "type": "EXACT_CHOICE",
-                            "choices": [
-                                {
-                                    "type": "PAPER",
-                                    "amount": 1,
-                                    "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
-                                }
-                            ]
-                        }
-                    ],
-                    "group": "example_group",
-                    "category": "BUILDING/REDSTONE/EQUIPMENT/MISC"
-                }
-            },
-            "showInCraftsMenu": false
-        },
-        {
-            "recipe": {
-                "type": "furnace",
-                "recipe": {
-                    "key": {
-                        "namespace": "msblock",
-                        "key": "example_furnace"
-                    },
-                    "output": {
-                        "type": "PAPER",
-                        "amount": 1,
-                        "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
-                    },
-                    "ingredient": {
-                        "type": "MATERIAL_CHOICE",
-                        "choices": [
-                            "PAPER"
-                        ]
-                    },
-                    "experience": 0.5,
-                    "cookingTime": 200,
-                    "group": "example_group",
-                    "category": "FOOD/BLOCKS/MISC"
-                }
-            },
-            "showInCraftsMenu": false
-        },
-        {
-            "recipe": {
-                "type": "blast_furnace",
-                "recipe": {
-                    "key": {
-                        "namespace": "msblock",
-                        "key": "example_blast_furnace"
-                    },
-                    "output": {
-                        "type": "PAPER",
-                        "amount": 1,
-                        "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
-                    },
-                    "ingredient": {
-                        "type": "MATERIAL_CHOICE",
-                        "choices": [
-                            "PAPER"
-                        ]
-                    },
-                    "experience": 0.5,
-                    "cookingTime": 100,
-                    "group": "example_group",
-                    "category": "FOOD/BLOCKS/MISC"
-                }
-            },
-            "showInCraftsMenu": false
-        },
-        {
-            "recipe": {
-                "type": "smoker",
-                "recipe": {
-                    "key": {
-                        "namespace": "msblock",
-                        "key": "example_smoker"
-                    },
-                    "output": {
-                        "type": "PAPER",
-                        "amount": 1,
-                        "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
-                    },
-                    "ingredient": {
-                        "type": "MATERIAL_CHOICE",
-                        "choices": [
-                            "PAPER"
-                        ]
-                    },
-                    "experience": 0.5,
-                    "cookingTime": 100,
-                    "group": "example_group",
-                    "category": "FOOD/BLOCKS/MISC"
-                }
-            },
-            "showInCraftsMenu": false
-        },
-        {
-            "recipe": {
-                "type": "campfire",
-                "recipe": {
-                    "key": {
-                        "namespace": "msblock",
-                        "key": "example_campfire"
-                    },
-                    "output": {
-                        "type": "PAPER",
-                        "amount": 1,
-                        "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
-                    },
-                    "ingredient": {
-                        "type": "MATERIAL_CHOICE",
-                        "choices": [
-                            "PAPER"
-                        ]
-                    },
-                    "experience": 0.5,
-                    "cookingTime": 100,
-                    "group": "example_group",
-                    "category": "FOOD/BLOCKS/MISC"
-                }
-            },
-            "showInCraftsMenu": false
-        },
-        {
-            "recipe": {
-                "type": "stonecutter",
-                "recipe": {
-                    "key": {
-                        "namespace": "msblock",
-                        "key": "example_stonecutter"
-                    },
-                    "output": {
-                        "type": "PAPER",
-                        "amount": 1,
-                        "nbt": "{CustomModelData:1,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Custom Block\"}],\"text\":\"\"}\u0027}}"
-                    },
-                    "ingredient": {
-                        "type": "MATERIAL_CHOICE",
-                        "choices": [
-                            "PAPER"
-                        ]
-                    },
-                    "group": "example_group"
-                }
-            },
-            "showInCraftsMenu": false
+    {
+      "recipe": {
+        "type": "SMOKER",
+        "recipe": {
+          "key": "example_smoker",
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "PAPER"
+            ]
+          },
+          "experience": 0.5,
+          "cookingTime": 100,
+          "group": "example_group",
+          "category": "FOOD/BLOCKS/MISC"
         }
-    ]
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "CAMPFIRE",
+        "recipe": {
+          "key": "example_campfire",
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "PAPER"
+            ]
+          },
+          "experience": 0.5,
+          "cookingTime": 100,
+          "group": "example_group",
+          "category": "FOOD/BLOCKS/MISC"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "example_stonecutter",
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "PAPER"
+            ]
+          },
+          "group": "example_group"
+        }
+      },
+      "showInCraftsMenu": false
+    }
+  ]
 }

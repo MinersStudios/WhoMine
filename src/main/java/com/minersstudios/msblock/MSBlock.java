@@ -12,11 +12,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
+/**
+ * The main class of the MSBlock plugin
+ *
+ * @see MSPlugin
+ */
 public final class MSBlock extends MSPlugin {
     private static MSBlock instance;
-    private CoreProtectAPI coreProtectAPI;
     private Cache cache;
     private Config config;
+    private CoreProtectAPI coreProtectAPI;
 
     @Override
     public void load() {

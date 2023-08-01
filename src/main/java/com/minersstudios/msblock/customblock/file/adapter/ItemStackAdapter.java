@@ -11,6 +11,14 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Type;
 import java.util.Locale;
 
+/**
+ * Gson adapter for serializing and deserializing ItemStack objects.
+ * This adapter handles ItemStack serialization by converting it into
+ * a JsonObject, and deserialization by reading the JsonObject and
+ * constructing the corresponding ItemStack.
+ * <p>
+ * Serialized output you can see in the "MSBlock/blocks/example.json" file.
+ */
 public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
     private static final String TYPE_KEY = "type";
     private static final String AMOUNT_KEY = "amount";
@@ -21,17 +29,11 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
             @NotNull JsonElement json,
             @NotNull Type typeOfT,
             @NotNull JsonDeserializationContext context
-    ) throws JsonParseException {
+    ) throws JsonParseException, IllegalArgumentException {
         JsonObject jsonObject = json.getAsJsonObject();
 
         String typeName = jsonObject.get(TYPE_KEY).getAsString().toUpperCase(Locale.ENGLISH);
-        Material type;
-
-        try {
-            type = Material.valueOf(typeName);
-        } catch (IllegalArgumentException e) {
-            throw new JsonParseException("Unknown Material: " + typeName);
-        }
+        Material type = Material.valueOf(typeName);
 
         int amount = jsonObject.get(AMOUNT_KEY).getAsInt();
         ItemStack itemStack = new ItemStack(type, amount);
@@ -46,7 +48,7 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
                 throw new JsonParseException("Invalid NBT: " + nbt);
             }
 
-            return nmsItemStack.getBukkitStack();
+            return nmsItemStack.asBukkitCopy();
         }
 
         return itemStack;
@@ -61,7 +63,7 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
         JsonObject jsonObject = new JsonObject();
         String nbt = src.getItemMeta().getAsString();
 
-        jsonObject.addProperty(TYPE_KEY, src.getType().toString());
+        jsonObject.addProperty(TYPE_KEY, src.getType().name());
         jsonObject.addProperty(AMOUNT_KEY, src.getAmount());
 
         if (!nbt.equals("{}")) {

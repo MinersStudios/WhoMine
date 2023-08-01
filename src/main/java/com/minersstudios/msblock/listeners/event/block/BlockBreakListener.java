@@ -77,7 +77,7 @@ public class BlockBreakListener extends AbstractMSListener {
             }
 
             if (
-                    customBlockMaterial.getBlockSettings().tool().type() == ToolType.AXE
+                    customBlockMaterial.getBlockSettings().getTool().type() == ToolType.AXE
                     && gameMode != GameMode.CREATIVE
             ) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));

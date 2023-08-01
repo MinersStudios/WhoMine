@@ -1,5 +1,6 @@
 package com.minersstudios.msblock.customblock;
 
+import com.google.common.base.Preconditions;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.file.BlockSettings;
 import com.minersstudios.msblock.customblock.file.PlacingType;
@@ -117,20 +118,16 @@ public class CustomBlock {
             String key = this.customBlockData.getKey();
             BlockData blockData = this.block.getBlockData();
             NoteBlock noteBlock;
-            PlacingType placingType = this.customBlockData.getBlockSettings().placing().type();
+            PlacingType placingType = this.customBlockData.getBlockSettings().getPlacing().type();
 
             if (placingType instanceof PlacingType.Default normal) {
                 noteBlock = normal.getNoteBlockData().craftNoteBlock(blockData);
             } else if (placingType instanceof PlacingType.Directional directional) {
-                if (blockFace == null) {
-                    throw new IllegalArgumentException("Block face is null, but placing type is directional! " + key);
-                }
+                Preconditions.checkArgument(blockFace != null, "Block face is null, but placing type is directional! " + key);
 
                 noteBlock = directional.getNoteBlockData(blockFace).craftNoteBlock(blockData);
             } else if (placingType instanceof PlacingType.Orientable orientable) {
-                if (axis == null) {
-                    throw new IllegalArgumentException("Axis is null, but placing type is orientable! " + key);
-                }
+                Preconditions.checkArgument(axis != null, "Axis is null, but placing type is orientable! " + key);
 
                 noteBlock = orientable.getNoteBlockData(axis).craftNoteBlock(blockData);
             } else {
@@ -186,8 +183,8 @@ public class CustomBlock {
         MSBlock.getCoreProtectAPI().logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
         this.block.setType(Material.AIR);
 
-        BlockSettings.Tool tool = this.customBlockData.getBlockSettings().tool();
-        int experience = this.customBlockData.getDropSettings().experience();
+        BlockSettings.Tool tool = this.customBlockData.getBlockSettings().getTool();
+        int experience = this.customBlockData.getDropSettings().getExperience();
 
         if (!tool.force() || tool.type() == ToolType.fromMaterial(mainHandMaterial)) {
             world.dropItemNaturally(blockLocation, this.customBlockData.craftItemStack());
