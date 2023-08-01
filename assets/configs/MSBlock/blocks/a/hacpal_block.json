@@ -1,0 +1,86 @@
+{
+  "key": "hacpal_block",
+  "blockSettings": {
+    "hardness": 10.0,
+    "tool": {
+      "type": "SHEARS",
+      "force": false
+    },
+    "placing": {
+      "type": {
+        "type": "DEFAULT",
+        "noteBlockData": {
+          "instrument": "BIT",
+          "note": 3,
+          "powered": false
+        }
+      }
+    }
+  },
+  "dropSettings": {
+    "item": {
+      "type": "PAPER",
+      "amount": 1,
+      "nbt": "{CustomModelData:13027,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Насрал-блок\"}],\"text\":\"\"}\u0027}}"
+    },
+    "experience": 0
+  },
+  "soundGroup": {
+    "placeSound": {
+      "key": "entity.puffer_fish.hurt",
+      "category": "BLOCKS",
+      "volume": 1.0,
+      "pitch": 0.9
+    },
+    "breakSound": {
+      "key": "entity.puffer_fish.death",
+      "category": "BLOCKS",
+      "volume": 1.0,
+      "pitch": 0.9
+    },
+    "hitSound": {
+      "key": "entity.llama.spit",
+      "category": "BLOCKS",
+      "volume": 0.5,
+      "pitch": 0.9
+    },
+    "stepSound": {
+      "key": "entity.llama.spit",
+      "category": "PLAYERS",
+      "volume": 0.3,
+      "pitch": 0.9
+    }
+  },
+  "recipeEntries": [
+    {
+      "recipe": {
+        "type": "SHAPED",
+        "recipe": {
+          "key": "hacpal_block",
+          "rows": [
+            "WWW",
+            "WKW",
+            "WWW"
+          ],
+          "ingredients": {
+            "K": {
+              "type": "MATERIAL_CHOICE",
+              "choices": [
+                "KELP"
+              ]
+            },
+            "W": {
+              "type": "MATERIAL_CHOICE",
+              "choices": [
+                "WHITE_WOOL"
+              ]
+            }
+          },
+          "group": "",
+          "category": "BUILDING"
+        }
+      },
+      "showInCraftsMenu": true
+    }
+  ]
+}

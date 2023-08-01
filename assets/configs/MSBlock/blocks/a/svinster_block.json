@@ -1,0 +1,86 @@
+{
+  "key": "svinster_block",
+  "blockSettings": {
+    "hardness": 10.0,
+    "tool": {
+      "type": "SWORD",
+      "force": false
+    },
+    "placing": {
+      "type": {
+        "type": "DEFAULT",
+        "noteBlockData": {
+          "instrument": "BIT",
+          "note": 4,
+          "powered": false
+        }
+      }
+    }
+  },
+  "dropSettings": {
+    "item": {
+      "type": "PAPER",
+      "amount": 1,
+      "nbt": "{CustomModelData:13028,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Свинстер-блок\"}],\"text\":\"\"}\u0027}}"
+    },
+    "experience": 0
+  },
+  "soundGroup": {
+    "placeSound": {
+      "key": "entity.pig.ambient",
+      "category": "BLOCKS",
+      "volume": 0.6,
+      "pitch": 0.9
+    },
+    "breakSound": {
+      "key": "entity.pig.death",
+      "category": "BLOCKS",
+      "volume": 0.6,
+      "pitch": 0.9
+    },
+    "hitSound": {
+      "key": "entity.pig.ambient",
+      "category": "BLOCKS",
+      "volume": 0.5,
+      "pitch": 0.9
+    },
+    "stepSound": {
+      "key": "entity.pig.hurt",
+      "category": "PLAYERS",
+      "volume": 0.3,
+      "pitch": 0.9
+    }
+  },
+  "recipeEntries": [
+    {
+      "recipe": {
+        "type": "SHAPED",
+        "recipe": {
+          "key": "svinster_block",
+          "rows": [
+            "PPP",
+            "PDP",
+            "PPP"
+          ],
+          "ingredients": {
+            "P": {
+              "type": "MATERIAL_CHOICE",
+              "choices": [
+                "PORKCHOP"
+              ]
+            },
+            "D": {
+              "type": "MATERIAL_CHOICE",
+              "choices": [
+                "BROWN_DYE"
+              ]
+            }
+          },
+          "group": "",
+          "category": "BUILDING"
+        }
+      },
+      "showInCraftsMenu": true
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "key": "framed_crimson_planks",
+  "blockSettings": {
+    "hardness": 11.0,
+    "tool": {
+      "type": "AXE",
+      "force": false
+    },
+    "placing": {
+      "type": {
+        "type": "DEFAULT",
+        "noteBlockData": {
+          "instrument": "BANJO",
+          "note": 11,
+          "powered": false
+        }
+      }
+    }
+  },
+  "dropSettings": {
+    "item": {
+      "type": "PAPER",
+      "amount": 1,
+      "nbt": "{CustomModelData:13011,display:{Name:\u0027{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"Обрамленные багровые доски\"}],\"text\":\"\"}\u0027}}"
+    },
+    "experience": 0
+  },
+  "soundGroup": {
+    "placeSound": {
+      "key": "block.nether_wood.place",
+      "category": "BLOCKS",
+      "volume": 1.0,
+      "pitch": 1.0
+    },
+    "breakSound": {
+      "key": "block.nether_wood.break",
+      "category": "BLOCKS",
+      "volume": 1.0,
+      "pitch": 1.0
+    },
+    "hitSound": {
+      "key": "block.nether_wood.hit",
+      "category": "BLOCKS",
+      "volume": 0.5,
+      "pitch": 0.5
+    },
+    "stepSound": {
+      "key": "block.nether_wood.step",
+      "category": "PLAYERS",
+      "volume": 0.3,
+      "pitch": 0.9
+    }
+  },
+  "recipeEntries": [
+    {
+      "recipe": {
+        "type": "SHAPED",
+        "recipe": {
+          "key": "framed_crimson_planks",
+          "rows": [
+            "SS"
+          ],
+          "ingredients": {
+            "S": {
+              "type": "MATERIAL_CHOICE",
+              "choices": [
+                "CRIMSON_SLAB"
+              ]
+            }
+          },
+          "group": "framed_planks",
+          "category": "BUILDING"
+        }
+      },
+      "showInCraftsMenu": true
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "framed_crimson_planks_stonecutter",
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "CRIMSON_PLANKS"
+            ]
+          },
+          "group": "framed_planks"
+        }
+      },
+      "showInCraftsMenu": false
+    }
+  ]
+}

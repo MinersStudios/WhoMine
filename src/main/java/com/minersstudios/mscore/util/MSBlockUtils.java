@@ -24,7 +24,7 @@ public final class MSBlockUtils {
 
     /**
      * Gets {@link CustomBlockData} item stack from key from
-     * {@link CustomBlockRegistry#getKeyMap()} by using
+     * {@link CustomBlockRegistry#keySet()} by using
      * {@link CustomBlockRegistry#fromKey(String)} method
      *
      * @param key {@link CustomBlockData} key string
