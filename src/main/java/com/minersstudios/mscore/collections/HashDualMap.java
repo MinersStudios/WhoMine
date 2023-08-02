@@ -5,8 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class HashDualMap<P, S, V> implements DualMap<P, S, V> {
     private final @NotNull Map<P, Map.Entry<S, V>> map;
@@ -118,6 +120,6 @@ public class HashDualMap<P, S, V> implements DualMap<P, S, V> {
     public @NotNull Collection<V> values() {
         return this.map.values().stream()
                 .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

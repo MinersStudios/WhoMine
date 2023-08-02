@@ -78,8 +78,8 @@ public final class Config extends MSConfig {
     }
 
     private void loadBlocks() {
-        try (var path = Files.walk(Paths.get(this.file.getParent() + "/blocks"))) {
-            path
+        try (var pathStream = Files.walk(Paths.get(this.file.getParent() + "/blocks"))) {
+            pathStream.parallel()
             .filter(file -> {
                 String fileName = file.getFileName().toString();
                 return Files.isRegularFile(file)
@@ -89,6 +89,7 @@ public final class Config extends MSConfig {
             .map(Path::toFile)
             .forEach(file -> {
                 CustomBlockData data = CustomBlockData.fromFile(file);
+
                 if (data != null) {
                     CustomBlockRegistry.register(data);
                 }

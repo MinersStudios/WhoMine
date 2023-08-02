@@ -240,13 +240,13 @@ public final class PlayerUtils {
                 serverPlayer.experienceLevel
         );
 
-        players.stream()
+        players.stream().parallel()
         .filter(forWho -> forWho.getBukkitEntity().canSee(player))
         .forEach(forWho -> unregisterEntity(forWho, serverPlayer));
 
         serverPlayer.gameProfile = gameProfile;
 
-        players.stream()
+        players.stream().parallel()
         .filter(forWho -> forWho.getBukkitEntity().canSee(player))
         .forEach(forWho -> trackAndShowEntity(forWho, serverPlayer));
 

@@ -114,6 +114,7 @@
         "type": "SHAPED",
         "recipe": {
           "key": "example_shaped",
+          "amount": 3,
           "rows": [
             " E ",
             " M ",
@@ -154,6 +155,7 @@
         "type": "SHAPELESS",
         "recipe": {
           "key": "example_shapeless",
+          "amount": 3,
           "ingredients": [
             {
               "type": "MATERIAL_CHOICE",
@@ -195,6 +197,7 @@
         "type": "FURNACE",
         "recipe": {
           "key": "example_furnace",
+          "amount": 1,
           "ingredient": {
             "type": "MATERIAL_CHOICE",
             "choices": [
@@ -214,6 +217,7 @@
         "type": "BLAST_FURNACE",
         "recipe": {
           "key": "example_blast_furnace",
+          "amount": 1,
           "ingredient": {
             "type": "MATERIAL_CHOICE",
             "choices": [
@@ -233,6 +237,7 @@
         "type": "SMOKER",
         "recipe": {
           "key": "example_smoker",
+          "amount": 1,
           "ingredient": {
             "type": "MATERIAL_CHOICE",
             "choices": [
@@ -252,6 +257,7 @@
         "type": "CAMPFIRE",
         "recipe": {
           "key": "example_campfire",
+          "amount": 1,
           "ingredient": {
             "type": "MATERIAL_CHOICE",
             "choices": [
@@ -271,6 +277,7 @@
         "type": "STONECUTTER",
         "recipe": {
           "key": "example_stonecutter",
+          "amount": 1,
           "ingredient": {
             "type": "MATERIAL_CHOICE",
             "choices": [

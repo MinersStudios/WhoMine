@@ -253,12 +253,18 @@ public final class CustomBlockRegistry {
         if (placingType instanceof PlacingType.Default normal) {
             return containsHashCode(normal.getNoteBlockData().hashCode());
         } else if (placingType instanceof PlacingType.Directional directional) {
-            return directional.getMap().values().stream().anyMatch(cbd -> containsHashCode(cbd.hashCode()));
+            for (var noteBlockData : directional.getMap().values()) {
+                if (containsHashCode(noteBlockData.hashCode())) return true;
+            }
         } else if (placingType instanceof PlacingType.Orientable orientable) {
-            return orientable.getMap().values().stream().anyMatch(cbd -> containsHashCode(cbd.hashCode()));
+            for (var noteBlockData : orientable.getMap().values()) {
+                if (containsHashCode(noteBlockData.hashCode())) return true;
+            }
         } else {
             throw new IllegalArgumentException("Unknown placing type: " + placingType.getClass().getName());
         }
+
+        return false;
     }
 
     /**

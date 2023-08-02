@@ -1,10 +1,10 @@
 package com.minersstudios.msessentials.player.skin;
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
+import com.google.common.base.Preconditions;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.player.PlayerFile;
-import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Material;
@@ -70,6 +70,7 @@ public class Skin {
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(matchesNameRegex(name), "The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores");
         Preconditions.checkArgument(isValidBase64(value), "The value must be a valid Base64 string");
+        Preconditions.checkArgument(isValidBase64(signature), "The signature must be a valid Base64 string");
         return new Skin(name, value, signature);
     }
 
@@ -107,63 +108,6 @@ public class Skin {
         } while (retryAttempts.get() < 3);
 
         return null;
-    }
-
-    /**
-     * Serializes the skin into a map.
-     * The map contains the name, value, and signature of the skin.
-     * Used to save the skin to a yaml file.
-     *
-     * @return A map containing the name, value, and signature of the skin
-     * @see #deserialize(String)
-     */
-    public static @NotNull Map<String, String> serialize(@NotNull Skin skin) {
-        Map<String, String> serialized = new HashMap<>();
-
-        serialized.put("name", skin.getName());
-        serialized.put("value", skin.getValue());
-        serialized.put("signature", skin.getSignature());
-        return serialized;
-    }
-
-    /**
-     * Deserializes a skin from a map.
-     * The map must contain the name, value, and signature of the skin.
-     * Used to load the skin from a yaml file.
-     *
-     * @param string Map string containing the name, value, and signature of the skin.
-     *               Example of string : "name=a, value=b, signature=c"
-     * @return The skin if the map contains the name, value, and signature of the skin
-     *         and the skin is valid, otherwise null
-     * @see #serialize(Skin)
-     * @see #create(String, String, String)
-     */
-    public static @Nullable Skin deserialize(@NotNull String string) {
-        Map<String, String> map = new HashMap<>();
-        Matcher matcher = Pattern.compile("(name|value|signature)=([^,}]+)").matcher(string);
-
-        while (matcher.find()) {
-            map.put(matcher.group(1).toLowerCase(Locale.ROOT), matcher.group(2));
-        }
-
-        if (map.size() != 3) return null;
-
-        String name = map.get("name");
-        String value = map.get("value");
-        String signature = map.get("signature");
-
-        if (
-                name == null
-                || value == null
-                || signature == null
-        ) return null;
-
-        try {
-            return Skin.create(name, value, signature);
-        } catch (IllegalArgumentException e) {
-            MSLogger.log(Level.SEVERE, "Failed to deserialize skin: " + name, e);
-            return null;
-        }
     }
 
     /**
@@ -216,6 +160,64 @@ public class Skin {
     }
 
     /**
+     * Serializes the skin into a map.
+     * The map contains the name, value, and signature of the skin.
+     * Used to save the skin to a yaml file.
+     *
+     * @return A map containing the name, value, and signature of the skin
+     * @see #deserialize(String)
+     */
+    public @NotNull Map<String, String> serialize() {
+        Map<String, String> serialized = new HashMap<>();
+
+        serialized.put("name", this.name);
+        serialized.put("value", this.value);
+        serialized.put("signature", this.signature);
+
+        return serialized;
+    }
+
+    /**
+     * Deserializes a skin from a map.
+     * The map must contain the name, value, and signature of the skin.
+     * Used to load the skin from a yaml file.
+     *
+     * @param string Map string containing the name, value, and signature of the skin.
+     *               Example of string : "name=a, value=b, signature=c"
+     * @return The skin if the map contains the name, value, and signature of the skin
+     *         and the skin is valid, otherwise null
+     * @see #serialize()
+     * @see #create(String, String, String)
+     */
+    public static @Nullable Skin deserialize(@NotNull String string) {
+        Map<String, String> map = new HashMap<>();
+        Matcher matcher = Pattern.compile("(name|value|signature)=([^,}]+)").matcher(string);
+
+        while (matcher.find()) {
+            map.put(matcher.group(1).toLowerCase(Locale.ROOT), matcher.group(2));
+        }
+
+        if (map.size() != 3) return null;
+
+        String name = map.get("name");
+        String value = map.get("value");
+        String signature = map.get("signature");
+
+        if (
+                name == null
+                || value == null
+                || signature == null
+        ) return null;
+
+        try {
+            return Skin.create(name, value, signature);
+        } catch (IllegalArgumentException e) {
+            MSLogger.log(Level.SEVERE, "Failed to deserialize skin: " + name, e);
+            return null;
+        }
+    }
+
+    /**
      * @param link Link to be checked
      * @return True if the link starts with https:// and ends with .png and the image is 64x64
      */
@@ -225,19 +227,6 @@ public class Skin {
             BufferedImage image = ImageIO.read(new URL(link));
             return image.getWidth() == 64 && image.getHeight() == 64;
         } catch (IOException e) {
-            return false;
-        }
-    }
-
-    /**
-     * @param src String to be checked
-     * @return True if string is in valid Base64 scheme
-     */
-    public static boolean isValidBase64(@NotNull String src) {
-        try {
-            Base64.getDecoder().decode(src);
-            return true;
-        } catch (IllegalArgumentException e) {
             return false;
         }
     }
@@ -352,5 +341,18 @@ public class Skin {
         }
 
         return null;
+    }
+
+    /**
+     * @param src String to be checked
+     * @return True if string is in valid Base64 scheme
+     */
+    private static boolean isValidBase64(@NotNull String src) {
+        try {
+            Base64.getDecoder().decode(src);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

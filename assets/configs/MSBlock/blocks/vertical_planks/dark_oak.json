@@ -57,6 +57,7 @@
         "type": "SHAPED",
         "recipe": {
           "key": "vertical_dark_oak_planks",
+          "amount": 3,
           "rows": [
             "P",
             "P",
@@ -66,7 +67,7 @@
             "P": {
               "type": "MATERIAL_CHOICE",
               "choices": [
-                "DARK_OAK_SLAB"
+                "DARK_OAK_PLANKS"
               ]
             }
           },
@@ -88,6 +89,86 @@
             ]
           },
           "group": "vertical_planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "dark_oak_stairs_stonecutter",
+          "output": {
+            "type": "DARK_OAK_STAIRS",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "DARK_OAK_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "dark_oak_slab_stonecutter",
+          "output": {
+            "type": "DARK_OAK_SLAB",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "DARK_OAK_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "dark_oak_fence_stonecutter",
+          "output": {
+            "type": "DARK_OAK_FENCE",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "DARK_OAK_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "dark_oak_fence_gate_stonecutter",
+          "output": {
+            "type": "DARK_OAK_FENCE_GATE",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "DARK_OAK_PLANKS"
+            ]
+          },
+          "group": "planks"
         }
       },
       "showInCraftsMenu": false

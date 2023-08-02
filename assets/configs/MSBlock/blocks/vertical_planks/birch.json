@@ -57,6 +57,7 @@
         "type": "SHAPED",
         "recipe": {
           "key": "vertical_birch_planks",
+          "amount": 3,
           "rows": [
             "P",
             "P",
@@ -66,7 +67,7 @@
             "P": {
               "type": "MATERIAL_CHOICE",
               "choices": [
-                "BIRCH_SLAB"
+                "BIRCH_PLANKS"
               ]
             }
           },
@@ -88,6 +89,86 @@
             ]
           },
           "group": "vertical_planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "birch_stairs_stonecutter",
+          "output": {
+            "type": "BIRCH_STAIRS",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "BIRCH_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "birch_slab_stonecutter",
+          "output": {
+            "type": "BIRCH_SLAB",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "BIRCH_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "birch_fence_stonecutter",
+          "output": {
+            "type": "BIRCH_FENCE",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "BIRCH_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "birch_fence_gate_stonecutter",
+          "output": {
+            "type": "BIRCH_FENCE_GATE",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "BIRCH_PLANKS"
+            ]
+          },
+          "group": "planks"
         }
       },
       "showInCraftsMenu": false

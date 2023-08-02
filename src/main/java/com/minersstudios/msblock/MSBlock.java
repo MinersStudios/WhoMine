@@ -32,6 +32,7 @@ public final class MSBlock extends MSPlugin {
 
         if (!paperConfig.getBoolean(noteBlockUpdates, false)) {
             paperConfig.set(noteBlockUpdates, true);
+
             try {
                 paperConfig.save(paperGlobalConfig);
             } catch (IOException e) {

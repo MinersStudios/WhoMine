@@ -57,6 +57,7 @@
         "type": "SHAPED",
         "recipe": {
           "key": "vertical_oak_planks",
+          "amount": 3,
           "rows": [
             "P",
             "P",
@@ -66,7 +67,7 @@
             "P": {
               "type": "MATERIAL_CHOICE",
               "choices": [
-                "OAK_SLAB"
+                "OAK_PLANKS"
               ]
             }
           },
@@ -88,6 +89,86 @@
             ]
           },
           "group": "vertical_planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "oak_stairs_stonecutter",
+          "output": {
+            "type": "OAK_STAIRS",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "OAK_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "oak_slab_stonecutter",
+          "output": {
+            "type": "OAK_SLAB",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "OAK_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "oak_fence_stonecutter",
+          "output": {
+            "type": "OAK_FENCE",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "OAK_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "oak_fence_gate_stonecutter",
+          "output": {
+            "type": "OAK_FENCE_GATE",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "OAK_PLANKS"
+            ]
+          },
+          "group": "planks"
         }
       },
       "showInCraftsMenu": false

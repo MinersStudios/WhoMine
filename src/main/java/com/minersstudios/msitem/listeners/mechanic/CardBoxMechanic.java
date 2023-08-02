@@ -82,7 +82,7 @@ public class CardBoxMechanic extends AbstractMSListener {
         cards.addAll(CardsBicycle.BLUE_CARD_ITEMS);
         cards.addAll(CardsBicycle.RED_CARD_ITEMS);
 
-        if (ItemUtils.isListContainsItem(cards, cardItem)) {
+        if (ItemUtils.isContainsItem(cards, cardItem)) {
             BundleMeta bundleMeta = (BundleMeta) cardBoxItem.getItemMeta();
             var itemStacks = Lists.newArrayList(cardItem);
             itemStacks.addAll(bundleMeta.getItems());

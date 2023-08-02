@@ -343,10 +343,13 @@ public class PlayerFile {
     }
 
     public void serializeSkinsSection() {
-        this.config.set(
-                "skins",
-                this.skins.stream().map(Skin::serialize).toList()
-        );
+        var list = new ArrayList<>();
+
+        for (var skin : this.skins) {
+            list.add(skin.serialize());
+        }
+
+        this.config.set("skins", list);
     }
 
     public @NotNull List<Skin> deserializeSkinsSection() {

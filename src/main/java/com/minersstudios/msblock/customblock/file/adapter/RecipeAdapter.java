@@ -26,6 +26,7 @@ public class RecipeAdapter implements JsonSerializer<Recipe>, JsonDeserializer<R
     private static final String TYPE_KEY = "type";
     private static final String RECIPE_KEY = "recipe";
     private static final String OUTPUT_KEY = "output";
+    private static final String AMOUNT_KEY = "amount";
     private static final Type RECIPE_ENTRY_SET_TYPE = new TypeToken<Set<RecipeEntry>>() {}.getType();
 
     @Override
@@ -52,6 +53,7 @@ public class RecipeAdapter implements JsonSerializer<Recipe>, JsonDeserializer<R
 
         jsonObject.addProperty(TYPE_KEY, RecipeType.nameOf(src.getClass()));
         recipeObject.remove(OUTPUT_KEY);
+        recipeObject.addProperty(AMOUNT_KEY, src.getResult().getAmount());
         jsonObject.add(RECIPE_KEY, recipeObject);
 
         return jsonObject;
@@ -61,17 +63,21 @@ public class RecipeAdapter implements JsonSerializer<Recipe>, JsonDeserializer<R
             @NotNull ItemStack output,
             @NotNull JsonArray json
     ) {
-        JsonElement outputElement = CustomBlockFile.getGson().toJsonTree(output);
-
         for (var element : json) {
+            JsonObject outputObj = CustomBlockFile.getGson().toJsonTree(output).getAsJsonObject();
             JsonObject recipeEntryObject = element.getAsJsonObject();
             JsonObject recipeTypeObject = recipeEntryObject.get(RECIPE_KEY).getAsJsonObject();
             JsonObject recipeObject = recipeTypeObject.get(RECIPE_KEY).getAsJsonObject();
+            JsonElement amountElement = recipeObject.get(AMOUNT_KEY);
+
+            if (amountElement != null) {
+                outputObj.add(AMOUNT_KEY, amountElement);
+            }
 
             if (!recipeObject.has(OUTPUT_KEY)) {
                 recipeObject.add(
                         OUTPUT_KEY,
-                        outputElement
+                        outputObj
                 );
             }
         }

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Utility class for {@link ItemStack} and {@link ItemMeta}
@@ -58,12 +58,12 @@ public final class ItemUtils {
      * @return True if the list contains the item
      * @see #isSimilarItemStacks(ItemStack, ItemStack)
      */
-    public static boolean isListContainsItem(
-            @NotNull List<ItemStack> list,
+    public static boolean isContainsItem(
+            @NotNull Collection<ItemStack> list,
             @NotNull ItemStack item
     ) {
         return !list.isEmpty()
-                && list.stream().anyMatch(listItem -> isSimilarItemStacks(listItem, item));
+                && list.stream().parallel().anyMatch(listItem -> isSimilarItemStacks(listItem, item));
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.util;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.world.level.block.SoundType;
 import org.bukkit.Material;
@@ -13,9 +14,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Utility class for blocks
@@ -52,14 +51,19 @@ public final class BlockUtils {
 
     static {
         SoundGroup woodSoundGroup = CraftSoundGroup.getSoundGroup(SoundType.WOOD);
-        WOOD_SOUND_MATERIAL_SET =
-                Arrays.stream(Material.values())
-                .filter(material ->
-                        !material.isLegacy()
-                        && material.isBlock()
-                        && material.createBlockData().getSoundGroup() == woodSoundGroup
-                )
-                .collect(Collectors.toUnmodifiableSet());
+        var materialSet = new ImmutableSet.Builder<Material>();
+
+        for (var material : Material.values()) {
+            if (
+                    !material.isLegacy()
+                    && material.isBlock()
+                    && material.createBlockData().getSoundGroup() == woodSoundGroup
+            ) {
+                materialSet.add(material);
+            }
+        }
+
+        WOOD_SOUND_MATERIAL_SET = materialSet.build();
     }
 
     @Contract(value = " -> fail")

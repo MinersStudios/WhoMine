@@ -57,6 +57,7 @@
         "type": "SHAPED",
         "recipe": {
           "key": "vertical_mangrove_planks",
+          "amount": 3,
           "rows": [
             "P",
             "P",
@@ -66,7 +67,7 @@
             "P": {
               "type": "MATERIAL_CHOICE",
               "choices": [
-                "MANGROVE_SLAB"
+                "MANGROVE_PLANKS"
               ]
             }
           },
@@ -88,6 +89,86 @@
             ]
           },
           "group": "vertical_planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "mangrove_stairs_stonecutter",
+          "output": {
+            "type": "MANGROVE_STAIRS",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "MANGROVE_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "mangrove_slab_stonecutter",
+          "output": {
+            "type": "MANGROVE_SLAB",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "MANGROVE_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "mangrove_fence_stonecutter",
+          "output": {
+            "type": "MANGROVE_FENCE",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "MANGROVE_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "mangrove_fence_gate_stonecutter",
+          "output": {
+            "type": "MANGROVE_FENCE_GATE",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "MANGROVE_PLANKS"
+            ]
+          },
+          "group": "planks"
         }
       },
       "showInCraftsMenu": false

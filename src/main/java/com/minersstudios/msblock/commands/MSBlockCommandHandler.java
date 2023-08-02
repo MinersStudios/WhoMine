@@ -13,6 +13,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -67,7 +68,7 @@ public class MSBlockCommandHandler implements MSCommandExecutor {
         return switch (args.length) {
             case 1 -> TAB;
             case 2 -> MSPlayerUtils.getLocalPlayerNames();
-            case 3 -> CustomBlockRegistry.keySet().stream().toList();
+            case 3 -> new ArrayList<>(CustomBlockRegistry.keySet());
             default -> EMPTY_TAB;
         };
     }

@@ -1,5 +1,6 @@
 package com.minersstudios.msblock.collection;
 
+import com.google.common.collect.ImmutableSet;
 import com.minersstudios.msblock.MSBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
@@ -9,7 +10,6 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * The DiggingMap class represents a data structure
@@ -26,9 +26,13 @@ public class DiggingMap {
      * @see Entry
      */
     public @NotNull @Unmodifiable Set<Entry> diggingEntrySet() {
-        return this.diggingBlockMap.values().stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toUnmodifiableSet());
+        var setBuilder = new ImmutableSet.Builder<Entry>();
+
+        for (var diggingEntrySet : this.diggingBlockMap.values()) {
+            setBuilder.addAll(diggingEntrySet);
+        }
+
+        return setBuilder.build();
     }
 
     /**
@@ -43,7 +47,15 @@ public class DiggingMap {
      *         and their corresponding digging entries
      */
     public @NotNull @Unmodifiable Set<Map.Entry<Block, Entry>> entrySet() {
-        return Collections.unmodifiableSet(this.entries());
+        var entries = new ImmutableSet.Builder<Map.Entry<Block, Entry>>();
+
+        this.diggingBlockMap.forEach((block, entrySet) ->
+                entrySet.forEach(diggingEntry ->
+                        entries.add(Map.entry(block, diggingEntry))
+                )
+        );
+
+        return entries.build();
     }
 
     /**
@@ -65,11 +77,15 @@ public class DiggingMap {
      * @see Entry
      */
     public @Nullable Block getBlock(@NotNull Entry diggingEntry) {
-        return this.entries().stream()
-                .filter(entry -> entry.getValue().equals(diggingEntry))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
+        for (var entry : this.diggingBlockMap.entrySet()) {
+            if (!entry.getValue().contains(diggingEntry)) continue;
+
+            for (var digging : entry.getValue()) {
+                if (digging.equals(diggingEntry)) return entry.getKey();
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -80,11 +96,13 @@ public class DiggingMap {
      * @see Entry#player()
      */
     public @Nullable Block getBlock(@NotNull Player player) {
-        return this.entries().stream()
-                .filter(entry -> entry.getValue().player.equals(player))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
+        for (var entry : this.diggingBlockMap.entrySet()) {
+            for (var diggingEntry : entry.getValue()) {
+                if (diggingEntry.player.equals(player)) return entry.getKey();
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -97,10 +115,13 @@ public class DiggingMap {
             @NotNull Block block,
             @NotNull Player player
     ) {
-        return this.entries(block).stream()
-                .filter(entry -> entry.player.equals(player))
-                .findFirst()
-                .orElse(null);
+        if (!this.diggingBlockMap.containsKey(block)) return null;
+
+        for (var diggingEntry : this.diggingBlockMap.get(block)) {
+            if (diggingEntry.player.equals(player)) return diggingEntry;
+        }
+
+        return null;
     }
 
     /**
@@ -131,10 +152,10 @@ public class DiggingMap {
             @NotNull Block block,
             @NotNull Entry diggingEntry
     ) {
-        var entrySet = this.diggingBlockMap.computeIfAbsent(block, b -> ConcurrentHashMap.newKeySet());
+        var diggingEntrySet = this.diggingBlockMap.computeIfAbsent(block, b -> ConcurrentHashMap.newKeySet());
 
-        entrySet.add(diggingEntry);
-        this.diggingBlockMap.put(block, entrySet);
+        diggingEntrySet.add(diggingEntry);
+        this.diggingBlockMap.put(block, diggingEntrySet);
     }
 
     /**
@@ -153,15 +174,15 @@ public class DiggingMap {
             @NotNull Block block,
             @NotNull Entry diggingEntry
     ) {
-        var entrySet = this.entries(block);
+        var diggingEntrySet = this.entries(block);
 
-        entrySet.remove(diggingEntry);
+        diggingEntrySet.remove(diggingEntry);
         diggingEntry.cancelTask();
 
-        if (entrySet.isEmpty()) {
+        if (diggingEntrySet.isEmpty()) {
             this.diggingBlockMap.remove(block);
         } else {
-            this.diggingBlockMap.put(block, entrySet);
+            this.diggingBlockMap.put(block, diggingEntrySet);
         }
     }
 
@@ -181,10 +202,18 @@ public class DiggingMap {
             @NotNull Block block,
             @NotNull Player player
     ) {
-        this.entries().stream()
-        .filter(entry -> entry.getValue().player.equals(player))
-        .findFirst()
-        .ifPresent(entry -> this.remove(block, entry.getValue()));
+        if (!this.diggingBlockMap.containsKey(block)) return;
+
+        this.diggingBlockMap.forEach((diggingBlock, diggingEntrySet) ->
+                diggingEntrySet.forEach(diggingEntry -> {
+                    if (
+                            diggingBlock.equals(block)
+                            && diggingEntry.player.equals(player)
+                    ) {
+                        this.remove(block, diggingEntry);
+                    }
+                })
+        );
     }
 
     /**
@@ -197,10 +226,10 @@ public class DiggingMap {
      * @see Entry#cancelTask()
      */
     public synchronized void removeAll(@NotNull Block block) {
-        var entries = this.diggingBlockMap.remove(block);
+        var diggingEntrySet = this.diggingBlockMap.remove(block);
 
-        if (entries != null) {
-            entries.forEach(Entry::cancelTask);
+        if (diggingEntrySet != null) {
+            diggingEntrySet.forEach(Entry::cancelTask);
         }
     }
 
@@ -215,9 +244,13 @@ public class DiggingMap {
      * @see #remove(Block, Entry)
      */
     public synchronized void removeAll(@NotNull Entry diggingEntry) {
-        this.entries().stream()
-        .filter(entry -> entry.getValue().equals(diggingEntry))
-        .forEach(entry -> this.remove(entry.getKey(), entry.getValue()));
+        this.diggingBlockMap.forEach((block, entrySet) ->
+                entrySet.forEach(digging -> {
+                    if (digging.equals(diggingEntry)) {
+                        this.remove(block, digging);
+                    }
+                })
+        );
     }
 
     /**
@@ -231,9 +264,13 @@ public class DiggingMap {
      * @see #remove(Block, Entry)
      */
     public synchronized void removeAll(@NotNull Player player) {
-        this.entries().stream()
-        .filter(entry -> entry.getValue().player.equals(player))
-        .forEach(entry -> this.remove(entry.getKey(), entry.getValue()));
+        this.diggingBlockMap.forEach((block, entrySet) ->
+                entrySet.forEach(diggingEntry -> {
+                    if (diggingEntry.player.equals(player)) {
+                        this.remove(block, diggingEntry);
+                    }
+                })
+        );
     }
 
     /**
@@ -252,8 +289,11 @@ public class DiggingMap {
      * @return True if the digging entry is present in the DiggingMap
      */
     public boolean containsEntry(@NotNull Entry diggingEntry) {
-        return this.diggingBlockMap.values().stream()
-                .anyMatch(set -> set.contains(diggingEntry));
+        for (var diggingEntrySet : this.diggingBlockMap.values()) {
+            if (diggingEntrySet.contains(diggingEntry)) return true;
+        }
+
+        return false;
     }
 
     /**
@@ -265,8 +305,13 @@ public class DiggingMap {
      *         associated with the player
      */
     public boolean containsPlayer(@NotNull Player player) {
-        return this.entries().stream()
-                .anyMatch(entry -> entry.getValue().player.equals(player));
+        for (var diggingEntrySet : this.diggingBlockMap.values()) {
+            for (var diggingEntry : diggingEntrySet) {
+                if (diggingEntry.player.equals(player)) return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -307,16 +352,6 @@ public class DiggingMap {
      */
     private @NotNull Set<Entry> entries(@NotNull Block block) {
         return this.diggingBlockMap.getOrDefault(block, ConcurrentHashMap.newKeySet());
-    }
-
-    /**
-     * @return The set of map entries containing blocks and their
-     *         corresponding digging entries
-     */
-    private @NotNull Set<Map.Entry<Block, Entry>> entries() {
-        return this.diggingBlockMap.entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream().map(value -> Map.entry(entry.getKey(), value)))
-                .collect(Collectors.toSet());
     }
 
     /**

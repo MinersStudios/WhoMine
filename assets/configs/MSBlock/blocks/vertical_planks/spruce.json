@@ -57,6 +57,7 @@
         "type": "SHAPED",
         "recipe": {
           "key": "vertical_spruce_planks",
+          "amount": 3,
           "rows": [
             "P",
             "P",
@@ -66,7 +67,7 @@
             "P": {
               "type": "MATERIAL_CHOICE",
               "choices": [
-                "SPRUCE_SLAB"
+                "SPRUCE_PLANKS"
               ]
             }
           },
@@ -88,6 +89,86 @@
             ]
           },
           "group": "vertical_planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "spruce_stairs_stonecutter",
+          "output": {
+            "type": "SPRUCE_STAIRS",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "SPRUCE_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "spruce_slab_stonecutter",
+          "output": {
+            "type": "SPRUCE_SLAB",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "SPRUCE_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "spruce_fence_stonecutter",
+          "output": {
+            "type": "SPRUCE_FENCE",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "SPRUCE_PLANKS"
+            ]
+          },
+          "group": "planks"
+        }
+      },
+      "showInCraftsMenu": false
+    },
+    {
+      "recipe": {
+        "type": "STONECUTTER",
+        "recipe": {
+          "key": "spruce_fence_gate_stonecutter",
+          "output": {
+            "type": "SPRUCE_FENCE_GATE",
+            "amount": 1
+          },
+          "ingredient": {
+            "type": "MATERIAL_CHOICE",
+            "choices": [
+              "SPRUCE_PLANKS"
+            ]
+          },
+          "group": "planks"
         }
       },
       "showInCraftsMenu": false

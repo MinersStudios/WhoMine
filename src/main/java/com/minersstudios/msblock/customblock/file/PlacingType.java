@@ -45,7 +45,13 @@ public abstract class PlacingType {
     @Contract("_ -> new")
     public static @NotNull Directional directionalType(@NotNull Map<BlockFace, NoteBlockData> map) throws IllegalArgumentException {
         Preconditions.checkArgument(map.size() == 6, "Map must contain 6 entries");
-        Preconditions.checkArgument(map.keySet().stream().allMatch(Directional::isSupported), "Map must contain only supported BlockFaces");
+
+        for (var blockFace : map.keySet()) {
+            if (!Directional.isSupported(blockFace)) {
+                throw new IllegalArgumentException("Unsupported BlockFace: " + blockFace);
+            }
+        }
+
         return new Directional(map);
     }
 

@@ -14,10 +14,10 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Dosimeter implements CustomItem {
     private @NotNull NamespacedKey namespacedKey;
@@ -148,7 +148,7 @@ public class Dosimeter implements CustomItem {
         YELLOW(1374),
         RED(1375);
 
-        public static final List<ScreenType> VALUES = Arrays.stream(values()).toList();
+        public static final Set<ScreenType> VALUES = Set.of(ScreenType.values());
 
         private final int customModelData;
 
@@ -161,11 +161,10 @@ public class Dosimeter implements CustomItem {
         }
 
         public static @Nullable ScreenType getScreenType(int customModelData) {
-            for (ScreenType screenType : VALUES) {
-                if (screenType.customModelData == customModelData) {
-                    return screenType;
-                }
+            for (var screenType : VALUES) {
+                if (screenType.customModelData == customModelData) return screenType;
             }
+
             return null;
         }
     }

@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,9 +127,10 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
             i++;
         }
 
-        Arrays.stream(this.elementSlots)
-                .filter(slot -> !buttons.containsKey(slot))
-                .forEach(slot -> buttons.put(slot, null));
+        for (int slot : this.elementSlots) {
+            if (buttons.containsKey(slot)) continue;
+            buttons.put(slot, null);
+        }
 
         return buttons;
     }
