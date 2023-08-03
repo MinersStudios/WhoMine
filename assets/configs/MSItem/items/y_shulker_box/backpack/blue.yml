@@ -1,0 +1,5 @@
+namespaced-key: "backpack_blue"
+rename-text: "Рюкзак"
+material: BLUE_SHULKER_BOX
+custom-model-data: 2
+show-in-rename-menu: true

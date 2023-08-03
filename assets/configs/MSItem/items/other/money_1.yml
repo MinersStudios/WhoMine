@@ -1,0 +1,5 @@
+namespaced-key: "money_1"
+rename-text: "Ир"
+material: DIAMOND_ORE
+custom-model-data: 1
+show-in-rename-menu: false

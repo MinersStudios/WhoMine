@@ -1,0 +1,5 @@
+namespaced-key: "travel_case_pink"
+rename-text: "Чемодан"
+material: PINK_SHULKER_BOX
+custom-model-data: 28
+show-in-rename-menu: true

@@ -1,0 +1,7 @@
+namespaced-key: "travel_case_magenta"
+rename-text: "Чемодан"
+material: 
+ - MAGENTA_SHULKER_BOX
+ - SHULKER_BOX
+custom-model-data: 26
+show-in-rename-menu: true

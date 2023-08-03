@@ -1,0 +1,11 @@
+namespaced-key: "strenzhlavker_mr45"
+rename-text: "Strenzhlavker MR45"
+lore:
+  - "§7\"Strenzhlavker MR45\" -"
+  - " §7Гарант вашего выживания"
+material: BOW
+custom-model-data: 4
+show-in-rename-menu: false
+whitelist:
+  - 94cf67ca-3935-3a08-aebf-1e1e1a520101
+  - 1badda4d-1784-3e97-b98c-6fe0eb0c5899

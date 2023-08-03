@@ -1,0 +1,5 @@
+namespaced-key: "cigarette"
+rename-text: "Сигарета"
+material: STICK
+custom-model-data: 5
+show-in-rename-menu: true

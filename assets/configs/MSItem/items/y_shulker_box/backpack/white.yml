@@ -1,0 +1,5 @@
+namespaced-key: "backpack_white"
+rename-text: "Рюкзак"
+material: WHITE_SHULKER_BOX
+custom-model-data: 15
+show-in-rename-menu: true

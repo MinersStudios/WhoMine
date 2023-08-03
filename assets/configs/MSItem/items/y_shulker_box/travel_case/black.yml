@@ -1,0 +1,5 @@
+namespaced-key: "travel_case_black"
+rename-text: "Чемодан"
+material: BLACK_SHULKER_BOX
+custom-model-data: 17
+show-in-rename-menu: true

@@ -1,0 +1,7 @@
+namespaced-key: "salmon_can"
+rename-text: "Лосось в банке"
+material: 
+ - SALMON
+ - COOKED_SALMON
+custom-model-data: 1
+show-in-rename-menu: true

@@ -1,0 +1,5 @@
+namespaced-key: "backpack_lime"
+rename-text: "Рюкзак"
+material: LIME_SHULKER_BOX
+custom-model-data: 9
+show-in-rename-menu: true

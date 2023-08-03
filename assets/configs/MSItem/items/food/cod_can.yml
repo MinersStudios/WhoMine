@@ -1,0 +1,7 @@
+namespaced-key: "cod_can"
+rename-text: "Треска в банке"
+material: 
+ - COD
+ - COOKED_COD
+custom-model-data: 1
+show-in-rename-menu: true

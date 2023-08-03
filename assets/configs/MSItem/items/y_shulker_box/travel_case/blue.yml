@@ -1,0 +1,5 @@
+namespaced-key: "travel_case_blue"
+rename-text: "Чемодан"
+material: BLUE_SHULKER_BOX
+custom-model-data: 18
+show-in-rename-menu: true
