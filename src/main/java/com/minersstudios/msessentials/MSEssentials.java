@@ -92,7 +92,7 @@ public final class MSEssentials extends MSPlugin {
     }
 
     /**
-     * @return The instance of the plugin,
+     * @return The instance of the plugin
      * @throws NullPointerException If the plugin is not enabled
      */
     public static @NotNull MSEssentials getInstance() throws NullPointerException {

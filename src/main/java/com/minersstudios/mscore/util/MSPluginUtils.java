@@ -24,8 +24,14 @@ public final class MSPluginUtils {
      * @see MSItem#isLoadedCustoms()
      */
     public static boolean isLoadedCustoms() {
-        return MSDecor.getInstance().isLoadedCustoms()
-                && MSBlock.getInstance().isLoadedCustoms()
-                && MSItem.getInstance().isLoadedCustoms();
+        MSPlugin msDecor = MSDecor.getInstance();
+        MSPlugin msBlock = MSBlock.getInstance();
+        MSPlugin msItem = MSItem.getInstance();
+        return msDecor != null
+                && msBlock != null
+                && msItem != null
+                && msDecor.isLoadedCustoms()
+                && msBlock.isLoadedCustoms()
+                && msItem.isLoadedCustoms();
     }
 }

@@ -66,7 +66,8 @@ public class CustomChoice implements RecipeChoice {
                     Preconditions.checkArgument(PATTERN.matcher(namespacedKey).matches(), "Invalid namespacedKey: " + namespacedKey);
                 })
                 .map(MSCustomUtils::getItemStack)
-                .map(Optional::orElseThrow)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
     }
 

@@ -1,6 +1,7 @@
 package com.minersstudios.msblock.customblock;
 
 import com.google.gson.JsonElement;
+import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.file.*;
 import com.minersstudios.msblock.customblock.file.adapter.RecipeAdapter;
 import com.minersstudios.mscore.logger.MSLogger;
@@ -9,6 +10,7 @@ import com.minersstudios.msessentials.menu.CraftsMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -221,7 +223,7 @@ public class CustomBlockData {
      * @see CustomBlockRegistry#TYPE_NAMESPACED_KEY
      */
     public @NotNull ItemStack craftItemStack() {
-        ItemStack itemStack = new ItemStack(this.dropSettings.getItem());
+        ItemStack itemStack = this.dropSettings.getItem();
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         itemMeta.getPersistentDataContainer().set(
@@ -244,16 +246,19 @@ public class CustomBlockData {
      */
     public void registerRecipes(@NotNull JsonElement recipeJson) {
         try {
-            this.setRecipeEntries(RecipeAdapter.deserializeEntries(this.craftItemStack(), recipeJson.getAsJsonArray()));
+            this.setRecipeEntries(RecipeAdapter.deserializeEntries(new ItemStack(this.craftItemStack()), recipeJson.getAsJsonArray()));
         } catch (Exception e) {
             MSLogger.log(Level.SEVERE, "Failed to deserialize recipes for custom block data: " + this.key, e);
             return;
         }
 
+        MSBlock plugin = MSBlock.getInstance();
+        Server server = plugin.getServer();
+
         for (var recipeEntry : this.recipeEntries) {
             Recipe recipe = recipeEntry.getRecipe();
 
-            Bukkit.addRecipe(recipe);
+            plugin.runTask(() -> server.addRecipe(recipe));
 
             if (recipeEntry.isShowInCraftsMenu()) {
                 MSPlugin.getGlobalCache().customBlockRecipes.add(recipe);

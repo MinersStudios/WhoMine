@@ -73,20 +73,16 @@ public final class CustomBlockRegistry {
     public static final String NAMESPACE = "msblock";
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(NAMESPACE, "type");
 
-    private static final Map<String, Set<Integer>> KEY_MAP = new ConcurrentHashMap<>();
     private static final Map<Integer, CustomBlockData> HASH_CODE_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, Set<Integer>> KEY_MAP = new ConcurrentHashMap<>();
 
     static {
         register(CustomBlockData.getDefault());
     }
 
-    /**
-     * @return An unmodifiable view of the keys of all registered
-     *         custom block data
-     * @see #KEY_MAP
-     */
-    public static @NotNull @UnmodifiableView Set<String> keySet() {
-        return Collections.unmodifiableSet(KEY_MAP.keySet());
+    @Contract(value = " -> fail")
+    private CustomBlockRegistry() {
+        throw new AssertionError("Utility class");
     }
 
     /**
@@ -99,11 +95,35 @@ public final class CustomBlockRegistry {
     }
 
     /**
+     * @return An unmodifiable view of the keys of all registered
+     *         custom block data
+     * @see #KEY_MAP
+     */
+    public static @NotNull @UnmodifiableView Set<String> keySet() {
+        return Collections.unmodifiableSet(KEY_MAP.keySet());
+    }
+
+    /**
      * @return An unmodifiable view of all registered custom block data
      * @see #HASH_CODE_MAP
      */
     public static @NotNull @UnmodifiableView Collection<CustomBlockData> customBlockDataCollection() {
         return Collections.unmodifiableCollection(HASH_CODE_MAP.values());
+    }
+
+    /**
+     * Gets the {@link CustomBlockData} from the given hash code of the
+     * {@link NoteBlockData}. It will get the custom block data from the
+     * {@link #HASH_CODE_MAP}.
+     *
+     * @param hashCode The hash code to get the {@link CustomBlockData} from
+     * @return An {@link Optional} containing the {@link CustomBlockData}
+     *         or an {@link Optional#empty()} if the given hash code is not
+     *         associated with any custom block data
+     * @see #HASH_CODE_MAP
+     */
+    public static @NotNull Optional<CustomBlockData> fromHashCode(int hashCode) {
+        return Optional.ofNullable(HASH_CODE_MAP.get(hashCode));
     }
 
     /**
@@ -120,28 +140,14 @@ public final class CustomBlockRegistry {
      * @see #fromHashCode(int)
      */
     public static @NotNull Optional<CustomBlockData> fromKey(@Nullable String key) {
-        if (StringUtils.isBlank(key)) return Optional.empty();
-
-        var hashCodes = KEY_MAP.get(key);
-
-        return hashCodes == null || hashCodes.isEmpty()
+        return StringUtils.isBlank(key)
                 ? Optional.empty()
-                : fromHashCode(hashCodes.iterator().next());
-    }
-
-    /**
-     * Gets the {@link CustomBlockData} from the given hash code of the
-     * {@link NoteBlockData}. It will get the custom block data from the
-     * {@link #HASH_CODE_MAP}.
-     *
-     * @param hashCode The hash code to get the {@link CustomBlockData} from
-     * @return An {@link Optional} containing the {@link CustomBlockData}
-     *         or an {@link Optional#empty()} if the given hash code is not
-     *         associated with any custom block data
-     * @see #HASH_CODE_MAP
-     */
-    public static @NotNull Optional<CustomBlockData> fromHashCode(int hashCode) {
-        return Optional.ofNullable(HASH_CODE_MAP.get(hashCode));
+                : Optional.ofNullable(KEY_MAP.get(key))
+                .flatMap(
+                        hashCodes -> hashCodes.isEmpty()
+                                ? Optional.empty()
+                                : fromHashCode(hashCodes.iterator().next())
+                );
     }
 
     /**
@@ -222,6 +228,14 @@ public final class CustomBlockRegistry {
     }
 
     /**
+     * @param hashCode The hash code of the note block data to check
+     * @return True if the {@link #HASH_CODE_MAP} contains the hash code
+     */
+    public static boolean containsHashCode(int hashCode) {
+        return HASH_CODE_MAP.containsKey(hashCode);
+    }
+
+    /**
      * @param key The key to check
      * @return True if the {@link #KEY_MAP} contains the key
      */
@@ -229,14 +243,6 @@ public final class CustomBlockRegistry {
     public static boolean containsKey(@Nullable String key) {
         return !StringUtils.isBlank(key)
                 && KEY_MAP.containsKey(key);
-    }
-
-    /**
-     * @param hashCode The hash code of the note block data to check
-     * @return True if the {@link #HASH_CODE_MAP} contains the hash code
-     */
-    public static boolean containsHashCode(int hashCode) {
-        return HASH_CODE_MAP.containsKey(hashCode);
     }
 
     /**
@@ -336,21 +342,18 @@ public final class CustomBlockRegistry {
      * {@link PlacingType.Directional} or {@link PlacingType.Orientable}
      * is used to generate the hash code of the note block data.
      * Make sure, that one of the note block data, block face
-     * map, or block axis map is not null, otherwise an exception
-     * will be thrown.
+     * map, or block axis map is not null.
      *
      * @param customBlockData The custom block data to register
      * @throws IllegalArgumentException If the custom block data
-     *                                  is already registered
-     * @throws NullPointerException If the BlockFaceMap and
-     *                              BlockAxisMap are both null,
-     *                              and the main NoteBlockData
-     *                              is null
+     *                                  is already registered or
+     *                                  if the custom block data
+     *                                  has unknown placing type
      * @see CustomBlockData
      * @see #KEY_MAP
      * @see #HASH_CODE_MAP
      */
-    public static void register(@NotNull CustomBlockData customBlockData) throws IllegalArgumentException, NullPointerException {
+    public static void register(@NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
         String key = customBlockData.getKey();
         PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
 

@@ -1,18 +1,20 @@
 package com.minersstudios.msitem.listeners.inventory;
 
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.util.MSDecorUtils;
-import com.minersstudios.mscore.util.MSItemUtils;
-import com.minersstudios.msitem.items.Renameable;
-import com.minersstudios.msitem.items.RenameableItem;
-import com.minersstudios.msitem.utils.CustomItemUtils;
+import com.minersstudios.mscore.util.MSCustomUtils;
+import com.minersstudios.msdecor.customdecor.CustomDecorData;
+import com.minersstudios.msitem.item.CustomItem;
+import com.minersstudios.msitem.item.renameable.RenameableItem;
+import com.minersstudios.msitem.item.renameable.RenameableItemRegistry;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
@@ -24,35 +26,60 @@ public class PrepareAnvilListener extends AbstractMSListener {
         ItemStack firstItem = event.getInventory().getFirstItem();
         String renameText = event.getInventory().getRenameText();
 
-        if (resultItem == null || firstItem == null) return;
-        if (MSItemUtils.getCustomItem(resultItem).orElse(null) instanceof Renameable renameable) {
-            ItemStack renameableItem = renameable.createRenamedItem(resultItem, renameText);
+        if (
+                resultItem == null
+                || firstItem == null
+        ) return;
 
-            if (renameableItem != null) {
-                event.setResult(renameableItem);
+        RenameableItem renameableItem = RenameableItemRegistry.fromRename(renameText, resultItem).orElse(null);
+
+        if (
+                renameableItem != null
+                && renameableItem.isWhiteListed((OfflinePlayer) event.getViewers().get(0))
+        ) {
+            ItemStack renamedItem = renameableItem.craftRenamed(resultItem, renameText);
+
+            if (renamedItem != null) {
+                event.setResult(renamedItem);
             }
         } else {
-            RenameableItem renameableItem = CustomItemUtils.getRenameableItem(resultItem, renameText);
+            ItemMeta meta = resultItem.getItemMeta();
+            var custom = MSCustomUtils.getCustom(firstItem).orElse(null);
+            ItemStack customStack = null;
 
-            if (
-                    renameableItem != null
-                    && renameableItem.isWhiteListed((OfflinePlayer) event.getViewers().get(0))
-            ) {
-                ItemStack renamedItem = renameableItem.createRenamedItem(resultItem, renameText);
-
-                if (renamedItem != null) {
-                    event.setResult(renamedItem);
-                }
-            } else if (
-                    !CustomBlockRegistry.isCustomBlock(firstItem)
-                    && !MSDecorUtils.isCustomDecor(firstItem)
-                    && !MSItemUtils.isCustomItem(firstItem)
-            ) {
-                ItemMeta itemMeta = resultItem.getItemMeta();
-                itemMeta.setCustomModelData(null);
-                resultItem.setItemMeta(itemMeta);
+            if (custom == null) {
+                meta.setCustomModelData(null);
+                resultItem.setItemMeta(meta);
                 event.setResult(resultItem);
+                return;
+            } else if (custom instanceof CustomBlockData data) {
+                customStack = data.craftItemStack();
+            } else if (custom instanceof CustomItem item) {
+                customStack = item.getItem().clone();
+            } else if (custom instanceof CustomDecorData data) {
+                customStack = data.getItemStack().clone();
             }
+
+            assert customStack != null;
+
+            ItemMeta customMeta = customStack.getItemMeta();
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+            PersistentDataContainer dataContainer = customMeta.getPersistentDataContainer();
+
+            meta.setCustomModelData(customMeta.getCustomModelData());
+            meta.lore(customMeta.lore());
+            container.getKeys().forEach(container::remove);
+
+            for (var key : dataContainer.getKeys()) {
+                String keyStr = dataContainer.get(key, PersistentDataType.STRING);
+
+                if (keyStr != null) {
+                    container.set(key, PersistentDataType.STRING, keyStr);
+                }
+            }
+
+            resultItem.setItemMeta(meta);
+            event.setResult(resultItem);
         }
     }
 }

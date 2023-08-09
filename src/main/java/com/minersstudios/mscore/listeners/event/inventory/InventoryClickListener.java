@@ -42,7 +42,10 @@ public class InventoryClickListener extends AbstractMSListener {
 
             customInventory.doClickAction(event);
 
-            if (customInventory.clickAction() == null) {
+            if (
+                    customInventory.clickAction() == null
+                    && !clickType.isCreativeAction()
+            ) {
                 event.setCancelled(true);
             }
         } else if (clickedInventory instanceof PlayerInventory) {

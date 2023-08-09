@@ -1,56 +1,53 @@
 package com.minersstudios.msitem;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.util.MSPluginUtils;
-import com.minersstudios.msitem.items.CustomItem;
-import com.minersstudios.msitem.items.RenamesMenu;
-import com.minersstudios.msitem.listeners.mechanic.DosimeterMechanic;
-import com.minersstudios.msitem.utils.ConfigCache;
-import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
+import com.minersstudios.msitem.item.CustomItemType;
 
+/**
+ * The main class of the MSItem plugin
+ *
+ * @see MSPlugin
+ */
 public final class MSItem extends MSPlugin {
     private static MSItem instance;
-    private static ConfigCache configCache;
+    private Config config;
+    private Cache cache;
+
+    @Override
+    public void load() {
+        initClass(CustomItemType.class);
+    }
 
     @Override
     public void enable() {
         instance = this;
+        this.cache = new Cache();
+        this.config = new Config(this, this.getConfigFile());
 
-        reloadConfigs();
+        this.config.reload();
     }
 
-    public static void reloadConfigs() {
-        instance.saveResource("items/example.yml", true);
-        instance.saveDefaultConfig();
-        instance.reloadConfig();
-
-        if (configCache != null) {
-            configCache.bukkitTasks.forEach(BukkitTask::cancel);
-        }
-
-        configCache = new ConfigCache();
-
-        configCache.registerItems();
-        RenamesMenu.update();
-        instance.setLoadedCustoms(true);
-
-        configCache.bukkitTasks.add(instance.runTaskTimer(DosimeterMechanic.DosimeterTask::run, 0L, configCache.dosimeterCheckRate));
-
-        instance.runTaskTimer(task -> {
-            if (MSPluginUtils.isLoadedCustoms()) {
-                configCache.recipeItems.forEach(CustomItem::registerRecipes);
-                configCache.recipeItems.clear();
-                task.cancel();
-            }
-        }, 0L, 10L);
-    }
-
-    public static @NotNull MSItem getInstance() {
+    /**
+     * @return The instance of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static MSItem getInstance() throws NullPointerException {
         return instance;
     }
 
-    public static @NotNull ConfigCache getConfigCache() {
-        return configCache;
+    /**
+     * @return The cache of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static Cache getCache() throws NullPointerException {
+        return instance.cache;
+    }
+
+    /**
+     * @return The configuration of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static Config getConfiguration() throws NullPointerException {
+        return instance.config;
     }
 }

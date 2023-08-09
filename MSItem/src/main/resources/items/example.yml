@@ -1,13 +1,15 @@
-namespaced-key: "example"
-rename-text: "Example"
+key: "example"
+renames:
+  - "Example"
+  - "Example 2"
 lore:
   - "1"
   - "2"
   - "3"
-material:
+items:
   - STICK
-  - OAK_WOOD
+  - msitems:example
 custom-model-data: 0
 show-in-rename-menu: false/true
-whitelist:
+white-list:
   - 00000000-0000-0000-0000-000000000000

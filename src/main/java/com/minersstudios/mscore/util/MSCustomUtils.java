@@ -3,11 +3,15 @@ package com.minersstudios.mscore.util;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
-import com.minersstudios.msitem.items.CustomItem;
+import com.minersstudios.msitem.item.CustomItem;
+import com.minersstudios.msitem.item.CustomItemType;
+import com.minersstudios.msitem.item.renameable.RenameableItemRegistry;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,8 +46,9 @@ public final class MSCustomUtils {
     public static @NotNull Optional<ItemStack> getItemStack(@Nullable String namespacedKeyStr) {
         if (namespacedKeyStr == null) return Optional.empty();
 
-        String namespace = namespacedKeyStr.substring(0, namespacedKeyStr.indexOf(":"));
-        String key = namespacedKeyStr.substring(namespacedKeyStr.indexOf(":") + 1);
+        int index = namespacedKeyStr.indexOf(":");
+        String namespace = namespacedKeyStr.substring(0, index);
+        String key = namespacedKeyStr.substring(index + 1);
 
         return getItemStack(namespace, key);
     }
@@ -87,7 +92,7 @@ public final class MSCustomUtils {
                 : switch (namespace) {
                     case CustomBlockRegistry.NAMESPACE -> MSBlockUtils.getCustomBlockItem(key);
                     case "msdecor" -> MSDecorUtils.getCustomDecorItem(key);
-                    case "msitems" -> MSItemUtils.getCustomItemItemStack(key);
+                    case CustomItemType.NAMESPACE -> MSItemUtils.getCustomItemItemStack(key);
                     default -> Optional.empty();
                 };
     }
@@ -112,7 +117,8 @@ public final class MSCustomUtils {
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
         for (var namespacedKey : container.getKeys()) {
-            return getCustom(namespacedKey);
+            if (namespacedKey.equals(RenameableItemRegistry.RENAMEABLE_NAMESPACED_KEY)) continue;
+            return getCustom(namespacedKey.getNamespace(), container.get(namespacedKey, PersistentDataType.STRING));
         }
 
         return Optional.empty();
@@ -177,18 +183,21 @@ public final class MSCustomUtils {
      *         or empty optional if not found
      * @see CustomBlockRegistry#fromKey(String)
      * @see MSDecorUtils#getCustomDecorData(String)
-     * @see MSItemUtils#getCustomItem(String)
+     * @see CustomItemType#fromKey(String)
      */
     public static @NotNull Optional<?> getCustom(
             @Nullable String namespace,
             @Nullable String key
     ) {
-        return namespace == null || key == null
+        return StringUtils.isBlank(namespace) || StringUtils.isBlank(key)
                 ? Optional.empty()
                 : switch (namespace) {
-                    case CustomBlockRegistry.NAMESPACE -> CustomBlockRegistry.fromKey(key);
-                    case "msdecor" -> MSDecorUtils.getCustomDecorData(key);
-                    case "msitems" -> MSItemUtils.getCustomItem(key);
+                    case CustomBlockRegistry.NAMESPACE,
+                            CustomBlockRegistry.NAMESPACE + ":type" -> CustomBlockRegistry.fromKey(key);
+                    case "msdecor",
+                            "msdecor:type" -> MSDecorUtils.getCustomDecorData(key);
+                    case CustomItemType.NAMESPACE,
+                            CustomItemType.NAMESPACE + ":type" -> CustomItemType.fromKey(key);
                     default -> Optional.empty();
                 };
     }

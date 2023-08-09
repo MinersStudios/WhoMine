@@ -2,11 +2,11 @@ package com.minersstudios.msitem.listeners.mechanic;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.util.MSItemUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msitem.MSItem;
-import com.minersstudios.msitem.items.register.items.Dosimeter;
+import com.minersstudios.msitem.item.CustomItemType;
+import com.minersstudios.msitem.item.registry.items.Dosimeter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,29 +30,33 @@ public class DosimeterMechanic extends AbstractMSListener {
     @EventHandler
     public void onPlayerSwapHandItems(@NotNull PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
-        EquipmentSlot equipmentSlot = MSItem.getConfigCache().dosimeterPlayers.get(player);
+        var players = MSItem.getCache().dosimeterPlayers;
+        EquipmentSlot equipmentSlot = players.get(player);
 
         if (equipmentSlot != null) {
-            MSItem.getConfigCache().dosimeterPlayers.put(player, equipmentSlot == EquipmentSlot.HAND ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
+            players.put(player, equipmentSlot == EquipmentSlot.HAND ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
         }
     }
 
     @EventHandler
     public void onPlayerItemHeld(@NotNull PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
-        EquipmentSlot equipmentSlot = MSItem.getConfigCache().dosimeterPlayers.get(player);
+        var players = MSItem.getCache().dosimeterPlayers;
+        EquipmentSlot equipmentSlot = players.get(player);
 
         if (equipmentSlot == EquipmentSlot.HAND) {
             ItemStack dosimeterItem = player.getInventory().getItem(event.getPreviousSlot());
 
-            if (
-                    dosimeterItem == null
-                    || !(MSItemUtils.getCustomItem(dosimeterItem).orElse(null) instanceof Dosimeter dosimeter)
-            ) return;
+            CustomItemType.fromItemStack(dosimeterItem, Dosimeter.class)
+            .ifPresent(dosimeter -> {
+                Dosimeter copy = dosimeter.copy();
 
-            dosimeter.setItemStack(dosimeterItem);
-            dosimeter.setEnabled(false);
-            MSItem.getConfigCache().dosimeterPlayers.remove(player);
+                assert dosimeterItem != null;
+
+                copy.setItem(dosimeterItem);
+                copy.setEnabled(false);
+                players.remove(player);
+            });
         }
     }
 
@@ -63,142 +67,167 @@ public class DosimeterMechanic extends AbstractMSListener {
         ClickType clickType = event.getClick();
 
         if (!(inventory instanceof PlayerInventory playerInventory)) return;
-        EquipmentSlot equipmentSlot = MSItem.getConfigCache().dosimeterPlayers.get(player);
+
+        var players = MSItem.getCache().dosimeterPlayers;
+        EquipmentSlot equipmentSlot = players.get(player);
+
         if (equipmentSlot == null) return;
 
         ItemStack dosimeterItem = playerInventory.getItem(equipmentSlot);
-        if (!(MSItemUtils.getCustomItem(dosimeterItem).orElse(null) instanceof Dosimeter dosimeter)) return;
-        EquipmentSlot newEquipmentSlot = equipmentSlot == EquipmentSlot.HAND ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
 
-        if (
-                clickType.isShiftClick()
-                || (clickType == ClickType.SWAP_OFFHAND
-                && equipmentSlot == EquipmentSlot.OFF_HAND
-                && event.getSlot() != playerInventory.getHeldItemSlot())
-        ) {
-            dosimeter.setItemStack(clickType.isShiftClick() ? Objects.requireNonNull(event.getCurrentItem()) : dosimeterItem);
-            dosimeter.setEnabled(false);
-            MSItem.getConfigCache().dosimeterPlayers.remove(player);
-            return;
-        }
+        CustomItemType.fromItemStack(dosimeterItem, Dosimeter.class)
+        .ifPresent(dosimeter -> {
+            Dosimeter copy = dosimeter.copy();
+            EquipmentSlot newEquipmentSlot = equipmentSlot == EquipmentSlot.HAND ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
 
-        this.getPlugin().runTask(() -> {
-            if (dosimeterItem.equals(playerInventory.getItem(newEquipmentSlot))) {
-                MSItem.getConfigCache().dosimeterPlayers.put(player, newEquipmentSlot);
-            } else if (
-                    !dosimeterItem.equals(playerInventory.getItem(equipmentSlot))
+            if (
+                    clickType.isShiftClick()
+                    || (clickType == ClickType.SWAP_OFFHAND
+                    && equipmentSlot == EquipmentSlot.OFF_HAND
+                    && event.getSlot() != playerInventory.getHeldItemSlot())
             ) {
-                dosimeter.setItemStack(
-                        clickType.isKeyboardClick()
-                        ? dosimeterItem
-                        : Objects.requireNonNull(event.getCursor()));
-                dosimeter.setEnabled(false);
-                MSItem.getConfigCache().dosimeterPlayers.remove(player);
+                copy.setItem(clickType.isShiftClick() ? Objects.requireNonNull(event.getCurrentItem()) : dosimeterItem);
+                copy.setEnabled(false);
+                players.remove(player);
+                return;
             }
+
+            this.getPlugin().runTask(() -> {
+                if (dosimeterItem.equals(playerInventory.getItem(newEquipmentSlot))) {
+                    players.put(player, newEquipmentSlot);
+                } else if (!dosimeterItem.equals(playerInventory.getItem(equipmentSlot))) {
+                    copy.setItem(
+                            clickType.isKeyboardClick()
+                            ? dosimeterItem
+                            : Objects.requireNonNull(event.getCursor())
+                    );
+                    copy.setEnabled(false);
+                    players.remove(player);
+                }
+            });
         });
     }
 
     @EventHandler
     public void onPlayerDropItem(@NotNull PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        EquipmentSlot equipmentSlot = MSItem.getConfigCache().dosimeterPlayers.get(player);
+        var players = MSItem.getCache().dosimeterPlayers;
+        EquipmentSlot equipmentSlot = players.get(player);
 
         if (equipmentSlot != null) {
             ItemStack drop = event.getItemDrop().getItemStack();
             ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
-            if (
-                    MSItemUtils.getCustomItem(itemStack).orElse(null) instanceof Dosimeter
-                    || !(MSItemUtils.getCustomItem(drop).orElse(null) instanceof Dosimeter dosimeter)
-            ) return;
+            CustomItemType.fromItemStack(itemStack, Dosimeter.class)
+            .ifPresent(dosimeter -> {
+                if (CustomItemType.fromItemStack(drop, Dosimeter.class).isEmpty()) return;
 
-            dosimeter.setItemStack(drop);
-            dosimeter.setEnabled(false);
-            MSItem.getConfigCache().dosimeterPlayers.remove(player);
+                Dosimeter copy = dosimeter.copy();
+
+                copy.setItem(drop);
+                copy.setEnabled(false);
+                players.remove(player);
+            });
         }
     }
 
     @EventHandler
     public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        EquipmentSlot equipmentSlot = MSItem.getConfigCache().dosimeterPlayers.remove(player);
-        if (equipmentSlot == null) return;
-        ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
+        EquipmentSlot equipmentSlot = MSItem.getCache().dosimeterPlayers.remove(player);
 
-        if (MSItemUtils.getCustomItem(itemStack).orElse(null) instanceof Dosimeter dosimeter) {
-            dosimeter.setItemStack(itemStack);
-            dosimeter.setEnabled(false);
+        if (equipmentSlot != null) {
+            ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
+
+            CustomItemType.fromItemStack(itemStack, Dosimeter.class)
+            .ifPresent(dosimeter -> {
+                Dosimeter copy = dosimeter.copy();
+
+                copy.setItem(itemStack);
+                copy.setEnabled(false);
+            });
         }
     }
 
     @EventHandler
     public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
         if (!event.getAction().isRightClick()) return;
+
         Player player = event.getPlayer();
-        PlayerInventory inventory = player.getInventory();
         EquipmentSlot hand = event.getHand();
-        if (hand == null || !hand.isHand()) return;
-        ItemStack itemInHand = inventory.getItem(hand);
 
-        if (MSItemUtils.getCustomItem(itemInHand).orElse(null) instanceof Dosimeter dosimeter) {
+        if (
+                hand == null
+                || !hand.isHand()
+        ) return;
+
+        ItemStack itemInHand = player.getInventory().getItem(hand);
+
+        CustomItemType.fromItemStack(itemInHand, Dosimeter.class)
+        .ifPresent(dosimeter -> {
+            Dosimeter copy = dosimeter.copy();
+
             event.setCancelled(true);
-            dosimeter.setItemStack(itemInHand);
-            dosimeter.setEnabled(!dosimeter.isEnabled());
+            copy.setItem(itemInHand);
+            copy.setEnabled(!copy.isEnabled());
 
-            if (dosimeter.isEnabled()) {
-                MSItem.getConfigCache().dosimeterPlayers.put(player, hand);
+            if (copy.isEnabled()) {
+                MSItem.getCache().dosimeterPlayers.put(player, hand);
             } else {
-                MSItem.getConfigCache().dosimeterPlayers.remove(player, hand);
+                MSItem.getCache().dosimeterPlayers.remove(player, hand);
             }
-        }
+        });
     }
 
     public static class DosimeterTask {
+        private static final Map<Player, EquipmentSlot> PLAYERS = MSItem.getCache().dosimeterPlayers;
 
         public static void run() {
-            if (MSItem.getConfigCache().dosimeterPlayers.isEmpty()) return;
-            MSItem.getConfigCache().dosimeterPlayers.entrySet()
-                    .stream()
-                    .filter(entry -> entry.getKey().isOnline())
-                    .forEach(entry -> {
-                        Player player = entry.getKey();
-                        ItemStack itemStack = player.getInventory().getItem(entry.getValue());
+            if (PLAYERS.isEmpty()) return;
+            PLAYERS.entrySet()
+            .stream()
+            .filter(entry -> entry.getKey().isOnline())
+            .forEach(entry -> {
+                Player player = entry.getKey();
+                ItemStack itemStack = player.getInventory().getItem(entry.getValue());
 
-                        if (MSItemUtils.getCustomItem(itemStack).orElse(null) instanceof Dosimeter dosimeter) {
-                            dosimeter.setItemStack(itemStack);
+                if (CustomItemType.fromItemStack(itemStack).orElse(null) instanceof Dosimeter dosimeter) {
+                    Dosimeter copy = dosimeter.copy();
 
-                            if (dosimeter.isEnabled()) {
-                                var radiiPlayerInside = new HashMap<Anomaly, Double>();
+                    copy.setItem(itemStack);
 
-                                for (var anomaly : MSEssentials.getCache().anomalies.values()) {
-                                    double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
+                    if (copy.isEnabled()) {
+                        var radiiPlayerInside = new HashMap<Anomaly, Double>();
 
-                                    if (radiusInside != -1.0d) {
-                                        radiiPlayerInside.put(anomaly, radiusInside);
-                                    }
-                                }
+                        for (var anomaly : MSEssentials.getCache().anomalies.values()) {
+                            double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
 
-                                var anomalyEntry = getEntryWithMinValue(radiiPlayerInside);
-                                List<Double> radii = anomalyEntry == null
-                                        ? Collections.emptyList()
-                                        : anomalyEntry.getKey().getBoundingBox().getRadii();
-                                Double radius = anomalyEntry == null
-                                        ? null
-                                        : anomalyEntry.getValue();
-
-                                dosimeter.setItemStack(itemStack);
-                                dosimeter.setScreenTypeByRadius(radii, radius);
-                                player.sendActionBar(
-                                        text("Уровень радиации : ")
-                                        .append(text(radiusToLevel(radii, radius, player.getLocation())))
-                                        .append(text(" мк3в/ч"))
-                                );
-                                return;
+                            if (radiusInside != -1.0d) {
+                                radiiPlayerInside.put(anomaly, radiusInside);
                             }
                         }
 
-                        MSItem.getConfigCache().dosimeterPlayers.remove(player);
-                    });
+                        var anomalyEntry = getEntryWithMinValue(radiiPlayerInside);
+                        List<Double> radii = anomalyEntry == null
+                                ? Collections.emptyList()
+                                : anomalyEntry.getKey().getBoundingBox().getRadii();
+                        Double radius = anomalyEntry == null
+                                ? null
+                                : anomalyEntry.getValue();
+
+                        copy.setItem(itemStack);
+                        copy.setScreenTypeByRadius(radii, radius);
+                        player.sendActionBar(
+                                text("Уровень радиации : ")
+                                .append(text(radiusToLevel(radii, radius, player.getLocation())))
+                                .append(text(" мк3в/ч"))
+                        );
+                        return;
+                    }
+                }
+
+                PLAYERS.remove(player);
+            });
         }
 
         private static @NotNull String radiusToLevel(
@@ -207,13 +236,15 @@ public class DosimeterMechanic extends AbstractMSListener {
                 @NotNull Location loc
         ) {
             var reversedRadii = new ArrayList<>(radii);
+
             Collections.reverse(reversedRadii);
+
             double indexOfRadius = reversedRadii.indexOf(radius);
             double afterComma = Math.round(((Math.abs(loc.getX()) + Math.abs(loc.getY()) + Math.abs(loc.getZ())) % 1.0d) * 10.0d) / 10.0d;
             return (indexOfRadius == -1.0d ? 0.0d : indexOfRadius + 1.0d) + Math.min(afterComma, 0.9d) + String.valueOf(Math.min(Math.round(Math.random() * 10.0d), 9));
         }
 
-        private static @Nullable Map.Entry<Anomaly, Double> getEntryWithMinValue(@NotNull HashMap<Anomaly, Double> map) {
+        private static @Nullable Map.Entry<Anomaly, Double> getEntryWithMinValue(@NotNull Map<Anomaly, Double> map) {
             return map.entrySet().stream()
                     .min(Map.Entry.comparingByValue())
                     .orElse(null);

@@ -4,11 +4,12 @@ import com.minersstudios.mscore.collections.DualMap;
 import com.minersstudios.mscore.collections.HashDualMap;
 import com.minersstudios.mscore.packet.collection.PacketListenersMap;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
-import com.minersstudios.msitem.items.CustomItem;
-import com.minersstudios.msitem.items.RenameableItem;
 import org.bukkit.inventory.Recipe;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
 /**
  * Cache for all custom data.
@@ -19,9 +20,6 @@ public final class GlobalCache {
     public final Set<String> onlyPlayerCommandSet = new HashSet<>();
     public final DualMap<String, Integer, CustomDecorData> customDecorMap = new HashDualMap<>();
     public final Queue<Recipe> customDecorRecipes = new LinkedList<>();
-    public final DualMap<String, Integer, CustomItem> customItemMap = new HashDualMap<>();
-    public final DualMap<String, Integer, RenameableItem> renameableItemMap = new HashDualMap<>();
-    public final List<RenameableItem> renameableItemsMenu = new ArrayList<>();
     public final Queue<Recipe> customItemRecipes = new LinkedList<>();
     public final Queue<Recipe> customBlockRecipes = new LinkedList<>();
 }

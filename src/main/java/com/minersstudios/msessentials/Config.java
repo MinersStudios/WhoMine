@@ -131,7 +131,7 @@ public final class Config extends MSConfig {
 
         this.plugin.runTaskAsync(() -> {
             try (var path = Files.walk(Paths.get(pluginFolder + "/anomalies"))) {
-                path
+                path.parallel()
                 .filter(file -> {
                     String fileName = file.getFileName().toString();
                     return Files.isRegularFile(file)
@@ -164,10 +164,10 @@ public final class Config extends MSConfig {
                     && !customDecorRecipes.isEmpty()
                     && !customItemRecipes.isEmpty()
             ) {
+                task.cancel();
                 CraftsMenu.putCrafts(CraftsMenu.Type.BLOCKS, customBlockRecipes);
                 CraftsMenu.putCrafts(CraftsMenu.Type.DECORS, customDecorRecipes);
                 CraftsMenu.putCrafts(CraftsMenu.Type.ITEMS, customItemRecipes);
-                task.cancel();
             }
         }, 0L, 10L);
     }

@@ -7,6 +7,7 @@ import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.file.adapter.*;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.config.ConfigurationException;
+import com.minersstudios.mscore.util.MSPluginUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.SoundCategory;
 import org.bukkit.inventory.ItemStack;
@@ -180,8 +181,13 @@ public class CustomBlockFile {
             jsonObject.remove("recipeEntries");
 
             CustomBlockData data = GSON.fromJson(jsonObject, CustomBlockData.class);
+            MSBlock.getInstance().runTaskTimer(task -> {
+                if (MSPluginUtils.isLoadedCustoms()) {
+                    task.cancel();
+                    data.registerRecipes(recipeEntries);
+                }
+            }, 0L, 10L);
 
-            MSBlock.getCache().recipesToRegister.put(data, recipeEntries);
             return data;
         }
 

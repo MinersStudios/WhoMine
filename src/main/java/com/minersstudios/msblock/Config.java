@@ -4,7 +4,6 @@ import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.config.MSConfig;
-import com.minersstudios.mscore.util.MSPluginUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public final class Config extends MSConfig {
     /**
      * Configuration constructor
      *
-     * @param file   The config file, where the configuration is stored
+     * @param file The config file, where the configuration is stored
      * @throws IllegalArgumentException If the given file does not exist
      */
     public Config(
@@ -53,17 +52,8 @@ public final class Config extends MSConfig {
         this.woodSoundStep = this.yaml.getString("wood-sound.step");
         this.woodSoundHit = this.yaml.getString("wood-sound.hit");
 
-        var recipesToRegister = MSBlock.getCache().recipesToRegister;
-
         this.plugin.saveResource("blocks/example.json", true);
         this.loadBlocks();
-        this.plugin.runTaskTimer(task -> {
-            if (MSPluginUtils.isLoadedCustoms()) {
-                recipesToRegister.forEach(CustomBlockData::registerRecipes);
-                recipesToRegister.clear();
-                task.cancel();
-            }
-        }, 0L, 10L);
     }
 
     /**
@@ -78,6 +68,8 @@ public final class Config extends MSConfig {
     }
 
     private void loadBlocks() {
+        long start = System.currentTimeMillis();
+
         try (var pathStream = Files.walk(Paths.get(this.file.getParent() + "/blocks"))) {
             pathStream.parallel()
             .filter(file -> {
@@ -96,6 +88,7 @@ public final class Config extends MSConfig {
             });
 
             this.plugin.setLoadedCustoms(true);
+            MSLogger.fine("Loaded " + CustomBlockRegistry.size() + " custom blocks in " + (System.currentTimeMillis() - start) + "ms");
         } catch (IOException e) {
             MSLogger.log(Level.SEVERE, "An error occurred while loading blocks", e);
         }

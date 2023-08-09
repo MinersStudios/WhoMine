@@ -1,12 +1,12 @@
 package com.minersstudios.msblock;
 
+import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +42,9 @@ public final class MSBlock extends MSPlugin {
             server.paperConfigurations.reloadConfigs(server);
             server.server.reloadCount++;
         }
+
+        initClass(CustomBlockData.class);
+
     }
 
     @Override
@@ -55,10 +58,10 @@ public final class MSBlock extends MSPlugin {
     }
 
     /**
-     * @return The instance of the plugin,
+     * @return The instance of the plugin
      * @throws NullPointerException If the plugin is not enabled
      */
-    public static @NotNull MSBlock getInstance() throws NullPointerException {
+    public static MSBlock getInstance() throws NullPointerException {
         return instance;
     }
 
@@ -66,7 +69,7 @@ public final class MSBlock extends MSPlugin {
      * @return The cache of the plugin
      * @throws NullPointerException If the plugin is not enabled
      */
-    public static @NotNull Cache getCache() throws NullPointerException {
+    public static Cache getCache() throws NullPointerException {
         return instance.cache;
     }
 
@@ -74,7 +77,7 @@ public final class MSBlock extends MSPlugin {
      * @return The configuration of the plugin
      * @throws NullPointerException If the plugin is not enabled
      */
-    public static @NotNull Config getConfiguration() throws NullPointerException {
+    public static Config getConfiguration() throws NullPointerException {
         return instance.config;
     }
 
@@ -82,7 +85,7 @@ public final class MSBlock extends MSPlugin {
      * @return The CoreProtectAPI instance
      * @throws NullPointerException If the {@link CoreProtect} is not enabled
      */
-    public static @NotNull CoreProtectAPI getCoreProtectAPI() throws NullPointerException {
+    public static CoreProtectAPI getCoreProtectAPI() throws NullPointerException {
         return instance.coreProtectAPI;
     }
 }

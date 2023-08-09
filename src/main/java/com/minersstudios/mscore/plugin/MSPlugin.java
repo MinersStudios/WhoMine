@@ -272,6 +272,7 @@ public abstract class MSPlugin extends JavaPlugin {
     public final void onDisable() {
         long time = System.currentTimeMillis();
 
+        this.setLoadedCustoms(false);
         this.disable();
 
         MSLogger.fine("[" + this.getName() + "] Disabled in " + (System.currentTimeMillis() - time) + "ms");
@@ -857,11 +858,13 @@ public abstract class MSPlugin extends JavaPlugin {
      *
      * @param clazz The class to load
      * @see Class#forName(String)
+     * @throws RuntimeException If the class could not be initialized
+     *                          for any reason
      */
-    protected static void initClass(@NotNull Class<?> clazz) {
+    protected static void initClass(@NotNull Class<?> clazz) throws RuntimeException {
         try {
             Class.forName(clazz.getName());
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Could not init class " + clazz.getName(), e);
         }
     }

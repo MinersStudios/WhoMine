@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
@@ -92,6 +94,49 @@ public final class ChatUtils {
             int start
     ) {
         return String.join(" ", Arrays.copyOfRange(args, start, args.length));
+    }
+
+    /**
+     * Normalizes the given text by capitalizing the first letter and
+     * converting the rest of the letters to lowercase using the
+     * {@link Locale#ROOT} locale.
+     * <br>
+     * Example:
+     * <pre>{@code
+     * normalize("hELLO");
+     * }</pre>
+     * - will return "Hello"
+     *
+     * @param text Text to be normalized
+     * @return Normalized text, or empty string if the given text is blank
+     * @see StringUtils#isBlank(CharSequence)
+     */
+    public static @NotNull String normalize(@NotNull String text) {
+        if (StringUtils.isBlank(text)) return text;
+
+        String firstLetter = text.substring(0, 1).toUpperCase(Locale.ROOT);
+        String other = text.substring(1).toLowerCase(Locale.ROOT);
+
+        return firstLetter + other;
+    }
+
+    /**
+     * Normalizes the given component by capitalizing the first letter and
+     * converting the rest of the letters to lowercase using the
+     * {@link Locale#ROOT} locale.
+     * <br>
+     * Example:
+     * <pre>{@code
+     * normalize(text("hELLO"));
+     * }</pre>
+     * - will return "Hello"
+     *
+     * @param component Component to be normalized
+     * @return Normalized component
+     * @see #normalize(String)
+     */
+    public static @NotNull Component normalize(@NotNull Component component) {
+        return text(normalize(serializePlainComponent(component))).style(component.style());
     }
 
     /**

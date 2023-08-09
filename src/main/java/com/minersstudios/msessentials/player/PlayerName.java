@@ -8,8 +8,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
-
+import static com.minersstudios.mscore.util.ChatUtils.normalize;
 import static com.minersstudios.msessentials.util.MessageUtils.Colors.*;
 import static net.kyori.adventure.text.Component.text;
 
@@ -218,22 +217,5 @@ public class PlayerName {
      */
     public @NotNull Component createGrayIDGreenName(int id) {
         return this.createName(id, NamedTextColor.GRAY, NamedTextColor.GREEN);
-    }
-
-    /**
-     * Normalizes a string, making the first letter uppercase and the rest lowercase.
-     * <br>
-     * Example: "PoLosKun" -> "Poloskun"
-     *
-     * @param string The string to normalize
-     * @return The normalized string
-     */
-    private static @NotNull String normalize(@NotNull String string) {
-        if (string.isEmpty()) return string;
-
-        String firstLetter = string.substring(0, 1).toUpperCase(Locale.ROOT);
-        String other = string.substring(1).toLowerCase(Locale.ROOT);
-
-        return firstLetter + other;
     }
 }

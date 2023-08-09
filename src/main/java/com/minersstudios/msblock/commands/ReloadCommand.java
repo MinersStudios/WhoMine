@@ -11,8 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
-
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
@@ -22,7 +20,7 @@ public class ReloadCommand {
     public static boolean runCommand(@NotNull CommandSender sender) {
         long time = System.currentTimeMillis();
         Server server = sender.getServer();
-        Iterator<Recipe> crafts = server.recipeIterator();
+        var crafts = server.recipeIterator();
 
         while (crafts.hasNext()) {
             Recipe recipe = crafts.next();

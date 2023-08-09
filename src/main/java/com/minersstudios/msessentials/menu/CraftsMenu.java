@@ -116,12 +116,6 @@ public class CraftsMenu {
                 InventoryButton.playClickSound(player);
             }
         };
-
-        CRAFTS_PREVIOUS_BUTTON = InventoryButton.create().item(previousPageItem).clickAction(previousClick);
-        CRAFTS_PREVIOUS_BUTTON_NO_CMD = InventoryButton.create()
-                .item(previousPageNoCMD)
-                .clickAction(previousClick);
-
         ButtonClickAction nextClick = (event, customInventory) -> {
             if (!(customInventory instanceof PagedCustomInventory pagedInventory)) return;
 
@@ -134,11 +128,14 @@ public class CraftsMenu {
             }
         };
 
+        CRAFTS_PREVIOUS_BUTTON = InventoryButton.create().item(previousPageItem).clickAction(previousClick);
+        CRAFTS_PREVIOUS_BUTTON_NO_CMD = InventoryButton.create()
+                .item(previousPageNoCMD)
+                .clickAction(previousClick);
         CRAFTS_NEXT_BUTTON = InventoryButton.create().item(nextPageItem).clickAction(nextClick);
         CRAFTS_NEXT_BUTTON_NO_CMD = InventoryButton.create()
                 .item(nextPageNoCMDItem)
                 .clickAction(nextClick);
-
         CRAFTS_QUIT_BUTTON = InventoryButton.create()
                 .clickAction((event, customInventory) -> {
                     Player player = (Player) event.getWhoClicked();
@@ -202,8 +199,11 @@ public class CraftsMenu {
                 elements.add(
                         InventoryButton.create()
                         .item(resultItem)
-                        .clickAction((clickEvent, inventory) -> {
-                            Player player = (Player) clickEvent.getWhoClicked();
+                        .clickAction((buttonEvent, inventory) -> {
+                            if (buttonEvent.getClick().isCreativeAction()) return;
+
+                            Player player = (Player) buttonEvent.getWhoClicked();
+
                             player.openInventory(
                                     craftInventory
                                     .buttonAt(

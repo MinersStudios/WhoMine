@@ -2,7 +2,7 @@ package com.minersstudios.msitem.listeners.mechanic;
 
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.ItemUtils;
-import com.minersstudios.msitem.items.DamageableItem;
+import com.minersstudios.msitem.item.damageable.DamageableItem;
 import org.bukkit.event.EventHandler;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.event.player.PlayerItemDamageEvent;

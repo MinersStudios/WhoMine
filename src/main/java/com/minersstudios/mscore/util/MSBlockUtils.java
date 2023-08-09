@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomBlockData}
  */
 public final class MSBlockUtils {
-    public static final String NAMESPACED_KEY_REGEX = "(msblock):(\\w+)";
+    public static final String NAMESPACED_KEY_REGEX = "(" + CustomBlockRegistry.NAMESPACE + "):(\\w+)";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(value = " -> fail")

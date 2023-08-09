@@ -2,8 +2,7 @@ package com.minersstudios.msitem.listeners.mechanic;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.util.MSItemUtils;
-import com.minersstudios.msitem.items.register.items.Cocaine;
+import com.minersstudios.msitem.item.CustomItemType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +18,7 @@ public class CocaineMechanic extends AbstractMSListener {
 
         if (
                 !(itemStack.getItemMeta() instanceof PotionMeta)
-                || !(MSItemUtils.getCustomItem(itemStack).orElse(null) instanceof Cocaine)
+                || CustomItemType.typeOf(itemStack) != CustomItemType.COCAINE
         ) return;
 
         this.getPlugin().runTask(

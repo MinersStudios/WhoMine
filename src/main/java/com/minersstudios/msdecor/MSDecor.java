@@ -6,12 +6,11 @@ import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.utils.ConfigCache;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
-import org.jetbrains.annotations.NotNull;
 
 public final class MSDecor extends MSPlugin {
     private static MSDecor instance;
-    private static CoreProtectAPI coreProtectAPI;
-    private static ConfigCache configCache;
+    private CoreProtectAPI coreProtectAPI;
+    private ConfigCache configCache;
 
     @Override
     public void enable() {
@@ -24,29 +23,29 @@ public final class MSDecor extends MSPlugin {
     public static void reloadConfigs() {
         instance.saveDefaultConfig();
         instance.reloadConfig();
-        configCache = new ConfigCache();
+        instance.configCache = new ConfigCache();
 
-        configCache.registerCustomDecors();
+        instance.configCache.registerCustomDecors();
         instance.setLoadedCustoms(true);
 
         instance.runTaskTimer(task -> {
             if (MSPluginUtils.isLoadedCustoms()) {
-                configCache.recipeDecors.forEach(CustomDecorData::registerRecipes);
-                configCache.recipeDecors.clear();
                 task.cancel();
+                instance.configCache.recipeDecors.forEach(CustomDecorData::registerRecipes);
+                instance.configCache.recipeDecors.clear();
             }
         }, 0L, 10L);
     }
 
-    public static @NotNull MSDecor getInstance() {
+    public static MSDecor getInstance() {
         return instance;
     }
 
-    public static @NotNull CoreProtectAPI getCoreProtectAPI() {
-        return coreProtectAPI;
+    public static ConfigCache getConfigCache() {
+        return instance.configCache;
     }
 
-    public static @NotNull ConfigCache getConfigCache() {
-        return configCache;
+    public static CoreProtectAPI getCoreProtectAPI() {
+        return instance.coreProtectAPI;
     }
 }

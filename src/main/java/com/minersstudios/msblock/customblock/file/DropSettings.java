@@ -36,7 +36,7 @@ public class DropSettings {
      *         by the custom block when it is broken
      */
     public @NotNull ItemStack getItem() {
-        return this.item;
+        return this.item.clone();
     }
 
     /**
