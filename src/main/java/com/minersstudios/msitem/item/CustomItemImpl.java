@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -64,7 +64,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
         this.namespacedKey = new NamespacedKey(CustomItemType.NAMESPACE, key);
         this.itemStack = itemStack;
-        this.recipes = new LinkedList<>();
+        this.recipes = new ArrayList<>();
 
         ItemMeta meta = itemStack.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();

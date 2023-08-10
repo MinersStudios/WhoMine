@@ -21,6 +21,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -138,10 +139,15 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             case 1 -> MSPlayerUtils.getLocalPlayerNames();
             case 2 -> {
                 Server server = sender.getServer();
-                yield server.getWorlds().stream()
-                        .filter(world -> !WorldDark.isWorldDark(world))
-                        .map(World::getName)
-                        .toList();
+                var names = new ArrayList<String>();
+
+                for (var world : server.getWorlds()) {
+                    if (!WorldDark.isWorldDark(world)) {
+                        names.add(world.getName());
+                    }
+                }
+
+                yield names;
             }
             case 3, 4, 5 -> {
                 Location playerLoc = null;

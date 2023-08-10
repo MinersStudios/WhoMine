@@ -176,12 +176,13 @@ public class PlayerFile {
 
     @Contract("null -> null")
     public @Nullable Skin getSkin(@Nullable String name) {
-        return StringUtils.isBlank(name)
-                ? null
-                : this.skins.stream()
-                .filter(skin -> skin.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(null);
+        if (StringUtils.isBlank(name)) return null;
+
+        for (var skin : this.skins) {
+            if (skin.getName().equalsIgnoreCase(name)) return skin;
+        }
+
+        return null;
     }
 
     public int getSkinIndex(@NotNull Skin skin) {
@@ -249,7 +250,11 @@ public class PlayerFile {
     }
 
     public boolean containsSkin(@NotNull String name) {
-        return this.skins.stream().anyMatch(skin -> skin.getName().equalsIgnoreCase(name));
+        for (var skin : this.skins) {
+            if (skin.getName().equalsIgnoreCase(name)) return true;
+        }
+
+        return false;
     }
 
     public @NotNull GameMode getGameMode() {
@@ -353,12 +358,21 @@ public class PlayerFile {
     }
 
     public @NotNull List<Skin> deserializeSkinsSection() {
-        return this.config
-                .getList("skins", Collections.emptyList())
-                .stream()
-                .filter(Map.class::isInstance)
-                .map(skin -> Skin.deserialize(skin.toString()))
-                .filter(Objects::nonNull)
-                .toList();
+        var names = this.config.getList("skins", Collections.emptyList());
+
+        if (names.isEmpty()) return Collections.emptyList();
+
+        var skins = new ArrayList<Skin>(names.size());
+
+        for (var skin : names) {
+            if (!(skin instanceof Map)) continue;
+            Skin deserialized = Skin.deserialize(skin.toString());
+
+            if (deserialized != null) {
+                skins.add(deserialized);
+            }
+        }
+
+        return skins;
     }
 }

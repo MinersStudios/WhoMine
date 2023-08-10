@@ -2,6 +2,7 @@ package com.minersstudios.mscore.util;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomBlockData}
  */
 public final class MSBlockUtils {
-    public static final String NAMESPACED_KEY_REGEX = "(" + CustomBlockRegistry.NAMESPACE + "):(\\w+)";
+    public static final String NAMESPACED_KEY_REGEX = "(" + CustomBlockRegistry.NAMESPACE + "):([a-z0-9./_-]+)";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(value = " -> fail")
@@ -33,7 +34,7 @@ public final class MSBlockUtils {
      * @see CustomBlockRegistry#fromKey(String)
      * @see CustomBlockData#craftItemStack()
      */
-    public static @NotNull Optional<ItemStack> getCustomBlockItem(@Nullable String key) {
+    public static @NotNull Optional<ItemStack> getItemStack(@Nullable String key) {
         return CustomBlockRegistry.fromKey(key).map(CustomBlockData::craftItemStack);
     }
 
@@ -43,6 +44,7 @@ public final class MSBlockUtils {
      */
     @Contract(value = "null -> false")
     public static boolean matchesNamespacedKey(@Nullable String string) {
-        return string != null && NAMESPACED_KEY_PATTERN.matcher(string).matches();
+        return StringUtils.isNotBlank(string)
+                && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }
 }

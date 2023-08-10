@@ -10,68 +10,122 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * The RenameCollection class represents a collection of
+ * renameable items and their associated renames. It allows
+ * managing and manipulating the collection of items and
+ * renames, as well as creating and applying the renaming
+ * process.
+ */
 public class RenameCollection {
     private final String key;
     private String mainName;
     private ItemStack mainItem;
-    private final Queue<String> renames;
-    private final Queue<ItemStack> items;
+    private final List<String> renames;
+    private final List<ItemStack> items;
 
+    /**
+     * Constructs a RenameCollection with the given key
+     *
+     * @param key The key associated with the collection
+     */
     public RenameCollection(@NotNull String key) {
         this.key = key;
-        this.renames = new ConcurrentLinkedQueue<>();
-        this.items = new ConcurrentLinkedQueue<>();
+        this.renames = new ArrayList<>();
+        this.items = new ArrayList<>();
     }
 
+    /**
+     * Constructs a RenameCollection with the given key,
+     * renames, and items
+     *
+     * @param key     The key associated with the collection
+     * @param renames The initial collection of renames
+     * @param items   The initial collection of items
+     */
     public RenameCollection(
             @NotNull String key,
             @NotNull Collection<String> renames,
             @NotNull Collection<ItemStack> items
     ) {
         this.key = key;
-        this.renames = new ConcurrentLinkedQueue<>();
-        this.items = new ConcurrentLinkedQueue<>();
+        this.renames = new ArrayList<>();
+        this.items = new ArrayList<>();
 
         this.addAllRenames(renames);
         this.addAllItems(items);
     }
 
+    /**
+     * @return An unmodifiable view of the collection of renames
+     */
     public @NotNull @UnmodifiableView Collection<String> renames() {
         return Collections.unmodifiableCollection(this.renames);
     }
 
+    /**
+     * @return An unmodifiable view of the collection of items
+     */
     public @NotNull @UnmodifiableView Collection<ItemStack> items() {
         return Collections.unmodifiableCollection(this.items);
     }
 
-    public @NotNull @Unmodifiable Set<Map.Entry<String, ItemStack>> entrySet() {
-        var entrySet = new ImmutableSet.Builder<Map.Entry<String, ItemStack>>();
+    /**
+     * @return An unmodifiable set of the entries in the collection
+     */
+    public @NotNull @Unmodifiable Set<RenameEntry> entrySet() {
+        var entrySet = new ImmutableSet.Builder<RenameEntry>();
 
         for (var rename : this.renames) {
             for (var item : this.items) {
-                entrySet.add(new AbstractMap.SimpleImmutableEntry<>(rename, item));
+                entrySet.add(new RenameEntry(rename, item));
             }
         }
 
         return entrySet.build();
     }
 
+    /**
+     * @return The key associated with the collection
+     */
     public @NotNull String getKey() {
         return this.key;
     }
 
-    public String getMainName() {
+    /**
+     * @return The main name of the collection
+     * @throws NullPointerException If the main name is null,
+     *                              it will happen if the collection
+     *                              is empty
+     */
+    public String getMainName() throws NullPointerException {
         return this.mainName;
     }
 
-    public ItemStack getMainItem() {
+    /**
+     * @return The copy of the main item of the collection,
+     *         main item is the item that will be used to show
+     *         the result of the renaming process
+     * @throws NullPointerException If the main item is null,
+     *                              it will happen if the collection
+     *                              is empty or if the main item was
+     *                              set to null
+     */
+    public ItemStack getMainItem() throws NullPointerException {
         return this.mainItem == null
                 ? null
                 : this.mainItem.clone();
     }
 
+    /**
+     * Sets the main item of the collection, that means
+     * the item that will be used to show the result of
+     * the renaming process
+     *
+     * @param item New main item of the collection
+     * @throws IllegalArgumentException If the item type is air
+     */
     public void setMainItem(@Nullable ItemStack item) throws IllegalArgumentException {
         if (item == null) {
             this.mainItem = null;
@@ -95,6 +149,16 @@ public class RenameCollection {
         this.mainItem.setItemMeta(meta);
     }
 
+    /**
+     * Adds a rename to the collection, if the collection
+     * is empty, the rename will be set as the main name
+     * of the collection and the main item display name
+     * will be updated to match the new main name
+     *
+     * @param rename The rename to add
+     * @return True if this collection changed as a result of
+     *         the call
+     */
     public boolean addRename(@NotNull String rename) {
         if (this.renames.isEmpty()) {
             this.setMainName(rename);
@@ -103,6 +167,16 @@ public class RenameCollection {
         return this.renames.add(rename.toLowerCase(Locale.ROOT));
     }
 
+    /**
+     * Adds a renames to the collection, if the collection
+     * is empty, the first rename will be set as the main
+     * name of the collection
+     *
+     * @param renames The renames to add
+     * @return True if this collection changed as a result of
+     *         the call
+     * @see #addRename(String)
+     */
     public boolean addAllRenames(@NotNull Collection<String> renames) {
         boolean added = false;
 
@@ -113,11 +187,29 @@ public class RenameCollection {
         return added;
     }
 
+    /**
+     * Removes a rename from the collection, the Main name
+     * will not be changed
+     *
+     * @param rename The rename to remove
+     * @return True if this list contained the specified element
+     *         and the rename is not null or blank
+     */
     public boolean removeRename(@Nullable String rename) {
-       return !StringUtils.isBlank(rename)
+       return StringUtils.isNotBlank(rename)
                && this.renames.remove(rename.toLowerCase(Locale.ROOT));
     }
 
+    /**
+     * Adds an item to the collection, if the collection
+     * is empty and the main item is null, the item will
+     * be set as the main item of the collection
+     *
+     * @param item The item to add
+     * @return True if this collection changed as a result of
+     *         the call
+     * @throws IllegalArgumentException If the item type is air
+     */
     public boolean addItem(@NotNull ItemStack item) throws IllegalArgumentException {
         Preconditions.checkArgument(!item.getType().isAir(), "Item cannot be air (in " + this.key + ")");
 
@@ -131,6 +223,16 @@ public class RenameCollection {
         return this.items.add(item);
     }
 
+    /**
+     * Adds items to the collection, if the collection
+     * is empty and the main item is null, the first item
+     * will be set as the main item of the collection
+     *
+     * @param items The items to add
+     * @return True if this collection changed as a result of
+     *         the call
+     * @see #addItem(ItemStack)
+     */
     public boolean addAllItems(@NotNull Collection<ItemStack> items) {
         boolean added = false;
 
@@ -141,48 +243,97 @@ public class RenameCollection {
         return added;
     }
 
+    /**
+     * Removes an item from the collection, the Main item
+     * will not be changed
+     *
+     * @param item The item to remove
+     * @return True if this list contained the specified element
+     *         and the item is not null
+     */
     @Contract("null -> false")
     public boolean removeItem(@Nullable ItemStack item) {
         return item != null
                 && this.items.remove(item);
     }
 
+    /**
+     * Adds all the renames and items from the other
+     * rename collection to this one
+     *
+     * @param that The other rename collection to add
+     * @return True if this collection changed as a result of
+     *         the call
+     * @see #addAllRenames(Collection)
+     * @see #addAllItems(Collection)
+     */
     public boolean addAll(@NotNull RenameCollection that) {
         return this.addAllRenames(that.renames)
                 | this.addAllItems(that.items);
     }
 
+    /**
+     * @param rename The rename to check
+     * @return True if the collection contains the rename
+     *         and the rename is not null or blank
+     */
     @Contract("null -> false")
     public boolean containsRename(@Nullable String rename) {
-        return !StringUtils.isBlank(rename)
+        return StringUtils.isNotBlank(rename)
                 && this.renames.contains(rename.toLowerCase(Locale.ROOT));
     }
 
+    /**
+     * @param renames The renames to check
+     * @return True if the collection contains all the renames
+     */
     public boolean containsAllRenames(@NotNull Collection<String> renames) {
-        return this.renames.containsAll(renames);
+        return new HashSet<>(this.renames).containsAll(renames);
     }
 
+    /**
+     * @param item The item to check
+     * @return True if the collection contains the item
+     *         and the item stack is not null
+     */
     @Contract("null -> false")
     public boolean containsItem(@Nullable ItemStack item) {
         return this.items.contains(item);
     }
 
+    /**
+     * @param items The items to check
+     * @return True if the collection contains all the items
+     */
     public boolean containsAllItems(@NotNull Collection<ItemStack> items) {
-        return this.items.containsAll(items);
+        return new HashSet<>(this.items).containsAll(items);
     }
 
+    /**
+     * @return True if the rename collection is empty
+     */
     public boolean isEmptyRenames() {
         return this.renames.isEmpty();
     }
 
+    /**
+     * @return True if the item collection is empty
+     */
     public boolean isEmptyItems() {
         return this.items.isEmpty();
     }
 
+    /**
+     * @return True if the main item and name are not null
+     */
     public boolean isInitialized() {
         return this.mainItem != null && this.mainName != null;
     }
 
+    /**
+     * @return A string representation of the rename
+     *         collection
+     */
     @Override
     public @NotNull String toString() {
         return "RenameCollection{" +
@@ -191,28 +342,63 @@ public class RenameCollection {
                 '}';
     }
 
+    /**
+     * @param obj The object to compare
+     * @return True if the object is the same as this
+     * @see #containsAllItems(Collection)
+     * @see #containsAllRenames(Collection)
+     */
     @Contract("null -> false")
     @Override
     public boolean equals(@Nullable Object obj) {
         return this == obj
                 || (obj instanceof RenameCollection that
-                && this.renames.containsAll(that.renames)
-                && this.items.containsAll(that.items));
+                && this.containsAllItems(that.items)
+                && this.containsAllRenames(that.renames));
     }
 
+    /**
+     * Removes all the renames from the collection.
+     * The Main name will not be changed.
+     */
     public void clearRenames() {
         this.renames.clear();
     }
 
+    /**
+     * Removes all the items from the collection.
+     * The Main item will not be changed.
+     */
     public void clearItems() {
         this.items.clear();
     }
 
+    /**
+     * Removes all the renames and items from the
+     * collection. The Main item and name will not be
+     * changed.
+     *
+     * @see #clearRenames()
+     * @see #clearItems()
+     */
     public void clear() {
         this.clearRenames();
         this.clearItems();
     }
 
+    /**
+     * Creates a copy of the given item with the
+     * rename metadata applied to it. The main item
+     * will be used as a base for the metadata.
+     *
+     * @param item   The item to get the rename for
+     * @param rename The rename to get the item for
+     * @return The item with the rename metadata
+     *         applied to it, or null if the item
+     *         is null, the rename is null or blank,
+     *         the collection is not initialized, or
+     *         the item is air
+     */
     @Contract("null, null -> null")
     public @Nullable ItemStack craftRenamed(
             @Nullable ItemStack item,

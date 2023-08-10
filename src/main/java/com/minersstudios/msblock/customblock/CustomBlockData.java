@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -77,7 +78,7 @@ public class CustomBlockData {
             @NotNull SoundGroup soundGroup,
             @NotNull Set<RecipeEntry> recipeEntries
     ) {
-        this.key = key;
+        this.key = key.toLowerCase(Locale.ENGLISH);
         this.blockSettings = blockSettings;
         this.dropSettings = dropSettings;
         this.soundGroup = soundGroup;

@@ -25,7 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.stream.IntStream;
 
 import static com.minersstudios.mscore.inventory.InventoryButton.playClickSound;
@@ -145,15 +145,17 @@ public class RenamesMenu {
     }
 
     public static void update() {
-        var elements = new LinkedList<InventoryButton>();
+        var elements = new ArrayList<InventoryButton>();
 
         for (var renameableItem : MSItem.getCache().renameableItemsMenu) {
             RenameCollection renameCollection = renameableItem.getRenames();
             ItemStack resultItem = renameCollection.getMainItem();
-            var renameableItemStacks = new LinkedList<>(renameCollection.items());
-            var renames = renameCollection.renames().stream().parallel()
-                    .map(ChatUtils::normalize)
-                    .toList();
+            var renameableItemStacks = new ArrayList<>(renameCollection.items());
+            var renames = new ArrayList<String>();
+
+            for (var rename : renameCollection.renames()) {
+                renames.add(ChatUtils.normalize(rename));
+            }
 
             elements.add(InventoryButton.create()
             .item(resultItem)

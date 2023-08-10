@@ -15,7 +15,7 @@ import static net.kyori.adventure.text.Component.translatable;
 public class GiveCommand {
     private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
     private static final TranslatableComponent PLAYER_NOT_ONLINE = translatable("ms.error.player_not_online");
-    private static final TranslatableComponent WRONG_ITEM = translatable("ms.command.msitem.give.wrong_block");
+    private static final TranslatableComponent WRONG_ITEM = translatable("ms.command.msitem.give.wrong_item");
     private static final TranslatableComponent WRONG_FORMAT = translatable("ms.error.wrong_format");
     private static final TranslatableComponent GIVE_SUCCESS = translatable("ms.command.msitem.give.success");
 

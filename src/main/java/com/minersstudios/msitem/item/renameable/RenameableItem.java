@@ -13,7 +13,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.File;
 import java.util.*;
@@ -21,6 +20,12 @@ import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.text;
 
+/**
+ * The RenameableItem class represents a renameable item with
+ * associated renames, white-listed players, and menu visibility.
+ * It facilitates the creation, configuration, and management of
+ * renameable items.
+ */
 public class RenameableItem {
     private final String key;
     private final RenameCollection renameCollection;
@@ -44,6 +49,22 @@ public class RenameableItem {
         }
     }
 
+    /**
+     * Creates a new RenameableItem instance with the provided
+     * parameters
+     *
+     * @param key              The unique key associated with
+     *                         the item
+     * @param showInRenameMenu Whether the item should appear
+     *                         in the rename menu
+     * @param renameCollection The collection of renames
+     *                         associated with the item
+     * @param whiteList        The set of players that are
+     *                         allowed to rename the item
+     *                         (empty set means all players
+     *                         are allowed)
+     * @return A new RenameableItem instance
+     */
     public static @NotNull RenameableItem create(
             @NotNull String key,
             boolean showInRenameMenu,
@@ -53,6 +74,14 @@ public class RenameableItem {
         return new RenameableItem(key, renameCollection, whiteList, showInRenameMenu);
     }
 
+    /**
+     * Creates a RenameableItem instance by loading its
+     * configuration from a file
+     *
+     * @param file The configuration file to load
+     * @return A RenameableItem instance loaded from the file,
+     *         or null if loading fails
+     */
     public static @Nullable RenameableItem fromFile(@NotNull File file) {
         YamlConfiguration renameableItemConfig;
 
@@ -75,7 +104,7 @@ public class RenameableItem {
         var itemsString = renameableItemConfig.getStringList("items");
         var renamesString = renameableItemConfig.getStringList("renames");
         var loreString = renameableItemConfig.getStringList("lore");
-        var lore = new LinkedList<Component>();
+        var lore = new ArrayList<Component>();
         int customModelData = renameableItemConfig.getInt("custom-model-data", -1);
         var whiteList = new HashSet<OfflinePlayer>();
 
@@ -153,36 +182,66 @@ public class RenameableItem {
         );
     }
 
+    /**
+     * @return The unique key associated with the item
+     */
     public @NotNull String getKey() {
         return this.key;
     }
 
+    /**
+     * @return The collection of renames associated with the item
+     */
     public @NotNull RenameCollection getRenames() {
         return this.renameCollection;
     }
 
-    public @NotNull @UnmodifiableView Set<OfflinePlayer> whiteListedPlayers() {
-        return Collections.unmodifiableSet(this.whiteList);
+    /**
+     * @return The set of players that are allowed to rename the
+     *         item (empty set means all players are allowed)
+     */
+    public @NotNull  Set<OfflinePlayer> getWhiteListedPlayers() {
+        return this.whiteList;
     }
 
-    public void setWhiteListedPlayers(@NotNull Set<OfflinePlayer> whiteList) {
-        this.whiteList.clear();
-        this.whiteList.addAll(whiteList);
-    }
-
+    /**
+     * @return Whether the item should appear in the rename menu
+     */
     public boolean isShowInRenameMenu() {
         return this.showInRenameMenu;
     }
 
+    /**
+     * Sets whether the item should appear in the rename menu
+     *
+     * @param showInRenameMenu The new value for the property
+     */
     public void setShowInRenameMenu(boolean showInRenameMenu) {
         this.showInRenameMenu = showInRenameMenu;
     }
 
+    /**
+     * @param player The player to check
+     * @return Whether the player is allowed to rename the item
+     *         (true if the white-list is empty)
+     */
     public boolean isWhiteListed(@Nullable OfflinePlayer player) {
         return this.whiteList.isEmpty()
                 || this.whiteList.contains(player);
     }
 
+    /**
+     * Creates a copy of the given item with the rename metadata
+     * applied to it
+     *
+     * @param item   The item to get the rename for
+     * @param rename The rename to get the item for
+     * @return The item with the rename metadata applied to it,
+     *         or null if the item is null, the rename is null
+     *         or blank, the rename collection is not initialized,
+     *         or the item is air
+     * @see RenameCollection#craftRenamed(ItemStack, String)
+     */
     @Contract("null, null -> null")
     public @Nullable ItemStack craftRenamed(
             @Nullable ItemStack item,

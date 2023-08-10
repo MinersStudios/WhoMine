@@ -77,7 +77,7 @@ public class AsyncChatListener extends AbstractMSListener {
                 String action = message.substring(message.indexOf('*') + 1).trim(),
                         speech = message.substring(0, message.indexOf('*')).trim();
 
-                if (action.length() == 0 || speech.length() == 0) {
+                if (action.isEmpty() || speech.isEmpty()) {
                     severe(player, "Используй: * [речь] * [действие]");
                 } else {
                     MessageUtils.sendRPEventMessage(player, text(speech), text(action), MessageUtils.RolePlayActionType.TODO);

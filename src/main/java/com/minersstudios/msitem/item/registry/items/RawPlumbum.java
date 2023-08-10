@@ -46,7 +46,7 @@ public class RawPlumbum extends CustomItemImpl {
                 ).setIngredient('I', Material.RAW_IRON)
                 .setIngredient('B', Material.WATER_BUCKET);
 
-        var rawPlumbumBlock = MSBlockUtils.getCustomBlockItem("raw_plumbum_block");
+        var rawPlumbumBlock = MSBlockUtils.getItemStack("raw_plumbum_block");
 
         if (rawPlumbumBlock.isEmpty()) {
             MSLogger.warning("Can't find custom block with key: raw_plumbum_block! Shaped recipe for RawPlumbum will not be registered!");

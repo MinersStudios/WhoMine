@@ -205,8 +205,8 @@ public final class PlayerUtils {
         }
 
         if (
-                !StringUtils.isBlank(value)
-                && !StringUtils.isBlank(signature)
+                StringUtils.isNotBlank(value)
+                && StringUtils.isNotBlank(signature)
         ) {
             propertyMap.put("textures", new Property("textures", value, signature));
         }
@@ -240,15 +240,19 @@ public final class PlayerUtils {
                 serverPlayer.experienceLevel
         );
 
-        players.stream().parallel()
-        .filter(forWho -> forWho.getBukkitEntity().canSee(player))
-        .forEach(forWho -> unregisterEntity(forWho, serverPlayer));
+        for (var forWho : players) {
+            if (forWho.getBukkitEntity().canSee(player)) {
+                unregisterEntity(forWho, serverPlayer);
+            }
+        }
 
         serverPlayer.gameProfile = gameProfile;
 
-        players.stream().parallel()
-        .filter(forWho -> forWho.getBukkitEntity().canSee(player))
-        .forEach(forWho -> trackAndShowEntity(forWho, serverPlayer));
+        for (var forWho : players) {
+            if (forWho.getBukkitEntity().canSee(player)) {
+                trackAndShowEntity(forWho, serverPlayer);
+            }
+        }
 
         connection.send(respawnPacket);
         serverPlayer.onUpdateAbilities();

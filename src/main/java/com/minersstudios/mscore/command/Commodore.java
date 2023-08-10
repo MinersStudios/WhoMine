@@ -16,12 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 
@@ -57,7 +53,7 @@ public final class Commodore {
             throw new ExceptionInInitializerError(e);
         }
 
-        COMMAND = (context) -> {
+        COMMAND = context -> {
             throw new UnsupportedOperationException();
         };
         SUGGESTION_PROVIDER = (context, builder) -> {
@@ -128,10 +124,25 @@ public final class Commodore {
      * @return Aliases of the command
      */
     private @NotNull List<String> getAliases(@NotNull PluginCommand command) {
-        return Stream.concat(Stream.of(command.getLabel()), command.getAliases().stream())
-                .flatMap(alias -> Stream.of(alias, this.pluginName + ":" + alias))
-                .distinct()
-                .toList();
+        var aliases = new ArrayList<String>();
+
+        aliases.add(command.getLabel());
+        aliases.addAll(command.getAliases());
+
+        for (var alias : new ArrayList<>(aliases)) {
+            aliases.add(alias);
+            aliases.add(this.pluginName + ":" + alias);
+        }
+
+        var distinctAliases = new ArrayList<String>();
+
+        for (var alias : aliases) {
+            if (!distinctAliases.contains(alias)) {
+                distinctAliases.add(alias);
+            }
+        }
+
+        return distinctAliases;
     }
 
     /**

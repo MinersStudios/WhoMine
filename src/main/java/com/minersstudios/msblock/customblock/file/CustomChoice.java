@@ -60,15 +60,15 @@ public class CustomChoice implements RecipeChoice {
         Preconditions.checkArgument(!namespacedKeys.isEmpty(), "Must have at least one namespacedKey");
 
         this.namespacedKeys = new ArrayList<>(namespacedKeys);
-        this.choices = namespacedKeys.stream()
-                .peek(namespacedKey -> {
-                    Preconditions.checkArgument(namespacedKey != null, "Cannot have null namespacedKey");
-                    Preconditions.checkArgument(PATTERN.matcher(namespacedKey).matches(), "Invalid namespacedKey: " + namespacedKey);
-                })
-                .map(MSCustomUtils::getItemStack)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
+        this.choices = new ArrayList<>();
+
+        for (var namespacedKey : namespacedKeys) {
+            Preconditions.checkArgument(namespacedKey != null, "Cannot have null namespacedKey");
+            Preconditions.checkArgument(PATTERN.matcher(namespacedKey).matches(), "Invalid namespacedKey: " + namespacedKey);
+
+            MSCustomUtils.getItemStack(namespacedKey)
+            .ifPresent(itemStack -> this.choices.add(itemStack));
+        }
     }
 
     /**
@@ -135,7 +135,11 @@ public class CustomChoice implements RecipeChoice {
      */
     @Override
     public boolean test(@NotNull ItemStack itemStack) {
-        return this.choices.stream().anyMatch(itemStack::isSimilar);
+        for (var choice : this.choices) {
+            if (choice.isSimilar(itemStack)) return true;
+        }
+
+        return false;
     }
 
     /**

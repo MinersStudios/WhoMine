@@ -141,7 +141,7 @@ public class CustomDecor {
     }
 
     private void summonArmorStand(@Nullable Component customName) {
-        this.block.getWorld().spawn(this.block.getLocation().add(0.5d, 0.0d, 0.5d), ArmorStand.class, (armorStand) -> {
+        this.block.getWorld().spawn(this.block.getLocation().add(0.5d, 0.0d, 0.5d), ArmorStand.class, armorStand -> {
             armorStand.setGravity(false);
             armorStand.setMarker(this.customDecorData.getHitBox().isSolidHitBox() || this.customDecorData.getHitBox().isStructureHitBox());
             armorStand.setSmall(
@@ -164,7 +164,7 @@ public class CustomDecor {
     }
 
     private void summonItemFrame(@NotNull BlockFace blockFace, @Nullable Component customName) {
-        this.block.getWorld().spawn(this.block.getLocation().add(0.5d, 0.0d, 0.5d), ItemFrame.class, (itemFrame) -> {
+        this.block.getWorld().spawn(this.block.getLocation().add(0.5d, 0.0d, 0.5d), ItemFrame.class, itemFrame -> {
             itemFrame.setItemDropChance(0.0f);
             itemFrame.customName(
                     customName != null

@@ -59,11 +59,11 @@ public class DiscordMap {
      * @return The id of the linked discord user or -1 if not found
      */
     public long getId(@NotNull Params params) {
-        return this.map.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(params))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(-1L);
+        for (var entry : this.map.entrySet()) {
+            if (entry.getValue().equals(params)) return entry.getKey();
+        }
+
+        return -1L;
     }
 
     /**
@@ -115,11 +115,11 @@ public class DiscordMap {
             long id,
             @NotNull Params params
     ) {
-        this.map.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(params))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .ifPresent(this.map::remove);
+        this.map.forEach((key, value) -> {
+            if (value.equals(params)) {
+                this.map.remove(key);
+            }
+        });
 
         this.map.put(id, params);
         this.saveFile();
@@ -135,11 +135,11 @@ public class DiscordMap {
      */
     public short generateCode(@NotNull PlayerInfo playerInfo) {
         if (this.codeMap.containsValue(playerInfo)) {
-            this.codeMap.entrySet().stream()
-            .filter(entry -> entry.getValue().equals(playerInfo))
-            .map(Map.Entry::getKey)
-            .findFirst()
-            .ifPresent(this.codeMap::remove);
+            this.codeMap.forEach((code, info) -> {
+                if (info.equals(playerInfo)) {
+                    this.codeMap.remove(code);
+                }
+            });
         }
 
         short code = (short) (this.random.nextInt(9000) + 1000);

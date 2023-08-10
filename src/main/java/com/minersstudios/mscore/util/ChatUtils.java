@@ -11,10 +11,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
@@ -69,6 +66,10 @@ public final class ChatUtils {
             UNDERLINED.withState(false)
     );
 
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
+    private static final PlainTextComponentSerializer PLAIN_SERIALIZER = PlainTextComponentSerializer.plainText();
+    private static final GsonComponentSerializer GSON_SERIALIZER = GsonComponentSerializer.gson();
+
     @Contract(value = " -> fail")
     private ChatUtils() {
         throw new AssertionError("Utility class");
@@ -112,12 +113,18 @@ public final class ChatUtils {
      * @see StringUtils#isBlank(CharSequence)
      */
     public static @NotNull String normalize(@NotNull String text) {
-        if (StringUtils.isBlank(text)) return text;
+        int length = text.length();
 
-        String firstLetter = text.substring(0, 1).toUpperCase(Locale.ROOT);
-        String other = text.substring(1).toLowerCase(Locale.ROOT);
+        if (length == 0) return text;
 
-        return firstLetter + other;
+        int[] codePoints = new int[length];
+        codePoints[0] = Character.toUpperCase(text.codePointAt(0));
+
+        for (int i = 1; i < length; i++) {
+            codePoints[i] = Character.toLowerCase(text.codePointAt(i));
+        }
+
+        return new String(codePoints, 0, length);
     }
 
     /**
@@ -158,7 +165,7 @@ public final class ChatUtils {
      */
     @Contract("_ -> new")
     public static @NotNull String serializeGsonComponent(@NotNull Component component) {
-        return GsonComponentSerializer.gson().serialize(component);
+        return GSON_SERIALIZER.serialize(component);
     }
 
     /**
@@ -169,7 +176,7 @@ public final class ChatUtils {
      */
     @Contract("_ -> new")
     public static @NotNull String serializeLegacyComponent(@NotNull Component component) {
-        return LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().serialize(component);
+        return LEGACY_SERIALIZER.serialize(component);
     }
 
     /**
@@ -180,7 +187,7 @@ public final class ChatUtils {
      */
     @Contract("_ -> new")
     public static @NotNull String serializePlainComponent(@NotNull Component component) {
-        return PlainTextComponentSerializer.plainText().serialize(component);
+        return PLAIN_SERIALIZER.serialize(component);
     }
 
     /**
@@ -191,7 +198,7 @@ public final class ChatUtils {
      */
     @Contract("_ -> new")
     public static @NotNull Component deserializeGsonComponent(@NotNull String text) {
-        return GsonComponentSerializer.gson().deserialize(text);
+        return GSON_SERIALIZER.deserialize(text);
     }
 
     /**
@@ -204,7 +211,7 @@ public final class ChatUtils {
      */
     @Contract("_ -> new")
     public static @NotNull Component deserializeLegacyComponent(@NotNull String text) {
-        return LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().deserialize(text);
+        return LEGACY_SERIALIZER.deserialize(text);
     }
 
     /**
@@ -215,7 +222,7 @@ public final class ChatUtils {
      */
     @Contract("_ -> new")
     public static @NotNull Component deserializePlainComponent(@NotNull String text) {
-        return PlainTextComponentSerializer.plainText().deserialize(text);
+        return PLAIN_SERIALIZER.deserialize(text);
     }
 
     /**
@@ -233,16 +240,15 @@ public final class ChatUtils {
      */
     public static @NotNull List<Component> convertStringsToComponents(
             @Nullable Style style,
-            String @NotNull [] strings
+            @NotNull Collection<String> strings
     ) {
-        var components = new ArrayList<Component>();
+        final var components = new ArrayList<Component>(strings.size());
 
         for (var string : strings) {
-            Component component = text(string);
             components.add(
                     style == null
-                    ? component
-                    : component.style(style)
+                    ? text(string)
+                    : text(string, style)
             );
         }
 
@@ -261,7 +267,7 @@ public final class ChatUtils {
      * @param strings Strings to be converted to components
      * @return List of components
      */
-    public static @NotNull List<Component> convertStringsToComponents(String @NotNull [] strings) {
+    public static @NotNull List<Component> convertStringsToComponents(@NotNull Collection<String> strings) {
         return convertStringsToComponents(DEFAULT_STYLE, strings);
     }
 
@@ -278,7 +284,7 @@ public final class ChatUtils {
      * @param other Other strings
      * @return List of components
      */
-    public static @NotNull List<Component> convertStringsToComponents(
+    public static @NotNull List<Component>  convertStringsToComponents(
             @NotNull String first,
             String @NotNull ... other
     ) {
@@ -304,10 +310,8 @@ public final class ChatUtils {
             @NotNull String first,
             String @NotNull ... other
     ) {
-        String[] strings = new String[other.length + 1];
-        strings[0] = first;
-
-        System.arraycopy(other, 0, strings, 1, other.length);
+        var strings = new ArrayList<String>(other.length + 1);
+        strings.add(0, first);
         return convertStringsToComponents(style, strings);
     }
 }

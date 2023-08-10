@@ -50,7 +50,7 @@ public class PlumbumIngot extends CustomItemImpl {
                 100
         );
 
-        var plumbumBlock = MSBlockUtils.getCustomBlockItem("plumbum_block");
+        var plumbumBlock = MSBlockUtils.getItemStack("plumbum_block");
 
         if (plumbumBlock.isEmpty()) {
             MSLogger.warning("Can't find custom block with key: plumbum_block! Shaped recipe will not be registered!");

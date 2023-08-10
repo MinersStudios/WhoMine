@@ -2,9 +2,9 @@ package com.minersstudios.msessentials.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Preconditions;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.DateUtils;
 import com.minersstudios.mscore.util.PlayerUtils;
@@ -41,7 +41,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -454,7 +453,7 @@ public class PlayerInfo {
                 || this.isSitting()
         ) return;
 
-        player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 0.2d, 0.0d), ArmorStand.class, (armorStand) -> {
+        player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 0.2d, 0.0d), ArmorStand.class, armorStand -> {
             armorStand.setMarker(true);
             armorStand.setCanTick(false);
             armorStand.setBasePlate(false);
@@ -1224,7 +1223,14 @@ public class PlayerInfo {
      */
     public boolean isVanished() {
         Player player = this.getOnlinePlayer();
-        return player != null && player.getMetadata("vanished").stream().anyMatch(MetadataValue::asBoolean);
+
+        if (player == null) return false;
+
+        for (var metadataValue : player.getMetadata("vanished")) {
+            if (metadataValue.asBoolean()) return true;
+        }
+
+        return false;
     }
 
     /**

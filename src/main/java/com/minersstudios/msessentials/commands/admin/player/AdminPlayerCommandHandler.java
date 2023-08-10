@@ -2,13 +2,12 @@ package com.minersstudios.msessentials.commands.admin.player;
 
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.DateUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.IDMap;
-import com.minersstudios.msessentials.player.skin.Skin;
 import com.minersstudios.msessentials.util.IDUtils;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -357,7 +356,16 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 
                         switch (args[3]) {
                             case "set", "remove" -> {
-                                return playerInfo == null ? EMPTY_TAB : playerInfo.getPlayerFile().getSkins().stream().map(Skin::getName).toList();
+                                if (playerInfo == null) return EMPTY_TAB;
+
+                                var skins = playerInfo.getPlayerFile().getSkins();
+                                var names = new ArrayList<String>(skins.size());
+
+                                for (var skin : skins) {
+                                    names.add(skin.getName());
+                                }
+
+                                return names;
                             }
                         }
                     }

@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public final class MSDecorUtils {
     public static final NamespacedKey CUSTOM_DECOR_TYPE_NAMESPACED_KEY = new NamespacedKey("msdecor", "type");
-    public static final String NAMESPACED_KEY_REGEX = "(msdecor):(\\w+)";
+    public static final String NAMESPACED_KEY_REGEX = "(msdecor):([a-z0-9./_-]+)";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
     public static final String ENTITY_TAG_NAME = "customDecor";
 

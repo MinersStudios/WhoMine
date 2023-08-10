@@ -133,9 +133,23 @@ public class DiggingMap {
      * @see Entry#stage()
      */
     public @Nullable Entry getBiggestStageEntry(@NotNull Block block) {
-        return this.entries(block).stream()
-                .max(Comparator.comparingInt(Entry::stage))
-                .orElse(null);
+        var entrySet = this.entries(block);
+
+        if (entrySet.isEmpty()) return null;
+
+        Entry maxStageEntry = null;
+        int maxStage = Integer.MIN_VALUE;
+
+        for (var diggingEntry : entrySet) {
+            int currentStage = diggingEntry.stage;
+
+            if (currentStage > maxStage) {
+                maxStage = currentStage;
+                maxStageEntry = diggingEntry;
+            }
+        }
+
+        return maxStageEntry;
     }
 
     /**
@@ -340,9 +354,13 @@ public class DiggingMap {
      * @return The total number of digging entries present in the DiggingMap
      */
     public int entriesSize() {
-        return this.diggingBlockMap.values().stream()
-                .mapToInt(Set::size)
-                .sum();
+        int totalSize = 0;
+
+        for (var diggingEntrySet : this.diggingBlockMap.values()) {
+            totalSize += diggingEntrySet.size();
+        }
+
+        return totalSize;
     }
 
     /**

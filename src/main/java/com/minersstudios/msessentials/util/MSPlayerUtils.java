@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ public final class MSPlayerUtils {
      * @return A list of all online players' names and IDs
      */
     public static @NotNull List<String> getLocalPlayerNames() {
-        var completions = new LinkedList<String>();
+        var completions = new ArrayList<String>();
 
         for (var player : Bukkit.getOnlinePlayers()) {
             PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);

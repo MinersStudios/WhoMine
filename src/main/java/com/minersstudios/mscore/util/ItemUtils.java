@@ -60,10 +60,15 @@ public final class ItemUtils {
      */
     public static boolean isContainsItem(
             @NotNull Collection<ItemStack> list,
-            @NotNull ItemStack item
+            @Nullable ItemStack item
     ) {
-        return !list.isEmpty()
-                && list.stream().parallel().anyMatch(listItem -> isSimilarItemStacks(listItem, item));
+        if (list.isEmpty()) return false;
+
+        for (var listItem : list) {
+            if (isSimilarItemStacks(listItem, item)) return true;
+        }
+
+        return false;
     }
 
     /**
@@ -73,6 +78,7 @@ public final class ItemUtils {
      * @param item   The item to damage
      * @return False if the {@link ItemMeta} of the item
      *         is not an instance of {@link Damageable}
+     *         or if the damage event is cancelled
      * @see #damageItem(Player, ItemStack, int)
      */
     @Contract("_, null -> false")
@@ -91,6 +97,7 @@ public final class ItemUtils {
      * @param originalDamage Damage you want to inflict on the item
      * @return False if the {@link ItemMeta} of the item
      *         is not an instance of {@link Damageable}
+     *         or if the damage event is cancelled
      * @see #damageItem(Player, EquipmentSlot, ItemStack, int)
      */
     @Contract("_, null, _ -> false")
@@ -112,6 +119,7 @@ public final class ItemUtils {
      * @param originalDamage Damage you want to inflict on the item
      * @return False if the {@link ItemMeta} of the item
      *         is not an instance of {@link Damageable}
+     *         or if the damage event is cancelled
      */
     @Contract("_, _, null, _ -> false")
     public static boolean damageItem(
@@ -149,6 +157,8 @@ public final class ItemUtils {
         if (damageableItem == null) {
             PlayerItemDamageEvent event = new PlayerItemDamageEvent(holder, item, damage, originalDamage);
             holder.getServer().getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) return false;
         }
 
         if (

@@ -79,9 +79,9 @@ public final class MSCustomUtils {
      *                  example - (example)
      * @return Optional of {@link ItemStack} object
      *         or empty optional if not found
-     * @see MSBlockUtils#getCustomBlockItem(String)
+     * @see MSBlockUtils#getItemStack(String)
      * @see MSDecorUtils#getCustomDecorItem(String)
-     * @see MSItemUtils#getCustomItemItemStack(String)
+     * @see MSItemUtils#getItemStack(String)
      */
     public static @NotNull Optional<ItemStack> getItemStack(
             @Nullable String namespace,
@@ -90,9 +90,9 @@ public final class MSCustomUtils {
         return namespace == null || key == null
                 ? Optional.empty()
                 : switch (namespace) {
-                    case CustomBlockRegistry.NAMESPACE -> MSBlockUtils.getCustomBlockItem(key);
+                    case CustomBlockRegistry.NAMESPACE -> MSBlockUtils.getItemStack(key);
                     case "msdecor" -> MSDecorUtils.getCustomDecorItem(key);
-                    case CustomItemType.NAMESPACE -> MSItemUtils.getCustomItemItemStack(key);
+                    case CustomItemType.NAMESPACE -> MSItemUtils.getItemStack(key);
                     default -> Optional.empty();
                 };
     }

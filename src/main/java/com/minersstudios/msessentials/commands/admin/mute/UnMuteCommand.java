@@ -11,6 +11,8 @@ import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
@@ -19,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
@@ -68,26 +69,27 @@ public class UnMuteCommand implements MSCommandExecutor {
     ) {
         switch (args.length) {
             case 1 -> {
-                List<String> completions = new ArrayList<>();
+                var completions = new ArrayList<String>();
                 Cache cache = MSEssentials.getCache();
                 MuteMap muteMap = cache.muteMap;
+                Server server = sender.getServer();
 
-                muteMap.uuidSet().stream()
-                .map(uuid -> sender.getServer().getOfflinePlayer(uuid))
-                .filter(muteMap::isMuted)
-                .forEach(offlinePlayer -> {
-                    UUID uuid = offlinePlayer.getUniqueId();
-                    String name = offlinePlayer.getName();
-                    int id = cache.idMap.getID(uuid, false, false);
+                for (var uuid : muteMap.uuidSet()) {
+                    OfflinePlayer offlinePlayer = server.getOfflinePlayer(uuid);
 
-                    if (id != -1) {
-                        completions.add(String.valueOf(id));
+                    if (muteMap.isMuted(offlinePlayer)) {
+                        String name = offlinePlayer.getName();
+                        int id = cache.idMap.getID(uuid, false, false);
+
+                        if (id != -1) {
+                            completions.add(String.valueOf(id));
+                        }
+
+                        if (name != null) {
+                            completions.add(name);
+                        }
                     }
-
-                    if (name != null) {
-                        completions.add(name);
-                    }
-                });
+                }
 
                 return completions;
             }

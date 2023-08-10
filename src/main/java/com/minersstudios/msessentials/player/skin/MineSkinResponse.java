@@ -81,7 +81,7 @@ public class MineSkinResponse {
         connection.setRequestProperty("User-Agent", "WhoMine/MineSkinAPI");
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-        if (!StringUtils.isBlank(apiKey)) {
+        if (StringUtils.isNotBlank(apiKey)) {
             connection.setRequestProperty("Authorization", "Bearer " + apiKey);
         }
 
@@ -91,30 +91,10 @@ public class MineSkinResponse {
 
         connection.connect();
 
-        int responseCode = connection.getResponseCode();
-        StringBuilder body = new StringBuilder();
-        InputStream is;
-
-        try {
-            is = connection.getInputStream();
-        } catch (IOException e) {
-            is = connection.getErrorStream();
-        }
-
-        if (is == null) {
-            throw new IOException("Failed to get input stream");
-        }
-
-        try (var input = new DataInputStream(is)) {
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-
-            while ((bytesRead = input.read(buffer)) != -1) {
-                body.append(new String(buffer, 0, bytesRead, StandardCharsets.UTF_8));
-            }
-        }
-
-        return new MineSkinResponse(responseCode, body.toString());
+        return new MineSkinResponse(
+                connection.getResponseCode(),
+                getBody(connection)
+        );
     }
 
     /**
@@ -141,5 +121,31 @@ public class MineSkinResponse {
      */
     public <T> @NotNull T getBodyResponse(@NotNull Class<T> clazz) {
         return GSON.fromJson(this.body, clazz);
+    }
+
+    private static @NotNull String getBody(@NotNull HttpURLConnection connection) throws IOException {
+        StringBuilder body = new StringBuilder();
+        InputStream is;
+
+        try {
+            is = connection.getInputStream();
+        } catch (IOException e) {
+            is = connection.getErrorStream();
+        }
+
+        if (is == null) {
+            throw new IOException("Failed to get input stream");
+        }
+
+        try (var input = new DataInputStream(is)) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+
+            while ((bytesRead = input.read(buffer)) != -1) {
+                body.append(new String(buffer, 0, bytesRead, StandardCharsets.UTF_8));
+            }
+        }
+
+        return body.toString();
     }
 }

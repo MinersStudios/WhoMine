@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomItem}
  */
 public final class MSItemUtils {
-    public static final String NAMESPACED_KEY_REGEX = "(" + CustomItemType.NAMESPACE + "):(\\w+)";
+    public static final String NAMESPACED_KEY_REGEX = "(" + CustomItemType.NAMESPACE + "):([a-z0-9./_-]+)";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(value = " -> fail")
@@ -33,7 +33,7 @@ public final class MSItemUtils {
      * @see CustomItemType#fromKey(String)
      * @see CustomItem#getItem()
      */
-    public static @NotNull Optional<ItemStack> getCustomItemItemStack(@Nullable String key) {
+    public static @NotNull Optional<ItemStack> getItemStack(@Nullable String key) {
         return CustomItemType.fromKey(key).map(CustomItem::getItem);
     }
 
@@ -48,7 +48,7 @@ public final class MSItemUtils {
      * @see CustomItemType#fromClass(Class)
      * @see CustomItem#getItem()
      */
-    public static @NotNull Optional<ItemStack> getCustomItemItemStack(@NotNull Class<? extends CustomItem> clazz) {
+    public static @NotNull Optional<ItemStack> getItemStack(@NotNull Class<? extends CustomItem> clazz) {
        return CustomItemType.fromClass(clazz).map(CustomItem::getItem);
     }
 

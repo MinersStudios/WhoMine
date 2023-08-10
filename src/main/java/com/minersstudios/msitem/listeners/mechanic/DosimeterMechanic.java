@@ -184,12 +184,11 @@ public class DosimeterMechanic extends AbstractMSListener {
 
         public static void run() {
             if (PLAYERS.isEmpty()) return;
-            PLAYERS.entrySet()
-            .stream()
-            .filter(entry -> entry.getKey().isOnline())
-            .forEach(entry -> {
-                Player player = entry.getKey();
-                ItemStack itemStack = player.getInventory().getItem(entry.getValue());
+            PLAYERS
+            .forEach((player, equipmentSlot) -> {
+                if (!player.isOnline()) return;
+
+                ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
                 if (CustomItemType.fromItemStack(itemStack).orElse(null) instanceof Dosimeter dosimeter) {
                     Dosimeter copy = dosimeter.copy();
@@ -245,9 +244,19 @@ public class DosimeterMechanic extends AbstractMSListener {
         }
 
         private static @Nullable Map.Entry<Anomaly, Double> getEntryWithMinValue(@NotNull Map<Anomaly, Double> map) {
-            return map.entrySet().stream()
-                    .min(Map.Entry.comparingByValue())
-                    .orElse(null);
+            Map.Entry<Anomaly, Double> minEntry = null;
+            double minValue = Double.POSITIVE_INFINITY;
+
+            for (var entry : map.entrySet()) {
+                double value = entry.getValue();
+
+                if (value < minValue) {
+                    minValue = value;
+                    minEntry = entry;
+                }
+            }
+
+            return minEntry;
         }
     }
 }

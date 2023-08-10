@@ -1,10 +1,9 @@
 package com.minersstudios.msessentials.anomalies.tasks;
 
+import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomalies.AnomalyBoundingBox;
 import com.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
-import com.minersstudios.msessentials.Config;
-import org.bukkit.entity.Player;
 
 /**
  * Particle anomaly task.
@@ -23,17 +22,15 @@ public class ParticleTask implements Runnable {
 
     @Override
     public void run() {
-        var entries = MSEssentials.getCache().playerAnomalyActionMap.entrySet();
+        var map = MSEssentials.getCache().playerAnomalyActionMap;
         var anomalies = MSEssentials.getCache().anomalies.values();
 
-        if (anomalies.isEmpty() || entries.isEmpty()) return;
+        if (anomalies.isEmpty() || map.isEmpty()) return;
 
-        MSEssentials.getInstance().runTaskAsync(() ->
-                entries
-                .forEach(entry -> entry.getValue().keySet().stream()
-                .filter(action -> action instanceof SpawnParticlesAction)
+        MSEssentials.getInstance().runTaskAsync(() -> map.forEach(
+                (player, actionMap) -> actionMap.keySet()
                 .forEach(action -> {
-                    Player player = entry.getKey();
+                    if (!(action instanceof SpawnParticlesAction)) return;
 
                     for (var anomaly : anomalies) {
                         double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
@@ -45,7 +42,7 @@ public class ParticleTask implements Runnable {
                             action.removeAction(player);
                         }
                     }
-                }))
-        );
+                })
+        ));
     }
 }

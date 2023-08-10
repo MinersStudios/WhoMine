@@ -74,11 +74,11 @@ public class IDMap {
      * @return {@link UUID} of player with this ID or null if not found
      */
     public @Nullable UUID getUUID(int id) {
-        return this.map.entrySet().stream()
-                .filter(entry -> entry.getValue() == id)
-                .findFirst()
-                .map(Map.Entry::getKey)
-                .orElse(null);
+        for (var entry : this.map.entrySet()) {
+            if (entry.getValue() == id) return entry.getKey();
+        }
+
+        return null;
     }
 
     /**

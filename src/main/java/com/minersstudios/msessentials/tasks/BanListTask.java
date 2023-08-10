@@ -22,24 +22,24 @@ public class BanListTask implements Runnable {
         Set<BanEntry<PlayerProfile>> entries = banList.getEntries();
         Instant currentInstant = Instant.now();
 
-        entries.stream()
-        .filter(entry -> {
+        for (var entry : entries) {
             Date expiration = entry.getExpiration();
-            return !this.ignoreBanSet.contains(entry)
+
+            if (
+                    !this.ignoreBanSet.contains(entry)
                     && expiration != null
-                    && expiration.toInstant().isBefore(currentInstant);
-        })
-        .forEach(entry -> {
-            PlayerProfile profile = entry.getBanTarget();
-            UUID uuid = profile.getId();
-            String name = profile.getName();
+                    && expiration.toInstant().isBefore(currentInstant)
+            ) {
+                PlayerProfile profile = entry.getBanTarget();
+                UUID uuid = profile.getId();
+                String name = profile.getName();
 
-            if (uuid == null || name == null) {
-                this.ignoreBanSet.add(entry);
-                return;
+                if (uuid == null || name == null) {
+                    this.ignoreBanSet.add(entry);
+                } else {
+                    PlayerInfo.fromProfile(uuid, name).pardon(null);
+                }
             }
-
-            PlayerInfo.fromProfile(uuid, name).pardon(null);
-        });
+        }
     }
 }

@@ -24,22 +24,24 @@ public class CardBoxMechanic extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryMoveItem(@NotNull InventoryMoveItemEvent event) {
-        if (
-                event.getDestination().getType() == InventoryType.SHULKER_BOX
-                && CustomItemType.typeOf(event.getItem()) != CustomItemType.CARDS_BICYCLE
-        ) {
-            event.setCancelled(true);
-        }
+        if (event.getDestination().getType() != InventoryType.SHULKER_BOX) return;
+
+        CustomItemType.fromItemStack(event.getItem())
+        .filter(customItem -> customItem instanceof CardsBicycle)
+        .ifPresent(
+                c -> event.setCancelled(true)
+        );
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryDrag(@NotNull InventoryDragEvent event) {
-        if (
-                event.getInventory().getType() == InventoryType.SHULKER_BOX
-                && CustomItemType.typeOf(event.getOldCursor()) == CustomItemType.CARDS_BICYCLE
-        ) {
-            event.setCancelled(true);
-        }
+        if (event.getInventory().getType() != InventoryType.SHULKER_BOX) return;
+
+        CustomItemType.fromItemStack(event.getOldCursor())
+        .filter(customItem -> customItem instanceof CardsBicycle)
+        .ifPresent(
+                c -> event.setCancelled(true)
+        );
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -51,10 +53,10 @@ public class CardBoxMechanic extends AbstractMSListener {
         if (
                 (clickedInventory != null
                 && clickedInventory.getType() == InventoryType.SHULKER_BOX
-                && CustomItemType.typeOf(cursorItem) == CustomItemType.CARDS_BICYCLE)
+                && CustomItemType.fromItemStack(cursorItem).orElse(null) instanceof CardsBicycle)
                 || (event.isShiftClick()
                 && event.getWhoClicked().getOpenInventory().getType() == InventoryType.SHULKER_BOX
-                && CustomItemType.typeOf(currentItem) == CustomItemType.CARDS_BICYCLE)
+                && CustomItemType.fromItemStack(currentItem).orElse(null) instanceof CardsBicycle)
         ) {
             event.setCancelled(true);
         }
@@ -62,12 +64,12 @@ public class CardBoxMechanic extends AbstractMSListener {
         if (cursorItem == null || currentItem == null || !event.isRightClick()) return;
         if (
                 !cursorItem.getType().isAir()
-                && CustomItemType.typeOf(currentItem) == CustomItemType.CARDS_BICYCLE
+                && CustomItemType.fromItemStack(currentItem).orElse(null) instanceof CardsBicycle
         ) {
             addCardToCardBox(event, currentItem, cursorItem);
         } else if (
                 !currentItem.getType().isAir()
-                && CustomItemType.typeOf(cursorItem) == CustomItemType.CARDS_BICYCLE
+                && CustomItemType.fromItemStack(cursorItem).orElse(null) instanceof CardsBicycle
         ) {
             addCardToCardBox(event, cursorItem, currentItem);
         }

@@ -134,7 +134,7 @@ public class WorldDark extends CraftWorld {
 
         singleton = new WorldDark();
         darkEntity = singleton.getEntitiesByClass(ItemFrame.class).stream().findFirst().orElseGet(() ->
-                singleton.spawn(singleton.getSpawnLocation(), ItemFrame.class, (entity) -> {
+                singleton.spawn(singleton.getSpawnLocation(), ItemFrame.class, entity -> {
                     entity.setGravity(false);
                     entity.setFixed(true);
                     entity.setVisible(false);

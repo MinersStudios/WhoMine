@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -118,8 +119,13 @@ public class ConcurrentHashDualMap<P, S, V> implements DualMap<P, S, V> {
 
     @Override
     public @NotNull Collection<V> values() {
-        return this.map.values().stream()
-                .map(Map.Entry::getValue)
-                .toList();
+        var entries = this.map.values();
+        var values = new ArrayList<V>(entries.size());
+
+        for (var entry : entries) {
+            values.add(entry.getValue());
+        }
+
+        return values;
     }
 }

@@ -5,6 +5,7 @@ import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockExplodeEvent;
@@ -15,14 +16,18 @@ public class BlockExplodeListener extends AbstractMSListener {
 
     @EventHandler
     public void onBlockExplode(@NotNull BlockExplodeEvent event) {
-        event.blockList().stream()
-        .filter(block -> block.getType() == Material.NOTE_BLOCK)
-        .forEach(block -> {
+        World world = event.getBlock().getWorld();
+
+        for (var block : event.blockList()) {
+            if (block.getType() != Material.NOTE_BLOCK) continue;
+
             block.setType(Material.AIR);
-            block.getWorld().dropItemNaturally(
+            world.dropItemNaturally(
                     block.getLocation(),
-                    CustomBlockRegistry.fromNoteBlock((NoteBlock) block.getBlockData()).orElse(CustomBlockData.getDefault()).craftItemStack()
+                    CustomBlockRegistry.fromNoteBlock((NoteBlock) block.getBlockData())
+                    .orElse(CustomBlockData.getDefault())
+                    .craftItemStack()
             );
-        });
+        }
     }
 }

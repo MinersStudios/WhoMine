@@ -21,6 +21,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -164,10 +165,15 @@ public class SetServerSpawn implements MSCommandExecutor {
         return switch (args.length) {
             case 1 -> {
                 Server server = sender.getServer();
-                yield server.getWorlds().stream()
-                        .filter(world -> !WorldDark.isWorldDark(world))
-                        .map(World::getName)
-                        .toList();
+                var names = new ArrayList<String>();
+
+                for (var world : server.getWorlds()) {
+                    if (!WorldDark.isWorldDark(world)) {
+                        names.add(world.getName());
+                    }
+                }
+
+                yield names;
             }
             case 2, 3, 4 -> {
                 Location playerLoc = null;

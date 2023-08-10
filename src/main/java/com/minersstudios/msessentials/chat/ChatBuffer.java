@@ -32,7 +32,7 @@ public class ChatBuffer {
         StringBuilder stringBuilder = new StringBuilder();
         int delimPos, lineCount = 0;
 
-        while (message.length() > 0) {
+        while (!message.isEmpty()) {
             delimPos = message.lastIndexOf(' ', 30);
 
             if (delimPos < 0) {
@@ -47,8 +47,8 @@ public class ChatBuffer {
             message = message.substring(delimPos + 1);
             lineCount++;
 
-            if (lineCount % 15 == 0 || message.length() == 0) {
-                queueMessage(player, stringBuilder + (message.length() == 0 ? "\n" : "...\n"));
+            if (lineCount % 15 == 0 || message.isEmpty()) {
+                queueMessage(player, stringBuilder + (message.isEmpty() ? "\n" : "...\n"));
                 stringBuilder = new StringBuilder();
             } else {
                 stringBuilder.append("\n");
@@ -103,6 +103,7 @@ public class ChatBuffer {
         for (int i = chatLines.length - 1; i >= 0; i--) {
             vehicle = spawnNameTag(vehicle, chatLines[i], player.getLocation().add(0.0d, 1.0d, 0.0d), duration, i == 0);
         }
+
         return duration;
     }
 
@@ -113,7 +114,7 @@ public class ChatBuffer {
             int duration,
             boolean firstLine
     ) {
-        return spawnPoint.getWorld().spawn(spawnPoint, AreaEffectCloud.class, (entity) -> {
+        return spawnPoint.getWorld().spawn(spawnPoint, AreaEffectCloud.class, entity -> {
             entity.customName(
                     (firstLine ? Badges.SPEECH : Component.empty())
                     .append(text(text))

@@ -142,7 +142,7 @@ public final class CustomBlockRegistry {
     public static @NotNull Optional<CustomBlockData> fromKey(@Nullable String key) {
         return StringUtils.isBlank(key)
                 ? Optional.empty()
-                : Optional.ofNullable(KEY_MAP.get(key))
+                : Optional.ofNullable(KEY_MAP.get(key.toLowerCase(Locale.ENGLISH)))
                 .flatMap(
                         hashCodes -> hashCodes.isEmpty()
                                 ? Optional.empty()
@@ -238,11 +238,12 @@ public final class CustomBlockRegistry {
     /**
      * @param key The key to check
      * @return True if the {@link #KEY_MAP} contains the key
+     *         and key is not blank or null (case-insensitive)
      */
     @Contract("null -> false")
     public static boolean containsKey(@Nullable String key) {
-        return !StringUtils.isBlank(key)
-                && KEY_MAP.containsKey(key);
+        return StringUtils.isNotBlank(key)
+                && KEY_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
 
     /**
@@ -392,7 +393,7 @@ public final class CustomBlockRegistry {
      *                                  is not registered
      */
     public static void unregister(@NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
-        String key = customBlockData.getKey();
+        String key = customBlockData.getKey().toLowerCase(Locale.ENGLISH);
         int hashCode = customBlockData.hashCode();
 
         Preconditions.checkArgument(containsKey(key), "The key " + key + " is not registered! See " + key + " custom block data!");

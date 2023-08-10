@@ -13,7 +13,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -67,7 +67,7 @@ public class MSItemCommandHandler implements MSCommandExecutor {
         return switch (args.length) {
             case 1 -> TAB;
             case 2 -> MSPlayerUtils.getLocalPlayerNames();
-            case 3 -> new LinkedList<>(CustomItemType.keySet());
+            case 3 -> new ArrayList<>(CustomItemType.keySet());
             default -> EMPTY_TAB;
         };
     }

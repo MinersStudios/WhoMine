@@ -13,11 +13,13 @@ public class InventoryDragListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryDrag(@NotNull InventoryDragEvent event) {
-        if (
-                event.getInventory() instanceof CustomInventory customInventory
-                && event.getRawSlots().stream().anyMatch(slot -> slot >= 0 && slot < customInventory.getSize())
-        ) {
-            event.setCancelled(true);
+        if (!(event.getInventory() instanceof CustomInventory customInventory)) return;
+
+        for (int slot : event.getRawSlots()) {
+            if (slot >= 0 && slot < customInventory.getSize()) {
+                event.setCancelled(true);
+                break;
+            }
         }
     }
 }

@@ -24,14 +24,18 @@ public final class MSPluginUtils {
      * @see MSItem#isLoadedCustoms()
      */
     public static boolean isLoadedCustoms() {
-        MSPlugin msDecor = MSDecor.getInstance();
-        MSPlugin msBlock = MSBlock.getInstance();
-        MSPlugin msItem = MSItem.getInstance();
-        return msDecor != null
-                && msBlock != null
-                && msItem != null
-                && msDecor.isLoadedCustoms()
-                && msBlock.isLoadedCustoms()
-                && msItem.isLoadedCustoms();
+        try {
+            MSPlugin msDecor = MSDecor.getInstance();
+            MSPlugin msBlock = MSBlock.getInstance();
+            MSPlugin msItem = MSItem.getInstance();
+            return msDecor != null
+                    && msBlock != null
+                    && msItem != null
+                    && msDecor.isLoadedCustoms()
+                    && msBlock.isLoadedCustoms()
+                    && msItem.isLoadedCustoms();
+        } catch (NoClassDefFoundError e) {
+            return false;
+        }
     }
 }

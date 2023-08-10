@@ -2,6 +2,7 @@ package com.minersstudios.mscore.util;
 
 import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -19,6 +20,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -88,15 +90,19 @@ public final class DateUtils {
             @Nullable InetAddress address
     ) {
         if (address == null) {
-            return date.atZone(DEFAULT_ZONE_ID).format(MSPlugin.getGlobalConfig().timeFormatter);
+            return date
+                    .atZone(DEFAULT_ZONE_ID)
+                    .format(MSPlugin.getGlobalConfig().timeFormatter);
         }
 
         String timeZone = getTimezone(address);
-        return date.atZone(
-                ZoneId.of(timeZone.equalsIgnoreCase("Europe/Kyiv")
-                        ? "Europe/Kiev"
-                        : timeZone
-                )).format(MSPlugin.getGlobalConfig().timeFormatter);
+        return date
+                .atZone(
+                        ZoneId.of(timeZone.equalsIgnoreCase("Europe/Kyiv")
+                                ? "Europe/Kiev"
+                                : timeZone
+                        )
+                ).format(MSPlugin.getGlobalConfig().timeFormatter);
     }
 
     /**
@@ -113,36 +119,39 @@ public final class DateUtils {
             @NotNull Instant date,
             @Nullable CommandSender sender
     ) {
-        if (sender instanceof Player player) {
-            InetSocketAddress socketAddress = player.getAddress();
-            return DateUtils.getDate(
-                    date,
-                    socketAddress != null
-                    ? socketAddress.getAddress()
-                    : null
-            );
-        }
-        return DateUtils.getDate(date, null);
+        if (!(sender instanceof Player player)) return getDate(date, null);
+
+        InetSocketAddress socketAddress = player.getAddress();
+        return getDate(
+                date,
+                socketAddress != null
+                ? socketAddress.getAddress()
+                : null
+        );
     }
 
     /**
-     * Gets time suggestions from number
+     * Gets time suggestions from a string number. Can be
+     * used for time arguments in tab completer.
      * <br>
-     * Used for command tab completer
+     * Includes : s, m, h, d, M, y
      *
-     * @param input Number of time
+     * @param input Number of time in string
      * @return Time suggestions or empty list
-     *         if the input does not match the regex
+     *         if the input is not a number
      */
     public static @NotNull List<String> getTimeSuggestions(@NotNull String input) {
-        var suggestions = new ArrayList<String>();
-        if (!input.matches("\\d+")) return suggestions;
+        if (!StringUtils.isNumeric(input)) return Collections.emptyList();
+        
+        var suggestions = new ArrayList<String>(6);
+
         suggestions.add(input + "s");
         suggestions.add(input + "m");
         suggestions.add(input + "h");
         suggestions.add(input + "d");
         suggestions.add(input + "M");
         suggestions.add(input + "y");
+
         return suggestions;
     }
 
@@ -183,10 +192,11 @@ public final class DateUtils {
         if (!matchesChrono(string)) return null;
 
         Instant now = Instant.now();
+        String numberString = string.replaceAll("[smhdMy]", "");
         String chronoUnit = string.replaceAll("\\d+", "");
 
         try {
-            long number = Long.parseLong(string.replaceAll("[smhdMy]", ""));
+            long number = Long.parseLong(numberString);
             return switch (chronoUnit) {
                         case "s" -> now.plus(number, ChronoUnit.SECONDS);
                         case "m" -> now.plus(number, ChronoUnit.MINUTES);
@@ -207,6 +217,7 @@ public final class DateUtils {
      */
     @Contract(value = "null -> false")
     public static boolean matchesChrono(@Nullable String string) {
-        return string != null && CHRONO_PATTERN.matcher(string).matches();
+        return StringUtils.isNotBlank(string) 
+                && CHRONO_PATTERN.matcher(string).matches();
     }
 }

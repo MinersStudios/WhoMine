@@ -45,9 +45,11 @@ public final class MessageUtils {
      * @param message message
      */
     public static void sendGlobalMessage(@NotNull Component message) {
-        Bukkit.getOnlinePlayers().stream()
-        .filter(player -> !WorldDark.isInWorldDark(player))
-        .forEach(player -> player.sendMessage(message));
+        for (var player : Bukkit.getOnlinePlayers()) {
+            if (!WorldDark.isInWorldDark(player)) {
+                player.sendMessage(message);
+            }
+        }
     }
 
     /**
