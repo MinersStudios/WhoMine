@@ -1,5 +1,5 @@
-namespaced-key: "bamboo_stick"
-rename-text: "Бамбуковая трость"
-material: BAMBOO
+key: "bamboo_stick"
+renames: "Бамбуковая трость"
+items: BAMBOO
 custom-model-data: 1
 show-in-rename-menu: true

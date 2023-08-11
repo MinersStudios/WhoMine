@@ -1,6 +1,6 @@
-namespaced-key: "over_brand"
-rename-text: "Кровавый полэкс"
-material: 
+key: "over_brand"
+renames: "Кровавый полэкс"
+items: 
   - WOODEN_AXE
   - STONE_AXE
   - IRON_AXE

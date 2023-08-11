@@ -1,0 +1,5 @@
+key: "gas_mask"
+renames: "Противогаз"
+items: msitems:leather_hat
+custom-model-data: 1369
+show-in-rename-menu: true

@@ -1,5 +1,5 @@
-namespaced-key: "uzi"
-rename-text: "UZI"
-material: BOW
+key: "uzi"
+renames: "UZI"
+items: BOW
 custom-model-data: 3
 show-in-rename-menu: true

@@ -1,6 +1,6 @@
-namespaced-key: "masters_katana"
-rename-text: "Огненная катана"
-material: 
+key: "masters_katana"
+renames: "Огненная катана"
+items: 
   - WOODEN_SWORD
   - STONE_SWORD
   - IRON_SWORD

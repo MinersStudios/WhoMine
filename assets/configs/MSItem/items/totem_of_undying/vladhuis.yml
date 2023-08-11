@@ -1,5 +1,5 @@
-namespaced-key: "totem_of_undying_vladhuis"
-rename-text: "vladhuis"
-material: TOTEM_OF_UNDYING
+key: "totem_of_undying_vladhuis"
+renames: "vladhuis"
+items: TOTEM_OF_UNDYING
 custom-model-data: 37
 show-in-rename-menu: false

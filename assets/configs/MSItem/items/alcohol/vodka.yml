@@ -1,6 +1,6 @@
-namespaced-key: "vodka"
-rename-text: "Бутылка водки"
-material: 
+key: "vodka"
+renames: "Бутылка водки"
+items: 
   - GLASS_BOTTLE
   - POTION
 custom-model-data: 8

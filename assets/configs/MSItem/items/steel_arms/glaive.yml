@@ -1,6 +1,6 @@
-namespaced-key: "glaive"
-rename-text: "Глефа"
-material: 
+key: "glaive"
+renames: "Глефа"
+items: 
   - WOODEN_SWORD
   - STONE_SWORD
   - IRON_SWORD

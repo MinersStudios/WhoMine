@@ -1,6 +1,6 @@
-namespaced-key: "hammer"
-rename-text: "Молот"
-material: 
+key: "hammer"
+renames: "Молот"
+items: 
   - WOODEN_AXE
   - STONE_AXE
   - IRON_AXE

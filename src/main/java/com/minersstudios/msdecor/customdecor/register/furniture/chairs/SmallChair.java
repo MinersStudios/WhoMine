@@ -1,6 +1,5 @@
 package com.minersstudios.msdecor.customdecor.register.furniture.chairs;
 
-import com.google.common.collect.Lists;
 import com.minersstudios.mscore.util.Badges;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
@@ -96,8 +95,14 @@ public class SmallChair implements Sittable, Typed {
                 .setIngredient('L', Material.LEATHER)
                 .setIngredient('A', Material.AIR);
         mangrove.setGroup(this.namespacedKey.getNamespace() + ":small_chair");
+        ShapedRecipe cherry = new ShapedRecipe(Type.CHERRY.namespacedKey, this.createItemStack(Type.CHERRY))
+                .shape("PLP", "PAP")
+                .setIngredient('P', Material.CHERRY_PLANKS)
+                .setIngredient('L', Material.LEATHER)
+                .setIngredient('A', Material.AIR);
+        cherry.setGroup(this.namespacedKey.getNamespace() + ":small_chair");
         //</editor-fold>
-        this.recipes = Lists.newArrayList(acacia, birch, crimson, darkOak, jungle, oak, spruce, warped, mangrove);
+        this.recipes = List.of(acacia, birch, crimson, darkOak, jungle, oak, spruce, warped, mangrove, cherry);
         return this.recipes;
     }
 
@@ -195,7 +200,8 @@ public class SmallChair implements Sittable, Typed {
         OAK("Дубовый стул", 1005),
         SPRUCE("Еловый стул", 1006),
         WARPED("Искажённый стул", 1007),
-        MANGROVE("Мангровый стул", 1193);
+        MANGROVE("Мангровый стул", 1193),
+        CHERRY("Вишнёвый стул", 1376);
         //</editor-fold>
 
         private final @NotNull NamespacedKey namespacedKey;

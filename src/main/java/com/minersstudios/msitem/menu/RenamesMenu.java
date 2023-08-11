@@ -178,7 +178,7 @@ public class RenamesMenu {
                 );
 
                 if (renameableItemStacks.size() > 1) {
-                    plugin.runTaskTimer(new BukkitRunnable() {
+                    new BukkitRunnable() {
                         int index = 0;
 
                         @Override
@@ -200,13 +200,13 @@ public class RenamesMenu {
                                 this.index = 0;
                             }
                         }
-                    }, 0L, 25L);
+                    }.runTaskTimer(plugin, 0L, 25L);
                 }
 
                 if (renames.size() > 1) {
                     ItemMeta meta = resultItem.getItemMeta();
 
-                    plugin.runTaskTimer(new BukkitRunnable() {
+                    new BukkitRunnable() {
                         int index = 0;
 
                         @Override
@@ -225,7 +225,7 @@ public class RenamesMenu {
                                 this.index = 0;
                             }
                         }
-                    }, 0L, 25L);
+                    }.runTaskTimer(plugin, 0L, 25L);
                 }
 
                 renameInventory.closeAction((e, customInventory) -> {

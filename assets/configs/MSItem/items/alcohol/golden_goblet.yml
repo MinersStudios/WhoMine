@@ -1,6 +1,6 @@
-namespaced-key: "golden_goblet"
-rename-text: "Золотой бокал"
-material: 
+key: "golden_goblet"
+renames: "Золотой бокал"
+items: 
   - GLASS_BOTTLE
   - POTION
 custom-model-data: 5

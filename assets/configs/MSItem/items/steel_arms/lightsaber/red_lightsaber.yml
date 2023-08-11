@@ -1,6 +1,6 @@
-namespaced-key: "red_lightsaber"
-rename-text: "Красный световой меч"
-material: 
+key: "red_lightsaber"
+renames: "Красный световой меч"
+items: 
   - WOODEN_SWORD
   - STONE_SWORD
   - IRON_SWORD

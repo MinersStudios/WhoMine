@@ -1,5 +1,5 @@
-namespaced-key: "totem_of_undying_n3ytron"
-rename-text: "n3ytron"
-material: TOTEM_OF_UNDYING
+key: "totem_of_undying_n3ytron"
+renames: "n3ytron"
+items: TOTEM_OF_UNDYING
 custom-model-data: 27
 show-in-rename-menu: false

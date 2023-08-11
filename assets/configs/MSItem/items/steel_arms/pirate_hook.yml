@@ -1,6 +1,6 @@
-namespaced-key: "pirate_hook"
-rename-text: "Пиратский крюк"
-material: 
+key: "pirate_hook"
+renames: "Пиратский крюк"
+items: 
   - WOODEN_SWORD
   - STONE_SWORD
   - IRON_SWORD

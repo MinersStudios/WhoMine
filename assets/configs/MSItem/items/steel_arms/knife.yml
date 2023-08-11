@@ -1,6 +1,6 @@
-namespaced-key: "knife"
-rename-text: "Нож"
-material: 
+key: "knife"
+renames: "Нож"
+items: 
   - WOODEN_SWORD
   - STONE_SWORD
   - IRON_SWORD

@@ -104,6 +104,7 @@ public final class ConfigCache {
         new OakNightstand().register();
         new SpruceNightstand().register();
         new WarpedNightstand().register();
+        new CherryNightstand().register();
         //</editor-fold>
     }
 }

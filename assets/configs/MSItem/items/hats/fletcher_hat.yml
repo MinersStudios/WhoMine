@@ -1,0 +1,5 @@
+key: "fletcher_hat"
+renames: "Шляпа лучника"
+items: msitems:leather_hat
+custom-model-data: 1247
+show-in-rename-menu: true

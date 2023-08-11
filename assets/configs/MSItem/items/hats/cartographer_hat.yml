@@ -1,0 +1,5 @@
+key: "cartographer_hat"
+renames: "Монокль картографа"
+items: msitems:leather_hat
+custom-model-data: 1243
+show-in-rename-menu: true

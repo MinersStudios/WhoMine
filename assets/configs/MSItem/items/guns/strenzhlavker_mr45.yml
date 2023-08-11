@@ -1,9 +1,9 @@
-namespaced-key: "strenzhlavker_mr45"
-rename-text: "Strenzhlavker MR45"
+key: "strenzhlavker_mr45"
+renames: "Strenzhlavker MR45"
 lore:
   - "§7\"Strenzhlavker MR45\" -"
   - " §7Гарант вашего выживания"
-material: BOW
+items: BOW
 custom-model-data: 4
 show-in-rename-menu: false
 whitelist:

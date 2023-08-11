@@ -1,5 +1,5 @@
-namespaced-key: "revolver"
-rename-text: "Револьвер"
-material: CROSSBOW
+key: "revolver"
+renames: "Револьвер"
+items: CROSSBOW
 custom-model-data: 3
 show-in-rename-menu: true

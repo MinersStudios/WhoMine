@@ -1,7 +1,0 @@
-namespaced-key: "backpack_magenta"
-rename-text: "Рюкзак"
-material: 
- - MAGENTA_SHULKER_BOX
- - SHULKER_BOX
-custom-model-data: 10
-show-in-rename-menu: true

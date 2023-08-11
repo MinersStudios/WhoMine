@@ -1,6 +1,5 @@
 package com.minersstudios.msdecor.customdecor.register.furniture.tables;
 
-import com.google.common.collect.Lists;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.customdecor.SoundGroup;
@@ -109,8 +108,16 @@ public class BigTable implements Typed {
                 )
                 .setIngredient('P', Material.MANGROVE_PLANKS);
         mangrove.setGroup(this.namespacedKey.getNamespace() + ":big_table");
+        ShapedRecipe cherry = new ShapedRecipe(Type.CHERRY.namespacedKey, this.createItemStack(Type.CHERRY))
+                .shape(
+                        "PPP",
+                        "P P",
+                        "P P"
+                )
+                .setIngredient('P', Material.CHERRY_PLANKS);
+        cherry.setGroup(this.namespacedKey.getNamespace() + ":big_table");
         //</editor-fold>
-        this.recipes = Lists.newArrayList(acacia, birch, crimson, darkOak, jungle, oak, spruce, warped, mangrove);
+        this.recipes = List.of(acacia, birch, crimson, darkOak, jungle, oak, spruce, warped, mangrove, cherry);
         return this.recipes;
     }
 
@@ -198,7 +205,8 @@ public class BigTable implements Typed {
         OAK("Дубовый стол", 1064),
         SPRUCE("Еловый стол", 1066),
         WARPED("Искажённый стол", 1068),
-        MANGROVE("Мангровый стол", 1199);
+        MANGROVE("Мангровый стол", 1199),
+        CHERRY("Вишнёвый стол", 1382);
         //</editor-fold>
 
         private final @NotNull NamespacedKey namespacedKey;

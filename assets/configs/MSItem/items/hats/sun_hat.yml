@@ -1,0 +1,5 @@
+key: "sun_hat"
+renames: "Соломенная шляпа"
+items: msitems:leather_hat
+custom-model-data: 1237
+show-in-rename-menu: true

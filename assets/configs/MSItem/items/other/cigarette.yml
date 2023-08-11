@@ -1,5 +1,5 @@
-namespaced-key: "cigarette"
-rename-text: "Сигарета"
-material: STICK
+key: "cigarette"
+renames: "Сигарета"
+items: STICK
 custom-model-data: 5
 show-in-rename-menu: true

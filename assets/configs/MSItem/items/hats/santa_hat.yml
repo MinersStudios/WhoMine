@@ -1,0 +1,5 @@
+key: "santa_hat"
+renames: "Колпак санты"
+items: msitems:leather_hat
+custom-model-data: 1258
+show-in-rename-menu: true

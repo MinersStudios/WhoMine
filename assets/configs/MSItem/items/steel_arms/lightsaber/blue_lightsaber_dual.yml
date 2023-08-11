@@ -1,6 +1,6 @@
-namespaced-key: "blue_lightsaber_dual"
-rename-text: "Двойной синий световой меч"
-material: 
+key: "blue_lightsaber_dual"
+renames: "Двойной синий световой меч"
+items: 
   - WOODEN_SWORD
   - STONE_SWORD
   - IRON_SWORD

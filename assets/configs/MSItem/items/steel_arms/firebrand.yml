@@ -1,6 +1,6 @@
-namespaced-key: "firebrand"
-rename-text: "Огненный полэкс"
-material: 
+key: "firebrand"
+renames: "Огненный полэкс"
+items: 
   - WOODEN_AXE
   - STONE_AXE
   - IRON_AXE

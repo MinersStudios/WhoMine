@@ -1,6 +1,6 @@
-namespaced-key: "salmon_can"
-rename-text: "Лосось в банке"
-material: 
+key: "salmon_can"
+renames: "Лосось в банке"
+items: 
  - SALMON
  - COOKED_SALMON
 custom-model-data: 1

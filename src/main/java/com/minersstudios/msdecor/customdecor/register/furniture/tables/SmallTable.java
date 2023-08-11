@@ -1,6 +1,5 @@
 package com.minersstudios.msdecor.customdecor.register.furniture.tables;
 
-import com.google.common.collect.Lists;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.customdecor.SoundGroup;
@@ -82,8 +81,13 @@ public class SmallTable implements Typed {
                 .setIngredient('P', Material.MANGROVE_PLANKS)
                 .setIngredient('A', Material.AIR);
         mangrove.setGroup(this.namespacedKey.getNamespace() + ":small_table");
+        ShapedRecipe cherry = new ShapedRecipe(Type.CHERRY.namespacedKey, this.createItemStack(Type.CHERRY))
+                .shape("PPP", "PAP")
+                .setIngredient('P', Material.CHERRY_PLANKS)
+                .setIngredient('A', Material.AIR);
+        cherry.setGroup(this.namespacedKey.getNamespace() + ":small_table");
         //</editor-fold>
-        this.recipes = Lists.newArrayList(acacia, birch, crimson, darkOak, jungle, oak, spruce, warped, mangrove);
+        this.recipes = List.of(acacia, birch, crimson, darkOak, jungle, oak, spruce, warped, mangrove, cherry);
         return this.recipes;
     }
 
@@ -171,7 +175,8 @@ public class SmallTable implements Typed {
         OAK("Маленький дубовый стол", 1080),
         SPRUCE("Маленький еловый стол", 1082),
         WARPED("Маленький искажённый стол", 1084),
-        MANGROVE("Маленький мангровый стол", 1201);
+        MANGROVE("Маленький мангровый стол", 1201),
+        CHERRY("Маленький вишнёвый стол", 1384);
         //</editor-fold>
 
         private final @NotNull NamespacedKey namespacedKey;

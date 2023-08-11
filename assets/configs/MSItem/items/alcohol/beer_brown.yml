@@ -1,6 +1,6 @@
-namespaced-key: "beer_brown"
-rename-text: "Коричневая бутылка пива"
-material: 
+key: "beer_brown"
+renames: "Коричневая бутылка пива"
+items: 
   - GLASS_BOTTLE
   - POTION
 custom-model-data: 1

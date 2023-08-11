@@ -1,6 +1,6 @@
-namespaced-key: "cod_can"
-rename-text: "Треска в банке"
-material: 
+key: "cod_can"
+renames: "Треска в банке"
+items: 
  - COD
  - COOKED_COD
 custom-model-data: 1

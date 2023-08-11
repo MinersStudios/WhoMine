@@ -1,5 +1,5 @@
-namespaced-key: "i_stick"
-rename-text: "Роскошная трость"
-material: STICK
+key: "i_stick"
+renames: "Роскошная трость"
+items: STICK
 custom-model-data: 1
 show-in-rename-menu: true

@@ -1,5 +1,5 @@
-namespaced-key: "totem_of_undying_forgettmine"
-rename-text: "forgettmine_"
-material: TOTEM_OF_UNDYING
+key: "totem_of_undying_forgettmine"
+renames: "forgettmine_"
+items: TOTEM_OF_UNDYING
 custom-model-data: 15
 show-in-rename-menu: false

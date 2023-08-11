@@ -1,0 +1,5 @@
+key: "angry_bee"
+renames: "Злая пчела"
+items: msitems:leather_hat
+custom-model-data: 1214
+show-in-rename-menu: true

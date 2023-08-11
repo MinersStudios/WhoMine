@@ -1,5 +1,5 @@
-namespaced-key: "awp"
-rename-text: "AWP"
-material: CROSSBOW
+key: "awp"
+renames: "AWP"
+items: CROSSBOW
 custom-model-data: 1
 show-in-rename-menu: true

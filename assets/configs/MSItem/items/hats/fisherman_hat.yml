@@ -1,0 +1,5 @@
+key: "fisherman_hat"
+renames: "Шляпа рыбака"
+items: msitems:leather_hat
+custom-model-data: 1246
+show-in-rename-menu: true

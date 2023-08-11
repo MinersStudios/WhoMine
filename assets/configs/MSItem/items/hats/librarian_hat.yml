@@ -1,0 +1,5 @@
+key: "librarian_hat"
+renames: "Шляпа библиотекаря"
+items: msitems:leather_hat
+custom-model-data: 1248
+show-in-rename-menu: true

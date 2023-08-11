@@ -1,5 +1,5 @@
-namespaced-key: "totem_of_undying_p4ck37"
-rename-text: "p4ck37"
-material: TOTEM_OF_UNDYING
+key: "totem_of_undying_p4ck37"
+renames: "p4ck37"
+items: TOTEM_OF_UNDYING
 custom-model-data: 28
 show-in-rename-menu: false

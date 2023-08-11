@@ -1,0 +1,5 @@
+key: "butcher_hat"
+renames: "Повязка мясника"
+items: msitems:leather_hat
+custom-model-data: 1242
+show-in-rename-menu: true

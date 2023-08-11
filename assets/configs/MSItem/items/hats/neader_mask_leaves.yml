@@ -1,0 +1,5 @@
+key: "neader_mask_leaves"
+renames: "Маска с листьями неандертальца"
+items: msitems:leather_hat
+custom-model-data: 1227
+show-in-rename-menu: true

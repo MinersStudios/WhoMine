@@ -1,0 +1,5 @@
+key: "3d_glasses"
+renames: "3Д Очки"
+items: msitems:leather_hat
+custom-model-data: 1211
+show-in-rename-menu: true

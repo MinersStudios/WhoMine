@@ -1,6 +1,6 @@
-namespaced-key: "hammer_of_gravity"
-rename-text: "Гравитационный молот"
-material: 
+key: "hammer_of_gravity"
+renames: "Гравитационный молот"
+items: 
   - WOODEN_AXE
   - STONE_AXE
   - IRON_AXE

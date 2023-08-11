@@ -1,0 +1,5 @@
+key: "cap"
+renames: "Кепка"
+items: msitems:leather_hat
+custom-model-data: 1218
+show-in-rename-menu: true

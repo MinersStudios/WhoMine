@@ -1,5 +1,5 @@
-namespaced-key: "totem_of_undying_thelasing"
-rename-text: "thelasing"
-material: TOTEM_OF_UNDYING
+key: "totem_of_undying_thelasing"
+renames: "thelasing"
+items: TOTEM_OF_UNDYING
 custom-model-data: 35
 show-in-rename-menu: false

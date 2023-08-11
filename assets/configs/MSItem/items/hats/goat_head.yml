@@ -1,0 +1,5 @@
+key: "goat_head"
+renames: "Козья голова"
+items: msitems:leather_hat
+custom-model-data: 1223
+show-in-rename-menu: true

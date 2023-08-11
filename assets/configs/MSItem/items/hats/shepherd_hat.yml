@@ -1,0 +1,5 @@
+key: "shepherd_hat"
+renames: "Шляпа пастуха"
+items: msitems:leather_hat
+custom-model-data: 1250
+show-in-rename-menu: true

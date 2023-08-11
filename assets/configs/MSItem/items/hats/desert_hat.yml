@@ -1,0 +1,5 @@
+key: "desert_hat"
+renames: "Пустынная шляпа"
+items: msitems:leather_hat
+custom-model-data: 1244
+show-in-rename-menu: true

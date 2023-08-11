@@ -1,6 +1,6 @@
-namespaced-key: "golem_gauntlet"
-rename-text: "Устарелый големский кулак"
-material: 
+key: "golem_gauntlet"
+renames: "Устарелый големский кулак"
+items: 
   - WOODEN_AXE
   - STONE_AXE
   - IRON_AXE

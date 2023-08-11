@@ -1,0 +1,5 @@
+key: "phantom"
+renames: "Фантом"
+items: msitems:leather_hat
+custom-model-data: 1216
+show-in-rename-menu: true

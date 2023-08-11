@@ -1,5 +1,5 @@
-namespaced-key: "marshmallow_stick"
-rename-text: "Маршмеллоу на палочке"
-material: BREAD
+key: "marshmallow_stick"
+renames: "Маршмеллоу на палочке"
+items: BREAD
 custom-model-data: 4
 show-in-rename-menu: true

@@ -1,6 +1,5 @@
 package com.minersstudios.msdecor.customdecor.register.furniture.chairs;
 
-import com.google.common.collect.Lists;
 import com.minersstudios.mscore.util.Badges;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
@@ -114,6 +113,14 @@ public class RockingChair implements Sittable, Typed {
                 )
                 .setIngredient('P', Material.MANGROVE_PLANKS);
         mangrove.setGroup(this.namespacedKey.getNamespace() + ":rocking_chair");
+        ShapedRecipe cherry = new ShapedRecipe(Type.CHERRY.namespacedKey, this.createItemStack(Type.CHERRY))
+                .shape(
+                        "P  ",
+                        "PPP",
+                        "PPP"
+                )
+                .setIngredient('P', Material.CHERRY_PLANKS);
+        cherry.setGroup(this.namespacedKey.getNamespace() + ":rocking_chair");
         ShapedRecipe acaciaPaintable = new ShapedRecipe(Type.PAINTABLE_ACACIA.namespacedKey, this.createItemStack(Type.PAINTABLE_ACACIA))
                 .shape(
                         "P  ",
@@ -122,7 +129,7 @@ public class RockingChair implements Sittable, Typed {
                 )
                 .setIngredient('P', Material.ACACIA_PLANKS)
                 .setIngredient('L', Material.LEATHER);
-        acacia.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
+        acaciaPaintable.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
         ShapedRecipe birchPaintable = new ShapedRecipe(Type.PAINTABLE_BIRCH.namespacedKey, this.createItemStack(Type.PAINTABLE_BIRCH))
                 .shape(
                         "P  ",
@@ -131,7 +138,7 @@ public class RockingChair implements Sittable, Typed {
                 )
                 .setIngredient('P', Material.BIRCH_PLANKS)
                 .setIngredient('L', Material.LEATHER);
-        birch.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
+        birchPaintable.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
         ShapedRecipe crimsonPaintable = new ShapedRecipe(Type.PAINTABLE_CRIMSON.namespacedKey, this.createItemStack(Type.PAINTABLE_CRIMSON))
                 .shape(
                         "P  ",
@@ -140,7 +147,7 @@ public class RockingChair implements Sittable, Typed {
                 )
                 .setIngredient('P', Material.CRIMSON_PLANKS)
                 .setIngredient('L', Material.LEATHER);
-        crimson.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
+        crimsonPaintable.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
         ShapedRecipe darkOakPaintable = new ShapedRecipe(Type.PAINTABLE_DARK_OAK.namespacedKey, this.createItemStack(Type.PAINTABLE_DARK_OAK))
                 .shape(
                         "P  ",
@@ -149,7 +156,7 @@ public class RockingChair implements Sittable, Typed {
                 )
                 .setIngredient('P', Material.DARK_OAK_PLANKS)
                 .setIngredient('L', Material.LEATHER);
-        darkOak.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
+        darkOakPaintable.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
         ShapedRecipe junglePaintable = new ShapedRecipe(Type.PAINTABLE_JUNGLE.namespacedKey, this.createItemStack(Type.PAINTABLE_JUNGLE))
                 .shape(
                         "P  ",
@@ -158,7 +165,7 @@ public class RockingChair implements Sittable, Typed {
                 )
                 .setIngredient('P', Material.JUNGLE_PLANKS)
                 .setIngredient('L', Material.LEATHER);
-        jungle.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
+        junglePaintable.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
         ShapedRecipe oakPaintable = new ShapedRecipe(Type.PAINTABLE_OAK.namespacedKey, this.createItemStack(Type.PAINTABLE_OAK))
                 .shape(
                         "P  ",
@@ -167,7 +174,7 @@ public class RockingChair implements Sittable, Typed {
                 )
                 .setIngredient('P', Material.OAK_PLANKS)
                 .setIngredient('L', Material.LEATHER);
-        oak.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
+        oakPaintable.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
         ShapedRecipe sprucePaintable = new ShapedRecipe(Type.PAINTABLE_SPRUCE.namespacedKey, this.createItemStack(Type.PAINTABLE_SPRUCE))
                 .shape(
                         "P  ",
@@ -176,7 +183,7 @@ public class RockingChair implements Sittable, Typed {
                 )
                 .setIngredient('P', Material.SPRUCE_PLANKS)
                 .setIngredient('L', Material.LEATHER);
-        spruce.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
+        sprucePaintable.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
         ShapedRecipe warpedPaintable = new ShapedRecipe(Type.PAINTABLE_WARPED.namespacedKey, this.createItemStack(Type.PAINTABLE_WARPED))
                 .shape(
                         "P  ",
@@ -185,7 +192,7 @@ public class RockingChair implements Sittable, Typed {
                 )
                 .setIngredient('P', Material.WARPED_PLANKS)
                 .setIngredient('L', Material.LEATHER);
-        warped.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
+        warpedPaintable.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
         ShapedRecipe mangrovePaintable = new ShapedRecipe(Type.PAINTABLE_MANGROVE.namespacedKey, this.createItemStack(Type.PAINTABLE_MANGROVE))
                 .shape(
                         "P  ",
@@ -194,11 +201,20 @@ public class RockingChair implements Sittable, Typed {
                 )
                 .setIngredient('P', Material.MANGROVE_PLANKS)
                 .setIngredient('L', Material.LEATHER);
-        mangrove.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
+        mangrovePaintable.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
+        ShapedRecipe cherryPaintable = new ShapedRecipe(Type.PAINTABLE_CHERRY.namespacedKey, this.createItemStack(Type.PAINTABLE_CHERRY))
+                .shape(
+                        "P  ",
+                        "PLP",
+                        "PPP"
+                )
+                .setIngredient('P', Material.CHERRY_PLANKS)
+                .setIngredient('L', Material.LEATHER);
+        cherryPaintable.setGroup(this.namespacedKey.getNamespace() + ":paintable_rocking_chair");
         //</editor-fold>
-        this.recipes = Lists.newArrayList(
-                acacia, birch, crimson, darkOak, jungle, oak, spruce, warped, mangrove,
-                acaciaPaintable, birchPaintable, crimsonPaintable, darkOakPaintable, junglePaintable, oakPaintable, sprucePaintable, warpedPaintable, mangrovePaintable
+        this.recipes = List.of(
+                acacia, birch, crimson, darkOak, jungle, oak, spruce, warped, mangrove, cherry,
+                acaciaPaintable, birchPaintable, crimsonPaintable, darkOakPaintable, junglePaintable, oakPaintable, sprucePaintable, warpedPaintable, mangrovePaintable, cherryPaintable
         );
         return this.recipes;
     }
@@ -306,7 +322,9 @@ public class RockingChair implements Sittable, Typed {
         WARPED("Искажённое кресло-качалка", 1052, null),
         PAINTABLE_WARPED("Искажённое кресло-качалка", 1053, Badges.PAINTABLE_LORE_LIST),
         MANGROVE("Мангровое кресло-качалка", 1197, null),
-        PAINTABLE_MANGROVE("Мангровое кресло-качалка", 1198, Badges.PAINTABLE_LORE_LIST);
+        PAINTABLE_MANGROVE("Мангровое кресло-качалка", 1198, Badges.PAINTABLE_LORE_LIST),
+        CHERRY("Вишнёвое кресло-качалка", 1380, null),
+        PAINTABLE_CHERRY("Вишнёвое кресло-качалка", 1381, Badges.PAINTABLE_LORE_LIST);
         //</editor-fold>
 
         private final @NotNull NamespacedKey namespacedKey;

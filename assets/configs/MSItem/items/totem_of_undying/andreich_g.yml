@@ -1,5 +1,5 @@
-namespaced-key: "totem_of_undying_andreich_g"
-rename-text: "andreich_g"
-material: TOTEM_OF_UNDYING
+key: "totem_of_undying_andreich_g"
+renames: "andreich_g"
+items: TOTEM_OF_UNDYING
 custom-model-data: 3
 show-in-rename-menu: false

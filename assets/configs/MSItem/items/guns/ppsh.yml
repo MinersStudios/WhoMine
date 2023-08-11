@@ -1,5 +1,5 @@
-namespaced-key: "ppsh"
-rename-text: "PPSH"
-material: BOW
+key: "ppsh"
+renames: "PPSH"
+items: BOW
 custom-model-data: 1
 show-in-rename-menu: true

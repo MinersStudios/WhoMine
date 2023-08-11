@@ -1,5 +1,5 @@
-namespaced-key: "walker"
-rename-text: "Ходунки"
-material: STICK
+key: "walker"
+renames: "Ходунки"
+items: STICK
 custom-model-data: 4
 show-in-rename-menu: true
