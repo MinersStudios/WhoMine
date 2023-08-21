@@ -21,10 +21,10 @@
   <a href="https://github.com/MinersStudios/WMDocs">
     <img alt="WhoMine documentation" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMDocs&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
   </a>
-  <a href="https://github.com/MinersStudios/msTextures">
+  <a href="https://github.com/MinersStudios/MSTextures">
     <img alt="MSTextures repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=msTextures&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
   </a>
-  <a href="https://github.com/MinersStudios/mstranslations">
+  <a href="https://github.com/MinersStudios/WMTranslations">
     <img alt="MSTranslations repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=msTranslations&icon_color=FB8C00&hide_border=true&theme=dark&border_radius=20&title_color=FFD29A" width="49%">
   </a>
   <a href="https://github.com/MinersStudios/WMSite">
