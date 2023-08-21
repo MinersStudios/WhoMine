@@ -1,7 +1,7 @@
 <div align="center">
   <br>
   <a href="https://minersstudios.com">
-    <img src="https://raw.githubusercontent.com/MinersStudios/.github/main/assets/logos/logo_white.png" alt="MinersStudios">
+    <img alt="MinersStudios Logo" src="https://raw.githubusercontent.com/MinersStudios/.github/main/assets/logos/logo_white.svg" width="147" height="147">
   </a>
   <br>
   <a href="https://whomine.net/discord">
