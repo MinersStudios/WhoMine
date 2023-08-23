@@ -204,14 +204,14 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length < 2) return false;
 
-        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -234,22 +234,22 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 
     @Override
     public @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         switch (args.length) {
             case 1 -> {
-                List<String> completions = new ArrayList<>();
+                final var completions = new ArrayList<String>();
 
-                for (var offlinePlayer : sender.getServer().getOfflinePlayers()) {
-                    String nickname = offlinePlayer.getName();
+                for (final var offlinePlayer : sender.getServer().getOfflinePlayers()) {
+                    final String nickname = offlinePlayer.getName();
 
                     if (nickname == null) continue;
 
-                    UUID uuid = offlinePlayer.getUniqueId();
-                    int id = MSEssentials.getCache().idMap.getID(uuid, false, false);
+                    final UUID uuid = offlinePlayer.getUniqueId();
+                    final int id = MSEssentials.getCache().idMap.getID(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));
@@ -341,25 +341,25 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
             case 5 -> {
                 switch (args[2]) {
                     case "skin" -> {
-                        OfflinePlayer offlinePlayer = null;
+                        final OfflinePlayer offlinePlayer;
 
                         if (IDUtils.matchesIDRegex(args[0])) {
-                            IDMap idMap = MSEssentials.getCache().idMap;
+                            final IDMap idMap = MSEssentials.getCache().idMap;
                             offlinePlayer = idMap.getPlayerByID(args[0]);
                         } else if (args[0].length() > 2) {
                             offlinePlayer = sender.getServer().getOfflinePlayer(args[0]);
+                        } else {
+                            return EMPTY_TAB;
                         }
 
-                        if (offlinePlayer == null) return EMPTY_TAB;
-
-                        PlayerInfo playerInfo = PlayerInfo.fromOfflinePlayer(offlinePlayer);
+                        final PlayerInfo playerInfo = PlayerInfo.fromOfflinePlayer(offlinePlayer);
 
                         switch (args[3]) {
                             case "set", "remove" -> {
                                 if (playerInfo == null) return EMPTY_TAB;
 
-                                var skins = playerInfo.getPlayerFile().getSkins();
-                                var names = new ArrayList<String>(skins.size());
+                                final var skins = playerInfo.getPlayerFile().getSkins();
+                                final var names = new ArrayList<String>(skins.size());
 
                                 for (var skin : skins) {
                                     names.add(skin.getName());
@@ -372,6 +372,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                 }
             }
         }
+
         return EMPTY_TAB;
     }
 

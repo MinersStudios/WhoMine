@@ -24,7 +24,7 @@ public class Dosimeter extends CustomItemImpl {
     static {
         KEY = "dosimeter";
         ITEM_STACK = new ItemStack(Material.LEATHER_HORSE_ARMOR);
-        ItemMeta meta = ITEM_STACK.getItemMeta();
+        final ItemMeta meta = ITEM_STACK.getItemMeta();
 
         meta.displayName(ChatUtils.createDefaultStyledText("Дозиметр радиации"));
         meta.setCustomModelData(1372);
@@ -56,8 +56,8 @@ public class Dosimeter extends CustomItemImpl {
         return this.itemStack.getItemMeta().getPersistentDataContainer().getOrDefault(this.namespacedKey, PersistentDataType.BYTE, (byte) 0) == 1;
     }
 
-    public void setEnabled(boolean enabled) {
-        ItemMeta itemMeta = this.itemStack.getItemMeta();
+    public void setEnabled(final boolean enabled) {
+        final ItemMeta itemMeta = this.itemStack.getItemMeta();
 
         if (itemMeta == null) return;
 
@@ -73,24 +73,27 @@ public class Dosimeter extends CustomItemImpl {
     }
 
     public @NotNull ScreenType getScreenType() {
-        ScreenType screenType = ScreenType.getScreenType(this.itemStack.getItemMeta().getCustomModelData());
+        final ScreenType screenType = ScreenType.getScreenType(this.itemStack.getItemMeta().getCustomModelData());
         return screenType == null ? ScreenType.OFF : screenType;
     }
 
-    public void setScreenType(@NotNull ScreenType screenType) {
-        ItemMeta itemMeta = this.itemStack.getItemMeta();
+    public void setScreenType(final @NotNull ScreenType screenType) {
+        final ItemMeta itemMeta = this.itemStack.getItemMeta();
 
         itemMeta.setCustomModelData(screenType.customModelData);
         this.itemStack.setItemMeta(itemMeta);
     }
 
-    public void setScreenTypeByRadius(@NotNull List<Double> radii, @Nullable Double radius) {
+    public void setScreenTypeByRadius(
+            final @NotNull List<Double> radii,
+            final @Nullable Double radius
+    ) {
         if (radius == null || radii.isEmpty()) {
             this.setScreenType(ScreenType.GREEN);
             return;
         }
 
-        var firstHalf = radii.subList(0, radii.size() / 2);
+        final var firstHalf = radii.subList(0, radii.size() / 2);
 
         if (firstHalf.contains(radius)) {
             this.setScreenType(ScreenType.RED);
@@ -109,7 +112,7 @@ public class Dosimeter extends CustomItemImpl {
 
         private final int customModelData;
 
-        ScreenType(int customModelData) {
+        ScreenType(final int customModelData) {
             this.customModelData = customModelData;
         }
 
@@ -117,8 +120,8 @@ public class Dosimeter extends CustomItemImpl {
             return this.customModelData;
         }
 
-        public static @Nullable ScreenType getScreenType(int customModelData) {
-            for (var screenType : VALUES) {
+        public static @Nullable ScreenType getScreenType(final int customModelData) {
+            for (final var screenType : VALUES) {
                 if (screenType.customModelData == customModelData) return screenType;
             }
 

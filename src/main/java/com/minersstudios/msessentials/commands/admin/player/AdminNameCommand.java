@@ -28,16 +28,16 @@ public class AdminNameCommand {
     private static final TranslatableComponent NOW_FULL = translatable("ms.command.player.name.now_full");
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            String @NotNull [] args,
-            @NotNull PlayerInfo playerInfo
+            final @NotNull CommandSender sender,
+            final String @NotNull [] args,
+            final @NotNull PlayerInfo playerInfo
     ) {
-        PlayerFile playerFile = playerInfo.getPlayerFile();
-        YamlConfiguration yaml = playerFile.getConfig();
-        PlayerName playerName = playerFile.getPlayerName();
-        boolean haveArg = args.length >= 4;
-        String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
-        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
+        final PlayerFile playerFile = playerInfo.getPlayerFile();
+        final YamlConfiguration yaml = playerFile.getConfig();
+        final PlayerName playerName = playerFile.getPlayerName();
+        final boolean haveArg = args.length >= 4;
+        final String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
+        final String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
             MSLogger.fine(

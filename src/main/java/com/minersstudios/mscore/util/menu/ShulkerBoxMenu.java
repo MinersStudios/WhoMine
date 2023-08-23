@@ -13,14 +13,21 @@ import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
 import org.jetbrains.annotations.NotNull;
 
 public final class ShulkerBoxMenu extends AbstractContainerMenu {
-    private static final int CONTAINER_SIZE = 27;
     private final Container container;
     private CraftInventoryView bukkitEntity;
     private final Inventory player;
 
-    public ShulkerBoxMenu(int syncId, Inventory playerInventory, Container inventory) {
+    private static final int CONTAINER_SIZE = 27;
+
+    public ShulkerBoxMenu(
+            final int syncId,
+            final Inventory playerInventory,
+            final Container inventory
+    ) {
         super(MenuType.SHULKER_BOX, syncId);
+
         checkContainerSize(inventory, CONTAINER_SIZE);
+
         this.container = inventory;
         this.player = playerInventory;
         int j;
@@ -52,17 +59,20 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player) {
+    public boolean stillValid(final @NotNull Player player) {
         return !this.checkReachable || this.container.stillValid(player);
     }
 
     @Override
-    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int slot) {
+    public @NotNull ItemStack quickMoveStack(
+            final @NotNull Player player,
+            final int slot
+    ) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot1 = this.slots.get(slot);
+        final Slot slot1 = this.slots.get(slot);
 
         if (slot1.hasItem()) {
-            ItemStack itemStack1 = slot1.getItem();
+            final ItemStack itemStack1 = slot1.getItem();
             itemstack = itemStack1.copy();
 
             if (slot < this.container.getContainerSize()) {
@@ -84,7 +94,7 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public void removed(@NotNull Player player) {
+    public void removed(final @NotNull Player player) {
         super.removed(player);
         this.container.stopOpen(player);
     }

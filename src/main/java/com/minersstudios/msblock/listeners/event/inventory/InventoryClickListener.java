@@ -31,7 +31,7 @@ public class InventoryClickListener extends AbstractMSListener {
     );
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onInventoryClick(@NotNull InventoryClickEvent event) {
+    public void onInventoryClick(final @NotNull InventoryClickEvent event) {
         if (
                 IGNORABLE_INVENTORY_TYPES.contains(event.getInventory().getType())
                 && event.isShiftClick()

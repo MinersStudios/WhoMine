@@ -40,8 +40,8 @@ public final class MSLogger {
      * @see Logger#log(Level, String)
      */
     public static void log(
-            @NotNull Level level,
-            @NotNull String message
+            final @NotNull Level level,
+            final @NotNull String message
     ) {
         LOGGER.log(level, message);
     }
@@ -58,9 +58,9 @@ public final class MSLogger {
      * @see Logger#log(Level, String, Object[])
      */
     public static void log(
-            @NotNull Level level,
-            @NotNull String message,
-            @Nullable Object @NotNull ... params
+            final @NotNull Level level,
+            final @NotNull String message,
+            final @Nullable Object @NotNull ... params
     ) {
         LOGGER.log(level, message, params);
     }
@@ -77,9 +77,9 @@ public final class MSLogger {
      * @see Logger#log(Level, String, Throwable)
      */
     public static void log(
-            @NotNull Level level,
-            @NotNull String message,
-            @NotNull Throwable throwable
+            final @NotNull Level level,
+            final @NotNull String message,
+            final @NotNull Throwable throwable
     ) {
         LOGGER.log(level, message, throwable);
     }
@@ -96,8 +96,8 @@ public final class MSLogger {
      * @see ComponentLogger#debug(Component)
      */
     public static void log(
-            @NotNull Level level,
-            @NotNull Component message
+            final @NotNull Level level,
+            final @NotNull Component message
     ) {
         switch (level.intValue()) {
             case 1000 -> COMPONENT_LOGGER.error(message);
@@ -121,9 +121,9 @@ public final class MSLogger {
      * @see ComponentLogger#debug(Component, Object...)
      */
     public static void log(
-            @NotNull Level level,
-            @NotNull Component message,
-            @Nullable Object @NotNull ... params
+            final @NotNull Level level,
+            final @NotNull Component message,
+            final @Nullable Object @NotNull ... params
     ) {
         switch (level.intValue()) {
             case 1000 -> COMPONENT_LOGGER.error(message, params);
@@ -147,9 +147,9 @@ public final class MSLogger {
      * @see ComponentLogger#debug(Component, Object...)
      */
     public static void log(
-            @NotNull Level level,
-            @NotNull Component message,
-            @NotNull Throwable throwable
+            final @NotNull Level level,
+            final @NotNull Component message,
+            final @NotNull Throwable throwable
     ) {
         switch (level.intValue()) {
             case 1000 -> COMPONENT_LOGGER.error(message, throwable);
@@ -165,7 +165,7 @@ public final class MSLogger {
      * @param message Info message {@link String}
      * @see #info(Object, Component)
      */
-    public static void info(@NotNull String message) {
+    public static void info(final @NotNull String message) {
         info(null, message);
     }
 
@@ -177,8 +177,8 @@ public final class MSLogger {
      * @see #info(Object, Component)
      */
     public static void info(
-            @Nullable Object target,
-            @NotNull String message
+            final @Nullable Object target,
+            final @NotNull String message
     ) {
         info(target, text(message));
     }
@@ -189,7 +189,7 @@ public final class MSLogger {
      * @param message Info message as {@link Component}
      * @see #info(Object, Component)
      */
-    public static void info(@NotNull Component message) {
+    public static void info(final @NotNull Component message) {
         info(null, message);
     }
 
@@ -202,8 +202,8 @@ public final class MSLogger {
      * @see #log(Level, Component)
      */
     public static void info(
-            @Nullable Object target,
-            @NotNull Component message
+            final @Nullable Object target,
+            final @NotNull Component message
     ) {
         if (
                 target instanceof ConsoleCommandSender
@@ -216,7 +216,7 @@ public final class MSLogger {
                     ? LanguageFile.renderTranslationComponent(translatableComponent)
                     : message
             );
-        } else if (target instanceof CommandSender sender) {
+        } else if (target instanceof final CommandSender sender) {
             sender.sendMessage(text(" ").append(message));
         } else {
             throw new IllegalArgumentException("Target must be a CommandSender or null!");
@@ -230,7 +230,7 @@ public final class MSLogger {
      * @param message Fine message as {@link String}
      * @see #fine(Object, Component)
      */
-    public static void fine(@NotNull String message) {
+    public static void fine(final @NotNull String message) {
         fine(null, message);
     }
 
@@ -243,8 +243,8 @@ public final class MSLogger {
      * @see #fine(Object, Component)
      */
     public static void fine(
-            @Nullable Object target,
-            @NotNull String message
+            final @Nullable Object target,
+            final @NotNull String message
     ) {
         fine(target, text(message));
     }
@@ -256,7 +256,7 @@ public final class MSLogger {
      * @param message Fine message as {@link Component}
      * @see #fine(Object, Component)
      */
-    public static void fine(@NotNull Component message) {
+    public static void fine(final @NotNull Component message) {
         fine(null, message);
     }
 
@@ -273,8 +273,8 @@ public final class MSLogger {
      * @see #log(Level, Component)
      */
     public static void fine(
-            @Nullable Object target,
-            @NotNull Component message
+            final @Nullable Object target,
+            final @NotNull Component message
     ) {
         if (
                 target instanceof ConsoleCommandSender
@@ -287,7 +287,7 @@ public final class MSLogger {
                     ? LanguageFile.renderTranslationComponent(translatableComponent)
                     : message
             );
-        } else if (target instanceof CommandSender sender) {
+        } else if (target instanceof final CommandSender sender) {
             sender.sendMessage(Badges.GREEN_EXCLAMATION_MARK.append(message.color(GREEN)));
         } else {
             throw new IllegalArgumentException("Target must be a CommandSender or null!");
@@ -300,7 +300,7 @@ public final class MSLogger {
      * @param message Warning message as {@link String}
      * @see #warning(Object, Component)
      */
-    public static void warning(@NotNull String message) {
+    public static void warning(final @NotNull String message) {
         warning(null, message);
     }
 
@@ -312,8 +312,8 @@ public final class MSLogger {
      * @see #warning(Object, Component)
      */
     public static void warning(
-            @Nullable Object target,
-            @NotNull String message
+            final @Nullable Object target,
+            final @NotNull String message
     ) {
         warning(target, text(message));
     }
@@ -324,7 +324,7 @@ public final class MSLogger {
      * @param message Warning message as {@link Component}
      * @see #warning(Object, Component)
      */
-    public static void warning(@NotNull Component message) {
+    public static void warning(final @NotNull Component message) {
         warning(null, message);
     }
 
@@ -340,8 +340,8 @@ public final class MSLogger {
      * @see #log(Level, Component)
      */
     public static void warning(
-            @Nullable Object target,
-            @NotNull Component message
+            final @Nullable Object target,
+            final @NotNull Component message
     ) {
         if (
                 target instanceof ConsoleCommandSender
@@ -354,7 +354,7 @@ public final class MSLogger {
                     ? LanguageFile.renderTranslationComponent(translatableComponent)
                     : message
             );
-        } else if (target instanceof CommandSender sender) {
+        } else if (target instanceof final CommandSender sender) {
             sender.sendMessage(Badges.YELLOW_EXCLAMATION_MARK.append(message.color(GOLD)));
         } else {
             throw new IllegalArgumentException("Target must be a CommandSender or null!");
@@ -367,7 +367,7 @@ public final class MSLogger {
      * @param message Error message as {@link String}
      * @see #severe(Object, Component)
      */
-    public static void severe(@NotNull String message) {
+    public static void severe(final @NotNull String message) {
         severe(null, message);
     }
 
@@ -379,8 +379,8 @@ public final class MSLogger {
      * @see #severe(Object, Component)
      */
     public static void severe(
-            @Nullable Object target,
-            @NotNull String message
+            final @Nullable Object target,
+            final @NotNull String message
     ) {
         severe(target, text(message));
     }
@@ -391,7 +391,7 @@ public final class MSLogger {
      * @param message Error message as {@link Component}
      * @see #severe(Object, Component)
      */
-    public static void severe(@NotNull Component message) {
+    public static void severe(final @NotNull Component message) {
         severe(null, message);
     }
 
@@ -407,8 +407,8 @@ public final class MSLogger {
      * @see #log(Level, Component)
      */
     public static void severe(
-            @Nullable Object target,
-            @NotNull Component message
+            final @Nullable Object target,
+            final @NotNull Component message
     ) {
         if (
                 target instanceof ConsoleCommandSender
@@ -421,7 +421,7 @@ public final class MSLogger {
                     ? LanguageFile.renderTranslationComponent(translatableComponent)
                     : message
             );
-        } else if (target instanceof CommandSender sender) {
+        } else if (target instanceof final CommandSender sender) {
             sender.sendMessage(Badges.RED_EXCLAMATION_MARK.append(message.color(RED)));
         } else {
             throw new IllegalArgumentException("Target must be a CommandSender or null!");

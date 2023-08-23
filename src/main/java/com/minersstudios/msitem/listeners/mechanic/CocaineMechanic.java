@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 public class CocaineMechanic extends AbstractMSListener {
 
     @EventHandler
-    public void onInventoryClick(@NotNull PlayerItemConsumeEvent event) {
-        ItemStack itemStack = event.getItem();
+    public void onInventoryClick(final @NotNull PlayerItemConsumeEvent event) {
+        final ItemStack itemStack = event.getItem();
 
         if (
                 !(itemStack.getItemMeta() instanceof PotionMeta)

@@ -34,8 +34,8 @@ public final class ItemUtils {
      */
     @Contract("null, null -> false")
     public static boolean isSimilarItemStacks(
-            @Nullable ItemStack first,
-            @Nullable ItemStack second
+            final @Nullable ItemStack first,
+            final @Nullable ItemStack second
     ) {
         if (
                 first == null
@@ -43,8 +43,8 @@ public final class ItemUtils {
                 || first.getType() != second.getType()
         ) return false;
 
-        ItemMeta firstMeta = first.getItemMeta();
-        ItemMeta secondMeta = second.getItemMeta();
+        final ItemMeta firstMeta = first.getItemMeta();
+        final ItemMeta secondMeta = second.getItemMeta();
 
         return firstMeta.hasCustomModelData()
                 && secondMeta.hasCustomModelData()
@@ -59,12 +59,12 @@ public final class ItemUtils {
      * @see #isSimilarItemStacks(ItemStack, ItemStack)
      */
     public static boolean isContainsItem(
-            @NotNull Collection<ItemStack> list,
-            @Nullable ItemStack item
+            final @NotNull Collection<ItemStack> list,
+            final @Nullable ItemStack item
     ) {
         if (list.isEmpty()) return false;
 
-        for (var listItem : list) {
+        for (final var listItem : list) {
             if (isSimilarItemStacks(listItem, item)) return true;
         }
 
@@ -83,8 +83,8 @@ public final class ItemUtils {
      */
     @Contract("_, null -> false")
     public static boolean damageItem(
-            @NotNull Player holder,
-            @Nullable ItemStack item
+            final @NotNull Player holder,
+            final @Nullable ItemStack item
     ) {
         return damageItem(holder, item, 1);
     }
@@ -102,9 +102,9 @@ public final class ItemUtils {
      */
     @Contract("_, null, _ -> false")
     public static boolean damageItem(
-            @NotNull Player holder,
-            @Nullable ItemStack item,
-            int originalDamage
+            final @NotNull Player holder,
+            final @Nullable ItemStack item,
+            final int originalDamage
     ) {
         return damageItem(holder, null, item, originalDamage);
     }
@@ -123,15 +123,15 @@ public final class ItemUtils {
      */
     @Contract("_, _, null, _ -> false")
     public static boolean damageItem(
-            @NotNull Player holder,
-            @Nullable EquipmentSlot slot,
-            @Nullable ItemStack item,
-            int originalDamage
+            final @NotNull Player holder,
+            final @Nullable EquipmentSlot slot,
+            final @Nullable ItemStack item,
+            final int originalDamage
     ) {
-        if (item == null || !(item.getItemMeta() instanceof Damageable damageable)) return false;
+        if (item == null || !(item.getItemMeta() instanceof final Damageable damageable)) return false;
 
         int damage = 0;
-        DamageableItem damageableItem = DamageableItem.fromItemStack(item);
+        final DamageableItem damageableItem = DamageableItem.fromItemStack(item);
 
         if (damageableItem != null) {
             damageableItem.setRealDamage(damageableItem.getRealDamage() + originalDamage);
@@ -155,7 +155,8 @@ public final class ItemUtils {
         }
 
         if (damageableItem == null) {
-            PlayerItemDamageEvent event = new PlayerItemDamageEvent(holder, item, damage, originalDamage);
+            final PlayerItemDamageEvent event = new PlayerItemDamageEvent(holder, item, damage, originalDamage);
+
             holder.getServer().getPluginManager().callEvent(event);
 
             if (event.isCancelled()) return false;
@@ -182,6 +183,7 @@ public final class ItemUtils {
                 default -> holder.playEffect(EntityEffect.BREAK_EQUIPMENT_MAIN_HAND);
             }
         }
+
         return true;
     }
 }

@@ -47,14 +47,14 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length == 0) return false;
 
-        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -80,10 +80,10 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 
     @Override
     public @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         return args.length == 1
                 ? MSPlayerUtils.getLocalPlayerNames()

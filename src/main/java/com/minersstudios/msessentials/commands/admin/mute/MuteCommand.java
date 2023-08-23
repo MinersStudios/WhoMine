@@ -51,25 +51,25 @@ public class MuteCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length < 2) return false;
 
-        Instant date = DateUtils.getDateFromString(args[1], false);
+        final Instant date = DateUtils.getDateFromString(args[1], false);
 
         if (date == null) {
             MSLogger.severe(sender, WRONG_FORMAT);
             return true;
         }
 
-        String reason = args.length > 2
+        final String reason = args.length > 2
                 ? ChatUtils.extractMessage(args, 2)
                 : LanguageFile.renderTranslation("ms.command.mute.default_reason");
 
-        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -82,26 +82,26 @@ public class MuteCommand implements MSCommandExecutor {
 
     @Override
     public @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         switch (args.length) {
             case 1 -> {
-                List<String> completions = new ArrayList<>();
-                Cache cache = MSEssentials.getCache();
+                final var completions = new ArrayList<String>();
+                final Cache cache = MSEssentials.getCache();
 
-                for (var offlinePlayer : sender.getServer().getOfflinePlayers()) {
-                    String nickname = offlinePlayer.getName();
-                    UUID uuid = offlinePlayer.getUniqueId();
+                for (final var offlinePlayer : sender.getServer().getOfflinePlayers()) {
+                    final String nickname = offlinePlayer.getName();
+                    final UUID uuid = offlinePlayer.getUniqueId();
 
                     if (
                             StringUtils.isBlank(nickname)
                             || cache.muteMap.isMuted(offlinePlayer)
                     ) continue;
 
-                    int id = cache.idMap.getID(uuid, false, false);
+                    final int id = cache.idMap.getID(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

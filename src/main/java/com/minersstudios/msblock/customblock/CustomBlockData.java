@@ -72,11 +72,11 @@ public class CustomBlockData {
      * @param recipeEntries The recipe entries of the custom block data
      */
     public CustomBlockData(
-            @NotNull String key,
-            @NotNull BlockSettings blockSettings,
-            @NotNull DropSettings dropSettings,
-            @NotNull SoundGroup soundGroup,
-            @NotNull Set<RecipeEntry> recipeEntries
+            final @NotNull String key,
+            final @NotNull BlockSettings blockSettings,
+            final @NotNull DropSettings dropSettings,
+            final @NotNull SoundGroup soundGroup,
+            final @NotNull Set<RecipeEntry> recipeEntries
     ) {
         this.key = key.toLowerCase(Locale.ENGLISH);
         this.blockSettings = blockSettings;
@@ -95,11 +95,11 @@ public class CustomBlockData {
      * @param recipeEntries The recipe entries of the custom block data
      */
     public CustomBlockData(
-            @NotNull String key,
-            @NotNull BlockSettings blockSettings,
-            @NotNull DropSettings dropSettings,
-            @NotNull SoundGroup soundGroup,
-            RecipeEntry @NotNull ... recipeEntries
+            final @NotNull String key,
+            final @NotNull BlockSettings blockSettings,
+            final @NotNull DropSettings dropSettings,
+            final @NotNull SoundGroup soundGroup,
+            final RecipeEntry @NotNull ... recipeEntries
     ) {
         this(
                 key,
@@ -132,8 +132,8 @@ public class CustomBlockData {
      *         or null if an error occurred
      * @see CustomBlockFile#create(File)
      */
-    public static @Nullable CustomBlockData fromFile(@NotNull File file) {
-        CustomBlockFile blockFile = CustomBlockFile.create(file);
+    public static @Nullable CustomBlockData fromFile(final @NotNull File file) {
+        final CustomBlockFile blockFile = CustomBlockFile.create(file);
 
         if (blockFile == null) {
             MSLogger.severe("Failed to load custom block file: " + file.getName());
@@ -186,7 +186,7 @@ public class CustomBlockData {
      *
      * @param recipeEntries The new recipe entries of the custom block data
      */
-    public void setRecipeEntries(@NotNull Set<RecipeEntry> recipeEntries) {
+    public void setRecipeEntries(final @NotNull Set<RecipeEntry> recipeEntries) {
         if (this.recipeEntries != null) {
             this.unregisterRecipes();
         }
@@ -210,7 +210,7 @@ public class CustomBlockData {
      * @throws IllegalArgumentException If the file is not a json file
      * @see CustomBlockFile#create(File)
      */
-    public @NotNull CustomBlockFile toFile(@NotNull File file) throws IllegalArgumentException {
+    public @NotNull CustomBlockFile toFile(final @NotNull File file) throws IllegalArgumentException {
         return CustomBlockFile.create(file, this);
     }
 
@@ -224,8 +224,8 @@ public class CustomBlockData {
      * @see CustomBlockRegistry#TYPE_NAMESPACED_KEY
      */
     public @NotNull ItemStack craftItemStack() {
-        ItemStack itemStack = this.dropSettings.getItem();
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemStack itemStack = this.dropSettings.getItem();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
 
         itemMeta.getPersistentDataContainer().set(
                 CustomBlockRegistry.TYPE_NAMESPACED_KEY,
@@ -245,7 +245,7 @@ public class CustomBlockData {
      * used to display the custom block recipes in the
      * {@link CraftsMenu}
      */
-    public void registerRecipes(@NotNull JsonElement recipeJson) {
+    public void registerRecipes(final @NotNull JsonElement recipeJson) {
         try {
             this.setRecipeEntries(RecipeAdapter.deserializeEntries(new ItemStack(this.craftItemStack()), recipeJson.getAsJsonArray()));
         } catch (Exception e) {
@@ -253,11 +253,11 @@ public class CustomBlockData {
             return;
         }
 
-        MSBlock plugin = MSBlock.getInstance();
-        Server server = plugin.getServer();
+        final MSBlock plugin = MSBlock.getInstance();
+        final Server server = plugin.getServer();
 
-        for (var recipeEntry : this.recipeEntries) {
-            Recipe recipe = recipeEntry.getRecipe();
+        for (final var recipeEntry : this.recipeEntries) {
+            final Recipe recipe = recipeEntry.getRecipe();
 
             plugin.runTask(() -> server.addRecipe(recipe));
 
@@ -271,14 +271,14 @@ public class CustomBlockData {
      * Unregisters the recipes of the custom block data
      */
     public void unregisterRecipes() {
-        var recipes = MSPlugin.getGlobalCache().customBlockRecipes;
+        final var recipes = MSPlugin.getGlobalCache().customBlockRecipes;
 
-        for (var recipeEntry : this.recipeEntries) {
-            Recipe recipe = recipeEntry.getRecipe();
+        for (final var recipeEntry : this.recipeEntries) {
+            final Recipe recipe = recipeEntry.getRecipe();
 
             recipes.remove(recipe);
 
-            if (recipe instanceof Keyed keyed) {
+            if (recipe instanceof final Keyed keyed) {
                 Bukkit.removeRecipe(keyed.getKey());
             }
         }

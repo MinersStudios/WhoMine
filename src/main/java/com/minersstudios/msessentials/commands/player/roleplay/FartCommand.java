@@ -46,26 +46,26 @@ public class FartCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
-        Player player = (Player) sender;
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final Player player = (Player) sender;
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (playerInfo.isMuted()) {
             MSLogger.warning(player, MUTED);
             return true;
         }
 
-        Location location = player.getLocation();
+        final Location location = player.getLocation();
         boolean withPoop =
                 this.random.nextInt(10) == 0
                 && location.clone().subtract(0.0d, 0.5d, 0.0d).getBlock().getType().isSolid()
                 && BlockUtils.REPLACE.contains(location.clone().getBlock().getType());
 
-        for (var nearbyEntity : player.getWorld().getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
+        for (final var nearbyEntity : player.getWorld().getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
             if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && nearbyEntity.getType() != EntityType.PLAYER) {
                 withPoop = false;
                 break;

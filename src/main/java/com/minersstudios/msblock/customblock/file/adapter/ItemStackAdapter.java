@@ -26,21 +26,21 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
 
     @Override
     public @NotNull ItemStack deserialize(
-            @NotNull JsonElement json,
-            @NotNull Type typeOfT,
-            @NotNull JsonDeserializationContext context
+            final @NotNull JsonElement json,
+            final @NotNull Type typeOfT,
+            final @NotNull JsonDeserializationContext context
     ) throws JsonParseException, IllegalArgumentException {
-        JsonObject jsonObject = json.getAsJsonObject();
+        final JsonObject jsonObject = json.getAsJsonObject();
 
-        String typeName = jsonObject.get(TYPE_KEY).getAsString().toUpperCase(Locale.ENGLISH);
-        Material type = Material.valueOf(typeName);
+        final String typeName = jsonObject.get(TYPE_KEY).getAsString().toUpperCase(Locale.ENGLISH);
+        final Material type = Material.valueOf(typeName);
 
-        int amount = jsonObject.get(AMOUNT_KEY).getAsInt();
-        ItemStack itemStack = new ItemStack(type, amount);
+        final int amount = jsonObject.get(AMOUNT_KEY).getAsInt();
+        final ItemStack itemStack = new ItemStack(type, amount);
 
         if (jsonObject.has(NBT_KEY)) {
-            net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-            String nbt = jsonObject.get(NBT_KEY).getAsString();
+            final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+            final String nbt = jsonObject.get(NBT_KEY).getAsString();
 
             try {
                 nmsItemStack.setTag(TagParser.parseTag(nbt));
@@ -56,12 +56,12 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
 
     @Override
     public @NotNull JsonElement serialize(
-            @NotNull ItemStack src,
-            @NotNull Type typeOfSrc,
-            @NotNull JsonSerializationContext context
+            final @NotNull ItemStack src,
+            final @NotNull Type typeOfSrc,
+            final @NotNull JsonSerializationContext context
     ) {
-        JsonObject jsonObject = new JsonObject();
-        String nbt = src.getItemMeta().getAsString();
+        final JsonObject jsonObject = new JsonObject();
+        final String nbt = src.getItemMeta().getAsString();
 
         jsonObject.addProperty(TYPE_KEY, src.getType().name());
         jsonObject.addProperty(AMOUNT_KEY, src.getAmount());

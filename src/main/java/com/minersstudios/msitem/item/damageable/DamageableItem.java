@@ -44,8 +44,8 @@ public class DamageableItem {
      *                      item can have
      */
     public DamageableItem(
-            int defaultDamage,
-            int maxDamage
+            final int defaultDamage,
+            final int maxDamage
     ) {
         this(defaultDamage, maxDamage, 0);
     }
@@ -62,9 +62,9 @@ public class DamageableItem {
      *                      of the item
      */
     public DamageableItem(
-            int defaultDamage,
-            int maxDamage,
-            int realDamage
+            final int defaultDamage,
+            final int maxDamage,
+            final int realDamage
     ) {
         this.defaultDamage = defaultDamage;
         this.maxDamage = maxDamage;
@@ -80,9 +80,9 @@ public class DamageableItem {
      *         is successful, otherwise null
      */
     @Contract("null -> null")
-    public static @Nullable DamageableItem fromItemStack(@Nullable ItemStack itemStack) {
+    public static @Nullable DamageableItem fromItemStack(final @Nullable ItemStack itemStack) {
         if (itemStack == null) return null;
-        PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
+        final PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
 
         if (
                 !dataContainer.has(MAX_DAMAGE_NAMESPACED_KEY)
@@ -104,18 +104,18 @@ public class DamageableItem {
      * @param itemStack The {@link ItemStack} to save the data to
      * @return True if the data is successfully saved
      */
-    public boolean saveForItemStack(@NotNull ItemStack itemStack) {
+    public boolean saveForItemStack(final @NotNull ItemStack itemStack) {
         if (
                 itemStack.getType().getMaxDurability() != this.defaultDamage
-                || !(itemStack.getItemMeta() instanceof Damageable damageable)
+                || !(itemStack.getItemMeta() instanceof final Damageable damageable)
         ) return false;
 
         damageable.getPersistentDataContainer().set(MAX_DAMAGE_NAMESPACED_KEY, PersistentDataType.INTEGER, this.maxDamage);
         damageable.getPersistentDataContainer().set(REAL_DAMAGE_NAMESPACED_KEY, PersistentDataType.INTEGER, this.realDamage);
         damageable.setDamage(Math.round((float) this.realDamage / (float) this.maxDamage * (float) this.defaultDamage));
 
-        var lore = damageable.lore();
-        var newLore = new ArrayList<Component>();
+        final var lore = damageable.lore();
+        final var newLore = new ArrayList<Component>();
 
         if (lore != null) {
             newLore.addAll(lore);
@@ -158,7 +158,7 @@ public class DamageableItem {
      * @param damage New maximum damage value the item
      *               can have
      */
-    public void setMaxDamage(int damage) {
+    public void setMaxDamage(final int damage) {
         this.maxDamage = damage;
     }
 
@@ -174,7 +174,7 @@ public class DamageableItem {
      *
      * @param damage New real damage value of the item
      */
-    public void setRealDamage(int damage) {
+    public void setRealDamage(final int damage) {
         this.realDamage = damage;
     }
 }

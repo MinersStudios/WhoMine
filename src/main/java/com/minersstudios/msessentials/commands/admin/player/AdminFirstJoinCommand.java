@@ -14,8 +14,8 @@ public class AdminFirstJoinCommand {
     private static final TranslatableComponent FIRST_JOIN_FORMAT = translatable("ms.command.player.first_join");
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            @NotNull PlayerInfo playerInfo
+            final @NotNull CommandSender sender,
+            final @NotNull PlayerInfo playerInfo
     ) {
         MSLogger.fine(
                 sender,

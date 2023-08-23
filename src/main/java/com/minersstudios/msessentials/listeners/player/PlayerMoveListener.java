@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerMoveListener extends AbstractMSListener {
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerMove(@NotNull PlayerMoveEvent event) {
+    public void onPlayerMove(final @NotNull PlayerMoveEvent event) {
         if (WorldDark.isInWorldDark(event.getFrom())) {
             event.setCancelled(true);
         }

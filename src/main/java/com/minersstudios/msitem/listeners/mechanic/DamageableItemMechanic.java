@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 public class DamageableItemMechanic extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerItemDamage(@NotNull PlayerItemDamageEvent event) {
-        ItemStack itemStack = event.getItem();
+    public void onPlayerItemDamage(final @NotNull PlayerItemDamageEvent event) {
+        final ItemStack itemStack = event.getItem();
 
         if (DamageableItem.fromItemStack(itemStack) != null) {
             event.setCancelled(true);

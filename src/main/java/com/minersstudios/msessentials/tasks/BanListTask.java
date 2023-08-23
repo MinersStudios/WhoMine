@@ -18,21 +18,21 @@ public class BanListTask implements Runnable {
 
     @Override
     public void run() {
-        ProfileBanList banList = Bukkit.getServer().getBanList(BanList.Type.PROFILE);
-        Set<BanEntry<PlayerProfile>> entries = banList.getEntries();
-        Instant currentInstant = Instant.now();
+        final ProfileBanList banList = Bukkit.getServer().getBanList(BanList.Type.PROFILE);
+        final Set<BanEntry<PlayerProfile>> entries = banList.getEntries();
+        final Instant currentInstant = Instant.now();
 
-        for (var entry : entries) {
-            Date expiration = entry.getExpiration();
+        for (final var entry : entries) {
+            final Date expiration = entry.getExpiration();
 
             if (
                     !this.ignoreBanSet.contains(entry)
                     && expiration != null
                     && expiration.toInstant().isBefore(currentInstant)
             ) {
-                PlayerProfile profile = entry.getBanTarget();
-                UUID uuid = profile.getId();
-                String name = profile.getName();
+                final PlayerProfile profile = entry.getBanTarget();
+                final UUID uuid = profile.getId();
+                final String name = profile.getName();
 
                 if (uuid == null || name == null) {
                     this.ignoreBanSet.add(entry);

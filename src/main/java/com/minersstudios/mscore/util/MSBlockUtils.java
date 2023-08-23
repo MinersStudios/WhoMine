@@ -34,7 +34,7 @@ public final class MSBlockUtils {
      * @see CustomBlockRegistry#fromKey(String)
      * @see CustomBlockData#craftItemStack()
      */
-    public static @NotNull Optional<ItemStack> getItemStack(@Nullable String key) {
+    public static @NotNull Optional<ItemStack> getItemStack(final @Nullable String key) {
         return CustomBlockRegistry.fromKey(key).map(CustomBlockData::craftItemStack);
     }
 
@@ -43,7 +43,7 @@ public final class MSBlockUtils {
      * @return True if string matches {@link #NAMESPACED_KEY_REGEX}
      */
     @Contract(value = "null -> false")
-    public static boolean matchesNamespacedKey(@Nullable String string) {
+    public static boolean matchesNamespacedKey(final @Nullable String string) {
         return StringUtils.isNotBlank(string)
                 && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }

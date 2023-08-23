@@ -35,8 +35,8 @@ public final class Config extends MSConfig {
      * @throws IllegalArgumentException If the given file does not exist
      */
     public Config(
-            @NotNull MSItem plugin,
-            @NotNull File file
+            final @NotNull MSItem plugin,
+            final @NotNull File file
     ) throws IllegalArgumentException {
         super(file);
         this.plugin = plugin;
@@ -49,7 +49,7 @@ public final class Config extends MSConfig {
     public void reloadVariables() {
         this.dosimeterCheckRate = this.yaml.getLong("dosimeter-check-rate");
 
-        for (var task : this.plugin.getServer().getScheduler().getPendingTasks()) {
+        for (final var task : this.plugin.getServer().getScheduler().getPendingTasks()) {
             if (task.getOwner().equals(this.plugin)) {
                 task.cancel();
             }
@@ -76,19 +76,19 @@ public final class Config extends MSConfig {
     }
 
     private void loadRenames() {
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
 
-        try (var pathStream = Files.walk(Paths.get(this.file.getParent() + "/items"))) {
+        try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + "/items"))) {
             pathStream.parallel()
             .filter(file -> {
-                String fileName = file.getFileName().toString();
+                final String fileName = file.getFileName().toString();
                 return Files.isRegularFile(file)
                         && !fileName.equalsIgnoreCase("example.yml")
                         && fileName.endsWith(".yml");
             })
             .map(Path::toFile)
             .forEach(file -> {
-                RenameableItem renameableItem = RenameableItem.fromFile(file);
+                final RenameableItem renameableItem = RenameableItem.fromFile(file);
 
                 if (renameableItem != null) {
                     RenameableItemRegistry.register(renameableItem);

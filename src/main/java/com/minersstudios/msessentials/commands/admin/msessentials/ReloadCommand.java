@@ -13,7 +13,7 @@ public class ReloadCommand {
     private static final TranslatableComponent RELOAD_SUCCESS = translatable("ms.command.msessentials.reload.success");
 
     public static boolean runCommand(@NotNull CommandSender sender) {
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
 
         MSEssentials.getConfiguration().reload();
         MSLogger.fine(sender, RELOAD_SUCCESS.args(text(System.currentTimeMillis() - time)));

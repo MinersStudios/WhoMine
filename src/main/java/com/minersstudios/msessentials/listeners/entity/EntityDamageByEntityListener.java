@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class EntityDamageByEntityListener extends AbstractMSListener {
 
     @EventHandler
-    public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
+    public void onEntityDamageByEntity(final @NotNull EntityDamageByEntityEvent event) {
         if (
                 event.getEntity() instanceof ItemFrame itemFrame
                 && itemFrame.getScoreboardTags().contains("invisibleItemFrame")

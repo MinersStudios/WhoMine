@@ -59,7 +59,7 @@ public class MuteMap {
      * @param player Probably muted player
      * @return Creation and expiration date, reason and source of mute
      */
-    public @Nullable MuteMap.Entry getMuteEntry(@NotNull OfflinePlayer player) {
+    public @Nullable MuteMap.Entry getMuteEntry(final @NotNull OfflinePlayer player) {
         return this.map.get(player.getUniqueId());
     }
 
@@ -68,7 +68,7 @@ public class MuteMap {
      * @return True if the player is muted
      */
     @Contract("null -> false")
-    public boolean isMuted(@Nullable OfflinePlayer player) {
+    public boolean isMuted(final @Nullable OfflinePlayer player) {
         return player != null && this.map.containsKey(player.getUniqueId());
     }
 
@@ -81,13 +81,13 @@ public class MuteMap {
      * @param source     Mute source, could be a player's nickname or CONSOLE
      */
     public void put(
-            @NotNull OfflinePlayer player,
-            @NotNull Instant expiration,
-            @NotNull String reason,
-            @NotNull String source
+            final @NotNull OfflinePlayer player,
+            final @NotNull Instant expiration,
+            final @NotNull String reason,
+            final @NotNull String source
     ) {
-        Instant created = Instant.now();
-        UUID uuid = player.getUniqueId();
+        final Instant created = Instant.now();
+        final UUID uuid = player.getUniqueId();
 
         this.map.put(uuid, Entry.create(created, expiration, reason, source));
         this.saveFile();
@@ -98,7 +98,7 @@ public class MuteMap {
      *
      * @param player Muted player
      */
-    public void remove(@Nullable OfflinePlayer player) {
+    public void remove(final @Nullable OfflinePlayer player) {
         if (player == null) return;
         this.map.remove(player.getUniqueId());
         this.saveFile();
@@ -122,7 +122,7 @@ public class MuteMap {
      * @param uuid Player's UUID
      * @return True if this map contains a mute for the specified uuid
      */
-    public boolean containsUniqueId(@Nullable UUID uuid) {
+    public boolean containsUniqueId(final @Nullable UUID uuid) {
         return this.map.containsKey(uuid);
     }
 
@@ -150,9 +150,9 @@ public class MuteMap {
             this.createFile();
         } else {
             try {
-                Type mapType = new TypeToken<Map<UUID, Entry>>() {}.getType();
-                String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
-                Map<UUID, Entry> jsonMap = GSON.fromJson(json, mapType);
+                final Type mapType = new TypeToken<Map<UUID, Entry>>() {}.getType();
+                final String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
+                final Map<UUID, Entry> jsonMap = GSON.fromJson(json, mapType);
 
                 if (jsonMap == null) {
                     this.createBackupFile();
@@ -194,7 +194,7 @@ public class MuteMap {
      * Creates a backup file of the "muted_players.json" file
      */
     private void createBackupFile() {
-        File backupFile = new File(this.file.getParent(), this.file.getName() + ".OLD");
+        final File backupFile = new File(this.file.getParent(), this.file.getName() + ".OLD");
 
         try {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -210,7 +210,7 @@ public class MuteMap {
      * Saves the mute map to the "muted_players.json" file
      */
     private void saveFile() {
-        try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
+        try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
         } catch (IOException e) {
             MSLogger.log(Level.SEVERE, "Failed to save muted players", e);
@@ -237,10 +237,10 @@ public class MuteMap {
         private final String source;
 
         private Entry(
-                Instant created,
-                Instant expiration,
-                String reason,
-                String source
+                final Instant created,
+                final Instant expiration,
+                final String reason,
+                final String source
         ) {
             this.created = created;
             this.expiration = expiration;
@@ -259,10 +259,10 @@ public class MuteMap {
          */
         @Contract(value = "_, _, _, _ -> new")
         public static @NotNull MuteMap.Entry create(
-                @NotNull Instant created,
-                @NotNull Instant expiration,
-                @NotNull String reason,
-                @NotNull String source
+                final @NotNull Instant created,
+                final @NotNull Instant expiration,
+                final @NotNull String reason,
+                final @NotNull String source
         ) {
             return new Entry(created, expiration, reason, source);
         }

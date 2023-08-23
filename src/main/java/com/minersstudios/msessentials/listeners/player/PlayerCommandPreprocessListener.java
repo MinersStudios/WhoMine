@@ -17,9 +17,9 @@ public class PlayerCommandPreprocessListener extends AbstractMSListener {
     private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = translatable("ms.warning.you_cant_do_this_now");
 
     @EventHandler
-    public void onPlayerCommandPreprocess(@NotNull PlayerCommandPreprocessEvent event) {
-        Player player = event.getPlayer();
-        String message = event.getMessage();
+    public void onPlayerCommandPreprocess(final @NotNull PlayerCommandPreprocessEvent event) {
+        final Player player = event.getPlayer();
+        final String message = event.getMessage();
 
         if (
                 (message.startsWith("/l")

@@ -42,14 +42,14 @@ public class UnMuteCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length == 0) return false;
 
-        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -62,24 +62,24 @@ public class UnMuteCommand implements MSCommandExecutor {
 
     @Override
     public @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         switch (args.length) {
             case 1 -> {
-                var completions = new ArrayList<String>();
-                Cache cache = MSEssentials.getCache();
-                MuteMap muteMap = cache.muteMap;
-                Server server = sender.getServer();
+                final var completions = new ArrayList<String>();
+                final Cache cache = MSEssentials.getCache();
+                final MuteMap muteMap = cache.muteMap;
+                final Server server = sender.getServer();
 
-                for (var uuid : muteMap.uuidSet()) {
-                    OfflinePlayer offlinePlayer = server.getOfflinePlayer(uuid);
+                for (final var uuid : muteMap.uuidSet()) {
+                    final OfflinePlayer offlinePlayer = server.getOfflinePlayer(uuid);
 
                     if (muteMap.isMuted(offlinePlayer)) {
-                        String name = offlinePlayer.getName();
-                        int id = cache.idMap.getID(uuid, false, false);
+                        final String name = offlinePlayer.getName();
+                        final int id = cache.idMap.getID(uuid, false, false);
 
                         if (id != -1) {
                             completions.add(String.valueOf(id));

@@ -24,8 +24,8 @@ public class DropSettings {
      *                   is broken
      */
     public DropSettings(
-            @NotNull ItemStack item,
-            int experience
+            final @NotNull ItemStack item,
+            final int experience
     ) {
         this.item = item;
         this.experience = experience;
@@ -45,7 +45,7 @@ public class DropSettings {
      *
      * @param item A new item to drop
      */
-    public void setItem(@NotNull ItemStack item) {
+    public void setItem(final @NotNull ItemStack item) {
         this.item = item;
     }
 
@@ -63,7 +63,7 @@ public class DropSettings {
      *
      * @param experience The new amount of experience points
      */
-    public void setExperience(int experience) {
+    public void setExperience(final int experience) {
         this.experience = experience;
     }
 }

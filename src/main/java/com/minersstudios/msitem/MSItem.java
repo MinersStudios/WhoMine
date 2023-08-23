@@ -13,6 +13,10 @@ public final class MSItem extends MSPlugin {
     private Config config;
     private Cache cache;
 
+    public MSItem() {
+        instance = this;
+    }
+
     @Override
     public void load() {
         initClass(CustomItemType.class);
@@ -20,7 +24,6 @@ public final class MSItem extends MSPlugin {
 
     @Override
     public void enable() {
-        instance = this;
         this.cache = new Cache();
         this.config = new Config(this, this.getConfigFile());
 

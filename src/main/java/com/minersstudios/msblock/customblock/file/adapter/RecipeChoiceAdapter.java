@@ -28,12 +28,12 @@ public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDe
 
     @Override
     public @NotNull RecipeChoice deserialize(
-            @NotNull JsonElement json,
-            @NotNull Type type,
-            @NotNull JsonDeserializationContext context
+            final @NotNull JsonElement json,
+            final @NotNull Type type,
+            final @NotNull JsonDeserializationContext context
     ) throws JsonParseException, IllegalArgumentException {
-        JsonObject jsonObject = json.getAsJsonObject();
-        String typeString = jsonObject.get(TYPE_KEY).getAsString().toUpperCase(Locale.ENGLISH);
+        final JsonObject jsonObject = json.getAsJsonObject();
+        final String typeString = jsonObject.get(TYPE_KEY).getAsString().toUpperCase(Locale.ENGLISH);
 
         switch (typeString) {
             case MATERIAL_CHOICE -> {
@@ -49,7 +49,7 @@ public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDe
                 );
             }
             case CUSTOM_CHOICE -> {
-                List<String> namespacedKeys = context.deserialize(
+                final List<String> namespacedKeys = context.deserialize(
                         jsonObject.get(CHOICES_KEY),
                         NAMESPACED_LIST_TYPE
                 );
@@ -61,11 +61,11 @@ public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDe
 
     @Override
     public @NotNull JsonElement serialize(
-            @NotNull RecipeChoice src,
-            @NotNull Type type,
-            @NotNull JsonSerializationContext context
+            final @NotNull RecipeChoice src,
+            final @NotNull Type type,
+            final @NotNull JsonSerializationContext context
     ) throws IllegalArgumentException {
-        JsonObject jsonObject = new JsonObject();
+        final JsonObject jsonObject = new JsonObject();
 
         jsonObject.addProperty(
                 TYPE_KEY,
@@ -76,11 +76,11 @@ public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDe
                 : CUSTOM_CHOICE
         );
 
-        if (src instanceof RecipeChoice.MaterialChoice materialChoice) {
+        if (src instanceof final RecipeChoice.MaterialChoice materialChoice) {
             jsonObject.add(CHOICES_KEY, context.serialize(materialChoice.getChoices()));
-        } else if (src instanceof RecipeChoice.ExactChoice exactChoice) {
+        } else if (src instanceof final RecipeChoice.ExactChoice exactChoice) {
             jsonObject.add(CHOICES_KEY, context.serialize(exactChoice.getChoices()));
-        } else if (src instanceof CustomChoice customChoice) {
+        } else if (src instanceof final CustomChoice customChoice) {
             jsonObject.add(CHOICES_KEY, context.serialize(customChoice.getNamespacedKeys()));
         } else {
             throw new IllegalArgumentException("Unknown RecipeChoice type: " + src.getClass().getName());

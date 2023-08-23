@@ -58,7 +58,7 @@ public interface CustomItem extends Keyed {
      *
      * @param itemStack The {@link ItemStack} to set
      */
-    void setItem(@NotNull ItemStack itemStack);
+    void setItem(final @NotNull ItemStack itemStack);
 
     /**
      * @return An unmodifiable list of {@link Recipe}
@@ -73,7 +73,7 @@ public interface CustomItem extends Keyed {
      * @param recipes A list of {@link Recipe} entries
      *                representing the associated recipes
      */
-    void setRecipes(@Nullable List<Map.Entry<Recipe, Boolean>> recipes);
+    void setRecipes(final @Nullable List<Map.Entry<Recipe, Boolean>> recipes);
 
     /**
      * Check whether a given item stack is similar to
@@ -85,7 +85,7 @@ public interface CustomItem extends Keyed {
      *         custom item
      */
     @Contract("null -> false")
-    boolean isSimilar(@Nullable ItemStack itemStack);
+    boolean isSimilar(final @Nullable ItemStack itemStack);
 
     /**
      * Check whether a given custom item is similar to
@@ -98,7 +98,7 @@ public interface CustomItem extends Keyed {
      * @see #isSimilar(ItemStack)
      */
     @Contract("null -> false")
-    boolean isSimilar(@Nullable CustomItem customItem);
+    boolean isSimilar(final @Nullable CustomItem customItem);
 
     /**
      * Initialize and retrieve a list of associated recipes

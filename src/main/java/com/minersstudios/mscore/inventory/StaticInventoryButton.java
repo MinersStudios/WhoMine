@@ -15,5 +15,5 @@ public interface StaticInventoryButton {
      * @param pagedCustomInventory Paged inventory where button is located
      * @return Button in the specified paged inventory
      */
-    @NotNull InventoryButton getButton(@NotNull PagedCustomInventory pagedCustomInventory);
+    @NotNull InventoryButton getButton(final @NotNull PagedCustomInventory pagedCustomInventory);
 }

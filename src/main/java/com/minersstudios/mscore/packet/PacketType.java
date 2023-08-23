@@ -38,9 +38,9 @@ public class PacketType {
      * @param name The name of the packet
      */
     private PacketType(
-            @NotNull PacketFlow flow,
-            int id,
-            @NotNull String name
+            final @NotNull PacketFlow flow,
+            final int id,
+            final @NotNull String name
     ) {
         this.flow = flow;
         this.id = id;
@@ -56,7 +56,7 @@ public class PacketType {
      * @return The PacketType for the given packet class,
      *         or null if not found
      */
-    public static @Nullable PacketType fromClass(@NotNull Class<?> clazz) {
+    public static @Nullable PacketType fromClass(final @NotNull Class<?> clazz) {
         return PacketRegistry.getTypeFromClass(clazz);
     }
 
@@ -126,14 +126,13 @@ public class PacketType {
      * @param clazz The class from which to retrieve the packet map
      * @return A map of packet IDs to PacketType instances
      */
-    private static @NotNull Map<Integer, PacketType> getPacketsMap(@NotNull Class<?> clazz) {
-        var map = new HashMap<Integer, PacketType>();
+    private static @NotNull Map<Integer, PacketType> getPacketsMap(final @NotNull Class<?> clazz) {
+        final var map = new HashMap<Integer, PacketType>();
 
-        for (var field : clazz.getDeclaredFields()) {
+        for (final var field : clazz.getDeclaredFields()) {
             if (field.getType() == PacketType.class) {
                 try {
-                    PacketType packetType = (PacketType) field.get(null);
-
+                    final PacketType packetType = (PacketType) field.get(null);
                     map.put(packetType.id, packetType);
                 } catch (IllegalAccessException e) {
                     MSLogger.log(Level.SEVERE, "Could not get packet type from field " + field.getName(), e);

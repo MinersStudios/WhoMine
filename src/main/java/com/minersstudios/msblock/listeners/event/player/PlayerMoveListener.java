@@ -18,23 +18,23 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerMoveListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerMove(@NotNull PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        Block block = player.getLocation().subtract(0.0d, 0.15d, 0.0d).getBlock();
+    public void onPlayerMove(final @NotNull PlayerMoveEvent event) {
+        final Player player = event.getPlayer();
+        final Block block = player.getLocation().subtract(0.0d, 0.15d, 0.0d).getBlock();
 
         if (
                 player.getGameMode() != GameMode.SPECTATOR
                 && !player.isFlying()
                 && !player.isSneaking()
         ) {
-            double distance = event.getFrom().distance(event.getTo());
+            final double distance = event.getFrom().distance(event.getTo());
 
             if (
                     distance != 0.0d
                     && MSBlock.getCache().stepMap.addDistance(player, distance)
                     && BlockUtils.isWoodenSound(block.getType())
             ) {
-                Location stepLocation = block.getLocation().toCenterLocation();
+                final Location stepLocation = block.getLocation().toCenterLocation();
 
                 CustomBlockRegistry.fromBlockData(block.getBlockData())
                 .orElse(CustomBlockData.getDefault())

@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 public class DiscordPrivateMessageReceivedListener {
 
     @Subscribe
-    public void onDiscordPrivateMessageReceived(@NotNull DiscordPrivateMessageReceivedEvent event) {
-        long userID = event.getAuthor().getIdLong();
-        var handlerMap = MSEssentials.getCache().botHandlers;
+    public void onDiscordPrivateMessageReceived(final @NotNull DiscordPrivateMessageReceivedEvent event) {
+        final long userID = event.getAuthor().getIdLong();
+        final var handlerMap = MSEssentials.getCache().botHandlers;
         BotHandler handler = handlerMap.get(userID);
 
         if (handler == null) {

@@ -39,8 +39,8 @@ public class ResourcePack {
     private final String hash;
 
     private ResourcePack(
-            @NotNull String url,
-            @NotNull String hash
+            final @NotNull String url,
+            final @NotNull String hash
     ) {
         this.url = url;
         this.hash = hash;
@@ -52,10 +52,10 @@ public class ResourcePack {
      * @see ResourcePack
      */
     public static void init() {
-        Config config = MSEssentials.getConfiguration();
-        String user = config.user;
-        String repo = config.repo;
-        String tagName = getLatestTagName(config.user, config.repo).orElse(config.version);
+        final Config config = MSEssentials.getConfiguration();
+        final String user = config.user;
+        final String repo = config.repo;
+        final String tagName = getLatestTagName(config.user, config.repo).orElse(config.version);
 
         if (StringUtils.isBlank(tagName)) {
             MSLogger.severe("""
@@ -72,16 +72,16 @@ public class ResourcePack {
 
         boolean upToDate = config.version != null && config.version.equals(tagName) && config.fullHash != null && config.liteHash != null;
 
-        String fullFileName = String.format(config.fullFileName, tagName);
-        String liteFileName = String.format(config.liteFileName, tagName);
+        final String fullFileName = String.format(config.fullFileName, tagName);
+        final String liteFileName = String.format(config.liteFileName, tagName);
 
-        String fullUrl = "https://github.com/" + user + "/" + repo + "/releases/download/" + tagName + "/" + fullFileName;
-        String liteUrl = "https://github.com/" + user + "/" + repo + "/releases/download/" + tagName + "/" + liteFileName;
+        final String fullUrl = "https://github.com/" + user + "/" + repo + "/releases/download/" + tagName + "/" + fullFileName;
+        final String liteUrl = "https://github.com/" + user + "/" + repo + "/releases/download/" + tagName + "/" + liteFileName;
 
-        String fullHash = upToDate
+        final String fullHash = upToDate
                 ? config.fullHash
                 : generateHash(fullUrl, fullFileName);
-        String liteHash = upToDate
+        final String liteHash = upToDate
                 ? config.liteHash
                 : generateHash(liteUrl, liteFileName);
 
@@ -124,18 +124,18 @@ public class ResourcePack {
      * @see #bytesToHexString(byte[])
      */
     private static @NotNull String generateHash(
-            @NotNull String url,
-            @NotNull String fileName
+            final @NotNull String url,
+            final @NotNull String fileName
     ) {
-        URI uri = URI.create(url);
-        Path path = MSEssentials.getInstance().getPluginFolder().toPath().resolve(fileName);
+        final URI uri = URI.create(url);
+        final Path path = MSEssentials.getInstance().getPluginFolder().toPath().resolve(fileName);
 
-        HttpClient client = HttpClient.newBuilder()
+        final HttpClient client = HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.ALWAYS)
                 .build();
 
-        HttpRequest request = HttpRequest.newBuilder(uri).build();
-        var bodyHandler = HttpResponse.BodyHandlers.ofFile(path);
+        final HttpRequest request = HttpRequest.newBuilder(uri).build();
+        final var bodyHandler = HttpResponse.BodyHandlers.ofFile(path);
 
         client.sendAsync(request, bodyHandler)
         .thenAccept(response -> {
@@ -144,7 +144,7 @@ public class ResourcePack {
             }
         }).join();
 
-        String hash = bytesToHexString(createSHA1(path));
+        final String hash = bytesToHexString(createSHA1(path));
 
         if (path.toFile().delete()) {
             MSLogger.info("File deleted: " + path);
@@ -161,10 +161,10 @@ public class ResourcePack {
      * @param path The path to the file
      * @return The hash of the file
      */
-    private static byte @NotNull [] createSHA1(@NotNull Path path) {
-        try (var in = Files.newInputStream(path)) {
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            byte[] buffer = new byte[8192];
+    private static byte @NotNull [] createSHA1(final @NotNull Path path) {
+        try (final var in = Files.newInputStream(path)) {
+            final MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            final byte[] buffer = new byte[8192];
             int bytesRead;
 
             while ((bytesRead = in.read(buffer)) != -1) {
@@ -183,11 +183,11 @@ public class ResourcePack {
      * @param bytes The bytes to convert to hex string
      * @return The hex string of the bytes
      */
-    private static @NotNull String bytesToHexString(byte @NotNull [] bytes) {
-        StringBuilder stringBuilder = new StringBuilder();
+    private static @NotNull String bytesToHexString(final byte @NotNull [] bytes) {
+        final StringBuilder stringBuilder = new StringBuilder();
 
-        for (byte b : bytes) {
-            int value = b & 0xFF;
+        for (final byte b : bytes) {
+            final int value = b & 0xFF;
 
             if (value < 16) {
                 stringBuilder.append("0");
@@ -205,31 +205,31 @@ public class ResourcePack {
      * @return The latest tag name
      */
     private static @NotNull Optional<String> getLatestTagName(
-            @NotNull String user,
-            @NotNull String repo
+            final @NotNull String user,
+            final @NotNull String repo
     ) {
-        URI uri = URI.create("https://api.github.com/repos/" + user + "/" + repo + "/tags");
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder(uri).GET().build();
-        var bodyHandler = HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8);
+        final URI uri = URI.create("https://api.github.com/repos/" + user + "/" + repo + "/tags");
+        final HttpClient client = HttpClient.newHttpClient();
+        final HttpRequest request = HttpRequest.newBuilder(uri).GET().build();
+        final var bodyHandler = HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8);
 
         try {
-            var response = client.send(request, bodyHandler);
+            final var response = client.send(request, bodyHandler);
 
             if (response.statusCode() != HttpURLConnection.HTTP_OK) {
                 MSLogger.severe("Failed to get latest tag. Response code : " + response.statusCode() + ". Trying to get the latest tag from the config...");
                 return Optional.empty();
             }
 
-            String json = response.body();
-            JsonArray tags = JsonParser.parseString(json).getAsJsonArray();
+            final String json = response.body();
+            final JsonArray tags = JsonParser.parseString(json).getAsJsonArray();
 
             if (tags.isEmpty()) {
                 MSLogger.severe("No tags found in the repository. Trying to get the latest tag from the config...");
                 return Optional.empty();
             }
 
-            JsonObject latestTag = tags.get(0).getAsJsonObject();
+            final JsonObject latestTag = tags.get(0).getAsJsonObject();
 
             return Optional.of(latestTag.get("name").getAsString());
         } catch (InterruptedException | IOException e) {

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerQuitListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
+    public void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
         event.quitMessage(null);
         if (event.getReason() == PlayerQuitEvent.QuitReason.KICKED) return;
         PlayerInfo.fromOnlinePlayer(event.getPlayer()).handleQuit();

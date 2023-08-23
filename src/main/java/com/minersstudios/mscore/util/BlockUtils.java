@@ -50,10 +50,10 @@ public final class BlockUtils {
     public static final Set<Material> WOOD_SOUND_MATERIAL_SET;
 
     static {
-        SoundGroup woodSoundGroup = CraftSoundGroup.getSoundGroup(SoundType.WOOD);
-        var materialSet = new ImmutableSet.Builder<Material>();
+        final SoundGroup woodSoundGroup = CraftSoundGroup.getSoundGroup(SoundType.WOOD);
+        final var materialSet = new ImmutableSet.Builder<Material>();
 
-        for (var material : Material.values()) {
+        for (final var material : Material.values()) {
             if (
                     !material.isLegacy()
                     && material.isBlock()
@@ -76,9 +76,9 @@ public final class BlockUtils {
      *
      * @param centreBlock Block around which the blocks break
      */
-    public static void removeBlocksAround(@NotNull Block centreBlock) {
-        CraftBlock topBlock = (CraftBlock) centreBlock.getRelative(BlockFace.UP);
-        CraftBlock bottomBlock = (CraftBlock) centreBlock.getRelative(BlockFace.DOWN);
+    public static void removeBlocksAround(final @NotNull Block centreBlock) {
+        final CraftBlock topBlock = (CraftBlock) centreBlock.getRelative(BlockFace.UP);
+        final CraftBlock bottomBlock = (CraftBlock) centreBlock.getRelative(BlockFace.DOWN);
 
         if (BREAK_ON_BLOCK_PLACE.contains(topBlock.getType())) {
             topBlock.getHandle().destroyBlock(topBlock.getPosition(), true);
@@ -94,7 +94,7 @@ public final class BlockUtils {
      *                 to get the {@link BlockData}
      * @return {@link BlockData} from {@link Material}
      */
-    public static @Nullable BlockData getBlockDataByMaterial(@NotNull Material material) {
+    public static @Nullable BlockData getBlockDataByMaterial(final @NotNull Material material) {
         return switch (material) {
             case REDSTONE -> Material.REDSTONE_WIRE.createBlockData();
             case STRING -> Material.TRIPWIRE.createBlockData();
@@ -106,7 +106,7 @@ public final class BlockUtils {
      * @param material Material that will be checked
      * @return True if material has wood sound
      */
-    public static boolean isWoodenSound(@NotNull Material material) {
+    public static boolean isWoodenSound(final @NotNull Material material) {
         return WOOD_SOUND_MATERIAL_SET.contains(material);
     }
 }

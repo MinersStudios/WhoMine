@@ -44,8 +44,8 @@ public class CustomBlock {
      * @param customBlockData The custom block data of this custom block
      */
     public CustomBlock(
-            @NotNull Block block,
-            @NotNull CustomBlockData customBlockData
+            final @NotNull Block block,
+            final @NotNull CustomBlockData customBlockData
     ) {
         this.block = block;
         this.customBlockData = customBlockData;
@@ -78,8 +78,8 @@ public class CustomBlock {
      * @see #place(Player, EquipmentSlot, BlockFace, Axis)
      */
     public void place(
-            @NotNull Player player,
-            @NotNull EquipmentSlot hand
+            final @NotNull Player player,
+            final @NotNull EquipmentSlot hand
     ) {
         this.place(player, hand, null, null);
     }
@@ -102,12 +102,12 @@ public class CustomBlock {
      * @see BlockUtils#removeBlocksAround(Block)
      */
     public void place(
-            @NotNull Player player,
-            @NotNull EquipmentSlot hand,
-            @Nullable BlockFace blockFace,
-            @Nullable Axis axis
+            final @NotNull Player player,
+            final @NotNull EquipmentSlot hand,
+            final @Nullable BlockFace blockFace,
+            final @Nullable Axis axis
     ) throws IllegalArgumentException {
-        CustomBlockPlaceEvent event = new CustomBlockPlaceEvent(this, this.block.getState(), player, hand);
+        final CustomBlockPlaceEvent event = new CustomBlockPlaceEvent(this, this.block.getState(), player, hand);
         player.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
@@ -115,18 +115,18 @@ public class CustomBlock {
         MSBlock.getInstance().runTask(() -> {
             this.block.setType(Material.NOTE_BLOCK);
 
-            String key = this.customBlockData.getKey();
-            BlockData blockData = this.block.getBlockData();
-            NoteBlock noteBlock;
-            PlacingType placingType = this.customBlockData.getBlockSettings().getPlacing().type();
+            final String key = this.customBlockData.getKey();
+            final BlockData blockData = this.block.getBlockData();
+            final NoteBlock noteBlock;
+            final PlacingType placingType = this.customBlockData.getBlockSettings().getPlacing().type();
 
-            if (placingType instanceof PlacingType.Default normal) {
+            if (placingType instanceof final PlacingType.Default normal) {
                 noteBlock = normal.getNoteBlockData().craftNoteBlock(blockData);
-            } else if (placingType instanceof PlacingType.Directional directional) {
+            } else if (placingType instanceof final PlacingType.Directional directional) {
                 Preconditions.checkArgument(blockFace != null, "Block face is null, but placing type is directional! " + key);
 
                 noteBlock = directional.getNoteBlockData(blockFace).craftNoteBlock(blockData);
-            } else if (placingType instanceof PlacingType.Orientable orientable) {
+            } else if (placingType instanceof final PlacingType.Orientable orientable) {
                 Preconditions.checkArgument(axis != null, "Axis is null, but placing type is orientable! " + key);
 
                 noteBlock = orientable.getNoteBlockData(axis).craftNoteBlock(blockData);
@@ -141,7 +141,7 @@ public class CustomBlock {
             BlockUtils.removeBlocksAround(this.block);
 
             if (player.getGameMode() == GameMode.SURVIVAL) {
-                ItemStack itemInHand = player.getInventory().getItem(hand);
+                final ItemStack itemInHand = player.getInventory().getItem(hand);
                 itemInHand.setAmount(itemInHand.getAmount() - 1);
             }
         });
@@ -157,22 +157,22 @@ public class CustomBlock {
      *
      * @param player The player who broke the block
      */
-    public void destroy(@NotNull Player player) {
-        CustomBlockBreakEvent event = new CustomBlockBreakEvent(this, player);
+    public void destroy(final @NotNull Player player) {
+        final CustomBlockBreakEvent event = new CustomBlockBreakEvent(this, player);
         player.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
 
-        Location blockLocation = this.block.getLocation();
-        World world = this.block.getWorld();
-        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-        Material mainHandMaterial = itemInMainHand.getType();
+        final Location blockLocation = this.block.getLocation();
+        final World world = this.block.getWorld();
+        final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        final Material mainHandMaterial = itemInMainHand.getType();
 
         MSBlock.getCache().diggingMap.removeAll(this.block);
 
-        CraftBlock craftBlock = (CraftBlock) this.block;
-        LevelAccessor levelAccessor = craftBlock.getHandle();
-        BlockState blockState = craftBlock.getNMS();
+        final CraftBlock craftBlock = (CraftBlock) this.block;
+        final LevelAccessor levelAccessor = craftBlock.getHandle();
+        final BlockState blockState = craftBlock.getNMS();
 
         levelAccessor.levelEvent(
                 2001,
@@ -183,8 +183,8 @@ public class CustomBlock {
         MSBlock.getCoreProtectAPI().logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
         this.block.setType(Material.AIR);
 
-        BlockSettings.Tool tool = this.customBlockData.getBlockSettings().getTool();
-        int experience = this.customBlockData.getDropSettings().getExperience();
+        final BlockSettings.Tool tool = this.customBlockData.getBlockSettings().getTool();
+        final int experience = this.customBlockData.getDropSettings().getExperience();
 
         if (!tool.force() || tool.type() == ToolType.fromMaterial(mainHandMaterial)) {
             world.dropItemNaturally(blockLocation, this.customBlockData.craftItemStack());

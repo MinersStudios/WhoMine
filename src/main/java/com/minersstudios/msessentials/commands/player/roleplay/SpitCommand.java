@@ -43,15 +43,15 @@ public class SpitCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
-        Player player = (Player) sender;
-        World world = player.getWorld();
-        Location location = player.getLocation();
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final Player player = (Player) sender;
+        final World world = player.getWorld();
+        final Location location = player.getLocation();
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (playerInfo.isMuted()) {
             MSLogger.warning(player, MUTED);

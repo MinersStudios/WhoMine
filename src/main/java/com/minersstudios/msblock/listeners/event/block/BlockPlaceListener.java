@@ -18,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 public class BlockPlaceListener extends AbstractMSListener {
 
     @EventHandler
-    public void onBlockPlace(@NotNull BlockPlaceEvent event) {
-        Player player = event.getPlayer();
-        Block block = event.getBlockPlaced();
-        Material blockType = block.getType();
+    public void onBlockPlace(final @NotNull BlockPlaceEvent event) {
+        final Player player = event.getPlayer();
+        final Block block = event.getBlockPlaced();
+        final Material blockType = block.getType();
 
         if (
                 blockType == Material.NOTE_BLOCK

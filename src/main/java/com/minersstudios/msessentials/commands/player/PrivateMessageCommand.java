@@ -50,14 +50,14 @@ public class PrivateMessageCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length < 2) return false;
 
-        PlayerInfo senderInfo = sender instanceof Player player
+        final PlayerInfo senderInfo = sender instanceof Player player
                 ? PlayerInfo.fromOnlinePlayer(player)
                 : MSEssentials.getConsolePlayerInfo();
 
@@ -66,33 +66,32 @@ public class PrivateMessageCommand implements MSCommandExecutor {
             return true;
         }
 
-        String message = ChatUtils.extractMessage(args, 1);
+        final String message = ChatUtils.extractMessage(args, 1);
+        final PlayerInfo receiverInfo = PlayerInfo.fromString(args[0]);
 
-        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
-
-        if (playerInfo == null) {
+        if (receiverInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
             return true;
         }
 
         if (
-                !playerInfo.isOnline()
+                !receiverInfo.isOnline()
                 && !sender.hasPermission("msessentials.*")
         ) {
             MSLogger.warning(sender, PLAYER_NOT_ONLINE);
             return true;
         }
 
-        sendPrivateMessage(senderInfo, playerInfo, text(message));
+        sendPrivateMessage(senderInfo, receiverInfo, text(message));
         return true;
     }
 
     @Override
     public @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         return args.length == 1
                 ? MSPlayerUtils.getLocalPlayerNames()

@@ -45,14 +45,14 @@ public class UnBanCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length == 0) return false;
 
-        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -65,26 +65,26 @@ public class UnBanCommand implements MSCommandExecutor {
 
     @Override
     public @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length == 1) {
-            var completions = new ArrayList<String>();
-            ProfileBanList banList = Bukkit.getServer().getBanList(BanList.Type.PROFILE);
-            Set<BanEntry<PlayerProfile>> entries = banList.getEntries();
+            final var completions = new ArrayList<String>();
+            final ProfileBanList banList = Bukkit.getServer().getBanList(BanList.Type.PROFILE);
+            final Set<BanEntry<PlayerProfile>> entries = banList.getEntries();
 
-            for (var entry : entries) {
-                PlayerProfile playerProfile = entry.getBanTarget();
+            for (final var entry : entries) {
+                final PlayerProfile playerProfile = entry.getBanTarget();
 
                 if (
                         playerProfile.getName() != null
                         && playerProfile.getId() != null
                 ) {
-                    UUID uuid = playerProfile.getId();
-                    String name = playerProfile.getName();
-                    int id = PlayerInfo.fromProfile(uuid, name).getID(false, false);
+                    final UUID uuid = playerProfile.getId();
+                    final String name = playerProfile.getName();
+                    final int id = PlayerInfo.fromProfile(uuid, name).getID(false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

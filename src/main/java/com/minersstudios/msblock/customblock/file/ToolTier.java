@@ -23,7 +23,7 @@ public enum ToolTier {
      *
      * @param digSpeed The dig speed of the tool tier
      */
-    ToolTier(float digSpeed) {
+    ToolTier(final float digSpeed) {
         this.digSpeed = digSpeed;
     }
 
@@ -32,7 +32,7 @@ public enum ToolTier {
      * @return The tool tier of the specified material
      *         or {@link #HAND} if the material is not a tool
      */
-    public static @NotNull ToolTier fromMaterial(@NotNull Material material) {
+    public static @NotNull ToolTier fromMaterial(final @NotNull Material material) {
         return switch (material) {
             case
                     WOODEN_PICKAXE,

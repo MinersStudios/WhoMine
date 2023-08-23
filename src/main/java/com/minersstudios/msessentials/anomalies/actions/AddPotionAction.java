@@ -27,11 +27,12 @@ public class AddPotionAction extends AnomalyAction {
      * @param potionEffects Potion effects to add to player when action is performed
      */
     public AddPotionAction(
-            long time,
-            int percentage,
-            @NotNull List<PotionEffect> potionEffects
+            final long time,
+            final int percentage,
+            final @NotNull List<PotionEffect> potionEffects
     ) {
         super(time, percentage);
+
         this.potionEffects = potionEffects;
     }
 
@@ -47,10 +48,10 @@ public class AddPotionAction extends AnomalyAction {
      */
     @Override
     public void doAction(
-            @NotNull Player player,
-            @Nullable AnomalyIgnorableItems ignorableItems
+            final @NotNull Player player,
+            final @Nullable AnomalyIgnorableItems ignorableItems
     ) {
-        var actionMap = MSEssentials.getCache().playerAnomalyActionMap.get(player);
+        final var actionMap = MSEssentials.getCache().playerAnomalyActionMap.get(player);
 
         if (
                 actionMap.containsKey(this)

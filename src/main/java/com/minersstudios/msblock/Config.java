@@ -35,8 +35,8 @@ public final class Config extends MSConfig {
      * @throws IllegalArgumentException If the given file does not exist
      */
     public Config(
-            @NotNull MSBlock plugin,
-            @NotNull File file
+            final @NotNull MSBlock plugin,
+            final @NotNull File file
     ) throws IllegalArgumentException {
         super(file);
         this.plugin = plugin;
@@ -68,19 +68,19 @@ public final class Config extends MSConfig {
     }
 
     private void loadBlocks() {
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
 
-        try (var pathStream = Files.walk(Paths.get(this.file.getParent() + "/blocks"))) {
+        try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + "/blocks"))) {
             pathStream.parallel()
             .filter(file -> {
-                String fileName = file.getFileName().toString();
+                final String fileName = file.getFileName().toString();
                 return Files.isRegularFile(file)
                         && !fileName.equalsIgnoreCase("example.json")
                         && fileName.endsWith(".json");
             })
             .map(Path::toFile)
             .forEach(file -> {
-                CustomBlockData data = CustomBlockData.fromFile(file);
+                final CustomBlockData data = CustomBlockData.fromFile(file);
 
                 if (data != null) {
                     CustomBlockRegistry.register(data);

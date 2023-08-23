@@ -15,8 +15,8 @@ public class UpdateIdsCommand {
     private static final TranslatableComponent UPDATE_IDS_SUCCESS = translatable("ms.command.msessentials.update_ids.success");
 
     public static boolean runCommand(@NotNull CommandSender sender) {
-        long time = System.currentTimeMillis();
-        Cache cache = MSEssentials.getCache();
+        final long time = System.currentTimeMillis();
+        final Cache cache = MSEssentials.getCache();
 
         cache.idMap.reloadIds();
         cache.playerInfoMap.playerInfos().forEach(PlayerInfo::initNames);

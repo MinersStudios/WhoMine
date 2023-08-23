@@ -25,10 +25,10 @@ public class PlayerName {
     private @NotNull String patronymic;
 
     private PlayerName(
-            @NotNull String nickname,
-            @NotNull String firstName,
-            @NotNull String lastName,
-            @NotNull String patronymic
+            final @NotNull String nickname,
+            final @NotNull String firstName,
+            final @NotNull String lastName,
+            final @NotNull String patronymic
     ) {
         this.nickname = nickname;
         this.firstName = firstName;
@@ -48,10 +48,10 @@ public class PlayerName {
      */
     @Contract("_, _, _, _ -> new")
     public static @NotNull PlayerName create(
-            @NotNull String nickname,
-            @NotNull String firstName,
-            @NotNull String lastName,
-            @NotNull String patronymic
+            final @NotNull String nickname,
+            final @NotNull String firstName,
+            final @NotNull String lastName,
+            final @NotNull String patronymic
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(!nickname.isBlank(), "Nickname cannot be blank");
         Preconditions.checkArgument(!firstName.isBlank(), "First name cannot be blank");
@@ -77,7 +77,7 @@ public class PlayerName {
      * @param nickname New player's nickname
      * @throws IllegalArgumentException If the nickname is blank
      */
-    public void setNickname(@NotNull String nickname) throws IllegalArgumentException {
+    public void setNickname(final @NotNull String nickname) throws IllegalArgumentException {
         Preconditions.checkArgument(!nickname.isBlank(), "Nickname cannot be blank");
         this.nickname = nickname;
     }
@@ -95,7 +95,7 @@ public class PlayerName {
      * @param firstName New player's first name
      * @throws IllegalArgumentException If the first name is blank
      */
-    public void setFirstName(@NotNull String firstName) throws IllegalArgumentException {
+    public void setFirstName(final @NotNull String firstName) throws IllegalArgumentException {
         Preconditions.checkArgument(!firstName.isBlank(), "First name cannot be blank");
         this.firstName = normalize(firstName);
     }
@@ -112,7 +112,7 @@ public class PlayerName {
      *
      * @param lastName New player's last name, can be empty
      */
-    public void setLastName(@NotNull String lastName) {
+    public void setLastName(final @NotNull String lastName) {
         this.lastName = normalize(lastName);
     }
 
@@ -128,7 +128,7 @@ public class PlayerName {
      *
      * @param patronymic New player's patronymic, can be empty
      */
-    public void setPatronymic(@NotNull String patronymic) {
+    public void setPatronymic(final @NotNull String patronymic) {
         this.patronymic = normalize(patronymic);
     }
 
@@ -142,9 +142,9 @@ public class PlayerName {
      */
     @Contract("_, _, _ -> new")
     public @NotNull Component createName(
-            int id,
-            @Nullable TextColor first,
-            @Nullable TextColor second
+            final int id,
+            final @Nullable TextColor first,
+            final @Nullable TextColor second
     ) {
         return text("[")
                 .append(text(id)
@@ -165,9 +165,9 @@ public class PlayerName {
      */
     @Contract("_, _, _ -> new")
     public @NotNull Component createFullName(
-            int id,
-            @Nullable TextColor first,
-            @Nullable TextColor second
+            final int id,
+            final @Nullable TextColor first,
+            final @Nullable TextColor second
     ) {
         return text("[")
                 .append(text(id)
@@ -185,7 +185,7 @@ public class PlayerName {
      * @param id The player's ID
      * @return The player's ID, first name and last name as a {@link Component} with default colors
      */
-    public @NotNull Component createDefaultName(int id) {
+    public @NotNull Component createDefaultName(final int id) {
         return this.createName(id, null, null);
     }
 
@@ -195,7 +195,7 @@ public class PlayerName {
      * @param id The player's ID
      * @return The player's ID, first name and last name as a {@link Component} with gold colors
      */
-    public @NotNull Component createGoldenName(int id) {
+    public @NotNull Component createGoldenName(final int id) {
         return this.createName(id, JOIN_MESSAGE_COLOR_SECONDARY, JOIN_MESSAGE_COLOR_PRIMARY);
     }
 
@@ -205,7 +205,7 @@ public class PlayerName {
      * @param id The player's ID
      * @return The player's ID, first name and last name as a {@link Component} with gray and gold colors
      */
-    public @NotNull Component createGrayIDGoldName(int id) {
+    public @NotNull Component createGrayIDGoldName(final int id) {
         return this.createName(id, NamedTextColor.GRAY, RP_MESSAGE_MESSAGE_COLOR_PRIMARY);
     }
 
@@ -215,7 +215,7 @@ public class PlayerName {
      * @param id The player's ID
      * @return The player's ID, first name and last name as a {@link Component} with gray and green colors
      */
-    public @NotNull Component createGrayIDGreenName(int id) {
+    public @NotNull Component createGrayIDGreenName(final int id) {
         return this.createName(id, NamedTextColor.GRAY, NamedTextColor.GREEN);
     }
 }

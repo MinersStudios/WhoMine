@@ -1,12 +1,12 @@
 package com.minersstudios.msessentials.menu;
 
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.SingleInventory;
-import com.minersstudios.mscore.inventory.actions.ButtonClickAction;
 import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
 import com.minersstudios.msessentials.util.MessageUtils;
@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,63 +26,69 @@ import static net.kyori.adventure.text.Component.translatable;
 
 public class SkinsMenu {
     private static final Component TITLE = translatable("ms.menu.skins.title", ChatUtils.DEFAULT_STYLE);
-    private static final InventoryButton EMPTY_BUTTON = InventoryButton.create().item(new ItemStack(Material.AIR));
+    private static final InventoryButton EMPTY_BUTTON = new InventoryButton().item(new ItemStack(Material.AIR));
     private static final InventoryButton APPLY_BUTTON;
-    private static final InventoryButton APPLY_BUTTON_NO_CMD;
+    private static final InventoryButton APPLY_BUTTON_EMPTY;
     private static final InventoryButton DELETE_BUTTON;
-    private static final InventoryButton DELETE_BUTTON_NO_CMD;
+    private static final InventoryButton DELETE_BUTTON_EMPTY;
     private static final CustomInventory CUSTOM_INVENTORY;
 
     static {
-        ItemStack applyItem = new ItemStack(Material.PAPER);
-        ItemStack applyNoCMD = new ItemStack(Material.PAPER);
-        ItemMeta applyMeta = applyItem.getItemMeta();
-        ItemMeta applyMetaNoCMD = applyNoCMD.getItemMeta();
-        Component applyName = LanguageFile.renderTranslationComponent("ms.menu.skins.button.apply").style(ChatUtils.DEFAULT_STYLE);
+        final ItemStack applyItem = new ItemStack(Material.PAPER);
+        final ItemMeta applyMeta = applyItem.getItemMeta();
 
-        applyMetaNoCMD.displayName(applyName);
+        final ItemStack applyEmpty = applyItem.clone();
+        final ItemMeta applyEmptyMeta = applyEmpty.getItemMeta();
+
+        final Component applyName = LanguageFile.renderTranslationComponent("ms.menu.skins.button.apply").style(ChatUtils.DEFAULT_STYLE);
+
         applyMeta.displayName(applyName);
         applyMeta.setCustomModelData(5004);
-        applyMetaNoCMD.setCustomModelData(1);
-        applyNoCMD.setItemMeta(applyMetaNoCMD);
         applyItem.setItemMeta(applyMeta);
 
-        ButtonClickAction applyClickAction = (event, inv) -> {
-            Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
-            Skin skin = playerInfo.getPlayerFile().getSkin((int) inv.args().get(0));
+        applyEmptyMeta.displayName(applyName);
+        applyEmptyMeta.setCustomModelData(1);
+        applyEmpty.setItemMeta(applyEmptyMeta);
+
+        APPLY_BUTTON = new InventoryButton(applyItem, (event, inv) -> {
+            final Player player = (Player) event.getWhoClicked();
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+            final Skin skin = playerInfo.getPlayerFile().getSkin((int) inv.args().get(0));
 
             if (skin == null) return;
 
             playerInfo.setSkin(skin);
             player.closeInventory();
-        };
-        APPLY_BUTTON = InventoryButton.create().item(applyItem).clickAction(applyClickAction);
-        APPLY_BUTTON_NO_CMD = InventoryButton.create().item(applyNoCMD).clickAction(applyClickAction);
+        });
+        APPLY_BUTTON_EMPTY = APPLY_BUTTON.clone().item(applyEmpty);
 
-        ItemStack deleteItem = new ItemStack(Material.PAPER);
-        ItemStack deleteNoCMD = new ItemStack(Material.PAPER);
-        ItemMeta deleteMeta = deleteItem.getItemMeta();
-        ItemMeta deleteMetaNoCMD = deleteNoCMD.getItemMeta();
-        Component deleteName = LanguageFile.renderTranslationComponent("ms.menu.skins.button.delete").style(ChatUtils.DEFAULT_STYLE);
+        final ItemStack deleteItem = new ItemStack(Material.PAPER);
+        final ItemMeta deleteMeta = deleteItem.getItemMeta();
 
-        deleteMetaNoCMD.displayName(deleteName);
+        final ItemStack deleteEmpty = deleteItem.clone();
+        final ItemMeta deleteEmptyMeta = deleteEmpty.getItemMeta();
+
+        final Component deleteName = LanguageFile.renderTranslationComponent("ms.menu.skins.button.delete").style(ChatUtils.DEFAULT_STYLE);
+
         deleteMeta.displayName(deleteName);
         deleteMeta.setCustomModelData(5005);
-        deleteMetaNoCMD.setCustomModelData(1);
-        deleteNoCMD.setItemMeta(deleteMetaNoCMD);
         deleteItem.setItemMeta(deleteMeta);
 
-        ButtonClickAction deleteClickAction = (event, inv) -> {
-            Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        deleteEmptyMeta.displayName(deleteName);
+        deleteEmptyMeta.setCustomModelData(1);
+        deleteEmpty.setItemMeta(deleteEmptyMeta);
+
+        DELETE_BUTTON = new InventoryButton(deleteItem, (event, inv) -> {
+            final Player player = (Player) event.getWhoClicked();
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+            final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             try {
-                Skin selectedSkin = playerInfo.getPlayerFile().getSkin((int) inv.args().get(0));
+                final Skin selectedSkin = playerFile.getSkin((int) inv.args().get(0));
                 if (selectedSkin == null) return;
-                Component skinName = text(selectedSkin.getName());
+                final Component skinName = text(selectedSkin.getName());
 
-                playerInfo.getPlayerFile().removeSkin(selectedSkin);
+                playerFile.removeSkin(selectedSkin);
                 MSLogger.fine(
                         player,
                         translatable(
@@ -105,55 +111,53 @@ public class SkinsMenu {
             }
 
             open(player);
-        };
-        DELETE_BUTTON = InventoryButton.create().item(deleteItem).clickAction(deleteClickAction);
-        DELETE_BUTTON_NO_CMD = InventoryButton.create().item(deleteNoCMD).clickAction(deleteClickAction);
+        });
+        DELETE_BUTTON_EMPTY = DELETE_BUTTON.clone().item(deleteEmpty);
 
-        CUSTOM_INVENTORY = SingleInventory.single(TITLE, 3)
-                .buttonAt(
-                        22,
-                        InventoryButton.create()
-                        .clickAction((event, inv) -> {
-                            Player player = (Player) event.getWhoClicked();
-                            player.closeInventory();
-                            InventoryButton.playClickSound(player);
-                        })
-                );
+        CUSTOM_INVENTORY = SingleInventory.single(TITLE, 3).buttonAt(
+                22,
+                new InventoryButton()
+                .clickAction((event, inv) -> {
+                    final Player player = (Player) event.getWhoClicked();
+
+                    player.closeInventory();
+                    InventoryButton.playClickSound(player);
+                })
+        );
     }
 
-    public static void open(@NotNull Player player) {
-        CustomInventory customInventory = CUSTOM_INVENTORY.clone();
+    public static void open(final @NotNull Player player) {
+        final CustomInventory customInventory = CUSTOM_INVENTORY.clone();
 
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
-        var skins = playerInfo.getPlayerFile().getSkins();
-        var skinButtons = new HashMap<Integer, InventoryButton>();
+        final var skins = PlayerInfo.fromOnlinePlayer(player).getPlayerFile().getSkins();
+        final var skinButtons = new HashMap<Integer, InventoryButton>();
 
         for (int i = 0; i < skins.size(); i++) {
-            Skin skin = skins.get(i);
-            ItemStack head = skin.getHead();
-            InventoryButton inventoryButton = InventoryButton.create();
-            int finalI = i;
+            final Skin skin = skins.get(i);
+            final ItemStack head = skin.getHead();
+            final InventoryButton inventoryButton = new InventoryButton();
+            final int finalI = i;
 
             skinButtons.put(
                     i,
                     inventoryButton
                     .item(head)
                     .clickAction((event, inv) -> {
-                        boolean havePrevious = !inv.args().isEmpty();
-                        boolean isSame = havePrevious && ((int) inv.args().get(0)) == finalI;
-                        ItemMeta headItemMeta = head.getItemMeta();
+                        final boolean havePrevious = !inv.args().isEmpty();
+                        final boolean isSame = havePrevious && ((int) inv.args().get(0)) == finalI;
+                        final ItemMeta headItemMeta = head.getItemMeta();
 
                         headItemMeta.setCustomModelData(isSame ? null : 1);
                         head.setItemMeta(headItemMeta);
 
                         if (havePrevious) {
-                            int previous = (int) inv.args().get(0);
-                            InventoryButton previousButton = skinButtons.get(previous);
+                            final int previous = (int) inv.args().get(0);
+                            final InventoryButton previousButton = skinButtons.get(previous);
 
                             if (previousButton != null) {
-                                ItemStack previousHead = previousButton.item();
-                                assert previousHead != null;
-                                ItemMeta previousMeta = previousHead.getItemMeta();
+                                final ItemStack previousHead = previousButton.item();
+                                final ItemMeta previousMeta = previousHead.getItemMeta();
+
                                 previousMeta.setCustomModelData(null);
                                 previousHead.setItemMeta(previousMeta);
                                 inv.buttonAt(previous, previousButton);
@@ -164,13 +168,13 @@ public class SkinsMenu {
                             inv
                             .buttonAt(finalI, inventoryButton.item(head))
                             .buttonAt(18, APPLY_BUTTON)
-                            .buttonAt(19, APPLY_BUTTON_NO_CMD)
-                            .buttonAt(20, APPLY_BUTTON_NO_CMD)
-                            .buttonAt(21, APPLY_BUTTON_NO_CMD)
+                            .buttonAt(19, APPLY_BUTTON_EMPTY)
+                            .buttonAt(20, APPLY_BUTTON_EMPTY)
+                            .buttonAt(21, APPLY_BUTTON_EMPTY)
                             .buttonAt(23, DELETE_BUTTON)
-                            .buttonAt(24, DELETE_BUTTON_NO_CMD)
-                            .buttonAt(25, DELETE_BUTTON_NO_CMD)
-                            .buttonAt(26, DELETE_BUTTON_NO_CMD)
+                            .buttonAt(24, DELETE_BUTTON_EMPTY)
+                            .buttonAt(25, DELETE_BUTTON_EMPTY)
+                            .buttonAt(26, DELETE_BUTTON_EMPTY)
                             .args(List.of(finalI));
                         } else {
                             inv
@@ -182,7 +186,7 @@ public class SkinsMenu {
                             .buttonAt(24, EMPTY_BUTTON)
                             .buttonAt(25, EMPTY_BUTTON)
                             .buttonAt(26, EMPTY_BUTTON)
-                            .args(new ArrayList<>());
+                            .args(Collections.emptyList());
                         }
 
                         player.openInventory(inv);

@@ -106,8 +106,8 @@ public class PlayerInfo {
      * @param nickname Player nickname
      */
     public PlayerInfo(
-            @NotNull UUID uuid,
-            @NotNull String nickname
+            final @NotNull UUID uuid,
+            final @NotNull String nickname
     ) {
         this.uuid = uuid;
         this.nickname = nickname;
@@ -133,8 +133,8 @@ public class PlayerInfo {
      * @return Player info from {@link Cache#playerInfoMap}
      */
     public static @NotNull PlayerInfo fromProfile(
-            @NotNull UUID uuid,
-            @NotNull String nickname
+            final @NotNull UUID uuid,
+            final @NotNull String nickname
     ) {
         return MSEssentials.getCache().playerInfoMap.get(uuid, nickname);
     }
@@ -151,7 +151,7 @@ public class PlayerInfo {
      * @param player The player
      * @return Player info from {@link Cache#playerInfoMap}
      */
-    public static @NotNull PlayerInfo fromOnlinePlayer(@NotNull Player player) {
+    public static @NotNull PlayerInfo fromOnlinePlayer(final @NotNull Player player) {
         return MSEssentials.getCache().playerInfoMap.get(player);
     }
 
@@ -169,7 +169,7 @@ public class PlayerInfo {
      *         or null if player nickname is blank
      */
     @Contract("null -> null")
-    public static @Nullable PlayerInfo fromOfflinePlayer(@Nullable OfflinePlayer offlinePlayer) {
+    public static @Nullable PlayerInfo fromOfflinePlayer(final @Nullable OfflinePlayer offlinePlayer) {
         return MSEssentials.getCache().playerInfoMap.get(offlinePlayer);
     }
 
@@ -188,7 +188,7 @@ public class PlayerInfo {
      *         or null if the player ID doesn't exist
      * @see #fromOfflinePlayer(OfflinePlayer)
      */
-    public static @Nullable PlayerInfo fromID(int id) {
+    public static @Nullable PlayerInfo fromID(final int id) {
         return fromOfflinePlayer(MSEssentials.getCache().idMap.getPlayerByID(id));
     }
 
@@ -208,7 +208,7 @@ public class PlayerInfo {
      *         or null if the nickname is blank
      * @see #fromOfflinePlayer(OfflinePlayer)
      */
-    public static @Nullable PlayerInfo fromNickname(@NotNull String nickname) {
+    public static @Nullable PlayerInfo fromNickname(final @NotNull String nickname) {
         return nickname.isBlank() ? null : fromOfflinePlayer(Bukkit.getOfflinePlayer(nickname));
     }
 
@@ -228,7 +228,7 @@ public class PlayerInfo {
      *         or null if the player nickname is blank
      * @see #fromOfflinePlayer(OfflinePlayer)
      */
-    public static @Nullable PlayerInfo fromUUID(@NotNull UUID uuid) {
+    public static @Nullable PlayerInfo fromUUID(final @NotNull UUID uuid) {
         return fromOfflinePlayer(Bukkit.getOfflinePlayer(uuid));
     }
 
@@ -280,8 +280,8 @@ public class PlayerInfo {
      *         or null if the discord ID doesn't exist
      * @see #fromProfile(UUID, String)
      */
-    public static @Nullable PlayerInfo fromDiscord(long id) {
-        DiscordMap.Params params = MSEssentials.getCache().discordMap.getParams(id);
+    public static @Nullable PlayerInfo fromDiscord(final long id) {
+        final DiscordMap.Params params = MSEssentials.getCache().discordMap.getParams(id);
         return params == null
                 ? null
                 : fromProfile(params.getUuid(), params.getNickname());
@@ -388,8 +388,8 @@ public class PlayerInfo {
      * @return Player's id from {@link Cache#idMap}
      */
     public int getID(
-            boolean addPlayer,
-            boolean zeroIfNull
+            final boolean addPlayer,
+            final boolean zeroIfNull
     ) {
         return this == MSEssentials.getConsolePlayerInfo()
                 ? -1
@@ -403,7 +403,7 @@ public class PlayerInfo {
      *
      * @param location The location to set as the last leave location
      */
-    public void setLastLeaveLocation(@Nullable Location location) {
+    public void setLastLeaveLocation(final @Nullable Location location) {
         if (!WorldDark.isInWorldDark(location)) {
             this.playerFile.setLastLeaveLocation(location);
             this.playerFile.save();
@@ -417,7 +417,7 @@ public class PlayerInfo {
      *
      * @param location The location to set as the last death location
      */
-    public void setLastDeathLocation(@Nullable Location location) {
+    public void setLastDeathLocation(final @Nullable Location location) {
         if (!WorldDark.isInWorldDark(location)) {
             this.playerFile.setLastDeathLocation(location);
             this.playerFile.save();
@@ -429,7 +429,7 @@ public class PlayerInfo {
      *
      * @param sitLocation Location of the seat
      */
-    public void setSitting(@NotNull Location sitLocation) {
+    public void setSitting(final @NotNull Location sitLocation) {
         this.setSitting(sitLocation, null);
     }
 
@@ -441,10 +441,10 @@ public class PlayerInfo {
      * @param message     Message to send on sit
      */
     public void setSitting(
-            @NotNull Location sitLocation,
-            @Nullable Component message
+            final @NotNull Location sitLocation,
+            final @Nullable Component message
     ) {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
         if (player == null) return;
 
         if (
@@ -486,8 +486,8 @@ public class PlayerInfo {
      *
      * @param message Message to send on player get up
      */
-    public void unsetSitting(@Nullable Component message) {
-        Player player = this.getOnlinePlayer();
+    public void unsetSitting(final @Nullable Component message) {
+        final Player player = this.getOnlinePlayer();
         if (player == null) return;
 
         if (
@@ -496,9 +496,9 @@ public class PlayerInfo {
                 || !isSitting()
         ) return;
 
-        ArmorStand armorStand = MSEssentials.getCache().seats.remove(player);
-        Location playerLoc = player.getLocation();
-        Location getUpLocation = armorStand.getLocation().add(0.0d, 0.25d, 0.0d);
+        final ArmorStand armorStand = MSEssentials.getCache().seats.remove(player);
+        final Location playerLoc = player.getLocation();
+        final Location getUpLocation = armorStand.getLocation().add(0.0d, 0.25d, 0.0d);
 
         if (!BlockUtils.REPLACE.contains(getUpLocation.getBlock().getType())) {
             getUpLocation.add(getUpLocation.getDirection().multiply(0.75d));
@@ -523,23 +523,26 @@ public class PlayerInfo {
      * @param value True to add the player to the whitelist, false to remove
      * @return True if the player was added/removed successfully
      */
-    public boolean setWhiteListed(boolean value) {
-        CraftServer craftServer = this.server;
-        UserWhiteList userWhiteList = craftServer.getServer().getPlayerList().getWhiteList();
-        GameProfile gameProfile = new GameProfile(this.uuid, this.nickname);
-        boolean contains = craftServer.getWhitelistedPlayers().contains(this.offlinePlayer);
+    public boolean setWhiteListed(final boolean value) {
+        final CraftServer craftServer = this.server;
+        final UserWhiteList userWhiteList = craftServer.getServer().getPlayerList().getWhiteList();
+        final GameProfile gameProfile = new GameProfile(this.uuid, this.nickname);
+        final boolean contains = craftServer.getWhitelistedPlayers().contains(this.offlinePlayer);
 
         if (value) {
             if (contains) return false;
+
             userWhiteList.add(new UserWhiteListEntry(gameProfile));
         } else {
             if (!contains) return false;
+
             userWhiteList.remove(gameProfile);
             this.kickPlayer(
                     translatable("ms.command.white_list.remove.receiver.message.title"),
                     translatable("ms.command.white_list.remove.receiver.message.subtitle")
             );
         }
+
         return true;
     }
 
@@ -548,8 +551,8 @@ public class PlayerInfo {
      *
      * @param skin Skin to set, null to reset
      */
-    public void setSkin(@Nullable Skin skin) {
-        Player player = this.getOnlinePlayer();
+    public void setSkin(final @Nullable Skin skin) {
+        final Player player = this.getOnlinePlayer();
 
         if (player != null) {
             if (skin == null) {
@@ -588,7 +591,7 @@ public class PlayerInfo {
      * @param id Discord ID
      * @see DiscordMap#put(long, UUID, String)
      */
-    public void linkDiscord(long id) {
+    public void linkDiscord(final long id) {
         MSEssentials.getCache().discordMap.put(id, this.uuid, this.nickname);
     }
 
@@ -599,10 +602,10 @@ public class PlayerInfo {
      * @see DiscordMap#remove(long)
      */
     public long unlinkDiscord() {
-        DiscordMap discordMap = MSEssentials.getCache().discordMap;
-        long id = discordMap.getId(DiscordMap.Params.create(this.uuid, this.nickname));
-        var botHandlers = MSEssentials.getCache().botHandlers;
-        BotHandler botHandler = botHandlers.get(id);
+        final DiscordMap discordMap = MSEssentials.getCache().discordMap;
+        final long id = discordMap.getId(DiscordMap.Params.create(this.uuid, this.nickname));
+        final var botHandlers = MSEssentials.getCache().botHandlers;
+        final BotHandler botHandler = botHandlers.get(id);
 
         if (botHandler != null) {
             botHandler.setPlayerInfo(null);
@@ -626,15 +629,15 @@ public class PlayerInfo {
      * @see #completeResourcePackFuture(PlayerResourcePackStatusEvent.Status)
      */
     public @NotNull CompletableFuture<PlayerResourcePackStatusEvent.Status> setResourcePackAsync(
-            @NotNull String url,
-            @NotNull String hash,
-            boolean force,
-            @Nullable Component message
+            final @NotNull String url,
+            final @NotNull String hash,
+            final boolean force,
+            final @Nullable Component message
     ) {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
         if (player == null) return CompletableFuture.completedFuture(null);
 
-        var resourcePackStatus = new CompletableFuture<PlayerResourcePackStatusEvent.Status>();
+        final var resourcePackStatus = new CompletableFuture<PlayerResourcePackStatusEvent.Status>();
         this.resourcePackStatus = resourcePackStatus;
 
         player.setResourcePack(url, hash, force, message);
@@ -662,7 +665,7 @@ public class PlayerInfo {
      * @param status Player's resource pack status
      * @see #setResourcePackAsync(String, String, boolean, Component)
      */
-    public void completeResourcePackFuture(@NotNull PlayerResourcePackStatusEvent.Status status) {
+    public void completeResourcePackFuture(final @NotNull PlayerResourcePackStatusEvent.Status status) {
         if (this.resourcePackStatus == null || this.resourcePackStatus.isDone()) return;
         this.resourcePackStatus.complete(status);
     }
@@ -682,7 +685,7 @@ public class PlayerInfo {
      * @see MuteMap.Entry#getReason()
      */
     public @NotNull String getMuteReason() throws IllegalStateException {
-        MuteMap.Entry muteEntry = this.getMuteEntry();
+        final MuteMap.Entry muteEntry = this.getMuteEntry();
 
         Preconditions.checkArgument(muteEntry != null, "Player is not muted");
         return muteEntry.getReason();
@@ -695,7 +698,7 @@ public class PlayerInfo {
      * @see MuteMap.Entry#getSource()
      */
     public @NotNull String getMutedBy() throws IllegalStateException {
-        MuteMap.Entry muteEntry = this.getMuteEntry();
+        final MuteMap.Entry muteEntry = this.getMuteEntry();
 
         Preconditions.checkArgument(muteEntry != null, "Player is not muted");
         return muteEntry.getSource();
@@ -710,7 +713,7 @@ public class PlayerInfo {
      *                               check {@link #isMuted()} first
      * @see MuteMap.Entry#getCreated()
      */
-    public @NotNull Component getMutedFrom(@NotNull CommandSender sender) throws IllegalStateException {
+    public @NotNull Component getMutedFrom(final @NotNull CommandSender sender) throws IllegalStateException {
         return text(DateUtils.getSenderDate(this.getMutedFrom(), sender));
     }
 
@@ -723,7 +726,7 @@ public class PlayerInfo {
      *                               check {@link #isMuted()} first
      * @see MuteMap.Entry#getCreated()
      */
-    public @NotNull Component getMutedFrom(@NotNull InetAddress address) throws IllegalStateException {
+    public @NotNull Component getMutedFrom(final @NotNull InetAddress address) throws IllegalStateException {
         return text(DateUtils.getDate(this.getMutedFrom(), address));
     }
 
@@ -734,7 +737,7 @@ public class PlayerInfo {
      * @see MuteMap.Entry#getCreated()
      */
     public @NotNull Instant getMutedFrom() throws IllegalStateException {
-        MuteMap.Entry muteEntry = this.getMuteEntry();
+        final MuteMap.Entry muteEntry = this.getMuteEntry();
 
         Preconditions.checkArgument(muteEntry != null, "Player is not muted");
         return muteEntry.getCreated();
@@ -749,7 +752,7 @@ public class PlayerInfo {
      *                               check {@link #isMuted()} first
      * @see MuteMap.Entry#getExpiration()
      */
-    public @NotNull Component getMutedTo(@NotNull CommandSender sender) throws IllegalStateException {
+    public @NotNull Component getMutedTo(final @NotNull CommandSender sender) throws IllegalStateException {
         return text(DateUtils.getSenderDate(this.getMutedTo(), sender));
     }
 
@@ -762,7 +765,7 @@ public class PlayerInfo {
      *                               check {@link #isMuted()} first
      * @see MuteMap.Entry#getExpiration()
      */
-    public @NotNull Component getMutedTo(@NotNull InetAddress address) throws IllegalStateException {
+    public @NotNull Component getMutedTo(final @NotNull InetAddress address) throws IllegalStateException {
         return text(DateUtils.getDate(this.getMutedTo(), address));
     }
 
@@ -773,7 +776,7 @@ public class PlayerInfo {
      * @see MuteMap.Entry#getExpiration()
      */
     public @NotNull Instant getMutedTo() throws IllegalStateException {
-        MuteMap.Entry muteEntry = this.getMuteEntry();
+        final MuteMap.Entry muteEntry = this.getMuteEntry();
 
         Preconditions.checkArgument(muteEntry != null, "Player is not muted");
         return muteEntry.getExpiration();
@@ -794,13 +797,13 @@ public class PlayerInfo {
      * @see MuteMap#remove(OfflinePlayer)
      */
     public void setMuted(
-            boolean value,
-            @NotNull Instant date,
-            @NotNull String reason,
+            final boolean value,
+            final @NotNull Instant date,
+            final @NotNull String reason,
             @Nullable CommandSender sender
     ) {
-        Player player = this.getOnlinePlayer();
-        MuteMap muteMap = MSEssentials.getCache().muteMap;
+        final Player player = this.getOnlinePlayer();
+        final MuteMap muteMap = MSEssentials.getCache().muteMap;
 
         if (sender == null) {
             sender = this.server.getConsoleSender();
@@ -899,7 +902,7 @@ public class PlayerInfo {
      *                      can be null, in this case the console
      *                      sender will be used
      */
-    public void unmute(@Nullable CommandSender commandSender) {
+    public void unmute(final @Nullable CommandSender commandSender) {
         this.setMuted(false, Instant.EPOCH, "", commandSender);
     }
 
@@ -907,7 +910,7 @@ public class PlayerInfo {
      * @return The ban entry of the player from {@link BanList.Type#PROFILE}
      */
     public @Nullable BanEntry<PlayerProfile> getBanEntry() {
-        BanList<PlayerProfile> banList = this.server.getBanList(BanList.Type.PROFILE);
+        final BanList<PlayerProfile> banList = this.server.getBanList(BanList.Type.PROFILE);
         return banList.getBanEntry(this.profile);
     }
 
@@ -919,11 +922,11 @@ public class PlayerInfo {
      * @see BanEntry#getReason()
      */
     public @NotNull Component getBanReason() throws IllegalStateException {
-        var banEntry = this.getBanEntry();
+        final var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
 
-        String reason = banEntry.getReason();
+        final String reason = banEntry.getReason();
         return reason == null ? LanguageFile.renderTranslationComponent("ms.command.ban.default_reason") : text(reason);
     }
 
@@ -933,8 +936,8 @@ public class PlayerInfo {
      *                               check {@link #isBanned()} first
      * @see BanEntry#setReason(String)
      */
-    public void setBanReason(@NotNull String reason) throws IllegalStateException {
-        var banEntry = this.getBanEntry();
+    public void setBanReason(final @NotNull String reason) throws IllegalStateException {
+        final var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
         
@@ -949,7 +952,7 @@ public class PlayerInfo {
      * @see BanEntry#getSource()
      */
     public @NotNull String getBannedBy() throws IllegalStateException {
-        var banEntry = this.getBanEntry();
+        final var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
         return banEntry.getSource();
@@ -961,8 +964,8 @@ public class PlayerInfo {
      *                               check {@link #isBanned()} first
      * @see BanEntry#setSource(String)
      */
-    public void setBannedBy(@NotNull String source) throws IllegalStateException {
-        var banEntry = this.getBanEntry();
+    public void setBannedBy(final @NotNull String source) throws IllegalStateException {
+        final var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
         
@@ -979,7 +982,7 @@ public class PlayerInfo {
      *                               check {@link #isBanned()} first
      * @see BanEntry#getCreated()
      */
-    public @NotNull Component getBannedFrom(@NotNull CommandSender sender) throws IllegalStateException {
+    public @NotNull Component getBannedFrom(final @NotNull CommandSender sender) throws IllegalStateException {
         return text(DateUtils.getSenderDate(this.getBannedFrom(), sender));
     }
 
@@ -992,7 +995,7 @@ public class PlayerInfo {
      *                               check {@link #isBanned()} first
      * @see BanEntry#getCreated()
      */
-    public @NotNull Component getBannedFrom(@NotNull InetAddress address) throws IllegalStateException {
+    public @NotNull Component getBannedFrom(final @NotNull InetAddress address) throws IllegalStateException {
         return text(DateUtils.getDate(this.getBannedFrom(), address));
     }
 
@@ -1003,7 +1006,7 @@ public class PlayerInfo {
      * @see BanEntry#getCreated()
      */
     public @NotNull Instant getBannedFrom() throws IllegalStateException {
-        var banEntry = this.getBanEntry();
+        final var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
         return banEntry.getCreated().toInstant();
@@ -1018,12 +1021,12 @@ public class PlayerInfo {
      *                               check {@link #isBanned()} first
      * @see BanEntry#getExpiration()
      */
-    public @NotNull Component getBannedTo(@NotNull CommandSender sender) throws IllegalStateException {
-        var banEntry = this.getBanEntry();
+    public @NotNull Component getBannedTo(final @NotNull CommandSender sender) throws IllegalStateException {
+        final var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
 
-        Date expiration = banEntry.getExpiration();
+        final Date expiration = banEntry.getExpiration();
         return expiration == null
                 ? translatable("ms.command.ban.time.forever")
                 : text(DateUtils.getSenderDate(expiration.toInstant(), sender));
@@ -1038,12 +1041,12 @@ public class PlayerInfo {
      *                               check {@link #isBanned()} first
      * @see BanEntry#getExpiration()
      */
-    public @NotNull Component getBannedTo(@NotNull InetAddress address) throws IllegalStateException {
-        var banEntry = this.getBanEntry();
+    public @NotNull Component getBannedTo(final @NotNull InetAddress address) throws IllegalStateException {
+        final var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
 
-        Date expiration = banEntry.getExpiration();
+        final Date expiration = banEntry.getExpiration();
         return expiration == null
                 ? translatable("ms.command.ban.time.forever")
                 : text(DateUtils.getDate(expiration.toInstant(), address));
@@ -1057,11 +1060,11 @@ public class PlayerInfo {
      * @see BanEntry#getExpiration()
      */
     public @Nullable Instant getBannedTo() throws IllegalStateException {
-        var banEntry = this.getBanEntry();
+        final var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
 
-        Date expiration = banEntry.getExpiration();
+        final Date expiration = banEntry.getExpiration();
         return expiration == null ? null : expiration.toInstant();
     }
 
@@ -1072,8 +1075,8 @@ public class PlayerInfo {
      *                               check {@link #isBanned()} first
      * @see BanEntry#setExpiration(Date)
      */
-    public void setBannedTo(@Nullable Date expiration) throws IllegalStateException {
-        var banEntry = this.getBanEntry();
+    public void setBannedTo(final @Nullable Date expiration) throws IllegalStateException {
+        final var banEntry = this.getBanEntry();
 
         Preconditions.checkArgument(banEntry != null, "Player is not banned");
         
@@ -1094,14 +1097,14 @@ public class PlayerInfo {
      *               or null if the player was banned by the console
      */
     public void setBanned(
-            boolean value,
-            @NotNull Instant date,
-            @NotNull String reason,
-            @Nullable CommandSender sender
+            final boolean value,
+            final @NotNull Instant date,
+            final @NotNull String reason,
+            final @Nullable CommandSender sender
     ) {
-        BanList<PlayerProfile> banList = this.server.getBanList(BanList.Type.PROFILE);
-        Player player = this.getOnlinePlayer();
-        CommandSender commandSender = sender == null ? this.server.getConsoleSender() : sender;
+        final BanList<PlayerProfile> banList = this.server.getBanList(BanList.Type.PROFILE);
+        final Player player = this.getOnlinePlayer();
+        final CommandSender commandSender = sender == null ? this.server.getConsoleSender() : sender;
 
         if (value) {
             if (this.isBanned()) {
@@ -1186,7 +1189,7 @@ public class PlayerInfo {
      * @param commandSender The command sender, who unbanned the player,
      *                      or null if the player was unbanned by the console
      */
-    public void pardon(@Nullable CommandSender commandSender) {
+    public void pardon(final @Nullable CommandSender commandSender) {
         this.setBanned(false, Instant.EPOCH, "", commandSender);
     }
 
@@ -1202,7 +1205,7 @@ public class PlayerInfo {
      * @return True if the player isn't in dark_world and hasn't vanished
      */
     public boolean isOnline(boolean ignoreWorld) {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
         return player != null
                 && (ignoreWorld || !this.isInWorldDark())
                 && !this.isVanished();
@@ -1222,11 +1225,11 @@ public class PlayerInfo {
      * @return True if the player is vanished
      */
     public boolean isVanished() {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
 
         if (player == null) return false;
 
-        for (var metadataValue : player.getMetadata("vanished")) {
+        for (final var metadataValue : player.getMetadata("vanished")) {
             if (metadataValue.asBoolean()) return true;
         }
 
@@ -1237,7 +1240,7 @@ public class PlayerInfo {
      * @return True if the player is sitting
      */
     public boolean isSitting() {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
         return player != null && MSEssentials.getCache().seats.containsKey(player);
     }
 
@@ -1276,7 +1279,7 @@ public class PlayerInfo {
      * @return True if the player is online and authenticated
      */
     public boolean isAuthenticated() {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
         return player != null && AuthMeApi.getInstance().isAuthenticated(player);
     }
 
@@ -1298,8 +1301,9 @@ public class PlayerInfo {
      * @see #getGrayIDGreenName()
      */
     public void initNames() {
-        int id = this.getID();
-        PlayerName playerName = this.playerFile.getPlayerName();
+        final int id = this.getID();
+        final PlayerName playerName = this.playerFile.getPlayerName();
+
         this.defaultName = playerName.createDefaultName(id);
         this.goldenName = playerName.createGoldenName(id);
         this.grayIDGoldName = playerName.createGrayIDGoldName(id);
@@ -1316,7 +1320,7 @@ public class PlayerInfo {
      * @see #handleJoinTask()
      */
     public void handleJoin() {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
 
         if (
                 player == null
@@ -1352,12 +1356,12 @@ public class PlayerInfo {
      *
      * @param player The player, who quit
      */
-    public void handleQuit(@Nullable Player player) {
+    public void handleQuit(final @Nullable Player player) {
         if (player == null) return;
 
         this.unsetSitting();
 
-        Entity vehicle = player.getVehicle();
+        final Entity vehicle = player.getVehicle();
         if (vehicle != null) {
             vehicle.eject();
         }
@@ -1379,11 +1383,11 @@ public class PlayerInfo {
      * @see #setResourcePackAsync(String, String, boolean, Component)
      */
     public @NotNull CompletableFuture<Boolean> handleResourcePack() {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
         if (player == null) return CompletableFuture.completedFuture(false);
 
-        PlayerSettings playerSettings = this.playerFile.getPlayerSettings();
-        ResourcePack.Type type = playerSettings.getResourcePackType();
+        final PlayerSettings playerSettings = this.playerFile.getPlayerSettings();
+        final ResourcePack.Type type = playerSettings.getResourcePackType();
 
         if (!ResourcePack.isResourcePackLoaded()) {
             this.kickPlayer(SERVER_NOT_LOADED_TITLE, SERVER_NOT_LOADED_SUBTITLE);
@@ -1446,7 +1450,7 @@ public class PlayerInfo {
      * @return A future that will be completed with the result of the teleport
      */
     public @NotNull CompletableFuture<Boolean> teleportToLastLeaveLocation() {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
         if (player == null) return CompletableFuture.completedFuture(false);
 
         if (player.getGameMode() == GameMode.SPECTATOR) {
@@ -1474,7 +1478,7 @@ public class PlayerInfo {
      * @return A future that will be completed with the result of the teleport
      */
     public @NotNull CompletableFuture<Boolean> teleportToLastDeathLocation() {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
         if (player == null) return CompletableFuture.completedFuture(false);
 
         if (player.getGameMode() == GameMode.SPECTATOR) {
@@ -1532,8 +1536,8 @@ public class PlayerInfo {
      * @param reason Reason of the kick message
      */
     public void kickPlayer(
-            @NotNull Component title,
-            @NotNull Component reason
+            final @NotNull Component title,
+            final @NotNull Component reason
     ) {
         this.kickPlayer(this.getOnlinePlayer(), title, reason);
     }
@@ -1546,9 +1550,9 @@ public class PlayerInfo {
      * @param reason Reason of the kick message
      */
     public void kickPlayer(
-            @Nullable Player player,
-            @NotNull Component title,
-            @NotNull Component reason
+            final @Nullable Player player,
+            final @NotNull Component title,
+            final @NotNull Component reason
     ) {
         if (player == null) return;
 
@@ -1580,15 +1584,15 @@ public class PlayerInfo {
      * @return True if the player has linked their Discord account
      */
     public boolean sendPrivateDiscordMessage(
-            @NotNull MessageEmbed messageEmbed,
-            MessageEmbed @NotNull ... other
+            final @NotNull MessageEmbed messageEmbed,
+            final MessageEmbed @NotNull ... other
     ) {
-        long id = this.getDiscordID();
+        final long id = this.getDiscordID();
 
         if (id == -1) return false;
 
         MSEssentials.getInstance().runTaskAsync(() -> {
-            User user = DiscordUtil.getJda().getUserById(id);
+            final User user = DiscordUtil.getJda().getUserById(id);
 
             if (user != null) {
                 user.openPrivateChannel().complete().sendMessageEmbeds(messageEmbed, other).queue();
@@ -1604,12 +1608,12 @@ public class PlayerInfo {
      * @return True if the player has linked their Discord account
      */
     public boolean sendPrivateDiscordMessage(@NotNull CharSequence message) {
-        long id = this.getDiscordID();
+        final long id = this.getDiscordID();
 
         if (id == -1) return false;
 
         MSEssentials.getInstance().runTaskAsync(() -> {
-            User user = DiscordUtil.getJda().getUserById(id);
+            final User user = DiscordUtil.getJda().getUserById(id);
 
             if (user != null) {
                 user.openPrivateChannel().complete().sendMessage(message).queue();
@@ -1625,15 +1629,15 @@ public class PlayerInfo {
      * {@link WorldDark}
      */
     public void savePlayerDataParams() {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
 
         if (
                 player == null
                 || this.isInWorldDark()
         ) return;
 
-        double health = player.getHealth();
-        int air = player.getRemainingAir();
+        final double health = player.getHealth();
+        final int air = player.getRemainingAir();
 
         this.playerFile.setLastLeaveLocation(
                 player.isDead()
@@ -1684,7 +1688,7 @@ public class PlayerInfo {
      * @see #handleJoin()
      */
     private void handleJoinTask() {
-        Player player = this.getOnlinePlayer();
+        final Player player = this.getOnlinePlayer();
 
         this.joinTask.cancel();
 
@@ -1695,7 +1699,7 @@ public class PlayerInfo {
             if (this.playerFile.getConfig().getString("pronouns") == null) {
                 PronounsMenu.open(player);
             } else {
-                Skin currentSkin = this.getCurrentSkin();
+                final Skin currentSkin = this.getCurrentSkin();
 
                 if (currentSkin != null) {
                     this.setSkin(currentSkin);

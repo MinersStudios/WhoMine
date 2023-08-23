@@ -14,10 +14,10 @@ import org.jetbrains.annotations.NotNull;
 public class EntityExplodeListener extends AbstractMSListener {
 
     @EventHandler
-    public void onEntityExplode(@NotNull EntityExplodeEvent event) {
-        World world = event.getLocation().getWorld();
+    public void onEntityExplode(final @NotNull EntityExplodeEvent event) {
+        final World world = event.getLocation().getWorld();
 
-        for (var block : event.blockList()) {
+        for (final var block : event.blockList()) {
             if (block.getType() != Material.NOTE_BLOCK) continue;
 
             block.setType(Material.AIR);

@@ -50,7 +50,7 @@ public class RegistrationProcess {
     private static final TranslatableComponent LOCAL_FORMAT = translatable("ms.chat.local.format");
     private static final TranslatableComponent ANONYMOUS_NAME = translatable("ms.registration.anonymous.name");
 
-    public void registerPlayer(@NotNull PlayerInfo playerInfo) {
+    public void registerPlayer(final @NotNull PlayerInfo playerInfo) {
         this.playerInfo = playerInfo;
         this.player = playerInfo.getOnlinePlayer();
 
@@ -78,7 +78,7 @@ public class RegistrationProcess {
                 LanguageFile.renderTranslationComponent("ms.registration.sign.first_name.2"),
                 LanguageFile.renderTranslationComponent("ms.registration.sign.first_name.3"),
                 (player, strings) -> {
-                    String firstname = strings[0].trim();
+                    final String firstname = strings[0].trim();
 
                     if (!MSPlayerUtils.matchesNameRegex(firstname)) {
                         this.sendWarningMessage();
@@ -104,7 +104,7 @@ public class RegistrationProcess {
                 LanguageFile.renderTranslationComponent("ms.registration.sign.last_name.2"),
                 LanguageFile.renderTranslationComponent("ms.registration.sign.last_name.3"),
                 (player, strings) -> {
-                    String lastname = strings[0].trim();
+                    final String lastname = strings[0].trim();
 
                     if (!MSPlayerUtils.matchesNameRegex(lastname)) {
                         this.sendWarningMessage();
@@ -124,15 +124,15 @@ public class RegistrationProcess {
                 LanguageFile.renderTranslationComponent("ms.registration.sign.patronymic.2"),
                 LanguageFile.renderTranslationComponent("ms.registration.sign.patronymic.3"),
                 (player, strings) -> {
-                    String patronymic = strings[0].trim();
+                    final String patronymic = strings[0].trim();
 
                     if (!MSPlayerUtils.matchesNameRegex(patronymic)) {
                         this.sendWarningMessage();
                         return false;
                     }
 
-                    PlayerFile playerFile = this.playerInfo.getPlayerFile();
-                    PlayerName name = playerFile.getPlayerName();
+                    final PlayerFile playerFile = this.playerInfo.getPlayerFile();
+                    final PlayerName name = playerFile.getPlayerName();
 
                     name.setPatronymic(patronymic);
                     playerFile.updateName();
@@ -157,13 +157,13 @@ public class RegistrationProcess {
     }
 
     public void setPronouns(
-            @NotNull Player player,
-            @NotNull PlayerInfo playerInfo
+            final @NotNull Player player,
+            final @NotNull PlayerInfo playerInfo
     ) {
         this.player = player;
         this.playerLocation = player.getLocation();
         this.playerInfo = playerInfo;
-        Pronouns pronouns = this.playerInfo.getPlayerFile().getPronouns();
+        final Pronouns pronouns = this.playerInfo.getPlayerFile().getPronouns();
 
         this.sendDialogueMessage(M_14, 25L);
         this.sendDialogueMessage(M_15, 75L);
@@ -191,8 +191,8 @@ public class RegistrationProcess {
     }
 
     private void sendDialogueMessage(
-            @NotNull Component message,
-            long delay
+            final @NotNull Component message,
+            final long delay
     ) {
         MSEssentials.getInstance().runTaskLater(() -> {
             this.player.sendMessage(

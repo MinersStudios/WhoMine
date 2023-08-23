@@ -23,11 +23,12 @@ public class CustomBlockDamageEvent extends CustomBlockEvent implements Cancella
      *                    the player's hand
      */
     public CustomBlockDamageEvent(
-            @NotNull CustomBlock customBlock,
-            @NotNull Player player,
-            @NotNull ItemStack itemStack
+            final @NotNull CustomBlock customBlock,
+            final @NotNull Player player,
+            final @NotNull ItemStack itemStack
     ) {
         super(customBlock);
+
         this.player = player;
         this.itemStack = itemStack;
     }
@@ -56,7 +57,7 @@ public class CustomBlockDamageEvent extends CustomBlockEvent implements Cancella
      * @param cancel True if you wish to cancel this event
      */
     @Override
-    public void setCancelled(boolean cancel) {
+    public void setCancelled(final boolean cancel) {
         this.cancelled = cancel;
     }
 

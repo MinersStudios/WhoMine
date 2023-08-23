@@ -49,8 +49,8 @@ public class PlayerFile {
     private @Nullable Location lastDeathLocation;
 
     private PlayerFile(
-            @NotNull File file,
-            @NotNull YamlConfiguration config
+            final @NotNull File file,
+            final @NotNull YamlConfiguration config
     ) {
         this.file = file;
         this.config = config;
@@ -68,11 +68,11 @@ public class PlayerFile {
         this.air = config.getInt("game-params.air", 300);
         this.firstJoin = Instant.ofEpochMilli(config.getLong("first-join", System.currentTimeMillis()));
 
-        ConfigurationSection lastLeaveSection = this.config.getConfigurationSection("locations.last-leave-location");
-        String lastLeaveWorldName = this.config.getString("locations.last-leave-location.world", "");
-        World lastLeaveWorld = Bukkit.getWorld(lastLeaveWorldName);
-        Location spawnLocation = MSEssentials.getConfiguration().spawnLocation;
-        World spawnWorld = spawnLocation.getWorld();
+        final ConfigurationSection lastLeaveSection = this.config.getConfigurationSection("locations.last-leave-location");
+        final String lastLeaveWorldName = this.config.getString("locations.last-leave-location.world", "");
+        final World lastLeaveWorld = Bukkit.getWorld(lastLeaveWorldName);
+        final Location spawnLocation = MSEssentials.getConfiguration().spawnLocation;
+        final World spawnWorld = spawnLocation.getWorld();
 
         this.lastLeaveLocation = lastLeaveSection == null
                 ? null
@@ -85,9 +85,9 @@ public class PlayerFile {
                 (float) lastLeaveSection.getDouble("pitch", spawnLocation.getPitch())
         );
 
-        ConfigurationSection lastDeathSection = this.config.getConfigurationSection("locations.last-death-location");
-        String lastDeathWorldName = this.config.getString("locations.last-death-location.world", "");
-        World lastDeathWorld = Bukkit.getWorld(lastDeathWorldName);
+        final ConfigurationSection lastDeathSection = this.config.getConfigurationSection("locations.last-death-location");
+        final String lastDeathWorldName = this.config.getString("locations.last-death-location.world", "");
+        final World lastDeathWorld = Bukkit.getWorld(lastDeathWorldName);
         this.lastDeathLocation = lastDeathSection == null
                 ? null
                 : new Location(
@@ -105,11 +105,11 @@ public class PlayerFile {
     }
 
     public static @NotNull PlayerFile loadConfig(
-            @NotNull UUID uniqueId,
-            @Nullable String nickname
+            final @NotNull UUID uniqueId,
+            final @Nullable String nickname
     ) {
-        String filePath = "players/" + ("$Console".equals(nickname) ? "console" : uniqueId) + ".yml";
-        File dataFile = new File(getInstance().getPluginFolder(), filePath);
+        final String filePath = "players/" + ("$Console".equals(nickname) ? "console" : uniqueId) + ".yml";
+        final File dataFile = new File(getInstance().getPluginFolder(), filePath);
         return new PlayerFile(dataFile, YamlConfiguration.loadConfiguration(dataFile));
     }
 
@@ -125,13 +125,14 @@ public class PlayerFile {
         return this.playerName;
     }
 
-    public void setPlayerName(@NotNull PlayerName playerName) {
+    public void setPlayerName(final @NotNull PlayerName playerName) {
         this.playerName = playerName;
         this.updateName();
     }
 
     public void updateName() {
-        ConfigurationSection section = this.config.createSection("name");
+        final ConfigurationSection section = this.config.createSection("name");
+
         section.set("nickname", this.playerName.getNickname());
         section.set("first-name", this.playerName.getFirstName());
         section.set("last-name", this.playerName.getLastName());
@@ -148,12 +149,12 @@ public class PlayerFile {
         return this.pronouns;
     }
 
-    public void setPronouns(@NotNull Pronouns pronouns) {
+    public void setPronouns(final @NotNull Pronouns pronouns) {
         this.pronouns = pronouns;
         this.config.set("pronouns", pronouns.name());
     }
 
-    public void addIp(@Nullable String ip) {
+    public void addIp(final @Nullable String ip) {
         this.ipList.add(ip);
         this.saveIpList();
     }
@@ -170,32 +171,32 @@ public class PlayerFile {
         return Collections.unmodifiableList(this.skins);
     }
 
-    public @Nullable Skin getSkin(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
+    public @Nullable Skin getSkin(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
         return index >= this.skins.size() ? null : this.skins.get(index);
     }
 
     @Contract("null -> null")
-    public @Nullable Skin getSkin(@Nullable String name) {
+    public @Nullable Skin getSkin(final @Nullable String name) {
         if (StringUtils.isBlank(name)) return null;
 
-        for (var skin : this.skins) {
+        for (final var skin : this.skins) {
             if (skin.getName().equalsIgnoreCase(name)) return skin;
         }
 
         return null;
     }
 
-    public int getSkinIndex(@NotNull Skin skin) {
+    public int getSkinIndex(final @NotNull Skin skin) {
         return this.skins.indexOf(skin);
     }
 
-    public int getSkinIndex(@NotNull String name) {
+    public int getSkinIndex(final @NotNull String name) {
         return this.skins.indexOf(this.getSkin(name));
     }
 
     public boolean setSkin(
-            @Range(from = 0, to = Integer.MAX_VALUE) int index,
-            @NotNull Skin skin
+            final @Range(from = 0, to = Integer.MAX_VALUE) int index,
+            final @NotNull Skin skin
     ) throws IndexOutOfBoundsException {
         if (this.containsSkin(skin)) return false;
 
@@ -206,7 +207,7 @@ public class PlayerFile {
         return true;
     }
 
-    public boolean addSkin(@NotNull Skin skin) {
+    public boolean addSkin(final @NotNull Skin skin) {
         if (!this.hasAvailableSkinSlot()) return false;
 
         this.skins.add(skin);
@@ -216,20 +217,20 @@ public class PlayerFile {
         return true;
     }
 
-    public void removeSkin(@Range(from = 0, to = Integer.MAX_VALUE) int index) throws NullPointerException, IndexOutOfBoundsException, IllegalArgumentException {
-        Skin skin = this.skins.get(index);
+    public void removeSkin(final @Range(from = 0, to = Integer.MAX_VALUE) int index) throws NullPointerException, IndexOutOfBoundsException, IllegalArgumentException {
+        final Skin skin = this.skins.get(index);
 
         Preconditions.checkNotNull(skin, "Skin not found");
         this.removeSkin(skin);
     }
 
-    public void removeSkin(@NotNull Skin skin) throws IllegalArgumentException {
+    public void removeSkin(final @NotNull Skin skin) throws IllegalArgumentException {
         Preconditions.checkArgument(this.containsSkin(skin), "Skin not found");
 
-        Skin currentSkin = this.playerSettings.getSkin();
+        final Skin currentSkin = this.playerSettings.getSkin();
 
         if (skin.equals(currentSkin)) {
-            PlayerInfo playerInfo = PlayerInfo.fromNickname(this.playerName.getNickname());
+            final PlayerInfo playerInfo = PlayerInfo.fromNickname(this.playerName.getNickname());
 
             if (playerInfo != null) {
                 playerInfo.setSkin(null);
@@ -245,12 +246,12 @@ public class PlayerFile {
         return this.skins.size() < 18;
     }
 
-    public boolean containsSkin(@NotNull Skin skin) {
+    public boolean containsSkin(final @NotNull Skin skin) {
         return this.skins.contains(skin);
     }
 
-    public boolean containsSkin(@NotNull String name) {
-        for (var skin : this.skins) {
+    public boolean containsSkin(final @NotNull String name) {
+        for (final var skin : this.skins) {
             if (skin.getName().equalsIgnoreCase(name)) return true;
         }
 
@@ -261,7 +262,7 @@ public class PlayerFile {
         return this.gameMode;
     }
 
-    public void setGameMode(@NotNull GameMode gameMode) {
+    public void setGameMode(final @NotNull GameMode gameMode) {
         this.gameMode = gameMode;
         this.config.set("game-params.game-mode", gameMode.name());
     }
@@ -270,7 +271,7 @@ public class PlayerFile {
         return this.health;
     }
 
-    public void setHealth(double health) {
+    public void setHealth(final double health) {
         this.health = health;
         this.config.set("game-params.health", health);
     }
@@ -279,7 +280,7 @@ public class PlayerFile {
         return this.air;
     }
 
-    public void setAir(int air) {
+    public void setAir(final int air) {
         this.air = air;
         this.config.set("game-params.air", air);
     }
@@ -292,7 +293,7 @@ public class PlayerFile {
         return this.firstJoin;
     }
 
-    public void setFirstJoin(@NotNull Instant firstJoin) {
+    public void setFirstJoin(final @NotNull Instant firstJoin) {
         this.firstJoin = firstJoin;
         this.config.set("first-join", firstJoin.toEpochMilli());
     }
@@ -301,7 +302,7 @@ public class PlayerFile {
         return this.lastLeaveLocation;
     }
 
-    public void setLastLeaveLocation(@Nullable Location leaveLocation) {
+    public void setLastLeaveLocation(final @Nullable Location leaveLocation) {
         this.lastLeaveLocation = leaveLocation;
         setLocation(
                 this.config.createSection("locations.last-leave-location"),
@@ -313,7 +314,7 @@ public class PlayerFile {
         return this.lastDeathLocation;
     }
 
-    public void setLastDeathLocation(@Nullable Location deathLocation) {
+    public void setLastDeathLocation(final @Nullable Location deathLocation) {
         this.lastDeathLocation = deathLocation;
         setLocation(
                 this.config.createSection("locations.last-death-location"),
@@ -322,10 +323,10 @@ public class PlayerFile {
     }
 
     private static void setLocation(
-            @NotNull ConfigurationSection section,
-            @Nullable Location location
+            final @NotNull ConfigurationSection section,
+            final @Nullable Location location
     ) {
-        boolean isNull = location == null;
+        final boolean isNull = location == null;
 
         section.set("world", isNull ? null : location.getWorld().getName());
         section.set("x", isNull ? null : location.getX());
@@ -348,9 +349,9 @@ public class PlayerFile {
     }
 
     public void serializeSkinsSection() {
-        var list = new ArrayList<>();
+        final var list = new ArrayList<>();
 
-        for (var skin : this.skins) {
+        for (final var skin : this.skins) {
             list.add(skin.serialize());
         }
 
@@ -358,15 +359,15 @@ public class PlayerFile {
     }
 
     public @NotNull List<Skin> deserializeSkinsSection() {
-        var names = this.config.getList("skins", Collections.emptyList());
+        final var names = this.config.getList("skins", Collections.emptyList());
 
         if (names.isEmpty()) return Collections.emptyList();
 
-        var skins = new ArrayList<Skin>(names.size());
+        final var skins = new ArrayList<Skin>(names.size());
 
-        for (var skin : names) {
+        for (final var skin : names) {
             if (!(skin instanceof Map)) continue;
-            Skin deserialized = Skin.deserialize(skin.toString());
+            final Skin deserialized = Skin.deserialize(skin.toString());
 
             if (deserialized != null) {
                 skins.add(deserialized);

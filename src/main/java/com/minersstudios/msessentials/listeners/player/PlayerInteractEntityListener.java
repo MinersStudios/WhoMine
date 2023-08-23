@@ -22,13 +22,13 @@ public class PlayerInteractEntityListener extends AbstractMSListener {
     private final SecureRandom random = new SecureRandom();
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerInteractEntity(@NotNull PlayerInteractEntityEvent event) {
-        Player whoClicked = event.getPlayer();
+    public void onPlayerInteractEntity(final @NotNull PlayerInteractEntityEvent event) {
+        final Player whoClicked = event.getPlayer();
 
-        if (event.getRightClicked() instanceof Player clickedPlayer) {
-            PlayerInfo clickedInfo = PlayerInfo.fromOnlinePlayer(clickedPlayer);
-            ItemStack helmet = clickedPlayer.getInventory().getHelmet();
-            float pitch = whoClicked.getEyeLocation().getPitch();
+        if (event.getRightClicked() instanceof final Player clickedPlayer) {
+            final PlayerInfo clickedInfo = PlayerInfo.fromOnlinePlayer(clickedPlayer);
+            final ItemStack helmet = clickedPlayer.getInventory().getHelmet();
+            final float pitch = whoClicked.getEyeLocation().getPitch();
 
             if (
                     (pitch >= 80 && pitch <= 90)
@@ -53,7 +53,7 @@ public class PlayerInteractEntityListener extends AbstractMSListener {
                     && !whoClicked.isSneaking()
                     && helmet.getType() == Material.SADDLE
             ) {
-                var passengers = clickedPlayer.getPassengers();
+                final var passengers = clickedPlayer.getPassengers();
 
                 if (passengers.isEmpty()) {
                     clickedPlayer.addPassenger(whoClicked);
@@ -61,10 +61,10 @@ public class PlayerInteractEntityListener extends AbstractMSListener {
                     passengers.get(passengers.size() - 1).addPassenger(whoClicked);
                 }
             }
-        } else if (event.getRightClicked() instanceof ItemFrame itemFrame) {
-            boolean hasScoreboardTag = itemFrame.getScoreboardTags().contains("invisibleItemFrame");
-            Material frameMaterial = itemFrame.getItem().getType();
-            Material handMaterial = whoClicked.getInventory().getItemInMainHand().getType();
+        } else if (event.getRightClicked() instanceof final ItemFrame itemFrame) {
+            final boolean hasScoreboardTag = itemFrame.getScoreboardTags().contains("invisibleItemFrame");
+            final Material frameMaterial = itemFrame.getItem().getType();
+            final Material handMaterial = whoClicked.getInventory().getItemInMainHand().getType();
 
             if (
                     frameMaterial.isAir()

@@ -2,17 +2,14 @@ package com.minersstudios.msessentials.anomalies;
 
 import com.minersstudios.mscore.util.ItemUtils;
 import com.minersstudios.msessentials.MSEssentials;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.*;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,14 +23,16 @@ public class AnomalyIgnorableItems {
     private final @NotNull Map<EquipmentSlot, ItemStack> includedItems;
     private final int breakingPerAction;
 
+    private static final ItemStack EMPTY_ITEM = new ItemStack(Material.AIR);
+
     /**
      * @param includedItems     Ignorable items that will protect the player
      * @param breakingPerAction The amount of damage that will be dealt to the item
      *                          when the action is performed
      */
     public AnomalyIgnorableItems(
-            @NotNull Map<EquipmentSlot, ItemStack> includedItems,
-            int breakingPerAction
+            final @NotNull Map<EquipmentSlot, ItemStack> includedItems,
+            final int breakingPerAction
     ) {
         this.includedItems = includedItems;
         this.breakingPerAction = breakingPerAction;
@@ -46,11 +45,11 @@ public class AnomalyIgnorableItems {
      */
     @Contract("null, null -> false")
     public boolean isIgnorableItem(
-            @Nullable EquipmentSlot equipmentSlot,
-            @Nullable ItemStack item
+            final @Nullable EquipmentSlot equipmentSlot,
+            final @Nullable ItemStack item
     ) {
         if (equipmentSlot == null || item == null) return false;
-        ItemStack ignorableItem = this.includedItems.get(equipmentSlot);
+        final ItemStack ignorableItem = this.includedItems.get(equipmentSlot);
         return ignorableItem == null
                 || item.getType() == ignorableItem.getType()
                 && item.getItemMeta().getCustomModelData() == ignorableItem.getItemMeta().getCustomModelData();
@@ -60,8 +59,8 @@ public class AnomalyIgnorableItems {
      * @param inventory The player inventory to check
      * @return True if the player has all ignorable items, false otherwise
      */
-    public boolean hasIgnorableItems(@NotNull PlayerInventory inventory) {
-        for (var entry : getEquippedItems(inventory).entrySet()) {
+    public boolean hasIgnorableItems(final @NotNull PlayerInventory inventory) {
+        for (final var entry : getEquippedItems(inventory).entrySet()) {
             if (!this.includedItems.containsKey(entry.getKey())) continue;
             if (!this.isIgnorableItem(entry.getKey(), entry.getValue())) return false;
         }
@@ -73,10 +72,10 @@ public class AnomalyIgnorableItems {
      *
      * @param inventory The player inventory whose items will be damaged
      */
-    public void damageIgnorableItems(@NotNull PlayerInventory inventory) {
-        for (var entry : getEquippedItems(inventory).entrySet()) {
-            EquipmentSlot equipmentSlot = entry.getKey();
-            ItemStack item = entry.getValue();
+    public void damageIgnorableItems(final @NotNull PlayerInventory inventory) {
+        for (final var entry : getEquippedItems(inventory).entrySet()) {
+            final EquipmentSlot equipmentSlot = entry.getKey();
+            final ItemStack item = entry.getValue();
 
             if (
                     this.includedItems.containsKey(equipmentSlot)
@@ -115,14 +114,17 @@ public class AnomalyIgnorableItems {
      * @return A map of equipped items and their equipment slots of the player
      *         (HEAD, CHEST, LEGS, FEET)
      */
-    private static @NotNull Map<@NotNull EquipmentSlot, @Nullable ItemStack> getEquippedItems(@NotNull PlayerInventory inventory) {
-        var playerEquippedItems = new HashMap<EquipmentSlot, ItemStack>();
-
-        playerEquippedItems.put(EquipmentSlot.HEAD, inventory.getHelmet());
-        playerEquippedItems.put(EquipmentSlot.CHEST, inventory.getChestplate());
-        playerEquippedItems.put(EquipmentSlot.LEGS, inventory.getLeggings());
-        playerEquippedItems.put(EquipmentSlot.FEET, inventory.getBoots());
-
-        return playerEquippedItems;
+    @Contract("_ -> new")
+    private static @NotNull @Unmodifiable Map<@NotNull EquipmentSlot, @Nullable ItemStack> getEquippedItems(final @NotNull PlayerInventory inventory) {
+        final ItemStack helmet = inventory.getHelmet();
+        final ItemStack chestplate = inventory.getChestplate();
+        final ItemStack leggings = inventory.getLeggings();
+        final ItemStack boots = inventory.getBoots();
+        return Map.of(
+                EquipmentSlot.HEAD, helmet == null ? EMPTY_ITEM : helmet,
+                EquipmentSlot.CHEST, chestplate == null ? EMPTY_ITEM : chestplate,
+                EquipmentSlot.LEGS, leggings == null ? EMPTY_ITEM : leggings,
+                EquipmentSlot.FEET, boots == null ? EMPTY_ITEM : boots
+        );
     }
 }

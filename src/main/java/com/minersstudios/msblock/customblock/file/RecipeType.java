@@ -28,7 +28,7 @@ public enum RecipeType {
      *
      * @param clazz The class that represents this recipe type
      */
-    RecipeType(@NotNull Class<? extends Recipe> clazz) {
+    RecipeType(final @NotNull Class<? extends Recipe> clazz) {
         this.clazz = clazz;
     }
 
@@ -50,8 +50,8 @@ public enum RecipeType {
      *                                  not match any known recipe
      *                                  types
      */
-    public static @NotNull RecipeType valueOf(@NotNull Class<? extends Recipe> clazz) throws IllegalArgumentException {
-        for (var recipeType : values()) {
+    public static @NotNull RecipeType valueOf(final @NotNull Class<? extends Recipe> clazz) throws IllegalArgumentException {
+        for (final var recipeType : values()) {
             if (recipeType.getClazz() == clazz) return recipeType;
         }
 
@@ -70,7 +70,7 @@ public enum RecipeType {
      * @throws IllegalArgumentException If the provided recipe
      *                                  type string is not recognized
      */
-    public static @NotNull Class<? extends Recipe> clazzOf(@NotNull String type) throws IllegalArgumentException {
+    public static @NotNull Class<? extends Recipe> clazzOf(final @NotNull String type) throws IllegalArgumentException {
         return valueOf(type.toUpperCase(Locale.ENGLISH)).getClazz();
     }
 
@@ -84,7 +84,7 @@ public enum RecipeType {
      * @throws IllegalArgumentException If the provided Recipe
      *                                  class is not recognized
      */
-    public static @NotNull String nameOf(@NotNull Class<? extends Recipe> clazz) throws IllegalArgumentException {
+    public static @NotNull String nameOf(final @NotNull Class<? extends Recipe> clazz) throws IllegalArgumentException {
         return valueOf(clazz).name();
     }
 
@@ -93,8 +93,8 @@ public enum RecipeType {
      * @return True if the provided class is a recognized
      *         recipe type
      */
-    public static boolean isSupported(@NotNull Class<? extends Recipe> clazz) {
-        for (var recipeType : values()) {
+    public static boolean isSupported(final @NotNull Class<? extends Recipe> clazz) {
+        for (final var recipeType : values()) {
             if (recipeType.getClazz() == clazz) return true;
         }
 

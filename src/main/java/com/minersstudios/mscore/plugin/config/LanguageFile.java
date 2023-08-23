@@ -47,7 +47,7 @@ public final class LanguageFile {
 
     static {
         try {
-            var registryImplClass = Class.forName("net.kyori.adventure.translation.TranslationRegistryImpl");
+            final var registryImplClass = Class.forName("net.kyori.adventure.translation.TranslationRegistryImpl");
             TRANSLATIONS_FIELD = registryImplClass.getDeclaredField("translations");
 
             TRANSLATIONS_FIELD.setAccessible(true);
@@ -57,8 +57,8 @@ public final class LanguageFile {
     }
 
     private LanguageFile(
-            @NotNull String folderLink,
-            @NotNull String code
+            final @NotNull String folderLink,
+            final @NotNull String code
     ) {
         this.folderLink = folderLink;
         this.code = code;
@@ -104,23 +104,22 @@ public final class LanguageFile {
      * @param code Language code of the language file
      */
     public static void loadLanguage(
-            @NotNull String folderLink,
-            @NotNull String code
+            final @NotNull String folderLink,
+            final @NotNull String code
     ) {
-        long time = System.currentTimeMillis();
-        LanguageFile languageFile = new LanguageFile(folderLink, code);
+        final long time = System.currentTimeMillis();
+        final LanguageFile languageFile = new LanguageFile(folderLink, code);
 
-        Locale locale = Locale.US;
         languageFile.translations.entrySet().forEach(
                 entry -> {
-                    String key = entry.getKey();
-                    String value = entry.getValue().getAsString();
+                    final String key = entry.getKey();
+                    final String value = entry.getValue().getAsString();
 
                     if (registry.contains(key)) {
                         registry.unregister(key);
                     }
 
-                    registry.register(key, locale, new MessageFormat(value));
+                    registry.register(key, Locale.US, new MessageFormat(value));
                 }
         );
         GlobalTranslator.translator().addSource(registry);
@@ -143,7 +142,7 @@ public final class LanguageFile {
      * @see #loadLanguage(String, String)
      */
     public static void reloadLanguage() {
-        GlobalConfig config = MSPlugin.getGlobalConfig();
+        final GlobalConfig config = MSPlugin.getGlobalConfig();
 
         unloadLanguage();
         loadLanguage(config.languageFolderLink, config.languageCode);
@@ -159,7 +158,7 @@ public final class LanguageFile {
      * @return TranslatableComponent with translation from {@link #registry} or key if translation is not found
      * @see #renderTranslation(String)
      */
-    public static @NotNull TranslatableComponent renderTranslationComponent(@NotNull String key) {
+    public static @NotNull TranslatableComponent renderTranslationComponent(final @NotNull String key) {
         return translatable(key, renderTranslation(key));
     }
 
@@ -169,7 +168,7 @@ public final class LanguageFile {
      * @param translatable TranslatableComponent to render
      * @return Translated component or key if translation is not found
      */
-    public static @NotNull Component renderTranslationComponent(@NotNull TranslatableComponent translatable) {
+    public static @NotNull Component renderTranslationComponent(final @NotNull TranslatableComponent translatable) {
         return GlobalTranslator.render(translatable, Locale.US);
     }
 
@@ -181,8 +180,8 @@ public final class LanguageFile {
      * @param key Translation key
      * @return Translated string or key if translation is not found
      */
-    public static @NotNull String renderTranslation(@NotNull String key) {
-        MessageFormat format = registry.translate(key, Locale.US);
+    public static @NotNull String renderTranslation(final @NotNull String key) {
+        final MessageFormat format = registry.translate(key, Locale.US);
         return format == null ? key : format.toPattern();
     }
 
@@ -192,7 +191,7 @@ public final class LanguageFile {
      * @param translatable TranslatableComponent to render
      * @return Translated string or key if translation is not found
      */
-    public static @NotNull String renderTranslation(@NotNull TranslatableComponent translatable) {
+    public static @NotNull String renderTranslation(final @NotNull TranslatableComponent translatable) {
         return ChatUtils.serializePlainComponent(renderTranslationComponent(translatable));
     }
 
@@ -216,16 +215,16 @@ public final class LanguageFile {
      * @return Language file
      */
     private @NotNull File loadFile() {
-        File langFolder = new File("config/minersstudios/language");
+        final File langFolder = new File("config/minersstudios/language");
 
         if (!langFolder.exists() && !langFolder.mkdirs()) {
             throw new RuntimeException("Failed to create language folder");
         }
 
-        File langFile = new File(langFolder, this.code + ".json");
+        final File langFile = new File(langFolder, this.code + ".json");
 
         if (!langFile.exists()) {
-            String link =
+            final String link =
                     this.folderLink
                     + (
                             this.folderLink.endsWith("/")
@@ -235,8 +234,8 @@ public final class LanguageFile {
                     + this.code + ".json";
 
             try (
-                    var in = new URL(link).openStream();
-                    var out = new FileOutputStream(langFile)
+                    final var in = new URL(link).openStream();
+                    final var out = new FileOutputStream(langFile)
             ) {
                 in.transferTo(out);
             } catch (IOException e) {
@@ -255,9 +254,9 @@ public final class LanguageFile {
      */
     private @NotNull JsonObject loadTranslations() throws JsonSyntaxException {
         try {
-            Path path = Path.of(this.file.getAbsolutePath());
-            String content = Files.readString(path);
-            JsonElement element = JsonParser.parseString(content);
+            final Path path = Path.of(this.file.getAbsolutePath());
+            final String content = Files.readString(path);
+            final JsonElement element = JsonParser.parseString(content);
 
             return element.getAsJsonObject();
         } catch (IOException | JsonSyntaxException e) {
@@ -279,10 +278,10 @@ public final class LanguageFile {
      * @throws RuntimeException If failed to create backup file
      */
     private void createBackupFile() throws RuntimeException {
-        String backupFileName = this.file.getName() + ".OLD";
-        File backupFile = new File(this.file.getParent(), backupFileName);
-        Path filePath = Path.of(this.file.getAbsolutePath());
-        Path backupFilePath = Path.of(backupFile.getAbsolutePath());
+        final String backupFileName = this.file.getName() + ".OLD";
+        final File backupFile = new File(this.file.getParent(), backupFileName);
+        final Path filePath = Path.of(this.file.getAbsolutePath());
+        final Path backupFilePath = Path.of(backupFile.getAbsolutePath());
 
         try {
             Files.move(filePath, backupFilePath, StandardCopyOption.REPLACE_EXISTING);

@@ -19,12 +19,12 @@ import org.jetbrains.annotations.NotNull;
 public class InventoryClickListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onInventoryClick(@NotNull InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        PlayerInventory inventory = player.getInventory();
-        Inventory clickedInventory = event.getClickedInventory();
-        ItemStack cursorItem = event.getCursor();
-        ItemStack currentItem = event.getCurrentItem();
+    public void onInventoryClick(final @NotNull InventoryClickEvent event) {
+        final Player player = (Player) event.getWhoClicked();
+        final PlayerInventory inventory = player.getInventory();
+        final Inventory clickedInventory = event.getClickedInventory();
+        final ItemStack cursorItem = event.getCursor();
+        final ItemStack currentItem = event.getCurrentItem();
 
         if (
                 event.getSlot() == 39

@@ -32,7 +32,7 @@ public final class MSPlayerUtils {
      *
      * @param player the player
      */
-    public static void hideNameTag(@Nullable Player player) {
+    public static void hideNameTag(final @Nullable Player player) {
         if (player != null) {
             MSEssentials.getScoreboardHideTagsTeam().addEntry(player.getName());
             player.setScoreboard(MSEssentials.getScoreboardHideTags());
@@ -43,13 +43,13 @@ public final class MSPlayerUtils {
      * @return A list of all online players' names and IDs
      */
     public static @NotNull List<String> getLocalPlayerNames() {
-        var completions = new ArrayList<String>();
+        final var completions = new ArrayList<String>();
 
-        for (var player : Bukkit.getOnlinePlayers()) {
-            PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        for (final var player : Bukkit.getOnlinePlayers()) {
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
             if (playerInfo.isOnline()) {
-                int id = playerInfo.getID(false, false);
+                final int id = playerInfo.getID(false, false);
 
                 if (id != -1) {
                     completions.add(String.valueOf(id));
@@ -67,7 +67,7 @@ public final class MSPlayerUtils {
      * @return True if string matches {@link #NAME_REGEX}
      */
     @Contract(value = "null -> false")
-    public static boolean matchesNameRegex(@Nullable String string) {
+    public static boolean matchesNameRegex(final @Nullable String string) {
         return string != null && string.matches(NAME_REGEX);
     }
 }

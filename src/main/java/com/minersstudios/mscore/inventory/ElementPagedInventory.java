@@ -22,7 +22,7 @@ import java.util.Map;
  * @see PagedCustomInventory
  */
 public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPagedInventory> implements PagedCustomInventory {
-    protected final @NotNull Multimap<Integer, InventoryButton> elements;
+    protected final @NotNull ArrayListMultimap<Integer, InventoryButton> elements;
     protected final int[] elementSlots;
 
     /**
@@ -33,11 +33,12 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      * @param elementSlots Slots of the elements in the inventory
      */
     protected ElementPagedInventory(
-            @NotNull Component title,
-            @Range(from = 1, to = 6) int verticalSize,
-            int @Range(from = 0, to = Integer.MAX_VALUE) [] elementSlots
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize,
+            final int @Range(from = 0, to = Integer.MAX_VALUE) ... elementSlots
     ) {
         super(title, verticalSize);
+
         this.elementSlots = elementSlots;
         this.elements = ArrayListMultimap.create();
     }
@@ -52,9 +53,9 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      */
     @Contract("_, _, _ -> new")
     public static @NotNull ElementPagedInventory elementPaged(
-            @NotNull Component title,
-            @Range(from = 1, to = 6) int verticalSize,
-            int @Range(from = 0, to = Integer.MAX_VALUE) [] elementSlots
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize,
+            final int @Range(from = 0, to = Integer.MAX_VALUE) ... elementSlots
     ) {
         return new ElementPagedInventory(title, verticalSize, elementSlots);
     }
@@ -86,14 +87,16 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      * @param elements New elements of the inventory
      * @return This inventory
      */
-    public @NotNull ElementPagedInventory elements(@NotNull List<InventoryButton> elements) {
+    public @NotNull ElementPagedInventory elements(final @NotNull List<InventoryButton> elements) {
         this.elements.clear();
         this.setPagesSize((int) Math.ceil((double) elements.size() / this.elementSlots.length));
 
         for (int page = 0; page < this.pagesSize; page++) {
             for (int element = 0; element < this.elementSlots.length; element++) {
-                int index = element + (page * this.elementSlots.length);
+                final int index = element + (page * this.elementSlots.length);
+
                 if (index >= elements.size()) break;
+
                 this.elements.put(page, elements.get(index));
             }
         }
@@ -118,18 +121,15 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      * @param page Page index
      * @return Elements of the page
      */
-    public @NotNull Map<Integer, InventoryButton> getPageContents(int page) {
-        var buttons = new HashMap<Integer, InventoryButton>(this.elementSlots.length);
-        int i = 0;
+    public @NotNull Map<Integer, InventoryButton> getPageContents(final int page) {
+        final var buttons = new HashMap<Integer, InventoryButton>(this.elementSlots.length);
 
-        for (var inventoryButton : this.elements.get(page)) {
-            buttons.put(this.elementSlots[i], inventoryButton);
-            i++;
+        for (int i = 0; i < this.elements.get(page).size(); i++) {
+            buttons.put(this.elementSlots[i], this.elements.get(page).get(i));
         }
 
-        for (int slot : this.elementSlots) {
-            if (buttons.containsKey(slot)) continue;
-            buttons.put(slot, null);
+        for (final int slot : this.elementSlots) {
+            buttons.computeIfAbsent(slot, k -> null);
         }
 
         return buttons;
@@ -141,12 +141,14 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      * @param page Page index
      * @return Page of the inventory
      */
-    public @Nullable ElementPagedInventory createPage(@Range(from = 0, to = Integer.MAX_VALUE) int page) {
+    public @Nullable ElementPagedInventory createPage(final @Range(from = 0, to = Integer.MAX_VALUE) int page) {
         if (page >= this.pagesSize) return null;
 
-        ElementPagedInventory pagedInventory = this.clone();
+        final ElementPagedInventory pagedInventory = this.clone();
+
         pagedInventory.setPageIndex(page);
         pagedInventory.buttons(this.getPageContents(page));
+
         return pagedInventory;
     }
 
@@ -171,7 +173,7 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      * @param pagesSize New pages size
      */
     @Override
-    protected void setPagesSize(@Range(from = 0, to = Integer.MAX_VALUE) int pagesSize) {
+    protected void setPagesSize(final @Range(from = 0, to = Integer.MAX_VALUE) int pagesSize) {
         this.pagesSize = pagesSize;
     }
 }

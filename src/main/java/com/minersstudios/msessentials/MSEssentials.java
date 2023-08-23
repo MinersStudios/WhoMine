@@ -44,10 +44,13 @@ public final class MSEssentials extends MSPlugin {
         initClass(SkinsMenu.class);
     }
 
+    public MSEssentials() {
+        instance = this;
+    }
+
     @Override
     public void enable() {
-        Server server = this.getServer();
-        instance = this;
+        final Server server = this.getServer();
         this.cache = new Cache();
         this.scoreboardHideTags = server.getScoreboardManager().getNewScoreboard();
         this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam("hide_tags");
@@ -55,7 +58,7 @@ public final class MSEssentials extends MSPlugin {
         this.scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
         this.scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 
-        PluginCommand command = DiscordSRV.getPlugin().getCommand("discord");
+        final PluginCommand command = DiscordSRV.getPlugin().getCommand("discord");
         if (command != null) {
             command.setExecutor(new DiscordCommand());
         }
@@ -78,8 +81,8 @@ public final class MSEssentials extends MSPlugin {
 
     @Override
     public void disable() {
-        PlayerInfoMap playerInfoMap = this.cache.playerInfoMap;
-        var onlinePlayers = this.getServer().getOnlinePlayers();
+        final PlayerInfoMap playerInfoMap = this.cache.playerInfoMap;
+        final var onlinePlayers = this.getServer().getOnlinePlayers();
 
         if (
                 !playerInfoMap.isEmpty()

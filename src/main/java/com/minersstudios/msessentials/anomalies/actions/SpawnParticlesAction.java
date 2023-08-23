@@ -28,9 +28,9 @@ public class SpawnParticlesAction extends AnomalyAction {
      * @param particleBuilderList Particle builders to spawn when player is in anomaly zone
      */
     public SpawnParticlesAction(
-            long time,
-            int percentage,
-            @NotNull List<ParticleBuilder> particleBuilderList
+            final long time,
+            final int percentage,
+            final @NotNull List<ParticleBuilder> particleBuilderList
     ) {
         super(time, percentage);
         this.particleBuilderList = particleBuilderList;
@@ -44,10 +44,10 @@ public class SpawnParticlesAction extends AnomalyAction {
      */
     @Override
     public void doAction(
-            @NotNull Player player,
-            @Nullable AnomalyIgnorableItems ignorableItems
+            final @NotNull Player player,
+            final @Nullable AnomalyIgnorableItems ignorableItems
     ) {
-        for (var particleBuilder : this.particleBuilderList) {
+        for (final var particleBuilder : this.particleBuilderList) {
             particleBuilder.receivers(player).location(player.getLocation()).spawn();
         }
     }

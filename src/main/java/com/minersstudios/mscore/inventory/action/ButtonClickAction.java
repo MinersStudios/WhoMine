@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.inventory.actions;
+package com.minersstudios.mscore.inventory.action;
 
 import com.minersstudios.mscore.inventory.CustomInventory;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -17,7 +17,7 @@ public interface ButtonClickAction {
      * @param singleInventory Custom inventory that is involved in this event
      */
     void doAction(
-            @NotNull InventoryClickEvent event,
-            @NotNull CustomInventory singleInventory
+            final @NotNull InventoryClickEvent event,
+            final @NotNull CustomInventory singleInventory
     );
 }

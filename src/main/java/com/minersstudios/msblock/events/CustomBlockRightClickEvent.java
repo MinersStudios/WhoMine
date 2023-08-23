@@ -28,13 +28,14 @@ public class CustomBlockRightClickEvent extends CustomBlockEvent implements Canc
      * @param interactionPoint   The exact point at which the interaction occurred
      */
     public CustomBlockRightClickEvent(
-            @NotNull CustomBlock damagedCustomBlock,
-            @NotNull Player player,
-            @NotNull EquipmentSlot hand,
-            @NotNull BlockFace blockFace,
-            @NotNull Location interactionPoint
+            final @NotNull CustomBlock damagedCustomBlock,
+            final @NotNull Player player,
+            final @NotNull EquipmentSlot hand,
+            final @NotNull BlockFace blockFace,
+            final @NotNull Location interactionPoint
     ) {
         super(damagedCustomBlock);
+
         this.player = player;
         this.hand = hand;
         this.blockFace = blockFace;
@@ -78,7 +79,7 @@ public class CustomBlockRightClickEvent extends CustomBlockEvent implements Canc
      * @param cancel True if you wish to cancel this event
      */
     @Override
-    public void setCancelled(boolean cancel) {
+    public void setCancelled(final boolean cancel) {
         this.cancelled = cancel;
     }
 

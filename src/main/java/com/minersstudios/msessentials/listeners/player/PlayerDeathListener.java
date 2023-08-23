@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerDeathListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
-        Player killedPlayer = event.getEntity();
-        PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(killedPlayer);
+    public void onPlayerDeath(final @NotNull PlayerDeathEvent event) {
+        final Player killedPlayer = event.getEntity();
+        final PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(killedPlayer);
 
         event.deathMessage(null);
         killedInfo.unsetSitting();

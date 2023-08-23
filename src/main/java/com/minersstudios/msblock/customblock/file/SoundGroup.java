@@ -80,10 +80,10 @@ public class SoundGroup implements Cloneable {
      * @param stepSound  The step sound
      */
     public SoundGroup(
-            @Nullable Sound placeSound,
-            @Nullable Sound breakSound,
-            @Nullable Sound hitSound,
-            @Nullable Sound stepSound
+            final @Nullable Sound placeSound,
+            final @Nullable Sound breakSound,
+            final @Nullable Sound hitSound,
+            final @Nullable Sound stepSound
     ) {
         this.placeSound = placeSound;
         this.breakSound = breakSound;
@@ -145,7 +145,7 @@ public class SoundGroup implements Cloneable {
      *
      * @param location The location to play the place sound at
      */
-    public void playPlaceSound(@NotNull Location location) {
+    public void playPlaceSound(final @NotNull Location location) {
         if (this.placeSound == null) return;
         location.getWorld().playSound(
                 location,
@@ -166,7 +166,7 @@ public class SoundGroup implements Cloneable {
      *
      * @param location The location to play the break sound at
      */
-    public void playBreakSound(@NotNull Location location) {
+    public void playBreakSound(final @NotNull Location location) {
         if (this.breakSound == null) return;
         location.getWorld().playSound(
                 location,
@@ -187,7 +187,7 @@ public class SoundGroup implements Cloneable {
      *
      * @param location The location to play the hit sound at
      */
-    public void playHitSound(@NotNull Location location) {
+    public void playHitSound(final @NotNull Location location) {
         if (this.hitSound == null) return;
         location.getWorld().playSound(
                 location,
@@ -208,7 +208,7 @@ public class SoundGroup implements Cloneable {
      *
      * @param location The location to play the step sound at
      */
-    public void playStepSound(@NotNull Location location) {
+    public void playStepSound(final @NotNull Location location) {
         if (this.stepSound == null) return;
         location.getWorld().playSound(
                 location,
@@ -230,11 +230,13 @@ public class SoundGroup implements Cloneable {
     @Override
     public @NotNull SoundGroup clone() {
         try {
-            SoundGroup clone = (SoundGroup) super.clone();
+            final SoundGroup clone = (SoundGroup) super.clone();
+
             clone.placeSound = this.placeSound == null ? null : this.placeSound.clone();
             clone.breakSound = this.breakSound == null ? null : this.breakSound.clone();
             clone.hitSound = this.hitSound == null ? null : this.hitSound.clone();
             clone.stepSound = this.stepSound == null ? null : this.stepSound.clone();
+
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Failed to clone SoundGroup", e);

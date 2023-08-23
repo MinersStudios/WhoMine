@@ -17,26 +17,26 @@ import org.jetbrains.annotations.NotNull;
 public class BlockDropItemListener extends AbstractMSListener {
 
     @EventHandler
-    public void onBlockDropItem(@NotNull BlockDropItemEvent event) {
-        var items = event.getItems();
+    public void onBlockDropItem(final @NotNull BlockDropItemEvent event) {
+        final var items = event.getItems();
 
         if (items.size() != 1) return;
 
-        Item entity = items.get(0);
-        ItemStack item = entity.getItemStack();
+        final Item entity = items.get(0);
+        final ItemStack item = entity.getItemStack();
 
         if (!Tag.SHULKER_BOXES.isTagged(item.getType())) return;
 
-        ItemMeta meta = item.getItemMeta();
-        Component displayName = meta.displayName();
+        final ItemMeta meta = item.getItemMeta();
+        final Component displayName = meta.displayName();
 
         if (displayName == null) return;
 
-        String serialized = ChatUtils.serializePlainComponent(displayName);
+        final String serialized = ChatUtils.serializePlainComponent(displayName);
 
         RenameableItemRegistry.fromRename(serialized, item)
         .ifPresent(renameableItem -> {
-            ItemStack renameableItemStack = renameableItem.craftRenamed(item, serialized);
+            final ItemStack renameableItemStack = renameableItem.craftRenamed(item, serialized);
 
             if (renameableItemStack != null) {
                 entity.setItemStack(renameableItemStack);

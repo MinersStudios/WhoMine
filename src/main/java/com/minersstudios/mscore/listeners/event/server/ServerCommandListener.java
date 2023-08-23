@@ -16,7 +16,7 @@ public class ServerCommandListener extends AbstractMSListener {
     private static final TranslatableComponent ONLY_PLAYER_COMMAND = translatable("ms.error.only_player_command");
 
     @EventHandler
-    public void onServerCommand(@NotNull ServerCommandEvent event) {
+    public void onServerCommand(final @NotNull ServerCommandEvent event) {
         if (MSPlugin.getGlobalCache().onlyPlayerCommandSet.contains(event.getCommand())) {
             MSLogger.severe(event.getSender(), ONLY_PLAYER_COMMAND);
             event.setCancelled(true);

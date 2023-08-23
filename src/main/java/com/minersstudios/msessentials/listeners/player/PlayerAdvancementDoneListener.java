@@ -19,15 +19,15 @@ import static net.kyori.adventure.text.Component.*;
 public class PlayerAdvancementDoneListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerAdvancementDone(@NotNull PlayerAdvancementDoneEvent event) {
-        AdvancementDisplay advancementDisplay = event.getAdvancement().getDisplay();
+    public void onPlayerAdvancementDone(final @NotNull PlayerAdvancementDoneEvent event) {
+        final AdvancementDisplay advancementDisplay = event.getAdvancement().getDisplay();
 
         if (advancementDisplay == null || event.message() == null) return;
 
-        AdvancementDisplay.Frame frame = advancementDisplay.frame();
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(event.getPlayer());
-        Component title = advancementDisplay.title();
-        Component description = advancementDisplay.description();
+        final AdvancementDisplay.Frame frame = advancementDisplay.frame();
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(event.getPlayer());
+        final Component title = advancementDisplay.title();
+        final Component description = advancementDisplay.description();
 
         event.message(
                 space()

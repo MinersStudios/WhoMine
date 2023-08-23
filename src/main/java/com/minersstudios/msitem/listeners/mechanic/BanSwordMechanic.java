@@ -16,27 +16,29 @@ import org.jetbrains.annotations.NotNull;
 public class BanSwordMechanic extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
+    public void onEntityDamageByEntity(final @NotNull EntityDamageByEntityEvent event) {
         if (
-                !(event.getDamager() instanceof Player damager)
+                !(event.getDamager() instanceof final Player damager)
                 || CustomItemType.typeOf(damager.getInventory().getItemInMainHand()) != CustomItemType.BAN_SWORD
         ) return;
 
-        Entity damagedEntity = event.getEntity();
+        final Entity damagedEntity = event.getEntity();
         event.setCancelled(!damager.isOp() || damagedEntity instanceof Player);
 
-        if (damager.isOp() && damagedEntity instanceof Player damaged) {
+        if (damager.isOp() && damagedEntity instanceof final Player damaged) {
             damager.performCommand("ban " + damaged.getName() + " 1000y Вы были поражены великим Бан-Мечём");
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onInventoryClick(@NotNull InventoryClickEvent event) {
-        ItemStack currentItem = event.getCurrentItem();
+    public void onInventoryClick(final @NotNull InventoryClickEvent event) {
+        final ItemStack currentItem = event.getCurrentItem();
+
         if (
                 currentItem == null
                 || CustomItemType.typeOf(currentItem) != CustomItemType.BAN_SWORD
         ) return;
+
         currentItem.setAmount(0);
         event.setCancelled(true);
     }

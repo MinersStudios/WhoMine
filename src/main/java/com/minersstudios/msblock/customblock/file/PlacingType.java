@@ -26,7 +26,7 @@ public abstract class PlacingType {
      * @return The Default PlacingType object
      */
     @Contract("_ -> new")
-    public static @NotNull Default defaultType(@NotNull NoteBlockData noteBlockData) {
+    public static @NotNull Default defaultType(final @NotNull NoteBlockData noteBlockData) {
         return new Default(noteBlockData);
     }
 
@@ -43,10 +43,10 @@ public abstract class PlacingType {
      * @see Directional#isSupported(BlockFace)
      */
     @Contract("_ -> new")
-    public static @NotNull Directional directionalType(@NotNull Map<BlockFace, NoteBlockData> map) throws IllegalArgumentException {
+    public static @NotNull Directional directionalType(final @NotNull Map<BlockFace, NoteBlockData> map) throws IllegalArgumentException {
         Preconditions.checkArgument(map.size() == 6, "Map must contain 6 entries");
 
-        for (var blockFace : map.keySet()) {
+        for (final var blockFace : map.keySet()) {
             if (!Directional.isSupported(blockFace)) {
                 throw new IllegalArgumentException("Unsupported BlockFace: " + blockFace);
             }
@@ -69,12 +69,12 @@ public abstract class PlacingType {
      */
     @Contract("_, _, _, _, _, _ -> new")
     public static @NotNull Directional directionalType(
-            @NotNull NoteBlockData up,
-            @NotNull NoteBlockData down,
-            @NotNull NoteBlockData north,
-            @NotNull NoteBlockData east,
-            @NotNull NoteBlockData south,
-            @NotNull NoteBlockData west
+            final @NotNull NoteBlockData up,
+            final @NotNull NoteBlockData down,
+            final @NotNull NoteBlockData north,
+            final @NotNull NoteBlockData east,
+            final @NotNull NoteBlockData south,
+            final @NotNull NoteBlockData west
     ) {
         return new Directional(ImmutableMap.of(
                 BlockFace.UP, up,
@@ -97,7 +97,7 @@ public abstract class PlacingType {
      *                                  exactly 3 entries
      */
     @Contract("_ -> new")
-    public static @NotNull Orientable orientableType(@NotNull Map<Axis, NoteBlockData> map) throws IllegalArgumentException {
+    public static @NotNull Orientable orientableType(final @NotNull Map<Axis, NoteBlockData> map) throws IllegalArgumentException {
         Preconditions.checkArgument(map.size() == 3, "Map must contain 3 entries");
         return new Orientable(map);
     }
@@ -113,9 +113,9 @@ public abstract class PlacingType {
      */
     @Contract("_, _, _ -> new")
     public static @NotNull Orientable orientableType(
-            @NotNull NoteBlockData x,
-            @NotNull NoteBlockData y,
-            @NotNull NoteBlockData z
+            final @NotNull NoteBlockData x,
+            final @NotNull NoteBlockData y,
+            final @NotNull NoteBlockData z
     ) {
         return new Orientable(ImmutableMap.of(
                 Axis.X, x,
@@ -131,7 +131,7 @@ public abstract class PlacingType {
     public static class Default extends PlacingType {
         private final NoteBlockData noteBlockData;
 
-        private Default(@NotNull NoteBlockData noteBlockData) {
+        private Default(final @NotNull NoteBlockData noteBlockData) {
             this.noteBlockData = noteBlockData;
         }
 
@@ -154,11 +154,11 @@ public abstract class PlacingType {
     public static class Directional extends PlacingType {
         private final Map<BlockFace, NoteBlockData> map;
 
-        private Directional(@NotNull Map<BlockFace, NoteBlockData> map) {
+        private Directional(final @NotNull Map<BlockFace, NoteBlockData> map) {
             this.map = map;
         }
 
-        public @NotNull NoteBlockData getNoteBlockData(@NotNull BlockFace face) {
+        public @NotNull NoteBlockData getNoteBlockData(final @NotNull BlockFace face) {
             Preconditions.checkArgument(isSupported(face), "Unsupported BlockFace: " + face);
             return this.map.get(face);
         }
@@ -176,7 +176,7 @@ public abstract class PlacingType {
          * @return True if the specified block face is supported
          *         by this placing type
          */
-        public static boolean isSupported(@NotNull BlockFace face) {
+        public static boolean isSupported(final @NotNull BlockFace face) {
             return face == BlockFace.UP
                     || face == BlockFace.DOWN
                     || face == BlockFace.NORTH
@@ -196,7 +196,7 @@ public abstract class PlacingType {
     public static class Orientable extends PlacingType {
         private final Map<Axis, NoteBlockData> map;
 
-        private Orientable(@NotNull Map<Axis, NoteBlockData> map) {
+        private Orientable(final @NotNull Map<Axis, NoteBlockData> map) {
             this.map = map;
         }
 
@@ -207,7 +207,7 @@ public abstract class PlacingType {
          * @param axis The axis orientation
          * @return The note block data for the given orientation
          */
-        public @NotNull NoteBlockData getNoteBlockData(@NotNull Axis axis) {
+        public @NotNull NoteBlockData getNoteBlockData(final @NotNull Axis axis) {
             return this.map.get(axis);
         }
 

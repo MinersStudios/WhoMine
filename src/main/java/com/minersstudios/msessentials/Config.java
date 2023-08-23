@@ -59,10 +59,11 @@ public final class Config extends MSConfig {
      * @throws IllegalArgumentException If the given file does not exist
      */
     public Config(
-            @NotNull MSEssentials plugin,
-            @NotNull File file
+            final @NotNull MSEssentials plugin,
+            final @NotNull File file
     ) throws IllegalArgumentException {
         super(file);
+
         this.plugin = plugin;
     }
 
@@ -71,31 +72,31 @@ public final class Config extends MSConfig {
      */
     @Override
     public void reloadVariables() {
-        Cache cache = MSEssentials.getCache();
-        File pluginFolder = this.plugin.getPluginFolder();
+        final Cache cache = MSEssentials.getCache();
+        final File pluginFolder = this.plugin.getPluginFolder();
 
         this.developerMode = this.yaml.getBoolean("developer-mode");
-        this.anomalyCheckRate = this.yaml.getLong("anomaly-check-rate", 100L);
-        this.anomalyParticlesCheckRate = this.yaml.getLong("anomaly-particles-check-rate", 10L);
-        this.localChatRadius = this.yaml.getDouble("chat.local.radius", 25.0d);
+        this.anomalyCheckRate = this.yaml.getLong("anomaly-check-rate");
+        this.anomalyParticlesCheckRate = this.yaml.getLong("anomaly-particles-check-rate");
+        this.localChatRadius = this.yaml.getDouble("chat.local.radius");
         this.discordGlobalChannelId = this.yaml.getString("chat.global.discord-channel-id");
         this.discordLocalChannelId = this.yaml.getString("chat.local.discord-channel-id");
         this.version = this.yaml.getString("resource-pack.version");
-        this.user = this.yaml.getString("resource-pack.user", "MinersStudios");
-        this.repo = this.yaml.getString("resource-pack.repo", "MSTextures");
-        this.fullFileName = this.yaml.getString("resource-pack.full.file-name", "FULL-MSTextures-%s.zip");
+        this.user = this.yaml.getString("resource-pack.user");
+        this.repo = this.yaml.getString("resource-pack.repo");
+        this.fullFileName = this.yaml.getString("resource-pack.full.file-name");
         this.fullHash = this.yaml.getString("resource-pack.full.hash");
-        this.liteFileName = this.yaml.getString("resource-pack.lite.file-name", "LITE-MSTextures-%s.zip");
+        this.liteFileName = this.yaml.getString("resource-pack.lite.file-name");
         this.liteHash = this.yaml.getString("resource-pack.lite.hash");
         this.mineSkinApiKey = this.yaml.getString("skin.mine-skin-api-key");
 
-        String spawnLocationWorldName = this.yaml.getString("spawn-location.world", "");
-        World spawnLocationWorld = this.plugin.getServer().getWorld(spawnLocationWorldName);
-        double spawnLocationX = this.yaml.getDouble("spawn-location.x");
-        double spawnLocationY = this.yaml.getDouble("spawn-location.y");
-        double spawnLocationZ = this.yaml.getDouble("spawn-location.z");
-        float spawnLocationYaw = (float) this.yaml.getDouble("spawn-location.yaw");
-        float spawnLocationPitch = (float) this.yaml.getDouble("spawn-location.pitch");
+        final String spawnLocationWorldName = this.yaml.getString("spawn-location.world", "");
+        final World spawnLocationWorld = this.plugin.getServer().getWorld(spawnLocationWorldName);
+        final double spawnLocationX = this.yaml.getDouble("spawn-location.x");
+        final double spawnLocationY = this.yaml.getDouble("spawn-location.y");
+        final double spawnLocationZ = this.yaml.getDouble("spawn-location.z");
+        final float spawnLocationYaw = (float) this.yaml.getDouble("spawn-location.yaw");
+        final float spawnLocationPitch = (float) this.yaml.getDouble("spawn-location.pitch");
 
         if (spawnLocationWorld == null) {
             MSLogger.warning("World \"" + spawnLocationWorldName + "\" not found!\nUsing default spawn location!");
@@ -120,7 +121,7 @@ public final class Config extends MSConfig {
         cache.anomalies.clear();
 
         this.plugin.saveResource("anomalies/example.yml", true);
-        File consoleDataFile = new File(pluginFolder, "players/console.yml");
+        final File consoleDataFile = new File(pluginFolder, "players/console.yml");
         if (!consoleDataFile.exists()) {
             this.plugin.saveResource("players/console.yml", false);
         }
@@ -130,17 +131,17 @@ public final class Config extends MSConfig {
         this.plugin.runTaskAsync(ResourcePack::init);
 
         this.plugin.runTaskAsync(() -> {
-            try (var path = Files.walk(Paths.get(pluginFolder + "/anomalies"))) {
+            try (final var path = Files.walk(Paths.get(pluginFolder + "/anomalies"))) {
                 path.parallel()
                 .filter(file -> {
-                    String fileName = file.getFileName().toString();
+                    final String fileName = file.getFileName().toString();
                     return Files.isRegularFile(file)
                             && !fileName.equalsIgnoreCase("example.yml")
                             && fileName.endsWith(".yml");
                 })
                 .map(Path::toFile)
                 .forEach(file -> {
-                    Anomaly anomaly = Anomaly.fromConfig(file);
+                    final Anomaly anomaly = Anomaly.fromConfig(file);
                     cache.anomalies.put(anomaly.getNamespacedKey(), anomaly);
                 });
             } catch (IOException e) {
@@ -151,11 +152,10 @@ public final class Config extends MSConfig {
         cache.bukkitTasks.add(this.plugin.runTaskTimer(new MainAnomalyActionsTask(), 0L, this.anomalyCheckRate));
         cache.bukkitTasks.add(this.plugin.runTaskTimer(new ParticleTask(), 0L, this.anomalyParticlesCheckRate));
 
-        GlobalCache globalCache = MSPlugin.getGlobalCache();
-
-        var customBlockRecipes = globalCache.customBlockRecipes;
-        var customDecorRecipes = globalCache.customDecorRecipes;
-        var customItemRecipes = globalCache.customItemRecipes;
+        final GlobalCache globalCache = MSPlugin.getGlobalCache();
+        final var customBlockRecipes = globalCache.customBlockRecipes;
+        final var customDecorRecipes = globalCache.customDecorRecipes;
+        final var customItemRecipes = globalCache.customItemRecipes;
 
         this.plugin.runTaskTimer(task -> {
             if (
@@ -192,7 +192,7 @@ public final class Config extends MSConfig {
         this.setIfNotExists("resource-pack.lite.hash", "");
         this.setIfNotExists("skin.mine-skin-api-key", "");
 
-        Location mainWorldSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
+        final Location mainWorldSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
 
         this.setIfNotExists("spawn-location.world", mainWorldSpawn.getWorld().getName());
         this.setIfNotExists("spawn-location.x", mainWorldSpawn.x());

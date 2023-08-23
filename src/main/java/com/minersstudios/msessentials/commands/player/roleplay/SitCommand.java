@@ -38,21 +38,21 @@ public class SitCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
-        Player player = (Player) sender;
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final Player player = (Player) sender;
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
             MSLogger.warning(player, IN_AIR);
             return true;
         }
 
-        String messageString = ChatUtils.extractMessage(args, 0);
-        Component message = messageString.isEmpty() ? null : text(messageString);
+        final String messageString = ChatUtils.extractMessage(args, 0);
+        final Component message = messageString.isEmpty() ? null : text(messageString);
 
         if (
                 message != null

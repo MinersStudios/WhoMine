@@ -22,8 +22,8 @@ public class ParticleTask implements Runnable {
 
     @Override
     public void run() {
-        var map = MSEssentials.getCache().playerAnomalyActionMap;
-        var anomalies = MSEssentials.getCache().anomalies.values();
+        final var map = MSEssentials.getCache().playerAnomalyActionMap;
+        final var anomalies = MSEssentials.getCache().anomalies.values();
 
         if (anomalies.isEmpty() || map.isEmpty()) return;
 
@@ -32,8 +32,8 @@ public class ParticleTask implements Runnable {
                 .forEach(action -> {
                     if (!(action instanceof SpawnParticlesAction)) return;
 
-                    for (var anomaly : anomalies) {
-                        double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
+                    for (final var anomaly : anomalies) {
+                        final double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
 
                         if (radiusInside == -1.0d) continue;
                         if (anomaly.getAnomalyActionMap().get(radiusInside).contains(action)) {

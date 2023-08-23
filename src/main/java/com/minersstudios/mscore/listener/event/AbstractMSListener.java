@@ -55,8 +55,6 @@ public abstract class AbstractMSListener implements Listener {
      */
     @Override
     public @NotNull String toString() {
-        return this.getClass().getSimpleName() +
-                "{plugin=" + this.plugin +
-                '}';
+        return this.getClass().getSimpleName() + "{plugin=" + this.plugin + '}';
     }
 }

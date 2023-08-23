@@ -27,8 +27,8 @@ public class SingleInventory extends CustomInventoryImpl<SingleInventory> implem
      * @param verticalSize Vertical size of the inventory
      */
     protected SingleInventory(
-            @NotNull Component title,
-            @Range(from = 1, to = 6) int verticalSize
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize
     ) {
         super(title, verticalSize);
     }
@@ -42,8 +42,8 @@ public class SingleInventory extends CustomInventoryImpl<SingleInventory> implem
      */
     @Contract("_, _ -> new")
     public static @NotNull SingleInventory single(
-            @NotNull Component title,
-            @Range(from = 1, to = 6) int verticalSize
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize
     ) {
         return new SingleInventory(title, verticalSize);
     }

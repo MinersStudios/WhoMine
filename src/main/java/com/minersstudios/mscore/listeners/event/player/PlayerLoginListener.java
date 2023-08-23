@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerLoginListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerLogin(@NotNull PlayerLoginEvent event) {
-        MSPlugin plugin = this.getPlugin();
+    public void onPlayerLogin(final @NotNull PlayerLoginEvent event) {
+        final MSPlugin plugin = this.getPlugin();
         plugin.runTask(() -> ChannelHandler.injectPlayer(event.getPlayer(), plugin));
     }
 }

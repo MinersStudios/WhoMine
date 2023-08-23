@@ -33,9 +33,9 @@ public class AsyncPlayerPreLoginListener extends AbstractMSListener {
     private static final TranslatableComponent IP_ADDED = translatable("ms.info.player_added_ip");
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
-        String nickname = event.getName();
-        PlayerInfo playerInfo = PlayerInfo.fromProfile(event.getUniqueId(), nickname);
+    public void onAsyncPlayerPreLogin(final @NotNull AsyncPlayerPreLoginEvent event) {
+        final String nickname = event.getName();
+        final PlayerInfo playerInfo = PlayerInfo.fromProfile(event.getUniqueId(), nickname);
 
         if (!playerInfo.isWhiteListed()) {
             event.disallow(
@@ -81,8 +81,8 @@ public class AsyncPlayerPreLoginListener extends AbstractMSListener {
             return;
         }
 
-        String hostAddress = event.getAddress().getHostAddress();
-        PlayerFile playerFile = playerInfo.getPlayerFile();
+        final String hostAddress = event.getAddress().getHostAddress();
+        final PlayerFile playerFile = playerInfo.getPlayerFile();
 
         if (
                 playerFile.exists()

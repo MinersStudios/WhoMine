@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class HangingBreakByEntityListener extends AbstractMSListener {
 
     @EventHandler
-    public void onHangingBreakByEntity(@NotNull HangingBreakByEntityEvent event) {
+    public void onHangingBreakByEntity(final @NotNull HangingBreakByEntityEvent event) {
         if (
                 event.getEntity() instanceof ItemFrame itemFrame
                 && itemFrame.getScoreboardTags().contains("invisibleItemFrame")

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerBucketEmptyListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerBucketEmpty(@NotNull PlayerBucketEmptyEvent event) {
+    public void onPlayerBucketEmpty(final @NotNull PlayerBucketEmptyEvent event) {
         if (
                 event.getBlock().getType() == Material.NOTE_BLOCK
                 || CustomBlockRegistry.isCustomBlock(event.getPlayer().getInventory().getItemInMainHand())

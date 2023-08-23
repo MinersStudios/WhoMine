@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerDeathListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
-        Player player = event.getEntity();
-        Cache cache = MSBlock.getCache();
+    public void onPlayerDeath(final @NotNull PlayerDeathEvent event) {
+        final Player player = event.getEntity();
+        final Cache cache = MSBlock.getCache();
 
         cache.diggingMap.removeAll(player);
         cache.stepMap.put(player, 0.0d);

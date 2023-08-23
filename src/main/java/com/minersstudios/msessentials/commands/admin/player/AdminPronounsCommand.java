@@ -20,11 +20,11 @@ public class AdminPronounsCommand {
     private static final TranslatableComponent SET_PRONOUNS = translatable("ms.command.player.pronouns.set");
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            String @NotNull [] args,
-            @NotNull PlayerInfo playerInfo
+            final @NotNull CommandSender sender,
+            final String @NotNull [] args,
+            final @NotNull PlayerInfo playerInfo
     ) {
-        PlayerFile playerFile = playerInfo.getPlayerFile();
+        final PlayerFile playerFile = playerInfo.getPlayerFile();
 
         if (args.length == 2) {
             MSLogger.fine(
@@ -37,9 +37,9 @@ public class AdminPronounsCommand {
             );
             return true;
         } else if (args.length == 3) {
-            String pronounsString = args[2];
+            final String pronounsString = args[2];
 
-            Pronouns pronouns;
+            final Pronouns pronouns;
             try {
                 pronouns = Pronouns.valueOf(pronounsString.toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException ignore) {

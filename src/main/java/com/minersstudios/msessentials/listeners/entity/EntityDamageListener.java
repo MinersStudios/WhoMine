@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class EntityDamageListener extends AbstractMSListener {
 
     @EventHandler(ignoreCancelled = true)
-    public void onEntityDamage(@NotNull EntityDamageEvent event) {
+    public void onEntityDamage(final @NotNull EntityDamageEvent event) {
         if (
                 event.getEntity() instanceof Player player
                 && WorldDark.isInWorldDark(player)

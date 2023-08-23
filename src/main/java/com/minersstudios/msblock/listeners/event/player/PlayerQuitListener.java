@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerQuitListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        Cache cache = MSBlock.getCache();
+    public void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
+        final Player player = event.getPlayer();
+        final Cache cache = MSBlock.getCache();
 
         cache.diggingMap.removeAll(player);
         cache.stepMap.remove(player);

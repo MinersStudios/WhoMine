@@ -57,8 +57,8 @@ public class CustomBlockFile {
                     .create();
 
     private CustomBlockFile(
-            @NotNull File file,
-            @Nullable CustomBlockData data
+            final @NotNull File file,
+            final @Nullable CustomBlockData data
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(file.getPath().endsWith(".json"), "File must be a json file");
 
@@ -78,8 +78,8 @@ public class CustomBlockFile {
      */
     @Contract("_, _ -> new")
     public static @NotNull CustomBlockFile create(
-            @NotNull File file,
-            @NotNull CustomBlockData data
+            final @NotNull File file,
+            final @NotNull CustomBlockData data
     ) throws IllegalArgumentException {
         return new CustomBlockFile(file, data);
     }
@@ -96,9 +96,9 @@ public class CustomBlockFile {
      *         or if the file is not a valid json file
      * @see #load()
      */
-    public static @Nullable CustomBlockFile create(@NotNull File file) {
+    public static @Nullable CustomBlockFile create(final @NotNull File file) {
         try {
-            CustomBlockFile customBlockFile = new CustomBlockFile(file, null);
+            final CustomBlockFile customBlockFile = new CustomBlockFile(file, null);
 
             customBlockFile.load();
             return customBlockFile;
@@ -132,7 +132,7 @@ public class CustomBlockFile {
      *                                or if an I/O error occurs
      */
     public void load() throws ConfigurationException {
-        String path = this.file.getAbsolutePath();
+        final String path = this.file.getAbsolutePath();
 
         if (!this.file.exists()) {
             throw new ConfigurationException("File not found: " + path);
@@ -149,7 +149,7 @@ public class CustomBlockFile {
      * Saves the {@link CustomBlockData} to the file
      */
     public void save() {
-        File directory = this.file.getParentFile();
+        final File directory = this.file.getParentFile();
 
         if (
                 !directory.exists()
@@ -158,7 +158,7 @@ public class CustomBlockFile {
             MSLogger.warning("Failed to create a new directory: " + directory.getAbsolutePath());
         }
 
-        try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
+        try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.data, writer);
         } catch (IOException e) {
             MSLogger.log(Level.SEVERE, "Failed to save a file: " + this.file.getAbsolutePath(), e);
@@ -173,14 +173,14 @@ public class CustomBlockFile {
         return GSON;
     }
 
-    private static @NotNull CustomBlockData deserialize(@NotNull String json) {
-        JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-        JsonElement recipeEntries = jsonObject.get("recipeEntries");
+    private static @NotNull CustomBlockData deserialize(final @NotNull String json) {
+        final JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+        final JsonElement recipeEntries = jsonObject.get("recipeEntries");
 
         if (recipeEntries != null) {
             jsonObject.remove("recipeEntries");
 
-            CustomBlockData data = GSON.fromJson(jsonObject, CustomBlockData.class);
+            final CustomBlockData data = GSON.fromJson(jsonObject, CustomBlockData.class);
             MSBlock.getInstance().runTaskTimer(task -> {
                 if (MSPluginUtils.isLoadedCustoms()) {
                     task.cancel();

@@ -27,14 +27,14 @@ public class AdminMuteInfoCommand {
     private static final TranslatableComponent MUTE_INFO_SET_TIME_TO_FORMAT = translatable("ms.command.player.mute_info.set.time_to");
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            String @NotNull [] args,
-            @NotNull PlayerInfo playerInfo
+            final @NotNull CommandSender sender,
+            final String @NotNull [] args,
+            final @NotNull PlayerInfo playerInfo
     ) {
-        boolean muted = playerInfo.isMuted();
-        boolean haveArg = args.length >= 4;
-        String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
-        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
+        final boolean muted = playerInfo.isMuted();
+        final boolean haveArg = args.length >= 4;
+        final String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
+        final String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
             MSLogger.fine(
@@ -67,7 +67,7 @@ public class AdminMuteInfoCommand {
             return true;
         }
 
-        MuteMap muteMap = MSEssentials.getCache().muteMap;
+        final MuteMap muteMap = MSEssentials.getCache().muteMap;
 
         switch (paramString) {
             case "reason" -> {
@@ -83,7 +83,7 @@ public class AdminMuteInfoCommand {
                     return true;
                 }
 
-                String reason = ChatUtils.extractMessage(args, 3);
+                final String reason = ChatUtils.extractMessage(args, 3);
 
                 muteMap.put(playerInfo.getOfflinePlayer(), playerInfo.getMutedTo(), reason, sender.getName());
                 MSLogger.fine(
@@ -109,7 +109,7 @@ public class AdminMuteInfoCommand {
                     return true;
                 }
 
-                Instant instant = DateUtils.getDateFromString(paramArgString, false);
+                final Instant instant = DateUtils.getDateFromString(paramArgString, false);
 
                 if (instant == null) {
                     MSLogger.severe(sender, WRONG_FORMAT);

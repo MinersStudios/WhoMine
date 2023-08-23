@@ -15,7 +15,7 @@ public enum ToolType {
      * @return The tool type of the specified material
      *         or {@link #HAND} if the material is not a tool
      */
-    public static @NotNull ToolType fromMaterial(@NotNull Material material) {
+    public static @NotNull ToolType fromMaterial(final @NotNull Material material) {
         return switch (material) {
             case
                     WOODEN_SWORD,

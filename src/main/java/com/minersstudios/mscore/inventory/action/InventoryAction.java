@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.inventory.actions;
+package com.minersstudios.mscore.inventory.action;
 
 import com.minersstudios.mscore.inventory.CustomInventory;
 import org.bukkit.event.Event;
@@ -29,7 +29,7 @@ public interface InventoryAction<E extends Event> {
      * @param customInventory Custom inventory that is involved in this event
      */
     void doAction(
-            @NotNull E event,
-            @NotNull CustomInventory customInventory
+            final @NotNull E event,
+            final @NotNull CustomInventory customInventory
     );
 }

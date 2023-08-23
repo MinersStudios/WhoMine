@@ -13,8 +13,8 @@ public class AdminUpdateCommand {
     private static final TranslatableComponent UPDATE_SUCCESS = translatable("ms.command.player.update.success");
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            @NotNull PlayerInfo playerInfo
+            final @NotNull CommandSender sender,
+            final @NotNull PlayerInfo playerInfo
     ) {
         playerInfo.update();
         MSLogger.fine(

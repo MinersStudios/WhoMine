@@ -29,20 +29,20 @@ public class AdminGameParamsCommand {
     private static final TranslatableComponent SET_AIR = translatable("ms.command.player.game_params.set.air");
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            String @NotNull [] args,
-            @NotNull PlayerInfo playerInfo
+            final @NotNull CommandSender sender,
+            final String @NotNull [] args,
+            final @NotNull PlayerInfo playerInfo
     ) {
         if (args.length < 3) {
             MSLogger.severe(sender, USE_ONE_OF);
             return true;
         }
 
-        PlayerFile playerFile = playerInfo.getPlayerFile();
-        boolean haveArg = args.length >= 4;
-        String paramString = args[2].toLowerCase(Locale.ROOT);
-        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
-        Player player = playerInfo.getOnlinePlayer();
+        final PlayerFile playerFile = playerInfo.getPlayerFile();
+        final boolean haveArg = args.length >= 4;
+        final String paramString = args[2].toLowerCase(Locale.ROOT);
+        final String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
+        final Player player = playerInfo.getOnlinePlayer();
 
         switch (paramString) {
             case "game-mode" -> {
@@ -65,7 +65,7 @@ public class AdminGameParamsCommand {
                     return true;
                 }
 
-                GameMode gameMode;
+                final GameMode gameMode;
                 try {
                     gameMode = GameMode.valueOf(paramArgString.toUpperCase(Locale.ROOT));
                 } catch (IllegalArgumentException ignore) {
@@ -109,7 +109,7 @@ public class AdminGameParamsCommand {
                     return true;
                 }
 
-                double health;
+                final double health;
                 try {
                     health = Double.parseDouble(paramArgString);
                 } catch (NumberFormatException ignore) {
@@ -152,7 +152,8 @@ public class AdminGameParamsCommand {
                     );
                     return true;
                 }
-                int air;
+
+                final int air;
                 try {
                     air = Integer.parseInt(paramArgString);
                 } catch (NumberFormatException ignore) {

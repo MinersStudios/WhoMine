@@ -46,15 +46,15 @@ public class TryCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length == 0) return false;
 
-        Player player = (Player) sender;
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final Player player = (Player) sender;
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (playerInfo.isMuted()) {
             MSLogger.warning(player, MUTED);

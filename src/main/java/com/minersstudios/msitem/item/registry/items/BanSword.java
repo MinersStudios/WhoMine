@@ -21,7 +21,7 @@ public class BanSword extends CustomItemImpl {
     static {
         KEY = "ban_sword";
         ITEM_STACK = new ItemStack(Material.NETHERITE_SWORD);
-        ItemMeta meta = ITEM_STACK.getItemMeta();
+        final ItemMeta meta = ITEM_STACK.getItemMeta();
 
         meta.displayName(ChatUtils.createDefaultStyledText("Бан-меч"));
         meta.lore(ChatUtils.convertStringsToComponents(

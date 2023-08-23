@@ -22,26 +22,26 @@ public class NoteBlockDataAdapter implements JsonSerializer<NoteBlockData>, Json
 
     @Override
     public @NotNull NoteBlockData deserialize(
-            @NotNull JsonElement json,
-            @NotNull Type typeOfT,
-            @NotNull JsonDeserializationContext context
+            final @NotNull JsonElement json,
+            final @NotNull Type typeOfT,
+            final @NotNull JsonDeserializationContext context
     ) throws JsonParseException, IllegalArgumentException {
-        JsonObject jsonObject = json.getAsJsonObject();
+        final JsonObject jsonObject = json.getAsJsonObject();
 
-        Instrument instrument = Instrument.valueOf(jsonObject.get(INSTRUMENT_KEY).getAsString());
-        byte noteId = jsonObject.get(NOTE_KEY).getAsByte();
-        boolean powered = jsonObject.get(POWERED_KEY).getAsBoolean();
+        final Instrument instrument = Instrument.valueOf(jsonObject.get(INSTRUMENT_KEY).getAsString());
+        final byte noteId = jsonObject.get(NOTE_KEY).getAsByte();
+        final boolean powered = jsonObject.get(POWERED_KEY).getAsBoolean();
 
         return NoteBlockData.fromParams(instrument, noteId, powered);
     }
 
     @Override
     public @NotNull JsonElement serialize(
-            @NotNull NoteBlockData src,
-            @NotNull Type typeOfSrc,
-            @NotNull JsonSerializationContext context
+            final @NotNull NoteBlockData src,
+            final @NotNull Type typeOfSrc,
+            final @NotNull JsonSerializationContext context
     ) {
-        JsonObject jsonObject = new JsonObject();
+        final JsonObject jsonObject = new JsonObject();
 
         jsonObject.addProperty(INSTRUMENT_KEY, src.instrument().name());
         jsonObject.addProperty(NOTE_KEY, src.noteId());

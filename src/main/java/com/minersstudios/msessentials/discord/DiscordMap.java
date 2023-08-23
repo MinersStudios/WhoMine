@@ -58,8 +58,8 @@ public class DiscordMap {
      * @param params The params of the linked player
      * @return The id of the linked discord user or -1 if not found
      */
-    public long getId(@NotNull Params params) {
-        for (var entry : this.map.entrySet()) {
+    public long getId(final @NotNull Params params) {
+        for (final var entry : this.map.entrySet()) {
             if (entry.getValue().equals(params)) return entry.getKey();
         }
 
@@ -70,7 +70,7 @@ public class DiscordMap {
      * @param id The id of the linked discord user
      * @return The params of the linked player
      */
-    public @Nullable Params getParams(long id) {
+    public @Nullable Params getParams(final long id) {
         return this.map.get(id);
     }
 
@@ -83,8 +83,8 @@ public class DiscordMap {
      * @see #put(long, Params)
      */
     public void put(
-            long id,
-            @NotNull Player player
+            final long id,
+            final @NotNull Player player
     ) {
         this.put(id, player.getUniqueId(), player.getName());
     }
@@ -98,9 +98,9 @@ public class DiscordMap {
      * @see #put(long, Params)
      */
     public void put(
-            long id,
-            @NotNull UUID uuid,
-            @NotNull String nickname
+            final long id,
+            final @NotNull UUID uuid,
+            final @NotNull String nickname
     ) {
         this.put(id, Params.create(uuid, nickname));
     }
@@ -112,8 +112,8 @@ public class DiscordMap {
      * @param params The params of the linking player
      */
     public void put(
-            long id,
-            @NotNull Params params
+            final long id,
+            final @NotNull Params params
     ) {
         this.map.forEach((key, value) -> {
             if (value.equals(params)) {
@@ -133,7 +133,7 @@ public class DiscordMap {
      * @param playerInfo The player info to generate code for
      * @return The generated code
      */
-    public short generateCode(@NotNull PlayerInfo playerInfo) {
+    public short generateCode(final @NotNull PlayerInfo playerInfo) {
         if (this.codeMap.containsValue(playerInfo)) {
             this.codeMap.forEach((code, info) -> {
                 if (info.equals(playerInfo)) {
@@ -142,7 +142,7 @@ public class DiscordMap {
             });
         }
 
-        short code = (short) (this.random.nextInt(9000) + 1000);
+        final short code = (short) (this.random.nextInt(9000) + 1000);
 
         if (this.codeMap.containsKey(code)) {
             return this.generateCode(playerInfo);
@@ -159,7 +159,7 @@ public class DiscordMap {
      *
      * @param code The code to remove
      */
-    public void removeCode(short code) {
+    public void removeCode(final short code) {
         this.codeMap.remove(code);
     }
 
@@ -167,7 +167,7 @@ public class DiscordMap {
      * @param code The code to validate
      * @return The linked player if the code is valid, otherwise null
      */
-    public @Nullable PlayerInfo validateCode(short code) {
+    public @Nullable PlayerInfo validateCode(final short code) {
         return this.codeMap.get(code);
     }
 
@@ -175,7 +175,7 @@ public class DiscordMap {
      * @param id The id to check
      * @return True if the discord user id is linked
      */
-    public boolean containsId(long id) {
+    public boolean containsId(final long id) {
         return this.map.containsKey(id);
     }
 
@@ -183,7 +183,7 @@ public class DiscordMap {
      * @param params The params to check
      * @return True if the player is linked
      */
-    public boolean containsPlayer(@NotNull Params params) {
+    public boolean containsPlayer(final @NotNull Params params) {
         return this.getId(params) != -1L;
     }
 
@@ -192,7 +192,7 @@ public class DiscordMap {
      *
      * @param id The id of the linked player
      */
-    public void remove(long id) {
+    public void remove(final long id) {
         this.map.remove(id);
         this.saveFile();
     }
@@ -235,9 +235,9 @@ public class DiscordMap {
             this.createFile();
         } else {
             try {
-                Type mapType = new TypeToken<Map<Long, Params>>() {}.getType();
-                String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
-                Map<Long, Params> jsonMap = GSON.fromJson(json, mapType);
+                final Type mapType = new TypeToken<Map<Long, Params>>() {}.getType();
+                final String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
+                final Map<Long, Params> jsonMap = GSON.fromJson(json, mapType);
 
                 if (jsonMap == null) {
                     this.createBackupFile();
@@ -279,7 +279,7 @@ public class DiscordMap {
      * Creates a backup file of the "discord_links.json" file
      */
     private void createBackupFile() {
-        File backupFile = new File(this.file.getParent(), this.file.getName() + ".OLD");
+        final File backupFile = new File(this.file.getParent(), this.file.getName() + ".OLD");
 
         try {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -295,7 +295,7 @@ public class DiscordMap {
      * Saves the links map to "discord_links.json" file
      */
     private void saveFile() {
-        try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
+        try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
         } catch (IOException e) {
             MSLogger.log(Level.SEVERE, "Failed to save \"discord_links.json\" file", e);
@@ -318,8 +318,8 @@ public class DiscordMap {
         private final String nickname;
 
         private Params(
-                UUID uuid,
-                String nickname
+                final UUID uuid,
+                final String nickname
         ) {
             this.uuid = uuid;
             this.nickname = nickname;
@@ -334,8 +334,8 @@ public class DiscordMap {
          */
         @Contract(value = "_, _ -> new")
         public static @NotNull Params create(
-                @NotNull UUID uuid,
-                @NotNull String nickname
+                final @NotNull UUID uuid,
+                final @NotNull String nickname
         ) {
             return new Params(uuid, nickname);
         }
@@ -366,7 +366,7 @@ public class DiscordMap {
          * @param params {@link Params} to compare
          * @return True if uuid and nickname are equals
          */
-        public boolean equals(@NotNull Params params) {
+        public boolean equals(final @NotNull Params params) {
             return this.uuid.equals(params.uuid)
                     && this.nickname.equals(params.nickname);
         }

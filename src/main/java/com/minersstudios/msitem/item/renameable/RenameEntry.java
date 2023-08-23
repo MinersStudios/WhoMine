@@ -34,8 +34,8 @@ public class RenameEntry {
      *                                  material is air
      */
     public RenameEntry(
-            @NotNull String rename,
-            @NotNull ItemStack item
+            final @NotNull String rename,
+            final @NotNull ItemStack item
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(StringUtils.isNotBlank(rename), "Rename cannot be null or blank");
         Preconditions.checkArgument(!item.getType().isAir(), "Item cannot be air");
@@ -54,8 +54,8 @@ public class RenameEntry {
      *         parameter is invalid
      */
     public static @Nullable RenameEntry create(
-            @Nullable String rename,
-            @Nullable ItemStack item
+            final @Nullable String rename,
+            final @Nullable ItemStack item
     ) {
         return StringUtils.isBlank(rename)
                 || item == null
@@ -88,7 +88,7 @@ public class RenameEntry {
      * @return True if the given renaming string is similar
      *         to this entry's renaming
      */
-    public boolean isSimilarRename(@Nullable String rename) {
+    public boolean isSimilarRename(final @Nullable String rename) {
         return StringUtils.startsWithIgnoreCase(rename, this.getRename());
     }
 
@@ -101,18 +101,18 @@ public class RenameEntry {
      * @return True if the given ItemStack is similar to this
      *         entry's ItemStack
      */
-    public boolean isSimilarItem(@Nullable ItemStack item) {
+    public boolean isSimilarItem(final @Nullable ItemStack item) {
         if (item == null) return false;
 
-        Material type = item.getType();
-        PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
-        PersistentDataContainer thisContainer = this.item.getItemMeta().getPersistentDataContainer();
+        final Material type = item.getType();
+        final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+        final PersistentDataContainer thisContainer = this.item.getItemMeta().getPersistentDataContainer();
 
-        for (var namespacedKey : container.getKeys()) {
+        for (final var namespacedKey : container.getKeys()) {
             if (namespacedKey.equals(RenameableItemRegistry.RENAMEABLE_NAMESPACED_KEY)) continue;
 
-            String typeString = container.get(namespacedKey, PersistentDataType.STRING);
-            String thisTypeString = thisContainer.get(namespacedKey, PersistentDataType.STRING);
+            final String typeString = container.get(namespacedKey, PersistentDataType.STRING);
+            final String thisTypeString = thisContainer.get(namespacedKey, PersistentDataType.STRING);
 
             if (!Objects.equals(thisTypeString, typeString)) return false;
         }
@@ -131,8 +131,8 @@ public class RenameEntry {
      */
     @Contract("null -> false")
     @Override
-    public boolean equals(@Nullable Object obj) {
-        return obj instanceof RenameEntry that
+    public boolean equals(final @Nullable Object obj) {
+        return obj instanceof final RenameEntry that
                 && this.isSimilarRename(that.rename)
                 && this.isSimilarItem(that.item);
     }

@@ -51,7 +51,7 @@ public final class MSDecorUtils {
      * @see #getCustomDecorData(String)
      * @see CustomDecorData#getItemStack()
      */
-    public static @NotNull Optional<ItemStack> getCustomDecorItem(@Nullable String key) {
+    public static @NotNull Optional<ItemStack> getCustomDecorItem(final @Nullable String key) {
         return getCustomDecorData(key).map(CustomDecorData::getItemStack);
     }
 
@@ -66,11 +66,11 @@ public final class MSDecorUtils {
      *         or empty optional if not found
      * @see #getCustomDecorData(String)
      */
-    public static @NotNull Optional<CustomDecorData> getCustomDecorData(@Nullable ItemStack itemStack) {
+    public static @NotNull Optional<CustomDecorData> getCustomDecorData(final @Nullable ItemStack itemStack) {
         if (itemStack == null) return Optional.empty();
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) return Optional.empty();
-        String key = itemMeta.getPersistentDataContainer().get(CUSTOM_DECOR_TYPE_NAMESPACED_KEY, PersistentDataType.STRING);
+        final String key = itemMeta.getPersistentDataContainer().get(CUSTOM_DECOR_TYPE_NAMESPACED_KEY, PersistentDataType.STRING);
         return getCustomDecorData(key);
     }
 
@@ -82,7 +82,7 @@ public final class MSDecorUtils {
      * @return Optional of {@link CustomDecorData} object
      *         or empty optional if not found
      */
-    public static @NotNull Optional<CustomDecorData> getCustomDecorData(@Nullable String key) {
+    public static @NotNull Optional<CustomDecorData> getCustomDecorData(final @Nullable String key) {
         return key == null
                 ? Optional.empty()
                 : Optional.ofNullable(MSPlugin.getGlobalCache().customDecorMap.getByPrimaryKey(key));
@@ -102,10 +102,10 @@ public final class MSDecorUtils {
      * @see CustomDecor#setCustomDecor(BlockFace, EquipmentSlot, Component)
      */
     public static void placeCustomDecor(
-            @NotNull Block block,
-            @NotNull Player player,
-            @NotNull String key,
-            @NotNull BlockFace blockFace
+            final @NotNull Block block,
+            final @NotNull Player player,
+            final @NotNull String key,
+            final @NotNull BlockFace blockFace
     ) {
         placeCustomDecor(block, player, key, blockFace, null, null);
     }
@@ -125,11 +125,11 @@ public final class MSDecorUtils {
      * @see CustomDecor#setCustomDecor(BlockFace, EquipmentSlot, Component)
      */
     public static void placeCustomDecor(
-            @NotNull Block block,
-            @NotNull Player player,
-            @NotNull String key,
-            @NotNull BlockFace blockFace,
-            @Nullable EquipmentSlot hand
+            final @NotNull Block block,
+            final @NotNull Player player,
+            final @NotNull String key,
+            final @NotNull BlockFace blockFace,
+            final @Nullable EquipmentSlot hand
     ) {
         placeCustomDecor(block, player, key, blockFace, hand, null);
     }
@@ -149,14 +149,14 @@ public final class MSDecorUtils {
      * @see CustomDecor#setCustomDecor(BlockFace, EquipmentSlot, Component)
      */
     public static void placeCustomDecor(
-            @NotNull Block block,
-            @NotNull Player player,
-            @NotNull String key,
-            @NotNull BlockFace blockFace,
-            @Nullable EquipmentSlot hand,
-            @Nullable Component customName
+            final @NotNull Block block,
+            final @NotNull Player player,
+            final @NotNull String key,
+            final @NotNull BlockFace blockFace,
+            final @Nullable EquipmentSlot hand,
+            final @Nullable Component customName
     ) {
-        var customDecorData = MSDecorUtils.getCustomDecorData(key);
+        final var customDecorData = MSDecorUtils.getCustomDecorData(key);
 
         if (customDecorData.isEmpty()) {
             MSLogger.warning("Custom decor data with key: " + key + " not found");
@@ -173,7 +173,7 @@ public final class MSDecorUtils {
      *         as a decor {@link CustomDecorData.HitBox}
      */
     @Contract("null -> false")
-    public static boolean isCustomDecorMaterial(@Nullable Material material) {
+    public static boolean isCustomDecorMaterial(final @Nullable Material material) {
         return material != null
                 && switch (material) {
             case BARRIER, STRUCTURE_VOID, LIGHT -> true;
@@ -189,7 +189,7 @@ public final class MSDecorUtils {
      * @return True if the entity has the {@link #ENTITY_TAG_NAME} tag
      */
     @Contract("null -> false")
-    public static boolean isCustomDecorEntity(@Nullable Entity entity) {
+    public static boolean isCustomDecorEntity(final @Nullable Entity entity) {
         return entity != null && entity.getScoreboardTags().contains(ENTITY_TAG_NAME);
     }
 
@@ -202,9 +202,9 @@ public final class MSDecorUtils {
      * @see CustomDecorData
      */
     @Contract("null -> false")
-    public static boolean isCustomDecor(@Nullable ItemStack itemStack) {
+    public static boolean isCustomDecor(final @Nullable ItemStack itemStack) {
         if (itemStack == null) return false;
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         return itemMeta != null && itemMeta.getPersistentDataContainer().has(CUSTOM_DECOR_TYPE_NAMESPACED_KEY);
     }
 
@@ -213,7 +213,7 @@ public final class MSDecorUtils {
      * @return True if string matches {@link #NAMESPACED_KEY_REGEX}
      */
     @Contract(value = "null -> false")
-    public static boolean matchesNamespacedKey(@Nullable String string) {
+    public static boolean matchesNamespacedKey(final @Nullable String string) {
         return string != null && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }
 }

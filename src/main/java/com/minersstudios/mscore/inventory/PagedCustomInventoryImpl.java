@@ -19,14 +19,17 @@ import java.util.Map;
 abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> extends CustomInventoryImpl<S> implements PagedCustomInventory {
     protected int page;
     protected int pagesSize;
-    protected final @NotNull Map<Integer, StaticInventoryButton> staticButtons = new HashMap<>();
-    protected final @NotNull Map<Integer, S> pages = new HashMap<>();
+    protected final @NotNull Map<Integer, StaticInventoryButton> staticButtons;
+    protected final @NotNull Map<Integer, S> pages;
 
     protected PagedCustomInventoryImpl(
-            @NotNull Component title,
-            @Range(from = 1, to = 6) int verticalSize
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize
     ) {
         super(title, verticalSize);
+
+        this.staticButtons = new HashMap<>(this.size);
+        this.pages = new HashMap<>();
     }
 
     @Override
@@ -41,7 +44,7 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
     }
 
     @Override
-    public @NotNull S staticButtons(@NotNull Map<Integer, StaticInventoryButton> buttons) throws IllegalArgumentException {
+    public @NotNull S staticButtons(final @NotNull Map<Integer, StaticInventoryButton> buttons) throws IllegalArgumentException {
         buttons.forEach(this::staticButtonAt);
         return (S) this;
     }
@@ -52,8 +55,8 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
     }
 
     @Override
-    public @Nullable InventoryButton buttonAt(@Range(from = 0, to = Integer.MAX_VALUE) int slot) {
-        StaticInventoryButton staticButton = this.staticButtons.get(slot);
+    public @Nullable InventoryButton buttonAt(final @Range(from = 0, to = Integer.MAX_VALUE) int slot) {
+        final StaticInventoryButton staticButton = this.staticButtons.get(slot);
         return staticButton == null
                 ? this.buttons.getOrDefault(slot, null)
                 : staticButton.getButton(this);
@@ -61,8 +64,8 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
 
     @Override
     public @NotNull S staticButtonAt(
-            @Range(from = 0, to = LAST_SLOT) int slot,
-            @Nullable StaticInventoryButton button
+            final @Range(from = 0, to = LAST_SLOT) int slot,
+            final @Nullable StaticInventoryButton button
     ) throws IllegalArgumentException {
         this.validateSlot(slot);
         this.staticButtons.put(slot, button);
@@ -75,7 +78,7 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
     }
 
     @Override
-    public @Nullable S getPage(@Range(from = 0, to = Integer.MAX_VALUE) int page) {
+    public @Nullable S getPage(final @Range(from = 0, to = Integer.MAX_VALUE) int page) {
         return this.pages.getOrDefault(page, null);
     }
 
@@ -84,19 +87,19 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
         return this.page;
     }
 
-    protected void setPageIndex(@Range(from = 0, to = Integer.MAX_VALUE) int page) {
+    protected void setPageIndex(final @Range(from = 0, to = Integer.MAX_VALUE) int page) {
         this.page = page;
     }
 
     @Override
     public int getNextPageIndex() {
-        int next = this.page + 1;
+        final int next = this.page + 1;
         return next >= this.pagesSize ? -1 : next;
     }
 
     @Override
     public int getPreviousPageIndex() {
-        int previous = this.page - 1;
+        final int previous = this.page - 1;
         return previous < 0 ? -1 : previous;
     }
 
@@ -105,8 +108,8 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
         return this.pagesSize;
     }
 
-    protected void setPagesSize(@Range(from = 0, to = Integer.MAX_VALUE) int pagesSize) {
-        for (var pagedInventory : this.pages.values()) {
+    protected void setPagesSize(final @Range(from = 0, to = Integer.MAX_VALUE) int pagesSize) {
+        for (final var pagedInventory : this.pages.values()) {
             pagedInventory.pagesSize = pagesSize;
         }
     }
@@ -125,29 +128,33 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
 
     @Override
     public void updateStaticButtons() {
-        if (this.hasStaticButtons()) {
-            this.staticButtons.forEach((slot, button) -> {
-                for (var pagedInventory : this.pages.values()) {
-                    pagedInventory.setItem(slot, button == null ? EMPTY_ITEM : button.getButton(pagedInventory).item());
-                }
-            });
-        }
+        if (!this.hasStaticButtons()) return;
+
+        this.staticButtons.forEach((slot, button) -> {
+            for (final var pagedInventory : this.pages.values()) {
+                pagedInventory.setItem(slot, button == null ? EMPTY_ITEM : button.getButton(pagedInventory).item());
+            }
+        });
     }
 
     @Override
     public void updateStaticButtons(@Range(from = 0, to = Integer.MAX_VALUE) int page) {
         if (this.hasStaticButtons()) {
-            S pagedInventory = this.pages.get(page);
+            final S pagedInventory = this.pages.get(page);
 
-            for (var entry : this.staticButtons.entrySet()) {
-                pagedInventory.setItem(entry.getKey(), entry.getValue().getButton(pagedInventory).item());
+            for (final var entry : this.staticButtons.entrySet()) {
+                pagedInventory.setItem(
+                        entry.getKey(),
+                        entry.getValue().getButton(pagedInventory).item()
+                );
             }
         }
     }
 
     @Override
-    public void open(@NotNull Player player) {
-        S pagedInventory = this.getPage(0);
+    public void open(final @NotNull Player player) {
+        final S pagedInventory = this.getPage(0);
+
         if (pagedInventory != null) {
             player.openInventory(pagedInventory);
         }

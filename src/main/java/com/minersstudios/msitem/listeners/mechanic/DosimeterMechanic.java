@@ -28,10 +28,10 @@ import static net.kyori.adventure.text.Component.text;
 public class DosimeterMechanic extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerSwapHandItems(@NotNull PlayerSwapHandItemsEvent event) {
-        Player player = event.getPlayer();
-        var players = MSItem.getCache().dosimeterPlayers;
-        EquipmentSlot equipmentSlot = players.get(player);
+    public void onPlayerSwapHandItems(final @NotNull PlayerSwapHandItemsEvent event) {
+        final Player player = event.getPlayer();
+        final var players = MSItem.getCache().dosimeterPlayers;
+        final EquipmentSlot equipmentSlot = players.get(player);
 
         if (equipmentSlot != null) {
             players.put(player, equipmentSlot == EquipmentSlot.HAND ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
@@ -39,17 +39,17 @@ public class DosimeterMechanic extends AbstractMSListener {
     }
 
     @EventHandler
-    public void onPlayerItemHeld(@NotNull PlayerItemHeldEvent event) {
-        Player player = event.getPlayer();
-        var players = MSItem.getCache().dosimeterPlayers;
-        EquipmentSlot equipmentSlot = players.get(player);
+    public void onPlayerItemHeld(final @NotNull PlayerItemHeldEvent event) {
+        final Player player = event.getPlayer();
+        final var players = MSItem.getCache().dosimeterPlayers;
+        final EquipmentSlot equipmentSlot = players.get(player);
 
         if (equipmentSlot == EquipmentSlot.HAND) {
-            ItemStack dosimeterItem = player.getInventory().getItem(event.getPreviousSlot());
+            final ItemStack dosimeterItem = player.getInventory().getItem(event.getPreviousSlot());
 
             CustomItemType.fromItemStack(dosimeterItem, Dosimeter.class)
             .ifPresent(dosimeter -> {
-                Dosimeter copy = dosimeter.copy();
+                final Dosimeter copy = dosimeter.copy();
 
                 assert dosimeterItem != null;
 
@@ -61,24 +61,24 @@ public class DosimeterMechanic extends AbstractMSListener {
     }
 
     @EventHandler
-    public void onInventoryClick(@NotNull InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        Inventory inventory = event.getClickedInventory();
-        ClickType clickType = event.getClick();
+    public void onInventoryClick(final @NotNull InventoryClickEvent event) {
+        final Player player = (Player) event.getWhoClicked();
+        final Inventory inventory = event.getClickedInventory();
+        final ClickType clickType = event.getClick();
 
-        if (!(inventory instanceof PlayerInventory playerInventory)) return;
+        if (!(inventory instanceof final PlayerInventory playerInventory)) return;
 
-        var players = MSItem.getCache().dosimeterPlayers;
-        EquipmentSlot equipmentSlot = players.get(player);
+        final var players = MSItem.getCache().dosimeterPlayers;
+        final EquipmentSlot equipmentSlot = players.get(player);
 
         if (equipmentSlot == null) return;
 
-        ItemStack dosimeterItem = playerInventory.getItem(equipmentSlot);
+        final ItemStack dosimeterItem = playerInventory.getItem(equipmentSlot);
 
         CustomItemType.fromItemStack(dosimeterItem, Dosimeter.class)
         .ifPresent(dosimeter -> {
-            Dosimeter copy = dosimeter.copy();
-            EquipmentSlot newEquipmentSlot = equipmentSlot == EquipmentSlot.HAND ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
+            final Dosimeter copy = dosimeter.copy();
+            final EquipmentSlot newEquipmentSlot = equipmentSlot == EquipmentSlot.HAND ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
 
             if (
                     clickType.isShiftClick()
@@ -109,20 +109,20 @@ public class DosimeterMechanic extends AbstractMSListener {
     }
 
     @EventHandler
-    public void onPlayerDropItem(@NotNull PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
-        var players = MSItem.getCache().dosimeterPlayers;
-        EquipmentSlot equipmentSlot = players.get(player);
+    public void onPlayerDropItem(final @NotNull PlayerDropItemEvent event) {
+        final Player player = event.getPlayer();
+        final var players = MSItem.getCache().dosimeterPlayers;
+        final EquipmentSlot equipmentSlot = players.get(player);
 
         if (equipmentSlot != null) {
-            ItemStack drop = event.getItemDrop().getItemStack();
-            ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
+            final ItemStack drop = event.getItemDrop().getItemStack();
+            final ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
             CustomItemType.fromItemStack(itemStack, Dosimeter.class)
             .ifPresent(dosimeter -> {
                 if (CustomItemType.fromItemStack(drop, Dosimeter.class).isEmpty()) return;
 
-                Dosimeter copy = dosimeter.copy();
+                final Dosimeter copy = dosimeter.copy();
 
                 copy.setItem(drop);
                 copy.setEnabled(false);
@@ -132,12 +132,12 @@ public class DosimeterMechanic extends AbstractMSListener {
     }
 
     @EventHandler
-    public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        EquipmentSlot equipmentSlot = MSItem.getCache().dosimeterPlayers.remove(player);
+    public void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
+        final Player player = event.getPlayer();
+        final EquipmentSlot equipmentSlot = MSItem.getCache().dosimeterPlayers.remove(player);
 
         if (equipmentSlot != null) {
-            ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
+            final ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
             CustomItemType.fromItemStack(itemStack, Dosimeter.class)
             .ifPresent(dosimeter -> {
@@ -150,18 +150,18 @@ public class DosimeterMechanic extends AbstractMSListener {
     }
 
     @EventHandler
-    public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
+    public void onPlayerInteract(final @NotNull PlayerInteractEvent event) {
         if (!event.getAction().isRightClick()) return;
 
-        Player player = event.getPlayer();
-        EquipmentSlot hand = event.getHand();
+        final Player player = event.getPlayer();
+        final EquipmentSlot hand = event.getHand();
 
         if (
                 hand == null
                 || !hand.isHand()
         ) return;
 
-        ItemStack itemInHand = player.getInventory().getItem(hand);
+        final ItemStack itemInHand = player.getInventory().getItem(hand);
 
         CustomItemType.fromItemStack(itemInHand, Dosimeter.class)
         .ifPresent(dosimeter -> {
@@ -188,17 +188,17 @@ public class DosimeterMechanic extends AbstractMSListener {
             .forEach((player, equipmentSlot) -> {
                 if (!player.isOnline()) return;
 
-                ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
+                final ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
-                if (CustomItemType.fromItemStack(itemStack).orElse(null) instanceof Dosimeter dosimeter) {
-                    Dosimeter copy = dosimeter.copy();
+                if (CustomItemType.fromItemStack(itemStack).orElse(null) instanceof final Dosimeter dosimeter) {
+                    final Dosimeter copy = dosimeter.copy();
 
                     copy.setItem(itemStack);
 
                     if (copy.isEnabled()) {
-                        var radiiPlayerInside = new HashMap<Anomaly, Double>();
+                        final var radiiPlayerInside = new HashMap<Anomaly, Double>();
 
-                        for (var anomaly : MSEssentials.getCache().anomalies.values()) {
+                        for (final var anomaly : MSEssentials.getCache().anomalies.values()) {
                             double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
 
                             if (radiusInside != -1.0d) {
@@ -206,11 +206,11 @@ public class DosimeterMechanic extends AbstractMSListener {
                             }
                         }
 
-                        var anomalyEntry = getEntryWithMinValue(radiiPlayerInside);
-                        List<Double> radii = anomalyEntry == null
+                        final var anomalyEntry = getEntryWithMinValue(radiiPlayerInside);
+                        final List<Double> radii = anomalyEntry == null
                                 ? Collections.emptyList()
                                 : anomalyEntry.getKey().getBoundingBox().getRadii();
-                        Double radius = anomalyEntry == null
+                        final Double radius = anomalyEntry == null
                                 ? null
                                 : anomalyEntry.getValue();
 
@@ -230,20 +230,23 @@ public class DosimeterMechanic extends AbstractMSListener {
         }
 
         private static @NotNull String radiusToLevel(
-                @NotNull List<Double> radii,
-                @Nullable Double radius,
-                @NotNull Location loc
+                final @NotNull List<Double> radii,
+                final @Nullable Double radius,
+                final @NotNull Location loc
         ) {
-            var reversedRadii = new ArrayList<>(radii);
+            final var reversedRadii = new ArrayList<>(radii);
 
             Collections.reverse(reversedRadii);
 
-            double indexOfRadius = reversedRadii.indexOf(radius);
-            double afterComma = Math.round(((Math.abs(loc.getX()) + Math.abs(loc.getY()) + Math.abs(loc.getZ())) % 1.0d) * 10.0d) / 10.0d;
-            return (indexOfRadius == -1.0d ? 0.0d : indexOfRadius + 1.0d) + Math.min(afterComma, 0.9d) + String.valueOf(Math.min(Math.round(Math.random() * 10.0d), 9));
+            final double indexOfRadius = reversedRadii.indexOf(radius);
+            final double afterComma = Math.round(((Math.abs(loc.getX()) + Math.abs(loc.getY()) + Math.abs(loc.getZ())) % 1.0d) * 10.0d) / 10.0d;
+
+            return (indexOfRadius == -1.0d ? 0.0d : indexOfRadius + 1.0d)
+                    + Math.min(afterComma, 0.9d)
+                    + String.valueOf(Math.min(Math.round(Math.random() * 10.0d), 9));
         }
 
-        private static @Nullable Map.Entry<Anomaly, Double> getEntryWithMinValue(@NotNull Map<Anomaly, Double> map) {
+        private static @Nullable Map.Entry<Anomaly, Double> getEntryWithMinValue(final @NotNull Map<Anomaly, Double> map) {
             Map.Entry<Anomaly, Double> minEntry = null;
             double minValue = Double.POSITIVE_INFINITY;
 

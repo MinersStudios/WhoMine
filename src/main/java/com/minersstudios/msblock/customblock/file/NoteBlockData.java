@@ -23,9 +23,9 @@ public class NoteBlockData implements Cloneable {
     private static final NoteBlockData DEFAULT = new NoteBlockData(Instrument.BIT, new Note(0), false);
 
     private NoteBlockData(
-            @NotNull Instrument instrument,
-            @NotNull Note note,
-            boolean powered
+            final @NotNull Instrument instrument,
+            final @NotNull Note note,
+            final boolean powered
     ) {
         this.instrument = instrument;
         this.note = note;
@@ -54,9 +54,9 @@ public class NoteBlockData implements Cloneable {
      */
     @Contract(value = "_, _, _ -> new", pure = true)
     public static @NotNull NoteBlockData fromParams(
-            @NotNull Instrument instrument,
-            @NotNull Note note,
-            boolean powered
+            final @NotNull Instrument instrument,
+            final @NotNull Note note,
+            final boolean powered
     ) {
         return new NoteBlockData(instrument, note, powered);
     }
@@ -73,9 +73,9 @@ public class NoteBlockData implements Cloneable {
      */
     @Contract("_, _, _ -> new")
     public static @NotNull NoteBlockData fromParams(
-            @NotNull Instrument instrument,
-            @Range(from = 0, to = 24) int note,
-            boolean powered
+            final @NotNull Instrument instrument,
+            final @Range(from = 0, to = 24) int note,
+            final boolean powered
     ) {
         return new NoteBlockData(instrument, new Note(note), powered);
     }
@@ -87,7 +87,7 @@ public class NoteBlockData implements Cloneable {
      * @return New note block data
      */
     @Contract("_ -> new")
-    public static @NotNull NoteBlockData fromNoteBlock(@NotNull NoteBlock noteBlock) {
+    public static @NotNull NoteBlockData fromNoteBlock(final @NotNull NoteBlock noteBlock) {
         return new NoteBlockData(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
     }
 
@@ -103,7 +103,7 @@ public class NoteBlockData implements Cloneable {
      *
      * @param instrument The instrument to set
      */
-    public @NotNull NoteBlockData instrument(@NotNull Instrument instrument) {
+    public @NotNull NoteBlockData instrument(final @NotNull Instrument instrument) {
         this.instrument = instrument;
         return this;
     }
@@ -121,7 +121,7 @@ public class NoteBlockData implements Cloneable {
      * @param note The note to set
      * @return The note block data with the new note
      */
-    public @NotNull NoteBlockData note(@NotNull Note note) {
+    public @NotNull NoteBlockData note(final @NotNull Note note) {
         this.note = note;
         return this;
     }
@@ -143,7 +143,7 @@ public class NoteBlockData implements Cloneable {
      * @return The note block data with the new note
      * @see #note(Note)
      */
-    public @NotNull NoteBlockData noteId(@Range(from = 0, to = 24) int note) {
+    public @NotNull NoteBlockData noteId(final @Range(from = 0, to = 24) int note) {
         return this.note(new Note(note));
     }
 
@@ -160,7 +160,7 @@ public class NoteBlockData implements Cloneable {
      * @param powered The powered state to set
      * @return The note block data with the new powered state
      */
-    public @NotNull NoteBlockData powered(boolean powered) {
+    public @NotNull NoteBlockData powered(final boolean powered) {
         this.powered = powered;
         return this;
     }
@@ -180,8 +180,8 @@ public class NoteBlockData implements Cloneable {
      * @return The {@link NoteBlock} of the given block data
      * @throws IllegalArgumentException If the given block data is not a {@link NoteBlock}
      */
-    public @NotNull NoteBlock craftNoteBlock(@NotNull BlockData blockData) throws IllegalArgumentException {
-        if (!(blockData instanceof NoteBlock noteBlock)) {
+    public @NotNull NoteBlock craftNoteBlock(final @NotNull BlockData blockData) throws IllegalArgumentException {
+        if (!(blockData instanceof final NoteBlock noteBlock)) {
             throw new IllegalArgumentException("BlockData must be NoteBlock");
         }
 
@@ -203,7 +203,7 @@ public class NoteBlockData implements Cloneable {
         try {
             return (NoteBlockData) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new UnsupportedOperationException(e);
+            throw new AssertionError("An error occurred while cloning NoteBlockData", e);
         }
     }
 
@@ -242,16 +242,16 @@ public class NoteBlockData implements Cloneable {
      *         note and powered state
      */
     @Override
-    public boolean equals(@Nullable Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         if (obj == this) return true;
 
-        if (obj instanceof NoteBlockData noteBlockData) {
+        if (obj instanceof final NoteBlockData noteBlockData) {
             return this.instrument == noteBlockData.instrument
                     && this.note == noteBlockData.note
                     && this.powered == noteBlockData.powered;
         }
 
-        if (obj instanceof NoteBlock noteBlock) {
+        if (obj instanceof final NoteBlock noteBlock) {
             return this.instrument == noteBlock.getInstrument()
                     && this.note == noteBlock.getNote()
                     && this.powered == noteBlock.isPowered();

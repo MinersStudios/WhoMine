@@ -38,16 +38,16 @@ public class PlayerActionListener extends AbstractMSPacketListener {
     }
 
     @Override
-    public void onPacketReceive(@NotNull PacketEvent event) {
-        Player player = event.getPlayer();
-        PacketContainer container = event.getPacketContainer();
+    public void onPacketReceive(final @NotNull PacketEvent event) {
+        final Player player = event.getPlayer();
+        final PacketContainer container = event.getPacketContainer();
 
         if (
                 player.getGameMode() != GameMode.SURVIVAL
-                || !(container.getPacket() instanceof ServerboundPlayerActionPacket packet)
+                || !(container.getPacket() instanceof final ServerboundPlayerActionPacket packet)
         ) return;
 
-        ServerboundPlayerActionPacket.Action action = packet.getAction();
+        final ServerboundPlayerActionPacket.Action action = packet.getAction();
 
         if (
                 action != START_DESTROY_BLOCK
@@ -55,27 +55,26 @@ public class PlayerActionListener extends AbstractMSPacketListener {
                 && action != STOP_DESTROY_BLOCK
         ) return;
 
-        DiggingMap diggingMap = MSBlock.getCache().diggingMap;
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        ServerLevel serverLevel = serverPlayer.serverLevel();
-        BlockPos blockPos = packet.getPos();
-        Location blockLocation = new Location(player.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
-        Block block = blockLocation.getBlock();
-        boolean hasSlowDigging = player.hasPotionEffect(PotionEffectType.SLOW_DIGGING);
+        final DiggingMap diggingMap = MSBlock.getCache().diggingMap;
+        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        final ServerLevel serverLevel = serverPlayer.serverLevel();
+        final BlockPos blockPos = packet.getPos();
+        final Location blockLocation = new Location(player.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        final Block block = blockLocation.getBlock();
+        final boolean hasSlowDigging = player.hasPotionEffect(PotionEffectType.SLOW_DIGGING);
 
         switch (action) {
             case START_DESTROY_BLOCK -> {
-                if (block.getBlockData() instanceof NoteBlock noteBlock) {
+                if (block.getBlockData() instanceof final NoteBlock noteBlock) {
                     diggingMap.removeAll(player);
 
                     if (!hasSlowDigging) {
                         this.getPlugin().runTask(() -> player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false)));
                     }
 
-                    CustomBlockData customBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault());
-                    float digSpeed = customBlockData.getBlockSettings().calculateDigSpeed(player);
-
-                    DiggingMap.Entry entry = DiggingMap.Entry.create(player);
+                    final CustomBlockData customBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault());
+                    final float digSpeed = customBlockData.getBlockSettings().calculateDigSpeed(player);
+                    final DiggingMap.Entry entry = DiggingMap.Entry.create(player);
 
                     diggingMap.put(block, entry.taskId(
                             this.getPlugin().runTaskTimer(new Runnable() {
@@ -88,7 +87,7 @@ public class PlayerActionListener extends AbstractMSPacketListener {
                                         diggingMap.remove(block, entry);
                                     }
 
-                                    Block targetBlock = PlayerUtils.getTargetBlock(player);
+                                    final Block targetBlock = PlayerUtils.getTargetBlock(player);
                                     boolean wasFarAway = false;
 
                                     if (PlayerUtils.getTargetEntity(player, targetBlock) != null || targetBlock == null) {
@@ -141,7 +140,7 @@ public class PlayerActionListener extends AbstractMSPacketListener {
                             }, 0L, 1L).getTaskId())
                     );
                 } else {
-                    DiggingMap.Entry entry = diggingMap.getBiggestStageEntry(block);
+                    final DiggingMap.Entry entry = diggingMap.getBiggestStageEntry(block);
 
                     if (
                             entry != null
@@ -161,7 +160,7 @@ public class PlayerActionListener extends AbstractMSPacketListener {
                 ) {
                     diggingMap.removeAll(player);
 
-                    DiggingMap.Entry entry = DiggingMap.Entry.create(player);
+                    final DiggingMap.Entry entry = DiggingMap.Entry.create(player);
 
                     diggingMap.put(block, entry.taskId(
                             this.getPlugin().runTaskTimer(new Runnable() {
@@ -173,7 +172,7 @@ public class PlayerActionListener extends AbstractMSPacketListener {
                                         diggingMap.remove(block, entry);
                                     }
 
-                                    Block targetBlock = PlayerUtils.getTargetBlock(player);
+                                    final Block targetBlock = PlayerUtils.getTargetBlock(player);
                                     boolean wasFarAway = false;
 
                                     if (
@@ -206,13 +205,13 @@ public class PlayerActionListener extends AbstractMSPacketListener {
                 }
             }
             case ABORT_DESTROY_BLOCK -> {
-                DiggingMap.Entry entry = diggingMap.getEntry(block, player);
+                final DiggingMap.Entry entry = diggingMap.getEntry(block, player);
 
                 if (
                         entry != null
                         && !entry.farAway()
                 ) {
-                    Block targetBlock = PlayerUtils.getTargetBlock(player);
+                    final Block targetBlock = PlayerUtils.getTargetBlock(player);
 
                     this.getPlugin().runTask(() -> {
                         if (

@@ -21,7 +21,7 @@ public class AntiRadiationTextile extends CustomItemImpl {
     static {
         KEY = "anti_radiation_textile";
         ITEM_STACK = new ItemStack(Material.PAPER);
-        ItemMeta meta = ITEM_STACK.getItemMeta();
+        final ItemMeta meta = ITEM_STACK.getItemMeta();
 
         meta.displayName(ChatUtils.createDefaultStyledText("Антирадиационная ткань"));
         meta.setCustomModelData(12002);
@@ -34,7 +34,6 @@ public class AntiRadiationTextile extends CustomItemImpl {
 
     @Override
     public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        var a = CustomItemType.PLUMBUM_INGOT.getCustomItem();
         return Collections.singletonList(Map.entry(
                 new ShapedRecipe(this.namespacedKey, this.itemStack)
                 .shape(

@@ -30,11 +30,12 @@ public class ElementSingleInventory extends CustomInventoryImpl<ElementSingleInv
      * @param elementSlots Slots of the elements in the inventory
      */
     protected ElementSingleInventory(
-            @NotNull Component title,
-            @Range(from = 1, to = 6) int verticalSize,
-            int @Range(from = 0, to = Integer.MAX_VALUE) [] elementSlots
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize,
+            final int @Range(from = 0, to = Integer.MAX_VALUE) ... elementSlots
     ) {
         super(title, verticalSize);
+
         this.elementSlots = elementSlots;
         this.elements = new ArrayList<>();
     }
@@ -49,9 +50,9 @@ public class ElementSingleInventory extends CustomInventoryImpl<ElementSingleInv
      */
     @Contract("_, _, _ -> new")
     public static @NotNull ElementSingleInventory elementSingle(
-            @NotNull Component title,
-            @Range(from = 1, to = 6) int verticalSize,
-            int @Range(from = 0, to = Integer.MAX_VALUE) [] elementSlots
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize,
+            final int @Range(from = 0, to = Integer.MAX_VALUE) ... elementSlots
     ) {
         return new ElementSingleInventory(title, verticalSize, elementSlots);
     }
@@ -70,13 +71,13 @@ public class ElementSingleInventory extends CustomInventoryImpl<ElementSingleInv
      * @param elements New elements of the inventory
      * @return This inventory
      */
-    public @NotNull ElementSingleInventory elements(@NotNull List<InventoryButton> elements) {
+    public @NotNull ElementSingleInventory elements(final @NotNull List<InventoryButton> elements) {
         this.elements.clear();
 
         for (int i = 0; i < this.elementSlots.length; i++) {
             if (i >= elements.size()) break;
 
-            InventoryButton button = elements.get(i);
+            final InventoryButton button = elements.get(i);
 
             this.elements.add(button);
             this.buttonAt(this.elementSlots[i], button);

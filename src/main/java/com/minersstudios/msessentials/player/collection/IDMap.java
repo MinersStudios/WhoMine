@@ -60,9 +60,9 @@ public class IDMap {
      * @return -1 if the player is not found
      */
     public int getID(
-            @NotNull UUID uuid,
-            boolean addPlayer,
-            boolean zeroIfNull
+            final @NotNull UUID uuid,
+            final boolean addPlayer,
+            final boolean zeroIfNull
     ) {
         return this.map.getOrDefault(uuid, addPlayer ? this.addPlayer(uuid) : zeroIfNull ? 0 : -1);
     }
@@ -73,8 +73,8 @@ public class IDMap {
      * @param id Player ID
      * @return {@link UUID} of player with this ID or null if not found
      */
-    public @Nullable UUID getUUID(int id) {
-        for (var entry : this.map.entrySet()) {
+    public @Nullable UUID getUUID(final int id) {
+        for (final var entry : this.map.entrySet()) {
             if (entry.getValue() == id) return entry.getKey();
         }
 
@@ -87,8 +87,8 @@ public class IDMap {
      * @param stringId player ID string
      * @return {@link UUID} from ID string
      */
-    public @Nullable UUID getUUID(@NotNull String stringId) {
-        int id = IDUtils.parseID(stringId);
+    public @Nullable UUID getUUID(final @NotNull String stringId) {
+        final int id = IDUtils.parseID(stringId);
         return id != -1 ? this.getUUID(id) : null;
     }
 
@@ -98,8 +98,8 @@ public class IDMap {
      * @param id player ID
      * @return {@link OfflinePlayer} from ID
      */
-    public @Nullable OfflinePlayer getPlayerByID(int id) {
-        UUID uuid = this.getUUID(id);
+    public @Nullable OfflinePlayer getPlayerByID(final int id) {
+        final UUID uuid = this.getUUID(id);
         return uuid == null ? null : Bukkit.getOfflinePlayer(uuid);
     }
 
@@ -109,8 +109,8 @@ public class IDMap {
      * @param stringId player ID string
      * @return {@link OfflinePlayer} from ID string
      */
-    public @Nullable OfflinePlayer getPlayerByID(@NotNull String stringId) {
-        int id = IDUtils.parseID(stringId);
+    public @Nullable OfflinePlayer getPlayerByID(final @NotNull String stringId) {
+        final int id = IDUtils.parseID(stringId);
         return id != -1 ? this.getPlayerByID(id) : null;
     }
 
@@ -121,8 +121,8 @@ public class IDMap {
      * @param id   ID to set
      */
     public void put(
-            @NotNull UUID uuid,
-            int id
+            final @NotNull UUID uuid,
+            final int id
     ) {
         this.map.put(uuid, id);
         this.saveFile();
@@ -146,7 +146,7 @@ public class IDMap {
      * @param uuid {@link UUID} of player
      * @return True if the map contains the uuid of the player
      */
-    public boolean containsUUID(@Nullable UUID uuid) {
+    public boolean containsUUID(final @Nullable UUID uuid) {
         return this.map.containsKey(uuid);
     }
 
@@ -154,7 +154,7 @@ public class IDMap {
      * @param id ID of player
      * @return True if the map contains the id of the player
      */
-    public boolean containsID(@NotNull Integer id) {
+    public boolean containsID(final @NotNull Integer id) {
         return this.map.containsValue(id);
     }
 
@@ -185,7 +185,7 @@ public class IDMap {
      * @param uuid player {@link UUID}
      * @return next player ID, or -1 if the player already has an ID
      */
-    public int addPlayer(@NotNull UUID uuid) {
+    public int addPlayer(final @NotNull UUID uuid) {
         return this.map.computeIfAbsent(uuid, unused -> this.nextID());
     }
 
@@ -196,7 +196,7 @@ public class IDMap {
      * @return next player ID
      */
     public int nextID() {
-        var usedIDs = new HashSet<>(this.map.values());
+        final var usedIDs = new HashSet<>(this.map.values());
 
         for (int id = 0; id < Integer.MAX_VALUE; id++) {
             if (!usedIDs.contains(id)) return id;
@@ -215,9 +215,9 @@ public class IDMap {
             this.createFile();
         } else {
             try {
-                Type mapType = new TypeToken<Map<UUID, Integer>>() {}.getType();
-                String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
-                Map<UUID, Integer> jsonMap = GSON.fromJson(json, mapType);
+                final Type mapType = new TypeToken<Map<UUID, Integer>>() {}.getType();
+                final String json = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
+                final Map<UUID, Integer> jsonMap = GSON.fromJson(json, mapType);
 
                 if (jsonMap == null) {
                     this.createBackupFile();
@@ -256,7 +256,7 @@ public class IDMap {
      * Creates a backup file of the "ids.json" file
      */
     private void createBackupFile() {
-        File backupFile = new File(this.file.getParent(), this.file.getName() + ".OLD");
+        final File backupFile = new File(this.file.getParent(), this.file.getName() + ".OLD");
 
         try {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -272,7 +272,7 @@ public class IDMap {
      * Saves the mute map to the "ids.json" file
      */
     private void saveFile() {
-        try (var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
+        try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
         } catch (IOException e) {
             MSLogger.log(Level.SEVERE, "Failed to save ids", e);

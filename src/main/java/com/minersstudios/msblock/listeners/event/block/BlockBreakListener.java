@@ -14,7 +14,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CommandBlock;
@@ -39,22 +38,21 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @MSListener
 public class BlockBreakListener extends AbstractMSListener {
 
     @EventHandler
-    public void onBlockBreak(@NotNull BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        Block block = event.getBlock();
-        Material blockType = block.getType();
-        BlockPos blockPosition = ((CraftBlock) block).getPosition();
-        Block topBlock = event.getBlock().getRelative(BlockFace.UP);
-        Block bottomBlock = event.getBlock().getRelative(BlockFace.DOWN);
-        Location blockLocation = block.getLocation();
+    public void onBlockBreak(final @NotNull BlockBreakEvent event) {
+        final Player player = event.getPlayer();
+        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        final Block block = event.getBlock();
+        final Material blockType = block.getType();
+        final BlockPos blockPosition = ((CraftBlock) block).getPosition();
+        final Block topBlock = event.getBlock().getRelative(BlockFace.UP);
+        final Block bottomBlock = event.getBlock().getRelative(BlockFace.DOWN);
+        final Location blockLocation = block.getLocation();
 
         if (
                 blockType != Material.NOTE_BLOCK
@@ -63,9 +61,9 @@ public class BlockBreakListener extends AbstractMSListener {
             SoundGroup.wood().playBreakSound(blockLocation.toCenterLocation());
         }
 
-        if (block.getBlockData() instanceof NoteBlock noteBlock) {
-            CustomBlockData customBlockMaterial = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault());
-            GameMode gameMode = player.getGameMode();
+        if (block.getBlockData() instanceof final NoteBlock noteBlock) {
+            final CustomBlockData customBlockMaterial = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault());
+            final GameMode gameMode = player.getGameMode();
 
             event.setCancelled(true);
 
@@ -98,14 +96,14 @@ public class BlockBreakListener extends AbstractMSListener {
 
     @SuppressWarnings("DataFlowIssue")
     private static boolean destroyBlock(
-            @NotNull ServerPlayer serverPlayer,
-            @NotNull BlockPos pos
+            final @NotNull ServerPlayer serverPlayer,
+            final @NotNull BlockPos pos
     ) {
-        ServerPlayerGameMode gameMode = serverPlayer.gameMode;
+        final ServerPlayerGameMode gameMode = serverPlayer.gameMode;
         BlockState iBlockData = gameMode.level.getBlockState(pos);
-        Block bblock = CraftBlock.at(gameMode.level, pos);
-        BlockBreakEvent event = new BlockBreakEvent(bblock, serverPlayer.getBukkitEntity());
-        boolean isSwordNoBreak = !serverPlayer.getMainHandItem().getItem().canAttackBlock(iBlockData, gameMode.level, pos, serverPlayer);
+        final Block bblock = CraftBlock.at(gameMode.level, pos);
+        final BlockBreakEvent event = new BlockBreakEvent(bblock, serverPlayer.getBukkitEntity());
+        final boolean isSwordNoBreak = !serverPlayer.getMainHandItem().getItem().canAttackBlock(iBlockData, gameMode.level, pos, serverPlayer);
 
         if (gameMode.level.getBlockEntity(pos) == null && !isSwordNoBreak) {
             serverPlayer.connection.send(new ClientboundBlockUpdatePacket(pos, Blocks.AIR.defaultBlockState()));
@@ -113,8 +111,8 @@ public class BlockBreakListener extends AbstractMSListener {
 
         event.setCancelled(isSwordNoBreak);
 
-        BlockState nmsData = gameMode.level.getBlockState(pos);
-        net.minecraft.world.level.block.Block nmsBlock = nmsData.getBlock();
+        final BlockState nmsData = gameMode.level.getBlockState(pos);
+        final net.minecraft.world.level.block.Block nmsBlock = nmsData.getBlock();
 
         if (
                 serverPlayer.isCreative()
@@ -136,7 +134,7 @@ public class BlockBreakListener extends AbstractMSListener {
 
             serverPlayer.connection.send(new ClientboundBlockUpdatePacket(gameMode.level, pos));
 
-            for (Direction dir : Direction.values()) {
+            for (final var dir : Direction.values()) {
                 serverPlayer.connection.send(new ClientboundBlockUpdatePacket(gameMode.level, pos.relative(dir)));
             }
 
@@ -153,74 +151,73 @@ public class BlockBreakListener extends AbstractMSListener {
         }
 
         iBlockData = gameMode.level.getBlockState(pos);
-        if (iBlockData.isAir()) {
-            return false;
-        } else {
-            BlockEntity tileEntity = gameMode.level.getBlockEntity(pos);
-            net.minecraft.world.level.block.Block block = iBlockData.getBlock();
+
+        if (iBlockData.isAir()) return false;
+
+        final BlockEntity tileEntity = gameMode.level.getBlockEntity(pos);
+        final net.minecraft.world.level.block.Block block = iBlockData.getBlock();
+
+        if (
+                !(block instanceof GameMasterBlock)
+                || serverPlayer.canUseGameMasterBlocks()
+                || block instanceof CommandBlock && serverPlayer.isCreative()
+                && serverPlayer.getBukkitEntity().hasPermission("minecraft.commandblock")
+        ) {
+            if (serverPlayer.blockActionRestricted(gameMode.level, pos, gameMode.getGameModeForPlayer())) return false;
+
+            final org.bukkit.block.BlockState state = bblock.getState();
+            gameMode.level.captureDrops = new ArrayList<>();
+            block.playerWillDestroy(gameMode.level, pos, iBlockData, serverPlayer);
+
+            final boolean flag = gameMode.level.removeBlock(pos, false);
+
+            if (flag) {
+                block.destroy(gameMode.level, pos, iBlockData);
+            }
+
+            net.minecraft.world.item.ItemStack mainHandStack = null;
+            boolean isCorrectTool = false;
+
+            if (!gameMode.isCreative()) {
+                net.minecraft.world.item.ItemStack itemStack = serverPlayer.getMainHandItem();
+                net.minecraft.world.item.ItemStack itemStack1 = itemStack.copy();
+                boolean flag1 = serverPlayer.hasCorrectToolForDrops(iBlockData);
+                mainHandStack = itemStack1;
+                isCorrectTool = flag1;
+
+                itemStack.mineBlock(gameMode.level, iBlockData, pos, serverPlayer);
+
+                if (flag && flag1 && event.isDropItems()) {
+                    block.playerDestroy(gameMode.level, serverPlayer, pos, iBlockData, tileEntity, itemStack1);
+                }
+            }
+
+            final var itemsToDrop = gameMode.level.captureDrops;
+            gameMode.level.captureDrops = null;
+
+            if (event.isDropItems()) {
+                CraftEventFactory.handleBlockDropItemEvent(bblock, state, serverPlayer, itemsToDrop);
+            }
+
+            if (flag) {
+                iBlockData.getBlock().popExperience(gameMode.level, pos, event.getExpToDrop(), serverPlayer);
+            }
 
             if (
-                    !(block instanceof GameMasterBlock)
-                    || serverPlayer.canUseGameMasterBlocks()
-                    || block instanceof CommandBlock && serverPlayer.isCreative()
-                    && serverPlayer.getBukkitEntity().hasPermission("minecraft.commandblock")
+                    mainHandStack != null
+                    && flag
+                    && isCorrectTool
+                    && event.isDropItems()
+                    && block instanceof BeehiveBlock
+                    && tileEntity instanceof BeehiveBlockEntity beehiveBlockEntity
             ) {
-                if (serverPlayer.blockActionRestricted(gameMode.level, pos, gameMode.getGameModeForPlayer())) {
-                    return false;
-                } else {
-                    org.bukkit.block.BlockState state = bblock.getState();
-                    gameMode.level.captureDrops = new ArrayList<>();
-                    block.playerWillDestroy(gameMode.level, pos, iBlockData, serverPlayer);
-
-                    boolean flag = gameMode.level.removeBlock(pos, false);
-                    if (flag) {
-                        block.destroy(gameMode.level, pos, iBlockData);
-                    }
-
-                    net.minecraft.world.item.ItemStack mainHandStack = null;
-                    boolean isCorrectTool = false;
-
-                    if (!gameMode.isCreative()) {
-                        net.minecraft.world.item.ItemStack itemStack = serverPlayer.getMainHandItem();
-                        net.minecraft.world.item.ItemStack itemStack1 = itemStack.copy();
-                        boolean flag1 = serverPlayer.hasCorrectToolForDrops(iBlockData);
-                        mainHandStack = itemStack1;
-                        isCorrectTool = flag1;
-
-                        itemStack.mineBlock(gameMode.level, iBlockData, pos, serverPlayer);
-
-                        if (flag && flag1 && event.isDropItems()) {
-                            block.playerDestroy(gameMode.level, serverPlayer, pos, iBlockData, tileEntity, itemStack1);
-                        }
-                    }
-
-                    List<ItemEntity> itemsToDrop = gameMode.level.captureDrops;
-                    gameMode.level.captureDrops = null;
-
-                    if (event.isDropItems()) {
-                        CraftEventFactory.handleBlockDropItemEvent(bblock, state, serverPlayer, itemsToDrop);
-                    }
-
-                    if (flag) {
-                        iBlockData.getBlock().popExperience(gameMode.level, pos, event.getExpToDrop(), serverPlayer);
-                    }
-
-                    if (
-                            mainHandStack != null
-                            && flag
-                            && isCorrectTool
-                            && event.isDropItems()
-                            && block instanceof BeehiveBlock
-                            && tileEntity instanceof BeehiveBlockEntity beehiveBlockEntity
-                    ) {
-                        CriteriaTriggers.BEE_NEST_DESTROYED.trigger(serverPlayer, iBlockData, mainHandStack, beehiveBlockEntity.getOccupantCount());
-                    }
-                }
-                return true;
-            } else {
-                gameMode.level.sendBlockUpdated(pos, iBlockData, iBlockData, 3);
-                return false;
+                CriteriaTriggers.BEE_NEST_DESTROYED.trigger(serverPlayer, iBlockData, mainHandStack, beehiveBlockEntity.getOccupantCount());
             }
+
+            return true;
+        } else {
+            gameMode.level.sendBlockUpdated(pos, iBlockData, iBlockData, 3);
+            return false;
         }
     }
 }

@@ -44,8 +44,8 @@ public final class MessageUtils {
      *
      * @param message message
      */
-    public static void sendGlobalMessage(@NotNull Component message) {
-        for (var player : Bukkit.getOnlinePlayers()) {
+    public static void sendGlobalMessage(final @NotNull Component message) {
+        for (final var player : Bukkit.getOnlinePlayers()) {
             if (!WorldDark.isInWorldDark(player)) {
                 player.sendMessage(message);
             }
@@ -60,9 +60,9 @@ public final class MessageUtils {
      * @param radius   radius
      */
     public static void sendLocalMessage(
-            @NotNull Component message,
-            @NotNull Location location,
-            double radius
+            final @NotNull Component message,
+            final @NotNull Location location,
+            final double radius
     ) {
         MSEssentials.getInstance().runTask(
                 () -> location.getWorld().getNearbyPlayers(location, radius)
@@ -79,15 +79,15 @@ public final class MessageUtils {
      * @param message    message
      */
     public static void sendMessageToChat(
-            @NotNull PlayerInfo playerInfo,
-            @Nullable Location location,
-            @NotNull Chat chat,
-            @NotNull Component message
+            final @NotNull PlayerInfo playerInfo,
+            final @Nullable Location location,
+            final @NotNull Chat chat,
+            final @NotNull Component message
     ) {
-        Config config = MSEssentials.getConfiguration();
+        final Config config = MSEssentials.getConfiguration();
 
         if (chat == Chat.LOCAL && location != null) {
-            Component localMessage = space()
+            final Component localMessage = space()
                     .append(playerInfo.getDefaultName()
                     .append(text(" : "))
                     .color(CHAT_COLOR_PRIMARY)
@@ -95,7 +95,7 @@ public final class MessageUtils {
                     .clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
                     .append(message)
                     .color(CHAT_COLOR_SECONDARY);
-            String stringLocalMessage = ChatUtils.serializeLegacyComponent(localMessage);
+            final String stringLocalMessage = ChatUtils.serializeLegacyComponent(localMessage);
 
             sendLocalMessage(localMessage, location, config.localChatRadius);
             MSEssentials.getInstance().runTaskAsync(
@@ -105,7 +105,7 @@ public final class MessageUtils {
             return;
         }
 
-        Component globalMessage = space()
+        final Component globalMessage = space()
                 .append(text("[WM] ")
                 .append(playerInfo.getDefaultName()
                 .append(text(" : ")))
@@ -114,7 +114,7 @@ public final class MessageUtils {
                 .clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
                 .append(message)
                 .color(CHAT_COLOR_SECONDARY);
-        String stringGlobalMessage = ChatUtils.serializeLegacyComponent(globalMessage);
+        final String stringGlobalMessage = ChatUtils.serializeLegacyComponent(globalMessage);
 
         sendGlobalMessage(globalMessage);
         MSCore.getInstance().runTaskAsync(() -> {
@@ -133,24 +133,24 @@ public final class MessageUtils {
      * @return True if sender or receiver == null
      */
     public static boolean sendPrivateMessage(
-            @NotNull PlayerInfo sender,
-            @NotNull PlayerInfo receiver,
-            @NotNull Component message
+            final @NotNull PlayerInfo sender,
+            final @NotNull PlayerInfo receiver,
+            final @NotNull Component message
     ) {
-        CommandSender commandSender = sender == MSEssentials.getConsolePlayerInfo()
+        final CommandSender commandSender = sender == MSEssentials.getConsolePlayerInfo()
                 ? Bukkit.getConsoleSender()
                 : sender.getOnlinePlayer();
-        Player receiverPlayer = receiver.getOnlinePlayer();
+        final Player receiverPlayer = receiver.getOnlinePlayer();
 
         if (commandSender != null && receiverPlayer != null) {
-            Component privateMessage = space()
+            final Component privateMessage = space()
                     .append(sender.getDefaultName()
                     .append(text(" -> ")
                     .append(receiver.getDefaultName()
                     .append(text(" : ")))))
                     .color(CHAT_COLOR_PRIMARY)
                     .append(message.color(CHAT_COLOR_SECONDARY));
-            String privateMessageString = ChatUtils.serializeLegacyComponent(privateMessage);
+            final String privateMessageString = ChatUtils.serializeLegacyComponent(privateMessage);
 
             commandSender.sendMessage(
                     Badges.SPEECH.append(text()
@@ -187,14 +187,14 @@ public final class MessageUtils {
      * @param rolePlayActionType rp action type
      */
     public static void sendRPEventMessage(
-            @NotNull Player sender,
-            @NotNull Component speech,
-            @NotNull Component action,
-            @NotNull RolePlayActionType rolePlayActionType
+            final @NotNull Player sender,
+            final @NotNull Component speech,
+            final @NotNull Component action,
+            final @NotNull RolePlayActionType rolePlayActionType
     ) {
-        Config config = MSEssentials.getConfiguration();
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(sender);
-        Component fullMessage = switch (rolePlayActionType) {
+        final Config config = MSEssentials.getConfiguration();
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(sender);
+        final Component fullMessage = switch (rolePlayActionType) {
             case DO ->
                     text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
                     .append(action.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY))
@@ -234,9 +234,9 @@ public final class MessageUtils {
     }
 
     public static void sendRPEventMessage(
-            @NotNull Player player,
-            @NotNull Component action,
-            @NotNull RolePlayActionType rolePlayActionType
+            final @NotNull Player player,
+            final @NotNull Component action,
+            final @NotNull RolePlayActionType rolePlayActionType
     ) {
         sendRPEventMessage(player, Component.empty(), action, rolePlayActionType);
     }
@@ -248,16 +248,16 @@ public final class MessageUtils {
      * @param killer killer player
      */
     public static void sendDeathMessage(
-            @NotNull Player killed,
-            @Nullable Player killer
+            final @NotNull Player killed,
+            final @Nullable Player killer
     ) {
-        Config config = MSEssentials.getConfiguration();
-        Location deathLocation = killed.getLocation();
-        PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(killed);
-        PlayerInfo killerInfo = killer != null
+        final Config config = MSEssentials.getConfiguration();
+        final Location deathLocation = killed.getLocation();
+        final PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(killed);
+        final PlayerInfo killerInfo = killer != null
                         ? PlayerInfo.fromOnlinePlayer(killer)
                         : null;
-        Component deathMessage = killerInfo != null
+        final Component deathMessage = killerInfo != null
                 ? space()
                 .append(killerInfo.getGoldenName()
                 .append(space()))
@@ -270,7 +270,7 @@ public final class MessageUtils {
                 .append(space()))
                 .append(killedInfo.getPlayerFile().getPronouns().getDeathMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
-        String stringDeathMessage = ChatUtils.serializeLegacyComponent(deathMessage);
+        final String stringDeathMessage = ChatUtils.serializeLegacyComponent(deathMessage);
 
         killedInfo.setLastDeathLocation(deathLocation);
         sendGlobalMessage(deathMessage);
@@ -300,21 +300,21 @@ public final class MessageUtils {
      *
      * @param playerInfo playerInfo
      */
-    public static void sendJoinMessage(@NotNull PlayerInfo playerInfo) {
-        Player player = playerInfo.getOnlinePlayer();
+    public static void sendJoinMessage(final @NotNull PlayerInfo playerInfo) {
+        final Player player = playerInfo.getOnlinePlayer();
 
         if (
                 !playerInfo.isOnline(true)
                 || player == null
         ) return;
 
-        Config config = MSEssentials.getConfiguration();
-        Component joinMessage = space()
+        final Config config = MSEssentials.getConfiguration();
+        final Component joinMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
                 .append(playerInfo.getPlayerFile().getPronouns().getJoinMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
-        String stringJoinMessage = ChatUtils.serializeLegacyComponent(joinMessage);
+        final String stringJoinMessage = ChatUtils.serializeLegacyComponent(joinMessage);
 
         sendGlobalMessage(joinMessage);
         MSCore.getInstance().runTaskAsync(() -> {
@@ -331,17 +331,18 @@ public final class MessageUtils {
      * @param player     player
      */
     public static void sendQuitMessage(
-            @NotNull PlayerInfo playerInfo,
-            @NotNull Player player
+            final @NotNull PlayerInfo playerInfo,
+            final @NotNull Player player
     ) {
         if (!playerInfo.isOnline()) return;
-        Config config = MSEssentials.getConfiguration();
-        Component quitMessage = space()
+
+        final Config config = MSEssentials.getConfiguration();
+        final Component quitMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
                 .append(playerInfo.getPlayerFile().getPronouns().getQuitMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
-        String stringQuitMessage = ChatUtils.serializeLegacyComponent(quitMessage);
+        final String stringQuitMessage = ChatUtils.serializeLegacyComponent(quitMessage);
 
         sendGlobalMessage(quitMessage);
         MSCore.getInstance().runTaskAsync(() -> {
@@ -351,7 +352,7 @@ public final class MessageUtils {
         MSLogger.info(quitMessage);
     }
 
-    public static @NotNull MessageEmbed craftEmbed(@NotNull String description) {
+    public static @NotNull MessageEmbed craftEmbed(final @NotNull String description) {
         return new MessageEmbed(
                 null,
                 LanguageFile.renderTranslation("ms.discord.embed.title"),
@@ -375,10 +376,10 @@ public final class MessageUtils {
     }
 
     private static void sendActionMessage(
-            @NotNull Player player,
-            TextChannel textChannel,
-            @NotNull String actionMessage,
-            int colorRaw
+            final @NotNull Player player,
+            final TextChannel textChannel,
+            final @NotNull String actionMessage,
+            final int colorRaw
     ) {
         if (DiscordUtil.getJda() == null) return;
         DiscordUtil.queueMessage(

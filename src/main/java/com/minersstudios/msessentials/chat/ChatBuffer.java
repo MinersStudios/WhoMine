@@ -21,7 +21,7 @@ import static net.kyori.adventure.text.Component.text;
 public class ChatBuffer {
 
     public static void receiveMessage(
-            @NotNull Player player,
+            final @NotNull Player player,
             @NotNull String message
     ) {
         if (message.length() <= 30) {
@@ -57,11 +57,11 @@ public class ChatBuffer {
     }
 
     private static void queueMessage(
-            @NotNull Player player,
-            @NotNull String message
+            final @NotNull Player player,
+            final @NotNull String message
     ) {
-        var chatQueue = getCache().chatQueue;
-        UUID uuid = player.getUniqueId();
+        final var chatQueue = getCache().chatQueue;
+        final UUID uuid = player.getUniqueId();
 
         if (!chatQueue.containsKey(uuid)) {
             chatQueue.put(uuid, new LinkedList<>());
@@ -72,12 +72,12 @@ public class ChatBuffer {
     }
 
     private static void scheduleMessageUpdate(
-            @NotNull Player player,
-            @NotNull UUID uuid,
-            int delay
+            final @NotNull Player player,
+            final @NotNull UUID uuid,
+            final int delay
     ) {
         MSEssentials.getInstance().runTaskLater(() -> {
-            var chatQueue = getCache().chatQueue;
+            final var chatQueue = getCache().chatQueue;
 
             if (
                     !player.isOnline()
@@ -85,7 +85,7 @@ public class ChatBuffer {
             ) {
                 chatQueue.remove(uuid);
             } else {
-                String message = chatQueue.get(uuid).poll();
+                final String message = chatQueue.get(uuid).poll();
                 if (message == null) return;
                 scheduleMessageUpdate(player, uuid, spawnMessage(player, message) + 5);
             }
@@ -93,11 +93,11 @@ public class ChatBuffer {
     }
 
     public static int spawnMessage(
-            @NotNull Player player,
-            @NotNull String message
+            final @NotNull Player player,
+            final @NotNull String message
     ) {
-        String[] chatLines = message.split("\n");
-        int duration = (message.length() + (17 * chatLines.length)) * 1200 / 800;
+        final String[] chatLines = message.split("\n");
+        final int duration = (message.length() + (17 * chatLines.length)) * 1200 / 800;
         Entity vehicle = player;
 
         for (int i = chatLines.length - 1; i >= 0; i--) {
@@ -108,11 +108,11 @@ public class ChatBuffer {
     }
 
     private static @NotNull AreaEffectCloud spawnNameTag(
-            @NotNull Entity vehicle,
-            @NotNull String text,
-            @NotNull Location spawnPoint,
-            int duration,
-            boolean firstLine
+            final @NotNull Entity vehicle,
+            final @NotNull String text,
+            final @NotNull Location spawnPoint,
+            final int duration,
+            final boolean firstLine
     ) {
         return spawnPoint.getWorld().spawn(spawnPoint, AreaEffectCloud.class, entity -> {
             entity.customName(

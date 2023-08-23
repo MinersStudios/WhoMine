@@ -29,7 +29,7 @@ public class ConfigurationException extends Exception {
      *                (which is saved for later retrieval
      *                by the {@link #getMessage()} method)
      */
-    public ConfigurationException(@NotNull String message) {
+    public ConfigurationException(final @NotNull String message) {
         super(message);
     }
 
@@ -47,8 +47,8 @@ public class ConfigurationException extends Exception {
      *                that the cause is nonexistent or unknown)
      */
     public ConfigurationException(
-            @NotNull String message,
-            @Nullable Throwable cause
+            final @NotNull String message,
+            final @Nullable Throwable cause
     ) {
         super(message, cause);
     }
@@ -64,7 +64,7 @@ public class ConfigurationException extends Exception {
      *              (A null value is permitted, and indicates
      *              that the cause is nonexistent or unknown)
      */
-    public ConfigurationException(@Nullable Throwable cause) {
+    public ConfigurationException(final @Nullable Throwable cause) {
         super(cause);
     }
 }

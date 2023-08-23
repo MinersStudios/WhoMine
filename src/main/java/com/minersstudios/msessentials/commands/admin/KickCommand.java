@@ -48,25 +48,25 @@ public class KickCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length == 0) return false;
 
-        Component reason = args.length > 1
+        final Component reason = args.length > 1
                 ? text(ChatUtils.extractMessage(args, 1))
                 : LanguageFile.renderTranslationComponent("ms.command.kick.default_reason");
 
-        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
             return true;
         }
 
-        Player player = playerInfo.getOnlinePlayer();
+        final Player player = playerInfo.getOnlinePlayer();
 
         if (player == null) {
             MSLogger.warning(sender, PLAYER_NOT_ONLINE);
@@ -87,10 +87,10 @@ public class KickCommand implements MSCommandExecutor {
 
     @Override
     public @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         return args.length == 1
                 ? MSPlayerUtils.getLocalPlayerNames()

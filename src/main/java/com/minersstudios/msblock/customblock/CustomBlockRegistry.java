@@ -122,7 +122,7 @@ public final class CustomBlockRegistry {
      *         associated with any custom block data
      * @see #HASH_CODE_MAP
      */
-    public static @NotNull Optional<CustomBlockData> fromHashCode(int hashCode) {
+    public static @NotNull Optional<CustomBlockData> fromHashCode(final int hashCode) {
         return Optional.ofNullable(HASH_CODE_MAP.get(hashCode));
     }
 
@@ -139,7 +139,7 @@ public final class CustomBlockRegistry {
      * @see #KEY_MAP
      * @see #fromHashCode(int)
      */
-    public static @NotNull Optional<CustomBlockData> fromKey(@Nullable String key) {
+    public static @NotNull Optional<CustomBlockData> fromKey(final @Nullable String key) {
         return StringUtils.isBlank(key)
                 ? Optional.empty()
                 : Optional.ofNullable(KEY_MAP.get(key.toLowerCase(Locale.ENGLISH)))
@@ -164,8 +164,8 @@ public final class CustomBlockRegistry {
      *         is not associated with any custom block data
      * @see #fromNoteBlock(NoteBlock)
      */
-    public static @NotNull Optional<CustomBlockData> fromBlockData(@NotNull BlockData blockData) {
-        return blockData instanceof NoteBlock noteBlock
+    public static @NotNull Optional<CustomBlockData> fromBlockData(final @NotNull BlockData blockData) {
+        return blockData instanceof final NoteBlock noteBlock
                 ? fromNoteBlock(noteBlock)
                 : Optional.empty();
     }
@@ -184,7 +184,7 @@ public final class CustomBlockRegistry {
      * @see NoteBlockData#fromNoteBlock(NoteBlock)
      * @see #fromNoteBlockData(NoteBlockData)
      */
-    public static @NotNull Optional<CustomBlockData> fromNoteBlock(@NotNull NoteBlock noteBlock) {
+    public static @NotNull Optional<CustomBlockData> fromNoteBlock(final @NotNull NoteBlock noteBlock) {
         return fromNoteBlockData(NoteBlockData.fromNoteBlock(noteBlock));
     }
 
@@ -201,7 +201,7 @@ public final class CustomBlockRegistry {
      * @see NoteBlockData#hashCode()
      * @see #fromHashCode(int)
      */
-    public static @NotNull Optional<CustomBlockData> fromNoteBlockData(@NotNull NoteBlockData noteBlockData) {
+    public static @NotNull Optional<CustomBlockData> fromNoteBlockData(final @NotNull NoteBlockData noteBlockData) {
         return fromHashCode(noteBlockData.hashCode());
     }
 
@@ -218,9 +218,9 @@ public final class CustomBlockRegistry {
      * @see #TYPE_NAMESPACED_KEY
      * @see #fromKey(String)
      */
-    public static @NotNull Optional<CustomBlockData> fromItemStack(@Nullable ItemStack itemStack) {
+    public static @NotNull Optional<CustomBlockData> fromItemStack(final @Nullable ItemStack itemStack) {
         if (itemStack == null) return Optional.empty();
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) return Optional.empty();
         return fromKey(
                 itemMeta.getPersistentDataContainer().get(TYPE_NAMESPACED_KEY, PersistentDataType.STRING)
@@ -231,7 +231,7 @@ public final class CustomBlockRegistry {
      * @param hashCode The hash code of the note block data to check
      * @return True if the {@link #HASH_CODE_MAP} contains the hash code
      */
-    public static boolean containsHashCode(int hashCode) {
+    public static boolean containsHashCode(final int hashCode) {
         return HASH_CODE_MAP.containsKey(hashCode);
     }
 
@@ -241,7 +241,7 @@ public final class CustomBlockRegistry {
      *         and key is not blank or null (case-insensitive)
      */
     @Contract("null -> false")
-    public static boolean containsKey(@Nullable String key) {
+    public static boolean containsKey(final @Nullable String key) {
         return StringUtils.isNotBlank(key)
                 && KEY_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
@@ -252,19 +252,19 @@ public final class CustomBlockRegistry {
      *         of the note block data associated with the custom block data
      */
     @Contract("null -> false")
-    public static boolean containsCustomBlockData(@Nullable CustomBlockData customBlockData) {
+    public static boolean containsCustomBlockData(final @Nullable CustomBlockData customBlockData) {
         if (customBlockData == null) return false;
 
-        PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
+        final PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
 
-        if (placingType instanceof PlacingType.Default normal) {
+        if (placingType instanceof final PlacingType.Default normal) {
             return containsHashCode(normal.getNoteBlockData().hashCode());
-        } else if (placingType instanceof PlacingType.Directional directional) {
-            for (var noteBlockData : directional.getMap().values()) {
+        } else if (placingType instanceof final PlacingType.Directional directional) {
+            for (final var noteBlockData : directional.getMap().values()) {
                 if (containsHashCode(noteBlockData.hashCode())) return true;
             }
-        } else if (placingType instanceof PlacingType.Orientable orientable) {
-            for (var noteBlockData : orientable.getMap().values()) {
+        } else if (placingType instanceof final PlacingType.Orientable orientable) {
+            for (final var noteBlockData : orientable.getMap().values()) {
                 if (containsHashCode(noteBlockData.hashCode())) return true;
             }
         } else {
@@ -283,7 +283,7 @@ public final class CustomBlockRegistry {
      * @see #fromItemStack(ItemStack)
      */
     @Contract("null -> false")
-    public static boolean isCustomBlock(@Nullable ItemStack itemStack) {
+    public static boolean isCustomBlock(final @Nullable ItemStack itemStack) {
         return itemStack != null
                 && fromItemStack(itemStack).isPresent();
     }
@@ -298,7 +298,7 @@ public final class CustomBlockRegistry {
      * @see #isCustomBlock(BlockData)
      */
     @Contract("null -> false")
-    public static boolean isCustomBlock(@Nullable Block block) {
+    public static boolean isCustomBlock(final @Nullable Block block) {
         return block != null
                 && isCustomBlock(block.getBlockData());
     }
@@ -313,7 +313,7 @@ public final class CustomBlockRegistry {
      * @see #fromNoteBlock(NoteBlock)
      */
     @Contract("null -> false")
-    public static boolean isCustomBlock(@Nullable BlockData blockData) {
+    public static boolean isCustomBlock(final @Nullable BlockData blockData) {
         return blockData instanceof NoteBlock noteBlock
                 && fromNoteBlock(noteBlock).isPresent();
     }
@@ -354,17 +354,17 @@ public final class CustomBlockRegistry {
      * @see #KEY_MAP
      * @see #HASH_CODE_MAP
      */
-    public static void register(@NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
-        String key = customBlockData.getKey();
-        PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
+    public static void register(final @NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
+        final String key = customBlockData.getKey();
+        final PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
 
-        if (placingType instanceof PlacingType.Default normal) {
+        if (placingType instanceof final PlacingType.Default normal) {
             register(
                     customBlockData,
                     normal.getNoteBlockData().hashCode(),
                     key
             );
-        } else if (placingType instanceof PlacingType.Directional directional) {
+        } else if (placingType instanceof final PlacingType.Directional directional) {
             directional.getMap().forEach(
                     (blockFace, data) -> register(
                             customBlockData,
@@ -372,7 +372,7 @@ public final class CustomBlockRegistry {
                             key
                     )
             );
-        } else if (placingType instanceof PlacingType.Orientable orientable) {
+        } else if (placingType instanceof final PlacingType.Orientable orientable) {
             orientable.getMap().forEach(
                     (blockAxis, data) -> register(
                             customBlockData,
@@ -392,9 +392,9 @@ public final class CustomBlockRegistry {
      * @throws IllegalArgumentException If the key, or hash code
      *                                  is not registered
      */
-    public static void unregister(@NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
-        String key = customBlockData.getKey().toLowerCase(Locale.ENGLISH);
-        int hashCode = customBlockData.hashCode();
+    public static void unregister(final @NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
+        final String key = customBlockData.getKey().toLowerCase(Locale.ENGLISH);
+        final int hashCode = customBlockData.hashCode();
 
         Preconditions.checkArgument(containsKey(key), "The key " + key + " is not registered! See " + key + " custom block data!");
         Preconditions.checkArgument(containsHashCode(hashCode), "The hash code " + hashCode + " is not registered! See " + key + " custom block data!");
@@ -429,9 +429,9 @@ public final class CustomBlockRegistry {
      * @see #KEY_MAP
      */
     private static void register(
-            @NotNull CustomBlockData customBlockData,
-            int hashCode,
-            String key
+            final @NotNull CustomBlockData customBlockData,
+            final int hashCode,
+            final String key
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(!containsHashCode(hashCode), "The hash code " + hashCode + " is already registered! See " + key + " custom block data!");
 
@@ -439,7 +439,7 @@ public final class CustomBlockRegistry {
             Preconditions.checkArgument(!containsKey(key), "The key " + key + " is already registered! See " + key + " custom block data!");
         }
 
-        var hashKeys = KEY_MAP.computeIfAbsent(key, k -> new HashSet<>());
+        final var hashKeys = KEY_MAP.computeIfAbsent(key, k -> new HashSet<>());
 
         hashKeys.add(hashCode);
         HASH_CODE_MAP.put(hashCode, customBlockData);

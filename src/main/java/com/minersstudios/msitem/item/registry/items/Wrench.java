@@ -23,7 +23,7 @@ public class Wrench extends CustomItemImpl implements Damageable {
     static {
         KEY = "wrench";
         ITEM_STACK = new ItemStack(Material.IRON_SHOVEL);
-        ItemMeta meta = ITEM_STACK.getItemMeta();
+        final ItemMeta meta = ITEM_STACK.getItemMeta();
 
         meta.displayName(ChatUtils.createDefaultStyledText("Гаечный ключ"));
         meta.setCustomModelData(1);

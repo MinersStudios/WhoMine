@@ -17,13 +17,13 @@ public class PlayerEditBookListener extends AbstractMSListener {
     private static final Component ANONYMOUS_AUTHOR = translatable("ms.book.anonymous");
 
     @EventHandler
-    public void onPlayerEditBook(@NotNull PlayerEditBookEvent event) {
+    public void onPlayerEditBook(final @NotNull PlayerEditBookEvent event) {
         if (!event.isSigning()) return;
 
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(event.getPlayer());
-        BookMeta bookMeta = event.getNewBookMeta();
-        String title = bookMeta.getTitle();
-        boolean isAnon = title != null && title.startsWith("*");
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(event.getPlayer());
+        final BookMeta bookMeta = event.getNewBookMeta();
+        final String title = bookMeta.getTitle();
+        final boolean isAnon = title != null && title.startsWith("*");
 
         event.setNewBookMeta(bookMeta
                 .author(isAnon

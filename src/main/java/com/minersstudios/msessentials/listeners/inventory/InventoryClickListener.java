@@ -24,12 +24,12 @@ public class InventoryClickListener extends AbstractMSListener {
     private static final TranslatableComponent REMOVED_ITEM = translatable("ms.info.player_item_removed");
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onInventoryClick(@NotNull InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        Inventory clickedInventory = event.getClickedInventory();
-        int slot = event.getSlot();
-        ItemStack cursorItem = event.getCursor();
-        ItemStack currentItem = event.getCurrentItem();
+    public void onInventoryClick(final @NotNull InventoryClickEvent event) {
+        final Player player = (Player) event.getWhoClicked();
+        final Inventory clickedInventory = event.getClickedInventory();
+        final int slot = event.getSlot();
+        final ItemStack cursorItem = event.getCursor();
+        final ItemStack currentItem = event.getCurrentItem();
 
         if (clickedInventory == null) return;
 
@@ -53,7 +53,7 @@ public class InventoryClickListener extends AbstractMSListener {
             boolean remove = currentItem.getType() == Material.BEDROCK;
 
             if (!remove) {
-                for (var enchantment : currentItem.getEnchantments().keySet()) {
+                for (final var enchantment : currentItem.getEnchantments().keySet()) {
                     remove = currentItem.getEnchantmentLevel(enchantment) > enchantment.getMaxLevel();
                 }
             }

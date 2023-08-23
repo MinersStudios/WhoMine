@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 public class InventoryCloseListener extends AbstractMSListener {
 
     @EventHandler
-    public void onInventoryClose(@NotNull InventoryCloseEvent event) {
-        if (event.getInventory() instanceof CustomInventory customInventory) {
+    public void onInventoryClose(final @NotNull InventoryCloseEvent event) {
+        if (event.getInventory() instanceof final CustomInventory customInventory) {
             customInventory.doCloseAction(event);
         }
     }

@@ -14,8 +14,8 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerJoinListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+    public void onPlayerJoin(final @NotNull PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
 
         event.joinMessage(null);
 
@@ -29,8 +29,8 @@ public class PlayerJoinListener extends AbstractMSListener {
         }
     }
 
-    private void handle(@NotNull Player player) {
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+    private void handle(final @NotNull Player player) {
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         playerInfo.hideNameTag();
         player.displayName(playerInfo.getDefaultName());

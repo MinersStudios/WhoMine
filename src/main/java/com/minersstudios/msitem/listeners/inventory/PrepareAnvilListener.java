@@ -21,30 +21,30 @@ import org.jetbrains.annotations.NotNull;
 public class PrepareAnvilListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPrepareAnvil(@NotNull PrepareAnvilEvent event) {
-        ItemStack resultItem = event.getResult();
-        ItemStack firstItem = event.getInventory().getFirstItem();
-        String renameText = event.getInventory().getRenameText();
+    public void onPrepareAnvil(final @NotNull PrepareAnvilEvent event) {
+        final ItemStack resultItem = event.getResult();
+        final ItemStack firstItem = event.getInventory().getFirstItem();
+        final String renameText = event.getInventory().getRenameText();
 
         if (
                 resultItem == null
                 || firstItem == null
         ) return;
 
-        RenameableItem renameableItem = RenameableItemRegistry.fromRename(renameText, resultItem).orElse(null);
+        final RenameableItem renameableItem = RenameableItemRegistry.fromRename(renameText, resultItem).orElse(null);
 
         if (
                 renameableItem != null
                 && renameableItem.isWhiteListed((OfflinePlayer) event.getViewers().get(0))
         ) {
-            ItemStack renamedItem = renameableItem.craftRenamed(resultItem, renameText);
+            final ItemStack renamedItem = renameableItem.craftRenamed(resultItem, renameText);
 
             if (renamedItem != null) {
                 event.setResult(renamedItem);
             }
         } else {
-            ItemMeta meta = resultItem.getItemMeta();
-            var custom = MSCustomUtils.getCustom(firstItem).orElse(null);
+            final ItemMeta meta = resultItem.getItemMeta();
+            final var custom = MSCustomUtils.getCustom(firstItem).orElse(null);
             ItemStack customStack = null;
 
             if (custom == null) {
@@ -52,26 +52,26 @@ public class PrepareAnvilListener extends AbstractMSListener {
                 resultItem.setItemMeta(meta);
                 event.setResult(resultItem);
                 return;
-            } else if (custom instanceof CustomBlockData data) {
+            } else if (custom instanceof final CustomBlockData data) {
                 customStack = data.craftItemStack();
-            } else if (custom instanceof CustomItem item) {
+            } else if (custom instanceof final CustomItem item) {
                 customStack = item.getItem().clone();
-            } else if (custom instanceof CustomDecorData data) {
+            } else if (custom instanceof final CustomDecorData data) {
                 customStack = data.getItemStack().clone();
             }
 
             assert customStack != null;
 
-            ItemMeta customMeta = customStack.getItemMeta();
-            PersistentDataContainer container = meta.getPersistentDataContainer();
-            PersistentDataContainer dataContainer = customMeta.getPersistentDataContainer();
+            final ItemMeta customMeta = customStack.getItemMeta();
+            final PersistentDataContainer container = meta.getPersistentDataContainer();
+            final PersistentDataContainer dataContainer = customMeta.getPersistentDataContainer();
 
             meta.setCustomModelData(customMeta.getCustomModelData());
             meta.lore(customMeta.lore());
             container.getKeys().forEach(container::remove);
 
-            for (var key : dataContainer.getKeys()) {
-                String keyStr = dataContainer.get(key, PersistentDataType.STRING);
+            for (final var key : dataContainer.getKeys()) {
+                final String keyStr = dataContainer.get(key, PersistentDataType.STRING);
 
                 if (keyStr != null) {
                     container.set(key, PersistentDataType.STRING, keyStr);

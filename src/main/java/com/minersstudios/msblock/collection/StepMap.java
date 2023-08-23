@@ -40,7 +40,7 @@ public class StepMap {
      * @return The distance associated with the player,
      *         or 0.0 if the player is not found in the map
      */
-    public double get(@NotNull Player player) {
+    public double get(final @NotNull Player player) {
         return this.stepMap.getOrDefault(player, 0.0d);
     }
 
@@ -55,10 +55,10 @@ public class StepMap {
      *         or -1.0 if the player is not found in the map
      */
     public double put(
-            @NotNull Player player,
-            double distance
+            final @NotNull Player player,
+            final double distance
     ) {
-        Double previousDistance = this.stepMap.put(player, distance);
+        final Double previousDistance = this.stepMap.put(player, distance);
         return previousDistance == null ? -1.0d : previousDistance;
     }
 
@@ -70,8 +70,8 @@ public class StepMap {
      * @return The previous distance associated with the player,
      *         or -1.0 if the player is not found in the map
      */
-    public double remove(@NotNull Player player) {
-        Double previousDistance = this.stepMap.remove(player);
+    public double remove(final @NotNull Player player) {
+        final Double previousDistance = this.stepMap.remove(player);
         return previousDistance == null ? -1.0d : previousDistance;
     }
 
@@ -89,10 +89,10 @@ public class StepMap {
      * @see #isFinalStep(double)
      */
     public boolean addDistance(
-            @NotNull Player player,
-            double distance
+            final @NotNull Player player,
+            final double distance
     ) {
-        double newDistance = this.get(player) + distance;
+        final double newDistance = this.get(player) + distance;
 
         if (isFinalStep(newDistance)) {
             this.stepMap.remove(player);
@@ -109,7 +109,7 @@ public class StepMap {
      * @param player The player to check
      * @return True if the player is present in the StepMap
      */
-    public boolean contains(@NotNull Player player) {
+    public boolean contains(final @NotNull Player player) {
         return this.stepMap.containsKey(player);
     }
 
@@ -141,7 +141,7 @@ public class StepMap {
      *         step threshold
      * @see #FINAL_STEP
      */
-    public static boolean isFinalStep(double distance) {
+    public static boolean isFinalStep(final double distance) {
         return distance >= FINAL_STEP;
     }
 }

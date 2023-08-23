@@ -17,13 +17,13 @@ import org.jetbrains.annotations.NotNull;
 public class InventoryClickListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onInventoryClick(@NotNull InventoryClickEvent event) {
-        Inventory clickedInventory = event.getClickedInventory();
-        ClickType clickType = event.getClick();
+    public void onInventoryClick(final @NotNull InventoryClickEvent event) {
+        final Inventory clickedInventory = event.getClickedInventory();
+        final ClickType clickType = event.getClick();
 
         if (
                 clickedInventory == null
-                || !(event.getView().getTopInventory() instanceof CustomInventory customInventory)
+                || !(event.getView().getTopInventory() instanceof final CustomInventory customInventory)
         ) return;
 
         if (
@@ -34,7 +34,7 @@ public class InventoryClickListener extends AbstractMSListener {
         }
 
         if (clickedInventory instanceof CustomInventory) {
-            InventoryButton inventoryButton = customInventory.buttonAt(event.getSlot());
+            final InventoryButton inventoryButton = customInventory.buttonAt(event.getSlot());
 
             if (inventoryButton != null) {
                 inventoryButton.doClickAction(event, customInventory);

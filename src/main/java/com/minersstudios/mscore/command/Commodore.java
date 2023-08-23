@@ -66,18 +66,21 @@ public final class Commodore {
      *
      * @param plugin Plugin to register Commodore for
      */
-    public Commodore(@NotNull Plugin plugin) {
+    public Commodore(final @NotNull Plugin plugin) {
         this.pluginName = plugin.getName().toLowerCase().trim();
 
         plugin.getServer().getPluginManager().registerEvents(new Listener() {
+
             @SuppressWarnings({"UnstableApiUsage"})
             @EventHandler
-            public void onPlayerSendCommandsEvent(@NotNull AsyncPlayerSendCommandsEvent<?> event) {
+            public void onPlayerSendCommandsEvent(final @NotNull AsyncPlayerSendCommandsEvent<?> event) {
                 if (event.isAsynchronous() || !event.hasFiredAsync()) {
-                    Player player = event.getPlayer();
-                    var commandNode = event.getCommandNode();
+                    final Player player = event.getPlayer();
+                    final var commandNode = event.getCommandNode();
 
-                    Commodore.this.commands.forEach(command -> command.apply(player, commandNode));
+                    Commodore.this.commands.forEach(
+                            command -> command.apply(player, commandNode)
+                    );
                 }
             }
         }, plugin);
@@ -92,23 +95,23 @@ public final class Commodore {
      */
     @SuppressWarnings("unchecked")
     public void register(
-            @NotNull PluginCommand command,
-            @NotNull LiteralCommandNode<?> node,
-            @NotNull Predicate<? super CommandSender> permissionTest
+            final @NotNull PluginCommand command,
+            final @NotNull LiteralCommandNode<?> node,
+            final @NotNull Predicate<? super CommandSender> permissionTest
     ) {
         setFields(node, SUGGESTION_PROVIDER);
 
         var aliases = this.getAliases(command);
-
-        if (!aliases.contains(node.getLiteral())) {
-            node = renameLiteralNode(node, command.getName());
-        }
+        var commandNode =
+                aliases.contains(node.getLiteral())
+                ? node
+                : renameLiteralNode(node, command.getName());
 
         for (var alias : aliases) {
-            var targetNode = node.getLiteral().equals(alias)
-                    ? node
+            var targetNode = commandNode.getLiteral().equals(alias)
+                    ? commandNode
                     : literal(alias)
-                    .redirect((CommandNode<Object>) node)
+                    .redirect((CommandNode<Object>) commandNode)
                     .build();
 
             this.commands.add(new Command(targetNode, permissionTest));
@@ -123,20 +126,20 @@ public final class Commodore {
      * @param command Command to get aliases for
      * @return Aliases of the command
      */
-    private @NotNull List<String> getAliases(@NotNull PluginCommand command) {
-        var aliases = new ArrayList<String>();
+    private @NotNull List<String> getAliases(final @NotNull PluginCommand command) {
+        final var aliases = new ArrayList<String>();
 
         aliases.add(command.getLabel());
         aliases.addAll(command.getAliases());
 
-        for (var alias : new ArrayList<>(aliases)) {
+        for (final var alias : new ArrayList<>(aliases)) {
             aliases.add(alias);
             aliases.add(this.pluginName + ":" + alias);
         }
 
         var distinctAliases = new ArrayList<String>();
 
-        for (var alias : aliases) {
+        for (final var alias : aliases) {
             if (!distinctAliases.contains(alias)) {
                 distinctAliases.add(alias);
             }
@@ -152,8 +155,8 @@ public final class Commodore {
      * @param name Name of the child
      */
     private static void removeChild(
-            @NotNull RootCommandNode<?> root,
-            @NotNull String name
+            final @NotNull RootCommandNode<?> root,
+            final @NotNull String name
     ) {
         try {
             ((Map<?, ?>) CHILDREN_FIELD.get(root)).remove(name);
@@ -172,8 +175,8 @@ public final class Commodore {
      * @param suggestionProvider Suggestion provider
      */
     private static void setFields(
-            @NotNull CommandNode<?> node,
-            @Nullable SuggestionProvider<?> suggestionProvider
+            final @NotNull CommandNode<?> node,
+            final @Nullable SuggestionProvider<?> suggestionProvider
     ) {
         try {
             COMMAND_EXECUTE_FUNCTION_FIELD.set(node, COMMAND);
@@ -188,7 +191,7 @@ public final class Commodore {
             throw new RuntimeException("Failed to set fields", e);
         }
 
-        for (var child : node.getChildren()) {
+        for (final var child : node.getChildren()) {
             setFields(child, suggestionProvider);
         }
     }
@@ -201,10 +204,10 @@ public final class Commodore {
      * @return Command node with the new literal
      */
     private static <S> @NotNull LiteralCommandNode<S> renameLiteralNode(
-            @NotNull LiteralCommandNode<S> node,
-            @NotNull String literal
+            final @NotNull LiteralCommandNode<S> node,
+            final @NotNull String literal
     ) {
-        var clone = new LiteralCommandNode<>(
+        final var clone = new LiteralCommandNode<>(
                 literal,
                 node.getCommand(),
                 node.getRequirement(),
@@ -233,10 +236,11 @@ public final class Commodore {
          */
         @SuppressWarnings({"unchecked"})
         public <S> void apply(
-                @NotNull CommandSender sender,
-                @NotNull RootCommandNode<S> root
+                final @NotNull CommandSender sender,
+                final @NotNull RootCommandNode<S> root
         ) {
             if (!this.permissionTest.test(sender)) return;
+
             removeChild(root, this.node.getName());
             root.addChild((CommandNode<S>) this.node);
         }

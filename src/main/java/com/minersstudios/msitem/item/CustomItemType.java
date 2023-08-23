@@ -61,10 +61,10 @@ public enum CustomItemType {
     private static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new ConcurrentHashMap<>();
 
     static {
-        var recipesToRegister = new ArrayList<CustomItem>();
+        final var recipesToRegister = new ArrayList<CustomItem>();
 
-        for (var registry : values()) {
-            CustomItem customItem;
+        for (final var registry : values()) {
+            final CustomItem customItem;
 
             try {
                 customItem = registry.getClazz().getDeclaredConstructor().newInstance();
@@ -73,7 +73,7 @@ public enum CustomItemType {
                 continue;
             }
 
-            if (customItem instanceof Damageable damageable) {
+            if (customItem instanceof final Damageable damageable) {
                 damageable.buildDamageable().saveForItemStack(customItem.getItem());
             }
 
@@ -83,7 +83,7 @@ public enum CustomItemType {
             recipesToRegister.add(customItem);
         }
 
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
         executor.scheduleAtFixedRate(() -> {
             if (MSPluginUtils.isLoadedCustoms()) {
@@ -100,7 +100,7 @@ public enum CustomItemType {
      * @param clazz The associated class that implements
      *              the CustomItem interface
      */
-    CustomItemType(@NotNull Class<? extends CustomItem> clazz) {
+    CustomItemType(final @NotNull Class<? extends CustomItem> clazz) {
         this.clazz = clazz;
     }
 
@@ -126,8 +126,8 @@ public enum CustomItemType {
      * @throws IllegalArgumentException If the custom item instance cannot
      *                                  be cast to the specified class
      */
-    public <T extends CustomItem> @NotNull T getCustomItem(@NotNull Class<T> clazz) throws IllegalArgumentException {
-        CustomItem customItem = CLASS_TO_ITEM_MAP.get(this.clazz);
+    public <T extends CustomItem> @NotNull T getCustomItem(final @NotNull Class<T> clazz) throws IllegalArgumentException {
+        final CustomItem customItem = CLASS_TO_ITEM_MAP.get(this.clazz);
 
         try {
             return clazz.cast(customItem);
@@ -176,7 +176,7 @@ public enum CustomItemType {
      * @see #KEY_TO_TYPE_MAP
      * @see #fromKey(String, Class)
      */
-    public static @NotNull Optional<CustomItem> fromKey(@Nullable String key) {
+    public static @NotNull Optional<CustomItem> fromKey(final @Nullable String key) {
         return fromKey(key, CustomItem.class);
     }
 
@@ -198,15 +198,15 @@ public enum CustomItemType {
      * @see #typeOf(String)
      */
     public static <T extends CustomItem> @NotNull Optional<T> fromKey(
-            @Nullable String key,
-            @Nullable Class<T> clazz
+            final @Nullable String key,
+            final @Nullable Class<T> clazz
     ) {
         if (
                 key == null
                 || clazz == null
         ) return Optional.empty();
 
-        CustomItemType type = typeOf(key);
+        final CustomItemType type = typeOf(key);
         return type != null
                 && clazz.isInstance(type.getCustomItem())
                 ? Optional.of(type.getCustomItem(clazz))
@@ -225,7 +225,7 @@ public enum CustomItemType {
      *         associated with any custom item
      * @see #CLASS_TO_ITEM_MAP
      */
-    public static <T extends CustomItem> @NotNull Optional<T> fromClass(@Nullable Class<T> clazz) {
+    public static <T extends CustomItem> @NotNull Optional<T> fromClass(final @Nullable Class<T> clazz) {
         return clazz == null
                 ? Optional.empty()
                 : Optional.ofNullable(clazz.cast(CLASS_TO_ITEM_MAP.get(clazz)));
@@ -244,7 +244,7 @@ public enum CustomItemType {
      *         air item stack
      * @see #fromItemStack(ItemStack, Class)
      */
-    public static @NotNull Optional<CustomItem> fromItemStack(@Nullable ItemStack itemStack) {
+    public static @NotNull Optional<CustomItem> fromItemStack(final @Nullable ItemStack itemStack) {
         return fromItemStack(itemStack, CustomItem.class);
     }
 
@@ -264,15 +264,15 @@ public enum CustomItemType {
      * @see #fromKey(String, Class)
      */
     public static <T extends CustomItem> @NotNull Optional<T> fromItemStack(
-            @Nullable ItemStack itemStack,
-            @Nullable Class<T> clazz
+            final @Nullable ItemStack itemStack,
+            final @Nullable Class<T> clazz
     ) {
         if (
                 itemStack == null
                 || clazz == null
         ) return Optional.empty();
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         return itemMeta == null
                 ? Optional.empty()
                 : fromKey(
@@ -292,7 +292,7 @@ public enum CustomItemType {
      * @see #KEY_TO_TYPE_MAP
      */
     @Contract("null -> null")
-    public static @Nullable CustomItemType typeOf(@Nullable String key) {
+    public static @Nullable CustomItemType typeOf(final @Nullable String key) {
         return StringUtils.isBlank(key)
                 ? null
                 : KEY_TO_TYPE_MAP.get(key.toLowerCase(Locale.ENGLISH));
@@ -308,7 +308,7 @@ public enum CustomItemType {
      * @see #CLASS_TO_TYPE_MAP
      */
     @Contract("null -> null")
-    public static @Nullable CustomItemType typeOf(@Nullable Class<? extends CustomItem> clazz) {
+    public static @Nullable CustomItemType typeOf(final @Nullable Class<? extends CustomItem> clazz) {
         return clazz == null
                 ? null
                 : CLASS_TO_TYPE_MAP.get(clazz);
@@ -327,10 +327,10 @@ public enum CustomItemType {
      * @see #typeOf(String)
      */
     @Contract("null -> null")
-    public static @Nullable CustomItemType typeOf(@Nullable ItemStack itemStack) {
+    public static @Nullable CustomItemType typeOf(final @Nullable ItemStack itemStack) {
         if (itemStack == null) return null;
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         return itemMeta == null
                 ? null
                 : typeOf(
@@ -343,7 +343,7 @@ public enum CustomItemType {
      * @return True if the {@link #KEY_TO_TYPE_MAP} contains the given key
      */
     @Contract("null -> false")
-    public static boolean containsKey(@Nullable String key) {
+    public static boolean containsKey(final @Nullable String key) {
         return StringUtils.isNotBlank(key)
                 && KEY_TO_TYPE_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
@@ -353,7 +353,7 @@ public enum CustomItemType {
      * @return True if the {@link #CLASS_TO_TYPE_MAP} contains the given class
      */
     @Contract("null -> false")
-    public static boolean containsClass(@Nullable Class<? extends CustomItem> clazz) {
+    public static boolean containsClass(final @Nullable Class<? extends CustomItem> clazz) {
         return clazz != null
                 && CLASS_TO_TYPE_MAP.containsKey(clazz);
     }
@@ -367,7 +367,7 @@ public enum CustomItemType {
      * @see #fromItemStack(ItemStack)
      */
     @Contract("null -> false")
-    public static boolean isCustomItem(@Nullable ItemStack itemStack) {
+    public static boolean isCustomItem(final @Nullable ItemStack itemStack) {
         return fromItemStack(itemStack).isPresent();
     }
 }

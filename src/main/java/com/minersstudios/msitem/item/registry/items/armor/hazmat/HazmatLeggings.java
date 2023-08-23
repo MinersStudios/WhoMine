@@ -26,7 +26,7 @@ public class HazmatLeggings extends CustomItemImpl implements Damageable {
     static {
         KEY = "hazmat_leggings";
         ITEM_STACK = new ItemStack(Material.LEATHER_LEGGINGS);
-        LeatherArmorMeta meta = (LeatherArmorMeta) ITEM_STACK.getItemMeta();
+        final LeatherArmorMeta meta = (LeatherArmorMeta) ITEM_STACK.getItemMeta();
 
         meta.displayName(ChatUtils.createDefaultStyledText("Антирадиационные штаны"));
         meta.setCustomModelData(1);

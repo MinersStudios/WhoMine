@@ -28,14 +28,14 @@ public class AdminBanInfoCommand {
     private static final TranslatableComponent BAN_INFO_SET_TIME_TO_FORMAT = translatable("ms.command.player.ban_info.set.time_to");
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            String @NotNull [] args,
-            @NotNull PlayerInfo playerInfo
+            final @NotNull CommandSender sender,
+            final String @NotNull [] args,
+            final @NotNull PlayerInfo playerInfo
     ) {
-        boolean banned = playerInfo.isBanned();
-        boolean haveArg = args.length >= 4;
-        String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
-        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
+        final boolean banned = playerInfo.isBanned();
+        final boolean haveArg = args.length >= 4;
+        final String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
+        final String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
             MSLogger.fine(
@@ -82,7 +82,7 @@ public class AdminBanInfoCommand {
                     return true;
                 }
 
-                String reason = ChatUtils.extractMessage(args, 3);
+                final String reason = ChatUtils.extractMessage(args, 3);
 
                 playerInfo.setBanReason(reason);
                 MSLogger.fine(
@@ -108,16 +108,16 @@ public class AdminBanInfoCommand {
                     return true;
                 }
 
-                Instant instant = DateUtils.getDateFromString(paramArgString, false);
+                final Instant instant = DateUtils.getDateFromString(paramArgString, false);
 
                 if (instant == null) {
                     MSLogger.severe(sender, WRONG_FORMAT);
                     return true;
                 }
 
-                Date date = Date.from(instant);
-                BanList<PlayerProfile> banList = sender.getServer().getBanList(BanList.Type.PROFILE);
-                var banEntry = banList.getBanEntry(playerInfo.getPlayerProfile());
+                final Date date = Date.from(instant);
+                final BanList<PlayerProfile> banList = sender.getServer().getBanList(BanList.Type.PROFILE);
+                final var banEntry = banList.getBanEntry(playerInfo.getPlayerProfile());
 
                 playerInfo.setBannedTo(date);
 

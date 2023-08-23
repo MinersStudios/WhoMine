@@ -26,7 +26,7 @@ public class HazmatChestplate extends CustomItemImpl implements Damageable {
     static {
         KEY = "hazmat_chestplate";
         ITEM_STACK = new ItemStack(Material.LEATHER_CHESTPLATE);
-        LeatherArmorMeta meta = (LeatherArmorMeta) ITEM_STACK.getItemMeta();
+        final LeatherArmorMeta meta = (LeatherArmorMeta) ITEM_STACK.getItemMeta();
 
         meta.displayName(ChatUtils.createDefaultStyledText("Антирадиационная куртка"));
         meta.setCustomModelData(1);

@@ -98,7 +98,7 @@ public final class RenameableItemRegistry {
      *         associated with any renameable item
      * @see #KEY_MAP
      */
-    public static @NotNull Optional<RenameableItem> fromKey(@Nullable String key) {
+    public static @NotNull Optional<RenameableItem> fromKey(final @Nullable String key) {
         return StringUtils.isBlank(key)
                 ? Optional.empty()
                 : Optional.ofNullable(KEY_MAP.get(key.toLowerCase(Locale.ENGLISH)));
@@ -115,10 +115,10 @@ public final class RenameableItemRegistry {
      *         not associated with any renameable item
      * @see #RENAME_ENTRY_MAP
      */
-    public static @NotNull Optional<RenameableItem> fromRenameEntry(@Nullable RenameEntry renameEntry) {
+    public static @NotNull Optional<RenameableItem> fromRenameEntry(final @Nullable RenameEntry renameEntry) {
         if (renameEntry == null) return Optional.empty();
 
-        for (var entry : RENAME_ENTRY_MAP.entrySet()) {
+        for (final var entry : RENAME_ENTRY_MAP.entrySet()) {
             if (entry.getKey().equals(renameEntry)) return fromKey(entry.getValue());
         }
 
@@ -139,8 +139,8 @@ public final class RenameableItemRegistry {
      * @see #fromRenameEntry(RenameEntry)
      */
     public static @NotNull Optional<RenameableItem> fromRename(
-            @Nullable String rename,
-            @Nullable ItemStack itemStack
+            final @Nullable String rename,
+            final @Nullable ItemStack itemStack
     ) {
         return fromRenameEntry(RenameEntry.create(rename, itemStack));
     }
@@ -160,9 +160,9 @@ public final class RenameableItemRegistry {
      * @see #RENAMEABLE_NAMESPACED_KEY
      * @see #fromKey(String)
      */
-    public static @NotNull Optional<RenameableItem> fromItemStack(@Nullable ItemStack itemStack) {
+    public static @NotNull Optional<RenameableItem> fromItemStack(final @Nullable ItemStack itemStack) {
         if (itemStack == null) return Optional.empty();
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) return Optional.empty();
         return fromKey(
                 itemMeta.getPersistentDataContainer().get(RENAMEABLE_NAMESPACED_KEY, PersistentDataType.STRING)
@@ -175,7 +175,7 @@ public final class RenameableItemRegistry {
      *         and key is not blank or null (case-insensitive)
      */
     @Contract("null -> false")
-    public static boolean containsKey(@Nullable String key) {
+    public static boolean containsKey(final @Nullable String key) {
         return StringUtils.isNotBlank(key)
                 && KEY_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
@@ -186,7 +186,7 @@ public final class RenameableItemRegistry {
      *         rename entry and rename entry is not null
      */
     @Contract("null -> false")
-    public static boolean containsRenameEntry(@Nullable RenameEntry renameEntry) {
+    public static boolean containsRenameEntry(final @Nullable RenameEntry renameEntry) {
         return renameEntry != null
                 && RENAME_ENTRY_MAP.containsKey(renameEntry);
     }
@@ -201,8 +201,8 @@ public final class RenameableItemRegistry {
      */
     @Contract("null, null -> false")
     public static boolean containsRename(
-            @Nullable String rename,
-            @Nullable ItemStack itemStack
+            final @Nullable String rename,
+            final @Nullable ItemStack itemStack
     ) {
         return containsRenameEntry(RenameEntry.create(rename, itemStack));
     }
@@ -215,10 +215,10 @@ public final class RenameableItemRegistry {
      * @see #containsRename(String, ItemStack)
      */
     @Contract("null -> false")
-    public static boolean containsAnyFromSet(@Nullable RenameCollection renameCollection) {
+    public static boolean containsAnyFromSet(final @Nullable RenameCollection renameCollection) {
         if (renameCollection == null) return false;
 
-        for (var rename : renameCollection.entrySet()) {
+        for (final var rename : renameCollection.entrySet()) {
             if (containsRenameEntry(rename)) return true;
         }
 
@@ -231,7 +231,7 @@ public final class RenameableItemRegistry {
      *         item and renameable item is not null
      */
     @Contract("null -> false")
-    public static boolean containsRenameableItem(@Nullable RenameableItem renameableItem) {
+    public static boolean containsRenameableItem(final @Nullable RenameableItem renameableItem) {
         return renameableItem != null
                 && KEY_MAP.containsValue(renameableItem);
     }
@@ -245,7 +245,7 @@ public final class RenameableItemRegistry {
      * @see #fromItemStack(ItemStack)
      */
     @Contract("null -> false")
-    public static boolean isRenameableItem(@Nullable ItemStack itemStack) {
+    public static boolean isRenameableItem(final @Nullable ItemStack itemStack) {
         return fromItemStack(itemStack).isPresent();
     }
 
@@ -278,9 +278,9 @@ public final class RenameableItemRegistry {
      * @throws IllegalArgumentException If the key or any of the rename
      *                                  entries are already registered
      */
-    public static void register(@NotNull RenameableItem renameableItem) throws IllegalArgumentException {
-        String key = renameableItem.getKey();
-        RenameCollection renameCollection = renameableItem.getRenames();
+    public static void register(final @NotNull RenameableItem renameableItem) throws IllegalArgumentException {
+        final String key = renameableItem.getKey();
+        final RenameCollection renameCollection = renameableItem.getRenames();
 
         Preconditions.checkArgument(!containsKey(key), "Key " + key + " is already registered");
         Preconditions.checkArgument(!containsAnyFromSet(renameCollection), "Renames for key " + key + " are already registered");
@@ -299,9 +299,9 @@ public final class RenameableItemRegistry {
      * @throws IllegalArgumentException If the key or any of the rename
      *                                  entries are not registered
      */
-    public static void unregister(@NotNull RenameableItem renameableItem) throws IllegalArgumentException {
-        String key = renameableItem.getKey();
-        RenameCollection renameCollection = renameableItem.getRenames();
+    public static void unregister(final @NotNull RenameableItem renameableItem) throws IllegalArgumentException {
+        final String key = renameableItem.getKey();
+        final RenameCollection renameCollection = renameableItem.getRenames();
 
         Preconditions.checkArgument(containsKey(key), "Key " + key + " is not registered");
         Preconditions.checkArgument(containsAnyFromSet(renameCollection), "Renames for key " + key + " are not registered");

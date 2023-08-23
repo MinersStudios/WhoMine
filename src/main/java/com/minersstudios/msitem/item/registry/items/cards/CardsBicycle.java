@@ -142,12 +142,12 @@ public interface CardsBicycle {
     );
 
     private static @NotNull ItemStack createCardItem(
-            int customModelData,
-            @NotNull String name,
-            @NotNull String lore
+            final int customModelData,
+            final @NotNull String name,
+            final @NotNull String lore
     ) {
-        ItemStack itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemStack itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
+        final ItemMeta itemMeta = itemStack.getItemMeta();
 
         itemMeta.displayName(createDefaultStyledText(name));
         itemMeta.setCustomModelData(customModelData);
@@ -169,7 +169,7 @@ public interface CardsBicycle {
         static {
             KEY = "box_blue_1_card_box_bicycle";
             ITEM_STACK = new ItemStack(Material.BUNDLE);
-            BundleMeta bundleMeta = (BundleMeta) ITEM_STACK.getItemMeta();
+            final BundleMeta bundleMeta = (BundleMeta) ITEM_STACK.getItemMeta();
 
             bundleMeta.displayName(
                     createDefaultStyledText("Синяя колода карт ")
@@ -210,7 +210,7 @@ public interface CardsBicycle {
         static {
             KEY = "box_blue_2_card_box_bicycle";
             ITEM_STACK = new ItemStack(Material.BUNDLE);
-            BundleMeta bundleMeta = (BundleMeta) ITEM_STACK.getItemMeta();
+            final BundleMeta bundleMeta = (BundleMeta) ITEM_STACK.getItemMeta();
 
             bundleMeta.displayName(
                     createDefaultStyledText("Синяя колода карт ")
@@ -252,7 +252,7 @@ public interface CardsBicycle {
         static {
             KEY = "box_red_1_card_box_bicycle";
             ITEM_STACK = new ItemStack(Material.BUNDLE);
-            BundleMeta bundleMeta = (BundleMeta) ITEM_STACK.getItemMeta();
+            final BundleMeta bundleMeta = (BundleMeta) ITEM_STACK.getItemMeta();
 
             bundleMeta.displayName(
                     createDefaultStyledText("Красная колода карт ")
@@ -293,7 +293,7 @@ public interface CardsBicycle {
         static {
             KEY = "box_red_2_card_box_bicycle";
             ITEM_STACK = new ItemStack(Material.BUNDLE);
-            BundleMeta bundleMeta = (BundleMeta) ITEM_STACK.getItemMeta();
+            final BundleMeta bundleMeta = (BundleMeta) ITEM_STACK.getItemMeta();
 
             bundleMeta.displayName(
                     createDefaultStyledText("Красная колода карт ")

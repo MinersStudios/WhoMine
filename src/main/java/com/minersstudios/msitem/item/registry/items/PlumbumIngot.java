@@ -21,7 +21,7 @@ public class PlumbumIngot extends CustomItemImpl {
     static {
         KEY = "plumbum_ingot";
         ITEM_STACK = new ItemStack(Material.PAPER);
-        ItemMeta meta = ITEM_STACK.getItemMeta();
+        final ItemMeta meta = ITEM_STACK.getItemMeta();
 
         meta.displayName(ChatUtils.createDefaultStyledText("Свинцовый слиток"));
         meta.setCustomModelData(12000);
@@ -34,15 +34,15 @@ public class PlumbumIngot extends CustomItemImpl {
 
     @Override
     public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        ItemStack input = CustomItemType.RAW_PLUMBUM.getCustomItem().getItem();
-        FurnaceRecipe furnaceRecipe = new FurnaceRecipe(
+        final ItemStack input = CustomItemType.RAW_PLUMBUM.getCustomItem().getItem();
+        final FurnaceRecipe furnaceRecipe = new FurnaceRecipe(
                 new NamespacedKey(CustomItemType.NAMESPACE, "plumbum_ingot_furnace"),
                 this.itemStack,
                 new RecipeChoice.ExactChoice(input),
                 0.7f,
                 200
         );
-        BlastingRecipe blastingRecipe = new BlastingRecipe(
+        final BlastingRecipe blastingRecipe = new BlastingRecipe(
                 new NamespacedKey(CustomItemType.NAMESPACE, "plumbum_ingot_blast"),
                 this.itemStack,
                 new RecipeChoice.ExactChoice(input),
@@ -50,7 +50,7 @@ public class PlumbumIngot extends CustomItemImpl {
                 100
         );
 
-        var plumbumBlock = MSBlockUtils.getItemStack("plumbum_block");
+        final var plumbumBlock = MSBlockUtils.getItemStack("plumbum_block");
 
         if (plumbumBlock.isEmpty()) {
             MSLogger.warning("Can't find custom block with key: plumbum_block! Shaped recipe will not be registered!");

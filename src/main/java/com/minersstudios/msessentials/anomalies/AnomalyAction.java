@@ -31,8 +31,8 @@ public abstract class AnomalyAction {
      * @param percentage Percentage chance of completing action
      */
     protected AnomalyAction(
-            long time,
-            int percentage
+            final long time,
+            final int percentage
     ) {
         this.time = time;
         this.percentage = percentage;
@@ -46,8 +46,8 @@ public abstract class AnomalyAction {
      *                       if player has them and the action will be performed
      */
     public abstract void doAction(
-            @NotNull Player player,
-            @Nullable AnomalyIgnorableItems ignorableItems
+            final @NotNull Player player,
+            final @Nullable AnomalyIgnorableItems ignorableItems
     );
 
     /**
@@ -57,9 +57,9 @@ public abstract class AnomalyAction {
      * @return The previous action map associated with player,
      *         or null if there was no mapping for player
      */
-    public @Nullable Map<AnomalyAction, Long> putAction(@NotNull Player player) {
-        Cache cache = MSEssentials.getCache();
-        var actionMap = cache.playerAnomalyActionMap.getOrDefault(player, new ConcurrentHashMap<>());
+    public @Nullable Map<AnomalyAction, Long> putAction(final @NotNull Player player) {
+        final Cache cache = MSEssentials.getCache();
+        final var actionMap = cache.playerAnomalyActionMap.getOrDefault(player, new ConcurrentHashMap<>());
 
         actionMap.put(this, System.currentTimeMillis());
         return cache.playerAnomalyActionMap.put(player, actionMap);
@@ -71,9 +71,9 @@ public abstract class AnomalyAction {
      * @param player A player who has been influenced
      *               and from which the action will be removed
      */
-    public void removeAction(@NotNull Player player) {
-        Cache cache = MSEssentials.getCache();
-        var actionMap = cache.playerAnomalyActionMap.get(player);
+    public void removeAction(final @NotNull Player player) {
+        final Cache cache = MSEssentials.getCache();
+        final var actionMap = cache.playerAnomalyActionMap.get(player);
 
         if (actionMap != null) {
             actionMap.remove(this);

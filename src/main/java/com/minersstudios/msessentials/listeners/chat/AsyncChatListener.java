@@ -27,11 +27,11 @@ public class AsyncChatListener extends AbstractMSListener {
     private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = translatable("ms.warning.you_cant_do_this_now");
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onAsyncChat(@NotNull AsyncChatEvent event) {
+    public void onAsyncChat(final @NotNull AsyncChatEvent event) {
         event.setCancelled(true);
 
-        Player player = event.getPlayer();
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final Player player = event.getPlayer();
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (
                 playerInfo.isInWorldDark()
@@ -74,8 +74,8 @@ public class AsyncChatListener extends AbstractMSListener {
                     MessageUtils.sendRPEventMessage(player, text(message), MessageUtils.RolePlayActionType.DO);
                 }
             } else if (message.contains("*")) {
-                String action = message.substring(message.indexOf('*') + 1).trim(),
-                        speech = message.substring(0, message.indexOf('*')).trim();
+                final String action = message.substring(message.indexOf('*') + 1).trim();
+                final String speech = message.substring(0, message.indexOf('*')).trim();
 
                 if (action.isEmpty() || speech.isEmpty()) {
                     severe(player, "Используй: * [речь] * [действие]");

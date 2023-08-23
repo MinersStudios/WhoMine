@@ -23,7 +23,7 @@ public class Cocaine extends CustomItemImpl {
     static {
         KEY = "cocaine";
         ITEM_STACK = new ItemStack(Material.POTION);
-        PotionMeta meta = (PotionMeta) ITEM_STACK.getItemMeta();
+        final PotionMeta meta = (PotionMeta) ITEM_STACK.getItemMeta();
 
         meta.addCustomEffect(new PotionEffect(PotionEffectType.CONFUSION, 3600, 1), true);
         meta.addCustomEffect(new PotionEffect(PotionEffectType.HUNGER, 3600, 1), true);

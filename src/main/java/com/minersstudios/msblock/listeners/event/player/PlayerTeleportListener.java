@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerTeleportListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerTeleport(@NotNull PlayerTeleportEvent event) {
+    public void onPlayerTeleport(final @NotNull PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         Cache cache = MSBlock.getCache();
 

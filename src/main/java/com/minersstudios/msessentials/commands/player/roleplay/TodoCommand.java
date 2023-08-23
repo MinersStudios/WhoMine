@@ -42,28 +42,28 @@ public class TodoCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
-        String message = ChatUtils.extractMessage(args, 0);
+        final String message = ChatUtils.extractMessage(args, 0);
 
         if (
                 args.length < 3
                 || !message.contains("*")
         ) return false;
 
-        Player player = (Player) sender;
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final Player player = (Player) sender;
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (playerInfo.isMuted()) {
             MSLogger.warning(player, MUTED);
             return true;
         }
 
-        String action = message.substring(message.indexOf('*') + 1).trim();
-        String speech = message.substring(0, message.indexOf('*')).trim();
+        final String action = message.substring(message.indexOf('*') + 1).trim();
+        final String speech = message.substring(0, message.indexOf('*')).trim();
 
         if (
                 action.isEmpty()

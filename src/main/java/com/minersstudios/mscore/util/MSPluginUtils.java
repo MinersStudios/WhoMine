@@ -25,9 +25,9 @@ public final class MSPluginUtils {
      */
     public static boolean isLoadedCustoms() {
         try {
-            MSPlugin msDecor = MSDecor.getInstance();
-            MSPlugin msBlock = MSBlock.getInstance();
-            MSPlugin msItem = MSItem.getInstance();
+            final MSPlugin msDecor = MSDecor.getInstance();
+            final MSPlugin msBlock = MSBlock.getInstance();
+            final MSPlugin msItem = MSItem.getInstance();
             return msDecor != null
                     && msBlock != null
                     && msItem != null

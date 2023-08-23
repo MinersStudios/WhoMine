@@ -15,10 +15,10 @@ import org.jetbrains.annotations.NotNull;
 public class BlockExplodeListener extends AbstractMSListener {
 
     @EventHandler
-    public void onBlockExplode(@NotNull BlockExplodeEvent event) {
-        World world = event.getBlock().getWorld();
+    public void onBlockExplode(final @NotNull BlockExplodeEvent event) {
+        final World world = event.getBlock().getWorld();
 
-        for (var block : event.blockList()) {
+        for (final var block : event.blockList()) {
             if (block.getType() != Material.NOTE_BLOCK) continue;
 
             block.setType(Material.AIR);

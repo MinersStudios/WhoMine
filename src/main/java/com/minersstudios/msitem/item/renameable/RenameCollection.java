@@ -30,7 +30,7 @@ public class RenameCollection {
      *
      * @param key The key associated with the collection
      */
-    public RenameCollection(@NotNull String key) {
+    public RenameCollection(final @NotNull String key) {
         this.key = key;
         this.renames = new ArrayList<>();
         this.items = new ArrayList<>();
@@ -45,9 +45,9 @@ public class RenameCollection {
      * @param items   The initial collection of items
      */
     public RenameCollection(
-            @NotNull String key,
-            @NotNull Collection<String> renames,
-            @NotNull Collection<ItemStack> items
+            final @NotNull String key,
+            final @NotNull Collection<String> renames,
+            final @NotNull Collection<ItemStack> items
     ) {
         this.key = key;
         this.renames = new ArrayList<>();
@@ -75,10 +75,10 @@ public class RenameCollection {
      * @return An unmodifiable set of the entries in the collection
      */
     public @NotNull @Unmodifiable Set<RenameEntry> entrySet() {
-        var entrySet = new ImmutableSet.Builder<RenameEntry>();
+        final var entrySet = new ImmutableSet.Builder<RenameEntry>();
 
-        for (var rename : this.renames) {
-            for (var item : this.items) {
+        for (final var rename : this.renames) {
+            for (final var item : this.items) {
                 entrySet.add(new RenameEntry(rename, item));
             }
         }
@@ -126,7 +126,7 @@ public class RenameCollection {
      * @param item New main item of the collection
      * @throws IllegalArgumentException If the item type is air
      */
-    public void setMainItem(@Nullable ItemStack item) throws IllegalArgumentException {
+    public void setMainItem(final @Nullable ItemStack item) throws IllegalArgumentException {
         if (item == null) {
             this.mainItem = null;
             return;
@@ -135,7 +135,7 @@ public class RenameCollection {
         Preconditions.checkArgument(!item.getType().isAir(), "Item cannot be air (in " + this.key + ")");
 
         this.mainItem = new ItemStack(item);
-        ItemMeta meta = item.getItemMeta();
+        final ItemMeta meta = item.getItemMeta();
 
         if (this.mainName != null) {
             meta.displayName(ChatUtils.createDefaultStyledText(this.mainName));
@@ -159,7 +159,7 @@ public class RenameCollection {
      * @return True if this collection changed as a result of
      *         the call
      */
-    public boolean addRename(@NotNull String rename) {
+    public boolean addRename(final @NotNull String rename) {
         if (this.renames.isEmpty()) {
             this.setMainName(rename);
         }
@@ -177,10 +177,10 @@ public class RenameCollection {
      *         the call
      * @see #addRename(String)
      */
-    public boolean addAllRenames(@NotNull Collection<String> renames) {
+    public boolean addAllRenames(final @NotNull Collection<String> renames) {
         boolean added = false;
 
-        for (var rename : renames) {
+        for (final var rename : renames) {
             added |= this.addRename(rename);
         }
 
@@ -195,7 +195,7 @@ public class RenameCollection {
      * @return True if this list contained the specified element
      *         and the rename is not null or blank
      */
-    public boolean removeRename(@Nullable String rename) {
+    public boolean removeRename(final @Nullable String rename) {
        return StringUtils.isNotBlank(rename)
                && this.renames.remove(rename.toLowerCase(Locale.ROOT));
     }
@@ -210,7 +210,7 @@ public class RenameCollection {
      *         the call
      * @throws IllegalArgumentException If the item type is air
      */
-    public boolean addItem(@NotNull ItemStack item) throws IllegalArgumentException {
+    public boolean addItem(final @NotNull ItemStack item) throws IllegalArgumentException {
         Preconditions.checkArgument(!item.getType().isAir(), "Item cannot be air (in " + this.key + ")");
 
         if (
@@ -233,10 +233,10 @@ public class RenameCollection {
      *         the call
      * @see #addItem(ItemStack)
      */
-    public boolean addAllItems(@NotNull Collection<ItemStack> items) {
+    public boolean addAllItems(final @NotNull Collection<ItemStack> items) {
         boolean added = false;
 
-        for (var item : items) {
+        for (final var item : items) {
             added |= this.addItem(item);
         }
 
@@ -252,7 +252,7 @@ public class RenameCollection {
      *         and the item is not null
      */
     @Contract("null -> false")
-    public boolean removeItem(@Nullable ItemStack item) {
+    public boolean removeItem(final @Nullable ItemStack item) {
         return item != null
                 && this.items.remove(item);
     }
@@ -267,7 +267,7 @@ public class RenameCollection {
      * @see #addAllRenames(Collection)
      * @see #addAllItems(Collection)
      */
-    public boolean addAll(@NotNull RenameCollection that) {
+    public boolean addAll(final @NotNull RenameCollection that) {
         return this.addAllRenames(that.renames)
                 | this.addAllItems(that.items);
     }
@@ -278,7 +278,7 @@ public class RenameCollection {
      *         and the rename is not null or blank
      */
     @Contract("null -> false")
-    public boolean containsRename(@Nullable String rename) {
+    public boolean containsRename(final @Nullable String rename) {
         return StringUtils.isNotBlank(rename)
                 && this.renames.contains(rename.toLowerCase(Locale.ROOT));
     }
@@ -287,7 +287,7 @@ public class RenameCollection {
      * @param renames The renames to check
      * @return True if the collection contains all the renames
      */
-    public boolean containsAllRenames(@NotNull Collection<String> renames) {
+    public boolean containsAllRenames(final @NotNull Collection<String> renames) {
         return new HashSet<>(this.renames).containsAll(renames);
     }
 
@@ -297,7 +297,7 @@ public class RenameCollection {
      *         and the item stack is not null
      */
     @Contract("null -> false")
-    public boolean containsItem(@Nullable ItemStack item) {
+    public boolean containsItem(final @Nullable ItemStack item) {
         return this.items.contains(item);
     }
 
@@ -305,7 +305,7 @@ public class RenameCollection {
      * @param items The items to check
      * @return True if the collection contains all the items
      */
-    public boolean containsAllItems(@NotNull Collection<ItemStack> items) {
+    public boolean containsAllItems(final @NotNull Collection<ItemStack> items) {
         return new HashSet<>(this.items).containsAll(items);
     }
 
@@ -350,9 +350,9 @@ public class RenameCollection {
      */
     @Contract("null -> false")
     @Override
-    public boolean equals(@Nullable Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         return this == obj
-                || (obj instanceof RenameCollection that
+                || (obj instanceof final RenameCollection that
                 && this.containsAllItems(that.items)
                 && this.containsAllRenames(that.renames));
     }
@@ -401,8 +401,8 @@ public class RenameCollection {
      */
     @Contract("null, null -> null")
     public @Nullable ItemStack craftRenamed(
-            @Nullable ItemStack item,
-            @Nullable String rename
+            final @Nullable ItemStack item,
+            final @Nullable String rename
     ) {
         if (
                 item == null
@@ -411,9 +411,9 @@ public class RenameCollection {
                 || StringUtils.isBlank(rename)
         ) return null;
 
-        ItemStack newItem = new ItemStack(item);
-        ItemMeta meta = item.getItemMeta();
-        ItemMeta mainMeta = this.mainItem.getItemMeta();
+        final ItemStack newItem = new ItemStack(item);
+        final ItemMeta meta = item.getItemMeta();
+        final ItemMeta mainMeta = this.mainItem.getItemMeta();
 
         meta.lore(mainMeta.lore());
         meta.setCustomModelData(mainMeta.getCustomModelData());
@@ -428,16 +428,16 @@ public class RenameCollection {
         return newItem;
     }
 
-    private void setMainName(@Nullable String name) {
+    private void setMainName(final @Nullable String name) {
         if (StringUtils.isBlank(name)) {
             this.mainName = null;
             return;
         }
 
-        String normalizedName = ChatUtils.normalize(name);
+        final String normalizedName = ChatUtils.normalize(name);
 
         if (this.mainItem != null) {
-            ItemMeta meta = this.mainItem.getItemMeta();
+            final ItemMeta meta = this.mainItem.getItemMeta();
 
             meta.displayName(ChatUtils.createDefaultStyledText(normalizedName));
             this.mainItem.setItemMeta(meta);

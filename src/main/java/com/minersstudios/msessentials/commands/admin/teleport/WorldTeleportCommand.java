@@ -61,35 +61,35 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length < 2) return false;
 
-        PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
             return true;
         }
 
-        Player player = playerInfo.getOnlinePlayer();
+        final Player player = playerInfo.getOnlinePlayer();
 
         if (player == null) {
             MSLogger.warning(sender, PLAYER_NOT_FOUND);
             return true;
         }
 
-        World world = sender.getServer().getWorld(args[1]);
+        final World world = sender.getServer().getWorld(args[1]);
 
         if (world == null) {
             MSLogger.warning(sender, WORLD_NOT_FOUND);
             return true;
         }
-        
-        double x, y, z;
+
+        final double x, y, z;
 
         if (args.length > 2) {
             try {
@@ -105,7 +105,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
                 return true;
             }
         } else {
-            Location spawnLoc = world.getSpawnLocation();
+            final Location spawnLoc = world.getSpawnLocation();
             x = spawnLoc.getX();
             y = spawnLoc.getY();
             z = spawnLoc.getZ();

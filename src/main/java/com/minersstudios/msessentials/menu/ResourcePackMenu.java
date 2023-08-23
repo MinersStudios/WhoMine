@@ -1,9 +1,9 @@
 package com.minersstudios.msessentials.menu;
 
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.SingleInventory;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -26,14 +26,8 @@ public class ResourcePackMenu {
     private static final CustomInventory INVENTORY;
 
     static {
-        ItemStack infoItem = new ItemStack(Material.KNOWLEDGE_BOOK);
-        ItemStack noneItem = new ItemStack(Material.COAL_BLOCK);
-        ItemStack liteItem = new ItemStack(Material.IRON_BLOCK);
-        ItemStack fullItem = new ItemStack(Material.NETHERITE_BLOCK);
-        ItemMeta infoMeta = infoItem.getItemMeta();
-        ItemMeta noneMeta = noneItem.getItemMeta();
-        ItemMeta liteMeta = liteItem.getItemMeta();
-        ItemMeta fullMeta = fullItem.getItemMeta();
+        final ItemStack infoItem = new ItemStack(Material.KNOWLEDGE_BOOK);
+        final ItemMeta infoMeta = infoItem.getItemMeta();
 
         infoMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.info.title").style(ChatUtils.DEFAULT_STYLE));
         infoMeta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
@@ -47,12 +41,18 @@ public class ResourcePackMenu {
         ));
         infoItem.setItemMeta(infoMeta);
 
+        final ItemStack noneItem = new ItemStack(Material.COAL_BLOCK);
+        final ItemMeta noneMeta = noneItem.getItemMeta();
+
         noneMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.none.title").style(ChatUtils.DEFAULT_STYLE));
         noneMeta.lore(List.of(
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.none.lore.0").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.none.lore.1").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY)
         ));
         noneItem.setItemMeta(noneMeta);
+
+        final ItemStack liteItem = new ItemStack(Material.IRON_BLOCK);
+        final ItemMeta liteMeta = liteItem.getItemMeta();
 
         liteMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.lite.title").style(ChatUtils.DEFAULT_STYLE));
         liteMeta.lore(List.of(
@@ -62,6 +62,9 @@ public class ResourcePackMenu {
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.lite.lore.3").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY)
         ));
         liteItem.setItemMeta(liteMeta);
+
+        final ItemStack fullItem = new ItemStack(Material.NETHERITE_BLOCK);
+        final ItemMeta fullMeta = fullItem.getItemMeta();
 
         fullMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.full.title").style(ChatUtils.DEFAULT_STYLE));
         fullMeta.lore(List.of(
@@ -81,80 +84,74 @@ public class ResourcePackMenu {
         ));
         fullItem.setItemMeta(fullMeta);
 
-        InventoryButton noneButton = InventoryButton.create()
-                .item(noneItem)
-                .clickAction((event, inventory) -> {
-                    Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
-                    PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+        final InventoryButton noneButton = new InventoryButton(noneItem, (event, inventory) -> {
+            final Player player = (Player) event.getWhoClicked();
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+            final PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
-                    if (playerSettings.getResourcePackType() != ResourcePack.Type.NULL && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
-                        playerInfo.kickPlayer(
-                                translatable("ms.menu.resource_pack.button.none.kick.title"),
-                                translatable("ms.menu.resource_pack.button.none.kick.subtitle")
-                        );
-                    }
+            if (playerSettings.getResourcePackType() != ResourcePack.Type.NULL && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
+                playerInfo.kickPlayer(
+                        translatable("ms.menu.resource_pack.button.none.kick.title"),
+                        translatable("ms.menu.resource_pack.button.none.kick.subtitle")
+                );
+            }
 
-                    playerSettings.setResourcePackType(ResourcePack.Type.NONE);
-                    playerSettings.save();
-                    InventoryButton.playClickSound(player);
-                    player.closeInventory();
+            playerSettings.setResourcePackType(ResourcePack.Type.NONE);
+            playerSettings.save();
+            InventoryButton.playClickSound(player);
+            player.closeInventory();
 
-                    if (playerInfo.isInWorldDark()) {
-                        playerInfo.handleJoin();
-                    }
-                });
+            if (playerInfo.isInWorldDark()) {
+                playerInfo.handleJoin();
+            }
+        });
 
-        InventoryButton fullButton = InventoryButton.create()
-                .item(fullItem)
-                .clickAction((event, inventory) -> {
-                    Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
-                    PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+        final InventoryButton fullButton = new InventoryButton(fullItem, (event, inventory) -> {
+            final Player player = (Player) event.getWhoClicked();
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+            final PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
-                    playerSettings.setResourcePackType(ResourcePack.Type.FULL);
-                    playerSettings.save();
-                    InventoryButton.playClickSound(player);
-                    player.closeInventory();
-                    playerInfo.handleResourcePack().thenAccept(bool -> {
-                        if (bool && playerInfo.isInWorldDark()) {
-                            playerInfo.handleJoin();
-                        }
-                    });
-                });
+            playerSettings.setResourcePackType(ResourcePack.Type.FULL);
+            playerSettings.save();
+            InventoryButton.playClickSound(player);
+            player.closeInventory();
+            playerInfo.handleResourcePack().thenAccept(bool -> {
+                if (bool && playerInfo.isInWorldDark()) {
+                    playerInfo.handleJoin();
+                }
+            });
+        });
 
-        InventoryButton liteButton = InventoryButton.create()
-                .item(liteItem)
-                .clickAction((event, inventory) -> {
-                    Player player = (Player) event.getWhoClicked();
-                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
-                    PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+        final InventoryButton liteButton = new InventoryButton(liteItem, (event, inventory) -> {
+            final Player player = (Player) event.getWhoClicked();
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+            final PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
-                    playerSettings.setResourcePackType(ResourcePack.Type.LITE);
-                    playerSettings.save();
-                    InventoryButton.playClickSound(player);
-                    player.closeInventory();
-                    playerInfo.handleResourcePack().thenAccept(bool -> {
-                        if (bool && playerInfo.isInWorldDark()) {
-                            playerInfo.handleJoin();
-                        }
-                    });
-                });
+            playerSettings.setResourcePackType(ResourcePack.Type.LITE);
+            playerSettings.save();
+            InventoryButton.playClickSound(player);
+            player.closeInventory();
+            playerInfo.handleResourcePack().thenAccept(bool -> {
+                if (bool && playerInfo.isInWorldDark()) {
+                    playerInfo.handleJoin();
+                }
+            });
+        });
 
         INVENTORY = SingleInventory.single(translatable("ms.menu.resource_pack.title", ChatUtils.DEFAULT_STYLE), 1)
                 .buttonAt(0, noneButton)
                 .buttonAt(1, noneButton)
                 .buttonAt(2, fullButton)
                 .buttonAt(3, fullButton)
-                .buttonAt(4, InventoryButton.create().item(infoItem))
+                .buttonAt(4, new InventoryButton().item(infoItem))
                 .buttonAt(5, fullButton)
                 .buttonAt(6, fullButton)
                 .buttonAt(7, liteButton)
                 .buttonAt(8, liteButton)
                 .closeAction(((event, inventory) -> {
-                    Player player = (Player) event.getPlayer();
-                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
-                    ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
+                    final Player player = (Player) event.getPlayer();
+                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+                    final ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
                     if (type == ResourcePack.Type.NULL) {
                         MSEssentials.getInstance().runTask(() -> player.openInventory(inventory));
@@ -162,7 +159,7 @@ public class ResourcePackMenu {
                 }));
     }
 
-    public static void open(@NotNull Player player) {
+    public static void open(final @NotNull Player player) {
         INVENTORY.open(player);
     }
 }

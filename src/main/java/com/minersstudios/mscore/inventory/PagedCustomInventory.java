@@ -48,7 +48,7 @@ public interface PagedCustomInventory extends CustomInventory {
      * @throws IllegalArgumentException If any of the static buttons is out of inventory size
      * @see #staticButtonAt(int, StaticInventoryButton)
      */
-    PagedCustomInventory staticButtons(@NotNull Map<Integer, StaticInventoryButton> buttons) throws IllegalArgumentException;
+    PagedCustomInventory staticButtons(final @NotNull Map<Integer, StaticInventoryButton> buttons) throws IllegalArgumentException;
 
     /**
      * @return True if the inventory has any static buttons
@@ -60,7 +60,7 @@ public interface PagedCustomInventory extends CustomInventory {
      * @return {@link StaticInventoryButton} / {@link InventoryButton} at specified slot or null if there is no button
      */
     @Override
-    @Nullable InventoryButton buttonAt(int slot);
+    @Nullable InventoryButton buttonAt(final int slot);
 
     /**
      * Sets static button at specified slot.
@@ -71,8 +71,8 @@ public interface PagedCustomInventory extends CustomInventory {
      * @throws IllegalArgumentException If slot is out of inventory size
      */
     PagedCustomInventory staticButtonAt(
-            @Range(from = 0, to = CustomInventoryImpl.LAST_SLOT) int slot,
-            @Nullable StaticInventoryButton button
+            final @Range(from = 0, to = CustomInventoryImpl.LAST_SLOT) int slot,
+            final @Nullable StaticInventoryButton button
     ) throws IllegalArgumentException;
 
     /**
@@ -88,7 +88,7 @@ public interface PagedCustomInventory extends CustomInventory {
      * @param page page index
      * @return Page at specified index or null if there is no page
      */
-    PagedCustomInventory getPage(@Range(from = 0, to = Integer.MAX_VALUE) int page);
+    PagedCustomInventory getPage(final @Range(from = 0, to = Integer.MAX_VALUE) int page);
 
     /**
      * @return Current page index
@@ -127,5 +127,5 @@ public interface PagedCustomInventory extends CustomInventory {
      *
      * @param page Page to update static buttons in
      */
-    void updateStaticButtons(@Range(from = 0, to = Integer.MAX_VALUE) int page);
+    void updateStaticButtons(final @Range(from = 0, to = Integer.MAX_VALUE) int page);
 }

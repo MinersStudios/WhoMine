@@ -31,7 +31,7 @@ public abstract class MSConfig {
      * @param file The config file, where the configuration is stored
      * @throws IllegalArgumentException If the given file does not exist
      */
-    public MSConfig(@NotNull File file) throws IllegalArgumentException {
+    public MSConfig(final @NotNull File file) throws IllegalArgumentException {
         this.file = file;
         this.yaml = new YamlConfiguration();
     }
@@ -58,8 +58,8 @@ public abstract class MSConfig {
      * @param value The value to set
      */
     public void setIfNotExists(
-            @NotNull String path,
-            @Nullable Object value
+            final @NotNull String path,
+            final @Nullable Object value
     ) {
         if (!this.yaml.isSet(path)) {
             this.yaml.set(path, value);
@@ -167,8 +167,8 @@ public abstract class MSConfig {
      */
     @Override
     public @NotNull String toString() {
-        String path = this.file.getPath();
-        String configValues = Joiner.on(",").withKeyValueSeparator("=").join(this.yaml.getValues(true));
+        final String path = this.file.getPath();
+        final String configValues = Joiner.on(",").withKeyValueSeparator("=").join(this.yaml.getValues(true));
         return this.getClass().getName() + "{file=" + path + ", config=[" + configValues + "]}";
     }
 }

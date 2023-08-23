@@ -13,15 +13,14 @@ import org.jetbrains.annotations.NotNull;
 public class AdminInfoCommand {
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            @NotNull PlayerInfo playerInfo
+            final @NotNull CommandSender sender,
+            final @NotNull PlayerInfo playerInfo
     ) {
-        PlayerFile playerFile = playerInfo.getPlayerFile();
-        PlayerName playerName = playerFile.getPlayerName();
-        PlayerSettings playerSettings = playerFile.getPlayerSettings();
-        Location
-                lastLeaveLocation = playerFile.getLastLeaveLocation(),
-                lastDeathLocation = playerFile.getLastDeathLocation();
+        final PlayerFile playerFile = playerInfo.getPlayerFile();
+        final PlayerName playerName = playerFile.getPlayerName();
+        final PlayerSettings playerSettings = playerFile.getPlayerSettings();
+        Location lastLeaveLocation = playerFile.getLastLeaveLocation();
+        Location lastDeathLocation = playerFile.getLastDeathLocation();
 
         if (lastLeaveLocation == null) {
             lastLeaveLocation = MSEssentials.getConfiguration().spawnLocation;

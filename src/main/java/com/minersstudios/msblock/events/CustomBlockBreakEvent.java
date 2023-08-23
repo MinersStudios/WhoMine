@@ -20,10 +20,11 @@ public class CustomBlockBreakEvent extends CustomBlockEvent implements Cancellab
      *                    involved in this event
      */
     public CustomBlockBreakEvent(
-            @NotNull CustomBlock customBlock,
-            @NotNull Player player
+            final @NotNull CustomBlock customBlock,
+            final @NotNull Player player
     ) {
         super(customBlock);
+
         this.player = player;
     }
 
@@ -43,7 +44,7 @@ public class CustomBlockBreakEvent extends CustomBlockEvent implements Cancellab
      * @param cancel True if you wish to cancel this event
      */
     @Override
-    public void setCancelled(boolean cancel) {
+    public void setCancelled(final boolean cancel) {
         this.cancelled = cancel;
     }
 

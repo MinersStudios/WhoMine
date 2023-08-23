@@ -28,12 +28,13 @@ public class CustomBlockPlaceEvent extends CustomBlockEvent implements Cancellab
      *                           was used to place the custom block
      */
     public CustomBlockPlaceEvent(
-            @NotNull CustomBlock customBlock,
-            @NotNull BlockState replacedBlockState,
-            @NotNull Player player,
-            @NotNull EquipmentSlot hand
+            final @NotNull CustomBlock customBlock,
+            final @NotNull BlockState replacedBlockState,
+            final @NotNull Player player,
+            final @NotNull EquipmentSlot hand
     ) {
         super(customBlock);
+
         this.player = player;
         this.replacedBlockState = replacedBlockState;
         this.hand = hand;
@@ -71,7 +72,7 @@ public class CustomBlockPlaceEvent extends CustomBlockEvent implements Cancellab
      * @param cancel True if you wish to cancel this event
      */
     @Override
-    public void setCancelled(boolean cancel) {
+    public void setCancelled(final boolean cancel) {
         this.cancelled = cancel;
     }
 

@@ -30,7 +30,7 @@ public class DiscordLinkCodeMenu {
             translatable("ms.menu.discord.numbers.9")
     );
 
-    public static void open(@NotNull Player player) {
+    public static void open(final @NotNull Player player) {
         SingleInventory.single(
                 TITLE
                 .append(generateNumbers(PlayerInfo.fromOnlinePlayer(player).generateCode()))
@@ -39,7 +39,7 @@ public class DiscordLinkCodeMenu {
         ).open(player);
     }
 
-    private static @NotNull Component generateNumbers(short code) {
+    private static @NotNull Component generateNumbers(final short code) {
         return text("뀔").toBuilder()
                 .append(
                         String.valueOf(code).chars()

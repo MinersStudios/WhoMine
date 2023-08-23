@@ -50,11 +50,11 @@ public class Anomaly {
      * @param ignorablePlayers      Ignorable players of anomaly
      */
     public Anomaly(
-            @NotNull NamespacedKey namespacedKey,
-            @NotNull AnomalyBoundingBox anomalyBoundingBox,
-            @Nullable AnomalyIgnorableItems anomalyIgnorableItems,
-            @NotNull Map<Double, List<AnomalyAction>> anomalyActionMap,
-            @NotNull List<OfflinePlayer> ignorablePlayers
+            final @NotNull NamespacedKey namespacedKey,
+            final @NotNull AnomalyBoundingBox anomalyBoundingBox,
+            final @Nullable AnomalyIgnorableItems anomalyIgnorableItems,
+            final @NotNull Map<Double, List<AnomalyAction>> anomalyActionMap,
+            final @NotNull List<OfflinePlayer> ignorablePlayers
     ) {
         this.namespacedKey = namespacedKey;
         this.anomalyBoundingBox = anomalyBoundingBox;
@@ -72,13 +72,13 @@ public class Anomaly {
      * @throws IllegalArgumentException If anomaly config is invalid
      */
     @Contract("_ -> new")
-    public static @NotNull Anomaly fromConfig(@NotNull File file) throws IllegalArgumentException {
-        String fileName = file.getName();
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        World world = Bukkit.getWorld(
+    public static @NotNull Anomaly fromConfig(final @NotNull File file) throws IllegalArgumentException {
+        final String fileName = file.getName();
+        final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        final World world = Bukkit.getWorld(
                 Objects.requireNonNull(config.getString("bounding-box.location.world-name"), "world in " + fileName + " is null")
         );
-        AnomalyBoundingBox anomalyBoundingBox = new AnomalyBoundingBox(
+        final AnomalyBoundingBox anomalyBoundingBox = new AnomalyBoundingBox(
                 Objects.requireNonNull(world, "Can't find world, anomaly : " + fileName),
                 new BoundingBox(
                         config.getDouble("bounding-box.location.first-corner.x"),
@@ -90,12 +90,12 @@ public class Anomaly {
                 ),
                 config.getDoubleList("bounding-box.radius")
         );
-        var equipmentSlots = new ArrayList<EquipmentSlot>();
-        ConfigurationSection slotsSection = config.getConfigurationSection("ignorable-items.slots");
+        final var equipmentSlots = new ArrayList<EquipmentSlot>();
+        final ConfigurationSection slotsSection = config.getConfigurationSection("ignorable-items.slots");
 
         if (slotsSection != null) {
             try {
-                for (var string : slotsSection.getValues(false).keySet()) {
+                for (final var string : slotsSection.getValues(false).keySet()) {
                     equipmentSlots.add(EquipmentSlot.valueOf(string.toUpperCase(Locale.ROOT)));
                 }
             } catch (IllegalArgumentException e) {
@@ -103,43 +103,43 @@ public class Anomaly {
             }
         }
 
-        var items = new HashMap<EquipmentSlot, ItemStack>();
+        final var items = new HashMap<EquipmentSlot, ItemStack>();
 
-        for (var equipmentSlot : equipmentSlots) {
-            String name = equipmentSlot.name().toLowerCase(Locale.ROOT);
-            ItemStack itemStack = new ItemStack(Material.valueOf(slotsSection.getString(name + ".material")));
-            ItemMeta itemMeta = itemStack.getItemMeta();
+        for (final var equipmentSlot : equipmentSlots) {
+            final String name = equipmentSlot.name().toLowerCase(Locale.ROOT);
+            final ItemStack itemStack = new ItemStack(Material.valueOf(slotsSection.getString(name + ".material")));
+            final ItemMeta itemMeta = itemStack.getItemMeta();
 
             itemMeta.setCustomModelData(slotsSection.getInt(name + ".custom-model-data"));
             itemStack.setItemMeta(itemMeta);
             items.put(equipmentSlot, itemStack);
         }
 
-        AnomalyIgnorableItems anomalyIgnorableItems = new AnomalyIgnorableItems(
+        final AnomalyIgnorableItems anomalyIgnorableItems = new AnomalyIgnorableItems(
                 items,
                 config.getInt("ignorable-items.breaking-per-action")
         );
 
-        var anomalyActionMap = new HashMap<Double, List<AnomalyAction>>();
+        final var anomalyActionMap = new HashMap<Double, List<AnomalyAction>>();
 
-        for (var radius : anomalyBoundingBox.getRadii()) {
-            ConfigurationSection radiusSection = config.getConfigurationSection("on-entering-to-area." + radius);
-            var actionStrings =
+        for (final var radius : anomalyBoundingBox.getRadii()) {
+            final ConfigurationSection radiusSection = config.getConfigurationSection("on-entering-to-area." + radius);
+            final var actionStrings =
                     Objects.requireNonNull(radiusSection, "Anomaly configuration radii not properly configured, anomaly : " + fileName)
                     .getValues(false).keySet();
 
-            for (var anomalyAction : actionStrings) {
-                AnomalyAction action;
+            for (final var anomalyAction : actionStrings) {
+                final AnomalyAction action;
 
                 switch (anomalyAction) {
                     case "add-potion-effect" -> {
-                        var potionEffects = new ArrayList<PotionEffect>();
-                        ConfigurationSection effectsSection = radiusSection.getConfigurationSection("add-potion-effect.effects");
+                        final var potionEffects = new ArrayList<PotionEffect>();
+                        final ConfigurationSection effectsSection = radiusSection.getConfigurationSection("add-potion-effect.effects");
 
-                        for (var potionStr : Objects.requireNonNull(effectsSection).getValues(false).keySet()) {
-                            ConfigurationSection potionSection = effectsSection.getConfigurationSection(potionStr);
+                        for (final var potionStr : Objects.requireNonNull(effectsSection).getValues(false).keySet()) {
+                            final ConfigurationSection potionSection = effectsSection.getConfigurationSection(potionStr);
                             assert potionSection != null;
-                            PotionEffectType potionEffectType = PotionEffectType.getByName(potionStr);
+                            final PotionEffectType potionEffectType = PotionEffectType.getByName(potionStr);
 
                             potionEffects.add(new PotionEffect(
                                     Objects.requireNonNull(potionEffectType, "Invalid effect type name in : " + fileName),
@@ -158,14 +158,14 @@ public class Anomaly {
                         );
                     }
                     case "spawn-particles" -> {
-                        List<ParticleBuilder> particleBuilderList = new ArrayList<>();
-                        ConfigurationSection particlesSection = radiusSection.getConfigurationSection("spawn-particles.particles");
+                        final var particleBuilderList = new ArrayList<ParticleBuilder>();
+                        final ConfigurationSection particlesSection = radiusSection.getConfigurationSection("spawn-particles.particles");
 
-                        for (var particleStr : Objects.requireNonNull(particlesSection).getValues(false).keySet()) {
-                            ConfigurationSection particleSection = particlesSection.getConfigurationSection(particleStr);
+                        for (final var particleStr : Objects.requireNonNull(particlesSection).getValues(false).keySet()) {
+                            final ConfigurationSection particleSection = particlesSection.getConfigurationSection(particleStr);
                             assert particleSection != null;
-                            Particle particle = Particle.valueOf(particleStr);
-                            ParticleBuilder particleBuilder = new ParticleBuilder(particle)
+                            final Particle particle = Particle.valueOf(particleStr);
+                            final ParticleBuilder particleBuilder = new ParticleBuilder(particle)
                                     .count(particleSection.getInt("count"))
                                     .offset(
                                             particleSection.getDouble("offset.x"),
@@ -193,7 +193,8 @@ public class Anomaly {
 
                 if (action != null) {
                     if (anomalyActionMap.containsKey(radius)) {
-                        List<AnomalyAction> actions = new ArrayList<>(anomalyActionMap.get(radius));
+                        final var actions = new ArrayList<>(anomalyActionMap.get(radius));
+
                         actions.add(action);
                         anomalyActionMap.put(radius, actions);
                     } else {
@@ -203,9 +204,9 @@ public class Anomaly {
             }
         }
 
-        var ignorablePlayers = new ArrayList<OfflinePlayer>();
+        final var ignorablePlayers = new ArrayList<OfflinePlayer>();
 
-        for (var uuid : config.getStringList("ignorable-players")) {
+        for (final var uuid : config.getStringList("ignorable-players")) {
             ignorablePlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
         }
 
@@ -226,10 +227,10 @@ public class Anomaly {
      * @return True if the radios is the same as the anomaly action radius
      */
     public boolean isAnomalyActionRadius(
-            @NotNull AnomalyAction anomalyAction,
-            double radius
+            final @NotNull AnomalyAction anomalyAction,
+            final double radius
     ) {
-        for (var action : this.anomalyActionMap.entrySet()) {
+        for (final var action : this.anomalyActionMap.entrySet()) {
             if (action.getValue().contains(anomalyAction)) {
                 return action.getKey() == radius;
             }

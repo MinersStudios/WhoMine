@@ -28,14 +28,14 @@ public class AnomalyBoundingBox extends BoundingBox {
      * @param radii       The radii of the anomaly
      */
     public AnomalyBoundingBox(
-            @NotNull World world,
-            @NotNull BoundingBox boundingBox,
-            @NotNull List<Double> radii
+            final @NotNull World world,
+            final @NotNull BoundingBox boundingBox,
+            final @NotNull List<Double> radii
     ) {
         this.world = world;
         this.radii.addAll(radii);
 
-        for (var radius : radii) {
+        for (final var radius : radii) {
             this.radiusBoundingBoxes.put(radius, boundingBox.clone().expand(radius));
         }
     }
@@ -46,13 +46,15 @@ public class AnomalyBoundingBox extends BoundingBox {
      * @param player The player to check
      * @return -1 if the bounding box does not contain the player position
      */
-    public double getRadiusInside(@NotNull Player player) {
+    public double getRadiusInside(final @NotNull Player player) {
         if (player.getWorld() != this.world) return -1.0d;
-        for (var radiusBoundingBox : this.getRadiusBoundingBoxes().entrySet()) {
+
+        for (final var radiusBoundingBox : this.getRadiusBoundingBoxes().entrySet()) {
             if (radiusBoundingBox.getValue().contains(player.getLocation().toVector())) {
                 return radiusBoundingBox.getKey();
             }
         }
+
         return -1.0d;
     }
 

@@ -18,15 +18,15 @@ import org.jetbrains.annotations.NotNull;
 public class PrepareItemCraftListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPrepareItemCraft(@NotNull PrepareItemCraftEvent event) {
-        Recipe recipe = event.getRecipe();
+    public void onPrepareItemCraft(final @NotNull PrepareItemCraftEvent event) {
+        final Recipe recipe = event.getRecipe();
         if (recipe == null) return;
-        ItemStack result = recipe.getResult();
+        final ItemStack result = recipe.getResult();
 
-        for (ItemStack itemStack : event.getInventory().getMatrix()) {
+        for (final var itemStack : event.getInventory().getMatrix()) {
             if (
                     CustomBlockRegistry.isCustomBlock(itemStack)
-                    && ((recipe instanceof ShapedRecipe shapedRecipe
+                    && ((recipe instanceof final ShapedRecipe shapedRecipe
                     && shapedRecipe.getIngredientMap().values().stream().noneMatch(item -> ItemUtils.isSimilarItemStacks(item, itemStack)))
                     || (!result.hasItemMeta() || !result.getItemMeta().hasCustomModelData()))
             ) {

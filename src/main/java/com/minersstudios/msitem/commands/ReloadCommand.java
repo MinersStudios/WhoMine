@@ -19,16 +19,16 @@ import static net.kyori.adventure.text.Component.translatable;
 public class ReloadCommand {
     private static final TranslatableComponent RELOAD_SUCCESS = translatable("ms.command.msitem.reload.success");
 
-    public static boolean runCommand(@NotNull CommandSender sender) {
-        long time = System.currentTimeMillis();
-        Server server = sender.getServer();
-        var crafts = server.recipeIterator();
+    public static boolean runCommand(final @NotNull CommandSender sender) {
+        final long time = System.currentTimeMillis();
+        final Server server = sender.getServer();
+        final var crafts = server.recipeIterator();
 
         while (crafts.hasNext()) {
-            Recipe recipe = crafts.next();
+            final Recipe recipe = crafts.next();
 
             if (
-                    recipe instanceof Keyed keyed
+                    recipe instanceof final Keyed keyed
                     && CustomItemType.NAMESPACE.equals(keyed.getKey().getNamespace())
             ) {
                 server.removeRecipe(new NamespacedKey(CustomItemType.NAMESPACE, keyed.getKey().getKey()));

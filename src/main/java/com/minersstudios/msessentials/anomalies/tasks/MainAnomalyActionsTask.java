@@ -24,25 +24,25 @@ public class MainAnomalyActionsTask implements Runnable {
 
     @Override
     public void run() {
-        var onlinePlayers = Bukkit.getOnlinePlayers();
+        final var onlinePlayers = Bukkit.getOnlinePlayers();
 
         if (onlinePlayers.isEmpty()) return;
 
-        Cache cache = MSEssentials.getCache();
-        var playerActionMap = cache.playerAnomalyActionMap;
+        final Cache cache = MSEssentials.getCache();
+        final var playerActionMap = cache.playerAnomalyActionMap;
 
         MSEssentials.getInstance().runTaskAsync(() ->
                 onlinePlayers
                 .forEach(player -> {
-                    for (var anomaly : cache.anomalies.values()) {
-                        double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
-                        boolean isIgnorable = anomaly.getIgnorablePlayers().contains(player);
+                    for (final var anomaly : cache.anomalies.values()) {
+                        final double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
+                        final boolean isIgnorable = anomaly.getIgnorablePlayers().contains(player);
 
                         if (radiusInside == -1.0d) continue;
 
                         var actionMap = playerActionMap.get(player);
 
-                        for (var action : anomaly.getAnomalyActionMap().get(radiusInside)) {
+                        for (final var action : anomaly.getAnomalyActionMap().get(radiusInside)) {
                             if (actionMap == null || !actionMap.containsKey(action)) {
                                 if (isIgnorable && action instanceof SpawnParticlesAction) {
                                     action.putAction(player);
@@ -55,7 +55,7 @@ public class MainAnomalyActionsTask implements Runnable {
 
                         if (actionMap == null) return;
 
-                        for (var action : actionMap.keySet()) {
+                        for (final var action : actionMap.keySet()) {
                             if (anomaly.isAnomalyActionRadius(action, radiusInside)) {
                                 if (!(action instanceof SpawnParticlesAction)) {
                                     action.doAction(player, anomaly.getIgnorableItems());
@@ -66,6 +66,7 @@ public class MainAnomalyActionsTask implements Runnable {
                         }
                         return;
                     }
+
                     playerActionMap.remove(player);
                 })
         );

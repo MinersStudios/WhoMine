@@ -33,11 +33,34 @@ public interface MSCommandExecutor extends CommandExecutor, TabCompleter {
      * @return True if a valid command, otherwise false
      */
     boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     );
+
+    /**
+     * Requests a list of possible completions for a command argument
+     *
+     * @param sender  Source of the command. For players tab-completing
+     *                a command inside a command block, this will be the
+     *                player, not the command block.
+     * @param command Command which was executed
+     * @param label   Alias of the command which was used
+     * @param args    The arguments passed to the command, including final
+     *                partial argument to be completed
+     * @return A List of possible completions for the final argument,
+     *         or null to default to the command executor
+     */
+    @Override
+    default @NotNull List<String> onTabComplete(
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
+    ) {
+        return EMPTY_TAB;
+    }
 
     /**
      * Returns the components and its definition for better tab completion
@@ -60,28 +83,5 @@ public interface MSCommandExecutor extends CommandExecutor, TabCompleter {
      */
     default @Nullable CommandNode<?> getCommandNode() {
         return null;
-    }
-
-    /**
-     * Requests a list of possible completions for a command argument
-     *
-     * @param sender  Source of the command. For players tab-completing
-     *                a command inside a command block, this will be the
-     *                player, not the command block.
-     * @param command Command which was executed
-     * @param label   Alias of the command which was used
-     * @param args    The arguments passed to the command, including final
-     *                partial argument to be completed
-     * @return A List of possible completions for the final argument,
-     *         or null to default to the command executor
-     */
-    @Override
-    default @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
-    ) {
-        return EMPTY_TAB;
     }
 }

@@ -34,8 +34,8 @@ public enum PacketProtocol {
      *                packet flow and packet ID
      */
     PacketProtocol(
-            int id,
-            @NotNull Map<PacketFlow, Map<Integer, PacketType>> packets
+            final int id,
+            final @NotNull Map<PacketFlow, Map<Integer, PacketType>> packets
     ) {
         this.id = id;
         this.packets = packets;
@@ -49,7 +49,7 @@ public enum PacketProtocol {
      *                 retrieve the corresponding PacketProtocol
      * @return The PacketProtocol associated with the given ConnectionProtocol
      */
-    public static @NotNull PacketProtocol fromMinecraft(@NotNull ConnectionProtocol protocol) {
+    public static @NotNull PacketProtocol fromMinecraft(final @NotNull ConnectionProtocol protocol) {
         return switch (protocol) {
             case LOGIN -> LOGIN;
             case STATUS -> STATUS;

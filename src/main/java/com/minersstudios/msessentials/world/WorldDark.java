@@ -38,19 +38,21 @@ public class WorldDark extends CraftWorld {
     private static final String WORLD_NAME = "world_dark";
     private static final ChunkGenerator CHUNK_GENERATOR = new ChunkGenerator() {};
     private static final BiomeProvider BIOME_PROVIDER = new BiomeProvider() {
+        private static final List<Biome> BIOMES = List.of(Biome.THE_VOID);
+
         @Override
         public @NotNull Biome getBiome(
-                @NotNull WorldInfo worldInfo,
-                int x,
-                int y,
-                int z
+                final @NotNull WorldInfo worldInfo,
+                final int x,
+                final int y,
+                final int z
         ) {
             return Biome.THE_VOID;
         }
 
         @Override
-        public @NotNull @Unmodifiable List<Biome> getBiomes(@NotNull WorldInfo worldInfo) {
-            return List.of(Biome.THE_VOID);
+        public @NotNull @Unmodifiable List<Biome> getBiomes(final @NotNull WorldInfo worldInfo) {
+            return BIOMES;
         }
     };
     private static final Environment ENVIRONMENT = Environment.NORMAL;
@@ -88,7 +90,7 @@ public class WorldDark extends CraftWorld {
      * @return True if world is world dark, false otherwise
      */
     @Contract("null -> false")
-    public static boolean isWorldDark(@Nullable World world) {
+    public static boolean isWorldDark(final @Nullable World world) {
         return world != null && world.getName().equals(WORLD_NAME);
     }
 
@@ -97,7 +99,7 @@ public class WorldDark extends CraftWorld {
      * @return True if location is in world dark, false otherwise
      */
     @Contract("null -> false")
-    public static boolean isInWorldDark(@Nullable Location location) {
+    public static boolean isInWorldDark(final @Nullable Location location) {
         return location != null && location.getWorld().getName().equals(WORLD_NAME);
     }
 
@@ -106,7 +108,7 @@ public class WorldDark extends CraftWorld {
      * @return True if entity is in world dark, false otherwise
      */
     @Contract("null -> false")
-    public static boolean isInWorldDark(@Nullable Entity entity) {
+    public static boolean isInWorldDark(final @Nullable Entity entity) {
         return entity != null && entity.getWorld().getName().equals(WORLD_NAME);
     }
 
@@ -115,7 +117,7 @@ public class WorldDark extends CraftWorld {
      *
      * @param player Player to teleport
      */
-    public static @NotNull CompletableFuture<Boolean> teleportToDarkWorld(@NotNull Player player) {
+    public static @NotNull CompletableFuture<Boolean> teleportToDarkWorld(final @NotNull Player player) {
         return player.teleportAsync(singleton.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN).thenApply(bool -> {
             player.setGameMode(GameMode.SPECTATOR);
             player.setSpectatorTarget(darkEntity);
@@ -150,7 +152,7 @@ public class WorldDark extends CraftWorld {
      * @throws UnsupportedOperationException If world dark is not successfully created
      */
     private static @NotNull ServerLevel create() throws UnsupportedOperationException {
-        World world = new WorldCreator(WORLD_NAME)
+        final World world = new WorldCreator(WORLD_NAME)
                 .generator(CHUNK_GENERATOR)
                 .biomeProvider(BIOME_PROVIDER)
                 .environment(ENVIRONMENT)

@@ -91,8 +91,8 @@ public final class ChatUtils {
      */
     @Contract("_, _ -> new")
     public static @NotNull String extractMessage(
-            @NotNull String[] args,
-            int start
+            final @NotNull String[] args,
+            final int start
     ) {
         return String.join(" ", Arrays.copyOfRange(args, start, args.length));
     }
@@ -112,12 +112,12 @@ public final class ChatUtils {
      * @return Normalized text, or empty string if the given text is blank
      * @see StringUtils#isBlank(CharSequence)
      */
-    public static @NotNull String normalize(@NotNull String text) {
-        int length = text.length();
+    public static @NotNull String normalize(final @NotNull String text) {
+        final int length = text.length();
 
         if (length == 0) return text;
 
-        int[] codePoints = new int[length];
+        final int[] codePoints = new int[length];
         codePoints[0] = Character.toUpperCase(text.codePointAt(0));
 
         for (int i = 1; i < length; i++) {
@@ -142,7 +142,7 @@ public final class ChatUtils {
      * @return Normalized component
      * @see #normalize(String)
      */
-    public static @NotNull Component normalize(@NotNull Component component) {
+    public static @NotNull Component normalize(final @NotNull Component component) {
         return text(normalize(serializePlainComponent(component))).style(component.style());
     }
 
@@ -153,7 +153,7 @@ public final class ChatUtils {
      * @return Default styled text
      */
     @Contract("_ -> new")
-    public static @NotNull Component createDefaultStyledText(@NotNull String text) {
+    public static @NotNull Component createDefaultStyledText(final @NotNull String text) {
         return text().append(text(text).style(DEFAULT_STYLE)).build();
     }
 
@@ -164,7 +164,7 @@ public final class ChatUtils {
      * @return Serialized component
      */
     @Contract("_ -> new")
-    public static @NotNull String serializeGsonComponent(@NotNull Component component) {
+    public static @NotNull String serializeGsonComponent(final @NotNull Component component) {
         return GSON_SERIALIZER.serialize(component);
     }
 
@@ -175,7 +175,7 @@ public final class ChatUtils {
      * @return Serialized component
      */
     @Contract("_ -> new")
-    public static @NotNull String serializeLegacyComponent(@NotNull Component component) {
+    public static @NotNull String serializeLegacyComponent(final @NotNull Component component) {
         return LEGACY_SERIALIZER.serialize(component);
     }
 
@@ -186,7 +186,7 @@ public final class ChatUtils {
      * @return Serialized component
      */
     @Contract("_ -> new")
-    public static @NotNull String serializePlainComponent(@NotNull Component component) {
+    public static @NotNull String serializePlainComponent(final @NotNull Component component) {
         return PLAIN_SERIALIZER.serialize(component);
     }
 
@@ -197,7 +197,7 @@ public final class ChatUtils {
      * @return Deserialized component
      */
     @Contract("_ -> new")
-    public static @NotNull Component deserializeGsonComponent(@NotNull String text) {
+    public static @NotNull Component deserializeGsonComponent(final @NotNull String text) {
         return GSON_SERIALIZER.deserialize(text);
     }
 
@@ -210,7 +210,7 @@ public final class ChatUtils {
      * @return Deserialized component
      */
     @Contract("_ -> new")
-    public static @NotNull Component deserializeLegacyComponent(@NotNull String text) {
+    public static @NotNull Component deserializeLegacyComponent(final @NotNull String text) {
         return LEGACY_SERIALIZER.deserialize(text);
     }
 
@@ -221,7 +221,7 @@ public final class ChatUtils {
      * @return Deserialized component
      */
     @Contract("_ -> new")
-    public static @NotNull Component deserializePlainComponent(@NotNull String text) {
+    public static @NotNull Component deserializePlainComponent(final @NotNull String text) {
         return PLAIN_SERIALIZER.deserialize(text);
     }
 
@@ -239,12 +239,12 @@ public final class ChatUtils {
      * @return List of components
      */
     public static @NotNull List<Component> convertStringsToComponents(
-            @Nullable Style style,
-            @NotNull Collection<String> strings
+            final @Nullable Style style,
+            final @NotNull Collection<String> strings
     ) {
         final var components = new ArrayList<Component>(strings.size());
 
-        for (var string : strings) {
+        for (final var string : strings) {
             components.add(
                     style == null
                     ? text(string)
@@ -267,7 +267,7 @@ public final class ChatUtils {
      * @param strings Strings to be converted to components
      * @return List of components
      */
-    public static @NotNull List<Component> convertStringsToComponents(@NotNull Collection<String> strings) {
+    public static @NotNull List<Component> convertStringsToComponents(final @NotNull Collection<String> strings) {
         return convertStringsToComponents(DEFAULT_STYLE, strings);
     }
 
@@ -285,8 +285,8 @@ public final class ChatUtils {
      * @return List of components
      */
     public static @NotNull List<Component>  convertStringsToComponents(
-            @NotNull String first,
-            String @NotNull ... other
+            final @NotNull String first,
+            final String @NotNull ... other
     ) {
         return convertStringsToComponents(DEFAULT_STYLE, first, other);
     }
@@ -306,11 +306,12 @@ public final class ChatUtils {
      * @return List of components
      */
     public static @NotNull List<Component> convertStringsToComponents(
-            @Nullable Style style,
-            @NotNull String first,
-            String @NotNull ... other
+            final @Nullable Style style,
+            final @NotNull String first,
+            final String @NotNull ... other
     ) {
-        var strings = new ArrayList<String>(other.length + 1);
+        final var strings = new ArrayList<String>(other.length + 1);
+
         strings.add(0, first);
         return convertStringsToComponents(style, strings);
     }

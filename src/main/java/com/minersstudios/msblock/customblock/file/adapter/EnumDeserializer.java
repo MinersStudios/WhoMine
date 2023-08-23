@@ -31,9 +31,9 @@ public class EnumDeserializer<T extends Enum<T>> implements JsonDeserializer<T> 
 
     @Override
     public T deserialize(
-            @NotNull JsonElement json,
-            Type typeOfT,
-            JsonDeserializationContext context
+            final @NotNull JsonElement json,
+            final Type typeOfT,
+            final JsonDeserializationContext context
     ) throws JsonParseException, IllegalArgumentException {
         return Enum.valueOf(
                 this.enumClass,

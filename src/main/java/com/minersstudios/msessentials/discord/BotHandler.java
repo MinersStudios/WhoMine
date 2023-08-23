@@ -35,7 +35,7 @@ public class BotHandler {
     private static final int CODE_MAX_ATTEMPTS = 10;
     private static final long CODE_FLOOD_TIMEOUT = 300000L; // 5 minutes
 
-    public BotHandler(@NotNull DiscordPrivateMessageReceivedEvent event) {
+    public BotHandler(final @NotNull DiscordPrivateMessageReceivedEvent event) {
         this.user = event.getAuthor();
         this.userId = this.user.getIdLong();
         this.playerInfo = PlayerInfo.fromDiscord(this.userId);
@@ -53,7 +53,7 @@ public class BotHandler {
         return this.playerInfo;
     }
 
-    public void setPlayerInfo(@Nullable PlayerInfo playerInfo) {
+    public void setPlayerInfo(final @Nullable PlayerInfo playerInfo) {
         this.playerInfo = playerInfo;
     }
 
@@ -61,15 +61,16 @@ public class BotHandler {
         return this.waitingReplyTask;
     }
 
-    public void setWaitingReplyTask(@Nullable WaitingReplyTask waitingReplyTask) {
+    public void setWaitingReplyTask(final @Nullable WaitingReplyTask waitingReplyTask) {
         this.waitingReplyTask = waitingReplyTask;
     }
 
-    public void handleMessage(@NotNull Message message) {
+    public void handleMessage(final @NotNull Message message) {
         this.message = message;
         this.messageString = this.message.getContentDisplay();
-        var attachments = this.message.getAttachments();
-        int attachmentSize = attachments.size();
+
+        final var attachments = this.message.getAttachments();
+        final int attachmentSize = attachments.size();
         short code = 0;
 
         if (this.isFlooding()) {
@@ -85,7 +86,7 @@ public class BotHandler {
         }
 
         if (this.messageString.matches("\\d+") && attachmentSize == 0) {
-            String invalidCode = LanguageFile.renderTranslation("ms.discord.invalid_code");
+            final String invalidCode = LanguageFile.renderTranslation("ms.discord.invalid_code");
 
             try {
                 code = Short.parseShort(this.messageString);
@@ -119,8 +120,8 @@ public class BotHandler {
             this.reply(LanguageFile.renderTranslation("ms.discord.skin.only_one_img"));
             return;
         } else if (attachmentSize == 1) {
-            Message.Attachment attachment = attachments.get(0);
-            String link = attachment.getUrl();
+            final Message.Attachment attachment = attachments.get(0);
+            final String link = attachment.getUrl();
 
             if (this.messageString.isEmpty()) {
                 this.reply(LanguageFile.renderTranslation("ms.discord.skin.no_name"));
@@ -153,10 +154,10 @@ public class BotHandler {
     }
 
     private boolean isCodeFlooding() {
-        long currentTime = System.currentTimeMillis();
+        final long currentTime = System.currentTimeMillis();
         int attemptCount = this.codeAttempt.count();
-        long lastAttempt = this.codeAttempt.time();
-        Attempt newAttempt = new Attempt(++attemptCount, currentTime);
+        final long lastAttempt = this.codeAttempt.time();
+        final Attempt newAttempt = new Attempt(++attemptCount, currentTime);
 
         if (lastAttempt == 0L) {
             this.codeAttempt = newAttempt;
@@ -176,10 +177,11 @@ public class BotHandler {
     }
 
     private boolean isFlooding() {
-        long currentTime = System.currentTimeMillis();
+        final long currentTime = System.currentTimeMillis();
+
         int attemptCount = this.messageAttempt.count();
-        long lastAttempt = this.messageAttempt.time();
-        Attempt newAttempt = new Attempt(++attemptCount, currentTime);
+        final long lastAttempt = this.messageAttempt.time();
+        final Attempt newAttempt = new Attempt(++attemptCount, currentTime);
 
         if (lastAttempt == 0L) {
             this.messageAttempt = newAttempt;
@@ -198,9 +200,9 @@ public class BotHandler {
         return false;
     }
 
-    private void handleCode(short code) {
-        DiscordMap discordMap = MSEssentials.getCache().discordMap;
-        PlayerInfo fromCode = discordMap.validateCode(code);
+    private void handleCode(final short code) {
+        final DiscordMap discordMap = MSEssentials.getCache().discordMap;
+        final PlayerInfo fromCode = discordMap.validateCode(code);
 
         if (fromCode == null) {
             this.reply(LanguageFile.renderTranslation("ms.discord.no_code"));
@@ -208,6 +210,7 @@ public class BotHandler {
             this.replyEmbed(LanguageFile.renderTranslation("ms.discord.already_linked"));
         } else {
             this.playerInfo = fromCode;
+            final Player onlinePlayer = fromCode.getOnlinePlayer();
 
             discordMap.removeCode(code);
             fromCode.linkDiscord(this.userId);
@@ -221,7 +224,6 @@ public class BotHandler {
                     )
             );
 
-            Player onlinePlayer = fromCode.getOnlinePlayer();
             if (onlinePlayer != null) {
                 if (
                         onlinePlayer.getOpenInventory().getTopInventory() instanceof CustomInventory customInventory
@@ -241,9 +243,9 @@ public class BotHandler {
         }
     }
 
-    private void handleSkin(@NotNull String link) throws IllegalArgumentException {
-        PlayerFile playerFile = this.playerInfo.getPlayerFile();
-        String skinName = this.messageString;
+    private void handleSkin(final @NotNull String link) throws IllegalArgumentException {
+        final PlayerFile playerFile = this.playerInfo.getPlayerFile();
+        final String skinName = this.messageString;
 
         if (playerFile.containsSkin(skinName)) {
             getInstance().runTask(() -> this.handleEditTask(link, skinName));
@@ -261,7 +263,7 @@ public class BotHandler {
         }
 
         if (playerFile.hasAvailableSkinSlot()) {
-            Skin skin = Skin.create(skinName, link);
+            final Skin skin = Skin.create(skinName, link);
 
             if (skin == null) {
                 this.reply(LanguageFile.renderTranslation("ms.discord.skin.service_unavailable"));
@@ -280,7 +282,8 @@ public class BotHandler {
                     )
             );
 
-            Player player = this.playerInfo.getOnlinePlayer();
+            final Player player = this.playerInfo.getOnlinePlayer();
+
             if (player != null) {
                 MSLogger.fine(
                         player,
@@ -306,17 +309,17 @@ public class BotHandler {
     }
 
     private void handleEditTask(
-            @NotNull String link,
-            @NotNull String skinName
+            final @NotNull String link,
+            final @NotNull String skinName
     ) {
-        PlayerFile playerFile = this.playerInfo.getPlayerFile();
-        Player player = this.playerInfo.getOnlinePlayer();
-        String variantYes = LanguageFile.renderTranslation("ms.discord.skin.variant.yes");
-        String variantNo = LanguageFile.renderTranslation("ms.discord.skin.variant.no");
+        final PlayerFile playerFile = this.playerInfo.getPlayerFile();
+        final Player player = this.playerInfo.getOnlinePlayer();
+        final String variantYes = LanguageFile.renderTranslation("ms.discord.skin.variant.yes");
+        final String variantNo = LanguageFile.renderTranslation("ms.discord.skin.variant.no");
 
         this.waitingReplyTask = () -> {
             if (this.messageString.equalsIgnoreCase(variantYes)) {
-                Skin skin = Skin.create(skinName, link);
+                final Skin skin = Skin.create(skinName, link);
 
                 if (skin == null) {
                     this.reply(LanguageFile.renderTranslation("ms.discord.skin.service_unavailable"));
@@ -350,22 +353,23 @@ public class BotHandler {
                 this.reply(LanguageFile.renderTranslation("ms.discord.unknown_command"));
                 return false;
             }
+
             return true;
         };
     }
 
     private void handleShowSkinListTask() {
-        PlayerFile playerFile = this.playerInfo.getPlayerFile();
-        String variantYes = LanguageFile.renderTranslation("ms.discord.skin.variant.yes");
-        String variantNo = LanguageFile.renderTranslation("ms.discord.skin.variant.no");
+        final PlayerFile playerFile = this.playerInfo.getPlayerFile();
+        final String variantYes = LanguageFile.renderTranslation("ms.discord.skin.variant.yes");
+        final String variantNo = LanguageFile.renderTranslation("ms.discord.skin.variant.no");
 
         this.waitingReplyTask = () -> {
             if (this.messageString.equalsIgnoreCase(variantYes)) {
-                var skins = playerFile.getSkins();
-                StringBuilder skinList = new StringBuilder();
+                final var skins = playerFile.getSkins();
+                final StringBuilder skinList = new StringBuilder();
 
                 for (int i = 0; i < skins.size(); i++) {
-                    String name = skins.get(i).getName();
+                    final String name = skins.get(i).getName();
                     skinList.append("\n").append(i + 1).append(" : \"").append(name).append("\"");
                 }
 
@@ -385,6 +389,7 @@ public class BotHandler {
                 this.reply(LanguageFile.renderTranslation("ms.discord.unknown_command"));
                 return false;
             }
+
             return true;
         };
     }
@@ -396,7 +401,7 @@ public class BotHandler {
                 return true;
             }
 
-            byte skinIndex;
+            final byte skinIndex;
             try {
                 skinIndex = Byte.parseByte(this.messageString);
             } catch (NumberFormatException e) {
@@ -404,7 +409,7 @@ public class BotHandler {
                 return false;
             }
 
-            Skin skin = this.playerInfo.getPlayerFile().getSkin(skinIndex - 1);
+            final Skin skin = this.playerInfo.getPlayerFile().getSkin(skinIndex - 1);
 
             if (skin == null) {
                 this.reply(LanguageFile.renderTranslation("ms.discord.skin.invalid_index"));
@@ -416,7 +421,7 @@ public class BotHandler {
         };
     }
 
-    private void handleSkinTask(@NotNull Skin skin) {
+    private void handleSkinTask(final @NotNull Skin skin) {
         this.replyEmbed(LanguageFile.renderTranslation(translatable("ms.discord.skin.list_of_skin_actions")));
 
         this.waitingReplyTask = () -> {
@@ -425,7 +430,7 @@ public class BotHandler {
                 return true;
             }
 
-            byte actionIndex;
+            final byte actionIndex;
             try {
                 actionIndex = Byte.parseByte(this.messageString);
             } catch (NumberFormatException e) {
@@ -442,30 +447,31 @@ public class BotHandler {
                     return false;
                 }
             }
+
             return true;
         };
     }
 
-    private void handleEditImageTask(@NotNull Skin editableSkin) {
-        PlayerFile playerFile = this.playerInfo.getPlayerFile();
-        Player player = this.playerInfo.getOnlinePlayer();
-        String skinName = editableSkin.getName();
+    private void handleEditImageTask(final @NotNull Skin editableSkin) {
+        final PlayerFile playerFile = this.playerInfo.getPlayerFile();
+        final Player player = this.playerInfo.getOnlinePlayer();
+        final String skinName = editableSkin.getName();
 
         this.replyEmbed(LanguageFile.renderTranslation(translatable("ms.discord.skin.action.edit.info")));
 
         this.waitingReplyTask = () -> {
-            var attachments = this.message.getAttachments();
-            int attachmentSize = attachments.size();
+            final var attachments = this.message.getAttachments();
+            final int attachmentSize = attachments.size();
 
             if (attachmentSize > 1) {
                 this.reply(LanguageFile.renderTranslation("ms.discord.skin.only_one_img"));
                 return false;
             } else if (attachmentSize == 1) {
-                Message.Attachment attachment = attachments.get(0);
-                String link = attachment.getUrl();
+                final Message.Attachment attachment = attachments.get(0);
+                final String link = attachment.getUrl();
 
                 try {
-                    Skin skin = Skin.create(skinName, link);
+                    final Skin skin = Skin.create(skinName, link);
 
                     if (skin == null) {
                         this.reply(LanguageFile.renderTranslation("ms.discord.skin.service_unavailable"));
@@ -504,15 +510,15 @@ public class BotHandler {
         };
     }
 
-    private void handleEditNameTask(@NotNull Skin editableSkin) {
-        Player player = this.playerInfo.getOnlinePlayer();
-        PlayerFile playerFile = this.playerInfo.getPlayerFile();
-        String oldName = editableSkin.getName();
+    private void handleEditNameTask(final @NotNull Skin editableSkin) {
+        final Player player = this.playerInfo.getOnlinePlayer();
+        final PlayerFile playerFile = this.playerInfo.getPlayerFile();
+        final String oldName = editableSkin.getName();
 
         this.replyEmbed(LanguageFile.renderTranslation(translatable("ms.discord.skin.action.rename.info")));
 
         this.waitingReplyTask = () -> {
-            String newName = this.messageString;
+            final String newName = this.messageString;
 
             if (!Skin.matchesNameRegex(newName)) {
                 this.reply(LanguageFile.renderTranslation("ms.discord.skin.invalid_name_regex"));
@@ -558,13 +564,14 @@ public class BotHandler {
                         )
                 );
             }
+
             return true;
         };
     }
 
-    private void handleDeleteTask(@NotNull Skin skin) {
-        Player player = this.playerInfo.getOnlinePlayer();
-        String skinName = skin.getName();
+    private void handleDeleteTask(final @NotNull Skin skin) {
+        final Player player = this.playerInfo.getOnlinePlayer();
+        final String skinName = skin.getName();
 
         this.playerInfo.getPlayerFile().removeSkin(skin);
         this.replyEmbed(LanguageFile.renderTranslation(

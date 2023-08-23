@@ -20,16 +20,15 @@ public class PlayerSettings {
     private final @NotNull Parameter<ResourcePack.Type> resourcePackType;
     private final @NotNull Parameter<Skin> skin;
 
-    public PlayerSettings(
-            @NotNull PlayerFile playerFile
-    ) {
+    public PlayerSettings(final @NotNull PlayerFile playerFile) {
         this.playerFile = playerFile;
         this.config = playerFile.getConfig();
 
-        ResourcePack.Type resourcePackType = null;
+        ResourcePack.Type resourcePackType;
         try {
             resourcePackType = ResourcePack.Type.valueOf(this.config.getString("settings.resource-pack.resource-pack-type", "NULL"));
         } catch (IllegalArgumentException e) {
+            resourcePackType = ResourcePack.Type.NULL;
             MSLogger.log(Level.SEVERE, "Incorrect resource-pack type in : " + playerFile.getFile().getName(), e);
         }
         this.resourcePackType = new Parameter<>("settings.resource-pack.resource-pack-type", resourcePackType);
@@ -45,7 +44,7 @@ public class PlayerSettings {
         return this.resourcePackType.getValue();
     }
 
-    public void setResourcePackType(@Nullable ResourcePack.Type resourcePackType) {
+    public void setResourcePackType(final @Nullable ResourcePack.Type resourcePackType) {
         this.resourcePackType.setValue(resourcePackType);
         this.resourcePackType.setForYaml(
                 this.config,
@@ -63,7 +62,7 @@ public class PlayerSettings {
         return this.skin.getValue();
     }
 
-    public void setSkin(@Nullable Skin skin) {
+    public void setSkin(final @Nullable Skin skin) {
         this.skin.setValue(skin);
         this.skin.setForYaml(
                 this.config,
@@ -82,32 +81,32 @@ public class PlayerSettings {
         protected V value;
 
         public Parameter(
-                @NotNull String path,
-                V value
+                final @NotNull String path,
+                final V value
         ) {
             this.path = path;
             this.value = value;
         }
 
-        public void setForYaml(@NotNull YamlConfiguration yamlConfiguration) {
+        public void setForYaml(final @NotNull YamlConfiguration yamlConfiguration) {
             this.setForYaml(yamlConfiguration, this.value);
         }
 
         public void setForYaml(
-                @NotNull YamlConfiguration yamlConfiguration,
-                @Nullable Object value
+                final @NotNull YamlConfiguration yamlConfiguration,
+                final @Nullable Object value
         ) {
             yamlConfiguration.set(this.path, value);
         }
 
-        public void saveForFile(@NotNull PlayerFile playerFile) {
+        public void saveForFile(final @NotNull PlayerFile playerFile) {
             this.setForYaml(playerFile.getConfig());
             playerFile.save();
         }
 
         public void saveForFile(
-                @NotNull PlayerFile playerFile,
-                Object value
+                final @NotNull PlayerFile playerFile,
+                final Object value
         ) {
             this.setForYaml(
                     playerFile.getConfig(),
@@ -124,7 +123,7 @@ public class PlayerSettings {
             return this.value;
         }
 
-        public void setValue(V value) {
+        public void setValue(final V value) {
             this.value = value;
         }
     }

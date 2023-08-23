@@ -26,8 +26,8 @@ public class RecipeEntry {
      *                         be shown in the craft menu
      */
     public RecipeEntry(
-            @NotNull Recipe recipe,
-            boolean showInCraftsMenu
+            final @NotNull Recipe recipe,
+            final boolean showInCraftsMenu
     ) {
         this.recipe = recipe;
         this.showInCraftsMenu = showInCraftsMenu && isSupportedInCraftsMenu(recipe);
@@ -50,22 +50,22 @@ public class RecipeEntry {
     }
 
     /**
-     * @return A string representation of this RecipeEntry
-     */
-    @Override
-    public String toString() {
-        return "RecipeEntry{" +
-                "recipe=" + this.recipe +
-                ", showInCraftsMenu=" + this.showInCraftsMenu +
-                '}';
-    }
-
-    /**
      * @param recipe The Bukkit Recipe object
      * @return True if the recipe type is supported in
      *         the {@link CraftsMenu}
      */
-    public static boolean isSupportedInCraftsMenu(@NotNull Recipe recipe) {
+    public static boolean isSupportedInCraftsMenu(final @NotNull Recipe recipe) {
         return recipe instanceof ShapedRecipe;
+    }
+
+    /**
+     * @return A string representation of this RecipeEntry
+     */
+    @Override
+    public @NotNull String toString() {
+        return "RecipeEntry{" +
+                "recipe=" + this.recipe +
+                ", showInCraftsMenu=" + this.showInCraftsMenu +
+                '}';
     }
 }

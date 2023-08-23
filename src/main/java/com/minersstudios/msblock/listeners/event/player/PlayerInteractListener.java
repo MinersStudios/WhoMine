@@ -166,8 +166,8 @@ public class PlayerInteractListener extends AbstractMSListener {
     );
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
-        Block clickedBlock = event.getClickedBlock();
+    public void onPlayerInteract(final @NotNull PlayerInteractEvent event) {
+        final Block clickedBlock = event.getClickedBlock();
         EquipmentSlot hand = event.getHand();
 
         if (
@@ -176,16 +176,16 @@ public class PlayerInteractListener extends AbstractMSListener {
                 || event.getAction() != Action.RIGHT_CLICK_BLOCK
         ) return;
 
-        BlockFace blockFace = event.getBlockFace();
-        Player player = event.getPlayer();
-        Material blockType = clickedBlock.getType();
-        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        final BlockFace blockFace = event.getBlockFace();
+        final Player player = event.getPlayer();
+        final Material blockType = clickedBlock.getType();
+        final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
         if (
                 Tag.SHULKER_BOXES.isTagged(blockType)
                 && clickedBlock.getRelative(BlockFace.UP).getType() == Material.NOTE_BLOCK
-                && clickedBlock.getState() instanceof ShulkerBox shulkerBox
-                && clickedBlock.getBlockData() instanceof Directional directional
+                && clickedBlock.getState() instanceof final ShulkerBox shulkerBox
+                && clickedBlock.getBlockData() instanceof final Directional directional
                 && BlockUtils.REPLACE.contains(clickedBlock.getRelative(directional.getFacing()).getType())
         ) {
             event.setCancelled(true);
@@ -197,24 +197,24 @@ public class PlayerInteractListener extends AbstractMSListener {
             hand = EquipmentSlot.HAND;
         }
 
-        Block blockAtFace = clickedBlock.getRelative(blockFace);
-        ItemStack itemInHand = player.getInventory().getItem(hand);
-        Location interactionPoint = getInteractionPoint(player.getEyeLocation(), 8);
-        boolean validGameMode = player.getGameMode() != GameMode.ADVENTURE && player.getGameMode() != GameMode.SPECTATOR;
+        final Block blockAtFace = clickedBlock.getRelative(blockFace);
+        final ItemStack itemInHand = player.getInventory().getItem(hand);
+        final Location interactionPoint = getInteractionPoint(player.getEyeLocation(), 8);
+        final boolean validGameMode = player.getGameMode() != GameMode.ADVENTURE && player.getGameMode() != GameMode.SPECTATOR;
 
         if (
-                clickedBlock.getBlockData() instanceof NoteBlock noteBlock
+                clickedBlock.getBlockData() instanceof final NoteBlock noteBlock
                 && validGameMode
                 && !itemInHand.getType().isAir()
                 && (hand == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
                 && !CustomBlockRegistry.isCustomBlock(itemInHand)
                 && interactionPoint != null
         ) {
-            CustomBlockData clickedCustomBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElseThrow();
+            final CustomBlockData clickedCustomBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElseThrow();
 
             if (blockType == Material.NOTE_BLOCK) {
-                CustomBlock customBlock = new CustomBlock(clickedBlock, clickedCustomBlockData);
-                CustomBlockRightClickEvent rightClickEvent = new CustomBlockRightClickEvent(customBlock, player, hand, blockFace, interactionPoint);
+                final CustomBlock customBlock = new CustomBlock(clickedBlock, clickedCustomBlockData);
+                final CustomBlockRightClickEvent rightClickEvent = new CustomBlockRightClickEvent(customBlock, player, hand, blockFace, interactionPoint);
 
                 Bukkit.getPluginManager().callEvent(rightClickEvent);
 
@@ -238,30 +238,30 @@ public class PlayerInteractListener extends AbstractMSListener {
                     && !player.isSneaking()
             ) return;
 
-            Block replaceableBlock =
+            final Block replaceableBlock =
                     BlockUtils.REPLACE.contains(clickedBlock.getType())
                     ? clickedBlock
                     : blockAtFace;
 
-            for (var nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
+            for (final var nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
                 if (!IGNORABLE_ENTITIES.contains(nearbyEntity.getType())) return;
             }
 
-            CustomBlockData customBlockData = CustomBlockRegistry.fromItemStack(itemInHand).orElseThrow();
-            BlockSettings blockSettings = customBlockData.getBlockSettings();
-            BlockSettings.Placing placing = blockSettings.getPlacing();
-            PlacingType placingType = placing.type();
-            CustomBlock customBlock = new CustomBlock(replaceableBlock, customBlockData);
+            final CustomBlockData customBlockData = CustomBlockRegistry.fromItemStack(itemInHand).orElseThrow();
+            final BlockSettings blockSettings = customBlockData.getBlockSettings();
+            final BlockSettings.Placing placing = blockSettings.getPlacing();
+            final PlacingType placingType = placing.type();
+            final CustomBlock customBlock = new CustomBlock(replaceableBlock, customBlockData);
 
             if (placingType instanceof PlacingType.Default) {
                 customBlock.place(player, hand);
             } else if (placingType instanceof PlacingType.Directional) {
                 customBlock.place(player, hand, blockFace, null);
-            } else if (placingType instanceof PlacingType.Orientable orientable) {
-                Location playerLocation = player.getLocation();
-                float yaw = playerLocation.getYaw();
-                float pitch = playerLocation.getPitch();
-                var blockAxes = orientable.getMap().keySet();
+            } else if (placingType instanceof final PlacingType.Orientable orientable) {
+                final Location playerLocation = player.getLocation();
+                final float yaw = playerLocation.getYaw();
+                final float pitch = playerLocation.getPitch();
+                final var blockAxes = orientable.getMap().keySet();
 
                 customBlock.place(player, hand, null, getAxisByEyes(yaw, pitch, blockAxes));
             }
@@ -269,34 +269,34 @@ public class PlayerInteractListener extends AbstractMSListener {
     }
 
     private static void useItemInHand(
-            @NotNull Player player,
-            @NotNull Location interactionPoint,
-            @NotNull EquipmentSlot hand,
-            @NotNull ItemStack itemInHand,
-            @NotNull BlockFace blockFace,
-            @NotNull Block blockAtFace,
-            @NotNull CustomBlockData clickedCustomBlockData
+            final @NotNull Player player,
+            final @NotNull Location interactionPoint,
+            final @NotNull EquipmentSlot hand,
+            final @NotNull ItemStack itemInHand,
+            final @NotNull BlockFace blockFace,
+            final @NotNull Block blockAtFace,
+            final @NotNull CustomBlockData clickedCustomBlockData
     ) {
-        BlockData materialBlockData = BlockUtils.getBlockDataByMaterial(itemInHand.getType());
+        final BlockData materialBlockData = BlockUtils.getBlockDataByMaterial(itemInHand.getType());
 
         if (SPAWNABLE_ITEMS.contains(itemInHand.getType())) {
             new UseBucketsAndSpawnableItems(player, blockAtFace, blockFace, itemInHand);
         } else if (Tag.SLABS.isTagged(itemInHand.getType())) {
+            final Material itemMaterial = itemInHand.getType();
             boolean placeDouble = true;
-            Material itemMaterial = itemInHand.getType();
 
             if (blockAtFace.getType() != itemMaterial) {
                 useOn(player, hand, itemInHand, blockAtFace);
                 placeDouble = false;
             }
 
-            if (!(blockAtFace.getBlockData() instanceof Slab slab)) return;
+            if (!(blockAtFace.getBlockData() instanceof final Slab slab)) return;
 
             if (
                     placeDouble
                     && blockAtFace.getType() == itemMaterial
             ) {
-                SoundGroup soundGroup = slab.getSoundGroup();
+                final SoundGroup soundGroup = slab.getSoundGroup();
 
                 slab.setType(Slab.Type.DOUBLE);
                 blockAtFace.getWorld().playSound(
@@ -331,7 +331,7 @@ public class PlayerInteractListener extends AbstractMSListener {
 
         if (!BlockUtils.REPLACE.contains(blockAtFace.getType())) return;
 
-        var placeableMaterials = clickedCustomBlockData.getBlockSettings().getPlacing().placeableMaterials();
+        final var placeableMaterials = clickedCustomBlockData.getBlockSettings().getPlacing().placeableMaterials();
 
         if (placeableMaterials.contains(itemInHand.getType())) {
             blockAtFace.setType(itemInHand.getType(), false);
@@ -340,7 +340,7 @@ public class PlayerInteractListener extends AbstractMSListener {
 
         if (materialBlockData instanceof FaceAttachable) {
             useOn(player, hand, itemInHand, blockAtFace);
-            FaceAttachable faceAttachable = (FaceAttachable) blockAtFace.getBlockData();
+            final FaceAttachable faceAttachable = (FaceAttachable) blockAtFace.getBlockData();
 
             switch (blockFace) {
                 case UP -> faceAttachable.setAttachedFace(FaceAttachable.AttachedFace.FLOOR);
@@ -349,7 +349,7 @@ public class PlayerInteractListener extends AbstractMSListener {
             }
 
             if (
-                    faceAttachable instanceof Directional directional
+                    faceAttachable instanceof final Directional directional
                     && faceAttachable.getAttachedFace() == FaceAttachable.AttachedFace.WALL
             ) {
                 directional.setFacing(blockFace);
@@ -361,14 +361,14 @@ public class PlayerInteractListener extends AbstractMSListener {
         } else if (materialBlockData instanceof Orientable) {
             useOn(player, hand, itemInHand, blockAtFace);
 
-            if (blockAtFace.getBlockData() instanceof Orientable orientable) {
-                Location location = player.getLocation();
+            if (blockAtFace.getBlockData() instanceof final Orientable orientable) {
+                final Location location = player.getLocation();
 
                 orientable.setAxis(getAxis(location.getYaw(), location.getPitch()));
                 blockAtFace.setBlockData(orientable);
             }
         } else if (
-                materialBlockData instanceof Directional directionalMaterial
+                materialBlockData instanceof final Directional directionalMaterial
                 && (
                         directionalMaterial.getFaces().contains(blockFace)
                         || Tag.STAIRS.isTagged(itemInHand.getType())
@@ -377,12 +377,12 @@ public class PlayerInteractListener extends AbstractMSListener {
         ) {
             useOn(player, hand, itemInHand, blockAtFace);
 
-            if (!(blockAtFace.getBlockData() instanceof Directional directional)) return;
+            if (!(blockAtFace.getBlockData() instanceof final Directional directional)) return;
 
             if (!(directional instanceof Bisected bisected)) {
                 directional.setFacing(blockFace);
             } else {
-                double y = interactionPoint.getY();
+                final double y = interactionPoint.getY();
 
                 bisected.setHalf(
                         y == 1.0d
@@ -402,20 +402,20 @@ public class PlayerInteractListener extends AbstractMSListener {
     }
 
     private static void useOn(
-            @NotNull Player player,
-            @NotNull EquipmentSlot hand,
-            @NotNull ItemStack itemInHand,
-            @NotNull Block blockAtFace
+            final @NotNull Player player,
+            final @NotNull EquipmentSlot hand,
+            final @NotNull ItemStack itemInHand,
+            final @NotNull Block blockAtFace
     ) {
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        Material itemType = itemInHand.getType();
-        BlockHitResult blockHitResult = new BlockHitResult(
+        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        final Material itemType = itemInHand.getType();
+        final BlockHitResult blockHitResult = new BlockHitResult(
                 serverPlayer.getEyePosition(),
                 serverPlayer.getDirection(),
                 ((CraftBlock) blockAtFace).getPosition(),
                 false
         );
-        UseOnContext useOnContext = new UseOnContext(
+        final UseOnContext useOnContext = new UseOnContext(
                 serverPlayer,
                 hand == EquipmentSlot.HAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
                 blockHitResult
@@ -426,9 +426,9 @@ public class PlayerInteractListener extends AbstractMSListener {
                 || CraftItemStack.asNMSCopy(itemInHand).useOn(useOnContext) == InteractionResult.FAIL
         ) return;
 
-        Location blockLocation = blockAtFace.getLocation();
-        BlockData blockData = itemType.createBlockData();
-        SoundGroup soundGroup = blockData.getSoundGroup();
+        final Location blockLocation = blockAtFace.getLocation();
+        final BlockData blockData = itemType.createBlockData();
+        final SoundGroup soundGroup = blockData.getSoundGroup();
 
         MSBlock.getCoreProtectAPI().logPlacement(player.getName(), blockLocation, itemType, blockData);
         blockAtFace.getWorld().playSound(
@@ -441,22 +441,22 @@ public class PlayerInteractListener extends AbstractMSListener {
     }
 
     public static @Nullable Location getInteractionPoint(
-            @NotNull Location location,
-            int maxDistance
+            final @NotNull Location location,
+            final int maxDistance
     ) {
-        World world = location.getWorld();
+        final World world = location.getWorld();
         if (world == null) return null;
-        RayTraceResult rayTraceResult = world.rayTraceBlocks(location, location.getDirection(), maxDistance, FluidCollisionMode.NEVER, true);
+        final RayTraceResult rayTraceResult = world.rayTraceBlocks(location, location.getDirection(), maxDistance, FluidCollisionMode.NEVER, true);
         return rayTraceResult == null || rayTraceResult.getHitBlock() == null
                 ? null
                 : rayTraceResult.getHitPosition().subtract(
-                rayTraceResult.getHitBlock().getLocation().toVector()
-        ).toLocation(world);
+                        rayTraceResult.getHitBlock().getLocation().toVector()
+                ).toLocation(world);
     }
 
     private static @NotNull Axis getAxis(
-            double x,
-            double y
+            final double x,
+            final double y
     ) {
         return x == 0.0d || x == 1.0d
                 ? Axis.X
@@ -466,9 +466,9 @@ public class PlayerInteractListener extends AbstractMSListener {
     }
 
     private static @NotNull Axis getAxisByEyes(
-            float yaw,
-            float pitch,
-            @NotNull Set<Axis> axes
+            final float yaw,
+            final float pitch,
+            final @NotNull Set<Axis> axes
     ) {
         return !(pitch >= -45.0f && pitch <= 45.0f) && axes.contains(Axis.Y)
                 ? Axis.Y
@@ -479,9 +479,9 @@ public class PlayerInteractListener extends AbstractMSListener {
     }
 
     private static @NotNull BlockFace getBlockFaceByEyes(
-            float yaw,
-            float pitch,
-            @NotNull Set<BlockFace> blockFaces
+            final float yaw,
+            final float pitch,
+            final @NotNull Set<BlockFace> blockFaces
     ) {
         return !(pitch >= -45.0f) && blockFaces.contains(BlockFace.DOWN)
                 ? BlockFace.DOWN
@@ -490,7 +490,7 @@ public class PlayerInteractListener extends AbstractMSListener {
                 : getBlockFaceByYaw(yaw);
     }
 
-    private static @NotNull BlockFace getBlockFaceByYaw(float yaw) {
+    private static @NotNull BlockFace getBlockFaceByYaw(final float yaw) {
         return FACES[Math.round(yaw / 90f) & 3];
     }
 }

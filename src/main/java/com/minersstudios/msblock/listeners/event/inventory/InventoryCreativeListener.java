@@ -18,16 +18,16 @@ import org.jetbrains.annotations.NotNull;
 public class InventoryCreativeListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onInventoryCreative(@NotNull InventoryCreativeEvent event) {
+    public void onInventoryCreative(final @NotNull InventoryCreativeEvent event) {
         if (!event.getClick().isCreativeAction()) return;
 
-        Player player = (Player) event.getWhoClicked();
-        Block targetBlock = PlayerUtils.getTargetBlock(player);
+        final Player player = (Player) event.getWhoClicked();
+        final Block targetBlock = PlayerUtils.getTargetBlock(player);
 
         if (
                 targetBlock == null
                 || event.getCursor().getType() != Material.NOTE_BLOCK
-                || !(targetBlock.getBlockData() instanceof NoteBlock noteBlock)
+                || !(targetBlock.getBlockData() instanceof final NoteBlock noteBlock)
         ) return;
 
         event.setCancelled(true);

@@ -20,7 +20,7 @@ public final class IDUtils {
      * @param stringId ID string
      * @return int ID from string or -1 if
      */
-    public static int parseID(@NotNull String stringId) {
+    public static int parseID(final @NotNull String stringId) {
         try {
             return Integer.parseInt(stringId);
         } catch (NumberFormatException e) {
@@ -33,7 +33,7 @@ public final class IDUtils {
      * @return True if string matches {@link #ID_REGEX}
      */
     @Contract(value = "null -> false")
-    public static boolean matchesIDRegex(@Nullable String string) {
+    public static boolean matchesIDRegex(final @Nullable String string) {
         return string != null && string.matches(ID_REGEX);
     }
 }

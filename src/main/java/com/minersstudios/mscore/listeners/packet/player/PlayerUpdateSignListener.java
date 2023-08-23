@@ -17,13 +17,13 @@ public class PlayerUpdateSignListener extends AbstractMSPacketListener {
     }
 
     @Override
-    public void onPacketReceive(@NotNull PacketEvent event) {
-        Player player = event.getPlayer();
-        SignMenu menu = SignMenu.getSignMenu(player);
+    public void onPacketReceive(final @NotNull PacketEvent event) {
+        final Player player = event.getPlayer();
+        final SignMenu menu = SignMenu.getSignMenu(player);
 
         if (
                 menu != null
-                && event.getPacketContainer().getPacket() instanceof ServerboundSignUpdatePacket packet
+                && event.getPacketContainer().getPacket() instanceof final ServerboundSignUpdatePacket packet
         ) {
             if (!menu.getResponse().test(player, packet.getLines())) {
                 this.getPlugin().runTaskLater(() -> menu.open(player), 2L);

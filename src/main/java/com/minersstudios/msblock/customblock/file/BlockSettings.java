@@ -33,9 +33,9 @@ public class BlockSettings {
      * @param placing  The Placing rules for the custom block
      */
     public BlockSettings(
-            float hardness,
-            @NotNull Tool tool,
-            @NotNull Placing placing
+            final float hardness,
+            final @NotNull Tool tool,
+            final @NotNull Placing placing
     ) {
         this.hardness = hardness;
         this.tool = tool;
@@ -54,7 +54,7 @@ public class BlockSettings {
      *
      * @param hardness A new hardness value for the custom block
      */
-    public void setHardness(float hardness) {
+    public void setHardness(final float hardness) {
         this.hardness = hardness;
     }
 
@@ -81,11 +81,11 @@ public class BlockSettings {
      * @return The calculated dig speed of the custom block for the
      *         player
      */
-    public float calculateDigSpeed(@NotNull Player player) {
+    public float calculateDigSpeed(final @NotNull Player player) {
         float base = 1.0f;
-        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-        Material material = itemInMainHand.getType();
-        PotionEffect potionEffect = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
+        final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        final Material material = itemInMainHand.getType();
+        final PotionEffect potionEffect = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
 
         if (this.tool.type == ToolType.fromMaterial(material)) {
             base = ToolTier.fromMaterial(material).getDigSpeed();
@@ -117,8 +117,8 @@ public class BlockSettings {
         private boolean force;
 
         private Tool(
-                @NotNull ToolType type,
-                boolean force
+                final @NotNull ToolType type,
+                final boolean force
         ) {
             this.type = type;
             this.force = force;
@@ -146,8 +146,8 @@ public class BlockSettings {
          */
         @Contract(value = "_, _ -> new")
         public static @NotNull Tool create(
-                @NotNull ToolType type,
-                boolean force
+                final @NotNull ToolType type,
+                final boolean force
         ) {
             return new Tool(type, force);
         }
@@ -165,7 +165,7 @@ public class BlockSettings {
          * @param type The new tool type for the custom block
          * @return The Tool object with the new tool type
          */
-        public @NotNull Tool type(@NotNull ToolType type) {
+        public @NotNull Tool type(final @NotNull ToolType type) {
             this.type = type;
             return this;
         }
@@ -183,7 +183,7 @@ public class BlockSettings {
          * @param force Whether the tool is forced
          * @return The Tool object with the new forced value
          */
-        public @NotNull Tool force(boolean force) {
+        public @NotNull Tool force(final boolean force) {
             this.force = force;
             return this;
         }
@@ -194,10 +194,7 @@ public class BlockSettings {
          */
         @Override
         public @NotNull String toString() {
-            return "Tool{" +
-                    "type=" + this.type +
-                    ", force=" + this.force +
-                    '}';
+            return "Tool{type=" + this.type + ", force=" + this.force + '}';
         }
     }
 
@@ -211,8 +208,8 @@ public class BlockSettings {
         private Set<Material> placeableMaterials;
 
         private Placing(
-                @NotNull PlacingType type,
-                @NotNull Set<Material> placeableMaterials
+                final @NotNull PlacingType type,
+                final @NotNull Set<Material> placeableMaterials
         ) {
             this.type = type;
             this.placeableMaterials = placeableMaterials;
@@ -230,8 +227,8 @@ public class BlockSettings {
          */
         @Contract(value = "_, _ -> new")
         public static @NotNull Placing create(
-                @NotNull PlacingType type,
-                @NotNull Set<Material> placeableMaterials
+                final @NotNull PlacingType type,
+                final @NotNull Set<Material> placeableMaterials
         ) {
             return new Placing(type, Collections.unmodifiableSet(placeableMaterials));
         }
@@ -248,8 +245,8 @@ public class BlockSettings {
          */
         @Contract("_, _ -> new")
         public static @NotNull Placing create(
-                @NotNull PlacingType type,
-                Material @NotNull ... placeableMaterials
+                final @NotNull PlacingType type,
+                final Material @NotNull ... placeableMaterials
         ) {
             return new Placing(type, Set.of(placeableMaterials));
         }
@@ -267,7 +264,7 @@ public class BlockSettings {
          * @param type The new placing type for the custom block
          * @return The Placing object with the new placing type
          */
-        public @NotNull Placing type(@NotNull PlacingType type) {
+        public @NotNull Placing type(final @NotNull PlacingType type) {
             this.type = type;
             return this;
         }
@@ -290,7 +287,7 @@ public class BlockSettings {
          *                           (like a Grass)
          * @return The Placing object with the new set of placeable
          */
-        public @NotNull Placing placeableMaterials(@NotNull Set<Material> placeableMaterials) {
+        public @NotNull Placing placeableMaterials(final @NotNull Set<Material> placeableMaterials) {
             this.placeableMaterials = Collections.unmodifiableSet(placeableMaterials);
             return this;
         }
@@ -303,7 +300,7 @@ public class BlockSettings {
          *                           be placed on the custom block
          * @return The Placing object with the new array of placeable
          */
-        public @NotNull Placing placeableMaterials(Material @NotNull ... placeableMaterials) {
+        public @NotNull Placing placeableMaterials(final Material @NotNull ... placeableMaterials) {
             this.placeableMaterials = Set.of(placeableMaterials);
             return this;
         }
@@ -314,10 +311,7 @@ public class BlockSettings {
          */
         @Override
         public @NotNull String toString() {
-            return "Placing{" +
-                    "type=" + this.type +
-                    ", placeableMaterials=" + this.placeableMaterials +
-                    '}';
+            return "Placing{type=" + this.type + ", placeableMaterials=" + this.placeableMaterials + '}';
         }
     }
 }

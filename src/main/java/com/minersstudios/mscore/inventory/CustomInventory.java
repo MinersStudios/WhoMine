@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.inventory;
 
-import com.minersstudios.mscore.inventory.actions.InventoryAction;
+import com.minersstudios.mscore.inventory.action.InventoryAction;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -51,7 +51,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @return This instance
      * @throws IllegalArgumentException If any of the buttons is out of inventory size
      */
-    @NotNull CustomInventory buttons(@NotNull Map<Integer, InventoryButton> buttons) throws IllegalArgumentException;
+    @NotNull CustomInventory buttons(final @NotNull Map<Integer, InventoryButton> buttons) throws IllegalArgumentException;
 
     /**
      * @return True if this inventory has any buttons
@@ -64,7 +64,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @param slot Slot to get button from
      * @return Button at specified slot or null if there is no button
      */
-    @Nullable InventoryButton buttonAt(@Range(from = 0, to = CustomInventoryImpl.LAST_SLOT) int slot);
+    @Nullable InventoryButton buttonAt(final @Range(from = 0, to = CustomInventoryImpl.LAST_SLOT) int slot);
 
     /**
      * Sets button at specified slot
@@ -75,8 +75,8 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @throws IllegalArgumentException If slot is out of inventory size
      */
     @NotNull CustomInventory buttonAt(
-            @Range(from = 0, to = CustomInventoryImpl.LAST_SLOT) int slot,
-            @Nullable InventoryButton button
+            final @Range(from = 0, to = CustomInventoryImpl.LAST_SLOT) int slot,
+            final @Nullable InventoryButton button
     ) throws IllegalArgumentException;
 
     /**
@@ -90,7 +90,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @param args New inventory arguments
      * @return This inventory
      */
-    @NotNull CustomInventory args(@NotNull List<Object> args);
+    @NotNull CustomInventory args(final @NotNull List<Object> args);
 
     /**
      * Gets inventory open action
@@ -107,7 +107,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @return This inventory
      * @see #openAction()
      */
-    @NotNull CustomInventory openAction(@Nullable InventoryAction<InventoryOpenEvent> openAction);
+    @NotNull CustomInventory openAction(final @Nullable InventoryAction<InventoryOpenEvent> openAction);
 
     /**
      * Gets inventory close action
@@ -124,7 +124,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @return This inventory
      * @see #closeAction()
      */
-    @NotNull CustomInventory closeAction(@Nullable InventoryAction<InventoryCloseEvent> closeAction);
+    @NotNull CustomInventory closeAction(final @Nullable InventoryAction<InventoryCloseEvent> closeAction);
 
     /**
      * Gets inventory click action
@@ -141,7 +141,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @return This inventory
      * @see #clickAction()
      */
-    @NotNull CustomInventory clickAction(@Nullable InventoryAction<InventoryClickEvent> clickAction);
+    @NotNull CustomInventory clickAction(final @Nullable InventoryAction<InventoryClickEvent> clickAction);
 
     /**
      * Gets bottom inventory click action
@@ -158,7 +158,14 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @return This inventory
      * @see #bottomClickAction()
      */
-    @NotNull CustomInventory bottomClickAction(@Nullable InventoryAction<InventoryClickEvent> bottomClickAction);
+    @NotNull CustomInventory bottomClickAction(final @Nullable InventoryAction<InventoryClickEvent> bottomClickAction);
+
+    /**
+     * Creates a clone of this inventory with all the contents copied into it
+     *
+     * @return Clone of this inventory
+     */
+    @NotNull CustomInventory clone();
 
     /**
      * Performs the opening action when the inventory is opened, if it is set
@@ -166,7 +173,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @param event Event that triggered the action
      * @see #openAction(InventoryAction)
      */
-    void doOpenAction(@NotNull InventoryOpenEvent event);
+    void doOpenAction(final @NotNull InventoryOpenEvent event);
 
     /**
      * Performs the closing action when the inventory is closed, if it is set
@@ -174,7 +181,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @param event Event that triggered the action
      * @see #closeAction(InventoryAction)
      */
-    void doCloseAction(@NotNull InventoryCloseEvent event);
+    void doCloseAction(final @NotNull InventoryCloseEvent event);
 
     /**
      * Performs the clicking action when the inventory is clicked, if it is set
@@ -184,7 +191,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @param event Event that triggered the action
      * @see #clickAction(InventoryAction)
      */
-    void doClickAction(@NotNull InventoryClickEvent event);
+    void doClickAction(final @NotNull InventoryClickEvent event);
 
     /**
      * Performs the clicking action when player is clicked bottom inventory, if it is set
@@ -192,14 +199,14 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @param event Event that triggered the action
      * @see #bottomClickAction(InventoryAction)
      */
-    void doBottomClickAction(@NotNull InventoryClickEvent event);
+    void doBottomClickAction(final @NotNull InventoryClickEvent event);
 
     /**
      * Opens this inventory for specified player
      *
      * @param player Player to open this inventory for
      */
-    void open(@NotNull Player player);
+    void open(final @NotNull Player player);
 
     /**
      * Checks if slot is in inventory bounds
@@ -207,12 +214,5 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @param slot Slot to validate
      * @throws IllegalArgumentException If slot is out of inventory size
      */
-    void validateSlot(int slot) throws IllegalArgumentException;
-
-    /**
-     * Creates a clone of this inventory with all the contents copied into it
-     *
-     * @return Clone of this inventory
-     */
-    @NotNull CustomInventory clone();
+    void validateSlot(final int slot) throws IllegalArgumentException;
 }

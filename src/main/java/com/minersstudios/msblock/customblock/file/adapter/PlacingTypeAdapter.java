@@ -31,12 +31,12 @@ public class PlacingTypeAdapter implements JsonSerializer<PlacingType>, JsonDese
 
     @Override
     public @NotNull PlacingType deserialize(
-            @NotNull JsonElement json,
-            @NotNull Type typeOfT,
-            @NotNull JsonDeserializationContext context
+            final @NotNull JsonElement json,
+            final @NotNull Type typeOfT,
+            final @NotNull JsonDeserializationContext context
     ) throws JsonParseException, IllegalArgumentException {
-        JsonObject jsonObject = json.getAsJsonObject();
-        String type = jsonObject.get(TYPE_KEY).getAsString();
+        final JsonObject jsonObject = json.getAsJsonObject();
+        final String type = jsonObject.get(TYPE_KEY).getAsString();
 
         switch (type.toUpperCase(Locale.ENGLISH)) {
             case DEFAULT_TYPE -> {
@@ -69,19 +69,19 @@ public class PlacingTypeAdapter implements JsonSerializer<PlacingType>, JsonDese
 
     @Override
     public @NotNull JsonElement serialize(
-            @NotNull PlacingType src,
-            @NotNull Type typeOfSrc,
-            @NotNull JsonSerializationContext context
+            final @NotNull PlacingType src,
+            final @NotNull Type typeOfSrc,
+            final @NotNull JsonSerializationContext context
     ) {
-        JsonObject jsonObject = new JsonObject();
+        final JsonObject jsonObject = new JsonObject();
 
-        if (src instanceof PlacingType.Default defaultType) {
+        if (src instanceof final PlacingType.Default defaultType) {
             jsonObject.addProperty(TYPE_KEY, DEFAULT_TYPE);
             jsonObject.add(
                     NOTE_BLOCK_DATA_KEY,
                     context.serialize(defaultType.getNoteBlockData())
             );
-        } else if (src instanceof PlacingType.Directional directionalType) {
+        } else if (src instanceof final PlacingType.Directional directionalType) {
             jsonObject.addProperty(TYPE_KEY, DIRECTIONAL_TYPE);
             jsonObject.add(
                     NOTE_BLOCK_DATA_KEY,
@@ -90,7 +90,7 @@ public class PlacingTypeAdapter implements JsonSerializer<PlacingType>, JsonDese
                             BLOCK_FACE_MAP_TYPE
                     )
             );
-        } else if (src instanceof PlacingType.Orientable orientableType) {
+        } else if (src instanceof final PlacingType.Orientable orientableType) {
             jsonObject.addProperty(TYPE_KEY, ORIENTABLE_TYPE);
             jsonObject.add(
                     NOTE_BLOCK_DATA_KEY,

@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
 public class InventoryDragListener extends AbstractMSListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onInventoryDrag(@NotNull InventoryDragEvent event) {
-        if (!(event.getInventory() instanceof CustomInventory customInventory)) return;
+    public void onInventoryDrag(final @NotNull InventoryDragEvent event) {
+        if (!(event.getInventory() instanceof final CustomInventory customInventory)) return;
 
-        for (int slot : event.getRawSlots()) {
+        for (final int slot : event.getRawSlots()) {
             if (slot >= 0 && slot < customInventory.getSize()) {
                 event.setCancelled(true);
                 break;

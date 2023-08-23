@@ -39,7 +39,7 @@ public final class SignMenu {
 
     private static final Map<Player, SignMenu> SIGN_MENU_MAP = new HashMap<>();
 
-    private SignMenu(@NotNull List<Component> text) {
+    private SignMenu(final @NotNull List<Component> text) {
         this.text = text;
     }
 
@@ -60,13 +60,13 @@ public final class SignMenu {
      */
     @Contract("_, _, _, _, _ -> new")
     public static @NotNull SignMenu create(
-            @NotNull Component first,
-            @NotNull Component second,
-            @NotNull Component third,
-            @NotNull Component fourth,
-            @NotNull BiPredicate<Player, String[]> response
+            final @NotNull Component first,
+            final @NotNull Component second,
+            final @NotNull Component third,
+            final @NotNull Component fourth,
+            final @NotNull BiPredicate<Player, String[]> response
     ) {
-        SignMenu menu = new SignMenu(Lists.newArrayList(first, second, third, fourth));
+        final SignMenu menu = new SignMenu(Lists.newArrayList(first, second, third, fourth));
         menu.response = response;
         return menu;
     }
@@ -76,7 +76,7 @@ public final class SignMenu {
      * @return SignMenu opened by the player,
      *         or null if the player does not have a SignMenu open
      */
-    public static @Nullable SignMenu getSignMenu(@NotNull Player player) {
+    public static @Nullable SignMenu getSignMenu(final @NotNull Player player) {
         return SIGN_MENU_MAP.get(player);
     }
 
@@ -115,10 +115,10 @@ public final class SignMenu {
         this.location = player.getLocation();
         this.location.setY(this.location.getY() - 4.0d);
 
-        ServerGamePacketListenerImpl connection = ((CraftPlayer) player).getHandle().connection;
-        BlockPos blockPos = new BlockPos(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ());
-        net.minecraft.network.chat.Component[] components = CraftSign.sanitizeLines(this.text);
-        SignBlockEntity sign = new SignBlockEntity(blockPos, Blocks.OAK_SIGN.defaultBlockState());
+        final ServerGamePacketListenerImpl connection = ((CraftPlayer) player).getHandle().connection;
+        final BlockPos blockPos = new BlockPos(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ());
+        final net.minecraft.network.chat.Component[] components = CraftSign.sanitizeLines(this.text);
+        final SignBlockEntity sign = new SignBlockEntity(blockPos, Blocks.OAK_SIGN.defaultBlockState());
 
         sign.setText(
                 sign.getFrontText()
@@ -142,7 +142,7 @@ public final class SignMenu {
      *
      * @param player The player to close the sign for
      */
-    public void close(@NotNull Player player) {
+    public void close(final @NotNull Player player) {
         if (SIGN_MENU_MAP.remove(player) != null) {
             player.sendBlockChange(this.location, this.location.getBlock().getBlockData());
         }

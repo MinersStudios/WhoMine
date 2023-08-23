@@ -20,22 +20,22 @@ public class GiveCommand {
     private static final TranslatableComponent GIVE_SUCCESS = translatable("ms.command.msitem.give.success");
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final String @NotNull ... args
     ) {
         if (args.length < 3) return false;
 
-        String playerArg = args[1];
-        String itemArg = args[2];
-        String amountArg = args.length == 4 ? args[3] : "1";
-        PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
+        final String playerArg = args[1];
+        final String itemArg = args[2];
+        final String amountArg = args.length == 4 ? args[3] : "1";
+        final PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
             return true;
         }
 
-        Player player = playerInfo.getOnlinePlayer();
+        final Player player = playerInfo.getOnlinePlayer();
 
         if (player == null) {
             MSLogger.warning(sender, PLAYER_NOT_ONLINE);
@@ -43,7 +43,7 @@ public class GiveCommand {
         }
 
         CustomItemType.fromKey(itemArg).ifPresentOrElse(customItem -> {
-            int amount;
+            final int amount;
 
             try {
                 amount = Integer.parseInt(amountArg);
@@ -52,9 +52,9 @@ public class GiveCommand {
                 return;
             }
 
-            ItemStack itemStack = customItem.getItem();
-            itemStack.setAmount(amount);
+            final ItemStack itemStack = customItem.getItem();
 
+            itemStack.setAmount(amount);
             player.getInventory().addItem(itemStack);
             MSLogger.fine(
                     sender,

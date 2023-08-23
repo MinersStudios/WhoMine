@@ -28,8 +28,8 @@ public class PagedInventory extends PagedCustomInventoryImpl<PagedInventory> imp
      * @param verticalSize Vertical size of the inventory
      */
     protected PagedInventory(
-            @NotNull Component title,
-            @Range(from = 1, to = 6) int verticalSize
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize
     ) {
         super(title, verticalSize);
     }
@@ -42,8 +42,8 @@ public class PagedInventory extends PagedCustomInventoryImpl<PagedInventory> imp
      * @return New paged inventory
      */
     public static @NotNull PagedInventory paged(
-            @NotNull Component title,
-            @Range(from = 1, to = 6) int verticalSize
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize
     ) {
         return new PagedInventory(title, verticalSize);
     }

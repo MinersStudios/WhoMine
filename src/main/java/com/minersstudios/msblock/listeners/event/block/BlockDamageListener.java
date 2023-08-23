@@ -21,10 +21,10 @@ import org.jetbrains.annotations.NotNull;
 public class BlockDamageListener extends AbstractMSListener {
 
     @EventHandler
-    public void onBlockDamage(@NotNull BlockDamageEvent event) {
-        Block block = event.getBlock();
-        Material blockType = block.getType();
-        Location blockLocation = block.getLocation().toCenterLocation();
+    public void onBlockDamage(final @NotNull BlockDamageEvent event) {
+        final Block block = event.getBlock();
+        final Material blockType = block.getType();
+        final Location blockLocation = block.getLocation().toCenterLocation();
 
         if (
                 blockType != Material.NOTE_BLOCK
@@ -33,11 +33,11 @@ public class BlockDamageListener extends AbstractMSListener {
             SoundGroup.wood().playHitSound(blockLocation);
         }
 
-        if (block.getBlockData() instanceof NoteBlock noteBlock) {
-            Player player = event.getPlayer();
-            CustomBlockData customBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault());
-            CustomBlock customBlock = new CustomBlock(block, customBlockData);
-            CustomBlockDamageEvent damageEvent = new CustomBlockDamageEvent(customBlock, player, event.getItemInHand());
+        if (block.getBlockData() instanceof final NoteBlock noteBlock) {
+            final Player player = event.getPlayer();
+            final CustomBlockData customBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault());
+            final CustomBlock customBlock = new CustomBlock(block, customBlockData);
+            final CustomBlockDamageEvent damageEvent = new CustomBlockDamageEvent(customBlock, player, event.getItemInHand());
 
             this.getPlugin().getServer().getPluginManager().callEvent(damageEvent);
 

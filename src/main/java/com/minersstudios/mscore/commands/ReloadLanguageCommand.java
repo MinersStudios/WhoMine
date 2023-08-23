@@ -13,10 +13,11 @@ public class ReloadLanguageCommand {
     private static final TranslatableComponent RELOAD_LANG_SUCCESS = translatable("ms.command.mscore.reload_language.success");
 
     public static boolean runCommand(@NotNull CommandSender sender) {
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
 
         LanguageFile.reloadLanguage();
         MSLogger.fine(sender, RELOAD_LANG_SUCCESS.args(text(System.currentTimeMillis() - time)));
+
         return true;
     }
 }

@@ -60,7 +60,7 @@ public class PacketListenersMap {
      * @see AbstractMSPacketListener
      * @see PacketType
      */
-    public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener> getListeners(@NotNull PacketType packetType) {
+    public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener> getListeners(final @NotNull PacketType packetType) {
         return packetType.isReceive()
                 ? Collections.unmodifiableCollection(this.receiveWhiteList.get(packetType))
                 : Collections.unmodifiableCollection(this.sendWhiteList.get(packetType));
@@ -75,7 +75,7 @@ public class PacketListenersMap {
      * @see AbstractMSPacketListener
      */
     public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener> listeners() {
-        var listeners = new HashSet<AbstractMSPacketListener>();
+        final var listeners = new HashSet<AbstractMSPacketListener>(this.listenersSize());
 
         listeners.addAll(this.sendWhiteList.values());
         listeners.addAll(this.receiveWhiteList.values());
@@ -112,7 +112,7 @@ public class PacketListenersMap {
      * @see PacketType
      */
     public @NotNull @UnmodifiableView Set<PacketType> packetTypeSet() {
-        var packetTypes = new HashSet<PacketType>();
+        final var packetTypes = new HashSet<PacketType>(this.packetTypesSize());
 
         packetTypes.addAll(this.sendWhiteList.keySet());
         packetTypes.addAll(this.receiveWhiteList.keySet());
@@ -148,9 +148,9 @@ public class PacketListenersMap {
      * @see AbstractMSPacketListener#getReceiveWhiteList()
      * @see AbstractMSPacketListener#getSendWhiteList()
      */
-    public void addListener(@NotNull AbstractMSPacketListener listener) {
-        var receiveWhiteList = listener.getReceiveWhiteList();
-        var sendWhiteList = listener.getSendWhiteList();
+    public void addListener(final @NotNull AbstractMSPacketListener listener) {
+        final var receiveWhiteList = listener.getReceiveWhiteList();
+        final var sendWhiteList = listener.getSendWhiteList();
 
         if (!receiveWhiteList.isEmpty()) {
             receiveWhiteList.forEach(packetType -> this.receiveWhiteList.put(packetType, listener));
@@ -169,9 +169,9 @@ public class PacketListenersMap {
      * @see AbstractMSPacketListener#getReceiveWhiteList()
      * @see AbstractMSPacketListener#getSendWhiteList()
      */
-    public void removeListener(@NotNull AbstractMSPacketListener listener) {
-        var receiveWhiteList = listener.getReceiveWhiteList();
-        var sendWhiteList = listener.getSendWhiteList();
+    public void removeListener(final @NotNull AbstractMSPacketListener listener) {
+        final var receiveWhiteList = listener.getReceiveWhiteList();
+        final var sendWhiteList = listener.getSendWhiteList();
 
         if (!receiveWhiteList.isEmpty()) {
             receiveWhiteList.forEach(packetType -> this.receiveWhiteList.remove(packetType, listener));
@@ -190,7 +190,7 @@ public class PacketListenersMap {
      *                   the associated packet listeners
      * @see PacketType
      */
-    public void removePacketType(@NotNull PacketType packetType) {
+    public void removePacketType(final @NotNull PacketType packetType) {
         if (packetType.isReceive()) {
             this.receiveWhiteList.removeAll(packetType);
         } else {
@@ -204,7 +204,7 @@ public class PacketListenersMap {
      * @param listener The packet listener to check for
      * @return True if the packet listener is present in the map
      */
-    public boolean containsListener(@NotNull AbstractMSPacketListener listener) {
+    public boolean containsListener(final @NotNull AbstractMSPacketListener listener) {
         return this.receiveWhiteList.containsValue(listener)
                 || this.sendWhiteList.containsValue(listener);
     }
@@ -216,7 +216,7 @@ public class PacketListenersMap {
      * @param packetType The packet type to check for
      * @return True if the packet type is present in the map
      */
-    public boolean containsPacketType(@NotNull PacketType packetType) {
+    public boolean containsPacketType(final @NotNull PacketType packetType) {
         return packetType.isReceive()
                 ? this.receiveWhiteList.containsKey(packetType)
                 : this.sendWhiteList.containsKey(packetType);
@@ -262,6 +262,6 @@ public class PacketListenersMap {
      * @see PacketType
      */
     public int listenersSize() {
-        return this.listeners().size();
+        return this.sendWhiteList.values().size() + this.receiveWhiteList.values().size();
     }
 }

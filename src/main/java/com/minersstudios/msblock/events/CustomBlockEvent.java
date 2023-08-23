@@ -12,7 +12,7 @@ public abstract class CustomBlockEvent extends Event {
      *
      * @param customBlock The custom block involved in this event
      */
-    public CustomBlockEvent(@NotNull CustomBlock customBlock) {
+    public CustomBlockEvent(final @NotNull CustomBlock customBlock) {
         this.customBlock = customBlock;
     }
 

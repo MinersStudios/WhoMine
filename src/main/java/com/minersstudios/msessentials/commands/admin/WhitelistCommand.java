@@ -53,16 +53,16 @@ public class WhitelistCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         if (args.length == 0) return false;
 
-        Server server = sender.getServer();
-        String actionArg = args[0];
-        String playerArg = args.length == 2 ? args[1] : null;
+        final Server server = sender.getServer();
+        final String actionArg = args[0];
+        final String playerArg = args.length == 2 ? args[1] : null;
 
         switch (actionArg) {
             case "reload" -> {
@@ -73,7 +73,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             case "add" -> {
                 if (playerArg == null) return false;
 
-                PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
+                final PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
 
                 if (playerInfo == null) {
                     MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -103,7 +103,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             case "remove" -> {
                 if (playerArg == null) return false;
 
-                PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
+                final PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
 
                 if (playerInfo == null) {
                     MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -138,15 +138,15 @@ public class WhitelistCommand implements MSCommandExecutor {
 
     @Override
     public @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         return switch (args.length) {
             case 1 -> TAB;
             case 2 -> {
-                var completions = new ArrayList<String>();
+                final var completions = new ArrayList<String>();
 
                 if (args[0].equals("remove")) {
                     for (var offlinePlayer : sender.getServer().getWhitelistedPlayers()) {

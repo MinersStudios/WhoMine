@@ -20,8 +20,8 @@ import java.util.Set;
  */
 public abstract class AbstractMSPacketListener {
     private MSPlugin plugin;
-    private final Set<PacketType> sendWhiteList = new HashSet<>();
-    private final Set<PacketType> receiveWhiteList = new HashSet<>();
+    private final Set<PacketType> sendWhiteList;
+    private final Set<PacketType> receiveWhiteList;
 
     /**
      * Packet listener constructor
@@ -31,10 +31,13 @@ public abstract class AbstractMSPacketListener {
      * @see PacketType
      */
     public AbstractMSPacketListener(
-            @NotNull PacketType first,
-            PacketType @NotNull ... other
+            final @NotNull PacketType first,
+            final PacketType @NotNull ... other
     ) {
-        Set<PacketType> whitelist = new HashSet<>(Set.of(other));
+        this.sendWhiteList = new HashSet<>();
+        this.receiveWhiteList = new HashSet<>();
+        final var whitelist = new HashSet<>(Set.of(other));
+
         whitelist.add(first);
 
         for (var packetType : whitelist) {
@@ -85,10 +88,13 @@ public abstract class AbstractMSPacketListener {
      *
      * @param plugin The plugin to register this listener to
      */
-    public final void register(@NotNull MSPlugin plugin) {
-        Preconditions.checkState(!this.isRegistered(), "Packet listener " + this + " already registered!");
+    public final void register(final @NotNull MSPlugin plugin) {
+        if (this.isRegistered()) {
+            throw new IllegalStateException("Packet listener " + this + " already registered!");
+        }
 
         this.plugin = plugin;
+
         MSPlugin.getGlobalCache().packetListenerMap.addListener(this);
     }
 
@@ -97,7 +103,7 @@ public abstract class AbstractMSPacketListener {
      *
      * @param event The packet event
      */
-    public void onPacketReceive(@NotNull PacketEvent event) {
+    public void onPacketReceive(final @NotNull PacketEvent event) {
         throw new UnsupportedOperationException("Packet receive not implemented for " + event.getPacketContainer().getType().getName());
     }
 
@@ -106,7 +112,7 @@ public abstract class AbstractMSPacketListener {
      *
      * @param event The packet event
      */
-    public void onPacketSend(@NotNull PacketEvent event) {
+    public void onPacketSend(final @NotNull PacketEvent event) {
         throw new UnsupportedOperationException("Packet send not implemented for " + event.getPacketContainer().getType().getName());
     }
 

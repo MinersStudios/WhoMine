@@ -30,12 +30,12 @@ public class PacketRegistry {
     private static final Map<PacketType, Class<?>> TYPE_TO_CLASS = new ConcurrentHashMap<>();
 
     static {
-        ConnectionProtocol[] protocols = ConnectionProtocol.values();
-        var serverMaps = new LinkedHashMap<ConnectionProtocol, Object2IntMap<?>>();
-        var clientMaps = new LinkedHashMap<ConnectionProtocol, Object2IntMap<?>>();
+        final ConnectionProtocol[] protocols = ConnectionProtocol.values();
+        final var serverMaps = new LinkedHashMap<ConnectionProtocol, Object2IntMap<?>>();
+        final var clientMaps = new LinkedHashMap<ConnectionProtocol, Object2IntMap<?>>();
         Field flowsField = null;
 
-        for (var field : ConnectionProtocol.class.getDeclaredFields()) {
+        for (final var field : ConnectionProtocol.class.getDeclaredFields()) {
             if (
                     field.getType() == Map.class
                     && Modifier.isFinal(field.getModifiers())
@@ -51,7 +51,7 @@ public class PacketRegistry {
             throw new RuntimeException("Could not find 'flows' field in ConnectionProtocol class");
         }
 
-        for (var protocol : protocols) {
+        for (final var protocol : protocols) {
             Map<?, ?> flowsMap;
 
             try {
@@ -60,13 +60,13 @@ public class PacketRegistry {
                 throw new RuntimeException("Failed to access flows packet map", e);
             }
 
-            for (var entry : flowsMap.entrySet()) {
-                var flow = (PacketFlow) entry.getKey();
-                var packetSet = entry.getValue();
+            for (final var entry : flowsMap.entrySet()) {
+                final var flow = (PacketFlow) entry.getKey();
+                final var packetSet = entry.getValue();
+                final Object2IntMap<?> packetMap;
                 Field packetMapField = null;
-                Object2IntMap<?> packetMap;
 
-                for (var field : packetSet.getClass().getDeclaredFields()) {
+                for (final var field : packetSet.getClass().getDeclaredFields()) {
                     if (
                             field.getType() == Object2IntMap.class
                             && Modifier.isFinal(field.getModifiers())
@@ -95,8 +95,8 @@ public class PacketRegistry {
             }
         }
 
-        for (var protocol : protocols) {
-            PacketProtocol packetProtocol = PacketProtocol.fromMinecraft(protocol);
+        for (final var protocol : protocols) {
+            final PacketProtocol packetProtocol = PacketProtocol.fromMinecraft(protocol);
 
             if (serverMaps.containsKey(protocol)) {
                 putPackets(serverMaps.get(protocol), packetProtocol, PacketFlow.SERVERBOUND);
@@ -143,12 +143,10 @@ public class PacketRegistry {
      *         packet class, or null if the packet class
      *         is not registered
      */
-    public static @Nullable PacketType getTypeFromClass(@NotNull Class<?> packet) {
-        if (packet == ClientboundBundlePacket.class) {
-            return PacketType.Play.Client.BUNDLE_DELIMITER;
-        }
-
-        return CLASS_TO_TYPE.get(packet);
+    public static @Nullable PacketType getTypeFromClass(final @NotNull Class<?> packet) {
+        return packet == ClientboundBundlePacket.class
+                ? PacketType.Play.Client.BUNDLE_DELIMITER
+                : CLASS_TO_TYPE.get(packet);
     }
 
     /**
@@ -161,7 +159,7 @@ public class PacketRegistry {
      *         {@link PacketType}, or null if the PacketType
      *         is not registered
      */
-    public static @NotNull Class<?> getClassFromType(@NotNull PacketType type) {
+    public static @NotNull Class<?> getClassFromType(final @NotNull PacketType type) {
         return TYPE_TO_CLASS.get(type);
     }
 
@@ -173,15 +171,15 @@ public class PacketRegistry {
      * @param flow      The flow for which to register the packets
      */
     private static void putPackets(
-            @NotNull Object2IntMap<?> packetMap,
-            @NotNull PacketProtocol protocol,
-            @NotNull PacketFlow flow
+            final @NotNull Object2IntMap<?> packetMap,
+            final @NotNull PacketProtocol protocol,
+            final @NotNull PacketFlow flow
     ) {
-        var map = protocol.getPackets().get(flow);
+        final var map = protocol.getPackets().get(flow);
 
-        for (var entry : packetMap.object2IntEntrySet()) {
-            var packetType = map.get(entry.getIntValue());
-            var packetClass = (Class<?>) entry.getKey();
+        for (final var entry : packetMap.object2IntEntrySet()) {
+            final var packetType = map.get(entry.getIntValue());
+            final var packetClass = (Class<?>) entry.getKey();
 
             CLASS_TO_TYPE.put(packetClass, packetType);
             TYPE_TO_CLASS.put(packetType, packetClass);

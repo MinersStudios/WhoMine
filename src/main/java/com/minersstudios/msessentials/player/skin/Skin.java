@@ -8,13 +8,13 @@ import com.minersstudios.msessentials.player.PlayerFile;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Material;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.RegEx;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -34,18 +34,19 @@ import java.util.regex.Pattern;
  *
  * @see <a href="https://wiki.vg/Mojang_API#UUID_-.3E_Profile_.2B_Skin.2FCape">Mojang API</a>
  */
-public class Skin {
+public class Skin implements ConfigurationSerializable {
     private final String name;
     private final String value;
     private final String signature;
 
-    private static final @RegEx String NAME_REGEX = "[a-zA-ZЀ-ӿ-0-9]{1,32}";
+    private static final String NAME_REGEX = "[a-zA-ZЀ-ӿ-0-9]{1,32}";
+    private static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor(Thread::new);
 
     private Skin(
-            @NotNull String name,
-            @NotNull String value,
-            @NotNull String signature
+            final @NotNull String name,
+            final @NotNull String value,
+            final @NotNull String signature
     ) {
         this.name = name;
         this.value = value;
@@ -64,9 +65,9 @@ public class Skin {
      */
     @Contract(value = "_, _, _ -> new")
     public static @NotNull Skin create(
-            @NotNull String name,
-            @NotNull String value,
-            @NotNull String signature
+            final @NotNull String name,
+            final @NotNull String value,
+            final @NotNull String signature
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(matchesNameRegex(name), "The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores");
         Preconditions.checkArgument(isValidBase64(value), "The value must be a valid Base64 string");
@@ -86,19 +87,19 @@ public class Skin {
      * @see <a href="https://wiki.vg/Mojang_API#UUID_-.3E_Profile_.2B_Skin.2FCape">Mojang API</a>
      */
     public static @Nullable Skin create(
-            @NotNull String name,
-            @NotNull String link
+            final @NotNull String name,
+            final @NotNull String link
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(matchesNameRegex(name), "The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores");
         Preconditions.checkArgument(isValidSkinImg(link), "The link must start with https:// and end with .png and the image must be 64x64 pixels");
 
-        AtomicInteger retryAttempts = new AtomicInteger(0);
+        final AtomicInteger retryAttempts = new AtomicInteger(0);
 
         do {
-            CompletableFuture<Skin> future = CompletableFuture.supplyAsync(() -> handleLink(name, link), EXECUTOR_SERVICE);
+            final var future = CompletableFuture.supplyAsync(() -> handleLink(name, link), EXECUTOR_SERVICE);
 
             try {
-                Skin skin = future.get();
+                final Skin skin = future.get();
                 if (skin != null) return skin;
             } catch (InterruptedException | ExecutionException e) {
                 MSLogger.log(Level.SEVERE, "An error occurred while attempting to retrieve a skin from a link", e);
@@ -135,9 +136,9 @@ public class Skin {
      * @return The head of the skin as an {@link ItemStack}
      */
     public @NotNull ItemStack getHead() {
-        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        final ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
+        final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
+        final GameProfile profile = new GameProfile(UUID.randomUUID(), null);
 
         profile.getProperties().put("textures", new Property("textures", this.value, this.signature));
         skullMeta.setPlayerProfile(CraftPlayerProfile.asBukkitCopy(profile));
@@ -152,7 +153,7 @@ public class Skin {
      * @return True if the skin's name, value, and signature are equal
      */
     @Contract("null -> false")
-    public boolean equals(@Nullable Skin skin) {
+    public boolean equals(final @Nullable Skin skin) {
         return skin != null
                 && this.name.equalsIgnoreCase(skin.getName())
                 && this.value.equals(skin.getValue())
@@ -167,8 +168,9 @@ public class Skin {
      * @return A map containing the name, value, and signature of the skin
      * @see #deserialize(String)
      */
-    public @NotNull Map<String, String> serialize() {
-        Map<String, String> serialized = new HashMap<>();
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        final var serialized = new HashMap<String, Object>();
 
         serialized.put("name", this.name);
         serialized.put("value", this.value);
@@ -189,9 +191,9 @@ public class Skin {
      * @see #serialize()
      * @see #create(String, String, String)
      */
-    public static @Nullable Skin deserialize(@NotNull String string) {
-        Map<String, String> map = new HashMap<>();
-        Matcher matcher = Pattern.compile("(name|value|signature)=([^,}]+)").matcher(string);
+    public static @Nullable Skin deserialize(final @NotNull String string) {
+        final var map = new HashMap<String, String>();
+        final Matcher matcher = Pattern.compile("(name|value|signature)=([^,}]+)").matcher(string);
 
         while (matcher.find()) {
             map.put(matcher.group(1).toLowerCase(Locale.ROOT), matcher.group(2));
@@ -199,9 +201,9 @@ public class Skin {
 
         if (map.size() != 3) return null;
 
-        String name = map.get("name");
-        String value = map.get("value");
-        String signature = map.get("signature");
+        final String name = map.get("name");
+        final String value = map.get("value");
+        final String signature = map.get("signature");
 
         if (
                 name == null
@@ -221,10 +223,10 @@ public class Skin {
      * @param link Link to be checked
      * @return True if the link starts with https:// and ends with .png and the image is 64x64
      */
-    public static boolean isValidSkinImg(@NotNull String link) {
+    public static boolean isValidSkinImg(final @NotNull String link) {
         if (!link.startsWith("https://") || !link.endsWith(".png")) return false;
         try {
-            BufferedImage image = ImageIO.read(new URL(link));
+            final BufferedImage image = ImageIO.read(new URL(link));
             return image.getWidth() == 64 && image.getHeight() == 64;
         } catch (IOException e) {
             return false;
@@ -236,8 +238,8 @@ public class Skin {
      * @return True if string matches {@link #NAME_REGEX}
      */
     @Contract(value = "null -> false")
-    public static boolean matchesNameRegex(@Nullable String string) {
-        return string != null && string.matches(NAME_REGEX);
+    public static boolean matchesNameRegex(final @Nullable String string) {
+        return string != null && NAME_PATTERN.matcher(string).matches();
     }
 
     /**
@@ -250,8 +252,8 @@ public class Skin {
      * @return The skin if it was successfully retrieved, otherwise null
      */
     private static @Nullable Skin handleLink(
-            String name,
-            String link
+            final @NotNull String name,
+            final @NotNull String link
     ) {
         MineSkinResponse response;
 
@@ -266,10 +268,10 @@ public class Skin {
 
         switch (response.getStatusCode()) {
             case 200 -> {
-                MineSkinJson json = response.getBodyResponse(MineSkinJson.class);
-                MineSkinJson.Data.Texture texture = json.data().texture();
-                String value = texture.value();
-                String signature = texture.signature();
+                final MineSkinJson json = response.getBodyResponse(MineSkinJson.class);
+                final MineSkinJson.Data.Texture texture = json.data().texture();
+                final String value = texture.value();
+                final String signature = texture.signature();
 
                 try {
                     return Skin.create(name, value, signature);
@@ -278,8 +280,8 @@ public class Skin {
                 }
             }
             case 500, 400 -> {
-                MineSkinErrorJson errorJson = response.getBodyResponse(MineSkinErrorJson.class);
-                String errorCode = errorJson.errorCode();
+                final MineSkinErrorJson errorJson = response.getBodyResponse(MineSkinErrorJson.class);
+                final String errorCode = errorJson.errorCode();
 
                 switch (errorCode) {
                     case "failed_to_create_id", "skin_change_failed" -> {
@@ -294,9 +296,9 @@ public class Skin {
                 }
             }
             case 403 -> {
-                MineSkinErrorJson errorJson = response.getBodyResponse(MineSkinErrorJson.class);
-                String errorCode = errorJson.errorCode();
-                String error = errorJson.error();
+                final MineSkinErrorJson errorJson = response.getBodyResponse(MineSkinErrorJson.class);
+                final String errorCode = errorJson.errorCode();
+                final String error = errorJson.error();
 
                 if (errorCode.equals("invalid_api_key")) {
                     MSLogger.severe("Api key is not invalid! Reason: " + error);
@@ -315,16 +317,16 @@ public class Skin {
                 }
             }
             case 429 -> {
-                MineSkinDelayErrorJson delayErrorJson = response.getBodyResponse(MineSkinDelayErrorJson.class);
-                Integer delay = delayErrorJson.delay();
-                Integer nextRequest = delayErrorJson.nextRequest();
+                final MineSkinDelayErrorJson delayErrorJson = response.getBodyResponse(MineSkinDelayErrorJson.class);
+                final Integer delay = delayErrorJson.delay();
+                final Integer nextRequest = delayErrorJson.nextRequest();
                 int sleepDuration = 2;
 
                 if (delay != null) {
                     sleepDuration = delay;
                 } else if (nextRequest != null) {
-                    Instant nextRequestInstant = Instant.ofEpochSecond(nextRequest);
-                    int duration = (int) Duration.between(Instant.now(), nextRequestInstant).getSeconds();
+                    final Instant nextRequestInstant = Instant.ofEpochSecond(nextRequest);
+                    final int duration = (int) Duration.between(Instant.now(), nextRequestInstant).getSeconds();
 
                     if (duration > 0) {
                         sleepDuration = duration;
@@ -347,7 +349,7 @@ public class Skin {
      * @param src String to be checked
      * @return True if string is in valid Base64 scheme
      */
-    private static boolean isValidBase64(@NotNull String src) {
+    private static boolean isValidBase64(final @NotNull String src) {
         try {
             Base64.getDecoder().decode(src);
             return true;

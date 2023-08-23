@@ -56,8 +56,8 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
      * @see #KEY_REGEX
      */
     protected CustomItemImpl(
-            @NotNull String key,
-            @NotNull ItemStack itemStack
+            final @NotNull String key,
+            final @NotNull ItemStack itemStack
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(KEY_PATTERN.matcher(key).matches(), "Key '" + key + "' does not match regex " + KEY_REGEX);
         Preconditions.checkArgument(!itemStack.getType().isAir(), "Item type cannot be air! Check " + key);
@@ -66,8 +66,8 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
         this.itemStack = itemStack;
         this.recipes = new ArrayList<>();
 
-        ItemMeta meta = itemStack.getItemMeta();
-        PersistentDataContainer container = meta.getPersistentDataContainer();
+        final ItemMeta meta = itemStack.getItemMeta();
+        final PersistentDataContainer container = meta.getPersistentDataContainer();
 
         if (!container.has(CustomItemType.TYPE_NAMESPACED_KEY, PersistentDataType.STRING)) {
             container.set(
@@ -93,8 +93,8 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
      */
     @Contract("_, _ -> new")
     public static @NotNull CustomItem create(
-            @NotNull String key,
-            @NotNull ItemStack itemStack
+            final @NotNull String key,
+            final @NotNull ItemStack itemStack
     ) throws IllegalArgumentException {
         return new CustomItemImpl(key, itemStack) {};
     }
@@ -116,9 +116,9 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
      */
     @Contract("_, _, _ -> new")
     public static @NotNull CustomItem create(
-            @NotNull String key,
-            @NotNull ItemStack itemStack,
-            @NotNull Function<CustomItem, List<Map.Entry<Recipe, Boolean>>> initRecipes
+            final @NotNull String key,
+            final @NotNull ItemStack itemStack,
+            final @NotNull Function<CustomItem, List<Map.Entry<Recipe, Boolean>>> initRecipes
     ) throws IllegalArgumentException {
         return new CustomItemImpl(key, itemStack) {
 
@@ -140,7 +140,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
     }
 
     @Override
-    public final void setItem(@NotNull ItemStack itemStack) {
+    public final void setItem(final @NotNull ItemStack itemStack) {
         this.itemStack = itemStack;
     }
 
@@ -150,7 +150,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
     }
 
     @Override
-    public final void setRecipes(@Nullable List<Map.Entry<Recipe, Boolean>> recipes) {
+    public final void setRecipes(final @Nullable List<Map.Entry<Recipe, Boolean>> recipes) {
         this.unregisterRecipes();
         this.recipes.clear();
 
@@ -164,7 +164,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
     @Contract("null -> false")
     @Override
-    public final boolean isSimilar(@Nullable ItemStack itemStack) {
+    public final boolean isSimilar(final @Nullable ItemStack itemStack) {
         if (
                 itemStack == null
                 || itemStack.getType() != this.itemStack.getType()
@@ -178,7 +178,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
     @Contract("null -> false")
     @Override
-    public final boolean isSimilar(@Nullable CustomItem customItem) {
+    public final boolean isSimilar(final @Nullable CustomItem customItem) {
         return customItem != null
                 && (
                         customItem == this
@@ -190,8 +190,10 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
     @Override
     public <T extends CustomItem> @NotNull T copy() {
         try {
-            CustomItemImpl clone = (CustomItemImpl) super.clone();
+            final CustomItemImpl clone = (CustomItemImpl) super.clone();
+
             clone.itemStack = this.itemStack.clone();
+
             return (T) clone;
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("An error occurred while cloning '" + this.namespacedKey + "'", e);
@@ -205,13 +207,13 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
     @Override
     public final void registerRecipes() {
-        MSItem plugin = MSItem.getInstance();
-        Server server = plugin.getServer();
+        final MSItem plugin = MSItem.getInstance();
+        final Server server = plugin.getServer();
 
         this.setRecipes(this.initRecipes());
 
-        for (var entry : this.recipes) {
-            Recipe recipe = entry.getKey();
+        for (final var entry : this.recipes) {
+            final Recipe recipe = entry.getKey();
 
             plugin.runTask(() -> server.addRecipe(recipe));
 
@@ -223,10 +225,10 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
     @Override
     public final void unregisterRecipes() {
-        for (var entry : this.getRecipes()) {
-            Recipe recipe = entry.getKey();
+        for (final var entry : this.getRecipes()) {
+            final Recipe recipe = entry.getKey();
 
-            if (recipe instanceof Keyed keyed) {
+            if (recipe instanceof final Keyed keyed) {
                 Bukkit.removeRecipe(keyed.getKey());
 
                 if (entry.getValue()) {

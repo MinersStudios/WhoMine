@@ -23,12 +23,16 @@ public final class MSBlock extends MSPlugin {
     private Config config;
     private CoreProtectAPI coreProtectAPI;
 
+    public MSBlock() {
+        instance = this;
+    }
+
     @Override
     public void load() {
-        MinecraftServer server = MinecraftServer.getServer();
-        File paperGlobalConfig = new File("config/paper-global.yml");
-        YamlConfiguration paperConfig = YamlConfiguration.loadConfiguration(paperGlobalConfig);
-        String noteBlockUpdates = "block-updates.disable-noteblock-updates";
+        final MinecraftServer server = MinecraftServer.getServer();
+        final File paperGlobalConfig = new File("config/paper-global.yml");
+        final YamlConfiguration paperConfig = YamlConfiguration.loadConfiguration(paperGlobalConfig);
+        final String noteBlockUpdates = "block-updates.disable-noteblock-updates";
 
         if (!paperConfig.getBoolean(noteBlockUpdates, false)) {
             paperConfig.set(noteBlockUpdates, true);
@@ -49,7 +53,6 @@ public final class MSBlock extends MSPlugin {
 
     @Override
     public void enable() {
-        instance = this;
         this.coreProtectAPI = CoreProtect.getInstance().getAPI();
         this.cache = new Cache();
         this.config = new Config(this, this.getConfigFile());

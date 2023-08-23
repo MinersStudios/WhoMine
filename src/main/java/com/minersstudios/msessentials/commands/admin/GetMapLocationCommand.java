@@ -40,28 +40,28 @@ public class GetMapLocationCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
-        Player player = (Player) sender;
+        final Player player = (Player) sender;
 
-        if (!(player.getInventory().getItemInMainHand().getItemMeta() instanceof MapMeta mapMeta)) {
+        if (!(player.getInventory().getItemInMainHand().getItemMeta() instanceof final MapMeta mapMeta)) {
             MSLogger.warning(player, NO_MAP_IN_RIGHT_HAND);
             return true;
         }
 
-        MapView mapView = mapMeta.getMapView();
+        final MapView mapView = mapMeta.getMapView();
 
         if (mapView == null || mapView.getWorld() == null) {
             MSLogger.severe(sender, SOMETHING_WENT_WRONG);
             return true;
         }
 
-        int x = mapView.getCenterX();
-        int z = mapView.getCenterZ();
-        int y = mapView.getWorld().getHighestBlockYAt(x, z) + 1;
+        final int x = mapView.getCenterX();
+        final int z = mapView.getCenterZ();
+        final int y = mapView.getWorld().getHighestBlockYAt(x, z) + 1;
 
         MSLogger.warning(
                 player,

@@ -83,7 +83,7 @@ public final class PlayerUtils {
      * @param player Player that will sit
      * @see #setSitting(Player, Location, Component)
      */
-    public static void setSitting(@NotNull Player player) {
+    public static void setSitting(final @NotNull Player player) {
         setSitting(player, player.getLocation(), null);
     }
 
@@ -95,8 +95,8 @@ public final class PlayerUtils {
      * @see #setSitting(Player, Location, Component)
      */
     public static void setSitting(
-            @NotNull Player player,
-            @NotNull Location location
+            final @NotNull Player player,
+            final @NotNull Location location
     ) {
         setSitting(player, location, null);
     }
@@ -112,9 +112,9 @@ public final class PlayerUtils {
      * @see PlayerInfo#setSitting(Location, Component)
      */
     public static void setSitting(
-            @NotNull Player player,
-            @NotNull Location location,
-            @Nullable Component message
+            final @NotNull Player player,
+            final @NotNull Location location,
+            final @Nullable Component message
     ) {
         PlayerInfo.fromOnlinePlayer(player).setSitting(location, message);
     }
@@ -126,7 +126,7 @@ public final class PlayerUtils {
      *               and will be unset
      * @see #unsetSitting(Player, Component)
      */
-    public static void unsetSitting(@NotNull Player player) {
+    public static void unsetSitting(final @NotNull Player player) {
         unsetSitting(player, null);
     }
 
@@ -140,8 +140,8 @@ public final class PlayerUtils {
      * @see PlayerInfo#unsetSitting(Component)
      */
     public static void unsetSitting(
-            @NotNull Player player,
-            @Nullable Component message
+            final @NotNull Player player,
+            final @Nullable Component message
     ) {
         PlayerInfo.fromOnlinePlayer(player).unsetSitting(message);
     }
@@ -157,18 +157,18 @@ public final class PlayerUtils {
      * @param offlinePlayer Offline player whose data will be loaded
      * @return Online player from offline player
      */
-    public static @Nullable Player loadPlayer(@NotNull OfflinePlayer offlinePlayer) {
+    public static @Nullable Player loadPlayer(final @NotNull OfflinePlayer offlinePlayer) {
         if (!offlinePlayer.hasPlayedBefore()) return null;
 
-        GameProfile profile = new GameProfile(
+        final GameProfile profile = new GameProfile(
                 offlinePlayer.getUniqueId(),
                 offlinePlayer.getName() != null
                 ? offlinePlayer.getName()
                 : offlinePlayer.getUniqueId().toString()
         );
-        MinecraftServer server = MinecraftServer.getServer();
-        ServerLevel worldServer = server.overworld();
-        Player online = new ServerPlayer(server, worldServer, profile).getBukkitEntity();
+        final MinecraftServer server = MinecraftServer.getServer();
+        final ServerLevel worldServer = server.overworld();
+        final Player online = new ServerPlayer(server, worldServer, profile).getBukkitEntity();
 
         online.loadData();
         return online;
@@ -185,22 +185,22 @@ public final class PlayerUtils {
      * @param signature Signature of the skin
      */
     public static void setSkin(
-            @NotNull Player player,
-            @Nullable String value,
-            @Nullable String signature
+            final @NotNull Player player,
+            final @Nullable String value,
+            final @Nullable String signature
     ) {
-        MinecraftServer minecraftServer = MinecraftServer.getServer();
-        Entity vehicle = player.getVehicle();
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        GameProfile gameProfile = serverPlayer.getGameProfile();
-        PropertyMap propertyMap = gameProfile.getProperties();
+        final MinecraftServer minecraftServer = MinecraftServer.getServer();
+        final Entity vehicle = player.getVehicle();
+        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        final GameProfile gameProfile = serverPlayer.getGameProfile();
+        final PropertyMap propertyMap = gameProfile.getProperties();
 
         if (vehicle != null) {
             vehicle.eject();
         }
 
         if (propertyMap.containsKey("textures")) {
-            Property oldProperty = propertyMap.get("textures").iterator().next();
+            final Property oldProperty = propertyMap.get("textures").iterator().next();
             propertyMap.remove("textures", oldProperty);
         }
 
@@ -216,13 +216,13 @@ public final class PlayerUtils {
             return;
         }
 
-        Location location = player.getLocation();
-        ServerGamePacketListenerImpl connection = serverPlayer.connection;
-        ServerLevel serverLevel = serverPlayer.serverLevel();
-        ServerPlayerGameMode gameMode = serverPlayer.gameMode;
-        var players = minecraftServer.getPlayerList().players;
+        final Location location = player.getLocation();
+        final ServerGamePacketListenerImpl connection = serverPlayer.connection;
+        final ServerLevel serverLevel = serverPlayer.serverLevel();
+        final ServerPlayerGameMode gameMode = serverPlayer.gameMode;
+        final var players = minecraftServer.getPlayerList().players;
 
-        ClientboundRespawnPacket respawnPacket = new ClientboundRespawnPacket(
+        final ClientboundRespawnPacket respawnPacket = new ClientboundRespawnPacket(
                 serverLevel.dimensionTypeId(),
                 serverLevel.dimension(),
                 BiomeManager.obfuscateSeed(serverLevel.getSeed()),
@@ -234,13 +234,13 @@ public final class PlayerUtils {
                 serverPlayer.getLastDeathLocation(),
                 serverPlayer.getPortalCooldown()
         );
-        ClientboundSetExperiencePacket experiencePacket = new ClientboundSetExperiencePacket(
+        final ClientboundSetExperiencePacket experiencePacket = new ClientboundSetExperiencePacket(
                 serverPlayer.experienceProgress,
                 serverPlayer.totalExperience,
                 serverPlayer.experienceLevel
         );
 
-        for (var forWho : players) {
+        for (final var forWho : players) {
             if (forWho.getBukkitEntity().canSee(player)) {
                 unregisterEntity(forWho, serverPlayer);
             }
@@ -248,7 +248,7 @@ public final class PlayerUtils {
 
         serverPlayer.gameProfile = gameProfile;
 
-        for (var forWho : players) {
+        for (final var forWho : players) {
             if (forWho.getBukkitEntity().canSee(player)) {
                 trackAndShowEntity(forWho, serverPlayer);
             }
@@ -260,7 +260,7 @@ public final class PlayerUtils {
         minecraftServer.getPlayerList().sendAllPlayerInfo(serverPlayer);
         connection.send(experiencePacket);
 
-        for (var mobEffect : serverPlayer.getActiveEffects()) {
+        for (final var mobEffect : serverPlayer.getActiveEffects()) {
             connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), mobEffect));
         }
 
@@ -278,11 +278,11 @@ public final class PlayerUtils {
      * @return The offline player corresponding to the UUID and name
      */
     public static @NotNull OfflinePlayer getOfflinePlayer(
-            @NotNull UUID uuid,
-            @NotNull String name
+            final @NotNull UUID uuid,
+            final @NotNull String name
     ) {
-        CraftServer craftServer = (CraftServer) Bukkit.getServer();
-        GameProfile gameProfile = new GameProfile(uuid, name);
+        final CraftServer craftServer = (CraftServer) Bukkit.getServer();
+        final GameProfile gameProfile = new GameProfile(uuid, name);
 
         return craftServer.getOfflinePlayer(gameProfile);
     }
@@ -297,8 +297,8 @@ public final class PlayerUtils {
      */
     @Contract("_, _ -> new")
     public static @NotNull PlayerProfile craftProfile(
-            @Nullable UUID uuid,
-            @Nullable String nickname
+            final @Nullable UUID uuid,
+            final @Nullable String nickname
     ) throws IllegalArgumentException {
         return new CraftPlayerProfile(uuid, nickname);
     }
@@ -311,17 +311,17 @@ public final class PlayerUtils {
      * @param shulkerBox The shulker box to open
      */
     public static void openShulkerBoxSilent(
-            @NotNull Player player,
-            @NotNull ShulkerBox shulkerBox,
-            boolean playSound
+            final @NotNull Player player,
+            final @NotNull ShulkerBox shulkerBox,
+            final boolean playSound
     ) {
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        Container inventory = ((CraftInventory) shulkerBox.getInventory()).getInventory();
+        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        final Container inventory = ((CraftInventory) shulkerBox.getInventory()).getInventory();
 
         if (inventory != null && !serverPlayer.isSpectator()) {
-            int syncId = serverPlayer.nextContainerCounter();
-            ShulkerBoxMenu shulkerBoxMenu = new ShulkerBoxMenu(syncId, serverPlayer.getInventory(), inventory);
-            AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(serverPlayer, shulkerBoxMenu, false);
+            final int syncId = serverPlayer.nextContainerCounter();
+            final ShulkerBoxMenu shulkerBoxMenu = new ShulkerBoxMenu(syncId, serverPlayer.getInventory(), inventory);
+            final AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(serverPlayer, shulkerBoxMenu, false);
 
             container.setTitle(((MenuProvider) inventory).getDisplayName());
 
@@ -346,9 +346,9 @@ public final class PlayerUtils {
      *               from
      * @return The target block
      */
-    public static @Nullable Block getTargetBlock(@NotNull Player player) {
-        Location eyeLocation = player.getEyeLocation();
-        RayTraceResult rayTraceResult = player.getWorld().rayTraceBlocks(
+    public static @Nullable Block getTargetBlock(final @NotNull Player player) {
+        final Location eyeLocation = player.getEyeLocation();
+        final RayTraceResult rayTraceResult = player.getWorld().rayTraceBlocks(
                 eyeLocation,
                 eyeLocation.getDirection(),
                 4.5d,
@@ -367,16 +367,16 @@ public final class PlayerUtils {
      * @return The target entity
      */
     public static @Nullable Entity getTargetEntity(
-            @NotNull Player player,
-            @Nullable Block targetBlock
+            final @NotNull Player player,
+            final @Nullable Block targetBlock
     ) {
-        Location eyeLocation = player.getEyeLocation();
-        Predicate<Entity> filter = entity -> entity != player && !MOB_FILTER.contains(entity.getType());
-        RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
+        final Location eyeLocation = player.getEyeLocation();
+        final Predicate<Entity> filter = entity -> entity != player && !MOB_FILTER.contains(entity.getType());
+        final RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
 
         if (rayTraceResult == null) return null;
 
-        Entity targetEntity = rayTraceResult.getHitEntity();
+        final Entity targetEntity = rayTraceResult.getHitEntity();
 
         return targetBlock != null
                 && targetEntity != null
@@ -386,12 +386,12 @@ public final class PlayerUtils {
     }
 
     private static void unregisterEntity(
-            @NotNull ServerPlayer forWho,
-            @NotNull ServerPlayer serverPlayer
+            final @NotNull ServerPlayer forWho,
+            final @NotNull ServerPlayer serverPlayer
     ) {
-        ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
-        ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
-        ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(List.of(serverPlayer.getUUID()));
+        final ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
+        final ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
+        final ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(List.of(serverPlayer.getUUID()));
 
         if (entry != null) {
             entry.removePlayer(forWho);
@@ -404,14 +404,14 @@ public final class PlayerUtils {
 
     @SuppressWarnings("UnstableApiUsage")
     private static void trackAndShowEntity(
-            @NotNull ServerPlayer forWho,
-            @NotNull ServerPlayer serverPlayer
+            final @NotNull ServerPlayer forWho,
+            final @NotNull ServerPlayer serverPlayer
     ) {
-        PluginManager pluginManager = serverPlayer.getBukkitEntity().getServer().getPluginManager();
-        ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
-        ChunkMap.TrackedEntity trackedEntity = tracker.entityMap.get(serverPlayer.getId());
-        ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(serverPlayer));
-        Event event = new PlayerShowEntityEvent(forWho.getBukkitEntity(), serverPlayer.getBukkitEntity());
+        final PluginManager pluginManager = serverPlayer.getBukkitEntity().getServer().getPluginManager();
+        final ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
+        final ChunkMap.TrackedEntity trackedEntity = tracker.entityMap.get(serverPlayer.getId());
+        final ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(serverPlayer));
+        final Event event = new PlayerShowEntityEvent(forWho.getBukkitEntity(), serverPlayer.getBukkitEntity());
 
         forWho.connection.send(packet);
 

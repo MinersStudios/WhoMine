@@ -13,10 +13,12 @@ import org.jetbrains.annotations.NotNull;
 public final class MSCore extends MSPlugin {
     private static MSCore instance;
 
+    public MSCore() {
+        instance = this;
+    }
+
     @Override
     public void enable() {
-        instance = this;
-
         if (!LanguageFile.isLoaded()) {
             LanguageFile.loadLanguage(GLOBAL_CONFIG.languageFolderLink, GLOBAL_CONFIG.languageCode);
         }

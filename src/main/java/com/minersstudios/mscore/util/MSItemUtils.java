@@ -33,7 +33,7 @@ public final class MSItemUtils {
      * @see CustomItemType#fromKey(String)
      * @see CustomItem#getItem()
      */
-    public static @NotNull Optional<ItemStack> getItemStack(@Nullable String key) {
+    public static @NotNull Optional<ItemStack> getItemStack(final @Nullable String key) {
         return CustomItemType.fromKey(key).map(CustomItem::getItem);
     }
 
@@ -48,7 +48,7 @@ public final class MSItemUtils {
      * @see CustomItemType#fromClass(Class)
      * @see CustomItem#getItem()
      */
-    public static @NotNull Optional<ItemStack> getItemStack(@NotNull Class<? extends CustomItem> clazz) {
+    public static @NotNull Optional<ItemStack> getItemStack(final @NotNull Class<? extends CustomItem> clazz) {
        return CustomItemType.fromClass(clazz).map(CustomItem::getItem);
     }
 
@@ -57,7 +57,7 @@ public final class MSItemUtils {
      * @return True if string matches {@link #NAMESPACED_KEY_REGEX}
      */
     @Contract(value = "null -> false")
-    public static boolean matchesNamespacedKey(@Nullable String string) {
+    public static boolean matchesNamespacedKey(final @Nullable String string) {
         return string != null && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }
 }

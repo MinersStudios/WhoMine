@@ -20,9 +20,9 @@ public class NamespacedKeyAdapter implements JsonSerializer<NamespacedKey>, Json
 
     @Override
     public @NotNull NamespacedKey deserialize(
-            @NotNull JsonElement json,
-            @NotNull Type typeOfT,
-            @NotNull JsonDeserializationContext context
+            final @NotNull JsonElement json,
+            final @NotNull Type typeOfT,
+            final @NotNull JsonDeserializationContext context
     ) throws JsonParseException {
         return new NamespacedKey(
                 CustomBlockRegistry.NAMESPACE,
@@ -32,9 +32,9 @@ public class NamespacedKeyAdapter implements JsonSerializer<NamespacedKey>, Json
 
     @Override
     public @NotNull JsonElement serialize(
-            @NotNull NamespacedKey src,
-            @NotNull Type typeOfSrc,
-            @NotNull JsonSerializationContext context
+            final @NotNull NamespacedKey src,
+            final @NotNull Type typeOfSrc,
+            final @NotNull JsonSerializationContext context
     ) {
         return new JsonPrimitive(src.getKey());
     }

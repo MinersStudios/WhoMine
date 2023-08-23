@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerStopSpectatingEntityListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerStopSpectatingEntity(@NotNull PlayerStopSpectatingEntityEvent event) {
+    public void onPlayerStopSpectatingEntity(final @NotNull PlayerStopSpectatingEntityEvent event) {
         if (WorldDark.isInWorldDark(event.getPlayer())) {
             event.setCancelled(true);
         }

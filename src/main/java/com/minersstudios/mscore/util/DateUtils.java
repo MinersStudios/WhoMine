@@ -48,24 +48,24 @@ public final class DateUtils {
      *         if ip is null or failed to get timezone
      *         from ip
      */
-    public static @NotNull String getTimezone(@NotNull InetAddress ip) {
-        String cachedTimezone = TIMEZONE_CACHE.get(ip);
+    public static @NotNull String getTimezone(final @NotNull InetAddress ip) {
+        final String cachedTimezone = TIMEZONE_CACHE.get(ip);
 
         if (cachedTimezone != null) return cachedTimezone;
 
         try (
-                var input = new URL("http://ip-api.com/json/" + ip.getHostAddress()).openStream();
-                var reader = new BufferedReader(new InputStreamReader(input))
+                final var input = new URL("http://ip-api.com/json/" + ip.getHostAddress()).openStream();
+                final var reader = new BufferedReader(new InputStreamReader(input))
         ) {
-            StringBuilder entirePage = new StringBuilder();
-
+            final StringBuilder entirePage = new StringBuilder();
             String inputLine;
+
             while ((inputLine = reader.readLine()) != null) {
                 entirePage.append(inputLine);
             }
 
-            String pageString = entirePage.toString();
-            String timezone = pageString.contains("\"timezone\":\"")
+            final String pageString = entirePage.toString();
+            final String timezone = pageString.contains("\"timezone\":\"")
                     ? pageString.split("\"timezone\":\"")[1].split("\",")[0]
                     : DEFAULT_TIMEZONE;
 
@@ -86,8 +86,8 @@ public final class DateUtils {
      * @return String date format with address time zone
      */
     public static @NotNull String getDate(
-            @NotNull Instant date,
-            @Nullable InetAddress address
+            final @NotNull Instant date,
+            final @Nullable InetAddress address
     ) {
         if (address == null) {
             return date
@@ -95,7 +95,7 @@ public final class DateUtils {
                     .format(MSPlugin.getGlobalConfig().timeFormatter);
         }
 
-        String timeZone = getTimezone(address);
+        final String timeZone = getTimezone(address);
         return date
                 .atZone(
                         ZoneId.of(timeZone.equalsIgnoreCase("Europe/Kyiv")
@@ -116,12 +116,12 @@ public final class DateUtils {
      * @see #getDate(Instant, InetAddress)
      */
     public static @NotNull String getSenderDate(
-            @NotNull Instant date,
-            @Nullable CommandSender sender
+            final @NotNull Instant date,
+            final @Nullable CommandSender sender
     ) {
-        if (!(sender instanceof Player player)) return getDate(date, null);
+        if (!(sender instanceof final Player player)) return getDate(date, null);
 
-        InetSocketAddress socketAddress = player.getAddress();
+        final InetSocketAddress socketAddress = player.getAddress();
         return getDate(
                 date,
                 socketAddress != null
@@ -140,10 +140,10 @@ public final class DateUtils {
      * @return Time suggestions or empty list
      *         if the input is not a number
      */
-    public static @NotNull List<String> getTimeSuggestions(@NotNull String input) {
+    public static @NotNull List<String> getTimeSuggestions(final @NotNull String input) {
         if (!StringUtils.isNumeric(input)) return Collections.emptyList();
-        
-        var suggestions = new ArrayList<String>(6);
+
+        final var suggestions = new ArrayList<String>(6);
 
         suggestions.add(input + "s");
         suggestions.add(input + "m");
@@ -168,7 +168,7 @@ public final class DateUtils {
      * @throws ArithmeticException   If numeric overflow occurs
      * @see #getDateFromString(String, boolean)
      */
-    public static @Nullable Instant getDateFromString(@NotNull String string) throws NumberFormatException, DateTimeException, ArithmeticException {
+    public static @Nullable Instant getDateFromString(final @NotNull String string) throws NumberFormatException, DateTimeException, ArithmeticException {
         return getDateFromString(string, true);
     }
 
@@ -186,17 +186,17 @@ public final class DateUtils {
      * @throws ArithmeticException   If numeric overflow occurs
      */
     public static @Nullable Instant getDateFromString(
-            @NotNull String string,
-            boolean throwException
+            final @NotNull String string,
+            final boolean throwException
     ) throws NumberFormatException, DateTimeException, ArithmeticException {
         if (!matchesChrono(string)) return null;
 
-        Instant now = Instant.now();
-        String numberString = string.replaceAll("[smhdMy]", "");
-        String chronoUnit = string.replaceAll("\\d+", "");
+        final Instant now = Instant.now();
+        final String numberString = string.replaceAll("[smhdMy]", "");
+        final String chronoUnit = string.replaceAll("\\d+", "");
 
         try {
-            long number = Long.parseLong(numberString);
+            final long number = Long.parseLong(numberString);
             return switch (chronoUnit) {
                         case "s" -> now.plus(number, ChronoUnit.SECONDS);
                         case "m" -> now.plus(number, ChronoUnit.MINUTES);
@@ -216,7 +216,7 @@ public final class DateUtils {
      * @return True if the string matches the {@link #CHRONO_REGEX} regex
      */
     @Contract(value = "null -> false")
-    public static boolean matchesChrono(@Nullable String string) {
+    public static boolean matchesChrono(final @Nullable String string) {
         return StringUtils.isNotBlank(string) 
                 && CHRONO_PATTERN.matcher(string).matches();
     }

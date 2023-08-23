@@ -24,26 +24,26 @@ public class AdminSettingsCommand {
     private static final TranslatableComponent USE_ONE_OF_RESOURCEPACK_TYPE = translatable("ms.command.player.settings.resourcepack_type_use_one_of");
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            String @NotNull [] args,
-            @NotNull PlayerInfo playerInfo
+            final @NotNull CommandSender sender,
+            final String @NotNull [] args,
+            final @NotNull PlayerInfo playerInfo
     ) {
         if (args.length < 3) {
             MSLogger.severe(sender, USE_ONE_OF);
             return true;
         }
 
-        PlayerFile playerFile = playerInfo.getPlayerFile();
-        PlayerSettings playerSettings = playerFile.getPlayerSettings();
-        Player player = playerInfo.getOnlinePlayer();
-        boolean haveArg = args.length >= 4;
-        String paramString = args[2];
-        String paramArgString = haveArg ? args[3] : "";
+        final PlayerFile playerFile = playerInfo.getPlayerFile();
+        final PlayerSettings playerSettings = playerFile.getPlayerSettings();
+        final Player player = playerInfo.getOnlinePlayer();
+        final boolean haveArg = args.length >= 4;
+        final String paramString = args[2];
+        final String paramArgString = haveArg ? args[3] : "";
 
         switch (paramString) {
             case "resourcepack-type" -> {
                 if (!haveArg) {
-                    ResourcePack.Type type = playerSettings.getResourcePackType();
+                    final ResourcePack.Type type = playerSettings.getResourcePackType();
                     MSLogger.fine(
                             sender,
                             translatable(
@@ -56,7 +56,7 @@ public class AdminSettingsCommand {
                     return true;
                 }
 
-                ResourcePack.Type type = switch (paramArgString) {
+                final ResourcePack.Type type = switch (paramArgString) {
                     case "full" -> ResourcePack.Type.FULL;
                     case "lite" -> ResourcePack.Type.LITE;
                     case "none" -> ResourcePack.Type.NONE;
@@ -99,7 +99,7 @@ public class AdminSettingsCommand {
             }
             case "skin" -> {
                 if (!haveArg) {
-                    Skin skin = playerSettings.getSkin();
+                    final Skin skin = playerSettings.getSkin();
 
                     if (skin == null) {
                         MSLogger.warning(
@@ -128,8 +128,8 @@ public class AdminSettingsCommand {
                     case "set", "remove" -> {
                         if (args.length < 5) return false;
 
-                        String skinName = args[4];
-                        Skin skin = playerFile.getSkin(skinName);
+                        final String skinName = args[4];
+                        final Skin skin = playerFile.getSkin(skinName);
 
                         if (skin == null) {
                             MSLogger.severe(
@@ -190,15 +190,15 @@ public class AdminSettingsCommand {
                     case "add" -> {
                         if (args.length < 6) return false;
 
-                        String skinName = args[4];
-                        String skinLink = args[5];
+                        final String skinName = args[4];
+                        final String skinLink = args[5];
 
                         if (
                                 playerFile.hasAvailableSkinSlot()
                                 && !playerFile.containsSkin(skinName)
                         ) {
                             try {
-                                Skin skin = Skin.create(skinName, skinLink);
+                                final Skin skin = Skin.create(skinName, skinLink);
 
                                 if (skin != null) {
                                     playerFile.addSkin(skin);

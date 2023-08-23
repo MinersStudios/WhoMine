@@ -16,7 +16,6 @@ import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.packet.collection.PacketListenersMap;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.BlockUtils;
-import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
@@ -51,12 +50,12 @@ import java.util.logging.Level;
  * @see #disable()
  */
 public abstract class MSPlugin extends JavaPlugin {
-    private final File pluginFolder = new File(GLOBAL_FOLDER, this.getName() + '/');
-    private final File configFile = new File(this.pluginFolder, "config.yml");
-    private final Set<String> classNames = new HashSet<>();
-    private final Map<MSCommand, MSCommandExecutor> msCommands = new HashMap<>();
-    private final Set<AbstractMSListener> msListeners = new HashSet<>();
-    private final Set<AbstractMSPacketListener> msPacketListeners = new HashSet<>();
+    private final File pluginFolder;
+    private final File configFile;
+    private final Set<String> classNames;
+    private final Map<MSCommand, MSCommandExecutor> msCommands;
+    private final Set<AbstractMSListener> msListeners;
+    private final Set<AbstractMSPacketListener> msPacketListeners;
     private Commodore commodore;
     private FileConfiguration newConfig;
     private boolean loadedCustoms;
@@ -93,6 +92,15 @@ public abstract class MSPlugin extends JavaPlugin {
 
         initClass(PacketRegistry.class);
         initClass(BlockUtils.class);
+    }
+
+    protected MSPlugin() {
+        this.pluginFolder = new File(GLOBAL_FOLDER, this.getName() + '/');
+        this.configFile = new File(this.pluginFolder, "config.yml");
+        this.classNames = new HashSet<>();
+        this.msCommands = new HashMap<>();
+        this.msListeners = new HashSet<>();
+        this.msPacketListeners = new HashSet<>();
     }
 
     /**
@@ -151,7 +159,7 @@ public abstract class MSPlugin extends JavaPlugin {
     /**
      * @param loadedCustoms True if the plugin has loaded the customs to the cache
      */
-    public final void setLoadedCustoms(boolean loadedCustoms) {
+    public final void setLoadedCustoms(final boolean loadedCustoms) {
         this.loadedCustoms = loadedCustoms;
     }
 
@@ -250,7 +258,7 @@ public abstract class MSPlugin extends JavaPlugin {
      */
     @Override
     public final void onEnable() {
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
         this.commodore = new Commodore(this);
 
         this.registerCommands();
@@ -270,7 +278,7 @@ public abstract class MSPlugin extends JavaPlugin {
      */
     @Override
     public final void onDisable() {
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
 
         this.setLoadedCustoms(false);
         this.disable();
@@ -310,12 +318,12 @@ public abstract class MSPlugin extends JavaPlugin {
     @Override
     public void reloadConfig() {
         this.newConfig = YamlConfiguration.loadConfiguration(this.configFile);
-        InputStream defaultInput = this.getResource("config.yml");
+        final InputStream defaultInput = this.getResource("config.yml");
 
         if (defaultInput == null) return;
 
-        InputStreamReader inputReader = new InputStreamReader(defaultInput, Charsets.UTF_8);
-        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(inputReader);
+        final InputStreamReader inputReader = new InputStreamReader(defaultInput, Charsets.UTF_8);
+        final YamlConfiguration configuration = YamlConfiguration.loadConfiguration(inputReader);
 
         this.newConfig.setDefaults(configuration);
     }
@@ -348,21 +356,21 @@ public abstract class MSPlugin extends JavaPlugin {
      */
     @Override
     public void saveResource(
-            @NotNull String resourcePath,
-            boolean replace
+            final @NotNull String resourcePath,
+            final boolean replace
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(!resourcePath.isEmpty(), "ResourcePath cannot be empty");
 
-        String path = resourcePath.replace('\\', '/');
-        InputStream in = this.getResource(path);
+        final String path = resourcePath.replace('\\', '/');
+        final InputStream in = this.getResource(path);
 
         Preconditions.checkNotNull(in, "The embedded resource '" + path + "' cannot be found");
 
-        String dirPath = path.substring(0, Math.max(path.lastIndexOf('/'), 0));
-        File outFile = new File(this.pluginFolder, path);
-        File outDir = new File(this.pluginFolder, dirPath);
-        String outFileName = outFile.getName();
-        String outDirName = outDir.getName();
+        final String dirPath = path.substring(0, Math.max(path.lastIndexOf('/'), 0));
+        final File outFile = new File(this.pluginFolder, path);
+        final File outDir = new File(this.pluginFolder, dirPath);
+        final String outFileName = outFile.getName();
+        final String outDirName = outDir.getName();
 
         if (!outDir.exists() && !outDir.mkdirs()) {
             MSLogger.warning("Directory " + outDirName + " creation failed");
@@ -370,10 +378,10 @@ public abstract class MSPlugin extends JavaPlugin {
 
         if (!outFile.exists() || replace) {
             try (
-                    var out = new FileOutputStream(outFile);
+                    final var out = new FileOutputStream(outFile);
                     in
             ) {
-                byte[] buffer = new byte[1024];
+                final byte[] buffer = new byte[1024];
                 int read;
 
                 while ((read = in.read(buffer)) >= 0) {
@@ -411,11 +419,11 @@ public abstract class MSPlugin extends JavaPlugin {
     private void loadCommands() {
         this.classNames.stream().parallel().forEach(className -> {
             try {
-                var clazz = this.getClassLoader().loadClass(className);
-                MSCommand msCommand = clazz.getAnnotation(MSCommand.class);
+                final var clazz = this.getClassLoader().loadClass(className);
+                final MSCommand msCommand = clazz.getAnnotation(MSCommand.class);
 
                 if (msCommand != null) {
-                    if (clazz.getDeclaredConstructor().newInstance() instanceof MSCommandExecutor msCommandExecutor) {
+                    if (clazz.getDeclaredConstructor().newInstance() instanceof final MSCommandExecutor msCommandExecutor) {
                         this.msCommands.put(msCommand, msCommandExecutor);
                     } else {
                         MSLogger.warning("Annotated class with MSCommand is not instance of MSCommandExecutor (" + className + ")");
@@ -452,10 +460,10 @@ public abstract class MSPlugin extends JavaPlugin {
     private void loadListeners() {
         this.classNames.stream().parallel().forEach(className -> {
             try {
-                var clazz = this.getClassLoader().loadClass(className);
+                final var clazz = this.getClassLoader().loadClass(className);
 
                 if (clazz.isAnnotationPresent(MSListener.class)) {
-                    if (clazz.getDeclaredConstructor().newInstance() instanceof AbstractMSListener listener) {
+                    if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSListener listener) {
                         this.msListeners.add(listener);
                     } else {
                         MSLogger.warning("Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")");
@@ -491,10 +499,10 @@ public abstract class MSPlugin extends JavaPlugin {
     private void loadPacketListeners() {
         this.classNames.stream().parallel().forEach(className -> {
             try {
-                var clazz = this.getClassLoader().loadClass(className);
+                final var clazz = this.getClassLoader().loadClass(className);
 
                 if (clazz.isAnnotationPresent(MSPacketListener.class)) {
-                    if (clazz.getDeclaredConstructor().newInstance() instanceof AbstractMSPacketListener listener) {
+                    if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSPacketListener listener) {
                         this.msPacketListeners.add(listener);
                     } else {
                         MSLogger.warning("Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")");
@@ -526,9 +534,9 @@ public abstract class MSPlugin extends JavaPlugin {
      * @param event Packet event to be called
      * @see PacketEvent
      */
-    public void callPacketReceiveEvent(@NotNull PacketEvent event) {
-        PacketType packetType = event.getPacketContainer().getType();
-        PacketListenersMap listenersMap = GLOBAL_CACHE.packetListenerMap;
+    public void callPacketReceiveEvent(final @NotNull PacketEvent event) {
+        final PacketType packetType = event.getPacketContainer().getType();
+        final PacketListenersMap listenersMap = GLOBAL_CACHE.packetListenerMap;
 
         if (listenersMap.containsPacketType(packetType)) {
             listenersMap.getListeners(packetType).forEach(listener -> listener.onPacketReceive(event));
@@ -542,9 +550,9 @@ public abstract class MSPlugin extends JavaPlugin {
      * @param event Packet event to be called
      * @see PacketEvent
      */
-    public void callPacketSendEvent(@NotNull PacketEvent event) {
-        PacketType packetType = event.getPacketContainer().getType();
-        PacketListenersMap listenersMap = GLOBAL_CACHE.packetListenerMap;
+    public void callPacketSendEvent(final @NotNull PacketEvent event) {
+        final PacketType packetType = event.getPacketContainer().getType();
+        final PacketListenersMap listenersMap = GLOBAL_CACHE.packetListenerMap;
 
         if (listenersMap.containsPacketType(packetType)) {
             listenersMap.getListeners(packetType).forEach(listener -> listener.onPacketSend(event));
@@ -562,24 +570,24 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see #registerCommands()
      */
     public final void registerCommand(
-            @NotNull MSCommand msCommand,
-            @NotNull MSCommandExecutor executor
+            final @NotNull MSCommand msCommand,
+            final @NotNull MSCommandExecutor executor
     ) {
-        String name = msCommand.command();
-        CommandNode<?> commandNode = executor.getCommandNode();
-        PluginCommand bukkitCommand = this.getCommand(name);
-        PluginCommand pluginCommand = bukkitCommand == null ? createCommand(name) : bukkitCommand;
-        Server server = this.getServer();
+        final String name = msCommand.command();
+        final var commandNode = executor.getCommandNode();
+        final PluginCommand bukkitCommand = this.getCommand(name);
+        final PluginCommand pluginCommand = bukkitCommand == null ? createCommand(name) : bukkitCommand;
+        final Server server = this.getServer();
 
         if (pluginCommand == null) {
             MSLogger.log(Level.SEVERE, "Failed to register command : " + name);
             return;
         }
 
-        List<String> aliases = Arrays.asList(msCommand.aliases());
-        String usage = msCommand.usage();
-        String description = msCommand.description();
-        String permissionStr = msCommand.permission();
+        final var aliases = List.of(msCommand.aliases());
+        final String usage = msCommand.usage();
+        final String description = msCommand.description();
+        final String permissionStr = msCommand.permission();
 
         if (!aliases.isEmpty()) {
             pluginCommand.setAliases(aliases);
@@ -594,10 +602,10 @@ public abstract class MSPlugin extends JavaPlugin {
         }
 
         if (!permissionStr.isEmpty()) {
-            PluginManager pluginManager = server.getPluginManager();
-            var children = new HashMap<String, Boolean>();
-            String[] keys = msCommand.permissionParentKeys();
-            boolean[] values = msCommand.permissionParentValues();
+            final PluginManager pluginManager = server.getPluginManager();
+            final var children = new HashMap<String, Boolean>();
+            final String[] keys = msCommand.permissionParentKeys();
+            final boolean[] values = msCommand.permissionParentValues();
 
             if (keys.length != values.length) {
                 MSLogger.severe("Permission and boolean array lengths do not match in command : " + name);
@@ -608,7 +616,7 @@ public abstract class MSPlugin extends JavaPlugin {
             }
 
             if (pluginManager.getPermission(permissionStr) == null) {
-                Permission permission = new Permission(permissionStr, msCommand.permissionDefault(), children);
+                final Permission permission = new Permission(permissionStr, msCommand.permissionDefault(), children);
                 pluginManager.addPermission(permission);
             }
 
@@ -635,7 +643,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * @param command Command name
      * @return A new {@link PluginCommand} instance or null if failed
      */
-    public @Nullable PluginCommand createCommand(@NotNull String command) {
+    public @Nullable PluginCommand createCommand(final @NotNull String command) {
         try {
             return COMMAND_CONSTRUCTOR.newInstance(command, this);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -654,7 +662,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * @return A BukkitTask that contains the id number
      * @throws IllegalArgumentException If current plugin is not enabled
      */
-    public @NotNull BukkitTask runTaskAsync(@NotNull Runnable task) {
+    public @NotNull BukkitTask runTaskAsync(final @NotNull Runnable task) {
         return this.getServer().getScheduler().runTaskAsynchronously(this, task);
     }
 
@@ -672,9 +680,9 @@ public abstract class MSPlugin extends JavaPlugin {
      * @throws IllegalArgumentException If current plugin is not enabled
      */
     public @NotNull BukkitTask runTaskTimerAsync(
-            @NotNull Runnable task,
-            long delay,
-            long period
+            final @NotNull Runnable task,
+            final long delay,
+            final long period
     ) {
         return this.getServer().getScheduler().runTaskTimerAsynchronously(this, task, delay, period);
     }
@@ -686,7 +694,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * @return A BukkitTask that contains the id number
      * @throws IllegalArgumentException If current plugin is not enabled
      */
-    public @NotNull BukkitTask runTask(@NotNull Runnable task) {
+    public @NotNull BukkitTask runTask(final @NotNull Runnable task) {
         return this.getServer().getScheduler().runTask(this, task);
     }
 
@@ -703,8 +711,8 @@ public abstract class MSPlugin extends JavaPlugin {
      * @throws IllegalArgumentException If current plugin is not enabled
      */
     public @NotNull BukkitTask runTaskLaterAsync(
-            @NotNull Runnable task,
-            long delay
+            final @NotNull Runnable task,
+            final long delay
     ) {
         return this.getServer().getScheduler().runTaskLaterAsynchronously(this, task, delay);
     }
@@ -718,8 +726,8 @@ public abstract class MSPlugin extends JavaPlugin {
      * @throws IllegalArgumentException If current plugin is not enabled
      */
     public @NotNull BukkitTask runTaskLater(
-            @NotNull Runnable task,
-            long delay
+            final @NotNull Runnable task,
+            final long delay
     ) {
         return this.getServer().getScheduler().runTaskLater(this, task, delay);
     }
@@ -735,9 +743,9 @@ public abstract class MSPlugin extends JavaPlugin {
      * @throws IllegalArgumentException If current plugin is not enabled
      */
     public @NotNull BukkitTask runTaskTimer(
-            @NotNull Runnable task,
-            long delay,
-            long period
+            final @NotNull Runnable task,
+            final long delay,
+            final long period
     ) {
         return this.getServer().getScheduler().runTaskTimer(this, task, delay, period);
     }
@@ -751,7 +759,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * @param task The task to be run
      * @throws IllegalArgumentException If current plugin is not enabled
      */
-    public void runTaskAsync(@NotNull Consumer<BukkitTask> task) {
+    public void runTaskAsync(final @NotNull Consumer<BukkitTask> task) {
         this.getServer().getScheduler().runTaskAsynchronously(this, task);
     }
 
@@ -768,9 +776,9 @@ public abstract class MSPlugin extends JavaPlugin {
      * @throws IllegalArgumentException If current plugin is not enabled
      */
     public void runTaskTimerAsync(
-            @NotNull Consumer<BukkitTask> task,
-            long delay,
-            long period
+            final @NotNull Consumer<BukkitTask> task,
+            final long delay,
+            final long period
     ) {
         this.getServer().getScheduler().runTaskTimerAsynchronously(this, task, delay, period);
     }
@@ -781,7 +789,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * @param task The task to be run
      * @throws IllegalArgumentException If current plugin is not enabled
      */
-    public void runTask(@NotNull Consumer<BukkitTask> task) {
+    public void runTask(final @NotNull Consumer<BukkitTask> task) {
         this.getServer().getScheduler().runTask(this, task);
     }
 
@@ -797,8 +805,8 @@ public abstract class MSPlugin extends JavaPlugin {
      * @throws IllegalArgumentException If current plugin is not enabled
      */
     public void runTaskLaterAsync(
-            @NotNull Consumer<BukkitTask> task,
-            long delay
+            final @NotNull Consumer<BukkitTask> task,
+            final long delay
     ) {
         this.getServer().getScheduler().runTaskLaterAsynchronously(this, task, delay);
     }
@@ -811,8 +819,8 @@ public abstract class MSPlugin extends JavaPlugin {
      * @throws IllegalArgumentException If current plugin is not enabled
      */
     public void runTaskLater(
-            @NotNull Consumer<BukkitTask> task,
-            long delay
+            final @NotNull Consumer<BukkitTask> task,
+            final long delay
     ) {
         this.getServer().getScheduler().runTaskLater(this, task, delay);
     }
@@ -827,9 +835,9 @@ public abstract class MSPlugin extends JavaPlugin {
      * @throws IllegalArgumentException If current plugin is not enabled
      */
     public void runTaskTimer(
-            @NotNull Consumer<BukkitTask> task,
-            long delay,
-            long period
+            final @NotNull Consumer<BukkitTask> task,
+            final long delay,
+            final long period
     ) {
         this.getServer().getScheduler().runTaskTimer(this, task, delay, period);
     }
@@ -840,7 +848,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * "com/example/Example.class" -> "com.example.Example"
      */
     private void loadClassNames() {
-        try (var jarFile = new JarFile(this.getFile())) {
+        try (final var jarFile = new JarFile(this.getFile())) {
             this.classNames.addAll(
                     jarFile.stream().parallel()
                     .map(JarEntry::getName)
@@ -861,7 +869,7 @@ public abstract class MSPlugin extends JavaPlugin {
      * @throws RuntimeException If the class could not be initialized
      *                          for any reason
      */
-    protected static void initClass(@NotNull Class<?> clazz) throws RuntimeException {
+    protected static void initClass(final @NotNull Class<?> clazz) throws RuntimeException {
         try {
             Class.forName(clazz.getName());
         } catch (Exception e) {

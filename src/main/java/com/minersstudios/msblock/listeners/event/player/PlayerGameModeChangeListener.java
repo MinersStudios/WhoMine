@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerGameModeChangeListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerGameModeChange(@NotNull PlayerGameModeChangeEvent event) {
-        Player player = event.getPlayer();
-        Cache cache = MSBlock.getCache();
+    public void onPlayerGameModeChange(final @NotNull PlayerGameModeChangeEvent event) {
+        final Player player = event.getPlayer();
+        final Cache cache = MSBlock.getCache();
 
         cache.diggingMap.removeAll(player);
     }

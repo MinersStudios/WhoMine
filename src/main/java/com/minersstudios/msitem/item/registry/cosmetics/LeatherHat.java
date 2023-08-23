@@ -26,7 +26,7 @@ public class LeatherHat extends CustomItemImpl implements Wearable {
     static {
         KEY = "leather_hat";
         ITEM_STACK = new ItemStack(Material.LEATHER_HORSE_ARMOR);
-        ItemMeta meta = ITEM_STACK.getItemMeta();
+        final ItemMeta meta = ITEM_STACK.getItemMeta();
 
         meta.displayName(ChatUtils.createDefaultStyledText("Кожаная шляпа"));
         meta.setCustomModelData(999);

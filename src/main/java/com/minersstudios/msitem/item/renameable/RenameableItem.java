@@ -29,20 +29,19 @@ import static net.kyori.adventure.text.Component.text;
 public class RenameableItem {
     private final String key;
     private final RenameCollection renameCollection;
-    private final Set<OfflinePlayer> whiteList = new HashSet<>();
+    private final Set<OfflinePlayer> whiteList;
     private boolean showInRenameMenu;
 
     private RenameableItem(
-            @NotNull String key,
-            @NotNull RenameCollection renameCollection,
-            @NotNull Collection<OfflinePlayer> whiteList,
-            boolean showInRenameMenu
+            final @NotNull String key,
+            final @NotNull RenameCollection renameCollection,
+            final @NotNull Collection<OfflinePlayer> whiteList,
+            final boolean showInRenameMenu
     ) {
         this.key = key.toLowerCase(Locale.ENGLISH);
         this.renameCollection = renameCollection;
         this.showInRenameMenu = showInRenameMenu;
-
-        this.whiteList.addAll(whiteList);
+        this.whiteList = new HashSet<>(whiteList);
 
         if (showInRenameMenu) {
             MSItem.getCache().renameableItemsMenu.add(this);
@@ -66,10 +65,10 @@ public class RenameableItem {
      * @return A new RenameableItem instance
      */
     public static @NotNull RenameableItem create(
-            @NotNull String key,
-            boolean showInRenameMenu,
-            @NotNull RenameCollection renameCollection,
-            @NotNull Collection<OfflinePlayer> whiteList
+            final @NotNull String key,
+            final boolean showInRenameMenu,
+            final @NotNull RenameCollection renameCollection,
+            final @NotNull Collection<OfflinePlayer> whiteList
     ) {
         return new RenameableItem(key, renameCollection, whiteList, showInRenameMenu);
     }
@@ -82,8 +81,8 @@ public class RenameableItem {
      * @return A RenameableItem instance loaded from the file,
      *         or null if loading fails
      */
-    public static @Nullable RenameableItem fromFile(@NotNull File file) {
-        YamlConfiguration renameableItemConfig;
+    public static @Nullable RenameableItem fromFile(final @NotNull File file) {
+        final YamlConfiguration renameableItemConfig;
 
         try {
             renameableItemConfig = YamlConfiguration.loadConfiguration(file);
@@ -92,21 +91,21 @@ public class RenameableItem {
             return null;
         }
 
-        String fileName = file.getName();
-        String key = renameableItemConfig.getString("key");
+        final String fileName = file.getName();
+        final String key = renameableItemConfig.getString("key");
 
         if (key == null) {
             MSLogger.severe("Key is not defined in " + fileName + "!");
             return null;
         }
 
-        RenameCollection renameCollection = new RenameCollection(key);
-        var itemsString = renameableItemConfig.getStringList("items");
-        var renamesString = renameableItemConfig.getStringList("renames");
-        var loreString = renameableItemConfig.getStringList("lore");
-        var lore = new ArrayList<Component>();
-        int customModelData = renameableItemConfig.getInt("custom-model-data", -1);
-        var whiteList = new HashSet<OfflinePlayer>();
+        final RenameCollection renameCollection = new RenameCollection(key);
+        final var itemsString = renameableItemConfig.getStringList("items");
+        final var renamesString = renameableItemConfig.getStringList("renames");
+        final var loreString = renameableItemConfig.getStringList("lore");
+        final var lore = new ArrayList<Component>();
+        final int customModelData = renameableItemConfig.getInt("custom-model-data", -1);
+        final var whiteList = new HashSet<OfflinePlayer>();
 
         if (customModelData < 0) {
             MSLogger.severe("Custom model data is not valid! (in " + fileName + ")");
@@ -131,15 +130,15 @@ public class RenameableItem {
             renameCollection.addRename(rename);
         }
 
-        for (var item : itemsString) {
-            ItemStack itemStack;
+        for (final var item : itemsString) {
+            final ItemStack itemStack;
 
             if (item.contains(":")) {
                 itemStack = MSCustomUtils.getItemStack(item)
                         .map(ItemStack::new)
                         .orElse(null);
             } else {
-                Material material = Material.getMaterial(item);
+                final Material material = Material.getMaterial(item);
                 itemStack = material == null
                         ? null
                         : new ItemStack(material);
@@ -151,8 +150,8 @@ public class RenameableItem {
             }
 
             if (renameCollection.isEmptyItems()) {
-                ItemStack mainItem = itemStack.clone();
-                ItemMeta meta = mainItem.getItemMeta();
+                final ItemStack mainItem = itemStack.clone();
+                final ItemMeta meta = mainItem.getItemMeta();
 
                 if (!lore.isEmpty()) {
                     meta.lore(lore);
@@ -166,7 +165,7 @@ public class RenameableItem {
             renameCollection.addItem(itemStack);
         }
 
-        for (var uuid : renameableItemConfig.getStringList("white-list")) {
+        for (final var uuid : renameableItemConfig.getStringList("white-list")) {
             try {
                 whiteList.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
             } catch (IllegalArgumentException e) {
@@ -216,7 +215,7 @@ public class RenameableItem {
      *
      * @param showInRenameMenu The new value for the property
      */
-    public void setShowInRenameMenu(boolean showInRenameMenu) {
+    public void setShowInRenameMenu(final boolean showInRenameMenu) {
         this.showInRenameMenu = showInRenameMenu;
     }
 
@@ -225,7 +224,7 @@ public class RenameableItem {
      * @return Whether the player is allowed to rename the item
      *         (true if the white-list is empty)
      */
-    public boolean isWhiteListed(@Nullable OfflinePlayer player) {
+    public boolean isWhiteListed(final @Nullable OfflinePlayer player) {
         return this.whiteList.isEmpty()
                 || this.whiteList.contains(player);
     }
@@ -244,8 +243,8 @@ public class RenameableItem {
      */
     @Contract("null, null -> null")
     public @Nullable ItemStack craftRenamed(
-            @Nullable ItemStack item,
-            @Nullable String rename
+            final @Nullable ItemStack item,
+            final @Nullable String rename
     ) {
         return this.renameCollection.craftRenamed(item, rename);
     }

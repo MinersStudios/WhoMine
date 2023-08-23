@@ -24,8 +24,8 @@ public class PacketEvent implements Cancellable {
      * @param player          The player who sent or received the packet
      */
     public PacketEvent(
-            @NotNull PacketContainer packetContainer,
-            @NotNull Player player
+            final @NotNull PacketContainer packetContainer,
+            final @NotNull Player player
     ) {
         this.packetContainer = packetContainer;
         this.player = player;
@@ -52,7 +52,7 @@ public class PacketEvent implements Cancellable {
      * @param cancel True if you wish to cancel this event
      */
     @Override
-    public void setCancelled(boolean cancel) {
+    public void setCancelled(final boolean cancel) {
         this.cancelled = cancel;
     }
 

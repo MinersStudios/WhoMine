@@ -11,7 +11,7 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 public class PlayerSpawnLocationListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerSpawnLocation(@NotNull PlayerSpawnLocationEvent event) {
+    public void onPlayerSpawnLocation(final @NotNull PlayerSpawnLocationEvent event) {
         if (!event.getPlayer().isDead()) {
             event.setSpawnLocation(WorldDark.getInstance().getSpawnLocation());
         }

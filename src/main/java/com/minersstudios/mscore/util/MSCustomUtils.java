@@ -43,12 +43,12 @@ public final class MSCustomUtils {
      *         or empty optional if not found
      * @see #getItemStack(String, String)
      */
-    public static @NotNull Optional<ItemStack> getItemStack(@Nullable String namespacedKeyStr) {
+    public static @NotNull Optional<ItemStack> getItemStack(final @Nullable String namespacedKeyStr) {
         if (namespacedKeyStr == null) return Optional.empty();
 
-        int index = namespacedKeyStr.indexOf(":");
-        String namespace = namespacedKeyStr.substring(0, index);
-        String key = namespacedKeyStr.substring(index + 1);
+        final int index = namespacedKeyStr.indexOf(":");
+        final String namespace = namespacedKeyStr.substring(0, index);
+        final String key = namespacedKeyStr.substring(index + 1);
 
         return getItemStack(namespace, key);
     }
@@ -63,7 +63,7 @@ public final class MSCustomUtils {
      *         or empty optional if not found
      * @see #getItemStack(String, String)
      */
-    public static @NotNull Optional<ItemStack> getItemStack(@Nullable NamespacedKey namespacedKey) {
+    public static @NotNull Optional<ItemStack> getItemStack(final @Nullable NamespacedKey namespacedKey) {
         return namespacedKey == null
                 ? Optional.empty()
                 : getItemStack(namespacedKey.getNamespace(), namespacedKey.getKey());
@@ -84,8 +84,8 @@ public final class MSCustomUtils {
      * @see MSItemUtils#getItemStack(String)
      */
     public static @NotNull Optional<ItemStack> getItemStack(
-            @Nullable String namespace,
-            @Nullable String key
+            final @Nullable String namespace,
+            final @Nullable String key
     ) {
         return namespace == null || key == null
                 ? Optional.empty()
@@ -110,15 +110,16 @@ public final class MSCustomUtils {
      *         or empty optional if not found
      * @see #getCustom(NamespacedKey)
      */
-    public static @NotNull Optional<?> getCustom(@Nullable ItemStack itemStack) {
+    public static @NotNull Optional<?> getCustom(final @Nullable ItemStack itemStack) {
         if (itemStack == null) return Optional.empty();
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) return Optional.empty();
-        PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+        final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-        for (var namespacedKey : container.getKeys()) {
-            if (namespacedKey.equals(RenameableItemRegistry.RENAMEABLE_NAMESPACED_KEY)) continue;
-            return getCustom(namespacedKey.getNamespace(), container.get(namespacedKey, PersistentDataType.STRING));
+        for (final var namespacedKey : container.getKeys()) {
+            if (!namespacedKey.equals(RenameableItemRegistry.RENAMEABLE_NAMESPACED_KEY)) {
+                return getCustom(namespacedKey.getNamespace(), container.get(namespacedKey, PersistentDataType.STRING));
+            }
         }
 
         return Optional.empty();
@@ -138,11 +139,11 @@ public final class MSCustomUtils {
      *         or empty optional if not found
      * @see #getCustom(String, String)
      */
-    public static @NotNull Optional<?> getCustom(@Nullable String namespacedKeyStr) {
+    public static @NotNull Optional<?> getCustom(final @Nullable String namespacedKeyStr) {
         if (namespacedKeyStr == null) return Optional.empty();
 
-        String namespace = namespacedKeyStr.substring(0, namespacedKeyStr.indexOf(":"));
-        String key = namespacedKeyStr.substring(namespacedKeyStr.indexOf(":") + 1);
+        final String namespace = namespacedKeyStr.substring(0, namespacedKeyStr.indexOf(":"));
+        final String key = namespacedKeyStr.substring(namespacedKeyStr.indexOf(":") + 1);
 
         return getCustom(namespace, key);
     }
@@ -161,7 +162,7 @@ public final class MSCustomUtils {
      *         or empty optional if not found
      * @see #getCustom(String, String)
      */
-    public static @NotNull Optional<?> getCustom(@Nullable NamespacedKey namespacedKey) {
+    public static @NotNull Optional<?> getCustom(final @Nullable NamespacedKey namespacedKey) {
         return namespacedKey == null
                 ? Optional.empty()
                 : getCustom(namespacedKey.getNamespace(), namespacedKey.getKey());
@@ -186,8 +187,8 @@ public final class MSCustomUtils {
      * @see CustomItemType#fromKey(String)
      */
     public static @NotNull Optional<?> getCustom(
-            @Nullable String namespace,
-            @Nullable String key
+            final @Nullable String namespace,
+            final @Nullable String key
     ) {
         return StringUtils.isBlank(namespace) || StringUtils.isBlank(key)
                 ? Optional.empty()

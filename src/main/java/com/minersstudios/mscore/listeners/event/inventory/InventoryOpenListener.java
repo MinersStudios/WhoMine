@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 public class InventoryOpenListener extends AbstractMSListener {
 
     @EventHandler
-    public void onInventoryOpen(@NotNull InventoryOpenEvent event) {
-        if (event.getInventory() instanceof CustomInventory customInventory) {
+    public void onInventoryOpen(final @NotNull InventoryOpenEvent event) {
+        if (event.getInventory() instanceof final CustomInventory customInventory) {
             customInventory.doOpenAction(event);
         }
     }

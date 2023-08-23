@@ -12,7 +12,7 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 public class EntityDismountListener extends AbstractMSListener {
 
     @EventHandler
-    public void onEntityDismount(@NotNull EntityDismountEvent event) {
+    public void onEntityDismount(final @NotNull EntityDismountEvent event) {
         if (event.getEntity() instanceof Player player) {
             PlayerInfo.fromOnlinePlayer(player).unsetSitting();
         }

@@ -34,8 +34,8 @@ public class ChannelHandler extends ChannelDuplexHandler {
      *               (can be null)
      */
     public ChannelHandler(
-            @NotNull MSPlugin plugin,
-            @NotNull Player player
+            final @NotNull MSPlugin plugin,
+            final @NotNull Player player
     ) {
         this.plugin = plugin;
         this.player = player;
@@ -67,26 +67,26 @@ public class ChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelRead(
-            @NotNull ChannelHandlerContext ctx,
-            @NotNull Object msg
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull Object msg
     ) throws Exception {
-        if (msg instanceof Packet<?> packet) {
-            PacketType packetType = PacketType.fromClass(packet.getClass());
+        if (!(msg instanceof final Packet<?> packet)) return;
 
-            if (packetType == null) {
-                this.plugin.runTask(() -> this.player.kick());
-                MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent by " + this.player.getName());
-                return;
-            }
+        final PacketType packetType = PacketType.fromClass(packet.getClass());
 
-            PacketContainer packetContainer = new PacketContainer(packet, packetType);
-            PacketEvent event = new PacketEvent(packetContainer, this.player);
+        if (packetType == null) {
+            this.plugin.runTask(() -> this.player.kick());
+            MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent by " + this.player.getName());
+            return;
+        }
 
-            this.plugin.callPacketReceiveEvent(event);
+        final PacketContainer packetContainer = new PacketContainer(packet, packetType);
+        final PacketEvent event = new PacketEvent(packetContainer, this.player);
 
-            if (!event.isCancelled()) {
-                super.channelRead(ctx, event.getPacketContainer().getPacket());
-            }
+        this.plugin.callPacketReceiveEvent(event);
+
+        if (!event.isCancelled()) {
+            super.channelRead(ctx, event.getPacketContainer().getPacket());
         }
     }
 
@@ -103,27 +103,27 @@ public class ChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void write(
-            @NotNull ChannelHandlerContext ctx,
-            @NotNull Object msg,
-            @NotNull ChannelPromise promise
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull Object msg,
+            final @NotNull ChannelPromise promise
     ) throws Exception {
-        if (msg instanceof Packet<?> packet) {
-            PacketType packetType = PacketType.fromClass(packet.getClass());
+        if (!(msg instanceof final Packet<?> packet)) return;
 
-            if (packetType == null) {
-                this.plugin.runTask(() -> this.player.kick());
-                MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent to " + this.player.getName());
-                return;
-            }
+        final PacketType packetType = PacketType.fromClass(packet.getClass());
 
-            PacketContainer packetContainer = new PacketContainer(packet, packetType);
-            PacketEvent event = new PacketEvent(packetContainer, this.player);
+        if (packetType == null) {
+            this.plugin.runTask(() -> this.player.kick());
+            MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent to " + this.player.getName());
+            return;
+        }
 
-            this.plugin.callPacketSendEvent(event);
+        final PacketContainer packetContainer = new PacketContainer(packet, packetType);
+        final PacketEvent event = new PacketEvent(packetContainer, this.player);
 
-            if (!event.isCancelled()) {
-                super.write(ctx, event.getPacketContainer().getPacket(), promise);
-            }
+        this.plugin.callPacketSendEvent(event);
+
+        if (!event.isCancelled()) {
+            super.write(ctx, event.getPacketContainer().getPacket(), promise);
         }
     }
 
@@ -135,14 +135,14 @@ public class ChannelHandler extends ChannelDuplexHandler {
      * @param plugin The MSPlugin instance associated with the ChannelHandler
      */
     public static void injectPlayer(
-            @NotNull Player player,
-            @NotNull MSPlugin plugin
+            final @NotNull Player player,
+            final @NotNull MSPlugin plugin
     ) {
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        ChannelPipeline pipeline = serverPlayer.connection.connection.channel.pipeline();
+        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        final ChannelPipeline pipeline = serverPlayer.connection.connection.channel.pipeline();
 
         if (!pipeline.names().contains(ChannelHandler.CHANNEL_HANDLER_NAME)) {
-            ChannelHandler channelHandler = new ChannelHandler(plugin, player);
+            final ChannelHandler channelHandler = new ChannelHandler(plugin, player);
             pipeline.addBefore(ChannelHandler.PACKET_HANDLER_NAME, ChannelHandler.CHANNEL_HANDLER_NAME, channelHandler);
         }
     }
@@ -153,10 +153,10 @@ public class ChannelHandler extends ChannelDuplexHandler {
      *
      * @param player The player to remove the ChannelHandler for
      */
-    public static void uninjectPlayer(@NotNull Player player) {
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        Channel channel = serverPlayer.connection.connection.channel;
-        ChannelPipeline pipeline = channel.pipeline();
+    public static void uninjectPlayer(final @NotNull Player player) {
+        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        final Channel channel = serverPlayer.connection.connection.channel;
+        final ChannelPipeline pipeline = channel.pipeline();
 
         if (pipeline.names().contains(CHANNEL_HANDLER_NAME)) {
             channel.eventLoop().execute(() -> pipeline.remove(CHANNEL_HANDLER_NAME));

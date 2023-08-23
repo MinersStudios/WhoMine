@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
@@ -32,7 +33,7 @@ public class CustomChoice implements RecipeChoice {
      * @param namespacedKey The namespaced key to use for the choice
      * @throws IllegalArgumentException If the namespaced key is invalid
      */
-    public CustomChoice(@NotNull String namespacedKey) throws IllegalArgumentException {
+    public CustomChoice(final @NotNull String namespacedKey) throws IllegalArgumentException {
         this(List.of(namespacedKey));
     }
 
@@ -44,7 +45,7 @@ public class CustomChoice implements RecipeChoice {
      *                                  or if any of the namespaced keys
      *                                  are invalid
      */
-    public CustomChoice(String @NotNull ... namespacedKeys) throws IllegalArgumentException {
+    public CustomChoice(final String @NotNull ... namespacedKeys) throws IllegalArgumentException {
         this(List.of(namespacedKeys));
     }
 
@@ -56,7 +57,7 @@ public class CustomChoice implements RecipeChoice {
      *                                  or if any of the namespaced keys
      *                                  are null or invalid
      */
-    public CustomChoice(@NotNull List<String> namespacedKeys) throws IllegalArgumentException {
+    public CustomChoice(final @NotNull List<String> namespacedKeys) throws IllegalArgumentException {
         Preconditions.checkArgument(!namespacedKeys.isEmpty(), "Must have at least one namespacedKey");
 
         this.namespacedKeys = new ArrayList<>(namespacedKeys);
@@ -120,9 +121,11 @@ public class CustomChoice implements RecipeChoice {
     @Override
     public @NotNull CustomChoice clone() {
         try {
-            CustomChoice clone = (CustomChoice) super.clone();
+            final CustomChoice clone = (CustomChoice) super.clone();
+
             clone.choices = new ArrayList<>(this.choices);
             clone.namespacedKeys = new ArrayList<>(this.namespacedKeys);
+
             return clone;
         } catch (CloneNotSupportedException ex) {
             throw new AssertionError(ex);
@@ -134,8 +137,8 @@ public class CustomChoice implements RecipeChoice {
      * @return True if the itemStack is similar to any of the choices
      */
     @Override
-    public boolean test(@NotNull ItemStack itemStack) {
-        for (var choice : this.choices) {
+    public boolean test(final @NotNull ItemStack itemStack) {
+        for (final var choice : this.choices) {
             if (choice.isSimilar(itemStack)) return true;
         }
 
@@ -147,9 +150,12 @@ public class CustomChoice implements RecipeChoice {
      */
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.choices);
-        return hash;
+        final int prime = 41;
+        int result = 7;
+
+        result = prime * result + Objects.hashCode(this.choices);
+
+        return result;
     }
 
     /**
@@ -158,7 +164,7 @@ public class CustomChoice implements RecipeChoice {
      */
     @Contract(value = "null -> false")
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
@@ -170,6 +176,6 @@ public class CustomChoice implements RecipeChoice {
      */
     @Override
     public @NotNull String toString() {
-        return "CustomChoice{" + "choices=" + this.choices + '}';
+        return "CustomChoice{choices=" + this.choices + '}';
     }
 }

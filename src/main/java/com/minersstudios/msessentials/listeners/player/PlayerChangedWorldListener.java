@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerChangedWorldListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerChangedWorld(@NotNull PlayerChangedWorldEvent event) {
+    public void onPlayerChangedWorld(final @NotNull PlayerChangedWorldEvent event) {
         MSPlayerUtils.hideNameTag(event.getPlayer());
     }
 }

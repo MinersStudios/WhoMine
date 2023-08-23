@@ -22,8 +22,8 @@ public class PacketContainer {
      * @param type   The packet type of the packet
      */
     public PacketContainer(
-            @NotNull Packet<?> packet,
-            @NotNull PacketType type
+            final @NotNull Packet<?> packet,
+            final @NotNull PacketType type
     ) {
         this.packet = packet;
         this.type = type;
@@ -43,7 +43,7 @@ public class PacketContainer {
      *                                  of this container
      *                                  (Checks by comparing the classes)
      */
-    public void setPacket(@NotNull Packet<?> packet) throws IllegalArgumentException {
+    public void setPacket(final @NotNull Packet<?> packet) throws IllegalArgumentException {
         if (this.packet.getClass() != packet.getClass()) {
             throw new IllegalArgumentException("Packet type cannot be changed!");
         }

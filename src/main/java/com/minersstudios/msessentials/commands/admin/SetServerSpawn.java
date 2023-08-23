@@ -58,16 +58,16 @@ public class SetServerSpawn implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
-        Server server = sender.getServer();
+        final Server server = sender.getServer();
 
         switch (args.length) {
             case 0 -> {
-                if (!(sender instanceof Player player)) {
+                if (!(sender instanceof final Player player)) {
                     MSLogger.warning(sender, ONLY_PLAYER_COMMAND);
                     return true;
                 }
@@ -75,7 +75,7 @@ public class SetServerSpawn implements MSCommandExecutor {
                 setNewLocation(sender, player.getLocation());
             }
             case 1 -> {
-                World world = server.getWorld(args[0]);
+                final World world = server.getWorld(args[0]);
 
                 if (world == null) {
                     MSLogger.warning(sender, WORLD_NOT_FOUND);
@@ -85,14 +85,14 @@ public class SetServerSpawn implements MSCommandExecutor {
                 setNewLocation(sender, world.getSpawnLocation());
             }
             case 4 -> {
-                World world = server.getWorld(args[0]);
+                final World world = server.getWorld(args[0]);
 
                 if (world == null) {
                     MSLogger.warning(sender, WORLD_NOT_FOUND);
                     return true;
                 }
 
-                double x, y, z;
+                final double x, y, z;
 
                 try {
                     x = Double.parseDouble(args[1]);
@@ -110,14 +110,14 @@ public class SetServerSpawn implements MSCommandExecutor {
                 setNewLocation(sender, new Location(world, x, y, z));
             }
             case 6 -> {
-                World world = server.getWorld(args[0]);
+                final World world = server.getWorld(args[0]);
 
                 if (world == null) {
                     MSLogger.warning(sender, WORLD_NOT_FOUND);
                     return true;
                 }
 
-                double x, y, z;
+                final double x, y, z;
 
                 try {
                     x = Double.parseDouble(args[1]);
@@ -132,7 +132,7 @@ public class SetServerSpawn implements MSCommandExecutor {
                     return true;
                 }
 
-                float yaw, pitch;
+                final float yaw, pitch;
 
                 try {
                     yaw = Float.parseFloat(args[4]);
@@ -157,17 +157,17 @@ public class SetServerSpawn implements MSCommandExecutor {
 
     @Override
     public @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         return switch (args.length) {
             case 1 -> {
-                Server server = sender.getServer();
-                var names = new ArrayList<String>();
+                final Server server = sender.getServer();
+                final var names = new ArrayList<String>();
 
-                for (var world : server.getWorlds()) {
+                for (final var world : server.getWorlds()) {
                     if (!WorldDark.isWorldDark(world)) {
                         names.add(world.getName());
                     }
@@ -179,19 +179,19 @@ public class SetServerSpawn implements MSCommandExecutor {
                 Location playerLoc = null;
 
                 if (
-                        sender instanceof Player player
+                        sender instanceof final Player player
                         && args[0].equals(player.getWorld().getName())
                 ) {
                     playerLoc = player.getLocation();
                 }
 
                 if (playerLoc != null) {
-                    double coordinate = switch (args.length) {
+                    final double coordinate = switch (args.length) {
                         case 2 -> playerLoc.x();
                         case 3 -> playerLoc.y();
                         default -> playerLoc.z();
                     };
-                    double roundedCoordinate = Math.round(coordinate * 100.0d) / 100.0d;
+                    final double roundedCoordinate = Math.round(coordinate * 100.0d) / 100.0d;
 
                     yield List.of(String.valueOf(roundedCoordinate));
                 }
@@ -202,15 +202,15 @@ public class SetServerSpawn implements MSCommandExecutor {
                 Location playerLoc = null;
 
                 if (
-                        sender instanceof Player player
+                        sender instanceof final Player player
                         && args[0].equals(player.getWorld().getName())
                 ) {
                     playerLoc = player.getLocation();
                 }
 
                 if (playerLoc != null) {
-                    float degree = args.length == 5 ? playerLoc.getYaw() : playerLoc.getPitch();
-                    float roundedDegree = Math.round(degree * 100.0f) / 100.0f;
+                    final float degree = args.length == 5 ? playerLoc.getYaw() : playerLoc.getPitch();
+                    final float roundedDegree = Math.round(degree * 100.0f) / 100.0f;
 
                     yield List.of(String.valueOf(roundedDegree));
                 }
@@ -222,10 +222,10 @@ public class SetServerSpawn implements MSCommandExecutor {
     }
 
     private static void setNewLocation(
-            @NotNull CommandSender sender,
-            @NotNull Location location
+            final @NotNull CommandSender sender,
+            final @NotNull Location location
     ) {
-        Config config = MSEssentials.getConfiguration();
+        final Config config = MSEssentials.getConfiguration();
         config.spawnLocation = location;
 
         config.save();

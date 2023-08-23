@@ -1,12 +1,12 @@
 package com.minersstudios.mscore.inventory;
 
-import com.minersstudios.mscore.inventory.actions.ButtonClickAction;
+import com.minersstudios.mscore.inventory.action.ButtonClickAction;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,20 +14,36 @@ import org.jetbrains.annotations.Nullable;
  * Button builder class.
  * Button can use {@link ButtonClickAction} to perform action when clicked
  */
-public class InventoryButton {
-    private @Nullable ItemStack item;
-    private @Nullable ButtonClickAction clickAction;
+public class InventoryButton implements Cloneable {
+    private ItemStack item;
+    private ButtonClickAction clickAction;
 
-    private InventoryButton() {}
+    private static final ItemStack DEFAULT_ITEM = new ItemStack(Material.AIR);
 
     /**
-     * Creates new instance of {@link InventoryButton} with null values
-     *
-     * @return New instance of {@link InventoryButton}
+     * Creates new button with {@link #DEFAULT_ITEM}
+     * and no click action
      */
-    @Contract(value = " -> new")
-    public static @NotNull InventoryButton create() {
-        return new InventoryButton();
+    public InventoryButton() {
+        this.item = DEFAULT_ITEM.clone();
+        this.clickAction = null;
+    }
+
+    /**
+     * Creates new button with specified item and click action
+     *
+     * @param item        Item to be displayed on button
+     * @param clickAction Click action to be performed when button
+     *                    is clicked
+     */
+    public InventoryButton(
+            final @Nullable ItemStack item,
+            final @Nullable ButtonClickAction clickAction
+    ) {
+        this.item = item == null
+                ? DEFAULT_ITEM.clone()
+                : item;
+        this.clickAction = clickAction;
     }
 
     /**
@@ -35,7 +51,7 @@ public class InventoryButton {
      *
      * @return Item to be displayed on button
      */
-    public @Nullable ItemStack item() {
+    public @NotNull ItemStack item() {
         return this.item;
     }
 
@@ -45,7 +61,7 @@ public class InventoryButton {
      * @param item New item
      * @return This instance
      */
-    public @NotNull InventoryButton item(@Nullable ItemStack item) {
+    public @NotNull InventoryButton item(final @Nullable ItemStack item) {
         this.item = item;
         return this;
     }
@@ -67,7 +83,7 @@ public class InventoryButton {
      * @return This instance
      * @see ButtonClickAction
      */
-    public @NotNull InventoryButton clickAction(@Nullable ButtonClickAction clickAction) {
+    public @NotNull InventoryButton clickAction(final @Nullable ButtonClickAction clickAction) {
         this.clickAction = clickAction;
         return this;
     }
@@ -77,7 +93,7 @@ public class InventoryButton {
      *
      * @param player Player to whom the sound will be played
      */
-    public static void playClickSound(@NotNull Player player) {
+    public static void playClickSound(final @NotNull Player player) {
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.MASTER, 0.5f, 1.0f);
     }
 
@@ -85,14 +101,31 @@ public class InventoryButton {
      * Performs click action when button is clicked
      *
      * @param event           Event that triggered the action
-     * @param customInventory Custom inventory that is involved in this event
+     * @param customInventory Custom inventory that is involved
+     *                        in this event
      */
     public void doClickAction(
-            @NotNull InventoryClickEvent event,
-            @NotNull CustomInventory customInventory
+            final @NotNull InventoryClickEvent event,
+            final @NotNull CustomInventory customInventory
     ) {
         if (this.clickAction != null) {
             this.clickAction.doAction(event, customInventory.clone());
+        }
+    }
+
+    /**
+     * Creates a clone of this button
+     *
+     * @return Cloned instance of this button
+     */
+    @Override
+    public @NotNull InventoryButton clone() {
+        try {
+            final InventoryButton clone = (InventoryButton) super.clone();
+            clone.item = this.item.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError("An error occurred while cloning InventoryButton", e);
         }
     }
 }

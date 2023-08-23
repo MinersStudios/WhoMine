@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerTeleportListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerTeleport(@NotNull PlayerTeleportEvent event) {
-        Player player = event.getPlayer();
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+    public void onPlayerTeleport(final @NotNull PlayerTeleportEvent event) {
+        final Player player = event.getPlayer();
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
 
         if (playerInfo.isSitting()) {
             playerInfo.unsetSitting();

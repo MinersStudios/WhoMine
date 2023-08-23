@@ -36,10 +36,10 @@ public final class UseBucketsAndSpawnableItems {
      * @param itemInHand item in hand
      */
     public UseBucketsAndSpawnableItems(
-            @NotNull Player player,
-            @NotNull Block block,
-            @NotNull BlockFace blockFace,
-            @NotNull ItemStack itemInHand
+            final @NotNull Player player,
+            final @NotNull Block block,
+            final @NotNull BlockFace blockFace,
+            final @NotNull ItemStack itemInHand
     ) {
         this.player = player;
         this.world = player.getWorld();
@@ -47,7 +47,7 @@ public final class UseBucketsAndSpawnableItems {
         this.itemInHand = itemInHand;
         this.blockLocation = block.getLocation().toCenterLocation();
         this.blockFace = blockFace;
-        Material itemMaterial = this.itemInHand.getType();
+        final Material itemMaterial = this.itemInHand.getType();
 
         switch (itemMaterial) {
             case ITEM_FRAME, GLOW_ITEM_FRAME -> this.setItemFrame();
@@ -73,7 +73,7 @@ public final class UseBucketsAndSpawnableItems {
      * @return random axolotl color variant
      */
     private @NotNull Axolotl.Variant randomVariant() {
-        Axolotl.Variant[] variants = Axolotl.Variant.values();
+        final Axolotl.Variant[] variants = Axolotl.Variant.values();
         return variants[this.random.nextInt(variants.length)];
     }
 
@@ -81,7 +81,7 @@ public final class UseBucketsAndSpawnableItems {
      * @return random tropical fish body pattern variant
      */
     private @NotNull TropicalFish.Pattern randomPattern() {
-        TropicalFish.Pattern[] patterns = TropicalFish.Pattern.values();
+        final TropicalFish.Pattern[] patterns = TropicalFish.Pattern.values();
         return patterns[this.random.nextInt(patterns.length)];
     }
 
@@ -89,7 +89,7 @@ public final class UseBucketsAndSpawnableItems {
      * @return random tropical fish body color variant
      */
     private @NotNull DyeColor randomBodyColor() {
-        DyeColor[] dyeColors = DyeColor.values();
+        final DyeColor[] dyeColors = DyeColor.values();
         return dyeColors[this.random.nextInt(dyeColors.length)];
     }
 
@@ -106,16 +106,16 @@ public final class UseBucketsAndSpawnableItems {
      * Uses boat
      */
     private void setBoat() {
-        Location eyeLocation = this.player.getEyeLocation();
-        Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
-        RayTraceResult rayTraceEntities = this.world.rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
-        RayTraceResult rayTraceBlocks = this.world.rayTraceBlocks(eyeLocation, eyeLocation.getDirection(), 4.5d);
+        final Location eyeLocation = this.player.getEyeLocation();
+        final Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
+        final RayTraceResult rayTraceEntities = this.world.rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
+        final RayTraceResult rayTraceBlocks = this.world.rayTraceBlocks(eyeLocation, eyeLocation.getDirection(), 4.5d);
 
         if (rayTraceBlocks == null) return;
 
-        Location summonLocation = rayTraceBlocks.getHitPosition().toLocation(this.world);
+        final Location summonLocation = rayTraceBlocks.getHitPosition().toLocation(this.world);
 
-        for (Entity nearbyEntity : this.world.getNearbyEntities(summonLocation, 0.5d, 0.5d, 0.5d)) {
+        for (final var nearbyEntity : this.world.getNearbyEntities(summonLocation, 0.5d, 0.5d, 0.5d)) {
             if (nearbyEntity.getType() != EntityType.DROPPED_ITEM) return;
         }
 
@@ -124,7 +124,7 @@ public final class UseBucketsAndSpawnableItems {
                 || (rayTraceEntities != null && rayTraceEntities.getHitEntity() != null)
         ) return;
 
-        Boat.Type boatType = Boat.Type.valueOf(this.itemInHand.getType().name().split("_")[0]);
+        final Boat.Type boatType = Boat.Type.valueOf(this.itemInHand.getType().name().split("_")[0]);
         summonLocation.setYaw(eyeLocation.getYaw());
 
         if (Tag.ITEMS_CHEST_BOATS.isTagged(this.itemInHand.getType())) {
@@ -169,9 +169,9 @@ public final class UseBucketsAndSpawnableItems {
     }
 
     private boolean checkForEntities() {
-        Location eyeLocation = this.player.getEyeLocation();
-        Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
-        RayTraceResult rayTraceResult = this.world.rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
+        final Location eyeLocation = this.player.getEyeLocation();
+        final Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
+        final RayTraceResult rayTraceResult = this.world.rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
 
         return rayTraceResult != null
                 && rayTraceResult.getHitEntity() != null
@@ -185,7 +185,7 @@ public final class UseBucketsAndSpawnableItems {
     private void setTropicalFish() {
         this.world.spawn(this.blockLocation, TropicalFish.class, tropicalFish -> {
             if (this.itemInHand.getItemMeta() instanceof TropicalFishBucketMeta tropicalFishBucketMeta) {
-                boolean hasVariant = tropicalFishBucketMeta.hasVariant();
+                final boolean hasVariant = tropicalFishBucketMeta.hasVariant();
 
                 tropicalFish.setBodyColor(hasVariant ? tropicalFishBucketMeta.getBodyColor() : this.randomBodyColor());
                 tropicalFish.setPattern(hasVariant ? tropicalFishBucketMeta.getPattern() : this.randomPattern());
@@ -219,11 +219,11 @@ public final class UseBucketsAndSpawnableItems {
      * Uses empty bucket
      */
     private void useEmptyBucket() {
-        BlockData blockData = this.block.getBlockData();
-        Location blockLocation = this.block.getLocation();
-        GameMode gameMode = this.player.getGameMode();
-        String playerName = this.player.getName();
-        Material itemMaterial = this.itemInHand.getType();
+        final BlockData blockData = this.block.getBlockData();
+        final Location blockLocation = this.block.getLocation();
+        final GameMode gameMode = this.player.getGameMode();
+        final String playerName = this.player.getName();
+        final Material itemMaterial = this.itemInHand.getType();
 
         if (
                 this.block.getType() == Material.LAVA
@@ -239,11 +239,11 @@ public final class UseBucketsAndSpawnableItems {
             );
             this.block.setType(Material.AIR);
         } else {
-            if (blockData instanceof Waterlogged waterlogged) {
+            if (blockData instanceof final Waterlogged waterlogged) {
                 waterlogged.setWaterlogged(false);
                 this.block.setBlockData(waterlogged);
             } else if (
-                    blockData instanceof Levelled levelled
+                    blockData instanceof final Levelled levelled
                     && levelled.getLevel() == levelled.getMinimumLevel()
             ) {
                 this.block.setType(Material.AIR);
@@ -264,7 +264,7 @@ public final class UseBucketsAndSpawnableItems {
     private void setLava() {
         if (this.block.getType().isSolid()) return;
 
-        Location blockLocation = this.block.getLocation();
+        final Location blockLocation = this.block.getLocation();
 
         this.block.setType(Material.LAVA);
         this.world.playSound(blockLocation, Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
@@ -273,9 +273,9 @@ public final class UseBucketsAndSpawnableItems {
     }
 
     private void setWater() {
-        Location blockLocation = this.block.getLocation();
+        final Location blockLocation = this.block.getLocation();
 
-        if (this.block.getBlockData() instanceof Waterlogged waterlogged) {
+        if (this.block.getBlockData() instanceof final Waterlogged waterlogged) {
             waterlogged.setWaterlogged(true);
             this.block.setBlockData(waterlogged);
         } else {

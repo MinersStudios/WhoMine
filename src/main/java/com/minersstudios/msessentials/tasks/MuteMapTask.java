@@ -13,14 +13,14 @@ public class MuteMapTask implements Runnable {
 
     @Override
     public void run() {
-        Cache cache = MSEssentials.getCache();
+        final Cache cache = MSEssentials.getCache();
         if (cache.muteMap.isEmpty()) return;
-        Instant currentInstant = Instant.now();
+        final Instant currentInstant = Instant.now();
 
         cache.muteMap.entrySet().stream().parallel()
         .filter(entry -> entry.getValue().getExpiration().isBefore(currentInstant))
         .forEach(entry -> {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());
+            final OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());
             PlayerInfo.fromProfile(player.getUniqueId(), Objects.requireNonNull(player.getName())).unmute(null);
         });
     }

@@ -61,19 +61,19 @@ public class DiscordCommand implements MSCommandExecutor {
 
     @Override
     public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
-        Player player = (Player) sender;
+        final Player player = (Player) sender;
 
         if (args.length > 0) {
             switch (args[0]) {
                 case "link" -> DiscordLinkCodeMenu.open(player);
                 case "unlink" -> {
-                    PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
-                    long id = playerInfo.unlinkDiscord();
+                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+                    final long id = playerInfo.unlinkDiscord();
 
                     if (id == -1L) {
                         MSLogger.warning(sender, NO_LINKS);
@@ -82,8 +82,8 @@ public class DiscordCommand implements MSCommandExecutor {
 
                     MSEssentials.getInstance().runTaskAsync(
                             () -> {
-                                JDA jda = DiscordUtil.getJda();
-                                User user = jda.getUserById(id);
+                                final JDA jda = DiscordUtil.getJda();
+                                final User user = jda.getUserById(id);
 
                                 if (user != null) {
                                     user.openPrivateChannel().complete().sendMessageEmbeds(
@@ -122,10 +122,10 @@ public class DiscordCommand implements MSCommandExecutor {
 
     @Override
     public @NotNull List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final String @NotNull ... args
     ) {
         return args.length == 1 ? TAB : EMPTY_TAB;
     }

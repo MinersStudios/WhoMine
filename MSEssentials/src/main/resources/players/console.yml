@@ -13,14 +13,6 @@ game-params:
   air: 300
 settings:
   resource-pack-type: NONE
-mute:
-  muted: false
-  reason: null
-  to: 0
-ban:
-  banned: false
-  reason: null
-  to: 0
 locations:
   last-death-location:
     world: overworld

@@ -13,7 +13,7 @@ public class NotePlayListener extends AbstractMSListener {
     private static final @NotNull NoteBlockData DEFAULT = NoteBlockData.getDefault();
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onNotePlay(@NotNull NotePlayEvent event) {
+    public void onNotePlay(final @NotNull NotePlayEvent event) {
         if (
                 !(event.getInstrument() == DEFAULT.instrument()
                 && event.getNote().equals(DEFAULT.note()))

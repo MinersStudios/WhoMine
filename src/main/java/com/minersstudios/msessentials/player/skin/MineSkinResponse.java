@@ -45,8 +45,8 @@ public class MineSkinResponse {
     private static final String MINE_SKIN_API_URL = "https://api.mineskin.org/generate/url/";
 
     private MineSkinResponse(
-            int statusCode,
-            @NotNull String body
+            final int statusCode,
+            final @NotNull String body
     ) {
         this.statusCode = statusCode;
         this.body = body;
@@ -64,12 +64,12 @@ public class MineSkinResponse {
      * @see #MINE_SKIN_API_URL
      */
     @Contract("_ -> new")
-    public static @NotNull MineSkinResponse fromLink(@NotNull String link) throws IOException, IllegalArgumentException {
+    public static @NotNull MineSkinResponse fromLink(final @NotNull String link) throws IOException, IllegalArgumentException {
         Preconditions.checkArgument(link.startsWith("https://") || link.endsWith(".png"), "The link must start with https:// and end with .png");
 
-        String requestBody = "url=" + URLEncoder.encode(link, StandardCharsets.UTF_8);
-        String apiKey = MSEssentials.getConfiguration().mineSkinApiKey;
-        HttpURLConnection connection = (HttpURLConnection) new URL(MINE_SKIN_API_URL).openConnection();
+        final String requestBody = "url=" + URLEncoder.encode(link, StandardCharsets.UTF_8);
+        final String apiKey = MSEssentials.getConfiguration().mineSkinApiKey;
+        final HttpURLConnection connection = (HttpURLConnection) new URL(MINE_SKIN_API_URL).openConnection();
 
         connection.setRequestMethod("POST");
         connection.setConnectTimeout(90000);
@@ -119,12 +119,12 @@ public class MineSkinResponse {
      *              or {@link MineSkinDelayErrorJson} if you want to get the delay error data
      * @return The body of the response deserialized to the given class
      */
-    public <T> @NotNull T getBodyResponse(@NotNull Class<T> clazz) {
+    public <T> @NotNull T getBodyResponse(final @NotNull Class<T> clazz) {
         return GSON.fromJson(this.body, clazz);
     }
 
-    private static @NotNull String getBody(@NotNull HttpURLConnection connection) throws IOException {
-        StringBuilder body = new StringBuilder();
+    private static @NotNull String getBody(final @NotNull HttpURLConnection connection) throws IOException {
+        final StringBuilder body = new StringBuilder();
         InputStream is;
 
         try {
@@ -137,8 +137,8 @@ public class MineSkinResponse {
             throw new IOException("Failed to get input stream");
         }
 
-        try (var input = new DataInputStream(is)) {
-            byte[] buffer = new byte[4096];
+        try (final var input = new DataInputStream(is)) {
+            final byte[] buffer = new byte[4096];
             int bytesRead;
 
             while ((bytesRead = input.read(buffer)) != -1) {

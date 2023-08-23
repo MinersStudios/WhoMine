@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.inventory;
 
-import com.minersstudios.mscore.inventory.actions.InventoryAction;
+import com.minersstudios.mscore.inventory.action.InventoryAction;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.Container;
 import org.bukkit.Material;
@@ -35,19 +35,21 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     protected @Nullable InventoryAction<InventoryCloseEvent> closeAction;
     protected @Nullable InventoryAction<InventoryClickEvent> clickAction;
     protected @Nullable InventoryAction<InventoryClickEvent> bottomClickAction;
-    protected @NotNull List<Object> args = new ArrayList<>();
+    protected @NotNull List<Object> args;
     protected final int size;
 
     protected static final int LAST_SLOT = 53;
     protected static final ItemStack EMPTY_ITEM = new ItemStack(Material.AIR);
 
     protected CustomInventoryImpl(
-            @NotNull Component title,
-            @Range(from = 1, to = 6) int verticalSize
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize
     ) {
         super(null, verticalSize * 9, title);
+
         this.size = verticalSize * 9;
         this.buttons = new HashMap<>(this.size);
+        this.args = new ArrayList<>();
     }
 
     @Override
@@ -66,7 +68,7 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     }
 
     @Override
-    public @NotNull S buttons(@NotNull Map<Integer, InventoryButton> buttons) throws IllegalArgumentException {
+    public @NotNull S buttons(final @NotNull Map<Integer, InventoryButton> buttons) throws IllegalArgumentException {
         buttons.forEach(this::buttonAt);
         return (S) this;
     }
@@ -77,14 +79,14 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     }
 
     @Override
-    public @Nullable InventoryButton buttonAt(@Range(from = 0, to = LAST_SLOT) int slot) {
+    public @Nullable InventoryButton buttonAt(final @Range(from = 0, to = LAST_SLOT) int slot) {
         return this.buttons.getOrDefault(slot, null);
     }
 
     @Override
     public @NotNull S buttonAt(
-            @Range(from = 0, to = LAST_SLOT) int slot,
-            @Nullable InventoryButton button
+            final @Range(from = 0, to = LAST_SLOT) int slot,
+            final @Nullable InventoryButton button
     ) throws IllegalArgumentException {
         this.validateSlot(slot);
         this.buttons.put(slot, button);
@@ -98,7 +100,7 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     }
 
     @Override
-    public @NotNull S args(@NotNull List<Object> args) {
+    public @NotNull S args(final @NotNull List<Object> args) {
         this.args = args;
         return (S) this;
     }
@@ -109,7 +111,7 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     }
 
     @Override
-    public @NotNull S openAction(@Nullable InventoryAction<InventoryOpenEvent> openAction) {
+    public @NotNull S openAction(final @Nullable InventoryAction<InventoryOpenEvent> openAction) {
         this.openAction = openAction;
         return (S) this;
     }
@@ -120,7 +122,7 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     }
 
     @Override
-    public @NotNull S closeAction(@Nullable InventoryAction<InventoryCloseEvent> closeAction) {
+    public @NotNull S closeAction(final @Nullable InventoryAction<InventoryCloseEvent> closeAction) {
         this.closeAction = closeAction;
         return (S) this;
     }
@@ -131,7 +133,7 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     }
 
     @Override
-    public @NotNull S clickAction(@Nullable InventoryAction<InventoryClickEvent> clickAction) {
+    public @NotNull S clickAction(final @Nullable InventoryAction<InventoryClickEvent> clickAction) {
         this.clickAction = clickAction;
         return (S) this;
     }
@@ -142,46 +144,46 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     }
 
     @Override
-    public @NotNull S bottomClickAction(@Nullable InventoryAction<InventoryClickEvent> bottomClickAction) {
+    public @NotNull S bottomClickAction(final @Nullable InventoryAction<InventoryClickEvent> bottomClickAction) {
         this.bottomClickAction = bottomClickAction;
         return (S) this;
     }
 
     @Override
-    public void doOpenAction(@NotNull InventoryOpenEvent event) {
+    public void doOpenAction(final @NotNull InventoryOpenEvent event) {
         if (this.openAction != null) {
             this.openAction.doAction(event, this.clone());
         }
     }
 
     @Override
-    public void doCloseAction(@NotNull InventoryCloseEvent event) {
+    public void doCloseAction(final @NotNull InventoryCloseEvent event) {
         if (this.closeAction != null) {
             this.closeAction.doAction(event, this.clone());
         }
     }
 
     @Override
-    public void doClickAction(@NotNull InventoryClickEvent event) {
+    public void doClickAction(final @NotNull InventoryClickEvent event) {
         if (this.clickAction != null) {
             this.clickAction.doAction(event, this.clone());
         }
     }
 
     @Override
-    public void doBottomClickAction(@NotNull InventoryClickEvent event) {
+    public void doBottomClickAction(final @NotNull InventoryClickEvent event) {
         if (this.bottomClickAction != null) {
             this.bottomClickAction.doAction(event, this.clone());
         }
     }
 
     @Override
-    public void open(@NotNull Player player) {
+    public void open(final @NotNull Player player) {
         player.openInventory(this);
     }
 
     @Override
-    public void validateSlot(int slot) throws IllegalArgumentException {
+    public void validateSlot(final int slot) throws IllegalArgumentException {
         if (slot < 0 || slot >= this.getSize()) {
             throw new IllegalArgumentException("Slot must be between 0 and " + (this.getSize() - 1));
         }
@@ -190,13 +192,14 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     @Override
     public @NotNull S clone() {
         try {
-            var clone = (CustomInventoryImpl<S>) super.clone();
-            Container newContainer = new CraftInventoryCustom(null, this.getSize(), this.title()).getInventory();
-            Field inventoryField = CraftInventory.class.getDeclaredField("inventory");
+            final var clone = (CustomInventoryImpl<S>) super.clone();
+            final Container newContainer = new CraftInventoryCustom(null, this.getSize(), this.title()).getInventory();
+            final Field inventoryField = CraftInventory.class.getDeclaredField("inventory");
 
-            Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+            final Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
             unsafeField.setAccessible(true);
-            Unsafe unsafe = (Unsafe) unsafeField.get(null);
+
+            final Unsafe unsafe = (Unsafe) unsafeField.get(null);
             unsafe.putObject(clone, unsafe.objectFieldOffset(inventoryField), newContainer);
 
             clone.buttons = new HashMap<>(this.buttons);

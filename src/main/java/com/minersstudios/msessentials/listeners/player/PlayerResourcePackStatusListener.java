@@ -13,11 +13,11 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerResourcePackStatusListener extends AbstractMSListener {
 
     @EventHandler
-    public void onPlayerResourcePackStatus(@NotNull PlayerResourcePackStatusEvent event) {
-        PlayerResourcePackStatusEvent.Status status = event.getStatus();
-        Player player = event.getPlayer();
-        PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
-        ResourcePack.Type currentType = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
+    public void onPlayerResourcePackStatus(final @NotNull PlayerResourcePackStatusEvent event) {
+        final PlayerResourcePackStatusEvent.Status status = event.getStatus();
+        final Player player = event.getPlayer();
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final ResourcePack.Type currentType = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
         if (
                 currentType == ResourcePack.Type.NULL

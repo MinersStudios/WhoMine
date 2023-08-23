@@ -1,6 +1,5 @@
 package com.minersstudios.msitem.listeners.mechanic;
 
-import com.google.common.collect.Lists;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.ItemUtils;
@@ -18,12 +17,19 @@ import org.bukkit.inventory.meta.BundleMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @MSListener
 public class CardBoxMechanic extends AbstractMSListener {
+    private static final List<ItemStack> CARDS = new ArrayList<>();
+
+    static {
+        CARDS.addAll(CardsBicycle.BLUE_CARD_ITEMS);
+        CARDS.addAll(CardsBicycle.RED_CARD_ITEMS);
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onInventoryMoveItem(@NotNull InventoryMoveItemEvent event) {
+    public void onInventoryMoveItem(final @NotNull InventoryMoveItemEvent event) {
         if (event.getDestination().getType() != InventoryType.SHULKER_BOX) return;
 
         CustomItemType.fromItemStack(event.getItem())
@@ -34,7 +40,7 @@ public class CardBoxMechanic extends AbstractMSListener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onInventoryDrag(@NotNull InventoryDragEvent event) {
+    public void onInventoryDrag(final @NotNull InventoryDragEvent event) {
         if (event.getInventory().getType() != InventoryType.SHULKER_BOX) return;
 
         CustomItemType.fromItemStack(event.getOldCursor())
@@ -45,10 +51,10 @@ public class CardBoxMechanic extends AbstractMSListener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onInventoryClick(@NotNull InventoryClickEvent event) {
-        ItemStack cursorItem = event.getCursor();
-        ItemStack currentItem = event.getCurrentItem();
-        Inventory clickedInventory = event.getClickedInventory();
+    public void onInventoryClick(final @NotNull InventoryClickEvent event) {
+        final ItemStack cursorItem = event.getCursor();
+        final ItemStack currentItem = event.getCurrentItem();
+        final Inventory clickedInventory = event.getClickedInventory();
 
         if (
                 (clickedInventory != null
@@ -76,17 +82,15 @@ public class CardBoxMechanic extends AbstractMSListener {
     }
 
     private static void addCardToCardBox(
-            @NotNull InventoryClickEvent event,
-            @NotNull ItemStack cardBoxItem,
-            @NotNull ItemStack cardItem
+            final @NotNull InventoryClickEvent event,
+            final @NotNull ItemStack cardBoxItem,
+            final @NotNull ItemStack cardItem
     ) {
-        var cards = new ArrayList<ItemStack>();
-        cards.addAll(CardsBicycle.BLUE_CARD_ITEMS);
-        cards.addAll(CardsBicycle.RED_CARD_ITEMS);
+        if (ItemUtils.isContainsItem(CARDS, cardItem)) {
+            final BundleMeta bundleMeta = (BundleMeta) cardBoxItem.getItemMeta();
+            final var itemStacks = new ArrayList<ItemStack>();
 
-        if (ItemUtils.isContainsItem(cards, cardItem)) {
-            BundleMeta bundleMeta = (BundleMeta) cardBoxItem.getItemMeta();
-            var itemStacks = Lists.newArrayList(cardItem);
+            itemStacks.add(cardItem);
             itemStacks.addAll(bundleMeta.getItems());
 
             if (!(itemStacks.size() > 54)) {

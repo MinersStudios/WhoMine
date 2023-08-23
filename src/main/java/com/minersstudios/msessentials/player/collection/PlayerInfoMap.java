@@ -34,8 +34,8 @@ public class PlayerInfoMap {
      * @return {@link PlayerInfo} of player
      */
     public @NotNull PlayerInfo get(
-            @NotNull UUID uniqueId,
-            @NotNull String nickname
+            final @NotNull UUID uniqueId,
+            final @NotNull String nickname
     ) {
         return this.map.computeIfAbsent(
                 uniqueId,
@@ -49,7 +49,7 @@ public class PlayerInfoMap {
      * @param player The player
      * @return {@link PlayerInfo} of player
      */
-    public @NotNull PlayerInfo get(@NotNull Player player) {
+    public @NotNull PlayerInfo get(final @NotNull Player player) {
         return this.get(player.getUniqueId(), player.getName());
     }
 
@@ -60,11 +60,11 @@ public class PlayerInfoMap {
      * @return {@link PlayerInfo} of player, or null if we have not seen a name for this player yet
      */
     @Contract("null -> null")
-    public @Nullable PlayerInfo get(@Nullable OfflinePlayer offlinePlayer) {
+    public @Nullable PlayerInfo get(final @Nullable OfflinePlayer offlinePlayer) {
         if (offlinePlayer == null) return null;
 
-        UUID uuid = offlinePlayer.getUniqueId();
-        String nickname = offlinePlayer.getName();
+        final UUID uuid = offlinePlayer.getUniqueId();
+        final String nickname = offlinePlayer.getName();
 
         return StringUtils.isBlank(nickname) ? null : this.get(uuid, nickname);
     }
@@ -76,7 +76,7 @@ public class PlayerInfoMap {
      * @return The previous {@link PlayerInfo} associated with {@link UUID},
      *         or null if there was no mapping for player's {@link UUID}
      */
-    public @Nullable PlayerInfo put(@NotNull PlayerInfo playerInfo) {
+    public @Nullable PlayerInfo put(final @NotNull PlayerInfo playerInfo) {
         return this.map.put(playerInfo.getUuid(), playerInfo);
     }
 
@@ -87,7 +87,7 @@ public class PlayerInfoMap {
      * @return The previous {@link PlayerInfo} associated with {@link UUID},
      *         or null if there was no mapping for player's {@link UUID}
      */
-    public @Nullable PlayerInfo remove(@NotNull UUID uniqueId) {
+    public @Nullable PlayerInfo remove(final @NotNull UUID uniqueId) {
         return this.map.remove(uniqueId);
     }
 
@@ -98,7 +98,7 @@ public class PlayerInfoMap {
      * @return The previous {@link PlayerInfo} associated with {@link UUID},
      *         or null if there was no mapping for player's {@link UUID}
      */
-    public @Nullable PlayerInfo remove(@NotNull PlayerInfo playerInfo) {
+    public @Nullable PlayerInfo remove(final @NotNull PlayerInfo playerInfo) {
         return this.remove(playerInfo.getUuid());
     }
 
@@ -120,7 +120,7 @@ public class PlayerInfoMap {
      * @param uuid {@link UUID} of player
      * @return True if the map contains the uuid of the player
      */
-    public boolean containsUUID(@Nullable UUID uuid) {
+    public boolean containsUUID(final @Nullable UUID uuid) {
         return this.map.containsKey(uuid);
     }
 
@@ -128,7 +128,7 @@ public class PlayerInfoMap {
      * @param playerInfo {@link PlayerInfo} of player
      * @return True if the map contains the player info
      */
-    public boolean containsPlayerInfo(@NotNull PlayerInfo playerInfo) {
+    public boolean containsPlayerInfo(final @NotNull PlayerInfo playerInfo) {
         return this.map.containsValue(playerInfo);
     }
 
