@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.listeners.inventory;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.world.WorldDark;
 import net.kyori.adventure.text.TranslatableComponent;

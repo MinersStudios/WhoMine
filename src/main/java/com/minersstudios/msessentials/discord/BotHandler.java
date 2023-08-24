@@ -1,20 +1,26 @@
 package com.minersstudios.msessentials.discord;
 
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.inventory.CustomInventory;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
 import com.minersstudios.msessentials.util.MessageUtils;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
+import java.util.regex.Pattern;
+
+import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslation;
 import static com.minersstudios.msessentials.MSEssentials.getInstance;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
@@ -26,7 +32,6 @@ public class BotHandler {
     private String messageString;
     private WaitingReplyTask waitingReplyTask;
     private PlayerInfo playerInfo;
-
     private Attempt messageAttempt = Attempt.ZERO_ATTEMPT;
     private Attempt codeAttempt = Attempt.ZERO_ATTEMPT;
 
@@ -34,6 +39,44 @@ public class BotHandler {
     private static final long MESSAGE_FLOOD_TIMEOUT = 1500L; // 1.5 seconds
     private static final int CODE_MAX_ATTEMPTS = 10;
     private static final long CODE_FLOOD_TIMEOUT = 300000L; // 5 minutes
+
+    private static final String LIST_INDEX_REGEX = "\\d{1,2}";
+    private static final Pattern LIST_INDEX_PATTERN = Pattern.compile(LIST_INDEX_REGEX);
+
+    private static final String NOT_A_USER = renderTranslation("ms.discord.not_a_user");
+    private static final String MESSAGE_ATTEMPTS_LIMIT_REACHED = renderTranslation("ms.discord.message_attempts_limit_reached");
+    private static final String CODE_ATTEMPTS_LIMIT_REACHED = renderTranslation("ms.discord.code_attempts_limit_reached");
+    private static final String INVALID_CODE = renderTranslation("ms.discord.invalid_code");
+    private static final String NO_CODE = renderTranslation("ms.discord.no_code");
+    private static final String ALREADY_LINKED = renderTranslation("ms.discord.already_linked");
+    private static final String NOT_LINKED = renderTranslation("ms.discord.not_linked");
+    private static final TranslatableComponent SUCCESSFULLY_LINKED = translatable("ms.discord.successfully_linked");
+    private static final TranslatableComponent SUCCESSFULLY_LINKED_MINE = translatable( "ms.command.discord.link.success");
+    private static final String ONLY_ONE_IMG = renderTranslation("ms.discord.skin.only_one_img");
+    private static final String INVALID_IMG = renderTranslation("ms.discord.skin.invalid_img");
+    private static final TranslatableComponent TOO_MANY_SKINS = translatable("ms.discord.skin.too_many_skins");
+    private static final String SKIN_NO_NAME = renderTranslation("ms.discord.skin.no_name");
+    private static final String INVALID_NAME = renderTranslation("ms.discord.skin.invalid_name_regex");
+    private static final TranslatableComponent ALREADY_SET = translatable("ms.discord.skin.already_set");
+    private static final TranslatableComponent SUCCESSFULLY_RENAMED = translatable("ms.discord.skin.successfully_renamed");
+    private static final TranslatableComponent SUCCESSFULLY_RENAMED_MINE = translatable("ms.discord.skin.successfully_renamed.minecraft");
+    private static final TranslatableComponent SUCCESSFULLY_REMOVED = translatable("ms.discord.skin.successfully_removed");
+    private static final TranslatableComponent SUCCESSFULLY_REMOVED_MINE = translatable("ms.discord.skin.successfully_removed.minecraft");
+    private static final TranslatableComponent SUCCESSFULLY_EDITED = translatable("ms.discord.skin.successfully_edited");
+    private static final TranslatableComponent SUCCESSFULLY_EDITED_MINE = translatable("ms.discord.skin.successfully_edited.minecraft");
+    private static final String UNKNOWN_COMMAND = renderTranslation("ms.discord.unknown_command");
+    private static final String MENU_TITLE = "§f" + renderTranslation("ms.menu.discord.title");
+    private static final String INVALID_INDEX = renderTranslation("ms.discord.skin.invalid_index");
+    private static final String SERVICE_UNAVAILABLE = renderTranslation("ms.discord.skin.service_unavailable");
+    private static final TranslatableComponent SKIN_SUCCESSFULLY_ADDED = translatable("ms.discord.skin.successfully_added");
+    private static final TranslatableComponent SKIN_SUCCESSFULLY_ADDED_MINE = translatable("ms.discord.skin.successfully_added.minecraft");
+    private static final String VARIANT_YES = renderTranslation("ms.discord.skin.variant.yes").toLowerCase(Locale.ROOT);
+    private static final String VARIANT_NO = renderTranslation("ms.discord.skin.variant.no").toLowerCase(Locale.ROOT);
+    private static final String VARIANT_NO_REPLY = renderTranslation("ms.discord.skin.variant.no.reply");
+    private static final String ACTION_RENAME_INFO = renderTranslation("ms.discord.skin.action.rename.info");
+    private static final String ACTION_EDIT_INFO = renderTranslation("ms.discord.skin.action.edit.info");
+    private static final String LIST_OF_SKIN_ACTIONS = renderTranslation("ms.discord.skin.list_of_skin_actions");
+    private static final TranslatableComponent LIST_OF_SKINS = translatable("ms.discord.skin.list_of_skins");
 
     public BotHandler(final @NotNull DiscordPrivateMessageReceivedEvent event) {
         this.user = event.getAuthor();
@@ -73,8 +116,13 @@ public class BotHandler {
         final int attachmentSize = attachments.size();
         short code = 0;
 
+        if (!this.isInServer()) {
+            this.reply(NOT_A_USER);
+            return;
+        }
+
         if (this.isFlooding()) {
-            this.reply(LanguageFile.renderTranslation("ms.discord.message_attempts_limit_reached"));
+            this.reply(MESSAGE_ATTEMPTS_LIMIT_REACHED);
             return;
         }
 
@@ -86,28 +134,26 @@ public class BotHandler {
         }
 
         if (this.messageString.matches("\\d+") && attachmentSize == 0) {
-            final String invalidCode = LanguageFile.renderTranslation("ms.discord.invalid_code");
-
             try {
                 code = Short.parseShort(this.messageString);
             } catch (NumberFormatException e) {
-                this.reply(invalidCode);
+                this.reply(INVALID_CODE);
                 return;
             }
 
             if (code < 1000 || code > 9999) {
-                this.reply(invalidCode);
+                this.reply(INVALID_CODE);
                 return;
             }
 
             if (this.isCodeFlooding()) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.code_attempts_limit_reached"));
+                this.reply(CODE_ATTEMPTS_LIMIT_REACHED);
                 return;
             }
         }
 
         if (code == 0 && this.playerInfo == null) {
-            this.reply(LanguageFile.renderTranslation("ms.discord.not_linked"));
+            this.reply(NOT_LINKED);
             return;
         }
 
@@ -117,32 +163,32 @@ public class BotHandler {
         }
 
         if (attachmentSize > 1) {
-            this.reply(LanguageFile.renderTranslation("ms.discord.skin.only_one_img"));
+            this.reply(ONLY_ONE_IMG);
             return;
         } else if (attachmentSize == 1) {
             final Message.Attachment attachment = attachments.get(0);
             final String link = attachment.getUrl();
 
             if (this.messageString.isEmpty()) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.no_name"));
+                this.reply(SKIN_NO_NAME);
                 return;
             }
 
             if (!Skin.matchesNameRegex(this.messageString)) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.invalid_name_regex"));
+                this.reply(INVALID_NAME);
                 return;
             }
 
             try {
                 this.handleSkin(link);
             } catch (IllegalArgumentException e) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.invalid_img"));
+                this.reply(INVALID_IMG);
             }
 
             return;
         }
 
-        this.reply(LanguageFile.renderTranslation("ms.discord.unknown_command"));
+        this.reply(UNKNOWN_COMMAND);
     }
 
     private void reply(@NotNull String reply) {
@@ -151,6 +197,15 @@ public class BotHandler {
 
     private void replyEmbed(@NotNull String reply) {
         this.message.replyEmbeds(MessageUtils.craftEmbed(reply)).queue();
+    }
+
+    private boolean isInServer() {
+        final Config config = MSEssentials.getConfiguration();
+
+        if (config.guild == null) return false;
+
+        final Member member = config.guild.getMember(this.user);
+        return member != null && member.getRoles().contains(config.memberRole);
     }
 
     private boolean isCodeFlooding() {
@@ -205,9 +260,9 @@ public class BotHandler {
         final PlayerInfo fromCode = discordMap.validateCode(code);
 
         if (fromCode == null) {
-            this.reply(LanguageFile.renderTranslation("ms.discord.no_code"));
+            this.reply(NO_CODE);
         } else if (fromCode.equals(this.playerInfo)) {
-            this.replyEmbed(LanguageFile.renderTranslation("ms.discord.already_linked"));
+            this.replyEmbed(ALREADY_LINKED);
         } else {
             this.playerInfo = fromCode;
             final Player onlinePlayer = fromCode.getOnlinePlayer();
@@ -215,9 +270,8 @@ public class BotHandler {
             discordMap.removeCode(code);
             fromCode.linkDiscord(this.userId);
             this.replyEmbed(
-                    LanguageFile.renderTranslation(
-                            translatable(
-                                    "ms.discord.successfully_linked",
+                    renderTranslation(
+                            SUCCESSFULLY_LINKED.args(
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
                             )
@@ -227,18 +281,12 @@ public class BotHandler {
             if (onlinePlayer != null) {
                 if (
                         onlinePlayer.getOpenInventory().getTopInventory() instanceof CustomInventory customInventory
-                        && customInventory.getTitle().startsWith("§f" + LanguageFile.renderTranslation("ms.menu.discord.title"))
+                        && customInventory.getTitle().startsWith(MENU_TITLE)
                 ) {
                     getInstance().runTask(() -> onlinePlayer.closeInventory());
                 }
 
-                MSLogger.fine(
-                        onlinePlayer,
-                        translatable(
-                                "ms.command.discord.link.success",
-                                text(this.user.getName())
-                        )
-                );
+                MSLogger.fine(onlinePlayer, SUCCESSFULLY_LINKED_MINE.args(text(this.user.getName())));
             }
         }
     }
@@ -251,9 +299,8 @@ public class BotHandler {
             getInstance().runTask(() -> this.handleEditTask(link, skinName));
 
             this.replyEmbed(
-                    LanguageFile.renderTranslation(
-                            translatable(
-                                    "ms.discord.skin.already_set",
+                    renderTranslation(
+                            ALREADY_SET.args(
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
                             )
@@ -266,15 +313,14 @@ public class BotHandler {
             final Skin skin = Skin.create(skinName, link);
 
             if (skin == null) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.service_unavailable"));
+                this.reply(SERVICE_UNAVAILABLE);
                 return;
             }
 
             playerFile.addSkin(skin);
             this.replyEmbed(
-                    LanguageFile.renderTranslation(
-                            translatable(
-                                    "ms.discord.skin.successfully_added",
+                    renderTranslation(
+                            SKIN_SUCCESSFULLY_ADDED.args(
                                     text(skinName),
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
@@ -285,21 +331,14 @@ public class BotHandler {
             final Player player = this.playerInfo.getOnlinePlayer();
 
             if (player != null) {
-                MSLogger.fine(
-                        player,
-                        translatable(
-                                "ms.discord.skin.successfully_added.minecraft",
-                                text(skinName)
-                        )
-                );
+                MSLogger.fine(player, SKIN_SUCCESSFULLY_ADDED_MINE.args(text(skinName)));
             }
         } else {
             getInstance().runTask(this::handleShowSkinListTask);
 
             this.replyEmbed(
-                    LanguageFile.renderTranslation(
-                            translatable(
-                                    "ms.discord.skin.too_many_skins",
+                    renderTranslation(
+                            TOO_MANY_SKINS.args(
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
                             )
@@ -314,43 +353,20 @@ public class BotHandler {
     ) {
         final PlayerFile playerFile = this.playerInfo.getPlayerFile();
         final Player player = this.playerInfo.getOnlinePlayer();
-        final String variantYes = LanguageFile.renderTranslation("ms.discord.skin.variant.yes");
-        final String variantNo = LanguageFile.renderTranslation("ms.discord.skin.variant.no");
 
         this.waitingReplyTask = () -> {
-            if (this.messageString.equalsIgnoreCase(variantYes)) {
-                final Skin skin = Skin.create(skinName, link);
+            final String reply = this.messageString.toLowerCase(Locale.ROOT);
 
-                if (skin == null) {
-                    this.reply(LanguageFile.renderTranslation("ms.discord.skin.service_unavailable"));
-                    return true;
-                }
-
-                playerFile.setSkin(playerFile.getSkinIndex(skinName), skin);
-                this.replyEmbed(
-                        LanguageFile.renderTranslation(
-                                translatable(
-                                        "ms.discord.skin.successfully_edited",
-                                        text(skinName),
-                                        this.playerInfo.getDefaultName(),
-                                        text(this.playerInfo.getNickname())
-                                )
-                        )
-                );
+            if (reply.equals(VARIANT_YES)) {
+                if (this.editSkin(link, skinName, playerFile, playerFile.getSkinIndex(skinName))) return true;
 
                 if (player != null) {
-                    MSLogger.fine(
-                            player,
-                            translatable(
-                                    "ms.discord.skin.successfully_edited.minecraft",
-                                    text(skinName)
-                            )
-                    );
+                    MSLogger.fine(player, SUCCESSFULLY_EDITED_MINE.args(text(skinName)));
                 }
-            } else if (this.messageString.equalsIgnoreCase(variantNo)) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.variant.no.reply"));
+            } else if (reply.equals(VARIANT_NO)) {
+                this.reply(VARIANT_NO_REPLY);
             } else {
-                this.reply(LanguageFile.renderTranslation("ms.discord.unknown_command"));
+                this.reply(UNKNOWN_COMMAND);
                 return false;
             }
 
@@ -360,33 +376,30 @@ public class BotHandler {
 
     private void handleShowSkinListTask() {
         final PlayerFile playerFile = this.playerInfo.getPlayerFile();
-        final String variantYes = LanguageFile.renderTranslation("ms.discord.skin.variant.yes");
-        final String variantNo = LanguageFile.renderTranslation("ms.discord.skin.variant.no");
 
         this.waitingReplyTask = () -> {
-            if (this.messageString.equalsIgnoreCase(variantYes)) {
+            final String reply = this.messageString.toLowerCase(Locale.ROOT);
+
+            if (reply.equals(VARIANT_YES)) {
                 final var skins = playerFile.getSkins();
                 final StringBuilder skinList = new StringBuilder();
 
                 for (int i = 0; i < skins.size(); i++) {
                     final String name = skins.get(i).getName();
-                    skinList.append("\n").append(i + 1).append(" : \"").append(name).append("\"");
+                    skinList
+                    .append("\n")
+                    .append(i + 1)
+                    .append(" : \"")
+                    .append(name)
+                    .append("\"");
                 }
 
-                this.replyEmbed(
-                        LanguageFile.renderTranslation(
-                                translatable(
-                                        "ms.discord.skin.list_of_skins",
-                                        text(skinList.toString())
-                                )
-                        )
-                );
-
+                this.replyEmbed(renderTranslation(LIST_OF_SKINS.args(text(skinList.toString()))));
                 getInstance().runTask(this::handleSkinListTask);
-            } else if (this.messageString.equalsIgnoreCase(variantNo)) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.variant.no.reply"));
+            } else if (reply.equals(VARIANT_NO)) {
+                this.reply(VARIANT_NO_REPLY);
             } else {
-                this.reply(LanguageFile.renderTranslation("ms.discord.unknown_command"));
+                this.reply(UNKNOWN_COMMAND);
                 return false;
             }
 
@@ -396,8 +409,8 @@ public class BotHandler {
 
     private void handleSkinListTask() {
         this.waitingReplyTask = () -> {
-            if (!this.messageString.matches("[\\d]{1,2}")) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.variant.no.reply"));
+            if (!LIST_INDEX_PATTERN.matcher(this.messageString).matches()) {
+                this.reply(VARIANT_NO_REPLY);
                 return true;
             }
 
@@ -405,14 +418,14 @@ public class BotHandler {
             try {
                 skinIndex = Byte.parseByte(this.messageString);
             } catch (NumberFormatException e) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.invalid_index"));
+                this.reply(INVALID_INDEX);
                 return false;
             }
 
             final Skin skin = this.playerInfo.getPlayerFile().getSkin(skinIndex - 1);
 
             if (skin == null) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.invalid_index"));
+                this.reply(INVALID_INDEX);
                 return false;
             }
 
@@ -422,11 +435,11 @@ public class BotHandler {
     }
 
     private void handleSkinTask(final @NotNull Skin skin) {
-        this.replyEmbed(LanguageFile.renderTranslation(translatable("ms.discord.skin.list_of_skin_actions")));
+        this.replyEmbed(LIST_OF_SKIN_ACTIONS);
 
         this.waitingReplyTask = () -> {
-            if (!this.messageString.matches("[\\d]{1,2}")) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.variant.no.reply"));
+            if (!LIST_INDEX_PATTERN.matcher(this.messageString).matches()) {
+                this.reply(VARIANT_NO_REPLY);
                 return true;
             }
 
@@ -434,7 +447,7 @@ public class BotHandler {
             try {
                 actionIndex = Byte.parseByte(this.messageString);
             } catch (NumberFormatException e) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.invalid_index"));
+                this.reply(INVALID_INDEX);
                 return false;
             }
 
@@ -443,7 +456,7 @@ public class BotHandler {
                 case 2 -> getInstance().runTask(() -> this.handleEditNameTask(skin));
                 case 3 -> getInstance().runTask(() -> this.handleDeleteTask(skin));
                 default -> {
-                    this.reply(LanguageFile.renderTranslation("ms.discord.skin.invalid_index"));
+                    this.reply(INVALID_INDEX);
                     return false;
                 }
             }
@@ -454,82 +467,63 @@ public class BotHandler {
 
     private void handleEditImageTask(final @NotNull Skin editableSkin) {
         final PlayerFile playerFile = this.playerInfo.getPlayerFile();
-        final Player player = this.playerInfo.getOnlinePlayer();
         final String skinName = editableSkin.getName();
 
-        this.replyEmbed(LanguageFile.renderTranslation(translatable("ms.discord.skin.action.edit.info")));
+        this.replyEmbed(ACTION_EDIT_INFO);
 
         this.waitingReplyTask = () -> {
             final var attachments = this.message.getAttachments();
-            final int attachmentSize = attachments.size();
 
-            if (attachmentSize > 1) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.only_one_img"));
-                return false;
-            } else if (attachmentSize == 1) {
-                final Message.Attachment attachment = attachments.get(0);
-                final String link = attachment.getUrl();
+            switch (attachments.size()) {
+                case 0 -> {
+                    this.reply(VARIANT_NO_REPLY);
+                    return true;
+                }
+                case 1 -> {
+                    final Message.Attachment attachment = attachments.get(0);
+                    final String link = attachment.getUrl();
 
-                try {
-                    final Skin skin = Skin.create(skinName, link);
+                    try {
+                        if (editSkin(link, skinName, playerFile, playerFile.getSkinIndex(editableSkin))) return true;
 
-                    if (skin == null) {
-                        this.reply(LanguageFile.renderTranslation("ms.discord.skin.service_unavailable"));
-                        return true;
+                        final Player player = this.playerInfo.getOnlinePlayer();
+
+                        if (player != null) {
+                            MSLogger.fine(player, SUCCESSFULLY_EDITED_MINE.args(text(skinName)));
+                        }
+                    } catch (Exception e) {
+                        this.reply(INVALID_IMG);
+                        return false;
                     }
-
-                    playerFile.setSkin(playerFile.getSkinIndex(editableSkin), skin);
-                    this.replyEmbed(
-                            LanguageFile.renderTranslation(
-                                    translatable(
-                                            "ms.discord.skin.successfully_edited",
-                                            text(skinName),
-                                            this.playerInfo.getDefaultName(),
-                                            text(this.playerInfo.getNickname())
-                                    )
-                            )
-                    );
-
-                    if (player != null) {
-                        MSLogger.fine(
-                                player,
-                                translatable(
-                                        "ms.discord.skin.successfully_edited.minecraft",
-                                        text(skinName)
-                                )
-                        );
-                    }
-                } catch (IllegalArgumentException e) {
-                    this.reply(LanguageFile.renderTranslation("ms.discord.skin.invalid_img"));
+                }
+                default -> {
+                    this.reply(ONLY_ONE_IMG);
                     return false;
                 }
-            } else {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.variant.no.reply"));
             }
+
             return true;
         };
     }
 
     private void handleEditNameTask(final @NotNull Skin editableSkin) {
-        final Player player = this.playerInfo.getOnlinePlayer();
         final PlayerFile playerFile = this.playerInfo.getPlayerFile();
         final String oldName = editableSkin.getName();
 
-        this.replyEmbed(LanguageFile.renderTranslation(translatable("ms.discord.skin.action.rename.info")));
+        this.replyEmbed(ACTION_RENAME_INFO);
 
         this.waitingReplyTask = () -> {
             final String newName = this.messageString;
 
             if (!Skin.matchesNameRegex(newName)) {
-                this.reply(LanguageFile.renderTranslation("ms.discord.skin.invalid_name_regex"));
+                this.reply(INVALID_NAME);
                 return false;
             }
 
             if (playerFile.containsSkin(newName)) {
                 this.replyEmbed(
-                        LanguageFile.renderTranslation(
-                                translatable(
-                                        "ms.discord.skin.edit.already_set",
+                        renderTranslation(
+                                ALREADY_SET.args(
                                         this.playerInfo.getDefaultName(),
                                         text(this.playerInfo.getNickname())
                                 )
@@ -543,9 +537,8 @@ public class BotHandler {
                     Skin.create(newName, editableSkin.getValue(), editableSkin.getSignature())
             );
             this.replyEmbed(
-                    LanguageFile.renderTranslation(
-                            translatable(
-                                    "ms.discord.skin.successfully_renamed",
+                    renderTranslation(
+                            SUCCESSFULLY_RENAMED.args(
                                     text(oldName),
                                     text(newName),
                                     this.playerInfo.getDefaultName(),
@@ -554,11 +547,12 @@ public class BotHandler {
                     )
             );
 
+            final Player player = this.playerInfo.getOnlinePlayer();
+
             if (player != null) {
                 MSLogger.fine(
                         player,
-                        translatable(
-                                "ms.discord.skin.successfully_renamed.minecraft",
+                        SUCCESSFULLY_RENAMED_MINE.args(
                                 text(oldName),
                                 text(newName)
                         )
@@ -570,13 +564,12 @@ public class BotHandler {
     }
 
     private void handleDeleteTask(final @NotNull Skin skin) {
-        final Player player = this.playerInfo.getOnlinePlayer();
         final String skinName = skin.getName();
+        final Player player = this.playerInfo.getOnlinePlayer();
 
         this.playerInfo.getPlayerFile().removeSkin(skin);
-        this.replyEmbed(LanguageFile.renderTranslation(
-                translatable(
-                        "ms.discord.skin.successfully_removed",
+        this.replyEmbed(renderTranslation(
+                SUCCESSFULLY_REMOVED.args(
                         text(skinName),
                         this.playerInfo.getDefaultName(),
                         text(this.playerInfo.getNickname())
@@ -584,13 +577,33 @@ public class BotHandler {
         ));
 
         if (player != null) {
-            MSLogger.fine(
-                    player,
-                    translatable(
-                            "ms.discord.skin.successfully_removed.minecraft",
-                            text(skinName)
-                    )
-            );
+            MSLogger.fine(player, SUCCESSFULLY_REMOVED_MINE.args(text(skinName)));
         }
+    }
+
+    private boolean editSkin(
+            @NotNull String link,
+            @NotNull String skinName,
+            PlayerFile playerFile,
+            int skinIndex
+    ) {
+        final Skin skin = Skin.create(skinName, link);
+
+        if (skin == null) {
+            this.reply(SERVICE_UNAVAILABLE);
+            return true;
+        }
+
+        playerFile.setSkin(skinIndex, skin);
+        this.replyEmbed(
+                renderTranslation(
+                        SUCCESSFULLY_EDITED.args(
+                                text(skinName),
+                                this.playerInfo.getDefaultName(),
+                                text(this.playerInfo.getNickname())
+                        )
+                )
+        );
+        return false;
     }
 }

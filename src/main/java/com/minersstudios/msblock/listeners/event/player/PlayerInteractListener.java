@@ -277,7 +277,7 @@ public class PlayerInteractListener extends AbstractMSListener {
             final @NotNull Block blockAtFace,
             final @NotNull CustomBlockData clickedCustomBlockData
     ) {
-        final BlockData materialBlockData = BlockUtils.getBlockDataByMaterial(itemInHand.getType());
+        final BlockData materialBlockData = getBlockDataByMaterial(itemInHand.getType());
 
         if (SPAWNABLE_ITEMS.contains(itemInHand.getType())) {
             new UseBucketsAndSpawnableItems(player, blockAtFace, blockFace, itemInHand);
@@ -331,9 +331,7 @@ public class PlayerInteractListener extends AbstractMSListener {
 
         if (!BlockUtils.REPLACE.contains(blockAtFace.getType())) return;
 
-        final var placeableMaterials = clickedCustomBlockData.getBlockSettings().getPlacing().placeableMaterials();
-
-        if (placeableMaterials.contains(itemInHand.getType())) {
+        if (clickedCustomBlockData.getBlockSettings().getPlacing().isPlaceable(itemInHand.getType())) {
             blockAtFace.setType(itemInHand.getType(), false);
             itemInHand.setAmount(itemInHand.getAmount() - 1);
         }
@@ -492,5 +490,13 @@ public class PlayerInteractListener extends AbstractMSListener {
 
     private static @NotNull BlockFace getBlockFaceByYaw(final float yaw) {
         return FACES[Math.round(yaw / 90f) & 3];
+    }
+
+    private static @Nullable BlockData getBlockDataByMaterial(final @NotNull Material material) {
+        return switch (material) {
+            case REDSTONE -> Material.REDSTONE_WIRE.createBlockData();
+            case STRING -> Material.TRIPWIRE.createBlockData();
+            default -> material.isBlock() ? material.createBlockData() : null;
+        };
     }
 }

@@ -1,6 +1,6 @@
 package com.minersstudios.msdecor.commands;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.customdecor.Typed;

@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.listeners.chat;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.Badges;
 import com.minersstudios.msessentials.util.MessageUtils;
 import github.scarsz.discordsrv.api.Subscribe;

@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.commands.admin.msessentials;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;

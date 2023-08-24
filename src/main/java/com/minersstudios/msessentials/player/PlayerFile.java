@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.player;
 
-import com.google.common.base.Preconditions;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.skin.Skin;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Level;
 
 import static com.minersstudios.mscore.util.ChatUtils.serializeLegacyComponent;
 import static com.minersstudios.msessentials.MSEssentials.getInstance;
@@ -39,7 +40,7 @@ public class PlayerFile {
     private @NotNull PlayerName playerName;
     private @NotNull Pronouns pronouns;
     private final @NotNull List<String> ipList;
-    private final @NotNull List<Skin> skins = new ArrayList<>(18);
+    private final @NotNull List<Skin> skins;
     private @NotNull GameMode gameMode;
     private double health;
     private int air;
@@ -47,6 +48,8 @@ public class PlayerFile {
     private @NotNull Instant firstJoin;
     private @Nullable Location lastLeaveLocation;
     private @Nullable Location lastDeathLocation;
+
+    private static final int MAX_SKINS = 18;
 
     private PlayerFile(
             final @NotNull File file,
@@ -99,6 +102,7 @@ public class PlayerFile {
                 (float) lastDeathSection.getDouble("pitch")
         );
 
+        this.skins = new ArrayList<>(MAX_SKINS);
         this.skins.addAll(this.deserializeSkinsSection());
 
         this.playerSettings = new PlayerSettings(this);
@@ -197,8 +201,11 @@ public class PlayerFile {
     public boolean setSkin(
             final @Range(from = 0, to = Integer.MAX_VALUE) int index,
             final @NotNull Skin skin
-    ) throws IndexOutOfBoundsException {
-        if (this.containsSkin(skin)) return false;
+    ) {
+        if (
+                index >= this.skins.size()
+                || this.containsSkin(skin)
+        ) return false;
 
         this.skins.set(index, skin);
         this.serializeSkinsSection();
@@ -217,15 +224,13 @@ public class PlayerFile {
         return true;
     }
 
-    public void removeSkin(final @Range(from = 0, to = Integer.MAX_VALUE) int index) throws NullPointerException, IndexOutOfBoundsException, IllegalArgumentException {
-        final Skin skin = this.skins.get(index);
-
-        Preconditions.checkNotNull(skin, "Skin not found");
-        this.removeSkin(skin);
+    public boolean removeSkin(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
+        return !(index >= this.skins.size())
+                && this.removeSkin(this.skins.get(index));
     }
 
-    public void removeSkin(final @NotNull Skin skin) throws IllegalArgumentException {
-        Preconditions.checkArgument(this.containsSkin(skin), "Skin not found");
+    public boolean removeSkin(final @Nullable Skin skin) {
+        if (!this.containsSkin(skin)) return false;
 
         final Skin currentSkin = this.playerSettings.getSkin();
 
@@ -240,17 +245,23 @@ public class PlayerFile {
         this.skins.remove(skin);
         this.serializeSkinsSection();
         this.save();
+
+        return true;
     }
 
     public boolean hasAvailableSkinSlot() {
-        return this.skins.size() < 18;
+        return this.skins.size() < MAX_SKINS;
     }
 
-    public boolean containsSkin(final @NotNull Skin skin) {
-        return this.skins.contains(skin);
+    @Contract("null -> false")
+    public boolean containsSkin(final @Nullable Skin skin) {
+        return skin != null && this.skins.contains(skin);
     }
 
-    public boolean containsSkin(final @NotNull String name) {
+    @Contract("null -> false")
+    public boolean containsSkin(final @Nullable String name) {
+        if (StringUtils.isBlank(name)) return false;
+
         for (final var skin : this.skins) {
             if (skin.getName().equalsIgnoreCase(name)) return true;
         }
@@ -344,12 +355,12 @@ public class PlayerFile {
         try {
             this.config.save(this.file);
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
+            MSLogger.log(Level.SEVERE, "Failed to save player file : " + this.file.getName(), e);
         }
     }
 
     public void serializeSkinsSection() {
-        final var list = new ArrayList<>();
+        final var list = new ArrayList<>(MAX_SKINS);
 
         for (final var skin : this.skins) {
             list.add(skin.serialize());
@@ -360,13 +371,15 @@ public class PlayerFile {
 
     public @NotNull List<Skin> deserializeSkinsSection() {
         final var names = this.config.getList("skins", Collections.emptyList());
+        final int size = names.size();
 
-        if (names.isEmpty()) return Collections.emptyList();
+        if (size == 0) return Collections.emptyList();
 
-        final var skins = new ArrayList<Skin>(names.size());
+        final var skins = new ArrayList<Skin>(size);
 
         for (final var skin : names) {
             if (!(skin instanceof Map)) continue;
+
             final Skin deserialized = Skin.deserialize(skin.toString());
 
             if (deserialized != null) {

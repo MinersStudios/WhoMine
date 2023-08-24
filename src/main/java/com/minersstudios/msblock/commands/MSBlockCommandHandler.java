@@ -1,5 +1,6 @@
 package com.minersstudios.msblock.commands;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
@@ -27,7 +28,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permissionDefault = PermissionDefault.OP
 )
 public class MSBlockCommandHandler implements MSCommandExecutor {
-    private static final List<String> TAB = List.of("reload", "give");
+    private static final List<String> TAB = ImmutableList.of("reload", "give");
     private static final CommandNode<?> COMMAND_NODE =
             literal("msblock")
             .then(literal("reload"))

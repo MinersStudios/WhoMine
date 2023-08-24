@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.item;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.MSPluginUtils;
 import com.minersstudios.msitem.item.damageable.Damageable;
 import com.minersstudios.msitem.item.registry.cosmetics.LeatherHat;

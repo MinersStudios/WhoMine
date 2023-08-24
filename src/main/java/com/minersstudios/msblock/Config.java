@@ -2,7 +2,6 @@ package com.minersstudios.msblock;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
-import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.config.MSConfig;
 import org.jetbrains.annotations.NotNull;
 
@@ -88,9 +87,9 @@ public final class Config extends MSConfig {
             });
 
             this.plugin.setLoadedCustoms(true);
-            MSLogger.fine("Loaded " + CustomBlockRegistry.size() + " custom blocks in " + (System.currentTimeMillis() - start) + "ms");
+            MSBlock.logger().info("Loaded " + CustomBlockRegistry.size() + " custom blocks in " + (System.currentTimeMillis() - start) + "ms");
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "An error occurred while loading blocks", e);
+            MSBlock.logger().log(Level.SEVERE, "An error occurred while loading blocks", e);
         }
     }
 }

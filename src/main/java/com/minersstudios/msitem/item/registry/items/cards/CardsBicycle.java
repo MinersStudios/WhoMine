@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.item.registry.items.cards;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msitem.item.CustomItemImpl;
 import com.minersstudios.msitem.item.CustomItemType;
@@ -23,7 +23,7 @@ import static com.minersstudios.mscore.util.ChatUtils.createDefaultStyledText;
 import static net.kyori.adventure.text.Component.text;
 
 public interface CardsBicycle {
-    List<ItemStack> BLUE_CARD_ITEMS = Lists.newArrayList(
+    List<ItemStack> BLUE_CARD_ITEMS = ImmutableList.of(
             //<editor-fold desc="Blue cards">
             createCardItem(1260, "Туз треф", "Синяя колода карт \"Bicycle\""),
             createCardItem(1261, "2 треф", "Синяя колода карт \"Bicycle\""),
@@ -82,7 +82,7 @@ public interface CardsBicycle {
             //</editor-fold>
     );
 
-    List<ItemStack> RED_CARD_ITEMS = Lists.newArrayList(
+    List<ItemStack> RED_CARD_ITEMS = ImmutableList.of(
             //<editor-fold desc="Red cards">
             createCardItem(1314, "Туз треф", "Красная колода карт \"Bicycle\""),
             createCardItem(1315, "2 треф", "Красная колода карт \"Bicycle\""),

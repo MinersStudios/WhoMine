@@ -1,8 +1,9 @@
 package com.minersstudios.msessentials.commands.admin;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -30,7 +31,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permissionDefault = PermissionDefault.OP
 )
 public class WhitelistCommand implements MSCommandExecutor {
-    private static final List<String> TAB = List.of("add", "remove", "reload");
+    private static final List<String> TAB = ImmutableList.of("add", "remove", "reload");
     private static final CommandNode<?> COMMAND_NODE =
             literal("whitelist")
             .then(

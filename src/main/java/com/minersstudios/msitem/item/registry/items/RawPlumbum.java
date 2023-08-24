@@ -1,6 +1,7 @@
 package com.minersstudios.msitem.item.registry.items;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.google.common.collect.ImmutableList;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.MSBlockUtils;
 import com.minersstudios.msitem.item.CustomItemImpl;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +39,7 @@ public class RawPlumbum extends CustomItemImpl {
     }
 
     @Override
-    public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
+    public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
         final ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
                 .shape(
                         " I ",
@@ -53,7 +55,7 @@ public class RawPlumbum extends CustomItemImpl {
             return Collections.singletonList(Map.entry(shapedRecipe, true));
         }
 
-        return List.of(
+        return ImmutableList.of(
                 Map.entry(shapedRecipe, true),
                 Map.entry(
                         new ShapedRecipe(new NamespacedKey(CustomItemType.NAMESPACE, "raw_plumbum_from_block"), this.itemStack.clone().add(8))

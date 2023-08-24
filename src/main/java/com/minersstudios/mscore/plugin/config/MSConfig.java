@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.plugin.config;
 
 import com.google.common.base.Joiner;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;

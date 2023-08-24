@@ -2,11 +2,12 @@ package com.minersstudios.msessentials.player.skin;
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.google.common.base.Preconditions;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
@@ -41,6 +42,7 @@ public class Skin implements ConfigurationSerializable {
 
     private static final String NAME_REGEX = "[a-zA-ZЀ-ӿ-0-9]{1,32}";
     private static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
+    private static final Pattern DESERIALIZE_PATTERN = Pattern.compile("(name|value|signature)=([^,}]+)");
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor(Thread::new);
 
     private Skin(
@@ -191,12 +193,14 @@ public class Skin implements ConfigurationSerializable {
      * @see #serialize()
      * @see #create(String, String, String)
      */
-    public static @Nullable Skin deserialize(final @NotNull String string) {
+    public static @Nullable Skin deserialize(final @Nullable String string) {
+        if (StringUtils.isBlank(string)) return null;
+
         final var map = new HashMap<String, String>();
-        final Matcher matcher = Pattern.compile("(name|value|signature)=([^,}]+)").matcher(string);
+        final Matcher matcher = DESERIALIZE_PATTERN.matcher(string);
 
         while (matcher.find()) {
-            map.put(matcher.group(1).toLowerCase(Locale.ROOT), matcher.group(2));
+            map.put(matcher.group(1), matcher.group(2));
         }
 
         if (map.size() != 3) return null;

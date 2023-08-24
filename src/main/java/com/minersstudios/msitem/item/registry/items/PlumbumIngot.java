@@ -1,6 +1,7 @@
 package com.minersstudios.msitem.item.registry.items;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.google.common.collect.ImmutableList;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.MSBlockUtils;
 import com.minersstudios.msitem.item.CustomItemImpl;
@@ -10,6 +11,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,7 @@ public class PlumbumIngot extends CustomItemImpl {
     }
 
     @Override
-    public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
+    public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
         final ItemStack input = CustomItemType.RAW_PLUMBUM.getCustomItem().getItem();
         final FurnaceRecipe furnaceRecipe = new FurnaceRecipe(
                 new NamespacedKey(CustomItemType.NAMESPACE, "plumbum_ingot_furnace"),
@@ -54,13 +56,13 @@ public class PlumbumIngot extends CustomItemImpl {
 
         if (plumbumBlock.isEmpty()) {
             MSLogger.warning("Can't find custom block with key: plumbum_block! Shaped recipe will not be registered!");
-            return List.of(
+            return ImmutableList.of(
                     Map.entry(furnaceRecipe, false),
                     Map.entry(blastingRecipe, false)
             );
         }
 
-        return List.of(
+        return ImmutableList.of(
                 Map.entry(furnaceRecipe, false),
                 Map.entry(blastingRecipe, false),
                 Map.entry(

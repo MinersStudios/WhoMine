@@ -1,6 +1,7 @@
 package com.minersstudios.msblock.customblock.file;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.util.MSCustomUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -34,7 +35,7 @@ public class CustomChoice implements RecipeChoice {
      * @throws IllegalArgumentException If the namespaced key is invalid
      */
     public CustomChoice(final @NotNull String namespacedKey) throws IllegalArgumentException {
-        this(List.of(namespacedKey));
+        this(ImmutableList.of(namespacedKey));
     }
 
     /**
@@ -46,7 +47,7 @@ public class CustomChoice implements RecipeChoice {
      *                                  are invalid
      */
     public CustomChoice(final String @NotNull ... namespacedKeys) throws IllegalArgumentException {
-        this(List.of(namespacedKeys));
+        this(Arrays.asList(namespacedKeys));
     }
 
     /**
@@ -57,7 +58,7 @@ public class CustomChoice implements RecipeChoice {
      *                                  or if any of the namespaced keys
      *                                  are null or invalid
      */
-    public CustomChoice(final @NotNull List<String> namespacedKeys) throws IllegalArgumentException {
+    public CustomChoice(final @NotNull Collection<String> namespacedKeys) throws IllegalArgumentException {
         Preconditions.checkArgument(!namespacedKeys.isEmpty(), "Must have at least one namespacedKey");
 
         this.namespacedKeys = new ArrayList<>(namespacedKeys);

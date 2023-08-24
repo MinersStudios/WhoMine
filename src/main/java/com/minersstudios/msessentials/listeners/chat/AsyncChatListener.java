@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.listeners.chat;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.chat.ChatBuffer;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
-import static com.minersstudios.mscore.logger.MSLogger.severe;
-import static com.minersstudios.mscore.logger.MSLogger.warning;
+import static com.minersstudios.mscore.plugin.MSLogger.severe;
+import static com.minersstudios.mscore.plugin.MSLogger.warning;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 

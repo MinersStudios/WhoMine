@@ -7,6 +7,7 @@ import com.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +37,7 @@ public abstract class AbstractMSPacketListener {
     ) {
         this.sendWhiteList = new HashSet<>();
         this.receiveWhiteList = new HashSet<>();
-        final var whitelist = new HashSet<>(Set.of(other));
+        final var whitelist = new HashSet<>(Arrays.asList(other));
 
         whitelist.add(first);
 

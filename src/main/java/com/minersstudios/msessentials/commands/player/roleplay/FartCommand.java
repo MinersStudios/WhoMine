@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.commands.player.roleplay;
 
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;

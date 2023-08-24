@@ -33,7 +33,7 @@ public final class GlobalConfig extends MSConfig {
     public void reloadVariables() {
         this.timeFormatter = DateTimeFormatter.ofPattern(this.yaml.getString("date-format", "EEE, yyyy-MM-dd HH:mm z"));
         this.languageCode = this.yaml.getString("language.code", "ru_ru");
-        this.languageFolderLink = this.yaml.getString("language.folder-link", "https://github.com/MinersStudios/MSTranslations/raw/release/lang/");
+        this.languageFolderLink = this.yaml.getString("language.folder-link", "https://github.com/MinersStudios/WMTranslations/raw/release/lang/");
     }
 
     /**
@@ -42,6 +42,6 @@ public final class GlobalConfig extends MSConfig {
     public void reloadDefaultVariables() {
         this.setIfNotExists("date-format", "EEE, yyyy-MM-dd HH:mm z");
         this.setIfNotExists("language.code", "ru_ru");
-        this.setIfNotExists("language.folder-link", "https://github.com/MinersStudios/MSTranslations/raw/release/lang/");
+        this.setIfNotExists("language.folder-link", "https://github.com/MinersStudios/WMTranslations/raw/release/lang/");
     }
 }

@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.menu;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.SingleInventory;
@@ -18,8 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 import static net.kyori.adventure.text.Component.translatable;
 
 public class ResourcePackMenu {
@@ -32,7 +31,7 @@ public class ResourcePackMenu {
         infoMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.info.title").style(ChatUtils.DEFAULT_STYLE));
         infoMeta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
         infoMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
-        infoMeta.lore(List.of(
+        infoMeta.lore(ImmutableList.of(
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.info.lore.0").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.info.lore.1").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.info.lore.2").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),
@@ -45,7 +44,7 @@ public class ResourcePackMenu {
         final ItemMeta noneMeta = noneItem.getItemMeta();
 
         noneMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.none.title").style(ChatUtils.DEFAULT_STYLE));
-        noneMeta.lore(List.of(
+        noneMeta.lore(ImmutableList.of(
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.none.lore.0").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.none.lore.1").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY)
         ));
@@ -55,7 +54,7 @@ public class ResourcePackMenu {
         final ItemMeta liteMeta = liteItem.getItemMeta();
 
         liteMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.lite.title").style(ChatUtils.DEFAULT_STYLE));
-        liteMeta.lore(List.of(
+        liteMeta.lore(ImmutableList.of(
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.lite.lore.0").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.lite.lore.1").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.lite.lore.2").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),
@@ -67,7 +66,7 @@ public class ResourcePackMenu {
         final ItemMeta fullMeta = fullItem.getItemMeta();
 
         fullMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.full.title").style(ChatUtils.DEFAULT_STYLE));
-        fullMeta.lore(List.of(
+        fullMeta.lore(ImmutableList.of(
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.full.lore.0").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.full.lore.1").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),
                 LanguageFile.renderTranslationComponent("ms.menu.resource_pack.button.full.lore.2").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY),

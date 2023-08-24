@@ -1,5 +1,6 @@
 package com.minersstudios.msdecor.customdecor.register.decorations.home.plushes;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.MSDecor;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 
@@ -46,13 +48,13 @@ public class BMOPlush implements CustomDecorData {
     }
 
     @Override
-    public @Nullable List<Recipe> initRecipes() {
-        ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
+    public @NotNull @Unmodifiable List<Recipe> initRecipes() {
+        return this.recipes = ImmutableList.of(
+                new ShapedRecipe(this.namespacedKey, this.itemStack)
                 .shape("II", "DI")
                 .setIngredient('D', Material.LIGHT_BLUE_DYE)
-                .setIngredient('I', Material.IRON_INGOT);
-        this.recipes = List.of(shapedRecipe);
-        return this.recipes;
+                .setIngredient('I', Material.IRON_INGOT)
+        );
     }
 
     @Override

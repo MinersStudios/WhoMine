@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.commands;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.mojang.brigadier.tree.CommandNode;
@@ -21,7 +22,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
         permissionDefault = PermissionDefault.OP
 )
 public class MSCoreCommandHandler implements MSCommandExecutor {
-    private static final List<String> TAB = List.of("reloadlanguage", "reloadconfig");
+    private static final List<String> TAB = ImmutableList.of("reloadlanguage", "reloadconfig");
     private static final CommandNode<?> COMMAND_NODE =
             literal("mscore")
             .then(literal("reloadlanguage"))

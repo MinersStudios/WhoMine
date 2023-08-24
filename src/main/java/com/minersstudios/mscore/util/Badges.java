@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
 
+import java.util.List;
+
 import static com.minersstudios.mscore.util.ChatUtils.createDefaultStyledText;
 
 /**
@@ -18,8 +20,8 @@ public final class Badges {
     public static final Component PAINTABLE_LORE = createDefaultStyledText("ꀢ");
     public static final Component WRENCHABLE_LORE = createDefaultStyledText("ꀢ");
 
-    public static final ImmutableList<Component> PAINTABLE_LORE_LIST = ImmutableList.of(PAINTABLE_LORE);
-    public static final ImmutableList<Component> WRENCHABLE_LORE_LIST = ImmutableList.of(WRENCHABLE_LORE);
+    public static final List<Component> PAINTABLE_LORE_LIST = ImmutableList.of(PAINTABLE_LORE);
+    public static final List<Component> WRENCHABLE_LORE_LIST = ImmutableList.of(WRENCHABLE_LORE);
 
     @Contract(" -> fail")
     private Badges() {

@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.GlobalCache;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.plugin.config.MSConfig;
@@ -11,6 +11,11 @@ import com.minersstudios.msessentials.anomalies.tasks.ParticleTask;
 import com.minersstudios.msessentials.menu.CraftsMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.ResourcePack;
+import github.scarsz.discordsrv.dependencies.jda.api.JDA;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
+import github.scarsz.discordsrv.dependencies.jda.api.events.guild.GuildReadyEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -23,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 /**
@@ -38,6 +44,8 @@ public final class Config extends MSConfig {
     public long anomalyCheckRate;
     public long anomalyParticlesCheckRate;
     public boolean developerMode;
+    public long discordServerId;
+    public long memberRoleId;
     public String discordGlobalChannelId;
     public String discordLocalChannelId;
     public String version;
@@ -50,6 +58,10 @@ public final class Config extends MSConfig {
     public double localChatRadius;
     public String mineSkinApiKey;
     public Location spawnLocation;
+    public Guild guild;
+    public Role memberRole;
+
+    private final CompletableFuture<Void> guildReadyFuture = new CompletableFuture<>();
 
     /**
      * Configuration constructor
@@ -79,6 +91,8 @@ public final class Config extends MSConfig {
         this.anomalyCheckRate = this.yaml.getLong("anomaly-check-rate");
         this.anomalyParticlesCheckRate = this.yaml.getLong("anomaly-particles-check-rate");
         this.localChatRadius = this.yaml.getDouble("chat.local.radius");
+        this.discordServerId = this.yaml.getLong("discord.server-id");
+        this.memberRoleId = this.yaml.getLong("discord.member-role-id");
         this.discordGlobalChannelId = this.yaml.getString("chat.global.discord-channel-id");
         this.discordLocalChannelId = this.yaml.getString("chat.local.discord-channel-id");
         this.version = this.yaml.getString("resource-pack.version");
@@ -170,6 +184,40 @@ public final class Config extends MSConfig {
                 CraftsMenu.putCrafts(CraftsMenu.Type.ITEMS, customItemRecipes);
             }
         }, 0L, 10L);
+
+        ListenerAdapter listener = new ListenerAdapter() {
+
+            @Override
+            public void onGuildReady(@NotNull GuildReadyEvent event) {
+                Config.this.guildReadyFuture.complete(null);
+            }
+        };
+
+        this.plugin.runTaskTimer(task -> {
+            JDA jda = MSEssentials.getJda();
+
+            if (jda != null) {
+                task.cancel();
+                jda.addEventListener(listener);
+
+                this.guildReadyFuture.thenRun(() -> {
+                    jda.removeEventListener(listener);
+
+                    this.guild = jda.getGuildById(this.discordServerId);
+
+                    if (this.guild == null) {
+                        MSLogger.warning("Discord server not found!");
+                        return;
+                    }
+
+                    this.memberRole = this.guild.getRoleById(this.memberRoleId);
+
+                    if (this.memberRole == null) {
+                        MSLogger.warning("Discord member role not found!");
+                    }
+                });
+            }
+        }, 0L, 10L);
     }
 
     /**
@@ -183,12 +231,14 @@ public final class Config extends MSConfig {
         this.setIfNotExists("chat.local.radius", 25.0d);
         this.setIfNotExists("chat.global.discord-channel-id", -1);
         this.setIfNotExists("chat.local.discord-channel-id", -1);
+        this.setIfNotExists("discord.server-id", -1);
+        this.setIfNotExists("discord.member-role-id", -1);
         this.setIfNotExists("resource-pack.version", "");
         this.setIfNotExists("resource-pack.user", "MinersStudios");
-        this.setIfNotExists("resource-pack.repo", "MSTextures");
-        this.setIfNotExists("resource-pack.full.file-name", "FULL-MSTextures-%s.zip");
+        this.setIfNotExists("resource-pack.repo", "WMTextures");
+        this.setIfNotExists("resource-pack.full.file-name", "FULL-WMTextures-%s.zip");
         this.setIfNotExists("resource-pack.full.hash", "");
-        this.setIfNotExists("resource-pack.lite.file-name", "LITE-MSTextures-%s.zip");
+        this.setIfNotExists("resource-pack.lite.file-name", "LITE-WMTextures-%s.zip");
         this.setIfNotExists("resource-pack.lite.hash", "");
         this.setIfNotExists("skin.mine-skin-api-key", "");
 

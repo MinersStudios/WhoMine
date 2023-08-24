@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.commands;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;

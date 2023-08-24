@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.util;
 
 import com.minersstudios.mscore.plugin.GlobalCache;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;

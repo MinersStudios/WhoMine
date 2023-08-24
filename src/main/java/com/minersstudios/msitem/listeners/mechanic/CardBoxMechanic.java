@@ -23,11 +23,6 @@ import java.util.List;
 public class CardBoxMechanic extends AbstractMSListener {
     private static final List<ItemStack> CARDS = new ArrayList<>();
 
-    static {
-        CARDS.addAll(CardsBicycle.BLUE_CARD_ITEMS);
-        CARDS.addAll(CardsBicycle.RED_CARD_ITEMS);
-    }
-
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryMoveItem(final @NotNull InventoryMoveItemEvent event) {
         if (event.getDestination().getType() != InventoryType.SHULKER_BOX) return;
@@ -86,6 +81,11 @@ public class CardBoxMechanic extends AbstractMSListener {
             final @NotNull ItemStack cardBoxItem,
             final @NotNull ItemStack cardItem
     ) {
+        if (CARDS.isEmpty()) {
+            CARDS.addAll(CardsBicycle.BLUE_CARD_ITEMS);
+            CARDS.addAll(CardsBicycle.RED_CARD_ITEMS);
+        }
+
         if (ItemUtils.isContainsItem(CARDS, cardItem)) {
             final BundleMeta bundleMeta = (BundleMeta) cardBoxItem.getItemMeta();
             final var itemStacks = new ArrayList<ItemStack>();

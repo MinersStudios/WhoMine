@@ -1,16 +1,18 @@
 package com.minersstudios.msblock;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The main class of the MSBlock plugin
@@ -40,7 +42,7 @@ public final class MSBlock extends MSPlugin {
             try {
                 paperConfig.save(paperGlobalConfig);
             } catch (IOException e) {
-                MSLogger.log(Level.SEVERE, "Failed to save paper-global.yml with " + noteBlockUpdates + " enabled", e);
+                this.getLogger().log(Level.SEVERE, "Failed to save paper-global.yml with " + noteBlockUpdates + " enabled", e);
             }
 
             server.paperConfigurations.reloadConfigs(server);
@@ -48,7 +50,6 @@ public final class MSBlock extends MSPlugin {
         }
 
         initClass(CustomBlockData.class);
-
     }
 
     @Override
@@ -66,6 +67,22 @@ public final class MSBlock extends MSPlugin {
      */
     public static MSBlock getInstance() throws NullPointerException {
         return instance;
+    }
+
+    /**
+     * @return The logger of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static @NotNull Logger logger() throws NullPointerException {
+        return instance.getLogger();
+    }
+
+    /**
+     * @return The component logger of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static @NotNull ComponentLogger componentLogger() throws NullPointerException {
+        return instance.getComponentLogger();
     }
 
     /**

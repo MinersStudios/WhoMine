@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.commands.admin.player;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.DateUtils;
 import com.minersstudios.msessentials.MSEssentials;

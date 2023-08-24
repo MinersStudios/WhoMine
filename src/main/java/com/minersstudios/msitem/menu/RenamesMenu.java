@@ -54,31 +54,33 @@ public class RenamesMenu {
         final ItemStack previousPageItem = new ItemStack(Material.PAPER);
         final ItemMeta previousPageMeta = previousPageItem.getItemMeta();
 
+        previousPageMeta.displayName(previousButtonComponent);
+        previousPageMeta.setCustomModelData(5001);
+        previousPageItem.setItemMeta(previousPageMeta);
+
         final ItemStack previousPageEmptyItem = previousPageItem.clone();
         final ItemMeta previousPageEmptyMeta = previousPageEmptyItem.getItemMeta();
+
+        previousPageEmptyMeta.displayName(previousButtonComponent);
+        previousPageEmptyMeta.setCustomModelData(1);
+        previousPageEmptyItem.setItemMeta(previousPageEmptyMeta);
 
         final ItemStack nextPageItem = previousPageItem.clone();
         final ItemMeta nextPageMeta = nextPageItem.getItemMeta();
 
+        nextPageMeta.displayName(nextButtonComponent);
+        nextPageMeta.setCustomModelData(5002);
+        nextPageItem.setItemMeta(nextPageMeta);
+
         final ItemStack nextPageEmptyItem = previousPageItem.clone();
         final ItemMeta nextPageEmptyMeta = nextPageEmptyItem.getItemMeta();
 
-        RED_CROSS_ITEM = previousPageItem.clone();
-        final ItemMeta redCrossMeta = RED_CROSS_ITEM.getItemMeta();
-
-        previousPageEmptyMeta.displayName(previousButtonComponent);
-        previousPageMeta.displayName(previousButtonComponent);
-        previousPageMeta.setCustomModelData(5001);
-        previousPageEmptyMeta.setCustomModelData(1);
-        previousPageEmptyItem.setItemMeta(previousPageEmptyMeta);
-        previousPageItem.setItemMeta(previousPageMeta);
-
         nextPageEmptyMeta.displayName(nextButtonComponent);
-        nextPageMeta.displayName(nextButtonComponent);
-        nextPageMeta.setCustomModelData(5002);
         nextPageEmptyMeta.setCustomModelData(1);
         nextPageEmptyItem.setItemMeta(nextPageEmptyMeta);
-        nextPageItem.setItemMeta(nextPageMeta);
+
+        RED_CROSS_ITEM = previousPageItem.clone();
+        final ItemMeta redCrossMeta = RED_CROSS_ITEM.getItemMeta();
 
         redCrossMeta.displayName(redCrossComponent);
         redCrossMeta.setCustomModelData(5003);
@@ -95,7 +97,7 @@ public class RenamesMenu {
                 playClickSound(player);
             }
         });
-        final InventoryButton previousPageButtonEmpty = previousPageButton.item(previousPageEmptyItem);
+        final InventoryButton previousPageButtonEmpty = previousPageButton.clone().item(previousPageEmptyItem);
 
         final InventoryButton nextButton = new InventoryButton(nextPageItem, (event, customInventory) -> {
             if (!(customInventory instanceof final PagedCustomInventory paged)) return;
@@ -108,7 +110,7 @@ public class RenamesMenu {
                 playClickSound(player);
             }
         });
-        final InventoryButton nextButtonEmpty = nextButton.item(nextPageEmptyItem);
+        final InventoryButton nextButtonEmpty = nextButton.clone().item(nextPageEmptyItem);
 
         final InventoryButton backButton = new InventoryButton()
                 .clickAction((event, customInventory) -> {

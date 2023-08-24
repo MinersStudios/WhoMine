@@ -8,6 +8,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
@@ -303,6 +304,15 @@ public class BlockSettings {
         public @NotNull Placing placeableMaterials(final Material @NotNull ... placeableMaterials) {
             this.placeableMaterials = Set.of(placeableMaterials);
             return this;
+        }
+
+        /**
+         * @param material The material to check
+         * @return True if the specified material can be placed on
+         *         the custom block
+         */
+        public boolean isPlaceable(final @Nullable Material material) {
+            return material != null && this.placeableMaterials.contains(material);
         }
 
         /**

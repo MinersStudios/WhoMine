@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.file.*;
 import com.minersstudios.msblock.customblock.file.adapter.RecipeAdapter;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.menu.CraftsMenu;
 import org.bukkit.Bukkit;

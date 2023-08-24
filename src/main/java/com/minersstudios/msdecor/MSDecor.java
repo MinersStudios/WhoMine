@@ -6,6 +6,10 @@ import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.utils.ConfigCache;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.logging.Logger;
 
 public final class MSDecor extends MSPlugin {
     private static MSDecor instance;
@@ -39,6 +43,14 @@ public final class MSDecor extends MSPlugin {
 
     public static MSDecor getInstance() {
         return instance;
+    }
+
+    public static @NotNull Logger logger() throws NullPointerException {
+        return instance.getLogger();
+    }
+
+    public static @NotNull ComponentLogger componentLogger() throws NullPointerException {
+        return instance.getComponentLogger();
     }
 
     public static ConfigCache getConfigCache() {

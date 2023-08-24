@@ -1,5 +1,6 @@
 package com.minersstudios.msdecor.customdecor.register.furniture.chairs;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.util.Badges;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +41,7 @@ public class SmallChair implements Sittable, Typed {
     }
 
     @Override
-    public @Nullable List<Recipe> initRecipes() {
+    public @NotNull @Unmodifiable List<Recipe> initRecipes() {
         //<editor-fold desc="Recipes">
         ShapedRecipe acacia = new ShapedRecipe(Type.ACACIA.namespacedKey, this.createItemStack(Type.ACACIA))
                 .shape("PLP", "PAP")
@@ -102,8 +104,7 @@ public class SmallChair implements Sittable, Typed {
                 .setIngredient('A', Material.AIR);
         cherry.setGroup(this.namespacedKey.getNamespace() + ":small_chair");
         //</editor-fold>
-        this.recipes = List.of(acacia, birch, crimson, darkOak, jungle, oak, spruce, warped, mangrove, cherry);
-        return this.recipes;
+        return this.recipes = ImmutableList.of(acacia, birch, crimson, darkOak, jungle, oak, spruce, warped, mangrove, cherry);
     }
 
     @Override

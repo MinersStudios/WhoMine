@@ -9,7 +9,6 @@ import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
-import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
@@ -584,7 +583,7 @@ public abstract class MSPlugin extends JavaPlugin {
             return;
         }
 
-        final var aliases = List.of(msCommand.aliases());
+        final var aliases = Arrays.asList(msCommand.aliases());
         final String usage = msCommand.usage();
         final String description = msCommand.description();
         final String permissionStr = msCommand.permission();

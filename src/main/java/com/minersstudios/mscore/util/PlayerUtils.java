@@ -2,6 +2,7 @@ package com.minersstudios.mscore.util;
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.destroystokyo.paper.profile.PlayerProfile;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.minersstudios.mscore.util.menu.ShulkerBoxMenu;
@@ -41,7 +42,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -391,7 +391,7 @@ public final class PlayerUtils {
     ) {
         final ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
         final ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
-        final ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(List.of(serverPlayer.getUUID()));
+        final ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(ImmutableList.of(serverPlayer.getUUID()));
 
         if (entry != null) {
             entry.removePlayer(forWho);
@@ -410,7 +410,7 @@ public final class PlayerUtils {
         final PluginManager pluginManager = serverPlayer.getBukkitEntity().getServer().getPluginManager();
         final ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
         final ChunkMap.TrackedEntity trackedEntity = tracker.entityMap.get(serverPlayer.getId());
-        final ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(serverPlayer));
+        final ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(ImmutableList.of(serverPlayer));
         final Event event = new PlayerShowEntityEvent(forWho.getBukkitEntity(), serverPlayer.getBukkitEntity());
 
         forWho.connection.send(packet);

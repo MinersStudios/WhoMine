@@ -3,7 +3,7 @@ package com.minersstudios.msdecor.customdecor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Arrays;
 
 public interface Wrenchable extends Typed {
 
@@ -14,8 +14,10 @@ public interface Wrenchable extends Typed {
     @Contract("null -> null")
     default @Nullable Type getNextType(@Nullable Type type) {
         if (type == null) return null;
-        var types = List.of(this.getTypes());
+
+        var types = Arrays.asList(this.getTypes());
         int index = types.indexOf(type) + 1;
+
         return types.get(index + 1 > types.size() ? 0 : index);
     }
 }

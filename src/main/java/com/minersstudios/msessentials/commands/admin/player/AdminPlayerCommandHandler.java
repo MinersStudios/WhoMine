@@ -1,8 +1,9 @@
 package com.minersstudios.msessentials.commands.admin.player;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.DateUtils;
 import com.minersstudios.msessentials.MSEssentials;
@@ -37,7 +38,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permissionDefault = PermissionDefault.OP
 )
 public class AdminPlayerCommandHandler implements MSCommandExecutor {
-    private static final List<String> TAB_2 = List.of(
+    private static final List<String> TAB_2 = ImmutableList.of(
             "update",
             "info",
             "first-join",
@@ -48,57 +49,57 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
             "mute-info",
             "name"
     );
-    private static final List<String> TAB_3_PRONOUNS = List.of(
+    private static final List<String> TAB_3_PRONOUNS = ImmutableList.of(
             "he",
             "she",
             "they"
     );
-    private static final List<String> TAB_3_GAME_PARAMS = List.of(
+    private static final List<String> TAB_3_GAME_PARAMS = ImmutableList.of(
             "game-mode",
             "health",
             "air"
     );
-    private static final List<String> TAB_3_SETTINGS = List.of(
+    private static final List<String> TAB_3_SETTINGS = ImmutableList.of(
             "resourcepack-type"
     );
-    private static final List<String> TAB_3_BAN_MUTE_INFO = List.of(
+    private static final List<String> TAB_3_BAN_MUTE_INFO = ImmutableList.of(
             "reason",
             "time"
     );
-    private static final List<String> TAB_3_NAME = List.of(
+    private static final List<String> TAB_3_NAME = ImmutableList.of(
             "reset",
             "first-name",
             "last-name",
             "patronymic"
     );
-    private static final List<String> TAB_4_GAME_PARAMS_GAME_MODE = List.of(
+    private static final List<String> TAB_4_GAME_PARAMS_GAME_MODE = ImmutableList.of(
             "survival",
             "creative",
             "spectator",
             "adventure"
     );
-    private static final List<String> TAB_4_GAME_PARAMS_AIR = List.of(
+    private static final List<String> TAB_4_GAME_PARAMS_AIR = ImmutableList.of(
             "300",
             "0"
     );
-    private static final List<String> TAB_4_GAME_PARAMS_HEALTH = List.of(
+    private static final List<String> TAB_4_GAME_PARAMS_HEALTH = ImmutableList.of(
             "20.0",
             "0.0"
     );
-    private static final List<String> TAB_4_SETTINGS_RESOURCEPACK_TYPE = List.of(
+    private static final List<String> TAB_4_SETTINGS_RESOURCEPACK_TYPE = ImmutableList.of(
             "full",
             "lite",
             "none",
             "null"
     );
-    private static final List<String> TAB_4_SETTINGS_SKIN = List.of(
+    private static final List<String> TAB_4_SETTINGS_SKIN = ImmutableList.of(
             "set",
             "remove",
             "add"
     );
-    private final List<String> TAB_4_BAN_INFO_REASON = List.of(LanguageFile.renderTranslation("ms.command.ban.default_reason"));
-    private final List<String> TAB_4_MUTE_INFO_REASON = List.of(LanguageFile.renderTranslation("ms.command.mute.default_reason"));
-    private static final List<String> TAB_4_NAME_EMPTY = List.of("empty");
+    private final List<String> TAB_4_BAN_INFO_REASON = ImmutableList.of(LanguageFile.renderTranslation("ms.command.ban.default_reason"));
+    private final List<String> TAB_4_MUTE_INFO_REASON = ImmutableList.of(LanguageFile.renderTranslation("ms.command.mute.default_reason"));
+    private static final List<String> TAB_4_NAME_EMPTY = ImmutableList.of("empty");
     private static final CommandNode<?> COMMAND_NODE =
             literal("player")
             .then(

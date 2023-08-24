@@ -2,6 +2,10 @@ package com.minersstudios.msitem;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msitem.item.CustomItemType;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.logging.Logger;
 
 /**
  * The main class of the MSItem plugin
@@ -36,6 +40,22 @@ public final class MSItem extends MSPlugin {
      */
     public static MSItem getInstance() throws NullPointerException {
         return instance;
+    }
+
+    /**
+     * @return The logger of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static @NotNull Logger logger() throws NullPointerException {
+        return instance.getLogger();
+    }
+
+    /**
+     * @return The component logger of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static @NotNull ComponentLogger componentLogger() throws NullPointerException {
+        return instance.getComponentLogger();
     }
 
     /**

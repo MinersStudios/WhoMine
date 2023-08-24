@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -27,7 +28,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permissionDefault = PermissionDefault.OP
 )
 public class MSItemCommandHandler implements MSCommandExecutor {
-    private static final List<String> TAB = List.of("reload", "give");
+    private static final List<String> TAB = Arrays.asList("reload", "give");
     private static final CommandNode<?> COMMAND_NODE = literal("msitem")
             .then(literal("reload"))
             .then(

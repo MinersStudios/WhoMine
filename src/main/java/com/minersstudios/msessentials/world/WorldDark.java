@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.world;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.msessentials.MSEssentials;
 import net.kyori.adventure.util.TriState;
 import net.minecraft.server.level.ServerLevel;
@@ -38,7 +39,7 @@ public class WorldDark extends CraftWorld {
     private static final String WORLD_NAME = "world_dark";
     private static final ChunkGenerator CHUNK_GENERATOR = new ChunkGenerator() {};
     private static final BiomeProvider BIOME_PROVIDER = new BiomeProvider() {
-        private static final List<Biome> BIOMES = List.of(Biome.THE_VOID);
+        private static final List<Biome> BIOMES = ImmutableList.of(Biome.THE_VOID);
 
         @Override
         public @NotNull Biome getBiome(

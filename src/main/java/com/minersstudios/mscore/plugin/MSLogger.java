@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.logger;
+package com.minersstudios.mscore.plugin;
 
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.Badges;

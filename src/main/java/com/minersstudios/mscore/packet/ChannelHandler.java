@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.packet;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import io.netty.channel.*;
 import net.minecraft.network.protocol.Packet;

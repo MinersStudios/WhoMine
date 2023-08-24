@@ -108,7 +108,7 @@ public class Dosimeter extends CustomItemImpl {
         YELLOW(1374),
         RED(1375);
 
-        public static final Set<ScreenType> VALUES = Set.of(ScreenType.values());
+        public static final Set<ScreenType> VALUES = Set.of(values());
 
         private final int customModelData;
 

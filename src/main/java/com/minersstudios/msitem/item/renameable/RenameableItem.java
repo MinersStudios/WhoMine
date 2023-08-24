@@ -1,10 +1,9 @@
 package com.minersstudios.msitem.item.renameable;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.MSCustomUtils;
 import com.minersstudios.msitem.MSItem;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -29,13 +28,13 @@ import static net.kyori.adventure.text.Component.text;
 public class RenameableItem {
     private final String key;
     private final RenameCollection renameCollection;
-    private final Set<OfflinePlayer> whiteList;
+    private final Set<UUID> whiteList;
     private boolean showInRenameMenu;
 
     private RenameableItem(
             final @NotNull String key,
             final @NotNull RenameCollection renameCollection,
-            final @NotNull Collection<OfflinePlayer> whiteList,
+            final @NotNull Collection<UUID> whiteList,
             final boolean showInRenameMenu
     ) {
         this.key = key.toLowerCase(Locale.ENGLISH);
@@ -68,7 +67,7 @@ public class RenameableItem {
             final @NotNull String key,
             final boolean showInRenameMenu,
             final @NotNull RenameCollection renameCollection,
-            final @NotNull Collection<OfflinePlayer> whiteList
+            final @NotNull Collection<UUID> whiteList
     ) {
         return new RenameableItem(key, renameCollection, whiteList, showInRenameMenu);
     }
@@ -105,7 +104,7 @@ public class RenameableItem {
         final var loreString = renameableItemConfig.getStringList("lore");
         final var lore = new ArrayList<Component>();
         final int customModelData = renameableItemConfig.getInt("custom-model-data", -1);
-        final var whiteList = new HashSet<OfflinePlayer>();
+        final var whiteList = new HashSet<UUID>();
 
         if (customModelData < 0) {
             MSLogger.severe("Custom model data is not valid! (in " + fileName + ")");
@@ -167,7 +166,7 @@ public class RenameableItem {
 
         for (final var uuid : renameableItemConfig.getStringList("white-list")) {
             try {
-                whiteList.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
+                whiteList.add(UUID.fromString(uuid));
             } catch (IllegalArgumentException e) {
                 MSLogger.severe("Invalid UUID " + uuid + " in white-list! (in " + fileName + ")");
             }
@@ -196,10 +195,10 @@ public class RenameableItem {
     }
 
     /**
-     * @return The set of players that are allowed to rename the
-     *         item (empty set means all players are allowed)
+     * @return The set of uuids of players that are allowed to rename
+     *         the item (empty set means all players are allowed)
      */
-    public @NotNull  Set<OfflinePlayer> getWhiteListedPlayers() {
+    public @NotNull Set<UUID> getWhiteList() {
         return this.whiteList;
     }
 
@@ -226,7 +225,10 @@ public class RenameableItem {
      */
     public boolean isWhiteListed(final @Nullable OfflinePlayer player) {
         return this.whiteList.isEmpty()
-                || this.whiteList.contains(player);
+                || (
+                        player != null
+                        && this.whiteList.contains(player.getUniqueId())
+                );
     }
 
     /**

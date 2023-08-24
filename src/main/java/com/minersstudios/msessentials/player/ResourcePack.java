@@ -3,7 +3,7 @@ package com.minersstudios.msessentials.player;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.HttpException;

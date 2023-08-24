@@ -1,9 +1,10 @@
 package com.minersstudios.msessentials.menu;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.SingleInventory;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.player.PlayerFile;
@@ -19,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
@@ -175,7 +175,7 @@ public class SkinsMenu {
                             .buttonAt(24, DELETE_BUTTON_EMPTY)
                             .buttonAt(25, DELETE_BUTTON_EMPTY)
                             .buttonAt(26, DELETE_BUTTON_EMPTY)
-                            .args(List.of(finalI));
+                            .args(ImmutableList.of(finalI));
                         } else {
                             inv
                             .buttonAt(18, EMPTY_BUTTON)

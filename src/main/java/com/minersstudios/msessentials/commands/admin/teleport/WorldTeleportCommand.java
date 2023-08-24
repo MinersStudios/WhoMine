@@ -1,8 +1,9 @@
 package com.minersstudios.msessentials.commands.admin.teleport;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
 import com.minersstudios.msessentials.world.WorldDark;
@@ -167,7 +168,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
                     };
                     double roundedCoordinate = Math.round(coordinate * 100.0d) / 100.0d;
 
-                    yield List.of(String.valueOf(roundedCoordinate));
+                    yield ImmutableList.of(String.valueOf(roundedCoordinate));
                 }
 
                 yield EMPTY_TAB;

@@ -1,6 +1,5 @@
 package com.minersstudios.msitem;
 
-import com.minersstudios.mscore.logger.MSLogger;
 import com.minersstudios.mscore.plugin.config.MSConfig;
 import com.minersstudios.mscore.util.MSPluginUtils;
 import com.minersstudios.msitem.item.renameable.RenameableItem;
@@ -95,9 +94,9 @@ public final class Config extends MSConfig {
                 }
             });
 
-            MSLogger.fine("Loaded " + RenameableItemRegistry.keysSize() + " renameable items in " + (System.currentTimeMillis() - start) + "ms");
+            MSItem.logger().info("Loaded " + RenameableItemRegistry.keysSize() + " renameable items in " + (System.currentTimeMillis() - start) + "ms");
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "An error occurred while renameable loading items", e);
+            MSItem.logger().log(Level.SEVERE, "An error occurred while renameable loading items", e);
         }
     }
 }

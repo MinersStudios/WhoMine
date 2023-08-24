@@ -1,6 +1,7 @@
 package com.minersstudios.msessentials.anomalies;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomalies.actions.AddPotionAction;
@@ -198,7 +199,7 @@ public class Anomaly {
                         actions.add(action);
                         anomalyActionMap.put(radius, actions);
                     } else {
-                        anomalyActionMap.put(radius, List.of(action));
+                        anomalyActionMap.put(radius, ImmutableList.of(action));
                     }
                 }
             }

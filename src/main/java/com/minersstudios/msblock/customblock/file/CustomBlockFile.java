@@ -5,7 +5,7 @@ import com.google.gson.*;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.file.adapter.*;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.config.ConfigurationException;
 import com.minersstudios.mscore.util.MSPluginUtils;
 import org.bukkit.NamespacedKey;

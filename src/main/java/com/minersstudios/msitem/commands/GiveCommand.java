@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.commands;
 
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msitem.item.CustomItemType;
 import net.kyori.adventure.text.TranslatableComponent;

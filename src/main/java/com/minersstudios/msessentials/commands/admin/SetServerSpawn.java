@@ -1,8 +1,9 @@
 package com.minersstudios.msessentials.commands.admin;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.world.WorldDark;
@@ -193,7 +194,7 @@ public class SetServerSpawn implements MSCommandExecutor {
                     };
                     final double roundedCoordinate = Math.round(coordinate * 100.0d) / 100.0d;
 
-                    yield List.of(String.valueOf(roundedCoordinate));
+                    yield ImmutableList.of(String.valueOf(roundedCoordinate));
                 }
 
                 yield EMPTY_TAB;
@@ -212,7 +213,7 @@ public class SetServerSpawn implements MSCommandExecutor {
                     final float degree = args.length == 5 ? playerLoc.getYaw() : playerLoc.getPitch();
                     final float roundedDegree = Math.round(degree * 100.0f) / 100.0f;
 
-                    yield List.of(String.valueOf(roundedDegree));
+                    yield ImmutableList.of(String.valueOf(roundedDegree));
                 }
 
                 yield EMPTY_TAB;

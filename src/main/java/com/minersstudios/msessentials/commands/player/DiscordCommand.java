@@ -1,9 +1,10 @@
 package com.minersstudios.msessentials.commands.player;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.logger.MSLogger;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -37,7 +38,7 @@ import static net.kyori.adventure.text.event.HoverEvent.showText;
         playerOnly = true
 )
 public class DiscordCommand implements MSCommandExecutor {
-    private static final List<String> TAB = List.of("link", "unlink");
+    private static final List<String> TAB = ImmutableList.of("link", "unlink");
     private static final CommandNode<?> COMMAND_NODE =
             literal("discord")
             .then(literal("link"))

@@ -310,9 +310,12 @@ public final class ChatUtils {
             final @NotNull String first,
             final String @NotNull ... other
     ) {
-        final var strings = new ArrayList<String>(other.length + 1);
-
-        strings.add(0, first);
-        return convertStringsToComponents(style, strings);
+        return convertStringsToComponents(
+                style,
+                new ArrayList<>(other.length + 1) {{
+                    this.add(first);
+                    this.addAll(Arrays.asList(other));
+                }}
+        );
     }
 }
