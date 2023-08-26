@@ -112,12 +112,12 @@ public class PacketListenersMap {
      * @see PacketType
      */
     public @NotNull @UnmodifiableView Set<PacketType> packetTypeSet() {
-        final var packetTypes = new HashSet<PacketType>(this.packetTypesSize());
-
-        packetTypes.addAll(this.sendWhiteList.keySet());
-        packetTypes.addAll(this.receiveWhiteList.keySet());
-
-        return Collections.unmodifiableSet(packetTypes);
+        return Collections.unmodifiableSet(
+                new HashSet<>(this.packetTypesSize()) {{
+                    this.addAll(PacketListenersMap.this.receiveWhiteList.keySet());
+                    this.addAll(PacketListenersMap.this.sendWhiteList.keySet());
+                }}
+        );
     }
 
     /**

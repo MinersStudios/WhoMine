@@ -130,13 +130,12 @@ public class PacketType {
         final var map = new HashMap<Integer, PacketType>();
 
         for (final var field : clazz.getDeclaredFields()) {
-            if (field.getType() == PacketType.class) {
-                try {
-                    final PacketType packetType = (PacketType) field.get(null);
-                    map.put(packetType.id, packetType);
-                } catch (IllegalAccessException e) {
-                    MSLogger.log(Level.SEVERE, "Could not get packet type from field " + field.getName(), e);
-                }
+            if (field.getType() != PacketType.class) continue;
+            try {
+                final PacketType packetType = (PacketType) field.get(null);
+                map.put(packetType.id, packetType);
+            } catch (IllegalAccessException e) {
+                MSLogger.log(Level.SEVERE, "Could not get packet type from field " + field.getName(), e);
             }
         }
 

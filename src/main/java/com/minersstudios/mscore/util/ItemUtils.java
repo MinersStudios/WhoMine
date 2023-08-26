@@ -19,6 +19,7 @@ import java.util.Collection;
 /**
  * Utility class for {@link ItemStack} and {@link ItemMeta}
  */
+@SuppressWarnings("UnusedReturnValue")
 public final class ItemUtils {
 
     @Contract(value = " -> fail")
@@ -52,19 +53,19 @@ public final class ItemUtils {
     }
 
     /**
-     * @param list List of items that will be checked
-     * @param item Item that will be checked
-     *             for its presence in the list
+     * @param items Collection of items that will be checked
+     * @param item  Item that will be checked
+     *              for its presence in the list
      * @return True if the list contains the item
      * @see #isSimilarItemStacks(ItemStack, ItemStack)
      */
     public static boolean isContainsItem(
-            final @NotNull Collection<ItemStack> list,
+            final @NotNull Collection<ItemStack> items,
             final @Nullable ItemStack item
     ) {
-        if (list.isEmpty()) return false;
+        if (items.isEmpty()) return false;
 
-        for (final var listItem : list) {
+        for (final var listItem : items) {
             if (isSimilarItemStacks(listItem, item)) return true;
         }
 

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @see MSPlugin#registerListeners()
  */
 public abstract class AbstractMSListener implements Listener {
-    private MSPlugin plugin;
+    protected MSPlugin plugin;
 
     /**
      * @return The plugin for this listener or null if not set

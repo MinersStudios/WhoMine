@@ -142,8 +142,11 @@ public class ChannelHandler extends ChannelDuplexHandler {
         final ChannelPipeline pipeline = serverPlayer.connection.connection.channel.pipeline();
 
         if (!pipeline.names().contains(ChannelHandler.CHANNEL_HANDLER_NAME)) {
-            final ChannelHandler channelHandler = new ChannelHandler(plugin, player);
-            pipeline.addBefore(ChannelHandler.PACKET_HANDLER_NAME, ChannelHandler.CHANNEL_HANDLER_NAME, channelHandler);
+            pipeline.addBefore(
+                    ChannelHandler.PACKET_HANDLER_NAME,
+                    ChannelHandler.CHANNEL_HANDLER_NAME,
+                    new ChannelHandler(plugin, player)
+            );
         }
     }
 

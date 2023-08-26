@@ -30,7 +30,8 @@ public class ChatBuffer {
         }
 
         StringBuilder stringBuilder = new StringBuilder();
-        int delimPos, lineCount = 0;
+        int delimPos;
+        int lineCount = 0;
 
         while (!message.isEmpty()) {
             delimPos = message.lastIndexOf(' ', 30);

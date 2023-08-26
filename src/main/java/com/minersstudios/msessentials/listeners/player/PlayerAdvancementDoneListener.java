@@ -35,7 +35,7 @@ public class PlayerAdvancementDoneListener extends AbstractMSListener {
                 "chat.type.advancement." + frame.name().toLowerCase(Locale.ROOT),
                 playerInfo.getDefaultName(),
                 text("[").append(title).append(text("]")).color(frame.color())
-                .hoverEvent(HoverEvent.showText(title.append(Component.newline().append(description)).color(frame.color()))))
+                .hoverEvent(HoverEvent.showText(title.append(newline().append(description)).color(frame.color()))))
                 .color(NamedTextColor.GRAY))
         );
     }

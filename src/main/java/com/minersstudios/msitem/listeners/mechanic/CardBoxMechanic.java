@@ -93,7 +93,7 @@ public class CardBoxMechanic extends AbstractMSListener {
             itemStacks.add(cardItem);
             itemStacks.addAll(bundleMeta.getItems());
 
-            if (!(itemStacks.size() > 54)) {
+            if (itemStacks.size() <= 54) {
                 bundleMeta.setItems(itemStacks);
                 cardBoxItem.setItemMeta(bundleMeta);
                 cardItem.setAmount(0);

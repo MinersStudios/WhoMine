@@ -9,31 +9,31 @@ import java.util.Set;
 public interface DualMap<P, S, V> {
 
     V put(
-            P primary,
-            S secondary,
-            V value
+            final P primary,
+            final S secondary,
+            final V value
     );
 
-    P getPrimaryKey(S secondary);
+    P getPrimaryKey(final S secondary);
 
-    S getSecondaryKey(P primary);
+    S getSecondaryKey(final P primary);
 
-    V getByPrimaryKey(P primary);
+    V getByPrimaryKey(final P primary);
 
-    V getBySecondaryKey(S secondary);
+    V getBySecondaryKey(final S secondary);
 
-    V removeByPrimaryKey(P primary);
+    V removeByPrimaryKey(final P primary);
 
-    V removeBySecondaryKey(S secondary);
-
-    @Contract(value = "null -> false")
-    boolean containsPrimaryKey(P primary);
+    V removeBySecondaryKey(final S secondary);
 
     @Contract(value = "null -> false")
-    boolean containsSecondaryKey(S secondary);
+    boolean containsPrimaryKey(final P primary);
 
     @Contract(value = "null -> false")
-    boolean containsValue(V value);
+    boolean containsSecondaryKey(final S secondary);
+
+    @Contract(value = "null -> false")
+    boolean containsValue(final V value);
 
     void clear();
 

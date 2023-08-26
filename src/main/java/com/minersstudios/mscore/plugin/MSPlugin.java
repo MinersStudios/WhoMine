@@ -230,7 +230,12 @@ public abstract class MSPlugin extends JavaPlugin {
      */
     @Override
     public final void onLoad() {
-        this.loadClassNames();
+        try {
+            this.loadClassNames();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not load class names", e);
+        }
+
         this.loadCommands();
         this.loadListeners();
         this.loadPacketListeners();
@@ -624,6 +629,7 @@ public abstract class MSPlugin extends JavaPlugin {
 
         if (msCommand.playerOnly()) {
             GLOBAL_CACHE.onlyPlayerCommandSet.add(name);
+            GLOBAL_CACHE.onlyPlayerCommandSet.addAll(aliases);
         }
 
         pluginCommand.setExecutor(executor);
@@ -845,8 +851,9 @@ public abstract class MSPlugin extends JavaPlugin {
      * Gathers the names of all plugin classes and converts them to the same string as the package
      * <br>
      * "com/example/Example.class" -> "com.example.Example"
+     * @throws IOException If the jar file could not be read
      */
-    private void loadClassNames() {
+    private void loadClassNames() throws IOException {
         try (final var jarFile = new JarFile(this.getFile())) {
             this.classNames.addAll(
                     jarFile.stream().parallel()
@@ -855,8 +862,6 @@ public abstract class MSPlugin extends JavaPlugin {
                     .map(name -> name.replace("/", ".").replace(".class", ""))
                     .toList()
             );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 

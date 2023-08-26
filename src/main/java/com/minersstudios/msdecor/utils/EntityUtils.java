@@ -8,10 +8,28 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public final class EntityUtils {
+    private static final NavigableMap<Float, Rotation> DIRECTION_MAP;
+
+    static {
+        var tempMap = new TreeMap<Float, Rotation>();
+
+        tempMap.put(0.0f, Rotation.NONE);
+        tempMap.put(23.0f, Rotation.CLOCKWISE_45);
+        tempMap.put(68.0f, Rotation.CLOCKWISE);
+        tempMap.put(113.0f, Rotation.CLOCKWISE_135);
+        tempMap.put(158.0f, Rotation.FLIPPED);
+        tempMap.put(203.0f, Rotation.FLIPPED_45);
+        tempMap.put(248.0f, Rotation.COUNTER_CLOCKWISE);
+        tempMap.put(293.0f, Rotation.COUNTER_CLOCKWISE_45);
+        tempMap.put(338.0f, Rotation.NONE);
+
+        DIRECTION_MAP = Collections.unmodifiableNavigableMap(tempMap);
+    }
 
     @Contract(value = " -> fail")
     private EntityUtils() {
@@ -24,9 +42,13 @@ public final class EntityUtils {
      * @param armorStand armor stand entity used for rotate
      * @param player     player used for rotate armor stand
      */
-    public static void rotateArmorStandByPlayer(@NotNull ArmorStand armorStand, @NotNull Player player) {
-        Location armorStandLocation = armorStand.getLocation();
-        switch (playerDirectionHandler(player.getLocation().getYaw())) {
+    public static void rotateArmorStandByPlayer(
+            final @NotNull ArmorStand armorStand,
+            final @NotNull Player player
+    ) {
+       final Location armorStandLocation = armorStand.getLocation();
+
+        switch (convertYawToRotation(player.getLocation().getYaw())) {
             case NONE -> armorStandLocation.setYaw(0.0f);
             case CLOCKWISE_45 -> armorStandLocation.setYaw(45.0f);
             case CLOCKWISE -> armorStandLocation.setYaw(90.0f);
@@ -36,6 +58,7 @@ public final class EntityUtils {
             case COUNTER_CLOCKWISE -> armorStandLocation.setYaw(-90.0f);
             case COUNTER_CLOCKWISE_45 -> armorStandLocation.setYaw(-45.0f);
         }
+
         armorStand.teleport(armorStandLocation);
     }
 
@@ -45,22 +68,20 @@ public final class EntityUtils {
      * @param itemFrame item frame entity used for rotate item
      * @param player    player used for rotate item frame item
      */
-    public static void rotateItemFrameByPlayer(@NotNull ItemFrame itemFrame, @NotNull Player player) {
-        itemFrame.setRotation(playerDirectionHandler(player.getLocation().getYaw()));
+    public static void rotateItemFrameByPlayer(
+            final @NotNull ItemFrame itemFrame,
+            final @NotNull Player player
+    ) {
+        itemFrame.setRotation(convertYawToRotation(player.getLocation().getYaw()));
     }
 
-    private static Rotation playerDirectionHandler(float yaw) {
-        yaw = (yaw + 360) % 360;
-        NavigableMap<Float, Rotation> map = new TreeMap<>();
-        map.put(0.0f, Rotation.NONE);
-        map.put(23.0f, Rotation.CLOCKWISE_45);
-        map.put(68.0f, Rotation.CLOCKWISE);
-        map.put(113.0f, Rotation.CLOCKWISE_135);
-        map.put(158.0f, Rotation.FLIPPED);
-        map.put(203.0f, Rotation.FLIPPED_45);
-        map.put(248.0f, Rotation.COUNTER_CLOCKWISE);
-        map.put(293.0f, Rotation.COUNTER_CLOCKWISE_45);
-        map.put(338.0f, Rotation.NONE);
-        return map.floorEntry(yaw).getValue();
+    /**
+     * Converts player yaw to rotation
+     *
+     * @param yaw Player yaw
+     * @return Rotation by player yaw
+     */
+    public static @NotNull Rotation convertYawToRotation(final float yaw) {
+        return DIRECTION_MAP.floorEntry((yaw + 360) % 360).getValue();
     }
 }

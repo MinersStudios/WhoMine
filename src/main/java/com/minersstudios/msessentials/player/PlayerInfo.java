@@ -19,7 +19,6 @@ import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.player.skin.Skin;
 import com.minersstudios.msessentials.util.IDUtils;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
-import com.minersstudios.msessentials.util.MessageUtils;
 import com.minersstudios.msessentials.world.WorldDark;
 import com.mojang.authlib.GameProfile;
 import fr.xephi.authme.api.v3.AuthMeApi;
@@ -873,7 +872,7 @@ public class PlayerInfo {
         }
 
         if (this.isLinked()) {
-            this.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+            this.sendPrivateDiscordMessage(craftEmbed(
                     LanguageFile.renderTranslation(
                             value
                             ? translatable(
@@ -1163,7 +1162,7 @@ public class PlayerInfo {
         }
 
         if (this.isLinked()) {
-            this.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+            this.sendPrivateDiscordMessage(craftEmbed(
                     LanguageFile.renderTranslation(
                             value
                             ? translatable(

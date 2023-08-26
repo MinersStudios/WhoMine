@@ -19,7 +19,6 @@ import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -141,18 +140,16 @@ public final class DateUtils {
      *         if the input is not a number
      */
     public static @NotNull List<String> getTimeSuggestions(final @NotNull String input) {
-        if (!StringUtils.isNumeric(input)) return Collections.emptyList();
-
-        final var suggestions = new ArrayList<String>(6);
-
-        suggestions.add(input + "s");
-        suggestions.add(input + "m");
-        suggestions.add(input + "h");
-        suggestions.add(input + "d");
-        suggestions.add(input + "M");
-        suggestions.add(input + "y");
-
-        return suggestions;
+        return StringUtils.isNumeric(input)
+                ? List.of(
+                        input + "s",
+                        input + "m",
+                        input + "h",
+                        input + "d",
+                        input + "M",
+                        input + "y"
+                )
+                : Collections.emptyList();
     }
 
     /**

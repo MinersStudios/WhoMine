@@ -101,20 +101,23 @@ public final class Commodore {
     ) {
         setFields(node, SUGGESTION_PROVIDER);
 
-        var aliases = this.getAliases(command);
-        var commandNode =
+        final var aliases = this.getAliases(command);
+        final var commandNode =
                 aliases.contains(node.getLiteral())
                 ? node
                 : renameLiteralNode(node, command.getName());
 
-        for (var alias : aliases) {
-            var targetNode = commandNode.getLiteral().equals(alias)
-                    ? commandNode
-                    : literal(alias)
-                    .redirect((CommandNode<Object>) commandNode)
-                    .build();
-
-            this.commands.add(new Command(targetNode, permissionTest));
+        for (final var alias : aliases) {
+            this.commands.add(
+                    new Command(
+                            commandNode.getLiteral().equals(alias)
+                            ? commandNode
+                            : literal(alias)
+                                .redirect((CommandNode<Object>) commandNode)
+                                .build(),
+                            permissionTest
+                    )
+            );
         }
     }
 
@@ -127,25 +130,19 @@ public final class Commodore {
      * @return Aliases of the command
      */
     private @NotNull List<String> getAliases(final @NotNull PluginCommand command) {
-        final var aliases = new ArrayList<String>();
+        final var aliases = new ArrayList<String>() {{
+            this.add(command.getLabel());
+            this.add(pluginName + ":" + command.getLabel());
+        }};
 
-        aliases.add(command.getLabel());
-        aliases.addAll(command.getAliases());
-
-        for (final var alias : new ArrayList<>(aliases)) {
-            aliases.add(alias);
-            aliases.add(this.pluginName + ":" + alias);
-        }
-
-        var distinctAliases = new ArrayList<String>();
-
-        for (final var alias : aliases) {
-            if (!distinctAliases.contains(alias)) {
-                distinctAliases.add(alias);
+        for (final var alias : command.getAliases()) {
+            if (!aliases.contains(alias)) {
+                aliases.add(alias);
+                aliases.add(pluginName + ":" + alias);
             }
         }
 
-        return distinctAliases;
+        return aliases;
     }
 
     /**

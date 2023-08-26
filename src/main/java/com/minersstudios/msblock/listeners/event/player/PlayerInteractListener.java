@@ -476,18 +476,6 @@ public class PlayerInteractListener extends AbstractMSListener {
                 };
     }
 
-    private static @NotNull BlockFace getBlockFaceByEyes(
-            final float yaw,
-            final float pitch,
-            final @NotNull Set<BlockFace> blockFaces
-    ) {
-        return !(pitch >= -45.0f) && blockFaces.contains(BlockFace.DOWN)
-                ? BlockFace.DOWN
-                : !(pitch <= 45.0f) && blockFaces.contains(BlockFace.UP)
-                ? BlockFace.UP
-                : getBlockFaceByYaw(yaw);
-    }
-
     private static @NotNull BlockFace getBlockFaceByYaw(final float yaw) {
         return FACES[Math.round(yaw / 90f) & 3];
     }

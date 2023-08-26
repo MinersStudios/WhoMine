@@ -7,10 +7,7 @@ import com.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class used for extending packet
@@ -37,11 +34,12 @@ public abstract class AbstractMSPacketListener {
     ) {
         this.sendWhiteList = new HashSet<>();
         this.receiveWhiteList = new HashSet<>();
-        final var whitelist = new HashSet<>(Arrays.asList(other));
+        final PacketType[] whitelist = new PacketType[other.length + 1];
 
-        whitelist.add(first);
+        System.arraycopy(other, 0, whitelist, 0, other.length);
+        whitelist[other.length] = first;
 
-        for (var packetType : whitelist) {
+        for (final var packetType : whitelist) {
             if (packetType.isReceive()) {
                 this.receiveWhiteList.add(packetType);
             } else {

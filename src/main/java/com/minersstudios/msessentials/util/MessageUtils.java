@@ -238,7 +238,7 @@ public final class MessageUtils {
             final @NotNull Component action,
             final @NotNull RolePlayActionType rolePlayActionType
     ) {
-        sendRPEventMessage(player, Component.empty(), action, rolePlayActionType);
+        sendRPEventMessage(player, empty(), action, rolePlayActionType);
     }
 
     /**

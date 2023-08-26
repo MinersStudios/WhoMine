@@ -16,8 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
-import static com.minersstudios.mscore.plugin.MSLogger.severe;
-import static com.minersstudios.mscore.plugin.MSLogger.warning;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
@@ -46,7 +44,7 @@ public class AsyncChatListener extends AbstractMSListener {
         }
 
         if (playerInfo.isMuted()) {
-            warning(player, MUTED);
+            MSLogger.warning(player, MUTED);
             return;
         }
 
@@ -78,7 +76,7 @@ public class AsyncChatListener extends AbstractMSListener {
                 final String speech = message.substring(0, message.indexOf('*')).trim();
 
                 if (action.isEmpty() || speech.isEmpty()) {
-                    severe(player, "Используй: * [речь] * [действие]");
+                    MSLogger.severe(player, "Используй: * [речь] * [действие]");
                 } else {
                     MessageUtils.sendRPEventMessage(player, text(speech), text(action), MessageUtils.RolePlayActionType.TODO);
                 }
