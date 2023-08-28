@@ -8,6 +8,10 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.IDMap;
 import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -31,4 +35,9 @@ public final class Cache {
     public final List<BukkitTask> bukkitTasks = new ArrayList<>();
     public final Map<Long, BotHandler> botHandlers = new HashMap<>();
     public PlayerInfo consolePlayerInfo;
+    public JDA jda;
+    public Guild mainGuild;
+    public TextChannel discordGlobalChannel;
+    public TextChannel discordLocalChannel;
+    public Role memberRole;
 }

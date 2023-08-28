@@ -17,14 +17,13 @@ import com.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.player.skin.Skin;
+import com.minersstudios.msessentials.util.DiscordUtil;
 import com.minersstudios.msessentials.util.IDUtils;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
 import com.minersstudios.msessentials.world.WorldDark;
 import com.mojang.authlib.GameProfile;
 import fr.xephi.authme.api.v3.AuthMeApi;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -872,7 +871,7 @@ public class PlayerInfo {
         }
 
         if (this.isLinked()) {
-            this.sendPrivateDiscordMessage(craftEmbed(
+            this.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                     LanguageFile.renderTranslation(
                             value
                             ? translatable(
@@ -1162,7 +1161,7 @@ public class PlayerInfo {
         }
 
         if (this.isLinked()) {
-            this.sendPrivateDiscordMessage(craftEmbed(
+            this.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                     LanguageFile.renderTranslation(
                             value
                             ? translatable(
@@ -1590,13 +1589,7 @@ public class PlayerInfo {
 
         if (id == -1) return false;
 
-        MSEssentials.getInstance().runTaskAsync(() -> {
-            final User user = DiscordUtil.getJda().getUserById(id);
-
-            if (user != null) {
-                user.openPrivateChannel().complete().sendMessageEmbeds(messageEmbed, other).queue();
-            }
-        });
+        DiscordUtil.sendEmbeds(id, messageEmbed, other);
         return true;
     }
 
@@ -1611,13 +1604,7 @@ public class PlayerInfo {
 
         if (id == -1) return false;
 
-        MSEssentials.getInstance().runTaskAsync(() -> {
-            final User user = DiscordUtil.getJda().getUserById(id);
-
-            if (user != null) {
-                user.openPrivateChannel().complete().sendMessage(message).queue();
-            }
-        });
+        DiscordUtil.sendMessage(id, message);
         return true;
     }
 

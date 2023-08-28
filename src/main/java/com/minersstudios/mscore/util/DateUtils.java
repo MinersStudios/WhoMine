@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -139,7 +140,7 @@ public final class DateUtils {
      * @return Time suggestions or empty list
      *         if the input is not a number
      */
-    public static @NotNull List<String> getTimeSuggestions(final @NotNull String input) {
+    public static @NotNull @Unmodifiable List<String> getTimeSuggestions(final @NotNull String input) {
         return StringUtils.isNumeric(input)
                 ? List.of(
                         input + "s",

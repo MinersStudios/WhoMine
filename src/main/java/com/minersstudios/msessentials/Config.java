@@ -1,21 +1,31 @@
 package com.minersstudios.msessentials;
 
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.GlobalCache;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.plugin.config.MSConfig;
+import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.MSPluginUtils;
 import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msessentials.anomalies.tasks.MainAnomalyActionsTask;
 import com.minersstudios.msessentials.anomalies.tasks.ParticleTask;
+import com.minersstudios.msessentials.chat.ChatType;
+import com.minersstudios.msessentials.listeners.chat.MessageReceivedListener;
 import com.minersstudios.msessentials.menu.CraftsMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.ResourcePack;
-import github.scarsz.discordsrv.dependencies.jda.api.JDA;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.events.guild.GuildReadyEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import com.minersstudios.msessentials.util.DiscordUtil;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.managers.Presence;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,8 +37,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 /**
@@ -58,10 +68,9 @@ public final class Config extends MSConfig {
     public double localChatRadius;
     public String mineSkinApiKey;
     public Location spawnLocation;
-    public Guild guild;
-    public Role memberRole;
 
-    private final CompletableFuture<Void> guildReadyFuture = new CompletableFuture<>();
+    private static final String SERVER_ENABLED = LanguageFile.renderTranslation("ms.discord.server.enabled");
+    private static final TranslatableComponent DISCORD_BOT_STATUS = Component.translatable("ms.discord.bot.status");
 
     /**
      * Configuration constructor
@@ -185,39 +194,85 @@ public final class Config extends MSConfig {
             }
         }, 0L, 10L);
 
-        ListenerAdapter listener = new ListenerAdapter() {
+        final String botToken = this.yaml.getString("discord.bot-token");
 
-            @Override
-            public void onGuildReady(@NotNull GuildReadyEvent event) {
-                Config.this.guildReadyFuture.complete(null);
+        this.plugin.runTaskAsync(() -> {
+            try {
+                cache.jda = StringUtils.isNotBlank(botToken)
+                        ? JDABuilder
+                        .createDefault(botToken)
+                        .enableIntents(List.of(
+                                GatewayIntent.MESSAGE_CONTENT
+                        ))
+                        .build()
+                        .awaitReady()
+                        : null;
+            } catch (Exception e) {
+                throw new RuntimeException("An error occurred while loading Discord bot!", e);
             }
-        };
 
-        this.plugin.runTaskTimer(task -> {
-            JDA jda = MSEssentials.getJda();
+            if (cache.jda != null) {
+                if (this.discordGlobalChannelId != null) {
+                    cache.discordGlobalChannel = cache.jda.getTextChannelById(this.discordGlobalChannelId);
 
-            if (jda != null) {
-                task.cancel();
-                jda.addEventListener(listener);
-
-                this.guildReadyFuture.thenRun(() -> {
-                    jda.removeEventListener(listener);
-
-                    this.guild = jda.getGuildById(this.discordServerId);
-
-                    if (this.guild == null) {
-                        MSLogger.warning("Discord server not found!");
-                        return;
+                    if (cache.discordGlobalChannel == null) {
+                        MSLogger.warning("Discord global channel not found!");
                     }
+                }
 
-                    this.memberRole = this.guild.getRoleById(this.memberRoleId);
+                if (this.discordLocalChannelId != null) {
+                    cache.discordLocalChannel = cache.jda.getTextChannelById(this.discordLocalChannelId);
 
-                    if (this.memberRole == null) {
-                        MSLogger.warning("Discord member role not found!");
+                    if (cache.discordLocalChannel == null) {
+                        MSLogger.warning("Discord local channel not found!");
                     }
-                });
+                }
+
+                final Presence presence = cache.jda.getPresence();
+
+                if (this.developerMode) {
+                    presence.setStatus(OnlineStatus.DO_NOT_DISTURB);
+                }
+
+                presence.setActivity(
+                        Activity.playing(ChatUtils.serializePlainComponent(
+                                DISCORD_BOT_STATUS.args(Component.text(this.plugin.getServer().getMinecraftVersion())))
+                        )
+                );
+
+                cache.jda.addEventListener(new MessageReceivedListener());
+
+                cache.jda.updateCommands().addCommands(
+                        Commands.slash("skinlist", "Skin list"),
+                        Commands.slash("skin", "Set skin")
+                                .addOption(OptionType.STRING, "name", "Skin Name")
+                                .addOption(OptionType.STRING, "url", "Skin URL")
+                                .addOption(OptionType.STRING, "value", "Skin Value")
+                                .addOption(OptionType.STRING, "signature", "Skin Signature"),
+                        Commands.slash("help", "Help list")
+                ).queue();
+
+
+                cache.mainGuild = cache.jda.getGuildById(this.discordServerId);
+
+                if (cache.mainGuild == null) {
+                    MSLogger.warning("Discord server not found!");
+                    return;
+                }
+
+                cache.memberRole = cache.mainGuild.getRoleById(this.memberRoleId);
+
+                if (cache.memberRole == null) {
+                    MSLogger.warning("Discord member role not found!");
+                }
+
+                DiscordUtil.sendMessage(ChatType.GLOBAL, SERVER_ENABLED);
+                DiscordUtil.sendMessage(ChatType.LOCAL, SERVER_ENABLED);
+                this.plugin.setLoadedCustoms(true);
+            } else {
+                this.plugin.setLoadedCustoms(true);
             }
-        }, 0L, 10L);
+        });
     }
 
     /**
@@ -231,6 +286,7 @@ public final class Config extends MSConfig {
         this.setIfNotExists("chat.local.radius", 25.0d);
         this.setIfNotExists("chat.global.discord-channel-id", -1);
         this.setIfNotExists("chat.local.discord-channel-id", -1);
+        this.setIfNotExists("discord.bot-token", "");
         this.setIfNotExists("discord.server-id", -1);
         this.setIfNotExists("discord.member-role-id", -1);
         this.setIfNotExists("resource-pack.version", "");

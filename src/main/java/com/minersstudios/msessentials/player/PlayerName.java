@@ -1,6 +1,5 @@
 package com.minersstudios.msessentials.player;
 
-import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -29,7 +28,15 @@ public class PlayerName {
             final @NotNull String firstName,
             final @NotNull String lastName,
             final @NotNull String patronymic
-    ) {
+    ) throws IllegalArgumentException {
+        if (nickname.isBlank()) {
+            throw new IllegalArgumentException("Nickname cannot be blank");
+        }
+
+        if (firstName.isBlank()) {
+            throw new IllegalArgumentException("First name cannot be blank");
+        }
+
         this.nickname = nickname;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -53,9 +60,6 @@ public class PlayerName {
             final @NotNull String lastName,
             final @NotNull String patronymic
     ) throws IllegalArgumentException {
-        Preconditions.checkArgument(!nickname.isBlank(), "Nickname cannot be blank");
-        Preconditions.checkArgument(!firstName.isBlank(), "First name cannot be blank");
-
         return new PlayerName(
                 nickname,
                 normalize(firstName),
@@ -78,7 +82,10 @@ public class PlayerName {
      * @throws IllegalArgumentException If the nickname is blank
      */
     public void setNickname(final @NotNull String nickname) throws IllegalArgumentException {
-        Preconditions.checkArgument(!nickname.isBlank(), "Nickname cannot be blank");
+        if (nickname.isBlank()) {
+            throw new IllegalArgumentException("Nickname cannot be blank");
+        }
+
         this.nickname = nickname;
     }
 
@@ -96,7 +103,10 @@ public class PlayerName {
      * @throws IllegalArgumentException If the first name is blank
      */
     public void setFirstName(final @NotNull String firstName) throws IllegalArgumentException {
-        Preconditions.checkArgument(!firstName.isBlank(), "First name cannot be blank");
+        if (firstName.isBlank()) {
+            throw new IllegalArgumentException("First name cannot be blank");
+        }
+
         this.firstName = normalize(firstName);
     }
 

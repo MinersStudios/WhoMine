@@ -2,6 +2,7 @@ plugins {
     java
     kotlin("jvm") version "1.9.0"
     id("io.papermc.paperweight.userdev") version "1.5.5"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "com.minersstudios"
@@ -24,7 +25,6 @@ allprojects {
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://maven.playpro.com")
         maven("https://m2.dv8tion.net/releases")
-        maven("https://nexus.scarsz.me/content/groups/public/")
         maven("https://repo.codemc.org/repository/maven-public/")
     }
 
@@ -32,7 +32,7 @@ allprojects {
         paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
         compileOnly("net.coreprotect:coreprotect:21.3")
         compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
-        compileOnly("com.discordsrv:discordsrv:1.26.3-SNAPSHOT")
+        implementation("net.dv8tion:JDA:5.0.0-beta.13")
     }
 
     sourceSets {

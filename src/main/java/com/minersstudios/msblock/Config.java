@@ -52,7 +52,7 @@ public final class Config extends MSConfig {
         this.woodSoundHit = this.yaml.getString("wood-sound.hit");
 
         this.plugin.saveResource("blocks/example.json", true);
-        this.loadBlocks();
+        this.plugin.runTaskAsync(this::loadBlocks);
     }
 
     /**

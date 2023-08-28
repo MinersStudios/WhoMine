@@ -21,9 +21,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.minersstudios.mscore.util.ChatUtils.serializeLegacyComponent;
+import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslation;
 import static com.minersstudios.msessentials.MSEssentials.getInstance;
-import static net.kyori.adventure.text.Component.translatable;
 
 /**
  * Player file with player data, settings, etc.
@@ -50,6 +49,10 @@ public class PlayerFile {
     private @Nullable Location lastDeathLocation;
 
     private static final int MAX_SKINS = 18;
+    private static final String DEFAULT_NICKNAME = renderTranslation("ms.player.name.nickname");
+    private static final String DEFAULT_FIRST_NAME = renderTranslation("ms.player.name.first_name");
+    private static final String DEFAULT_LAST_NAME = renderTranslation("ms.player.name.last_name");
+    private static final String DEFAULT_PATRONYMIC = renderTranslation("ms.player.name.patronymic");
 
     private PlayerFile(
             final @NotNull File file,
@@ -59,10 +62,10 @@ public class PlayerFile {
         this.config = config;
 
         this.playerName = PlayerName.create(
-                config.getString("name.nickname", serializeLegacyComponent(translatable("ms.player.name.nickname"))),
-                config.getString("name.first-name", serializeLegacyComponent(translatable("ms.player.name.first_name"))),
-                config.getString("name.last-name", serializeLegacyComponent(translatable("ms.player.name.last_name"))),
-                config.getString("name.patronymic", serializeLegacyComponent(translatable("ms.player.name.patronymic")))
+                config.getString("name.nickname", DEFAULT_NICKNAME),
+                config.getString("name.first-name", DEFAULT_FIRST_NAME),
+                config.getString("name.last-name", DEFAULT_LAST_NAME),
+                config.getString("name.patronymic", DEFAULT_PATRONYMIC)
         );
         this.pronouns = Pronouns.valueOf(config.getString("pronouns", "HE"));
         this.ipList = config.getStringList("ip-list");
@@ -112,8 +115,10 @@ public class PlayerFile {
             final @NotNull UUID uniqueId,
             final @Nullable String nickname
     ) {
-        final String filePath = "players/" + ("$Console".equals(nickname) ? "console" : uniqueId) + ".yml";
-        final File dataFile = new File(getInstance().getPluginFolder(), filePath);
+        final File dataFile = new File(
+                getInstance().getPluginFolder(),
+                "players/" + ("$Console".equals(nickname) ? "console" : uniqueId) + ".yml"
+        );
         return new PlayerFile(dataFile, YamlConfiguration.loadConfiguration(dataFile));
     }
 

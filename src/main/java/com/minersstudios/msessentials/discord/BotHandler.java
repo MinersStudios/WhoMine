@@ -2,16 +2,14 @@ package com.minersstudios.msessentials.discord;
 
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.msessentials.Config;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.util.MessageUtils;
-import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import com.minersstudios.msessentials.util.DiscordUtil;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -78,7 +76,7 @@ public class BotHandler {
     private static final String LIST_OF_SKIN_ACTIONS = renderTranslation("ms.discord.skin.list_of_skin_actions");
     private static final TranslatableComponent LIST_OF_SKINS = translatable("ms.discord.skin.list_of_skins");
 
-    public BotHandler(final @NotNull DiscordPrivateMessageReceivedEvent event) {
+    public BotHandler(final @NotNull MessageReceivedEvent event) {
         this.user = event.getAuthor();
         this.userId = this.user.getIdLong();
         this.playerInfo = PlayerInfo.fromDiscord(this.userId);
@@ -116,7 +114,7 @@ public class BotHandler {
         final int attachmentSize = attachments.size();
         short code = 0;
 
-        if (!this.isInServer()) {
+        if (!DiscordUtil.isVerified(this.user)) {
             this.reply(NOT_A_USER);
             return;
         }
@@ -196,16 +194,7 @@ public class BotHandler {
     }
 
     private void replyEmbed(@NotNull String reply) {
-        this.message.replyEmbeds(MessageUtils.craftEmbed(reply)).queue();
-    }
-
-    private boolean isInServer() {
-        final Config config = MSEssentials.getConfiguration();
-
-        if (config.guild == null) return false;
-
-        final Member member = config.guild.getMember(this.user);
-        return member != null && member.getRoles().contains(config.memberRole);
+        this.message.replyEmbeds(craftEmbed(reply)).queue();
     }
 
     private boolean isCodeFlooding() {
@@ -385,12 +374,11 @@ public class BotHandler {
                 final StringBuilder skinList = new StringBuilder();
 
                 for (int i = 0; i < skins.size(); i++) {
-                    final String name = skins.get(i).getName();
                     skinList
                     .append("\n")
                     .append(i + 1)
                     .append(" : \"")
-                    .append(name)
+                    .append(skins.get(i).getName())
                     .append("\"");
                 }
 
@@ -605,5 +593,28 @@ public class BotHandler {
                 )
         );
         return false;
+    }
+
+    public static @NotNull MessageEmbed craftEmbed(final @NotNull String description) {
+        return new MessageEmbed(
+                null,
+                LanguageFile.renderTranslation("ms.discord.embed.title"),
+                description,
+                EmbedType.RICH,
+                null,
+                0x3368cb,
+                new MessageEmbed.Thumbnail(
+                        "https://github.com/MinersStudios/WhoMine/blob/release/assets/logo/text_logo.png?raw=true",
+                        null,
+                        0,
+                        0
+                ),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 }

@@ -1,13 +1,13 @@
 package com.minersstudios.msessentials.commands.admin.player;
 
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
+import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerSettings;
 import com.minersstudios.msessentials.player.ResourcePack;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.util.MessageUtils;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -173,7 +173,7 @@ public class AdminSettingsCommand {
                                     );
                                 }
 
-                                playerInfo.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+                                playerInfo.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                                         LanguageFile.renderTranslation(
                                                 translatable(
                                                         "ms.discord.skin.successfully_removed",
@@ -222,7 +222,7 @@ public class AdminSettingsCommand {
                                         );
                                     }
 
-                                    playerInfo.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+                                    playerInfo.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                                             LanguageFile.renderTranslation(
                                                     translatable(
                                                             "ms.discord.skin.successfully_added",

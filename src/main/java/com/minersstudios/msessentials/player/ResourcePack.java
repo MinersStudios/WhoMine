@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
-import github.scarsz.discordsrv.dependencies.jda.api.exceptions.HttpException;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -140,7 +139,7 @@ public class ResourcePack {
         client.sendAsync(request, bodyHandler)
         .thenAccept(response -> {
             if (response.statusCode() != HttpURLConnection.HTTP_OK) {
-                throw new HttpException("Failed to download resource pack. Response code: " + response.statusCode());
+                throw new RuntimeException("Failed to download resource pack. Response code : " + response.statusCode());
             }
         }).join();
 
@@ -221,8 +220,7 @@ public class ResourcePack {
                 return Optional.empty();
             }
 
-            final String json = response.body();
-            final JsonArray tags = JsonParser.parseString(json).getAsJsonArray();
+            final JsonArray tags = JsonParser.parseString(response.body()).getAsJsonArray();
 
             if (tags.isEmpty()) {
                 MSLogger.severe("No tags found in the repository. Trying to get the latest tag from the config...");
@@ -265,11 +263,10 @@ public class ResourcePack {
          *                                       {@link Type#NULL} or {@link Type#NONE}
          */
         public String getHash() throws NullPointerException, UnsupportedOperationException {
-            if (this == NULL || this == NONE) {
-                throw new UnsupportedOperationException("Cannot get hash of " + this.name() + " resource pack");
-            }
-
-            return this.resourcePack.hash;
+            return switch (this) {
+                case FULL, LITE -> this.resourcePack.hash;
+                default -> throw new UnsupportedOperationException("Cannot get hash of " + this.name() + " resource pack");
+            };
         }
 
         /**
@@ -281,11 +278,10 @@ public class ResourcePack {
          *                                       {@link Type#NULL} or {@link Type#NONE}
          */
         public String getURL() throws NullPointerException, UnsupportedOperationException {
-            if (this == NULL || this == NONE) {
-                throw new UnsupportedOperationException("Cannot get url of " + this.name() + " resource pack");
-            }
-
-            return this.resourcePack.url;
+            return switch (this) {
+                case FULL, LITE -> this.resourcePack.url;
+                default -> throw new UnsupportedOperationException("Cannot get url of " + this.name() + " resource pack");
+            };
         }
     }
 }

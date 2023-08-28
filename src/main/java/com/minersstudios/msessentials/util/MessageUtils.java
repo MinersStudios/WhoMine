@@ -1,21 +1,14 @@
 package com.minersstudios.msessentials.util;
 
 import com.minersstudios.mscore.MSCore;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.Badges;
-import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.Config;
+import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.world.WorldDark;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.util.ChatUtils;
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.EmbedType;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.objects.MessageFormat;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.PlaceholderUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -29,8 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.minersstudios.msessentials.util.MessageUtils.Colors.*;
-import static github.scarsz.discordsrv.util.DiscordUtil.getTextChannelById;
-import static github.scarsz.discordsrv.util.DiscordUtil.sendMessage;
 import static net.kyori.adventure.text.Component.*;
 
 public final class MessageUtils {
@@ -75,18 +66,18 @@ public final class MessageUtils {
      *
      * @param playerInfo player info
      * @param location   sender location
-     * @param chat       chat
+     * @param chatType       chat
      * @param message    message
      */
     public static void sendMessageToChat(
             final @NotNull PlayerInfo playerInfo,
             final @Nullable Location location,
-            final @NotNull Chat chat,
+            final @NotNull ChatType chatType,
             final @NotNull Component message
     ) {
         final Config config = MSEssentials.getConfiguration();
 
-        if (chat == Chat.LOCAL && location != null) {
+        if (chatType == ChatType.LOCAL && location != null) {
             final Component localMessage = space()
                     .append(playerInfo.getDefaultName()
                     .append(text(" : "))
@@ -95,11 +86,11 @@ public final class MessageUtils {
                     .clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
                     .append(message)
                     .color(CHAT_COLOR_SECONDARY);
-            final String stringLocalMessage = ChatUtils.serializeLegacyComponent(localMessage);
+            final String stringLocalMessage = ChatUtils.serializePlainComponent(localMessage);
 
             sendLocalMessage(localMessage, location, config.localChatRadius);
             MSEssentials.getInstance().runTaskAsync(
-                    () -> sendMessage(getTextChannelById(config.discordLocalChannelId), stringLocalMessage)
+                    () -> DiscordUtil.sendMessage(ChatType.LOCAL, stringLocalMessage)
             );
             MSLogger.info(localMessage);
             return;
@@ -114,12 +105,12 @@ public final class MessageUtils {
                 .clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
                 .append(message)
                 .color(CHAT_COLOR_SECONDARY);
-        final String stringGlobalMessage = ChatUtils.serializeLegacyComponent(globalMessage);
+        final String stringGlobalMessage = ChatUtils.serializePlainComponent(globalMessage);
 
         sendGlobalMessage(globalMessage);
         MSCore.getInstance().runTaskAsync(() -> {
-            sendMessage(getTextChannelById(config.discordGlobalChannelId), stringGlobalMessage.replaceFirst("\\[WM]", ""));
-            sendMessage(getTextChannelById(config.discordLocalChannelId), stringGlobalMessage);
+            DiscordUtil.sendMessage(ChatType.GLOBAL, stringGlobalMessage.replaceFirst("\\[WM]", ""));
+            DiscordUtil.sendMessage(ChatType.LOCAL, stringGlobalMessage);
         });
         MSLogger.info(globalMessage);
     }
@@ -150,7 +141,7 @@ public final class MessageUtils {
                     .append(text(" : ")))))
                     .color(CHAT_COLOR_PRIMARY)
                     .append(message.color(CHAT_COLOR_SECONDARY));
-            final String privateMessageString = ChatUtils.serializeLegacyComponent(privateMessage);
+            final String privateMessageString = ChatUtils.serializePlainComponent(privateMessage);
 
             commandSender.sendMessage(
                     Badges.SPEECH.append(text()
@@ -170,7 +161,7 @@ public final class MessageUtils {
                     .append(message.color(CHAT_COLOR_SECONDARY))
             );
             MSCore.getInstance().runTaskAsync(
-                    () -> sendMessage(getTextChannelById(MSEssentials.getConfiguration().discordLocalChannelId), privateMessageString)
+                    () -> DiscordUtil.sendMessage(ChatType.LOCAL, privateMessageString)
             );
             MSLogger.info(privateMessage);
             return true;
@@ -228,7 +219,7 @@ public final class MessageUtils {
 
         sendLocalMessage(Badges.YELLOW_EXCLAMATION_MARK.append(fullMessage), sender.getLocation(), config.localChatRadius);
         MSCore.getInstance().runTaskAsync(
-                () -> sendMessage(getTextChannelById(config.discordLocalChannelId), ChatUtils.serializeLegacyComponent(fullMessage))
+                () -> DiscordUtil.sendMessage(ChatType.LOCAL, ChatUtils.serializePlainComponent(fullMessage))
         );
         MSLogger.info(fullMessage);
     }
@@ -251,7 +242,6 @@ public final class MessageUtils {
             final @NotNull Player killed,
             final @Nullable Player killer
     ) {
-        final Config config = MSEssentials.getConfiguration();
         final Location deathLocation = killed.getLocation();
         final PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(killed);
         final PlayerInfo killerInfo = killer != null
@@ -270,13 +260,13 @@ public final class MessageUtils {
                 .append(space()))
                 .append(killedInfo.getPlayerFile().getPronouns().getDeathMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
-        final String stringDeathMessage = ChatUtils.serializeLegacyComponent(deathMessage);
+        final String stringDeathMessage = ChatUtils.serializePlainComponent(deathMessage);
 
         killedInfo.setLastDeathLocation(deathLocation);
         sendGlobalMessage(deathMessage);
         MSCore.getInstance().runTaskAsync(() -> {
-            sendActionMessage(killed, getTextChannelById(config.discordGlobalChannelId), stringDeathMessage, 16757024);
-            sendActionMessage(killed, getTextChannelById(config.discordLocalChannelId), stringDeathMessage, 16757024);
+            DiscordUtil.sendActionMessage(ChatType.GLOBAL, killed.getName(), stringDeathMessage, 16757024);
+            DiscordUtil.sendActionMessage(ChatType.LOCAL, killed.getName(), stringDeathMessage, 16757024);
         });
         MSLogger.info(deathMessage);
 
@@ -308,18 +298,17 @@ public final class MessageUtils {
                 || player == null
         ) return;
 
-        final Config config = MSEssentials.getConfiguration();
         final Component joinMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
                 .append(playerInfo.getPlayerFile().getPronouns().getJoinMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
-        final String stringJoinMessage = ChatUtils.serializeLegacyComponent(joinMessage);
+        final String stringJoinMessage = ChatUtils.serializePlainComponent(joinMessage);
 
         sendGlobalMessage(joinMessage);
         MSCore.getInstance().runTaskAsync(() -> {
-            sendActionMessage(player, getTextChannelById(config.discordGlobalChannelId), stringJoinMessage, 65280);
-            sendActionMessage(player, getTextChannelById(config.discordLocalChannelId), stringJoinMessage, 65280);
+            DiscordUtil.sendActionMessage(ChatType.GLOBAL, player.getName(), stringJoinMessage, 65280);
+            DiscordUtil.sendActionMessage(ChatType.LOCAL, player.getName(), stringJoinMessage, 65280);
         });
         MSLogger.info(joinMessage);
     }
@@ -336,83 +325,20 @@ public final class MessageUtils {
     ) {
         if (!playerInfo.isOnline()) return;
 
-        final Config config = MSEssentials.getConfiguration();
         final Component quitMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
                 .append(playerInfo.getPlayerFile().getPronouns().getQuitMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
-        final String stringQuitMessage = ChatUtils.serializeLegacyComponent(quitMessage);
+        final String stringQuitMessage = ChatUtils.serializePlainComponent(quitMessage);
 
         sendGlobalMessage(quitMessage);
         MSCore.getInstance().runTaskAsync(() -> {
-           sendActionMessage(player, getTextChannelById(config.discordGlobalChannelId), stringQuitMessage, 16711680);
-           sendActionMessage(player, getTextChannelById(config.discordLocalChannelId), stringQuitMessage, 16711680);
+            DiscordUtil.sendActionMessage(ChatType.GLOBAL, player.getName(), stringQuitMessage, 16711680);
+            DiscordUtil.sendActionMessage(ChatType.LOCAL, player.getName(), stringQuitMessage, 16711680);
         });
         MSLogger.info(quitMessage);
     }
-
-    public static @NotNull MessageEmbed craftEmbed(final @NotNull String description) {
-        return new MessageEmbed(
-                null,
-                LanguageFile.renderTranslation("ms.discord.embed.title"),
-                description,
-                EmbedType.RICH,
-                null,
-                0x3368cb,
-                new MessageEmbed.Thumbnail(
-                        "https://github.com/MinersStudios/WhoMine/blob/release/assets/logo/text_logo.png?raw=true",
-                        null,
-                        0,
-                        0
-                ),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-    }
-
-    private static void sendActionMessage(
-            final @NotNull Player player,
-            final TextChannel textChannel,
-            final @NotNull String actionMessage,
-            final int colorRaw
-    ) {
-        if (DiscordUtil.getJda() == null) return;
-        DiscordUtil.queueMessage(
-                textChannel,
-                DiscordSRV.translateMessage(
-                        new MessageFormat(
-                                "",
-                                actionMessage,
-                                "",
-                                DiscordSRV.getAvatarUrl(player),
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                null,
-                                colorRaw,
-                                null,
-                                false,
-                                DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl(),
-                                DiscordSRV.getPlugin().getMainGuild() != null
-                                        ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName()
-                                        : DiscordUtil.getJda().getSelfUser().getName()
-                        ),
-                        (content, needsEscape) -> PlaceholderUtil.replacePlaceholdersToDiscord(content, player)
-                ),
-                true
-        );
-    }
-
-    public enum Chat {GLOBAL, LOCAL}
 
     public enum RolePlayActionType {DO, IT, ME, TODO}
 

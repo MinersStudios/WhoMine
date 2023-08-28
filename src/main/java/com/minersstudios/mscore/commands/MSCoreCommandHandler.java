@@ -37,7 +37,6 @@ public class MSCoreCommandHandler implements MSCommandExecutor {
             final String @NotNull ... args
     ) {
         return switch (args[0]) {
-            case "reloadlanguage" -> ReloadLanguageCommand.runCommand(sender);
             case "reloadconfig" -> ReloadConfigCommand.runCommand(sender);
             default -> false;
         };

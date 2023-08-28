@@ -44,13 +44,14 @@ public final class MSCustomUtils {
      * @see #getItemStack(String, String)
      */
     public static @NotNull Optional<ItemStack> getItemStack(final @Nullable String namespacedKeyStr) {
-        if (namespacedKeyStr == null) return Optional.empty();
+        if (StringUtils.isBlank(namespacedKeyStr)) return Optional.empty();
 
         final int index = namespacedKeyStr.indexOf(":");
-        final String namespace = namespacedKeyStr.substring(0, index);
-        final String key = namespacedKeyStr.substring(index + 1);
 
-        return getItemStack(namespace, key);
+        return getItemStack(
+                namespacedKeyStr.substring(0, index),
+                namespacedKeyStr.substring(index + 1)
+        );
     }
 
     /**
@@ -140,12 +141,14 @@ public final class MSCustomUtils {
      * @see #getCustom(String, String)
      */
     public static @NotNull Optional<?> getCustom(final @Nullable String namespacedKeyStr) {
-        if (namespacedKeyStr == null) return Optional.empty();
+        if (StringUtils.isBlank(namespacedKeyStr)) return Optional.empty();
 
-        final String namespace = namespacedKeyStr.substring(0, namespacedKeyStr.indexOf(":"));
-        final String key = namespacedKeyStr.substring(namespacedKeyStr.indexOf(":") + 1);
+        final int index = namespacedKeyStr.indexOf(":");
 
-        return getCustom(namespace, key);
+        return getCustom(
+                namespacedKeyStr.substring(0, index),
+                namespacedKeyStr.substring(index + 1)
+        );
     }
 
     /**

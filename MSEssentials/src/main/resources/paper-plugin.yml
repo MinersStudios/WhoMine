@@ -6,6 +6,7 @@ contributors: [ $contributors ]
 website: $website
 
 main: $main
+loader: com.minersstudios.msessentials.MSEssentialsLoader
 api-version: $apiVersion
 dependencies:
   - name: MSCore
@@ -18,8 +19,5 @@ dependencies:
     version: $version
   - name: AuthMe
     version: 5.6.0-SNAPSHOT
-  - name: DiscordSRV
-    version: 1.23.0
 load-after:
   - name: AuthMe
-  - name: DiscordSRV

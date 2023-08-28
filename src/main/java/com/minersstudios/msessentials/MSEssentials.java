@@ -1,9 +1,9 @@
 package com.minersstudios.msessentials;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
+import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.commands.player.DiscordCommand;
-import com.minersstudios.msessentials.listeners.chat.DiscordGuildMessagePreProcessListener;
-import com.minersstudios.msessentials.listeners.chat.DiscordPrivateMessageReceivedListener;
 import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;
 import com.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.minersstudios.msessentials.menu.SkinsMenu;
@@ -13,12 +13,13 @@ import com.minersstudios.msessentials.tasks.BanListTask;
 import com.minersstudios.msessentials.tasks.MuteMapTask;
 import com.minersstudios.msessentials.tasks.PlayerListTask;
 import com.minersstudios.msessentials.tasks.SeatsTask;
+import com.minersstudios.msessentials.util.DiscordUtil;
 import com.minersstudios.msessentials.world.WorldDark;
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -35,7 +36,6 @@ import static net.kyori.adventure.text.Component.translatable;
  */
 public final class MSEssentials extends MSPlugin {
     private static MSEssentials instance;
-    private static JDA jda;
     private Cache cache;
     private Config config;
     private Scoreboard scoreboardHideTags;
@@ -43,6 +43,7 @@ public final class MSEssentials extends MSPlugin {
 
     private static final TranslatableComponent DISABLE_TITLE = translatable("ms.on_disable.message.title");
     private static final TranslatableComponent DISABLE_SUBTITLE = translatable("ms.on_disable.message.subtitle");
+    private static final String SERVER_DISABLED = LanguageFile.renderTranslation("ms.discord.server.disabled");
 
     static {
         initClass(DiscordLinkCodeMenu.class);
@@ -56,6 +57,8 @@ public final class MSEssentials extends MSPlugin {
 
     @Override
     public void enable() {
+        final Server server = this.getServer();
+
         this.cache = new Cache();
         this.scoreboardHideTags = this.getServer().getScoreboardManager().getNewScoreboard();
         this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam("hide_tags");
@@ -63,30 +66,21 @@ public final class MSEssentials extends MSPlugin {
         this.scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
         this.scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 
-        final PluginCommand command = DiscordSRV.getPlugin().getCommand("discord");
-        if (command != null) {
-            command.setExecutor(new DiscordCommand());
-        }
+        final Plugin discordSRV = server.getPluginManager().getPlugin("DiscordSRV");
 
-        DiscordSRV.api.subscribe(new DiscordGuildMessagePreProcessListener());
-        DiscordSRV.api.subscribe(new DiscordPrivateMessageReceivedListener());
+        if (discordSRV != null) {
+            final PluginCommand command = server.getPluginCommand("discord");
 
-        this.runTaskTimer(task -> {
-            JDA jda = DiscordSRV.getPlugin().getJda();
-
-            if (jda != null) {
-                MSEssentials.jda = jda;
-                this.setLoadedCustoms(true);
-                task.cancel();
+            if (command != null && command.getPlugin() == discordSRV) {
+                command.setExecutor(new DiscordCommand());
             }
-        }, 0L, 1L);
+        }
 
         this.runTask(WorldDark::init);
 
         this.config = new Config(this, this.getConfigFile());
 
         this.config.reload();
-        this.setLoadedCustoms(jda != null);
 
         this.runTaskTimer(new SeatsTask(), 0L, 1L);
         this.runTaskTimer(new PlayerListTask(), 6000L, 6000L);
@@ -99,6 +93,10 @@ public final class MSEssentials extends MSPlugin {
         final PlayerInfoMap playerInfoMap = this.cache.playerInfoMap;
         final var onlinePlayers = this.getServer().getOnlinePlayers();
 
+        if (this.cache.jda != null) {
+            this.cache.jda.shutdown();
+        }
+
         if (
                 !playerInfoMap.isEmpty()
                 && !onlinePlayers.isEmpty()
@@ -107,6 +105,9 @@ public final class MSEssentials extends MSPlugin {
         }
 
         this.cache.bukkitTasks.forEach(BukkitTask::cancel);
+
+        DiscordUtil.sendMessage(ChatType.GLOBAL, SERVER_DISABLED);
+        DiscordUtil.sendMessage(ChatType.LOCAL, SERVER_DISABLED);
     }
 
     /**
@@ -131,14 +132,6 @@ public final class MSEssentials extends MSPlugin {
      */
     public static @NotNull ComponentLogger componentLogger() throws NullPointerException {
         return instance.getComponentLogger();
-    }
-
-    /**
-     * @return The instance of the JDA
-     * @throws NullPointerException If the plugin or JDA is not enabled
-     */
-    public static JDA getJda() throws NullPointerException {
-        return jda;
     }
 
     /**

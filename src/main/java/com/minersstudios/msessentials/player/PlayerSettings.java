@@ -24,15 +24,19 @@ public class PlayerSettings {
         this.playerFile = playerFile;
         this.config = playerFile.getConfig();
 
-        ResourcePack.Type resourcePackType;
-        try {
-            resourcePackType = ResourcePack.Type.valueOf(this.config.getString("settings.resource-pack.resource-pack-type", "NULL"));
-        } catch (IllegalArgumentException e) {
-            resourcePackType = ResourcePack.Type.NULL;
-            MSLogger.log(Level.SEVERE, "Incorrect resource-pack type in : " + playerFile.getFile().getName(), e);
-        }
-        this.resourcePackType = new Parameter<>("settings.resource-pack.resource-pack-type", resourcePackType);
-
+        this.resourcePackType = new Parameter<>(
+                "settings.resource-pack.resource-pack-type",
+                switch (this.config.getString("settings.resource-pack.resource-pack-type", "NULL")) {
+                    case "FULL" -> ResourcePack.Type.FULL;
+                    case "LITE" -> ResourcePack.Type.LITE;
+                    case "NONE" -> ResourcePack.Type.NONE;
+                    case "NULL" -> ResourcePack.Type.NULL;
+                    default -> {
+                        MSLogger.log(Level.SEVERE, "Incorrect resource-pack type in : " + playerFile.getFile().getName());
+                        yield ResourcePack.Type.NULL;
+                    }
+                }
+        );
         this.skin = new Parameter<>("settings.skin", this.playerFile.getSkin(this.config.getString("settings.skin", "")));
     }
 

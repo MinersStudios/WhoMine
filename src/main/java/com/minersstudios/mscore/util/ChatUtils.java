@@ -117,14 +117,14 @@ public final class ChatUtils {
 
         if (length == 0) return text;
 
-        final int[] codePoints = new int[length];
-        codePoints[0] = Character.toUpperCase(text.codePointAt(0));
+        final char[] chars = new char[length];
+        chars[0] = Character.toUpperCase(text.charAt(0));
 
         for (int i = 1; i < length; i++) {
-            codePoints[i] = Character.toLowerCase(text.codePointAt(i));
+            chars[i] = Character.toLowerCase(text.charAt(i));
         }
 
-        return new String(codePoints, 0, length);
+        return new String(chars);
     }
 
     /**
@@ -240,19 +240,17 @@ public final class ChatUtils {
      */
     public static @NotNull List<Component> convertStringsToComponents(
             final @Nullable Style style,
-            final @NotNull Collection<String> strings
+            final @NotNull List<String> strings
     ) {
-        final var components = new ArrayList<Component>(strings.size());
+        final Component[] components = new Component[strings.size()];
 
-        for (final var string : strings) {
-            components.add(
-                    style == null
-                    ? text(string)
-                    : text(string, style)
-            );
+        for (int i = 0; i < strings.size(); i++) {
+            components[i] = style == null
+                    ? text(strings.get(i))
+                    : text(strings.get(i), style);
         }
 
-        return components;
+        return Arrays.asList(components);
     }
 
     /**
@@ -267,7 +265,7 @@ public final class ChatUtils {
      * @param strings Strings to be converted to components
      * @return List of components
      */
-    public static @NotNull List<Component> convertStringsToComponents(final @NotNull Collection<String> strings) {
+    public static @NotNull List<Component> convertStringsToComponents(final @NotNull List<String> strings) {
         return convertStringsToComponents(DEFAULT_STYLE, strings);
     }
 
@@ -310,12 +308,11 @@ public final class ChatUtils {
             final @NotNull String first,
             final String @NotNull ... other
     ) {
-        return convertStringsToComponents(
-                style,
-                new ArrayList<>(other.length + 1) {{
-                    this.add(first);
-                    this.addAll(Arrays.asList(other));
-                }}
-        );
+        final String[] strings = new String[other.length + 1];
+
+        System.arraycopy(other, 0, strings, 1, other.length);
+        strings[0] = first;
+
+        return convertStringsToComponents(style, Arrays.asList(strings));
     }
 }

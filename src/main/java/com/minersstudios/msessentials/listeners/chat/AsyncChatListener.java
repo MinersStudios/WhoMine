@@ -5,6 +5,7 @@ import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.chat.ChatBuffer;
+import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.util.MessageUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
@@ -54,7 +55,7 @@ public class AsyncChatListener extends AbstractMSListener {
             message = message.substring(1).trim();
 
             if (!message.isEmpty()) {
-                MessageUtils.sendMessageToChat(playerInfo, null, MessageUtils.Chat.GLOBAL, text(message));
+                MessageUtils.sendMessageToChat(playerInfo, null, ChatType.GLOBAL, text(message));
             }
         } else if (message.startsWith("*")) {
             message = message.substring(1).trim();
@@ -84,7 +85,7 @@ public class AsyncChatListener extends AbstractMSListener {
                 MessageUtils.sendRPEventMessage(player, text(message), MessageUtils.RolePlayActionType.ME);
             }
         } else {
-            MessageUtils.sendMessageToChat(playerInfo, player.getLocation(), MessageUtils.Chat.LOCAL, text(message));
+            MessageUtils.sendMessageToChat(playerInfo, player.getLocation(), ChatType.LOCAL, text(message));
             ChatBuffer.receiveMessage(player, message + " ");
         }
     }

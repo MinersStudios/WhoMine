@@ -7,10 +7,10 @@ import com.minersstudios.mscore.inventory.SingleInventory;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.util.MessageUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -96,7 +96,7 @@ public class SkinsMenu {
                                 skinName
                         )
                 );
-                playerInfo.sendPrivateDiscordMessage(MessageUtils.craftEmbed(
+                playerInfo.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                         LanguageFile.renderTranslation(
                                 translatable(
                                         "ms.discord.skin.successfully_removed",

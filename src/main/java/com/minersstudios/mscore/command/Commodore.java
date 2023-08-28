@@ -130,15 +130,16 @@ public final class Commodore {
      * @return Aliases of the command
      */
     private @NotNull List<String> getAliases(final @NotNull PluginCommand command) {
-        final var aliases = new ArrayList<String>() {{
-            this.add(command.getLabel());
-            this.add(pluginName + ":" + command.getLabel());
-        }};
+        final var commandAliases = command.getAliases();
+        final var aliases = new ArrayList<String>(commandAliases.size() + 1);
 
-        for (final var alias : command.getAliases()) {
+        aliases.add(command.getLabel());
+        aliases.add(this.pluginName + ":" + command.getLabel());
+
+        for (final var alias : commandAliases) {
             if (!aliases.contains(alias)) {
                 aliases.add(alias);
-                aliases.add(pluginName + ":" + alias);
+                aliases.add(this.pluginName + ":" + alias);
             }
         }
 

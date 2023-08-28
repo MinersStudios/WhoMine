@@ -3,16 +3,15 @@ package com.minersstudios.msessentials.commands.player;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.util.MessageUtils;
+import com.minersstudios.msessentials.util.DiscordUtil;
 import com.mojang.brigadier.tree.CommandNode;
-import github.scarsz.discordsrv.dependencies.jda.api.JDA;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.api.entities.User;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -81,14 +80,13 @@ public class DiscordCommand implements MSCommandExecutor {
                         return true;
                     }
 
-                    MSEssentials.getInstance().runTaskAsync(
-                            () -> {
-                                final JDA jda = DiscordUtil.getJda();
+                    MSEssentials.getInstance().runTaskAsync(() -> DiscordUtil.getJDA().ifPresent(
+                            jda -> {
                                 final User user = jda.getUserById(id);
 
                                 if (user != null) {
                                     user.openPrivateChannel().complete().sendMessageEmbeds(
-                                            MessageUtils.craftEmbed(
+                                            BotHandler.craftEmbed(
                                                     LanguageFile.renderTranslation(
                                                             UNLINK_SUCCESS_DISCORD.args(
                                                                     playerInfo.getDefaultName(),
@@ -103,12 +101,12 @@ public class DiscordCommand implements MSCommandExecutor {
                                         player,
                                         UNLINK_SUCCESS_MINECRAFT.args(
                                                 user == null
-                                                ? text(id)
-                                                : text(user.getName())
+                                                        ? text(id)
+                                                        : text(user.getName())
                                         )
                                 );
                             }
-                    );
+                    ));
                 }
                 default -> {
                     return false;
