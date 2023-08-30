@@ -1,6 +1,5 @@
 package com.minersstudios.msessentials.player;
 
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.skin.Skin;
 import org.apache.commons.lang3.StringUtils;
@@ -230,7 +229,7 @@ public class PlayerFile {
     }
 
     public boolean removeSkin(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        return !(index >= this.skins.size())
+        return index < this.skins.size()
                 && this.removeSkin(this.skins.get(index));
     }
 
@@ -360,7 +359,7 @@ public class PlayerFile {
         try {
             this.config.save(this.file);
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "Failed to save player file : " + this.file.getName(), e);
+            MSEssentials.logger().log(Level.SEVERE, "Failed to save player file : " + this.file.getName(), e);
         }
     }
 

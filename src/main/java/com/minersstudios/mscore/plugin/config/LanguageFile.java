@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.GlobalConfig;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.util.ChatUtils;
 import net.kyori.adventure.key.Key;
@@ -26,7 +26,6 @@ import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.translatable;
 
@@ -203,7 +202,7 @@ public final class LanguageFile {
         try {
             return !((Map<?, ?>) TRANSLATIONS_FIELD.get(registry)).isEmpty();
         } catch (IllegalAccessException e) {
-            MSLogger.log(Level.SEVERE, "Failed to check if language is loaded", e);
+            MSLogger.severe("Failed to check if language is loaded", e);
             return false;
         }
     }
@@ -239,7 +238,7 @@ public final class LanguageFile {
             ) {
                 in.transferTo(out);
             } catch (IOException e) {
-                MSLogger.log(Level.SEVERE, "Failed to download language file: " + link, e);
+                MSLogger.severe("Failed to download language file: " + link, e);
             }
         }
 

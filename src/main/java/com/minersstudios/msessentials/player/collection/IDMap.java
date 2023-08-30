@@ -3,7 +3,6 @@ package com.minersstudios.msessentials.player.collection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.util.IDUtils;
 import org.bukkit.Bukkit;
@@ -229,7 +228,7 @@ public class IDMap {
                     if (id != null) {
                         this.map.put(uuid, id);
                     } else {
-                        MSLogger.severe("Failed to read the player id : " + uuid.toString() + " in \"ids.json\"");
+                        MSEssentials.logger().severe("Failed to read the player id : " + uuid.toString() + " in \"ids.json\"");
                     }
                 });
             } catch (Exception e) {
@@ -248,7 +247,7 @@ public class IDMap {
                 this.saveFile();
             }
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "Failed to create a new \"ids.json\" file", e);
+            MSEssentials.logger().log(Level.SEVERE, "Failed to create a new \"ids.json\" file", e);
         }
     }
 
@@ -262,10 +261,10 @@ public class IDMap {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "Failed to create \"ids.json.OLD\" backup file", e);
+            MSEssentials.logger().log(Level.SEVERE, "Failed to create \"ids.json.OLD\" backup file", e);
         }
 
-        MSLogger.log(Level.SEVERE, "Failed to read the \"ids.json\" file, creating a new file");
+        MSEssentials.logger().severe("Failed to read the \"ids.json\" file, creating a new file");
     }
 
     /**
@@ -275,7 +274,7 @@ public class IDMap {
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "Failed to save ids", e);
+            MSEssentials.logger().log(Level.SEVERE, "Failed to save ids", e);
         }
     }
 }

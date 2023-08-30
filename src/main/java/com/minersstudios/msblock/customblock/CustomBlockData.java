@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.file.*;
 import com.minersstudios.msblock.customblock.file.adapter.RecipeAdapter;
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.menu.CraftsMenu;
 import org.bukkit.Bukkit;
@@ -136,7 +135,7 @@ public class CustomBlockData {
         final CustomBlockFile blockFile = CustomBlockFile.create(file);
 
         if (blockFile == null) {
-            MSLogger.severe("Failed to load custom block file: " + file.getName());
+            MSBlock.logger().severe("Failed to load custom block file: " + file.getName());
             return null;
         }
 
@@ -249,7 +248,7 @@ public class CustomBlockData {
         try {
             this.setRecipeEntries(RecipeAdapter.deserializeEntries(new ItemStack(this.craftItemStack()), recipeJson.getAsJsonArray()));
         } catch (Exception e) {
-            MSLogger.log(Level.SEVERE, "Failed to deserialize recipes for custom block data: " + this.key, e);
+            MSBlock.logger().log(Level.SEVERE, "Failed to deserialize recipes for custom block data: " + this.key, e);
             return;
         }
 

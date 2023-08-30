@@ -2,8 +2,8 @@ package com.minersstudios.msessentials.player.skin;
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.google.common.base.Preconditions;
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -104,7 +107,7 @@ public class Skin implements ConfigurationSerializable {
                 final Skin skin = future.get();
                 if (skin != null) return skin;
             } catch (InterruptedException | ExecutionException e) {
-                MSLogger.log(Level.SEVERE, "An error occurred while attempting to retrieve a skin from a link", e);
+                MSEssentials.logger().log(Level.SEVERE, "An error occurred while attempting to retrieve a skin from a link", e);
             }
 
             retryAttempts.incrementAndGet();
@@ -218,7 +221,7 @@ public class Skin implements ConfigurationSerializable {
         try {
             return Skin.create(name, value, signature);
         } catch (IllegalArgumentException e) {
-            MSLogger.log(Level.SEVERE, "Failed to deserialize skin: " + name, e);
+            MSEssentials.logger().log(Level.SEVERE, "Failed to deserialize skin: " + name, e);
             return null;
         }
     }
@@ -280,7 +283,7 @@ public class Skin implements ConfigurationSerializable {
                 try {
                     return Skin.create(name, value, signature);
                 } catch (IllegalArgumentException e) {
-                    MSLogger.log(Level.SEVERE, "Failed to create skin : \"" + name + "\" with value : " + value + " and signature : " + signature, e);
+                    MSEssentials.logger().log(Level.SEVERE, "Failed to create skin : \"" + name + "\" with value : " + value + " and signature : " + signature, e);
                 }
             }
             case 500, 400 -> {
@@ -292,11 +295,11 @@ public class Skin implements ConfigurationSerializable {
                         try {
                             TimeUnit.SECONDS.sleep(5);
                         } catch (InterruptedException e) {
-                            MSLogger.log(Level.SEVERE, "Failed to sleep thread", e);
+                            MSEssentials.logger().log(Level.SEVERE, "Failed to sleep thread", e);
                         }
                     }
-                    case "no_account_available" -> MSLogger.severe("No account available to create skin");
-                    default -> MSLogger.severe("Unknown MineSkin error: " + errorCode);
+                    case "no_account_available" -> MSEssentials.logger().severe("No account available to create skin");
+                    default -> MSEssentials.logger().severe("Unknown MineSkin error: " + errorCode);
                 }
             }
             case 403 -> {
@@ -305,18 +308,18 @@ public class Skin implements ConfigurationSerializable {
                 final String error = errorJson.error();
 
                 if (errorCode.equals("invalid_api_key")) {
-                    MSLogger.severe("Api key is not invalid! Reason: " + error);
+                    MSEssentials.logger().severe("Api key is not invalid! Reason: " + error);
 
                     switch (error) {
                         case "Invalid API Key" ->
-                                MSLogger.severe("This api key is not registered on MineSkin!");
+                                MSEssentials.logger().severe("This api key is not registered on MineSkin!");
                         case "Client not allowed" ->
-                                MSLogger.severe("This server ip is not on the api key allowed ips list!");
+                                MSEssentials.logger().severe("This server ip is not on the api key allowed ips list!");
                         case "Origin not allowed" ->
-                                MSLogger.severe("This server origin is not on the api key allowed origin list!");
+                                MSEssentials.logger().severe("This server origin is not on the api key allowed origin list!");
                         case "Agent not allowed" ->
-                                MSLogger.severe("This server agent is not on the api key allowed agents list!");
-                        default -> MSLogger.severe("Unknown error :" + error);
+                                MSEssentials.logger().severe("This server agent is not on the api key allowed agents list!");
+                        default -> MSEssentials.logger().severe("Unknown error :" + error);
                     }
                 }
             }
@@ -340,10 +343,10 @@ public class Skin implements ConfigurationSerializable {
                 try {
                     TimeUnit.SECONDS.sleep(sleepDuration);
                 } catch (InterruptedException e) {
-                    MSLogger.log(Level.SEVERE, "Failed to sleep thread", e);
+                    MSEssentials.logger().log(Level.SEVERE, "Failed to sleep thread", e);
                 }
             }
-            default -> MSLogger.log(Level.SEVERE, "Unknown MineSkin error: " + response.getStatusCode());
+            default -> MSEssentials.logger().log(Level.SEVERE, "Unknown MineSkin error: " + response.getStatusCode());
         }
 
         return null;

@@ -16,6 +16,7 @@ import com.minersstudios.mscore.packet.collection.PacketListenersMap;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -38,6 +39,8 @@ import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 /**
  * Represents a Java plugin and its main class.
@@ -271,7 +274,7 @@ public abstract class MSPlugin extends JavaPlugin {
 
         this.enable();
 
-        MSLogger.fine("[" + this.getName() + "] Enabled in " + (System.currentTimeMillis() - time) + "ms");
+        this.getComponentLogger().info(text("Enabled in " + (System.currentTimeMillis() - time) + "ms", NamedTextColor.GREEN));
     }
 
     /**
@@ -287,7 +290,7 @@ public abstract class MSPlugin extends JavaPlugin {
         this.setLoadedCustoms(false);
         this.disable();
 
-        MSLogger.fine("[" + this.getName() + "] Disabled in " + (System.currentTimeMillis() - time) + "ms");
+        this.getComponentLogger().info(text("Disabled in " + (System.currentTimeMillis() - time) + "ms", NamedTextColor.GREEN));
     }
 
     /**
@@ -340,7 +343,7 @@ public abstract class MSPlugin extends JavaPlugin {
         try {
             this.getConfig().save(this.configFile);
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "Could not save config to " + this.configFile, e);
+            this.getLogger().severe("Could not save config to " + this.configFile);
         }
     }
 
@@ -377,7 +380,7 @@ public abstract class MSPlugin extends JavaPlugin {
         final String outDirName = outDir.getName();
 
         if (!outDir.exists() && !outDir.mkdirs()) {
-            MSLogger.warning("Directory " + outDirName + " creation failed");
+            this.getLogger().warning("Directory " + outDirName + " creation failed");
         }
 
         if (!outFile.exists() || replace) {
@@ -391,11 +394,11 @@ public abstract class MSPlugin extends JavaPlugin {
                 while ((read = in.read(buffer)) >= 0) {
                     out.write(buffer, 0, read);
                 }
-            } catch (IOException ex) {
-                MSLogger.log(Level.SEVERE, "Could not save " + outFileName + " to " + outFile, ex);
+            } catch (IOException e) {
+                this.getLogger().log(Level.SEVERE, "Could not save " + outFileName + " to " + outFile, e);
             }
         } else {
-            MSLogger.warning("Could not save " + outFileName + " to " + outFile + " because " + outFileName + " already exists.");
+            this.getLogger().warning("Could not save " + outFileName + " to " + outFile + " because " + outFileName + " already exists.");
         }
     }
 
@@ -430,11 +433,11 @@ public abstract class MSPlugin extends JavaPlugin {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof final MSCommandExecutor msCommandExecutor) {
                         this.msCommands.put(msCommand, msCommandExecutor);
                     } else {
-                        MSLogger.warning("Annotated class with MSCommand is not instance of MSCommandExecutor (" + className + ")");
+                        this.getLogger().warning("Annotated class with MSCommand is not instance of MSCommandExecutor (" + className + ")");
                     }
                 }
             } catch (Exception e) {
-                MSLogger.log(Level.SEVERE, "Failed to load command", e);
+                this.getLogger().log(Level.SEVERE, "Failed to load command", e);
             }
         });
     }
@@ -470,11 +473,11 @@ public abstract class MSPlugin extends JavaPlugin {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSListener listener) {
                         this.msListeners.add(listener);
                     } else {
-                        MSLogger.warning("Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")");
+                        this.getLogger().warning("Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")");
                     }
                 }
             } catch (Exception e) {
-                MSLogger.log(Level.SEVERE, "Failed to load listener", e);
+                this.getLogger().log(Level.SEVERE, "Failed to load listener", e);
             }
         });
     }
@@ -509,11 +512,11 @@ public abstract class MSPlugin extends JavaPlugin {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSPacketListener listener) {
                         this.msPacketListeners.add(listener);
                     } else {
-                        MSLogger.warning("Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")");
+                        this.getLogger().warning("Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")");
                     }
                 }
             } catch (Exception e) {
-                MSLogger.log(Level.SEVERE, "Failed to load listener", e);
+                this.getLogger().log(Level.SEVERE, "Failed to load listener", e);
             }
         });
     }
@@ -584,7 +587,7 @@ public abstract class MSPlugin extends JavaPlugin {
         final Server server = this.getServer();
 
         if (pluginCommand == null) {
-            MSLogger.log(Level.SEVERE, "Failed to register command : " + name);
+            this.getLogger().severe("Failed to register command : " + name);
             return;
         }
 
@@ -612,7 +615,7 @@ public abstract class MSPlugin extends JavaPlugin {
             final boolean[] values = msCommand.permissionParentValues();
 
             if (keys.length != values.length) {
-                MSLogger.severe("Permission and boolean array lengths do not match in command : " + name);
+                this.getLogger().severe("Permission and boolean array lengths do not match in command : " + name);
             } else {
                 for (int i = 0; i < keys.length; i++) {
                     children.put(keys[i], values[i]);
@@ -652,7 +655,7 @@ public abstract class MSPlugin extends JavaPlugin {
         try {
             return COMMAND_CONSTRUCTOR.newInstance(command, this);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            MSLogger.log(Level.SEVERE, "Failed to create command : " + command, e);
+            this.getLogger().log(Level.SEVERE, "Failed to create command : " + command, e);
             return null;
         }
     }

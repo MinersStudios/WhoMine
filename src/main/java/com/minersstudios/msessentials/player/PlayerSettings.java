@@ -1,12 +1,10 @@
 package com.minersstudios.msessentials.player;
 
-import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.skin.Skin;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.logging.Level;
 
 /**
  * Player settings class, which contains all player custom settings.
@@ -32,7 +30,7 @@ public class PlayerSettings {
                     case "NONE" -> ResourcePack.Type.NONE;
                     case "NULL" -> ResourcePack.Type.NULL;
                     default -> {
-                        MSLogger.log(Level.SEVERE, "Incorrect resource-pack type in : " + playerFile.getFile().getName());
+                        MSEssentials.logger().severe("Incorrect resource-pack type in : " + playerFile.getFile().getName());
                         yield ResourcePack.Type.NULL;
                     }
                 }

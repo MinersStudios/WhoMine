@@ -5,7 +5,6 @@ import com.google.gson.*;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.file.adapter.*;
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.config.ConfigurationException;
 import com.minersstudios.mscore.util.MSPluginUtils;
 import org.bukkit.NamespacedKey;
@@ -103,9 +102,9 @@ public class CustomBlockFile {
             customBlockFile.load();
             return customBlockFile;
         } catch (ConfigurationException e) {
-            MSLogger.log(Level.SEVERE, "Failed to create a custom block file from file", e);
+            MSBlock.logger().log(Level.SEVERE, "Failed to create a custom block file from file", e);
         } catch (IllegalArgumentException e) {
-            MSLogger.log(Level.SEVERE, "The file is not a json file", e);
+            MSBlock.logger().log(Level.SEVERE, "The file is not a json file", e);
         }
         return null;
     }
@@ -155,13 +154,13 @@ public class CustomBlockFile {
                 !directory.exists()
                 && !directory.mkdirs()
         ) {
-            MSLogger.warning("Failed to create a new directory: " + directory.getAbsolutePath());
+            MSBlock.logger().warning("Failed to create a new directory: " + directory.getAbsolutePath());
         }
 
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.data, writer);
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "Failed to save a file: " + this.file.getAbsolutePath(), e);
+            MSBlock.logger().log(Level.SEVERE, "Failed to save a file: " + this.file.getAbsolutePath(), e);
         }
     }
 

@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 
 /**
  * Abstract configuration class, which provides a simple way to load
@@ -81,7 +80,7 @@ public abstract class MSConfig {
             this.reloadVariables();
             return true;
         } catch (ConfigurationException e) {
-            MSLogger.log(Level.SEVERE, "An error occurred while loading the config!", e);
+            MSLogger.severe("An error occurred while loading the config!", e);
             return false;
         }
     }
@@ -126,7 +125,7 @@ public abstract class MSConfig {
             this.yaml.save(this.file);
             return true;
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "An error occurred while saving the config!", e);
+            MSLogger.severe("An error occurred while saving the config!", e);
             return false;
         }
     }

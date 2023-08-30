@@ -1,7 +1,6 @@
 package com.minersstudios.msessentials;
 
 import com.minersstudios.mscore.plugin.GlobalCache;
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.plugin.config.MSConfig;
@@ -122,7 +121,7 @@ public final class Config extends MSConfig {
         final float spawnLocationPitch = (float) this.yaml.getDouble("spawn-location.pitch");
 
         if (spawnLocationWorld == null) {
-            MSLogger.warning("World \"" + spawnLocationWorldName + "\" not found!\nUsing default spawn location!");
+            MSEssentials.logger().warning("World \"" + spawnLocationWorldName + "\" not found!\nUsing default spawn location!");
             this.spawnLocation = this.plugin.getServer().getWorlds().get(0).getSpawnLocation();
         } else {
            this.spawnLocation = new Location(
@@ -168,7 +167,7 @@ public final class Config extends MSConfig {
                     cache.anomalies.put(anomaly.getNamespacedKey(), anomaly);
                 });
             } catch (IOException e) {
-                MSLogger.log(Level.SEVERE, "An error occurred while loading anomalies!", e);
+                MSEssentials.logger().log(Level.SEVERE, "An error occurred while loading anomalies!", e);
             }
         });
 
@@ -216,7 +215,7 @@ public final class Config extends MSConfig {
                     cache.discordGlobalChannel = cache.jda.getTextChannelById(this.discordGlobalChannelId);
 
                     if (cache.discordGlobalChannel == null) {
-                        MSLogger.warning("Discord global channel not found!");
+                        MSEssentials.logger().warning("Discord global channel not found!");
                     }
                 }
 
@@ -224,7 +223,7 @@ public final class Config extends MSConfig {
                     cache.discordLocalChannel = cache.jda.getTextChannelById(this.discordLocalChannelId);
 
                     if (cache.discordLocalChannel == null) {
-                        MSLogger.warning("Discord local channel not found!");
+                        MSEssentials.logger().warning("Discord local channel not found!");
                     }
                 }
 
@@ -256,14 +255,14 @@ public final class Config extends MSConfig {
                 cache.mainGuild = cache.jda.getGuildById(this.discordServerId);
 
                 if (cache.mainGuild == null) {
-                    MSLogger.warning("Discord server not found!");
+                    MSEssentials.logger().warning("Discord server not found!");
                     return;
                 }
 
                 cache.memberRole = cache.mainGuild.getRoleById(this.memberRoleId);
 
                 if (cache.memberRole == null) {
-                    MSLogger.warning("Discord member role not found!");
+                    MSEssentials.logger().warning("Discord member role not found!");
                 }
 
                 DiscordUtil.sendMessage(ChatType.GLOBAL, SERVER_ENABLED);

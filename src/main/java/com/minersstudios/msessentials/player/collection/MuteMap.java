@@ -3,7 +3,6 @@ package com.minersstudios.msessentials.player.collection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.mojang.util.InstantTypeAdapter;
 import org.bukkit.OfflinePlayer;
@@ -164,7 +163,7 @@ public class MuteMap {
                     if (params != null && params.isValidate()) {
                         this.map.put(uuid, params);
                     } else {
-                        MSLogger.severe("Failed to read the player params : " + uuid.toString() + " in \"muted_players.json\"");
+                        MSEssentials.logger().severe("Failed to read the player params : " + uuid.toString() + " in \"muted_players.json\"");
                     }
                 });
             } catch (Exception e) {
@@ -186,7 +185,7 @@ public class MuteMap {
                 this.saveFile();
             }
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "Failed to create a new \"muted_players.json\" file", e);
+            MSEssentials.logger().log(Level.SEVERE, "Failed to create a new \"muted_players.json\" file", e);
         }
     }
 
@@ -200,10 +199,10 @@ public class MuteMap {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "Failed to create \"muted_players.json.OLD\" backup file", e);
+            MSEssentials.logger().log(Level.SEVERE, "Failed to create \"muted_players.json.OLD\" backup file", e);
         }
 
-        MSLogger.log(Level.SEVERE, "Failed to read the \"muted_players.json\" file, creating a new file");
+        MSEssentials.logger().severe("Failed to read the \"muted_players.json\" file, creating a new file");
     }
 
     /**
@@ -213,7 +212,7 @@ public class MuteMap {
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
         } catch (IOException e) {
-            MSLogger.log(Level.SEVERE, "Failed to save muted players", e);
+            MSEssentials.logger().log(Level.SEVERE, "Failed to save muted players", e);
         }
     }
 

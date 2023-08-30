@@ -1,9 +1,9 @@
 package com.minersstudios.msitem.item.registry.items;
 
 import com.google.common.collect.ImmutableList;
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.MSBlockUtils;
+import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.item.CustomItemImpl;
 import com.minersstudios.msitem.item.CustomItemType;
 import org.bukkit.Material;
@@ -55,7 +55,7 @@ public class PlumbumIngot extends CustomItemImpl {
         final var plumbumBlock = MSBlockUtils.getItemStack("plumbum_block");
 
         if (plumbumBlock.isEmpty()) {
-            MSLogger.warning("Can't find custom block with key: plumbum_block! Shaped recipe will not be registered!");
+            MSItem.logger().warning("Can't find custom block with key: plumbum_block! Shaped recipe will not be registered!");
             return ImmutableList.of(
                     Map.entry(furnaceRecipe, false),
                     Map.entry(blastingRecipe, false)

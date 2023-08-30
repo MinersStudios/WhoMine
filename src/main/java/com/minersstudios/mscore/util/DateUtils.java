@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public final class DateUtils {
@@ -73,7 +72,7 @@ public final class DateUtils {
 
             return timezone;
         } catch (IOException e) {
-            MSLogger.log(Level.WARNING, "Failed to get timezone from ip " + ip.getHostAddress(), e);
+            MSLogger.warning("Failed to get timezone from ip " + ip.getHostAddress(), e);
             return DEFAULT_TIMEZONE;
         }
     }

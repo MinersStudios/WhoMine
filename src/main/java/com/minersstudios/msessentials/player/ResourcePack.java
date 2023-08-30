@@ -3,7 +3,6 @@ package com.minersstudios.msessentials.player;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import org.apache.commons.lang3.StringUtils;
@@ -57,7 +56,7 @@ public class ResourcePack {
         final String tagName = getLatestTagName(config.user, config.repo).orElse(config.version);
 
         if (StringUtils.isBlank(tagName)) {
-            MSLogger.severe("""
+            MSEssentials.logger().severe("""
                     Apparently the API rate limit has been exceeded and the tag name could not be obtained.
                     The players will not be able to connect to the server.
                     Please try again later or generate resource pack parameters manually."""
@@ -146,9 +145,9 @@ public class ResourcePack {
         final String hash = bytesToHexString(createSHA1(path));
 
         if (path.toFile().delete()) {
-            MSLogger.info("File deleted: " + path);
+            MSEssentials.logger().info("File deleted: " + path);
         } else {
-            MSLogger.warning("Failed to delete file: " + path);
+            MSEssentials.logger().warning("Failed to delete file: " + path);
         }
 
         return hash;
@@ -216,14 +215,14 @@ public class ResourcePack {
             final var response = client.send(request, bodyHandler);
 
             if (response.statusCode() != HttpURLConnection.HTTP_OK) {
-                MSLogger.severe("Failed to get latest tag. Response code : " + response.statusCode() + ". Trying to get the latest tag from the config...");
+                MSEssentials.logger().severe("Failed to get latest tag. Response code : " + response.statusCode() + ". Trying to get the latest tag from the config...");
                 return Optional.empty();
             }
 
             final JsonArray tags = JsonParser.parseString(response.body()).getAsJsonArray();
 
             if (tags.isEmpty()) {
-                MSLogger.severe("No tags found in the repository. Trying to get the latest tag from the config...");
+                MSEssentials.logger().severe("No tags found in the repository. Trying to get the latest tag from the config...");
                 return Optional.empty();
             }
 
@@ -231,7 +230,7 @@ public class ResourcePack {
 
             return Optional.of(latestTag.get("name").getAsString());
         } catch (InterruptedException | IOException e) {
-            MSLogger.log(Level.WARNING, "Failed to get latest tag. Trying to get the latest tag from the config...", e);
+            MSEssentials.logger().log(Level.WARNING, "Failed to get latest tag. Trying to get the latest tag from the config...", e);
             return Optional.empty();
         }
     }

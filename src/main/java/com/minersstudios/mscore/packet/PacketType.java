@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import static net.minecraft.network.protocol.PacketFlow.CLIENTBOUND;
 import static net.minecraft.network.protocol.PacketFlow.SERVERBOUND;
@@ -135,7 +134,7 @@ public class PacketType {
                 final PacketType packetType = (PacketType) field.get(null);
                 map.put(packetType.id, packetType);
             } catch (IllegalAccessException e) {
-                MSLogger.log(Level.SEVERE, "Could not get packet type from field " + field.getName(), e);
+                MSLogger.severe("Could not get packet type from field " + field.getName(), e);
             }
         }
 

@@ -1,6 +1,5 @@
 package com.minersstudios.msitem.item.renameable;
 
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.MSCustomUtils;
 import com.minersstudios.msitem.MSItem;
 import net.kyori.adventure.text.Component;
@@ -86,7 +85,7 @@ public class RenameableItem {
         try {
             renameableItemConfig = YamlConfiguration.loadConfiguration(file);
         } catch (Exception e) {
-            MSLogger.log(Level.SEVERE, "Failed to load " + file.getName() + "!", e);
+            MSItem.logger().log(Level.SEVERE, "Failed to load " + file.getName() + "!", e);
             return null;
         }
 
@@ -94,7 +93,7 @@ public class RenameableItem {
         final String key = renameableItemConfig.getString("key");
 
         if (key == null) {
-            MSLogger.severe("Key is not defined in " + fileName + "!");
+            MSItem.logger().severe("Key is not defined in " + fileName + "!");
             return null;
         }
 
@@ -107,7 +106,7 @@ public class RenameableItem {
         final var whiteList = new HashSet<UUID>();
 
         if (customModelData < 0) {
-            MSLogger.severe("Custom model data is not valid! (in " + fileName + ")");
+            MSItem.logger().severe("Custom model data is not valid! (in " + fileName + ")");
             return null;
         }
 
@@ -144,7 +143,7 @@ public class RenameableItem {
             }
 
             if (itemStack == null || itemStack.getType().isAir()) {
-                MSLogger.severe("Item " + item + " is not valid! (in " + fileName + ")");
+                MSItem.logger().severe("Item " + item + " is not valid! (in " + fileName + ")");
                 return null;
             }
 
@@ -168,7 +167,7 @@ public class RenameableItem {
             try {
                 whiteList.add(UUID.fromString(uuid));
             } catch (IllegalArgumentException e) {
-                MSLogger.severe("Invalid UUID " + uuid + " in white-list! (in " + fileName + ")");
+                MSItem.logger().severe("Invalid UUID " + uuid + " in white-list! (in " + fileName + ")");
             }
         }
 

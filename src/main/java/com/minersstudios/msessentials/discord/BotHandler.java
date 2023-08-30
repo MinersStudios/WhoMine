@@ -2,13 +2,15 @@ package com.minersstudios.msessentials.discord;
 
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
 import com.minersstudios.msessentials.util.DiscordUtil;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.EmbedType;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.Player;
@@ -598,7 +600,7 @@ public class BotHandler {
     public static @NotNull MessageEmbed craftEmbed(final @NotNull String description) {
         return new MessageEmbed(
                 null,
-                LanguageFile.renderTranslation("ms.discord.embed.title"),
+                renderTranslation("ms.discord.embed.title"),
                 description,
                 EmbedType.RICH,
                 null,

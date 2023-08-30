@@ -92,7 +92,7 @@ public final class MessageUtils {
             MSEssentials.getInstance().runTaskAsync(
                     () -> DiscordUtil.sendMessage(ChatType.LOCAL, stringLocalMessage)
             );
-            MSLogger.info(localMessage);
+            MSLogger.info(null, localMessage);
             return;
         }
 
@@ -112,7 +112,7 @@ public final class MessageUtils {
             DiscordUtil.sendMessage(ChatType.GLOBAL, stringGlobalMessage.replaceFirst("\\[WM]", ""));
             DiscordUtil.sendMessage(ChatType.LOCAL, stringGlobalMessage);
         });
-        MSLogger.info(globalMessage);
+        MSLogger.info(null, globalMessage);
     }
 
     /**
@@ -163,7 +163,7 @@ public final class MessageUtils {
             MSCore.getInstance().runTaskAsync(
                     () -> DiscordUtil.sendMessage(ChatType.LOCAL, privateMessageString)
             );
-            MSLogger.info(privateMessage);
+            MSLogger.info(null, privateMessage);
             return true;
         }
         return false;
@@ -221,7 +221,7 @@ public final class MessageUtils {
         MSCore.getInstance().runTaskAsync(
                 () -> DiscordUtil.sendMessage(ChatType.LOCAL, ChatUtils.serializePlainComponent(fullMessage))
         );
-        MSLogger.info(fullMessage);
+        MSLogger.info(null, fullMessage);
     }
 
     public static void sendRPEventMessage(
@@ -268,9 +268,10 @@ public final class MessageUtils {
             DiscordUtil.sendActionMessage(ChatType.GLOBAL, killed.getName(), stringDeathMessage, 16757024);
             DiscordUtil.sendActionMessage(ChatType.LOCAL, killed.getName(), stringDeathMessage, 16757024);
         });
-        MSLogger.info(deathMessage);
+        MSLogger.info(null, deathMessage);
 
         MSLogger.info(
+                null,
                 translatable(
                         "ms.info.player_death_info",
                         killedInfo.getDefaultName(),
@@ -310,7 +311,7 @@ public final class MessageUtils {
             DiscordUtil.sendActionMessage(ChatType.GLOBAL, player.getName(), stringJoinMessage, 65280);
             DiscordUtil.sendActionMessage(ChatType.LOCAL, player.getName(), stringJoinMessage, 65280);
         });
-        MSLogger.info(joinMessage);
+        MSLogger.info(null, joinMessage);
     }
 
     /**
@@ -337,7 +338,7 @@ public final class MessageUtils {
             DiscordUtil.sendActionMessage(ChatType.GLOBAL, player.getName(), stringQuitMessage, 16711680);
             DiscordUtil.sendActionMessage(ChatType.LOCAL, player.getName(), stringQuitMessage, 16711680);
         });
-        MSLogger.info(quitMessage);
+        MSLogger.info(null, quitMessage);
     }
 
     public enum RolePlayActionType {DO, IT, ME, TODO}

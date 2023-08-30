@@ -1412,18 +1412,18 @@ public class PlayerInfo {
                         .thenApply(status -> {
                             switch (status) {
                                 case SUCCESSFULLY_LOADED -> {
-                                    MSLogger.fine(RP_SUCCESSFULLY_LOADED.args(text(this.nickname)));
+                                    MSEssentials.componentLogger().info(RP_SUCCESSFULLY_LOADED.args(text(this.nickname, NamedTextColor.GREEN)));
                                     return true;
                                 }
                                 case FAILED_DOWNLOAD -> {
                                     playerSettings.setResourcePackType(ResourcePack.Type.NONE);
                                     playerSettings.save();
 
-                                    MSLogger.warning(RP_FAILED_DOWNLOAD_CONSOLE.args(text(this.nickname)));
+                                    MSEssentials.componentLogger().warn(RP_FAILED_DOWNLOAD_CONSOLE.args(text(this.nickname, NamedTextColor.GOLD)));
                                     this.kickPlayer(RP_FAILED_DOWNLOAD_TITLE, RP_FAILED_DOWNLOAD_SUBTITLE);
                                 }
                                 case DECLINED -> {
-                                    MSLogger.warning(RP_DECLINED_CONSOLE.args(text(this.nickname)));
+                                    MSEssentials.componentLogger().warn(RP_DECLINED_CONSOLE.args(text(this.nickname, NamedTextColor.GOLD)));
                                     this.kickPlayer(RP_DECLINED_TITLE, RP_DECLINED_SUBTITLE);
                                 }
                             }
@@ -1431,7 +1431,7 @@ public class PlayerInfo {
                         })
                         .exceptionally(
                                 throwable -> {
-                                    MSLogger.log(Level.SEVERE, "An error occurred while sending the resource pack to " + this.nickname, throwable);
+                                    MSEssentials.logger().log(Level.SEVERE, "An error occurred while sending the resource pack to " + this.nickname, throwable);
                                     this.kickPlayer(SOMETHING_WENT_WRONG_TITLE, SOMETHING_WENT_WRONG_SUBTITLE);
                                     return false;
                                 }
@@ -1518,12 +1518,12 @@ public class PlayerInfo {
         }
 
         this.playerFile.save();
-        MSLogger.fine(
+        MSEssentials.componentLogger().info(
                 translatable(
                         "ms.info.player_file_created",
                         text(this.nickname),
                         text(this.offlinePlayer.getUniqueId().toString())
-                )
+                ).color(NamedTextColor.GREEN)
         );
     }
 
@@ -1700,7 +1700,7 @@ public class PlayerInfo {
                         sendJoinMessage(this);
                     } else {
                         player.kick();
-                        MSLogger.warning("Something went wrong while teleporting " + this.nickname + " to their last leave location");
+                        MSEssentials.logger().warning("Something went wrong while teleporting " + this.nickname + " to their last leave location");
                     }
                 });
             }
