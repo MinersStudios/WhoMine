@@ -1,9 +1,11 @@
 package com.minersstudios.msessentials;
 
+import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.msessentials.chat.ChatType;
-import com.minersstudios.msessentials.commands.player.DiscordCommand;
+import com.minersstudios.msessentials.discord.command.SlashCommand;
+import com.minersstudios.msessentials.discord.command.SlashCommandExecutor;
 import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;
 import com.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.minersstudios.msessentials.menu.SkinsMenu;
@@ -17,14 +19,15 @@ import com.minersstudios.msessentials.util.DiscordUtil;
 import com.minersstudios.msessentials.world.WorldDark;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import org.bukkit.Server;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static net.kyori.adventure.text.Component.translatable;
@@ -40,6 +43,7 @@ public final class MSEssentials extends MSPlugin {
     private Config config;
     private Scoreboard scoreboardHideTags;
     private Team scoreboardHideTagsTeam;
+    private List<SlashCommandExecutor> slashCommands;
 
     private static final TranslatableComponent DISABLE_TITLE = translatable("ms.on_disable.message.title");
     private static final TranslatableComponent DISABLE_SUBTITLE = translatable("ms.on_disable.message.subtitle");
@@ -57,24 +61,12 @@ public final class MSEssentials extends MSPlugin {
 
     @Override
     public void enable() {
-        final Server server = this.getServer();
-
         this.cache = new Cache();
         this.scoreboardHideTags = this.getServer().getScoreboardManager().getNewScoreboard();
         this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam("hide_tags");
 
         this.scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
         this.scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
-
-        final Plugin discordSRV = server.getPluginManager().getPlugin("DiscordSRV");
-
-        if (discordSRV != null) {
-            final PluginCommand command = server.getPluginCommand("discord");
-
-            if (command != null && command.getPlugin() == discordSRV) {
-                command.setExecutor(new DiscordCommand());
-            }
-        }
 
         this.runTask(WorldDark::init);
 
@@ -108,6 +100,28 @@ public final class MSEssentials extends MSPlugin {
 
         DiscordUtil.sendMessage(ChatType.GLOBAL, SERVER_DISABLED);
         DiscordUtil.sendMessage(ChatType.LOCAL, SERVER_DISABLED);
+    }
+
+    void loadSlashCommands() {
+        final var builder = new ImmutableList.Builder<SlashCommandExecutor>();
+
+        this.getClassNames().stream().parallel().forEach(className -> {
+            try {
+                final var clazz = this.getClassLoader().loadClass(className);
+
+                if (clazz.isAnnotationPresent(SlashCommand.class)) {
+                    if (clazz.getDeclaredConstructor().newInstance() instanceof final SlashCommandExecutor executor) {
+                        builder.add(executor);
+                    } else {
+                        this.getLogger().warning("Annotated class with SlashCommand is not instance of SlashCommandExecutor (" + className + ")");
+                    }
+                }
+            } catch (Exception e) {
+                this.getLogger().log(Level.SEVERE, "Failed to load slash command", e);
+            }
+        });
+
+        this.slashCommands = builder.build();
     }
 
     /**
@@ -172,5 +186,15 @@ public final class MSEssentials extends MSPlugin {
      */
     public static Team getScoreboardHideTagsTeam() throws NullPointerException {
         return instance.scoreboardHideTagsTeam;
+    }
+
+    /**
+     * @return The list of slash commands or an empty list
+     *         if the list is not loaded
+     */
+    public static @NotNull @Unmodifiable List<SlashCommandExecutor> getSlashCommands() {
+        return instance == null || instance.slashCommands == null
+                ? Collections.emptyList()
+                : instance.slashCommands;
     }
 }

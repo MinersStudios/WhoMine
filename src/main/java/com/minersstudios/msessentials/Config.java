@@ -10,8 +10,8 @@ import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msessentials.anomalies.tasks.MainAnomalyActionsTask;
 import com.minersstudios.msessentials.anomalies.tasks.ParticleTask;
 import com.minersstudios.msessentials.chat.ChatType;
-import com.minersstudios.msessentials.listeners.event.chat.MessageReceivedListener;
-import com.minersstudios.msessentials.listeners.event.chat.SlashCommandInteractionListener;
+import com.minersstudios.msessentials.listeners.discord.MessageReceivedListener;
+import com.minersstudios.msessentials.listeners.discord.SlashCommandInteractionListener;
 import com.minersstudios.msessentials.menu.CraftsMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.ResourcePack;
@@ -19,8 +19,6 @@ import com.minersstudios.msessentials.util.DiscordUtil;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.managers.Presence;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.kyori.adventure.text.Component;
@@ -243,24 +241,7 @@ public final class Config extends MSConfig {
                 cache.jda.addEventListener(new MessageReceivedListener());
                 cache.jda.addEventListener(new SlashCommandInteractionListener());
 
-                cache.jda.updateCommands().addCommands(
-                        Commands.slash("unlink", "Unlink Discord account"),
-                        Commands.slash("skinlist", "Skin list"),
-                        Commands.slash("addskin", "Add skin")
-                                .addOption(OptionType.STRING, "name", "Skin Name", true)
-                                .addOption(OptionType.STRING, "url", "Skin URL")
-                                .addOption(OptionType.STRING, "value", "Skin Value")
-                                .addOption(OptionType.STRING, "signature", "Skin Signature"),
-                        Commands.slash("removeskin", "Remove skin")
-                                .addOption(OptionType.INTEGER, "id", "Skin ID", true),
-                        Commands.slash("editskin", "Edit skin")
-                                .addOption(OptionType.INTEGER, "id", "Skin ID", true)
-                                .addOption(OptionType.STRING, "name", "Skin Name")
-                                .addOption(OptionType.STRING, "url", "Skin URL")
-                                .addOption(OptionType.STRING, "value", "Skin Value")
-                                .addOption(OptionType.STRING, "signature", "Skin Signature"),
-                        Commands.slash("help", "Help list")
-                ).queue();
+                this.plugin.loadSlashCommands();
 
                 cache.mainGuild = cache.jda.getGuildById(this.discordServerId);
 

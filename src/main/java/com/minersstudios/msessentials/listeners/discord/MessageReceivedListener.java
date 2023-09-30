@@ -1,4 +1,4 @@
-package com.minersstudios.msessentials.listeners.event.chat;
+package com.minersstudios.msessentials.listeners.discord;
 
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.Badges;

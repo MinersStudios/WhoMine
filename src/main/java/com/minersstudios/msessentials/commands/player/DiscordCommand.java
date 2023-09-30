@@ -54,7 +54,7 @@ public class DiscordCommand implements MSCommandExecutor {
                     .clickEvent(ClickEvent.runCommand("/discord link"))
             );
     private static final TranslatableComponent NO_LINKS = translatable("ms.command.discord.unlink.no_links");
-    private static final TranslatableComponent UNLINK_SUCCESS_DISCORD = translatable("ms.command.discord.unlink.success");
+    private static final TranslatableComponent UNLINK_SUCCESS_DISCORD = translatable("ms.command.discord.unlink.discord.success");
     private static final TranslatableComponent UNLINK_SUCCESS_MINECRAFT = translatable("ms.command.discord.unlink.minecraft.success");
 
     @Override
