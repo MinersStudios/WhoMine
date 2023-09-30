@@ -16,7 +16,7 @@ public class MSEssentialsLoader implements PluginLoader {
         final MavenLibraryResolver resolver = new MavenLibraryResolver();
 
         resolver.addRepository(new RemoteRepository.Builder("central", "default", "https://repo1.maven.org/maven2/").build());
-        resolver.addDependency(new Dependency(new DefaultArtifact("net.dv8tion:JDA:5.0.0-beta.13"), null));
+        resolver.addDependency(new Dependency(new DefaultArtifact("net.dv8tion:JDA:5.0.0-beta.14"), null));
 
         classpathBuilder.addLibrary(resolver);
     }

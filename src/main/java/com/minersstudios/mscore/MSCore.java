@@ -4,6 +4,7 @@ import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.packet.ChannelHandler;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
@@ -26,13 +27,15 @@ public final class MSCore extends MSPlugin {
             LanguageFile.loadLanguage(GLOBAL_CONFIG.languageFolderLink, GLOBAL_CONFIG.languageCode);
         }
 
-        this.getServer().getOnlinePlayers().forEach(player -> ChannelHandler.injectPlayer(player, this));
+        MinecraftServer.getServer().getConnection().getConnections()
+            .forEach(connection -> ChannelHandler.injectConnection(connection, this));
     }
 
     @Override
     public void disable() {
         LanguageFile.unloadLanguage();
-        this.getServer().getOnlinePlayers().forEach(ChannelHandler::uninjectPlayer);
+        MinecraftServer.getServer().getConnection().getConnections()
+            .forEach(ChannelHandler::uninjectConnection);
     }
 
     /**

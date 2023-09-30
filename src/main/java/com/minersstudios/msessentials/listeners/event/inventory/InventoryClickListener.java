@@ -1,4 +1,4 @@
-package com.minersstudios.msessentials.listeners.inventory;
+package com.minersstudios.msessentials.listeners.event.inventory;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
@@ -40,7 +40,6 @@ public class InventoryClickListener extends AbstractMSListener {
         if (
                 slot == 39
                 && event.getSlotType() == InventoryType.SlotType.ARMOR
-                && cursorItem != null
                 && currentItem != null
                 && currentItem.getType() == Material.AIR
                 && cursorItem.getType() != Material.AIR

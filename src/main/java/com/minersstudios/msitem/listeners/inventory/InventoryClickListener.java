@@ -29,7 +29,6 @@ public class InventoryClickListener extends AbstractMSListener {
         if (
                 event.getSlot() == 39
                 && event.getSlotType() == InventoryType.SlotType.ARMOR
-                && cursorItem != null
                 && !cursorItem.getType().isAir()
         ) {
             CustomItemType.fromItemStack(currentItem, Wearable.class)

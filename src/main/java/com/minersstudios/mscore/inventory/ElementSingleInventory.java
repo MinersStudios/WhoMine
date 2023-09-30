@@ -41,23 +41,6 @@ public class ElementSingleInventory extends CustomInventoryImpl<ElementSingleInv
     }
 
     /**
-     * Creates a new inventory with elements
-     *
-     * @param title        Title of the inventory
-     * @param verticalSize Vertical size of the inventory
-     * @param elementSlots Slots of the elements in the inventory
-     * @return New element inventory
-     */
-    @Contract("_, _, _ -> new")
-    public static @NotNull ElementSingleInventory elementSingle(
-            final @NotNull Component title,
-            final @Range(from = 1, to = 6) int verticalSize,
-            final int @Range(from = 0, to = Integer.MAX_VALUE) ... elementSlots
-    ) {
-        return new ElementSingleInventory(title, verticalSize, elementSlots);
-    }
-
-    /**
      * @return Elements of the inventory
      */
     @Contract(" -> new")

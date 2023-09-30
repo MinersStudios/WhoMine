@@ -17,27 +17,30 @@ import java.util.Map;
  * @see <a href="https://wiki.vg/Protocol">Protocol Wiki</a>
  */
 public enum PacketProtocol {
-    HANDSHAKING(-1, PacketType.Handshaking.PACKET_MAP),
-    PLAY(0, PacketType.Play.PACKET_MAP),
-    STATUS(1, PacketType.Status.PACKET_MAP),
-    LOGIN(2, PacketType.Login.PACKET_MAP);
+    HANDSHAKING("handshake", PacketType.Handshaking.PACKET_MAP),
+    PLAY("play", PacketType.Play.PACKET_MAP),
+    STATUS("status", PacketType.Status.PACKET_MAP),
+    LOGIN("login", PacketType.Login.PACKET_MAP),
+    CONFIGURATION("configuration", PacketType.Configuration.PACKET_MAP);
 
-    private final int id;
+    private final String stateId;
     private final Map<PacketFlow, Map<Integer, PacketType>> packets;
+
+    private static final PacketProtocol[] VALUES = values();
 
     /**
      * Constructor for the PacketProtocol enum
      *
-     * @param id      The ID of this protocol
+     * @param stateId The state id of this protocol
      * @param packets The map of packet types associated
      *                with this protocol, organized by
      *                packet flow and packet ID
      */
     PacketProtocol(
-            final int id,
+            final @NotNull String stateId,
             final @NotNull Map<PacketFlow, Map<Integer, PacketType>> packets
     ) {
-        this.id = id;
+        this.stateId = stateId;
         this.packets = packets;
     }
 
@@ -50,24 +53,18 @@ public enum PacketProtocol {
      * @return The PacketProtocol associated with the given ConnectionProtocol
      */
     public static @NotNull PacketProtocol fromMinecraft(final @NotNull ConnectionProtocol protocol) {
-        return switch (protocol) {
-            case LOGIN -> LOGIN;
-            case STATUS -> STATUS;
-            case PLAY -> PLAY;
-            default -> HANDSHAKING;
-        };
+        return VALUES[protocol.ordinal()];
     }
 
     /**
-     * Get the id of this protocol.
-     * The id is the same as the id of the
-     * {@link ConnectionProtocol} associated
-     * with this protocol.
+     * Get the state id of this protocol. The id is the
+     * same as the id of the {@link ConnectionProtocol}
+     * associated with this protocol.
      *
-     * @return The id of this protocol
+     * @return The state id of this protocol
      */
-    public int getId() {
-        return this.id;
+    public @NotNull String getStateId() {
+        return this.stateId;
     }
 
     /**

@@ -62,7 +62,31 @@ public class PacketRegistry {
 
             for (final var entry : flowsMap.entrySet()) {
                 final var flow = (PacketFlow) entry.getKey();
-                final var packetSet = entry.getValue();
+                final var codecData = entry.getValue();
+                final Object packetSet;
+                Field packetSetField = null;
+
+                for (final var field : codecData.getClass().getDeclaredFields()) {
+                    if (
+                        field.getName().equals("c")
+                        && Modifier.isFinal(field.getModifiers())
+                    ) {
+                        packetSetField = field;
+                        packetSetField.setAccessible(true);
+                        break;
+                    }
+                }
+
+                if (packetSetField == null) {
+                    throw new RuntimeException("Could not find 'packetSet' field in codec data class");
+                }
+
+                try {
+                    packetSet = packetSetField.get(codecData);
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException("Failed to access packet set", e);
+                }
+
                 final Object2IntMap<?> packetMap;
                 Field packetMapField = null;
 

@@ -1,4 +1,4 @@
-package com.minersstudios.msessentials.listeners.chat;
+package com.minersstudios.msessentials.listeners.event.chat;
 
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.Badges;
@@ -38,7 +38,7 @@ public class MessageReceivedListener extends ListenerAdapter {
             final Component messageComponent = craftComponent(message, reply);
 
             MessageUtils.sendGlobalMessage(messageComponent);
-            MSLogger.info(messageComponent);
+            MSLogger.info(null, messageComponent);
         } else if (event.isFromType(ChannelType.PRIVATE)) {
             final long userID = user.getIdLong();
             final var handlerMap = MSEssentials.getCache().botHandlers;

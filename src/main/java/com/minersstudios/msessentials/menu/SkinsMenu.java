@@ -3,7 +3,6 @@ package com.minersstudios.msessentials.menu;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
-import com.minersstudios.mscore.inventory.SingleInventory;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.ChatUtils;
@@ -114,7 +113,7 @@ public class SkinsMenu {
         });
         DELETE_BUTTON_EMPTY = DELETE_BUTTON.clone().item(deleteEmpty);
 
-        CUSTOM_INVENTORY = SingleInventory.single(TITLE, 3).buttonAt(
+        CUSTOM_INVENTORY = CustomInventory.single(TITLE, 3).buttonAt(
                 22,
                 new InventoryButton()
                 .clickAction((event, inv) -> {

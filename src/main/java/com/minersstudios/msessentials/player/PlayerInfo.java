@@ -32,7 +32,7 @@ import net.minecraft.server.players.UserWhiteList;
 import net.minecraft.server.players.UserWhiteListEntry;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -451,18 +451,22 @@ public class PlayerInfo {
                 || this.isSitting()
         ) return;
 
-        player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 0.2d, 0.0d), ArmorStand.class, armorStand -> {
-            armorStand.setMarker(true);
-            armorStand.setCanTick(false);
-            armorStand.setBasePlate(false);
-            armorStand.setGravity(false);
-            armorStand.setVisible(false);
-            armorStand.setCollidable(false);
-            armorStand.setSmall(true);
-            armorStand.addPassenger(player);
-            armorStand.addScoreboardTag("customDecor");
-            MSEssentials.getCache().seats.put(player, armorStand);
-        });
+        player.getWorld().spawn(
+            sitLocation,
+            ArmorStand.class,
+            armorStand -> {
+                armorStand.setMarker(true);
+                armorStand.setCanTick(false);
+                armorStand.setBasePlate(false);
+                armorStand.setGravity(false);
+                armorStand.setVisible(false);
+                armorStand.setCollidable(false);
+                armorStand.setSmall(true);
+                armorStand.addPassenger(player);
+                armorStand.addScoreboardTag("customDecor");
+                MSEssentials.getCache().seats.put(player, armorStand);
+            }
+        );
 
         if (message == null) {
             sendRPEventMessage(player, this.playerFile.getPronouns().getSitMessage(), ME);

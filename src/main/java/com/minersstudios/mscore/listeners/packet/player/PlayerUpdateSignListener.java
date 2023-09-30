@@ -18,7 +18,7 @@ public class PlayerUpdateSignListener extends AbstractMSPacketListener {
 
     @Override
     public void onPacketReceive(final @NotNull PacketEvent event) {
-        final Player player = event.getPlayer();
+        final Player player = event.getConnection().getPlayer().getBukkitEntity();
         final SignMenu menu = SignMenu.getSignMenu(player);
 
         if (

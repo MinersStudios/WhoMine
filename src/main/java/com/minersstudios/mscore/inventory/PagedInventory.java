@@ -33,18 +33,4 @@ public class PagedInventory extends PagedCustomInventoryImpl<PagedInventory> imp
     ) {
         super(title, verticalSize);
     }
-
-    /**
-     * Creates a new paged inventory
-     *
-     * @param title        Title of the inventory
-     * @param verticalSize Vertical size of the inventory
-     * @return New paged inventory
-     */
-    public static @NotNull PagedInventory paged(
-            final @NotNull Component title,
-            final @Range(from = 1, to = 6) int verticalSize
-    ) {
-        return new PagedInventory(title, verticalSize);
-    }
 }

@@ -22,6 +22,7 @@ import java.util.Map;
 import static com.minersstudios.mscore.util.ChatUtils.createDefaultStyledText;
 import static net.kyori.adventure.text.Component.text;
 
+@SuppressWarnings("UnstableApiUsage")
 public interface CardsBicycle {
     List<ItemStack> BLUE_CARD_ITEMS = ImmutableList.of(
             //<editor-fold desc="Blue cards">

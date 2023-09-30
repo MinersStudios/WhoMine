@@ -574,7 +574,7 @@ public class BotHandler {
     private boolean editSkin(
             @NotNull String link,
             @NotNull String skinName,
-            PlayerFile playerFile,
+            @NotNull PlayerFile playerFile,
             int skinIndex
     ) {
         final Skin skin = Skin.create(skinName, link);

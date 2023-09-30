@@ -61,7 +61,7 @@ public class CraftsMenu {
                     InventoryButton.playClickSound(player);
                 });
 
-        CATEGORIES_INVENTORY = SingleInventory.single(CATEGORIES_TITLE, 4)
+        CATEGORIES_INVENTORY = CustomInventory.single(CATEGORIES_TITLE, 4)
                 .buttons(
                         IntStream.of(0, 1, 2, 9, 10, 11, 18, 19, 20, 27, 28, 29)
                         .boxed()
@@ -163,7 +163,7 @@ public class CraftsMenu {
 
         for (final var recipe : recipes) {
             final ItemStack resultItem = recipe.getResult();
-            final SingleInventory craftInventory = SingleInventory.single(CRAFT_TITLE, 4);
+            final SingleInventory craftInventory = CustomInventory.single(CRAFT_TITLE, 4);
 
             if (recipe instanceof final ShapedRecipe shapedRecipe) {
                 final String[] shapes = shapedRecipe.getShape();
@@ -237,7 +237,7 @@ public class CraftsMenu {
     }
 
     private static @NotNull ElementPagedInventory buildCraftsInventory() {
-        return ElementPagedInventory
+        return CustomInventory
                 .elementPaged(CRAFTS_TITLE, 5, IntStream.range(0, 36).toArray())
                 .staticButtonAt(
                         36,

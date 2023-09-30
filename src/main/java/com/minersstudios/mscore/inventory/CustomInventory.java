@@ -7,6 +7,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -27,6 +28,70 @@ import java.util.Map;
  * </ul>
  */
 public interface CustomInventory extends Inventory, Cloneable {
+
+    /**
+     * Creates new single page inventory with specified title and vertical size
+     *
+     * @param title        Title of the inventory
+     * @param verticalSize Vertical size of the inventory
+     * @return New custom inventory
+     */
+    @Contract("_, _ -> new")
+    static @NotNull SingleInventory single(
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize
+    ) {
+        return new SingleInventory(title, verticalSize);
+    }
+
+    /**
+     * Creates a new paged inventory
+     *
+     * @param title        Title of the inventory
+     * @param verticalSize Vertical size of the inventory
+     * @return New paged inventory
+     */
+    static @NotNull PagedInventory paged(
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize
+    ) {
+        return new PagedInventory(title, verticalSize);
+    }
+
+    /**
+     * Creates a new inventory with elements
+     *
+     * @param title        Title of the inventory
+     * @param verticalSize Vertical size of the inventory
+     * @param elementSlots Slots of the elements in the inventory
+     * @return New element inventory
+     */
+    @Contract("_, _, _ -> new")
+    static @NotNull ElementSingleInventory elementSingle(
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize,
+            final int @Range(from = 0, to = Integer.MAX_VALUE) ... elementSlots
+    ) {
+        return new ElementSingleInventory(title, verticalSize, elementSlots);
+    }
+
+    /**
+     * Creates a new inventory with elements and pages
+     *
+     * @param title        Title of the inventory
+     * @param verticalSize Vertical size of the inventory
+     * @param elementSlots Slots of the elements in the inventory
+     * @return New element paged inventory
+     */
+    @Contract("_, _, _ -> new")
+    static @NotNull ElementPagedInventory elementPaged(
+            final @NotNull Component title,
+            final @Range(from = 1, to = 6) int verticalSize,
+            final int @Range(from = 0, to = Integer.MAX_VALUE) ... elementSlots
+    ) {
+        return new ElementPagedInventory(title, verticalSize, elementSlots);
+    }
+
     /**
      * @return Title of this inventory as string
      */

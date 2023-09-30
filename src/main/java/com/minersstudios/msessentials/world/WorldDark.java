@@ -6,7 +6,7 @@ import net.kyori.adventure.util.TriState;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;

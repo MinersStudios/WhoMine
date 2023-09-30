@@ -1,4 +1,4 @@
-package com.minersstudios.msessentials.listeners.player;
+package com.minersstudios.msessentials.listeners.event.player;
 
 import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
 import com.minersstudios.mscore.listener.event.MSListener;

@@ -143,7 +143,7 @@ public class Skin implements ConfigurationSerializable {
     public @NotNull ItemStack getHead() {
         final ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
         final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
-        final GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        final GameProfile profile = new GameProfile(UUID.randomUUID(), this.name);
 
         profile.getProperties().put("textures", new Property("textures", this.value, this.signature));
         skullMeta.setPlayerProfile(CraftPlayerProfile.asBukkitCopy(profile));
@@ -275,15 +275,14 @@ public class Skin implements ConfigurationSerializable {
 
         switch (response.getStatusCode()) {
             case 200 -> {
-                final MineSkinJson json = response.getBodyResponse(MineSkinJson.class);
-                final MineSkinJson.Data.Texture texture = json.data().texture();
+                final MineSkinJson.Data.Texture texture = response.getBodyResponse(MineSkinJson.class).data().texture();
                 final String value = texture.value();
                 final String signature = texture.signature();
 
                 try {
                     return Skin.create(name, value, signature);
                 } catch (IllegalArgumentException e) {
-                    MSEssentials.logger().log(Level.SEVERE, "Failed to create skin : \"" + name + "\" with value : " + value + " and signature : " + signature, e);
+                    MSEssentials.logger().log(Level.SEVERE, "Failed to create skin : '" + name + "' with value : '" + value + "' and signature : '" + signature + "'", e);
                 }
             }
             case 500, 400 -> {
@@ -327,13 +326,12 @@ public class Skin implements ConfigurationSerializable {
                 final MineSkinDelayErrorJson delayErrorJson = response.getBodyResponse(MineSkinDelayErrorJson.class);
                 final Integer delay = delayErrorJson.delay();
                 final Integer nextRequest = delayErrorJson.nextRequest();
-                int sleepDuration = 2;
+                long sleepDuration = 2;
 
                 if (delay != null) {
                     sleepDuration = delay;
                 } else if (nextRequest != null) {
-                    final Instant nextRequestInstant = Instant.ofEpochSecond(nextRequest);
-                    final int duration = (int) Duration.between(Instant.now(), nextRequestInstant).getSeconds();
+                    final long duration = Duration.between(Instant.now(), Instant.ofEpochSecond(nextRequest)).getSeconds();
 
                     if (duration > 0) {
                         sleepDuration = duration;

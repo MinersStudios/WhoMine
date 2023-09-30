@@ -1,4 +1,4 @@
-package com.minersstudios.msessentials.listeners.entity;
+package com.minersstudios.msessentials.listeners.event.entity;
 
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.msessentials.player.PlayerInfo;

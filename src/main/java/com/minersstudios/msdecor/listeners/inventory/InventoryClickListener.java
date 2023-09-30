@@ -51,8 +51,7 @@ public class InventoryClickListener extends AbstractMSListener {
         // WTF DID I WRITE HERE
         if (
                 event.getInventory() instanceof HorseInventory
-                && (itemInCursor != null
-                && !(clickedInventory instanceof PlayerInventory)
+                && (!(clickedInventory instanceof PlayerInventory)
                 && itemInCursor.getItemMeta() != null
                 && itemInCursor.getItemMeta().hasCustomModelData()
                 && MSDecorUtils.isCustomDecor(itemInCursor)

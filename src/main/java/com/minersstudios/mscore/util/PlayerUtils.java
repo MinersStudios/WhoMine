@@ -13,10 +13,7 @@ import com.mojang.authlib.properties.PropertyMap;
 import net.kyori.adventure.text.Component;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ChunkMap;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.ServerPlayerGameMode;
+import net.minecraft.server.level.*;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
@@ -27,10 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
-import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -168,7 +165,12 @@ public final class PlayerUtils {
         );
         final MinecraftServer server = MinecraftServer.getServer();
         final ServerLevel worldServer = server.overworld();
-        final Player online = new ServerPlayer(server, worldServer, profile).getBukkitEntity();
+        final Player online = new ServerPlayer(
+            server,
+            worldServer,
+            profile,
+            ((CraftPlayer) offlinePlayer).getHandle().clientInformation()
+        ).getBukkitEntity();
 
         online.loadData();
         return online;
@@ -223,6 +225,7 @@ public final class PlayerUtils {
         final var players = minecraftServer.getPlayerList().players;
 
         final ClientboundRespawnPacket respawnPacket = new ClientboundRespawnPacket(
+            new CommonPlayerSpawnInfo(
                 serverLevel.dimensionTypeId(),
                 serverLevel.dimension(),
                 BiomeManager.obfuscateSeed(serverLevel.getSeed()),
@@ -230,9 +233,10 @@ public final class PlayerUtils {
                 gameMode.getPreviousGameModeForPlayer(),
                 serverLevel.isDebug(),
                 serverLevel.isFlat(),
-                ClientboundRespawnPacket.KEEP_ALL_DATA,
                 serverPlayer.getLastDeathLocation(),
                 serverPlayer.getPortalCooldown()
+            ),
+            ClientboundRespawnPacket.KEEP_ALL_DATA
         );
         final ClientboundSetExperiencePacket experiencePacket = new ClientboundSetExperiencePacket(
                 serverPlayer.experienceProgress,
@@ -297,8 +301,8 @@ public final class PlayerUtils {
      */
     @Contract("_, _ -> new")
     public static @NotNull PlayerProfile craftProfile(
-            final @Nullable UUID uuid,
-            final @Nullable String nickname
+            final @NotNull UUID uuid,
+            final @NotNull String nickname
     ) throws IllegalArgumentException {
         return new CraftPlayerProfile(uuid, nickname);
     }
@@ -321,7 +325,7 @@ public final class PlayerUtils {
         if (inventory != null && !serverPlayer.isSpectator()) {
             final int syncId = serverPlayer.nextContainerCounter();
             final ShulkerBoxMenu shulkerBoxMenu = new ShulkerBoxMenu(syncId, serverPlayer.getInventory(), inventory);
-            final AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(serverPlayer, shulkerBoxMenu, false);
+            final AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(serverPlayer, shulkerBoxMenu);
 
             container.setTitle(((MenuProvider) inventory).getDisplayName());
 

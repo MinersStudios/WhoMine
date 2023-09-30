@@ -1,4 +1,4 @@
-package com.minersstudios.msessentials.listeners.chat;
+package com.minersstudios.msessentials.listeners.event.chat;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;

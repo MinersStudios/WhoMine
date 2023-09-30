@@ -1,7 +1,6 @@
 package com.minersstudios.mscore.inventory;
 
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -31,20 +30,5 @@ public class SingleInventory extends CustomInventoryImpl<SingleInventory> implem
             final @Range(from = 1, to = 6) int verticalSize
     ) {
         super(title, verticalSize);
-    }
-
-    /**
-     * Creates new single page inventory with specified title and vertical size
-     *
-     * @param title        Title of the inventory
-     * @param verticalSize Vertical size of the inventory
-     * @return New custom inventory
-     */
-    @Contract("_, _ -> new")
-    public static @NotNull SingleInventory single(
-            final @NotNull Component title,
-            final @Range(from = 1, to = 6) int verticalSize
-    ) {
-        return new SingleInventory(title, verticalSize);
     }
 }

@@ -6,8 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_20_R1.CraftSoundGroup;
-import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R2.CraftSoundGroup;
+import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlock;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

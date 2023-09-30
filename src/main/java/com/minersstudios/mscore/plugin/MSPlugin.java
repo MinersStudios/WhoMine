@@ -879,7 +879,7 @@ public abstract class MSPlugin extends JavaPlugin {
     protected static void initClass(final @NotNull Class<?> clazz) throws RuntimeException {
         try {
             Class.forName(clazz.getName());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new RuntimeException("Could not init class " + clazz.getName(), e);
         }
     }

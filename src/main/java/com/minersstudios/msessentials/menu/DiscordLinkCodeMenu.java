@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.menu;
 
 import com.google.common.collect.ImmutableList;
-import com.minersstudios.mscore.inventory.SingleInventory;
+import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
@@ -31,7 +31,7 @@ public class DiscordLinkCodeMenu {
     );
 
     public static void open(final @NotNull Player player) {
-        SingleInventory.single(
+        CustomInventory.single(
                 TITLE
                 .append(generateNumbers(PlayerInfo.fromOnlinePlayer(player).generateCode()))
                 .color(NamedTextColor.WHITE),

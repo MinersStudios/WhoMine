@@ -22,10 +22,9 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
         permissionDefault = PermissionDefault.OP
 )
 public class MSCoreCommandHandler implements MSCommandExecutor {
-    private static final List<String> TAB = ImmutableList.of("reloadlanguage", "reloadconfig");
+    private static final List<String> TAB = ImmutableList.of("reloadconfig");
     private static final CommandNode<?> COMMAND_NODE =
             literal("mscore")
-            .then(literal("reloadlanguage"))
             .then(literal("reloadconfig"))
             .build();
 

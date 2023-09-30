@@ -6,23 +6,22 @@ import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.msblock.customblock.file.SoundGroup;
-import com.minersstudios.mscore.util.PlayerUtils;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.packet.PacketContainer;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.PlayerUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import org.bukkit.GameMode;
+import net.minecraft.world.level.GameType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -39,12 +38,12 @@ public class PlayerActionListener extends AbstractMSPacketListener {
 
     @Override
     public void onPacketReceive(final @NotNull PacketEvent event) {
-        final Player player = event.getPlayer();
+        final ServerPlayer serverPlayer = event.getConnection().getPlayer();
         final PacketContainer container = event.getPacketContainer();
 
         if (
-                player.getGameMode() != GameMode.SURVIVAL
-                || !(container.getPacket() instanceof final ServerboundPlayerActionPacket packet)
+            serverPlayer.gameMode.getGameModeForPlayer() != GameType.SURVIVAL
+            || !(container.getPacket() instanceof final ServerboundPlayerActionPacket packet)
         ) return;
 
         final ServerboundPlayerActionPacket.Action action = packet.getAction();
@@ -56,10 +55,10 @@ public class PlayerActionListener extends AbstractMSPacketListener {
         ) return;
 
         final DiggingMap diggingMap = MSBlock.getCache().diggingMap;
-        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        final Player player = serverPlayer.getBukkitEntity();
         final ServerLevel serverLevel = serverPlayer.serverLevel();
         final BlockPos blockPos = packet.getPos();
-        final Location blockLocation = new Location(player.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        final Location blockLocation = new Location(serverLevel.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
         final Block block = blockLocation.getBlock();
         final boolean hasSlowDigging = player.hasPotionEffect(PotionEffectType.SLOW_DIGGING);
 

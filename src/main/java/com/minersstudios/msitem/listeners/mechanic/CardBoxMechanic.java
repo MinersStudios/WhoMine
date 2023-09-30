@@ -62,7 +62,7 @@ public class CardBoxMechanic extends AbstractMSListener {
             event.setCancelled(true);
         }
 
-        if (cursorItem == null || currentItem == null || !event.isRightClick()) return;
+        if (currentItem == null || !event.isRightClick()) return;
         if (
                 !cursorItem.getType().isAir()
                 && CustomItemType.fromItemStack(currentItem).orElse(null) instanceof CardsBicycle
@@ -76,6 +76,7 @@ public class CardBoxMechanic extends AbstractMSListener {
         }
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private static void addCardToCardBox(
             final @NotNull InventoryClickEvent event,
             final @NotNull ItemStack cardBoxItem,

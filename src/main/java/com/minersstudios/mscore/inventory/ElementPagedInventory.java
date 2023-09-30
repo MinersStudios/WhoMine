@@ -44,23 +44,6 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
     }
 
     /**
-     * Creates a new inventory with elements and pages
-     *
-     * @param title        Title of the inventory
-     * @param verticalSize Vertical size of the inventory
-     * @param elementSlots Slots of the elements in the inventory
-     * @return New element paged inventory
-     */
-    @Contract("_, _, _ -> new")
-    public static @NotNull ElementPagedInventory elementPaged(
-            final @NotNull Component title,
-            final @Range(from = 1, to = 6) int verticalSize,
-            final int @Range(from = 0, to = Integer.MAX_VALUE) ... elementSlots
-    ) {
-        return new ElementPagedInventory(title, verticalSize, elementSlots);
-    }
-
-    /**
      * Used to update the pages of the inventory
      *
      * @return Element paged inventory

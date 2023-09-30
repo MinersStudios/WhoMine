@@ -119,7 +119,7 @@ public class RenamesMenu {
                     playClickSound(player);
                 });
 
-        INVENTORY = ElementPagedInventory
+        INVENTORY = CustomInventory
                 .elementPaged(RENAMES_TITLE, 5, IntStream.range(0, 36).toArray())
                 .staticButtonAt(
                         36,
@@ -159,7 +159,7 @@ public class RenamesMenu {
 
                 final MSItem plugin = MSItem.getInstance();
                 final Player player = (Player) buttonEvent.getWhoClicked();
-                final SingleInventory renameInventory = SingleInventory.single(RENAME_TITLE, 5);
+                final SingleInventory renameInventory = CustomInventory.single(RENAME_TITLE, 5);
 
                 renameInventory.setItem(RENAMEABLE_ITEM_SLOT, renameableItemStacks.get(0));
                 renameInventory.setItem(RENAMED_ITEM_SLOT, resultItem);
@@ -254,7 +254,6 @@ public class RenamesMenu {
                             slot == CURRENT_RENAMED_ITEM_SLOT
                             && currentItem != null
                             && renameInventory.getItem(CURRENT_RENAMEABLE_ITEM_SLOT) != null
-                            && cursorItem != null
                             && cursorItem.getType().isAir()
                             && hasExp
                     ) {

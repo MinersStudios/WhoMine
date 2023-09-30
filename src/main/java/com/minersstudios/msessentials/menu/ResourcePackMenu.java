@@ -3,7 +3,6 @@ package com.minersstudios.msessentials.menu;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
-import com.minersstudios.mscore.inventory.SingleInventory;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
@@ -137,7 +136,7 @@ public class ResourcePackMenu {
             });
         });
 
-        INVENTORY = SingleInventory.single(translatable("ms.menu.resource_pack.title", ChatUtils.DEFAULT_STYLE), 1)
+        INVENTORY = CustomInventory.single(translatable("ms.menu.resource_pack.title", ChatUtils.DEFAULT_STYLE), 1)
                 .buttonAt(0, noneButton)
                 .buttonAt(1, noneButton)
                 .buttonAt(2, fullButton)

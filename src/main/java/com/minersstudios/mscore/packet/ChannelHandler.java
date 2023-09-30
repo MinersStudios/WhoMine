@@ -3,11 +3,13 @@ package com.minersstudios.mscore.packet;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import io.netty.channel.*;
+import net.kyori.adventure.text.Component;
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The ChannelHandler class is responsible for handling
@@ -21,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ChannelHandler extends ChannelDuplexHandler {
     private final MSPlugin plugin;
-    private final Player player;
+    private final Connection connection;
 
     public static final String CHANNEL_HANDLER_NAME = "ms_channel_handler";
     public static final String PACKET_HANDLER_NAME = "packet_handler";
@@ -29,16 +31,15 @@ public class ChannelHandler extends ChannelDuplexHandler {
     /**
      * Channel handler constructor
      *
-     * @param plugin The plugin associated with this channel handler
-     * @param player The player associated with this channel handler
-     *               (can be null)
+     * @param plugin     The plugin associated with this channel handler
+     * @param connection The connection associated with this channel handler
      */
     public ChannelHandler(
             final @NotNull MSPlugin plugin,
-            final @NotNull Player player
+            final @NotNull Connection connection
     ) {
         this.plugin = plugin;
-        this.player = player;
+        this.connection = connection;
     }
 
     /**
@@ -49,10 +50,10 @@ public class ChannelHandler extends ChannelDuplexHandler {
     }
 
     /**
-     * @return The player associated with this channel handler
+     * @return The connection associated with this channel handler
      */
-    public @NotNull Player getPlayer() {
-        return this.player;
+    public @Nullable Connection getConnection() {
+        return this.connection;
     }
 
     /**
@@ -75,13 +76,18 @@ public class ChannelHandler extends ChannelDuplexHandler {
         final PacketType packetType = PacketType.fromClass(packet.getClass());
 
         if (packetType == null) {
-            this.plugin.runTask(() -> this.player.kick());
-            MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent by " + this.player.getName());
+            final ServerPlayer serverPlayer = this.connection.getPlayer();
+
+            this.plugin.runTask(() -> serverPlayer.connection.disconnect(
+                Component.text("Unknown packet type: " + packet.getClass().getName()),
+                PlayerKickEvent.Cause.PLUGIN
+            ));
+            MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent by " + serverPlayer.getName());
             return;
         }
 
         final PacketContainer packetContainer = new PacketContainer(packet, packetType);
-        final PacketEvent event = new PacketEvent(packetContainer, this.player);
+        final PacketEvent event = new PacketEvent(packetContainer, this.connection);
 
         this.plugin.callPacketReceiveEvent(event);
 
@@ -112,13 +118,18 @@ public class ChannelHandler extends ChannelDuplexHandler {
         final PacketType packetType = PacketType.fromClass(packet.getClass());
 
         if (packetType == null) {
-            this.plugin.runTask(() -> this.player.kick());
-            MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent to " + this.player.getName());
+            final ServerPlayer serverPlayer = this.connection.getPlayer();
+
+            this.plugin.runTask(() -> serverPlayer.connection.disconnect(
+                Component.text("Unknown packet type: " + packet.getClass().getName()),
+                PlayerKickEvent.Cause.PLUGIN
+            ));
+            MSLogger.severe("Unknown packet type: " + packet.getClass().getName() + " sent to " + serverPlayer.getName());
             return;
         }
 
         final PacketContainer packetContainer = new PacketContainer(packet, packetType);
-        final PacketEvent event = new PacketEvent(packetContainer, this.player);
+        final PacketEvent event = new PacketEvent(packetContainer, connection);
 
         this.plugin.callPacketSendEvent(event);
 
@@ -131,21 +142,21 @@ public class ChannelHandler extends ChannelDuplexHandler {
      * Injects the {@link ChannelHandler} for a specific player into
      * the server networking pipeline
      *
-     * @param player The player to inject the ChannelHandler for
-     * @param plugin The MSPlugin instance associated with the ChannelHandler
+     * @param connection The connection to inject the ChannelHandler for
+     * @param plugin     The MSPlugin instance associated with the
+     *                   ChannelHandler
      */
-    public static void injectPlayer(
-            final @NotNull Player player,
+    public static void injectConnection(
+            final @NotNull Connection connection,
             final @NotNull MSPlugin plugin
     ) {
-        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        final ChannelPipeline pipeline = serverPlayer.connection.connection.channel.pipeline();
+        final ChannelPipeline pipeline = connection.channel.pipeline();
 
         if (!pipeline.names().contains(ChannelHandler.CHANNEL_HANDLER_NAME)) {
             pipeline.addBefore(
                     ChannelHandler.PACKET_HANDLER_NAME,
                     ChannelHandler.CHANNEL_HANDLER_NAME,
-                    new ChannelHandler(plugin, player)
+                    new ChannelHandler(plugin, connection)
             );
         }
     }
@@ -154,11 +165,10 @@ public class ChannelHandler extends ChannelDuplexHandler {
      * Removes the {@link ChannelHandler} from a specific player
      * in the server networking pipeline
      *
-     * @param player The player to remove the ChannelHandler for
+     * @param connection The connection to remove the ChannelHandler for
      */
-    public static void uninjectPlayer(final @NotNull Player player) {
-        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        final Channel channel = serverPlayer.connection.connection.channel;
+    public static void uninjectConnection(final @NotNull Connection connection) {
+        final Channel channel = connection.channel;
         final ChannelPipeline pipeline = channel.pipeline();
 
         if (pipeline.names().contains(CHANNEL_HANDLER_NAME)) {

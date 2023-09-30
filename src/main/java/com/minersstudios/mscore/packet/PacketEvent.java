@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.packet;
 
-import org.bukkit.entity.Player;
+import net.minecraft.network.Connection;
 import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,19 +16,19 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PacketEvent implements Cancellable {
     protected final PacketContainer packetContainer;
-    protected final Player player;
+    protected final Connection connection;
     protected boolean cancelled;
 
     /**
      * @param packetContainer The packet container
-     * @param player          The player who sent or received the packet
+     * @param connection      The connection
      */
     public PacketEvent(
             final @NotNull PacketContainer packetContainer,
-            final @NotNull Player player
+            final @NotNull Connection connection
     ) {
         this.packetContainer = packetContainer;
-        this.player = player;
+        this.connection = connection;
     }
 
     /**
@@ -41,8 +41,8 @@ public class PacketEvent implements Cancellable {
     /**
      * @return The player who sent or received the packet
      */
-    public @NotNull Player getPlayer() {
-        return this.player;
+    public @NotNull Connection getConnection() {
+        return this.connection;
     }
 
     /**

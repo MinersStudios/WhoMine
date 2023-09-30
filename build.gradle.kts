@@ -1,8 +1,8 @@
 plugins {
     java
-    kotlin("jvm") version "1.9.0"
-    id("io.papermc.paperweight.userdev") version "1.5.5"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    kotlin("jvm") version "1.9.10"
+    id("io.papermc.paperweight.userdev") version "1.5.6"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "com.minersstudios"
@@ -29,10 +29,10 @@ allprojects {
     }
 
     dependencies {
-        paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
+        paperweight.paperDevBundle("1.20.2-R0.1-SNAPSHOT")
         compileOnly("net.coreprotect:coreprotect:21.3")
         compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
-        implementation("net.dv8tion:JDA:5.0.0-beta.13")
+        implementation("net.dv8tion:JDA:5.0.0-beta.14")
     }
 
     sourceSets {
