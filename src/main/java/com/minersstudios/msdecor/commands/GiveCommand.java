@@ -17,13 +17,13 @@ import static net.kyori.adventure.text.Component.translatable;
 public class GiveCommand {
 
     public static boolean runCommand(
-            @NotNull CommandSender sender,
-            String @NotNull ... args
+            final @NotNull CommandSender sender,
+            final String @NotNull ... args
     ) {
         if (args.length < 3) return false;
         if (args[1].length() > 2) {
             int amount = 1;
-            Player player = Bukkit.getPlayer(args[1]);
+            final Player player = Bukkit.getPlayer(args[1]);
             CustomDecorData customDecorData = MSPlugin.getGlobalCache().customDecorMap.getByPrimaryKey(args[2]);
 
             if (player == null) {
@@ -48,22 +48,23 @@ public class GiveCommand {
             }
 
             if (
-                    customDecorData instanceof Typed typed
+                    customDecorData instanceof final Typed typed
                     && args.length == 4
                     && !args[3].matches("\\d+")
             ) {
-                for (var type : typed.getTypes()) {
+                for (final var type : typed.getTypes()) {
                     if (args[3].equals(type.getNamespacedKey().getKey())) {
                         customDecorData = typed.createCustomDecorData(type);
                     }
                 }
             }
 
-            ItemStack itemStack = customDecorData.getItemStack();
-            Component itemName = itemStack.displayName();
-            itemStack.setAmount(amount);
+            final ItemStack itemStack = customDecorData.getItemStack();
+            final Component itemName = itemStack.displayName();
 
+            itemStack.setAmount(amount);
             player.getInventory().addItem(itemStack);
+
             MSLogger.info(
                     sender,
                     translatable(

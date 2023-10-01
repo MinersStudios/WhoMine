@@ -181,7 +181,7 @@ public final class Commodore {
 
             if (
                     suggestionProvider != null
-                    && node instanceof ArgumentCommandNode<?, ?> argumentNode
+                    && node instanceof final ArgumentCommandNode<?, ?> argumentNode
             ) {
                 CUSTOM_SUGGESTIONS_FIELD.set(argumentNode, suggestionProvider);
             }
@@ -214,7 +214,7 @@ public final class Commodore {
                 node.isFork()
         );
 
-        for (var child : node.getChildren()) {
+        for (final var child : node.getChildren()) {
             clone.addChild(child);
         }
 

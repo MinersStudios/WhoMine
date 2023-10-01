@@ -9,7 +9,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UnstableApiUsage")
-public class MSEssentialsLoader implements PluginLoader {
+public final class MSEssentialsLoader implements PluginLoader {
 
     @Override
     public void classloader(final @NotNull PluginClasspathBuilder classpathBuilder) {

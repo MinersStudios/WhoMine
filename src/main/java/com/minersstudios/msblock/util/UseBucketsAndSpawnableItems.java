@@ -184,7 +184,7 @@ public final class UseBucketsAndSpawnableItems {
      */
     private void setTropicalFish() {
         this.world.spawn(this.blockLocation, TropicalFish.class, tropicalFish -> {
-            if (this.itemInHand.getItemMeta() instanceof TropicalFishBucketMeta tropicalFishBucketMeta) {
+            if (this.itemInHand.getItemMeta() instanceof final TropicalFishBucketMeta tropicalFishBucketMeta) {
                 final boolean hasVariant = tropicalFishBucketMeta.hasVariant();
 
                 tropicalFish.setBodyColor(hasVariant ? tropicalFishBucketMeta.getBodyColor() : this.randomBodyColor());
@@ -200,7 +200,7 @@ public final class UseBucketsAndSpawnableItems {
      */
     private void setAxolotl() {
         this.world.spawn(this.blockLocation, Axolotl.class, axolotl -> {
-            if (this.itemInHand.getItemMeta() instanceof AxolotlBucketMeta axolotlBucketMeta) {
+            if (this.itemInHand.getItemMeta() instanceof final AxolotlBucketMeta axolotlBucketMeta) {
                 axolotl.setVariant(axolotlBucketMeta.hasVariant() ? axolotlBucketMeta.getVariant() : this.randomVariant());
             }
         });
@@ -227,7 +227,7 @@ public final class UseBucketsAndSpawnableItems {
 
         if (
                 this.block.getType() == Material.LAVA
-                && blockData instanceof Levelled levelled
+                && blockData instanceof final Levelled levelled
                 && levelled.getLevel() == levelled.getMinimumLevel()
         ) {
             MSBlock.getCoreProtectAPI().logRemoval(playerName, blockLocation, Material.LAVA, blockData);

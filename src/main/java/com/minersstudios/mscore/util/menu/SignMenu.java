@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.util.menu;
 
-import com.google.common.collect.Lists;
 import com.minersstudios.mscore.listeners.packet.player.PlayerUpdateSignListener;
+import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -10,20 +10,16 @@ import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R2.block.CraftSign;
-import org.bukkit.craftbukkit.v1_20_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.util.CraftLocation;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 
@@ -33,14 +29,14 @@ import java.util.function.BiPredicate;
  * @see #create(Component, Component, Component, Component, BiPredicate)
  */
 public final class SignMenu {
-    private final List<Component> text;
+    private final Component[] lines;
     private BiPredicate<Player, String[]> response;
     private Location location;
 
     private static final Map<Player, SignMenu> SIGN_MENU_MAP = new HashMap<>();
 
-    private SignMenu(final @NotNull List<Component> text) {
-        this.text = text;
+    private SignMenu(final Component @NotNull [] lines) {
+        this.lines = lines;
     }
 
     /**
@@ -66,7 +62,7 @@ public final class SignMenu {
             final @NotNull Component fourth,
             final @NotNull BiPredicate<Player, String[]> response
     ) {
-        final SignMenu menu = new SignMenu(Lists.newArrayList(first, second, third, fourth));
+        final SignMenu menu = new SignMenu(new Component[] { first, second, third, fourth });
         menu.response = response;
         return menu;
     }
@@ -81,10 +77,10 @@ public final class SignMenu {
     }
 
     /**
-     * @return The text of the sign
+     * @return The lines of the sign
      */
-    public @NotNull @UnmodifiableView List<Component> getText() {
-        return Collections.unmodifiableList(this.text);
+    public Component @NotNull [] getLines() {
+        return this.lines;
     }
 
     /**
@@ -116,9 +112,21 @@ public final class SignMenu {
         this.location.setY(this.location.getY() - 4.0d);
 
         final ServerGamePacketListenerImpl connection = ((CraftPlayer) player).getHandle().connection;
-        final BlockPos blockPos = new BlockPos(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ());
-        final net.minecraft.network.chat.Component[] components = CraftSign.sanitizeLines(this.text);
-        final SignBlockEntity sign = new SignBlockEntity(blockPos, Blocks.OAK_SIGN.defaultBlockState());
+        final BlockPos blockPos = CraftLocation.toBlockPosition(this.location);
+        final BlockState blockState = Blocks.OAK_SIGN.defaultBlockState();
+        final SignBlockEntity sign = new SignBlockEntity(blockPos, blockState);
+        final net.minecraft.network.chat.Component[] components = new net.minecraft.network.chat.Component[4];
+
+        for (int i = 0; i < 4; i++) {
+            if (
+                    i < this.lines.length
+                    && this.lines[i] != null
+            ) {
+                components[i] = PaperAdventure.asVanilla(this.lines[i]);
+            } else {
+                components[i] = net.minecraft.network.chat.Component.literal("");
+            }
+        }
 
         sign.setText(
                 sign.getFrontText()
@@ -128,7 +136,7 @@ public final class SignMenu {
                 .setMessage(3, components[3]),
                 true
         );
-        connection.send(new ClientboundBlockUpdatePacket(blockPos, ((CraftBlockData) Material.OAK_SIGN.createBlockData()).getState()));
+        connection.send(new ClientboundBlockUpdatePacket(blockPos, blockState));
         connection.send(ClientboundBlockEntityDataPacket.create(sign));
         connection.send(new ClientboundOpenSignEditorPacket(blockPos, true));
 

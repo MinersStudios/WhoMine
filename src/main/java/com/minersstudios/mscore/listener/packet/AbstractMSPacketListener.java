@@ -25,19 +25,19 @@ public abstract class AbstractMSPacketListener {
      * Packet listener constructor
      *
      * @param first The first packet type to listen to
-     * @param other The other packet types to listen to (optional)
+     * @param rest  The other packet types to listen to (optional)
      * @see PacketType
      */
     public AbstractMSPacketListener(
             final @NotNull PacketType first,
-            final PacketType @NotNull ... other
+            final PacketType @NotNull ... rest
     ) {
         this.sendWhiteList = new HashSet<>();
         this.receiveWhiteList = new HashSet<>();
-        final PacketType[] whitelist = new PacketType[other.length + 1];
+        final PacketType[] whitelist = new PacketType[rest.length + 1];
 
-        System.arraycopy(other, 0, whitelist, 0, other.length);
-        whitelist[other.length] = first;
+        System.arraycopy(rest, 0, whitelist, 0, rest.length);
+        whitelist[rest.length] = first;
 
         for (final var packetType : whitelist) {
             if (packetType.isReceive()) {

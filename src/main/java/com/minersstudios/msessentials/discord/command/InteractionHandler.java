@@ -137,13 +137,13 @@ public final class InteractionHandler {
             final @NotNull FileUpload first,
             final FileUpload @NotNull ... rest
     ) {
-        final var whole = new FileUpload[rest.length + 1];
-        whole[0] = first;
+        final FileUpload[] files = new FileUpload[rest.length + 1];
 
-        System.arraycopy(rest, 0, whole, 1, rest.length);
+        System.arraycopy(rest, 0, files, 1, rest.length);
+        files[0] = first;
 
         this.interaction.getHook()
-                .sendFiles(whole)
+                .sendFiles(files)
                 .setEphemeral(ephemeral)
                 .queue();
     }

@@ -5,7 +5,7 @@ import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.events.CustomDecorBreakEvent;
 import com.minersstudios.msdecor.events.CustomDecorPlaceEvent;
-import com.minersstudios.msdecor.utils.EntityUtils;
+import com.minersstudios.msdecor.utils.CustomDecorUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -159,7 +159,7 @@ public class CustomDecor {
             itemMeta.displayName(customName != null ? customName : itemMeta.displayName());
             itemStack.setItemMeta(itemMeta);
             armorStand.getEquipment().setHelmet(itemStack);
-            EntityUtils.rotateArmorStandByPlayer(armorStand, this.player);
+            CustomDecorUtils.rotateArmorStandByPlayer(armorStand, this.player);
         });
     }
 
@@ -185,7 +185,7 @@ public class CustomDecor {
             itemFrame.setItem(itemStack);
 
             if (this.customDecorData.getFacing() != CustomDecorData.Facing.WALL) {
-                EntityUtils.rotateItemFrameByPlayer(itemFrame, this.player);
+                CustomDecorUtils.rotateItemFrameByPlayer(itemFrame, this.player);
             }
         });
     }

@@ -279,14 +279,14 @@ public final class ChatUtils {
      * - will return list of components with text "Hello", "Sir." and "PackmanDude"
      *
      * @param first First string
-     * @param other Other strings
+     * @param rest  Other strings
      * @return List of components
      */
     public static @NotNull List<Component>  convertStringsToComponents(
             final @NotNull String first,
-            final String @NotNull ... other
+            final String @NotNull ... rest
     ) {
-        return convertStringsToComponents(DEFAULT_STYLE, first, other);
+        return convertStringsToComponents(DEFAULT_STYLE, first, rest);
     }
 
     /**
@@ -300,17 +300,17 @@ public final class ChatUtils {
      *
      * @param style Style to be applied to all components
      * @param first First string
-     * @param other Other strings
+     * @param rest Other strings
      * @return List of components
      */
     public static @NotNull List<Component> convertStringsToComponents(
             final @Nullable Style style,
             final @NotNull String first,
-            final String @NotNull ... other
+            final String @NotNull ... rest
     ) {
-        final String[] strings = new String[other.length + 1];
+        final String[] strings = new String[rest.length + 1];
 
-        System.arraycopy(other, 0, strings, 1, other.length);
+        System.arraycopy(rest, 0, strings, 1, rest.length);
         strings[0] = first;
 
         return convertStringsToComponents(style, Arrays.asList(strings));
