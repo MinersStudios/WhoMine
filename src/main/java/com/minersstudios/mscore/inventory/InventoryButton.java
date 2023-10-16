@@ -124,8 +124,8 @@ public class InventoryButton implements Cloneable {
             final InventoryButton clone = (InventoryButton) super.clone();
             clone.item = this.item.clone();
             return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError("An error occurred while cloning InventoryButton", e);
+        } catch (final CloneNotSupportedException e) {
+            throw new AssertionError("An error occurred while cloning '" + this + "'", e);
         }
     }
 }

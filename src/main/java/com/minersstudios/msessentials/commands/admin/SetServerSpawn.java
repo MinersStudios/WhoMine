@@ -99,7 +99,7 @@ public class SetServerSpawn implements MSCommandExecutor {
                     x = Double.parseDouble(args[1]);
                     y = Double.parseDouble(args[2]);
                     z = Double.parseDouble(args[3]);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     return false;
                 }
 
@@ -124,7 +124,7 @@ public class SetServerSpawn implements MSCommandExecutor {
                     x = Double.parseDouble(args[1]);
                     y = Double.parseDouble(args[2]);
                     z = Double.parseDouble(args[3]);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     return false;
                 }
 
@@ -138,7 +138,7 @@ public class SetServerSpawn implements MSCommandExecutor {
                 try {
                     yaw = Float.parseFloat(args[4]);
                     pitch = Float.parseFloat(args[5]);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     return false;
                 }
 

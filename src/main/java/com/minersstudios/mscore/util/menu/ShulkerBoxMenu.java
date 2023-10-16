@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public final class ShulkerBoxMenu extends AbstractContainerMenu {
     private final Container container;
     private CraftInventoryView bukkitEntity;
-    private final Inventory player;
+    private final Inventory playerInventory;
 
     private static final int CONTAINER_SIZE = 27;
 
@@ -29,7 +29,7 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
         checkContainerSize(inventory, CONTAINER_SIZE);
 
         this.container = inventory;
-        this.player = playerInventory;
+        this.playerInventory = playerInventory;
         int j;
         int k;
 
@@ -53,8 +53,13 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
     @Override
     public @NotNull CraftInventoryView getBukkitView() {
         if (this.bukkitEntity == null) {
-            this.bukkitEntity = new CraftInventoryView(this.player.player.getBukkitEntity(), new CraftInventory(this.container), this);
+            this.bukkitEntity = new CraftInventoryView(
+                    this.playerInventory.player.getBukkitEntity(),
+                    new CraftInventory(this.container),
+                    this
+            );
         }
+
         return this.bukkitEntity;
     }
 
@@ -66,16 +71,16 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
     @Override
     public @NotNull ItemStack quickMoveStack(
             final @NotNull Player player,
-            final int slot
+            final int index
     ) {
         ItemStack itemstack = ItemStack.EMPTY;
-        final Slot slot1 = this.slots.get(slot);
+        final Slot slot = this.slots.get(index);
 
-        if (slot1.hasItem()) {
-            final ItemStack itemStack1 = slot1.getItem();
+        if (slot.hasItem()) {
+            final ItemStack itemStack1 = slot.getItem();
             itemstack = itemStack1.copy();
 
-            if (slot < this.container.getContainerSize()) {
+            if (index < this.container.getContainerSize()) {
                 if (!this.moveItemStackTo(itemStack1, this.container.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
@@ -84,9 +89,9 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
             }
 
             if (itemStack1.isEmpty()) {
-                slot1.set(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot1.setChanged();
+                slot.setChanged();
             }
         }
 

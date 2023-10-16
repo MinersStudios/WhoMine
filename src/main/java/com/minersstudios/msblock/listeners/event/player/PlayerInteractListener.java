@@ -30,7 +30,6 @@ import org.bukkit.block.data.type.Slab;
 import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,35 +46,8 @@ import java.util.Set;
 @MSListener
 public class PlayerInteractListener extends AbstractMSListener {
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
-    private static final ImmutableSet<EntityType> IGNORABLE_ENTITIES = Sets.immutableEnumSet(
-            //<editor-fold desc="Entities to be ignored when placing a block on their location">
-            EntityType.DROPPED_ITEM,
-            EntityType.ITEM_FRAME,
-            EntityType.GLOW_ITEM_FRAME,
-            EntityType.LIGHTNING,
-            EntityType.LLAMA_SPIT,
-            EntityType.EXPERIENCE_ORB,
-            EntityType.THROWN_EXP_BOTTLE,
-            EntityType.EGG,
-            EntityType.SPLASH_POTION,
-            EntityType.FIREWORK,
-            EntityType.FIREBALL,
-            EntityType.FISHING_HOOK,
-            EntityType.SMALL_FIREBALL,
-            EntityType.SNOWBALL,
-            EntityType.TRIDENT,
-            EntityType.WITHER_SKULL,
-            EntityType.DRAGON_FIREBALL,
-            EntityType.AREA_EFFECT_CLOUD,
-            EntityType.ARROW,
-            EntityType.SPECTRAL_ARROW,
-            EntityType.ENDER_PEARL,
-            EntityType.EVOKER_FANGS,
-            EntityType.LEASH_HITCH
-            //</editor-fold>
-    );
     private static final ImmutableSet<Material> IGNORABLE_MATERIALS = Sets.immutableEnumSet(
-            //<editor-fold desc="Ignorable materials">
+            //<editor-fold desc="Ignorable materials" defaultstate="collapsed">
             Material.ANVIL,
             Material.CHIPPED_ANVIL,
             Material.DAMAGED_ANVIL,
@@ -135,7 +107,7 @@ public class PlayerInteractListener extends AbstractMSListener {
             //</editor-fold>
     );
     private static final ImmutableSet<Material> SPAWNABLE_ITEMS = Sets.immutableEnumSet(
-            //<editor-fold desc="Non-block buckets and spawnable items">
+            //<editor-fold desc="Non-block buckets and spawnable items" defaultstate="collapsed">
             Material.BUCKET,
             Material.LAVA_BUCKET,
             Material.WATER_BUCKET,
@@ -186,7 +158,7 @@ public class PlayerInteractListener extends AbstractMSListener {
                 && clickedBlock.getRelative(BlockFace.UP).getType() == Material.NOTE_BLOCK
                 && clickedBlock.getState() instanceof final ShulkerBox shulkerBox
                 && clickedBlock.getBlockData() instanceof final Directional directional
-                && BlockUtils.REPLACE.contains(clickedBlock.getRelative(directional.getFacing()).getType())
+                && BlockUtils.REPLACEABLE_BLOCKS.contains(clickedBlock.getRelative(directional.getFacing()).getType())
         ) {
             event.setCancelled(true);
             PlayerUtils.openShulkerBoxSilent(player, shulkerBox, true);
@@ -227,7 +199,7 @@ public class PlayerInteractListener extends AbstractMSListener {
         if (
                 CustomBlockRegistry.isCustomBlock(itemInHand)
                 && (event.getHand() == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
-                && BlockUtils.REPLACE.contains(blockAtFace.getType())
+                && BlockUtils.REPLACEABLE_BLOCKS.contains(blockAtFace.getType())
                 && validGameMode
                 && interactionPoint != null
         ) {
@@ -239,12 +211,12 @@ public class PlayerInteractListener extends AbstractMSListener {
             ) return;
 
             final Block replaceableBlock =
-                    BlockUtils.REPLACE.contains(clickedBlock.getType())
+                    BlockUtils.REPLACEABLE_BLOCKS.contains(clickedBlock.getType())
                     ? clickedBlock
                     : blockAtFace;
 
             for (final var nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
-                if (!IGNORABLE_ENTITIES.contains(nearbyEntity.getType())) return;
+                if (!BlockUtils.IGNORABLE_ENTITIES.contains(nearbyEntity.getType())) return;
             }
 
             final CustomBlockData customBlockData = CustomBlockRegistry.fromItemStack(itemInHand).orElseThrow();
@@ -329,7 +301,7 @@ public class PlayerInteractListener extends AbstractMSListener {
             blockAtFace.setBlockData(slab);
         }
 
-        if (!BlockUtils.REPLACE.contains(blockAtFace.getType())) return;
+        if (!BlockUtils.REPLACEABLE_BLOCKS.contains(blockAtFace.getType())) return;
 
         if (clickedCustomBlockData.getBlockSettings().getPlacing().isPlaceable(itemInHand.getType())) {
             blockAtFace.setType(itemInHand.getType(), false);

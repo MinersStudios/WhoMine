@@ -99,7 +99,7 @@ public class Anomaly {
                 for (final var string : slotsSection.getValues(false).keySet()) {
                     equipmentSlots.add(EquipmentSlot.valueOf(string.toUpperCase(Locale.ROOT)));
                 }
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 throw new IllegalArgumentException("Anomaly config specified an invalid equipment slot name", e);
             }
         }

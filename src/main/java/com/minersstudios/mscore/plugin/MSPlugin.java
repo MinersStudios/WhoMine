@@ -1,7 +1,6 @@
 package com.minersstudios.mscore.plugin;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
 import com.minersstudios.mscore.command.Commodore;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
@@ -14,9 +13,10 @@ import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.packet.collection.PacketListenersMap;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.*;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -86,14 +86,20 @@ public abstract class MSPlugin extends JavaPlugin {
 
             DATA_FOLDER_FIELD.setAccessible(true);
             COMMAND_CONSTRUCTOR.setAccessible(true);
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             throw new RuntimeException("Could not find data folder field", e);
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             throw new RuntimeException("Could not find command constructor", e);
         }
 
         initClass(PacketRegistry.class);
+        initClass(Badges.class);
         initClass(BlockUtils.class);
+        initClass(ChatUtils.class);
+        initClass(DateUtils.class);
+        initClass(LocationUtils.class);
+        initClass(PlayerUtils.class);
+        initClass(SoundGroup.class);
     }
 
     protected MSPlugin() {
@@ -235,7 +241,7 @@ public abstract class MSPlugin extends JavaPlugin {
     public final void onLoad() {
         try {
             this.loadClassNames();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("Could not load class names", e);
         }
 
@@ -245,7 +251,7 @@ public abstract class MSPlugin extends JavaPlugin {
 
         try {
             DATA_FOLDER_FIELD.set(this, this.pluginFolder);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new RuntimeException("Could not set data folder", e);
         }
 
@@ -342,7 +348,7 @@ public abstract class MSPlugin extends JavaPlugin {
     public void saveConfig() {
         try {
             this.getConfig().save(this.configFile);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             this.getLogger().severe("Could not save config to " + this.configFile);
         }
     }
@@ -366,12 +372,16 @@ public abstract class MSPlugin extends JavaPlugin {
             final @NotNull String resourcePath,
             final boolean replace
     ) throws IllegalArgumentException {
-        Preconditions.checkArgument(!resourcePath.isEmpty(), "ResourcePath cannot be empty");
+        if (StringUtils.isBlank(resourcePath)) {
+            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
+        }
 
         final String path = resourcePath.replace('\\', '/');
         final InputStream in = this.getResource(path);
 
-        Preconditions.checkNotNull(in, "The embedded resource '" + path + "' cannot be found");
+        if (in == null) {
+            throw new IllegalArgumentException("The embedded resource '" + path + "' cannot be found");
+        }
 
         final String dirPath = path.substring(0, Math.max(path.lastIndexOf('/'), 0));
         final File outFile = new File(this.pluginFolder, path);
@@ -394,7 +404,7 @@ public abstract class MSPlugin extends JavaPlugin {
                 while ((read = in.read(buffer)) >= 0) {
                     out.write(buffer, 0, read);
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 this.getLogger().log(Level.SEVERE, "Could not save " + outFileName + " to " + outFile, e);
             }
         } else {
@@ -436,7 +446,7 @@ public abstract class MSPlugin extends JavaPlugin {
                         this.getLogger().warning("Annotated class with MSCommand is not instance of MSCommandExecutor (" + className + ")");
                     }
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 this.getLogger().log(Level.SEVERE, "Failed to load command", e);
             }
         });
@@ -476,7 +486,7 @@ public abstract class MSPlugin extends JavaPlugin {
                         this.getLogger().warning("Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")");
                     }
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 this.getLogger().log(Level.SEVERE, "Failed to load listener", e);
             }
         });
@@ -515,7 +525,7 @@ public abstract class MSPlugin extends JavaPlugin {
                         this.getLogger().warning("Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")");
                     }
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 this.getLogger().log(Level.SEVERE, "Failed to load listener", e);
             }
         });
@@ -654,7 +664,7 @@ public abstract class MSPlugin extends JavaPlugin {
     public @Nullable PluginCommand createCommand(final @NotNull String command) {
         try {
             return COMMAND_CONSTRUCTOR.newInstance(command, this);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        } catch (final InstantiationException | IllegalAccessException | InvocationTargetException e) {
             this.getLogger().log(Level.SEVERE, "Failed to create command : " + command, e);
             return null;
         }
@@ -879,7 +889,7 @@ public abstract class MSPlugin extends JavaPlugin {
     protected static void initClass(final @NotNull Class<?> clazz) throws RuntimeException {
         try {
             Class.forName(clazz.getName());
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             throw new RuntimeException("Could not init class " + clazz.getName(), e);
         }
     }

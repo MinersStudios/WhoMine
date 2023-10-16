@@ -120,7 +120,7 @@ public final class UseBucketsAndSpawnableItems {
         }
 
         if (
-                !BlockUtils.REPLACE.contains(summonLocation.getBlock().getType())
+                !BlockUtils.REPLACEABLE_BLOCKS.contains(summonLocation.getBlock().getType())
                 || (rayTraceEntities != null && rayTraceEntities.getHitEntity() != null)
         ) return;
 

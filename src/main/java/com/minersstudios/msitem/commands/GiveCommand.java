@@ -2,7 +2,7 @@ package com.minersstudios.msitem.commands;
 
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msitem.item.CustomItemType;
+import com.minersstudios.msitem.item.CustomItem;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -42,29 +42,32 @@ public class GiveCommand {
             return true;
         }
 
-        CustomItemType.fromKey(itemArg).ifPresentOrElse(customItem -> {
-            final int amount;
+        CustomItem.fromKey(itemArg).ifPresentOrElse(
+                customItem -> {
+                    final int amount;
 
-            try {
-                amount = Integer.parseInt(amountArg);
-            } catch (NumberFormatException ignore) {
-                MSLogger.severe(sender, WRONG_FORMAT);
-                return;
-            }
+                    try {
+                        amount = Integer.parseInt(amountArg);
+                    } catch (final NumberFormatException ignored) {
+                        MSLogger.severe(sender, WRONG_FORMAT);
+                        return;
+                    }
 
-            final ItemStack itemStack = customItem.getItem();
+                    final ItemStack itemStack = customItem.getItem();
 
-            itemStack.setAmount(amount);
-            player.getInventory().addItem(itemStack);
-            MSLogger.fine(
-                    sender,
-                    GIVE_SUCCESS.args(
-                            text(amount),
-                            itemStack.displayName(),
-                            playerInfo.getDefaultName()
-                    )
-            );
-        }, () -> MSLogger.severe(sender, WRONG_ITEM));
+                    itemStack.setAmount(amount);
+                    player.getInventory().addItem(itemStack);
+                    MSLogger.fine(
+                            sender,
+                            GIVE_SUCCESS.args(
+                                    text(amount),
+                                    itemStack.displayName(),
+                                    playerInfo.getDefaultName()
+                            )
+                    );
+                },
+                () -> MSLogger.severe(sender, WRONG_ITEM)
+        );
         return true;
     }
 }

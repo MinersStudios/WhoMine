@@ -97,7 +97,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
                 x = Double.parseDouble(args[2]);
                 y = Double.parseDouble(args[3]);
                 z = Double.parseDouble(args[4]);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 return false;
             }
 

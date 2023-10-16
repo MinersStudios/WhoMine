@@ -251,7 +251,7 @@ public class DiscordMap {
                         MSEssentials.logger().severe("Failed to read the discord params : " + id.toString() + " in \"discord_links.json\"");
                     }
                 });
-            } catch (Exception e) {
+            } catch (final Exception ignored) {
                 this.createBackupFile();
                 this.reloadLinks();
             }
@@ -269,7 +269,7 @@ public class DiscordMap {
             ) {
                 this.saveFile();
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to create a new \"discord_links.json\" file", e);
         }
     }
@@ -283,7 +283,7 @@ public class DiscordMap {
         try {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to create \"discord_links.json.OLD\" backup file", e);
         }
 
@@ -296,7 +296,7 @@ public class DiscordMap {
     private void saveFile() {
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to save \"discord_links.json\" file", e);
         }
     }

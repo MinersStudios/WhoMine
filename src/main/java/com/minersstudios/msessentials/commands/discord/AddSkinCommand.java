@@ -106,7 +106,7 @@ public class AddSkinCommand extends SlashCommandExecutor {
                 } else {
                     addSkin(handler, playerInfo, skin);
                 }
-            } catch (IllegalArgumentException ignored) {
+            } catch (final IllegalArgumentException ignored) {
                 handler.send(INVALID_IMG);
             }
         } else if (
@@ -124,7 +124,7 @@ public class AddSkinCommand extends SlashCommandExecutor {
                                 signatureOption.getAsString()
                         )
                 );
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException ignored) {
                 handler.send(INVALID_IMG);
             }
         } else {

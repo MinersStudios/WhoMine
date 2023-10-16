@@ -134,7 +134,7 @@ public class PacketType {
                 final PacketType packetType = (PacketType) field.get(null);
 
                 map.put(packetType.id, packetType);
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 MSLogger.severe("Could not get packet type from field " + field.getName(), e);
             }
         }

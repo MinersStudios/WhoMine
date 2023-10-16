@@ -19,9 +19,8 @@
  */
 package com.minersstudios.msessentials.player.skin;
 
-import com.minersstudios.msessentials.MSEssentials;
-import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
+import com.minersstudios.msessentials.MSEssentials;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -65,7 +64,12 @@ public class MineSkinResponse {
      */
     @Contract("_ -> new")
     public static @NotNull MineSkinResponse fromLink(final @NotNull String link) throws IOException, IllegalArgumentException {
-        Preconditions.checkArgument(link.startsWith("https://") || link.endsWith(".png"), "The link must start with https:// and end with .png");
+        if (
+                !link.startsWith("https://")
+                || !link.endsWith(".png")
+        ) {
+            throw new IllegalArgumentException("The link must start with https:// and end with .png");
+        }
 
         final String requestBody = "url=" + URLEncoder.encode(link, StandardCharsets.UTF_8);
         final String apiKey = MSEssentials.getConfiguration().mineSkinApiKey;
@@ -85,7 +89,7 @@ public class MineSkinResponse {
             connection.setRequestProperty("Authorization", "Bearer " + apiKey);
         }
 
-        try (var output = connection.getOutputStream()) {
+        try (final var output = connection.getOutputStream()) {
             output.write(requestBody.getBytes(StandardCharsets.UTF_8));
         }
 
@@ -129,7 +133,7 @@ public class MineSkinResponse {
 
         try {
             is = connection.getInputStream();
-        } catch (IOException e) {
+        } catch (final IOException ignored) {
             is = connection.getErrorStream();
         }
 

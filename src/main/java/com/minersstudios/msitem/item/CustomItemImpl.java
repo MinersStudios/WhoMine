@@ -1,6 +1,5 @@
 package com.minersstudios.msitem.item;
 
-import com.google.common.base.Preconditions;
 import com.minersstudios.msitem.MSItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -14,9 +13,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
@@ -33,8 +32,8 @@ import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
  */
 public abstract class CustomItemImpl implements CustomItem, Cloneable {
     protected final NamespacedKey namespacedKey;
-    protected final List<Map.Entry<Recipe, Boolean>> recipes;
     protected ItemStack itemStack;
+    protected List<Map.Entry<Recipe, Boolean>> recipes;
 
     private static final String KEY_REGEX = "[a-z0-9./_-]+";
     private static final Pattern KEY_PATTERN = Pattern.compile(KEY_REGEX);
@@ -56,8 +55,13 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
             final @NotNull String key,
             final @NotNull ItemStack itemStack
     ) throws IllegalArgumentException {
-        Preconditions.checkArgument(KEY_PATTERN.matcher(key).matches(), "Key '" + key + "' does not match regex " + KEY_REGEX);
-        Preconditions.checkArgument(!itemStack.getType().isAir(), "Item type cannot be air! Check " + key);
+        if (!KEY_PATTERN.matcher(key).matches()) {
+            throw new IllegalArgumentException("Key '" + key + "' does not match regex " + KEY_REGEX);
+        }
+
+        if (itemStack.getType().isAir()) {
+            throw new IllegalArgumentException("Item type cannot be air! Check " + key);
+        }
 
         this.namespacedKey = new NamespacedKey(CustomItemType.NAMESPACE, key);
         this.itemStack = itemStack;
@@ -74,56 +78,6 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
             );
             this.itemStack.setItemMeta(meta);
         }
-    }
-
-    /**
-     * Creates a new instance of {@code CustomItem} with
-     * the given key, item stack and empty recipe list
-     *
-     * @param key       The unique key identifying the custom item
-     * @param itemStack The {@link ItemStack} representing the
-     *                  custom item
-     * @return A new instance of {@code CustomItem} with the given
-     *         key and item stack
-     * @throws IllegalArgumentException If the key format is invalid
-     *                                  or the item stack type is air
-     */
-    @Contract("_, _ -> new")
-    public static @NotNull CustomItem create(
-            final @NotNull String key,
-            final @NotNull ItemStack itemStack
-    ) throws IllegalArgumentException {
-        return new CustomItemImpl(key, itemStack) {};
-    }
-
-    /**
-     * Creates a new instance of {@code CustomItem} with
-     * the given key, item stack and recipe initialization
-     * function
-     *
-     * @param key         The unique key identifying the custom item
-     * @param itemStack   The {@link ItemStack} representing the
-     *                    custom item
-     * @param initRecipes The function to initialize the recipe list
-     *                    of the custom item
-     * @return A new instance of {@code CustomItem} with the given
-     *         key, item stack and recipe initialization function
-     * @throws IllegalArgumentException If the key format is invalid
-     *                                  or the item stack type is air
-     */
-    @Contract("_, _, _ -> new")
-    public static @NotNull CustomItem create(
-            final @NotNull String key,
-            final @NotNull ItemStack itemStack,
-            final @NotNull Function<CustomItem, List<Map.Entry<Recipe, Boolean>>> initRecipes
-    ) throws IllegalArgumentException {
-        return new CustomItemImpl(key, itemStack) {
-
-            @Override
-            public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
-                return initRecipes.apply(this);
-            }
-        };
     }
 
     @Override
@@ -143,7 +97,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
     @Override
     public final @NotNull @UnmodifiableView List<Map.Entry<Recipe, Boolean>> getRecipes() {
-        return this.recipes;
+        return Collections.unmodifiableList(this.recipes);
     }
 
     @Override
@@ -183,23 +137,9 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
                 );
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends CustomItem> @NotNull T copy() {
-        try {
-            final CustomItemImpl clone = (CustomItemImpl) super.clone();
-
-            clone.itemStack = this.itemStack.clone();
-
-            return (T) clone;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("An error occurred while cloning '" + this.namespacedKey + "'", e);
-        }
-    }
-
-    @Override
-    public @Nullable List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        return null;
+    public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -207,7 +147,9 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
         final MSItem plugin = MSItem.getInstance();
         final Server server = plugin.getServer();
 
-        this.setRecipes(this.initRecipes());
+        if (this.recipes.isEmpty()) {
+            this.setRecipes(this.initRecipes());
+        }
 
         for (final var entry : this.recipes) {
             final Recipe recipe = entry.getKey();
@@ -222,7 +164,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
     @Override
     public final void unregisterRecipes() {
-        for (final var entry : this.getRecipes()) {
+        for (final var entry : this.recipes) {
             final Recipe recipe = entry.getKey();
 
             if (recipe instanceof final Keyed keyed) {
@@ -232,6 +174,21 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
                     getGlobalCache().customItemRecipes.remove(recipe);
                 }
             }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends CustomItem> @NotNull T copy() {
+        try {
+            final CustomItemImpl clone = (CustomItemImpl) super.clone();
+
+            clone.itemStack = this.itemStack.clone();
+            clone.recipes = new ArrayList<>(this.recipes);
+
+            return (T) clone;
+        } catch (final CloneNotSupportedException e) {
+            throw new AssertionError("An error occurred while cloning '" + this.namespacedKey + "'", e);
         }
     }
 }

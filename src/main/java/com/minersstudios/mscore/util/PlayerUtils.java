@@ -28,9 +28,7 @@ import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R2.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventory;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerShowEntityEvent;
 import org.bukkit.plugin.PluginManager;
@@ -47,7 +45,7 @@ import java.util.function.Predicate;
  */
 public final class PlayerUtils {
     private static final ImmutableSet<EntityType> MOB_FILTER = Sets.immutableEnumSet(
-            //<editor-fold desc="Ignorable mob types">
+            //<editor-fold desc="Ignorable mob types" defaultstate="collapsed">
             EntityType.DROPPED_ITEM,
             EntityType.ARROW,
             EntityType.SPECTRAL_ARROW,

@@ -84,7 +84,7 @@ public class RenameableItem {
 
         try {
             renameableItemConfig = YamlConfiguration.loadConfiguration(file);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MSItem.logger().log(Level.SEVERE, "Failed to load " + file.getName() + "!", e);
             return null;
         }
@@ -166,7 +166,7 @@ public class RenameableItem {
         for (final var uuid : renameableItemConfig.getStringList("white-list")) {
             try {
                 whiteList.add(UUID.fromString(uuid));
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 MSItem.logger().severe("Invalid UUID " + uuid + " in white-list! (in " + fileName + ")");
             }
         }

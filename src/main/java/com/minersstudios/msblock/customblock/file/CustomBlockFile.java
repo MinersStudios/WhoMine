@@ -1,6 +1,5 @@
 package com.minersstudios.msblock.customblock.file;
 
-import com.google.common.base.Preconditions;
 import com.google.gson.*;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
@@ -59,7 +58,9 @@ public class CustomBlockFile {
             final @NotNull File file,
             final @Nullable CustomBlockData data
     ) throws IllegalArgumentException {
-        Preconditions.checkArgument(file.getPath().endsWith(".json"), "File must be a json file");
+        if (!file.getPath().endsWith(".json")) {
+            throw new IllegalArgumentException("File must be a json file");
+        }
 
         this.file = file;
         this.data = data;
@@ -101,9 +102,9 @@ public class CustomBlockFile {
 
             customBlockFile.load();
             return customBlockFile;
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             MSBlock.logger().log(Level.SEVERE, "Failed to create a custom block file from file", e);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             MSBlock.logger().log(Level.SEVERE, "The file is not a json file", e);
         }
         return null;
@@ -139,7 +140,7 @@ public class CustomBlockFile {
 
         try {
             this.data = deserialize(Files.readString(this.file.toPath(), StandardCharsets.UTF_8));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ConfigurationException("Failed to load custom block data from file: " + path, e);
         }
     }
@@ -159,7 +160,7 @@ public class CustomBlockFile {
 
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.data, writer);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSBlock.logger().log(Level.SEVERE, "Failed to save a file: " + this.file.getAbsolutePath(), e);
         }
     }

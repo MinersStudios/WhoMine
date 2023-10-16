@@ -68,7 +68,7 @@ public class AdminGameParamsCommand {
                 final GameMode gameMode;
                 try {
                     gameMode = GameMode.valueOf(paramArgString.toUpperCase(Locale.ROOT));
-                } catch (IllegalArgumentException ignore) {
+                } catch (final IllegalArgumentException ignore) {
                     MSLogger.severe(sender, GAME_MODE_USE_ONE_OF);
                     return true;
                 }
@@ -112,7 +112,7 @@ public class AdminGameParamsCommand {
                 final double health;
                 try {
                     health = Double.parseDouble(paramArgString);
-                } catch (NumberFormatException ignore) {
+                } catch (final NumberFormatException ignore) {
                     MSLogger.severe(sender, WRONG_FORMAT);
                     return true;
                 }
@@ -156,7 +156,7 @@ public class AdminGameParamsCommand {
                 final int air;
                 try {
                     air = Integer.parseInt(paramArgString);
-                } catch (NumberFormatException ignore) {
+                } catch (final NumberFormatException ignore) {
                     MSLogger.severe(sender, WRONG_FORMAT);
                     return true;
                 }

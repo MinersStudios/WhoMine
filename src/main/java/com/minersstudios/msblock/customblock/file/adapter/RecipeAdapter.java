@@ -64,10 +64,11 @@ public class RecipeAdapter implements JsonSerializer<Recipe>, JsonDeserializer<R
             final @NotNull JsonArray json
     ) {
         for (final var element : json) {
+            final JsonObject recipeObject =
+                    element.getAsJsonObject()
+                    .get(RECIPE_KEY).getAsJsonObject()
+                    .get(RECIPE_KEY).getAsJsonObject();
             final JsonObject outputObj = CustomBlockFile.getGson().toJsonTree(output).getAsJsonObject();
-            final JsonObject recipeEntryObject = element.getAsJsonObject();
-            final JsonObject recipeTypeObject = recipeEntryObject.get(RECIPE_KEY).getAsJsonObject();
-            final JsonObject recipeObject = recipeTypeObject.get(RECIPE_KEY).getAsJsonObject();
             final JsonElement amountElement = recipeObject.get(AMOUNT_KEY);
 
             if (amountElement != null) {

@@ -1,6 +1,5 @@
 package com.minersstudios.msblock.customblock;
 
-import com.google.common.base.Preconditions;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.file.NoteBlockData;
 import com.minersstudios.msblock.customblock.file.PlacingType;
@@ -396,8 +395,13 @@ public final class CustomBlockRegistry {
         final String key = customBlockData.getKey().toLowerCase(Locale.ENGLISH);
         final int hashCode = customBlockData.hashCode();
 
-        Preconditions.checkArgument(containsKey(key), "The key " + key + " is not registered! See " + key + " custom block data!");
-        Preconditions.checkArgument(containsHashCode(hashCode), "The hash code " + hashCode + " is not registered! See " + key + " custom block data!");
+        if (!containsKey(key)) {
+            throw new IllegalArgumentException("The key " + key + " is not registered! See " + key + " custom block data!");
+        }
+
+        if (!containsHashCode(hashCode)) {
+            throw new IllegalArgumentException("The hash code " + hashCode + " is not registered! See " + key + " custom block data!");
+        }
 
         KEY_MAP.remove(key);
         HASH_CODE_MAP.remove(hashCode);
@@ -433,10 +437,15 @@ public final class CustomBlockRegistry {
             final int hashCode,
             final String key
     ) throws IllegalArgumentException {
-        Preconditions.checkArgument(!containsHashCode(hashCode), "The hash code " + hashCode + " is already registered! See " + key + " custom block data!");
+        if (containsCustomBlockData(customBlockData)) {
+            throw new IllegalArgumentException("The custom block data is already registered! See " + key + " custom block data!");
+        }
 
-        if (customBlockData.getBlockSettings().getPlacing().type() instanceof PlacingType.Default) {
-            Preconditions.checkArgument(!containsKey(key), "The key " + key + " is already registered! See " + key + " custom block data!");
+        if (
+                customBlockData.getBlockSettings().getPlacing().type() instanceof PlacingType.Default
+                && containsHashCode(hashCode)
+        ) {
+            throw new IllegalArgumentException("The hash code " + hashCode + " is already registered! See " + key + " custom block data!");
         }
 
         final var hashKeys = KEY_MAP.computeIfAbsent(key, k -> new HashSet<>());

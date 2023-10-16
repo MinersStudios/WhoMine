@@ -42,7 +42,7 @@ public class AdminPronounsCommand {
             final Pronouns pronouns;
             try {
                 pronouns = Pronouns.valueOf(pronounsString.toUpperCase(Locale.ROOT));
-            } catch (IllegalArgumentException ignore) {
+            } catch (final IllegalArgumentException ignore) {
                 MSLogger.severe(
                         sender,
                         USE_ONE_OF.args(text(

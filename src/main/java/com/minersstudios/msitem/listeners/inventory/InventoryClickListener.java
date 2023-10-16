@@ -2,7 +2,7 @@ package com.minersstudios.msitem.listeners.inventory;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.msitem.item.CustomItemType;
+import com.minersstudios.msitem.item.CustomItem;
 import com.minersstudios.msitem.item.Wearable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -31,7 +31,7 @@ public class InventoryClickListener extends AbstractMSListener {
                 && event.getSlotType() == InventoryType.SlotType.ARMOR
                 && !cursorItem.getType().isAir()
         ) {
-            CustomItemType.fromItemStack(currentItem, Wearable.class)
+            CustomItem.fromItemStack(currentItem, Wearable.class)
             .ifPresent(w -> {
                 assert currentItem != null;
                 if (currentItem.getEnchantments().containsKey(Enchantment.BINDING_CURSE)) return;
@@ -51,7 +51,7 @@ public class InventoryClickListener extends AbstractMSListener {
                 && player.getOpenInventory().getType() == InventoryType.CRAFTING
                 && inventory.getHelmet() == null
         ) {
-            CustomItemType.fromItemStack(currentItem, Wearable.class)
+            CustomItem.fromItemStack(currentItem, Wearable.class)
             .ifPresent(w -> {
                 event.setCancelled(true);
                 this.getPlugin().runTask(() -> {

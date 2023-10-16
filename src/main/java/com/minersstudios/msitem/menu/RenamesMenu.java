@@ -87,8 +87,7 @@ public class RenamesMenu {
         RED_CROSS_ITEM.setItemMeta(redCrossMeta);
 
         final InventoryButton previousPageButton = new InventoryButton(previousPageItem, (event, customInventory) -> {
-            if (!(customInventory instanceof final PagedCustomInventory paged)) return;
-
+            final PagedCustomInventory paged = (PagedCustomInventory) customInventory;
             final Player player = (Player) event.getWhoClicked();
             final CustomInventory previousPage = paged.getPage(paged.getPreviousPageIndex());
 
@@ -100,8 +99,7 @@ public class RenamesMenu {
         final InventoryButton previousPageButtonEmpty = previousPageButton.clone().item(previousPageEmptyItem);
 
         final InventoryButton nextButton = new InventoryButton(nextPageItem, (event, customInventory) -> {
-            if (!(customInventory instanceof final PagedCustomInventory paged)) return;
-
+            final PagedCustomInventory paged = (PagedCustomInventory) customInventory;
             final Player player = (Player) event.getWhoClicked();
             final CustomInventory nextPage = paged.getPage(paged.getNextPageIndex());
 

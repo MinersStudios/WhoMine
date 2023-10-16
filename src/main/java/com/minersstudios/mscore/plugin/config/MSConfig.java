@@ -79,7 +79,7 @@ public abstract class MSConfig {
             this.saveDefaultConfig();
             this.reloadVariables();
             return true;
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             MSLogger.severe("An error occurred while loading the config!", e);
             return false;
         }
@@ -93,9 +93,9 @@ public abstract class MSConfig {
     public void reloadYaml() throws ConfigurationException {
         try {
             this.yaml.load(this.file);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ConfigurationException("The config file : " + this.file + " cannot be read", e);
-        } catch (InvalidConfigurationException e) {
+        } catch (final InvalidConfigurationException e) {
             throw new ConfigurationException("The file : " + this.file + " is not a valid configuration", e);
         }
     }
@@ -124,7 +124,7 @@ public abstract class MSConfig {
         try {
             this.yaml.save(this.file);
             return true;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSLogger.severe("An error occurred while saving the config!", e);
             return false;
         }
@@ -152,9 +152,9 @@ public abstract class MSConfig {
             this.reloadYaml();
             this.reloadDefaultVariables();
             this.yaml.save(this.file);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ConfigurationException("The config file : " + this.file + " cannot be written to", e);
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             throw new ConfigurationException("The config file : " + this.file + " cannot be read", e);
         }
     }

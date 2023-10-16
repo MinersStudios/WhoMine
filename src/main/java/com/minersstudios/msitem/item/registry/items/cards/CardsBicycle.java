@@ -25,7 +25,7 @@ import static net.kyori.adventure.text.Component.text;
 @SuppressWarnings("UnstableApiUsage")
 public interface CardsBicycle {
     List<ItemStack> BLUE_CARD_ITEMS = ImmutableList.of(
-            //<editor-fold desc="Blue cards">
+            //<editor-fold desc="Blue cards" defaultstate="collapsed">
             createCardItem(1260, "Туз треф", "Синяя колода карт \"Bicycle\""),
             createCardItem(1261, "2 треф", "Синяя колода карт \"Bicycle\""),
             createCardItem(1262, "3 треф", "Синяя колода карт \"Bicycle\""),
@@ -84,7 +84,7 @@ public interface CardsBicycle {
     );
 
     List<ItemStack> RED_CARD_ITEMS = ImmutableList.of(
-            //<editor-fold desc="Red cards">
+            //<editor-fold desc="Red cards" defaultstate="collapsed">
             createCardItem(1314, "Туз треф", "Красная колода карт \"Bicycle\""),
             createCardItem(1315, "2 треф", "Красная колода карт \"Bicycle\""),
             createCardItem(1316, "3 треф", "Красная колода карт \"Bicycle\""),

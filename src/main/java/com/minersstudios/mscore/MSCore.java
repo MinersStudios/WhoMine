@@ -1,8 +1,8 @@
 package com.minersstudios.mscore;
 
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.packet.ChannelHandler;
 import com.minersstudios.mscore.plugin.MSPlugin;
+import com.minersstudios.mscore.plugin.config.LanguageFile;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;

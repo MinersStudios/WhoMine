@@ -3,6 +3,7 @@ package com.minersstudios.mscore.util;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
+import com.minersstudios.msdecor.customdecor.CustomDecorType;
 import com.minersstudios.msitem.item.CustomItem;
 import com.minersstudios.msitem.item.CustomItemType;
 import com.minersstudios.msitem.item.renameable.RenameableItemRegistry;
@@ -81,7 +82,7 @@ public final class MSCustomUtils {
      * @return Optional of {@link ItemStack} object
      *         or empty optional if not found
      * @see MSBlockUtils#getItemStack(String)
-     * @see MSDecorUtils#getCustomDecorItem(String)
+     * @see MSDecorUtils#getItemStack(String)
      * @see MSItemUtils#getItemStack(String)
      */
     public static @NotNull Optional<ItemStack> getItemStack(
@@ -92,7 +93,7 @@ public final class MSCustomUtils {
                 ? Optional.empty()
                 : switch (namespace) {
                     case CustomBlockRegistry.NAMESPACE -> MSBlockUtils.getItemStack(key);
-                    case "msdecor" -> MSDecorUtils.getCustomDecorItem(key);
+                    case CustomDecorType.NAMESPACE -> MSDecorUtils.getItemStack(key);
                     case CustomItemType.NAMESPACE -> MSItemUtils.getItemStack(key);
                     default -> Optional.empty();
                 };
@@ -186,7 +187,7 @@ public final class MSCustomUtils {
      *         or {@link CustomItem}
      *         or empty optional if not found
      * @see CustomBlockRegistry#fromKey(String)
-     * @see MSDecorUtils#getCustomDecorData(String)
+     * @see CustomDecorType#fromKey(String)
      * @see CustomItemType#fromKey(String)
      */
     public static @NotNull Optional<?> getCustom(
@@ -198,10 +199,10 @@ public final class MSCustomUtils {
                 : switch (namespace) {
                     case CustomBlockRegistry.NAMESPACE,
                             CustomBlockRegistry.NAMESPACE + ":type" -> CustomBlockRegistry.fromKey(key);
-                    case "msdecor",
-                            "msdecor:type" -> MSDecorUtils.getCustomDecorData(key);
+                    case CustomDecorType.NAMESPACE,
+                            CustomDecorType.NAMESPACE + ":type" -> CustomDecorData.fromKey(key);
                     case CustomItemType.NAMESPACE,
-                            CustomItemType.NAMESPACE + ":type" -> CustomItemType.fromKey(key);
+                            CustomItemType.NAMESPACE + ":type" -> CustomItem.fromKey(key);
                     default -> Optional.empty();
                 };
     }

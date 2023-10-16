@@ -1,13 +1,14 @@
 package com.minersstudios.mscore.listener.packet;
 
-import com.google.common.base.Preconditions;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class used for extending packet
@@ -55,7 +56,10 @@ public abstract class AbstractMSPacketListener {
      * @see MSPlugin#registerPacketListeners()
      */
     public final @NotNull MSPlugin getPlugin() throws IllegalStateException {
-        Preconditions.checkState(this.isRegistered(), "Packet listener " + this + " not registered!");
+        if (this.plugin == null) {
+            throw new IllegalStateException("Packet listener " + this + " not registered!");
+        }
+
         return this.plugin;
     }
 

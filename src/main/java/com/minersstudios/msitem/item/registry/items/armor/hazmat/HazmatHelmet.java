@@ -12,7 +12,6 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +47,7 @@ public class HazmatHelmet extends CustomItemImpl implements Damageable {
     }
 
     @Override
-    public @Nullable List<Map.Entry<Recipe, Boolean>> initRecipes() {
+    public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
         return Collections.singletonList(Map.entry(
                 new ShapedRecipe(this.namespacedKey, this.itemStack)
                 .shape(

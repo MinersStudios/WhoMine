@@ -42,29 +42,32 @@ public class GiveCommand {
             return true;
         }
 
-        CustomBlockRegistry.fromKey(blockArg).ifPresentOrElse(customBlockData -> {
-            final int amount;
+        CustomBlockRegistry.fromKey(blockArg).ifPresentOrElse(
+                customBlockData -> {
+                    final int amount;
 
-            try {
-                amount = Integer.parseInt(amountArg);
-            } catch (NumberFormatException ignore) {
-                MSLogger.severe(sender, WRONG_FORMAT);
-                return;
-            }
+                    try {
+                        amount = Integer.parseInt(amountArg);
+                    } catch (final NumberFormatException ignore) {
+                        MSLogger.severe(sender, WRONG_FORMAT);
+                        return;
+                    }
 
-            final ItemStack itemStack = customBlockData.craftItemStack();
+                    final ItemStack itemStack = customBlockData.craftItemStack();
 
-            itemStack.setAmount(amount);
-            player.getInventory().addItem(itemStack);
-            MSLogger.fine(
-                    sender,
-                    GIVE_SUCCESS.args(
-                            text(amount),
-                            itemStack.displayName(),
-                            playerInfo.getDefaultName()
-                    )
-            );
-        }, () -> MSLogger.severe(sender, WRONG_BLOCK));
+                    itemStack.setAmount(amount);
+                    player.getInventory().addItem(itemStack);
+                    MSLogger.fine(
+                            sender,
+                            GIVE_SUCCESS.args(
+                                    text(amount),
+                                    itemStack.displayName(),
+                                    playerInfo.getDefaultName()
+                            )
+                    );
+                },
+                () -> MSLogger.severe(sender, WRONG_BLOCK)
+        );
         return true;
     }
 }

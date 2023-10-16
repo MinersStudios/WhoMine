@@ -64,6 +64,7 @@ public final class SignMenu {
     ) {
         final SignMenu menu = new SignMenu(new Component[] { first, second, third, fourth });
         menu.response = response;
+
         return menu;
     }
 
@@ -136,6 +137,7 @@ public final class SignMenu {
                 .setMessage(3, components[3]),
                 true
         );
+
         connection.send(new ClientboundBlockUpdatePacket(blockPos, blockState));
         connection.send(ClientboundBlockEntityDataPacket.create(sign));
         connection.send(new ClientboundOpenSignEditorPacket(blockPos, true));

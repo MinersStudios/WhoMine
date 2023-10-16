@@ -2,7 +2,7 @@ package com.minersstudios.msblock.listeners.event.block;
 
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
-import com.minersstudios.msblock.customblock.file.SoundGroup;
+import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msblock.customblock.file.ToolType;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
@@ -58,7 +58,7 @@ public class BlockBreakListener extends AbstractMSListener {
                 blockType != Material.NOTE_BLOCK
                 && BlockUtils.isWoodenSound(blockType)
         ) {
-            SoundGroup.wood().playBreakSound(blockLocation.toCenterLocation());
+            SoundGroup.WOOD.playBreakSound(blockLocation.toCenterLocation());
         }
 
         if (block.getBlockData() instanceof final NoteBlock noteBlock) {

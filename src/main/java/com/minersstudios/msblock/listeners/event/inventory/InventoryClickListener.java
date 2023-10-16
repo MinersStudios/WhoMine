@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class InventoryClickListener extends AbstractMSListener {
     private static final ImmutableSet<InventoryType> IGNORABLE_INVENTORY_TYPES = Sets.immutableEnumSet(
-            //<editor-fold desc="Ignorable inventory types">
+            //<editor-fold desc="Ignorable inventory types" defaultstate="collapsed">
             InventoryType.CARTOGRAPHY,
             InventoryType.BREWING,
             InventoryType.BEACON,

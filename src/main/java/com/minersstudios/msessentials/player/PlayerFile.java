@@ -358,7 +358,7 @@ public class PlayerFile {
     public void save() {
         try {
             this.config.save(this.file);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to save player file : " + this.file.getName(), e);
         }
     }

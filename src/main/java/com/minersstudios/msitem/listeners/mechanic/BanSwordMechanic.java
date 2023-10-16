@@ -19,7 +19,7 @@ public class BanSwordMechanic extends AbstractMSListener {
     public void onEntityDamageByEntity(final @NotNull EntityDamageByEntityEvent event) {
         if (
                 !(event.getDamager() instanceof final Player damager)
-                || CustomItemType.typeOf(damager.getInventory().getItemInMainHand()) != CustomItemType.BAN_SWORD
+                || CustomItemType.fromItemStack(damager.getInventory().getItemInMainHand()) != CustomItemType.BAN_SWORD
         ) return;
 
         final Entity damagedEntity = event.getEntity();
@@ -36,7 +36,7 @@ public class BanSwordMechanic extends AbstractMSListener {
 
         if (
                 currentItem == null
-                || CustomItemType.typeOf(currentItem) != CustomItemType.BAN_SWORD
+                || CustomItemType.fromItemStack(currentItem) != CustomItemType.BAN_SWORD
         ) return;
 
         currentItem.setAmount(0);

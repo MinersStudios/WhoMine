@@ -1,24 +1,25 @@
 package com.minersstudios.msdecor.events;
 
-import com.minersstudios.msdecor.customdecor.CustomDecor;
+import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class CustomDecorEvent extends Event {
-    protected final CustomDecor customDecor;
+    protected final CustomDecorData<?> customDecorData;
 
-    public CustomDecorEvent(
-            final @NotNull CustomDecor customDecor
-    ) {
-        this.customDecor = customDecor;
+    /**
+     * Constructs a new CustomDecorEvent
+     *
+     * @param customDecorData The custom decor data involved in this event
+     */
+    public CustomDecorEvent(final @NotNull CustomDecorData<?> customDecorData) {
+        this.customDecorData = customDecorData;
     }
 
     /**
-     * Gets the custom decor involved in this event
-     *
      * @return The custom decor which is involved in this event
      */
-    public final @NotNull CustomDecor getCustomDecor() {
-        return this.customDecor;
+    public final @NotNull CustomDecorData<?> getCustomDecorData() {
+        return this.customDecorData;
     }
 }

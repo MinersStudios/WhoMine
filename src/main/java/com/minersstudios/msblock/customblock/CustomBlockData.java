@@ -5,6 +5,7 @@ import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.file.*;
 import com.minersstudios.msblock.customblock.file.adapter.RecipeAdapter;
 import com.minersstudios.mscore.plugin.MSPlugin;
+import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msessentials.menu.CraftsMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -41,7 +42,7 @@ public class CustomBlockData {
     private Set<RecipeEntry> recipeEntries;
 
     private static final CustomBlockData DEFAULT = new CustomBlockData(
-            //<editor-fold desc="Default note block params">
+            //<editor-fold desc="Default note block params" defaultstate="collapsed">
             "default",
             new BlockSettings(
                     11.0f,
@@ -50,14 +51,14 @@ public class CustomBlockData {
                             false
                     ),
                     BlockSettings.Placing.create(
-                            PlacingType.defaultType(NoteBlockData.getDefault())
+                            PlacingType.defaultType(NoteBlockData.defaultData())
                     )
             ),
             new DropSettings(
                     new ItemStack(Material.NOTE_BLOCK),
                     0
             ),
-            SoundGroup.wood()
+            SoundGroup.WOOD
             //</editor-fold>
     );
 
@@ -115,8 +116,8 @@ public class CustomBlockData {
      *     <p> - hardness: 11.0f
      *     <p> - custom model data: 0
      *     <p> - tool type: {@link ToolType#AXE}
-     *     <p> - note block data: {@link NoteBlockData#getDefault()}
-     *     <p> - sound group: {@link SoundGroup#wood()}
+     *     <p> - note block data: {@link NoteBlockData#defaultData()}
+     *     <p> - sound group: {@link SoundGroup#WOOD}
      * @see #DEFAULT
      */
     public static @NotNull CustomBlockData getDefault() {
@@ -247,7 +248,7 @@ public class CustomBlockData {
     public void registerRecipes(final @NotNull JsonElement recipeJson) {
         try {
             this.setRecipeEntries(RecipeAdapter.deserializeEntries(new ItemStack(this.craftItemStack()), recipeJson.getAsJsonArray()));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MSBlock.logger().log(Level.SEVERE, "Failed to deserialize recipes for custom block data: " + this.key, e);
             return;
         }

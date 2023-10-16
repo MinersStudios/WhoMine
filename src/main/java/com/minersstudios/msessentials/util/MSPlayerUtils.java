@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Utility class for players
@@ -21,7 +22,8 @@ public final class MSPlayerUtils {
     /**
      * Regex supports all <a href="https://jrgraphix.net/r/Unicode/0400-04FF">cyrillic</a> characters
      */
-    public static final @NotNull String NAME_REGEX = "[-Ѐ-ӿ]+";
+    public static final String NAME_REGEX = "[-Ѐ-ӿ]+";
+    public static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
 
     private MSPlayerUtils() {
         throw new IllegalStateException("Utility class");
@@ -68,6 +70,6 @@ public final class MSPlayerUtils {
      */
     @Contract(value = "null -> false")
     public static boolean matchesNameRegex(final @Nullable String string) {
-        return string != null && string.matches(NAME_REGEX);
+        return string != null && NAME_PATTERN.matcher(string).matches();
     }
 }

@@ -1,6 +1,5 @@
 package com.minersstudios.msitem.item.renameable;
 
-import com.google.common.base.Preconditions;
 import com.minersstudios.msitem.item.CustomItemType;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
@@ -282,8 +281,13 @@ public final class RenameableItemRegistry {
         final String key = renameableItem.getKey();
         final RenameCollection renameCollection = renameableItem.getRenames();
 
-        Preconditions.checkArgument(!containsKey(key), "Key " + key + " is already registered");
-        Preconditions.checkArgument(!containsAnyFromSet(renameCollection), "Renames for key " + key + " are already registered");
+        if (containsKey(key)) {
+            throw new IllegalArgumentException("Key " + key + " is already registered");
+        }
+
+        if (containsAnyFromSet(renameCollection)) {
+            throw new IllegalArgumentException("Renames for key " + key + " are already registered");
+        }
 
         KEY_MAP.put(key, renameableItem);
         renameCollection.entrySet().forEach(
@@ -303,8 +307,13 @@ public final class RenameableItemRegistry {
         final String key = renameableItem.getKey();
         final RenameCollection renameCollection = renameableItem.getRenames();
 
-        Preconditions.checkArgument(containsKey(key), "Key " + key + " is not registered");
-        Preconditions.checkArgument(containsAnyFromSet(renameCollection), "Renames for key " + key + " are not registered");
+        if (!containsKey(key)) {
+            throw new IllegalArgumentException("Key " + key + " is not registered");
+        }
+
+        if (!containsAnyFromSet(renameCollection)) {
+            throw new IllegalArgumentException("Renames for key " + key + " are not registered");
+        }
 
         KEY_MAP.remove(key);
         renameCollection.entrySet().forEach(RENAME_ENTRY_MAP::remove);

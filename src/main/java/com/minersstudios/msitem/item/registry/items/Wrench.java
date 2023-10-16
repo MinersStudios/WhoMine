@@ -11,12 +11,13 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class Wrench extends CustomItemImpl implements Damageable {
+public final class Wrench extends CustomItemImpl implements Damageable {
     private static final String KEY;
     private static final ItemStack ITEM_STACK;
 
@@ -42,7 +43,7 @@ public class Wrench extends CustomItemImpl implements Damageable {
     }
 
     @Override
-    public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
+    public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
         return Collections.singletonList(Map.entry(
                 new ShapedRecipe(this.namespacedKey, this.itemStack)
                         .shape("I", "I", "I")

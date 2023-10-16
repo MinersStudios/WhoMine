@@ -34,7 +34,7 @@ public final class MSPluginUtils {
                     && msDecor.isLoadedCustoms()
                     && msBlock.isLoadedCustoms()
                     && msItem.isLoadedCustoms();
-        } catch (NoClassDefFoundError e) {
+        } catch (final NoClassDefFoundError e) {
             return false;
         }
     }

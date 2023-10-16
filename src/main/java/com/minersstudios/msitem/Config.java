@@ -95,7 +95,7 @@ public final class Config extends MSConfig {
             });
 
             MSItem.logger().info("Loaded " + RenameableItemRegistry.keysSize() + " renameable items in " + (System.currentTimeMillis() - start) + "ms");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSItem.logger().log(Level.SEVERE, "An error occurred while renameable loading items", e);
         }
     }

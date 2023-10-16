@@ -41,7 +41,7 @@ public final class MSBlock extends MSPlugin {
 
             try {
                 paperConfig.save(paperGlobalConfig);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 this.getLogger().log(Level.SEVERE, "Failed to save paper-global.yml with " + noteBlockUpdates + " enabled", e);
             }
 

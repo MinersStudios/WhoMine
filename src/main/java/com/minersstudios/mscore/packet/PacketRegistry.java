@@ -56,7 +56,7 @@ public class PacketRegistry {
 
             try {
                 flowsMap = (Map<?, ?>) flowsField.get(protocol);
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 throw new RuntimeException("Failed to access flows packet map", e);
             }
 
@@ -83,7 +83,7 @@ public class PacketRegistry {
 
                 try {
                     packetSet = packetSetField.get(codecData);
-                } catch (ReflectiveOperationException e) {
+                } catch (final ReflectiveOperationException e) {
                     throw new RuntimeException("Failed to access packet set", e);
                 }
 
@@ -108,7 +108,7 @@ public class PacketRegistry {
 
                 try {
                     packetMap = (Object2IntMap<?>) packetMapField.get(packetSet);
-                } catch (ReflectiveOperationException e) {
+                } catch (final ReflectiveOperationException e) {
                     throw new RuntimeException("Failed to access packet map", e);
                 }
 

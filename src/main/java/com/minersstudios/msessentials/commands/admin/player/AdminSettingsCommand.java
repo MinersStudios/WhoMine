@@ -234,7 +234,7 @@ public class AdminSettingsCommand {
                                     ));
                                     return true;
                                 }
-                            } catch (IllegalArgumentException ignored) {}
+                            } catch (final IllegalArgumentException ignored) {}
                         }
 
                         MSLogger.severe(

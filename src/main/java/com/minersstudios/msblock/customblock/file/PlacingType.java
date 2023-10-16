@@ -1,6 +1,5 @@
 package com.minersstudios.msblock.customblock.file;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Axis;
 import org.bukkit.block.BlockFace;
@@ -44,7 +43,9 @@ public abstract class PlacingType {
      */
     @Contract("_ -> new")
     public static @NotNull Directional directionalType(final @NotNull Map<BlockFace, NoteBlockData> map) throws IllegalArgumentException {
-        Preconditions.checkArgument(map.size() == 6, "Map must contain 6 entries");
+        if (map.size() != 6) {
+            throw new IllegalArgumentException("Map must contain 6 entries");
+        }
 
         for (final var blockFace : map.keySet()) {
             if (!Directional.isSupported(blockFace)) {
@@ -98,7 +99,10 @@ public abstract class PlacingType {
      */
     @Contract("_ -> new")
     public static @NotNull Orientable orientableType(final @NotNull Map<Axis, NoteBlockData> map) throws IllegalArgumentException {
-        Preconditions.checkArgument(map.size() == 3, "Map must contain 3 entries");
+        if (map.size() != 3) {
+            throw new IllegalArgumentException("Map must contain 3 entries");
+        }
+
         return new Orientable(map);
     }
 
@@ -159,7 +163,10 @@ public abstract class PlacingType {
         }
 
         public @NotNull NoteBlockData getNoteBlockData(final @NotNull BlockFace face) {
-            Preconditions.checkArgument(isSupported(face), "Unsupported BlockFace: " + face);
+            if (!isSupported(face)) {
+                throw new IllegalArgumentException("Unsupported BlockFace: " + face);
+            }
+
             return this.map.get(face);
         }
 

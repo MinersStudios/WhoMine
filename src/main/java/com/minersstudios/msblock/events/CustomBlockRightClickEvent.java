@@ -20,21 +20,21 @@ public class CustomBlockRightClickEvent extends CustomBlockEvent implements Canc
     /**
      * Constructs a new CustomBlockRightClickEvent
      *
-     * @param damagedCustomBlock The custom block involved in this event
-     * @param player             The Player who damaged the custom block
+     * @param customBlock        The custom block involved in this event
+     * @param player             The Player who right-clicked the custom block
      * @param hand               The hand which was used to right-click
      *                           the custom block
      * @param blockFace          The block face on which the interaction occurred
      * @param interactionPoint   The exact point at which the interaction occurred
      */
     public CustomBlockRightClickEvent(
-            final @NotNull CustomBlock damagedCustomBlock,
+            final @NotNull CustomBlock customBlock,
             final @NotNull Player player,
             final @NotNull EquipmentSlot hand,
             final @NotNull BlockFace blockFace,
             final @NotNull Location interactionPoint
     ) {
-        super(damagedCustomBlock);
+        super(customBlock);
 
         this.player = player;
         this.hand = hand;
@@ -43,7 +43,7 @@ public class CustomBlockRightClickEvent extends CustomBlockEvent implements Canc
     }
 
     /**
-     * @return The Player who damaged the custom block
+     * @return The Player who right-clicked the custom block
      *         involved in this event
      */
     public @NotNull Player getPlayer() {

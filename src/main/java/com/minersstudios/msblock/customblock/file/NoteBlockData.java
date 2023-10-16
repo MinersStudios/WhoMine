@@ -39,7 +39,7 @@ public class NoteBlockData implements Cloneable {
      *     <p> - powered: false
      * @see #DEFAULT
      */
-    public static @NotNull NoteBlockData getDefault() {
+    public static @NotNull NoteBlockData defaultData() {
         return DEFAULT;
     }
 
@@ -167,7 +167,7 @@ public class NoteBlockData implements Cloneable {
 
     /**
      * @return True if the note block data is default
-     * @see #getDefault()
+     * @see #defaultData()
      */
     public boolean isDefault() {
         return this.equals(DEFAULT);
@@ -202,8 +202,8 @@ public class NoteBlockData implements Cloneable {
     public @NotNull NoteBlockData clone() {
         try {
             return (NoteBlockData) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError("An error occurred while cloning NoteBlockData", e);
+        } catch (final CloneNotSupportedException e) {
+            throw new AssertionError("An error occurred while cloning '" + this + "'", e);
         }
     }
 

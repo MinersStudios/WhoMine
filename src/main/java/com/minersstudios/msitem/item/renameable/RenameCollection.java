@@ -1,6 +1,5 @@
 package com.minersstudios.msitem.item.renameable;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.minersstudios.mscore.util.ChatUtils;
 import org.apache.commons.lang.StringUtils;
@@ -132,7 +131,9 @@ public class RenameCollection {
             return;
         }
 
-        Preconditions.checkArgument(!item.getType().isAir(), "Item cannot be air (in " + this.key + ")");
+        if (item.getType().isAir()) {
+            throw new IllegalArgumentException("Item cannot be air (in " + this.key + ")");
+        }
 
         this.mainItem = new ItemStack(item);
         final ItemMeta meta = item.getItemMeta();
@@ -211,7 +212,9 @@ public class RenameCollection {
      * @throws IllegalArgumentException If the item type is air
      */
     public boolean addItem(final @NotNull ItemStack item) throws IllegalArgumentException {
-        Preconditions.checkArgument(!item.getType().isAir(), "Item cannot be air (in " + this.key + ")");
+        if (item.getType().isAir()) {
+            throw new IllegalArgumentException("Item cannot be air (in " + this.key + ")");
+        }
 
         if (
                 this.items.isEmpty()

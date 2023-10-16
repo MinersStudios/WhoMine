@@ -56,8 +56,8 @@ public class PrepareAnvilListener extends AbstractMSListener {
                 customStack = data.craftItemStack();
             } else if (custom instanceof final CustomItem item) {
                 customStack = item.getItem().clone();
-            } else if (custom instanceof final CustomDecorData data) {
-                customStack = data.getItemStack().clone();
+            } else if (custom instanceof final CustomDecorData<?> data) {
+                customStack = data.getItem().clone();
             }
 
             assert customStack != null;

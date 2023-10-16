@@ -5,7 +5,7 @@ import com.minersstudios.msblock.collection.DiggingMap;
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
-import com.minersstudios.msblock.customblock.file.SoundGroup;
+import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.packet.PacketContainer;
@@ -196,7 +196,7 @@ public class PlayerActionListener extends AbstractMSPacketListener {
                                     this.ticks++;
 
                                     if (this.ticks % 4.0f == 0.0f) {
-                                        SoundGroup.wood().playHitSound(block.getLocation().toCenterLocation());
+                                        SoundGroup.WOOD.playHitSound(block.getLocation().toCenterLocation());
                                     }
                                 }
                             }, 0L, 1L).getTaskId())

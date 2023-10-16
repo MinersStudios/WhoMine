@@ -42,21 +42,24 @@ public class CraftsMenu {
     static {
         final InventoryButton blocksButton = new InventoryButton()
                 .clickAction((event, i) -> {
-                    Player player = (Player) event.getWhoClicked();
+                    final Player player = (Player) event.getWhoClicked();
+
                     open(Type.BLOCKS, player);
                     InventoryButton.playClickSound(player);
                 });
 
         final InventoryButton decorsButton = new InventoryButton()
                 .clickAction((event, i) -> {
-                    Player player = (Player) event.getWhoClicked();
+                    final Player player = (Player) event.getWhoClicked();
+
                     open(Type.DECORS, player);
                     InventoryButton.playClickSound(player);
                 });
 
         final InventoryButton itemsButton = new InventoryButton()
                 .clickAction((event, i) -> {
-                    Player player = (Player) event.getWhoClicked();
+                    final Player player = (Player) event.getWhoClicked();
+
                     open(Type.ITEMS, player);
                     InventoryButton.playClickSound(player);
                 });
@@ -110,10 +113,9 @@ public class CraftsMenu {
         nextPageEmptyItem.setItemMeta(nextPageEmptyMeta);
 
         final ButtonClickAction previousClick = (event, customInventory) -> {
-            if (!(customInventory instanceof PagedCustomInventory pagedInventory)) return;
-
-            Player player = (Player) event.getWhoClicked();
-            CustomInventory previousPage = pagedInventory.getPage(pagedInventory.getPreviousPageIndex());
+            final PagedCustomInventory paged = (PagedCustomInventory) customInventory;
+            final Player player = (Player) event.getWhoClicked();
+            final CustomInventory previousPage = paged.getPage(paged.getPreviousPageIndex());
 
             if (previousPage != null) {
                 player.openInventory(previousPage);
@@ -121,10 +123,9 @@ public class CraftsMenu {
             }
         };
         final ButtonClickAction nextClick = (event, customInventory) -> {
-            if (!(customInventory instanceof PagedCustomInventory pagedInventory)) return;
-
-            Player player = (Player) event.getWhoClicked();
-            CustomInventory nextPage = pagedInventory.getPage(pagedInventory.getNextPageIndex());
+            final PagedCustomInventory paged = (PagedCustomInventory) customInventory;
+            final Player player = (Player) event.getWhoClicked();
+            final CustomInventory nextPage = paged.getPage(paged.getNextPageIndex());
 
             if (nextPage != null) {
                 player.openInventory(nextPage);
@@ -138,7 +139,8 @@ public class CraftsMenu {
         CRAFTS_NEXT_BUTTON_EMPTY = CRAFTS_NEXT_BUTTON.clone().item(nextPageEmptyItem);
         CRAFTS_QUIT_BUTTON = new InventoryButton()
                 .clickAction((event, customInventory) -> {
-                    Player player = (Player) event.getWhoClicked();
+                    final Player player = (Player) event.getWhoClicked();
+
                     open(Type.MAIN, player);
                     InventoryButton.playClickSound(player);
                 });
@@ -169,8 +171,8 @@ public class CraftsMenu {
                 final String[] shapes = shapedRecipe.getShape();
                 int i = 0;
 
-                for (var shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
-                    for (var character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
+                for (final var shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
+                    for (final var character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
                         final ItemStack ingredient = shapedRecipe.getIngredientMap().get(character);
 
                         if (ingredient == null) {

@@ -4,11 +4,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.regex.Pattern;
+
 /**
  * Utility class for IDs
  */
 public final class IDUtils {
-    public static final @NotNull String ID_REGEX = "-?\\d+";
+    public static final String ID_REGEX = "-?\\d+";
+    public static final Pattern ID_PATTERN = Pattern.compile(ID_REGEX);
 
     private IDUtils() {
         throw new IllegalStateException("Utility class");
@@ -23,7 +26,7 @@ public final class IDUtils {
     public static int parseID(final @NotNull String stringId) {
         try {
             return Integer.parseInt(stringId);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException ignored) {
             return -1;
         }
     }
@@ -34,6 +37,6 @@ public final class IDUtils {
      */
     @Contract(value = "null -> false")
     public static boolean matchesIDRegex(final @Nullable String string) {
-        return string != null && string.matches(ID_REGEX);
+        return string != null && ID_PATTERN.matcher(string).matches();
     }
 }

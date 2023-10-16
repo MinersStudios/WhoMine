@@ -321,7 +321,10 @@ public class BlockSettings {
          */
         @Override
         public @NotNull String toString() {
-            return "Placing{type=" + this.type + ", placeableMaterials=" + this.placeableMaterials + '}';
+            return "Placing{" +
+                    "type=" + this.type +
+                    ", placeableMaterials=" + this.placeableMaterials +
+                    '}';
         }
     }
 }

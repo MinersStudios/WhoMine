@@ -105,7 +105,7 @@ public class SkinsMenu {
                                 )
                         )
                 ));
-            } catch (Exception e) {
+            } catch (final Exception ignored) {
                 MSLogger.severe(player, translatable("ms.error.something_went_wrong"));
             }
 

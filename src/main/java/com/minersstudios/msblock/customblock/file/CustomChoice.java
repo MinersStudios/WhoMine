@@ -1,6 +1,5 @@
 package com.minersstudios.msblock.customblock.file;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.util.MSCustomUtils;
 import org.bukkit.inventory.ItemStack;
@@ -59,14 +58,21 @@ public class CustomChoice implements RecipeChoice {
      *                                  are null or invalid
      */
     public CustomChoice(final @NotNull Collection<String> namespacedKeys) throws IllegalArgumentException {
-        Preconditions.checkArgument(!namespacedKeys.isEmpty(), "Must have at least one namespacedKey");
+        if (namespacedKeys.isEmpty()) {
+            throw new IllegalArgumentException("Must have at least one namespacedKey");
+        }
 
         this.namespacedKeys = new ArrayList<>(namespacedKeys);
         this.choices = new ArrayList<>();
 
         for (var namespacedKey : namespacedKeys) {
-            Preconditions.checkArgument(namespacedKey != null, "Cannot have null namespacedKey");
-            Preconditions.checkArgument(PATTERN.matcher(namespacedKey).matches(), "Invalid namespacedKey: " + namespacedKey);
+            if (namespacedKey == null) {
+                throw new IllegalArgumentException("Cannot have null namespacedKey");
+            }
+
+            if (!PATTERN.matcher(namespacedKey).matches()) {
+                throw new IllegalArgumentException("Invalid namespacedKey: " + namespacedKey);
+            }
 
             MSCustomUtils.getItemStack(namespacedKey)
             .ifPresent(itemStack -> this.choices.add(itemStack));
@@ -128,8 +134,8 @@ public class CustomChoice implements RecipeChoice {
             clone.namespacedKeys = new ArrayList<>(this.namespacedKeys);
 
             return clone;
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError(ex);
+        } catch (final CloneNotSupportedException e) {
+            throw new AssertionError("An error occurred while cloning '" + this + "'", e);
         }
     }
 

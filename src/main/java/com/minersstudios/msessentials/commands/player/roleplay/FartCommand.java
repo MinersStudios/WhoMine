@@ -5,13 +5,11 @@ import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.*;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -63,7 +61,7 @@ public class FartCommand implements MSCommandExecutor {
         boolean withPoop =
                 this.random.nextInt(10) == 0
                 && location.clone().subtract(0.0d, 0.5d, 0.0d).getBlock().getType().isSolid()
-                && BlockUtils.REPLACE.contains(location.clone().getBlock().getType());
+                && BlockUtils.REPLACEABLE_BLOCKS.contains(location.clone().getBlock().getType());
 
         for (final var nearbyEntity : player.getWorld().getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
             if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && nearbyEntity.getType() != EntityType.PLAYER) {
@@ -76,6 +74,8 @@ public class FartCommand implements MSCommandExecutor {
         player.getWorld().spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
 
         if (withPoop) {
+            //TODO
+            /*
             MSDecorUtils.placeCustomDecor(
                     location.getBlock(),
                     player,
@@ -84,6 +84,7 @@ public class FartCommand implements MSCommandExecutor {
                     null,
                     ChatUtils.createDefaultStyledText("Какашка " + ChatUtils.serializeLegacyComponent(playerInfo.getDefaultName()))
             );
+             */
         }
 
         if (args.length > 0) {

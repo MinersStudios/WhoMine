@@ -3,7 +3,7 @@ package com.minersstudios.msitem.listeners.mechanic;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.ItemUtils;
-import com.minersstudios.msitem.item.CustomItemType;
+import com.minersstudios.msitem.item.CustomItem;
 import com.minersstudios.msitem.item.registry.items.cards.CardsBicycle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,7 +27,7 @@ public class CardBoxMechanic extends AbstractMSListener {
     public void onInventoryMoveItem(final @NotNull InventoryMoveItemEvent event) {
         if (event.getDestination().getType() != InventoryType.SHULKER_BOX) return;
 
-        CustomItemType.fromItemStack(event.getItem())
+        CustomItem.fromItemStack(event.getItem())
         .filter(customItem -> customItem instanceof CardsBicycle)
         .ifPresent(
                 c -> event.setCancelled(true)
@@ -38,7 +38,7 @@ public class CardBoxMechanic extends AbstractMSListener {
     public void onInventoryDrag(final @NotNull InventoryDragEvent event) {
         if (event.getInventory().getType() != InventoryType.SHULKER_BOX) return;
 
-        CustomItemType.fromItemStack(event.getOldCursor())
+        CustomItem.fromItemStack(event.getOldCursor())
         .filter(customItem -> customItem instanceof CardsBicycle)
         .ifPresent(
                 c -> event.setCancelled(true)
@@ -54,10 +54,10 @@ public class CardBoxMechanic extends AbstractMSListener {
         if (
                 (clickedInventory != null
                 && clickedInventory.getType() == InventoryType.SHULKER_BOX
-                && CustomItemType.fromItemStack(cursorItem).orElse(null) instanceof CardsBicycle)
+                && CustomItem.fromItemStack(cursorItem).orElse(null) instanceof CardsBicycle)
                 || (event.isShiftClick()
                 && event.getWhoClicked().getOpenInventory().getType() == InventoryType.SHULKER_BOX
-                && CustomItemType.fromItemStack(currentItem).orElse(null) instanceof CardsBicycle)
+                && CustomItem.fromItemStack(currentItem).orElse(null) instanceof CardsBicycle)
         ) {
             event.setCancelled(true);
         }
@@ -65,12 +65,12 @@ public class CardBoxMechanic extends AbstractMSListener {
         if (currentItem == null || !event.isRightClick()) return;
         if (
                 !cursorItem.getType().isAir()
-                && CustomItemType.fromItemStack(currentItem).orElse(null) instanceof CardsBicycle
+                && CustomItem.fromItemStack(currentItem).orElse(null) instanceof CardsBicycle
         ) {
             addCardToCardBox(event, currentItem, cursorItem);
         } else if (
                 !currentItem.getType().isAir()
-                && CustomItemType.fromItemStack(cursorItem).orElse(null) instanceof CardsBicycle
+                && CustomItem.fromItemStack(cursorItem).orElse(null) instanceof CardsBicycle
         ) {
             addCardToCardBox(event, cursorItem, currentItem);
         }

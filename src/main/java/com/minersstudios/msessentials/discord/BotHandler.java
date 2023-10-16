@@ -136,7 +136,7 @@ public class BotHandler {
         if (this.messageString.matches("\\d+") && attachmentSize == 0) {
             try {
                 code = Short.parseShort(this.messageString);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException ignored) {
                 this.reply(INVALID_CODE);
                 return;
             }
@@ -181,7 +181,7 @@ public class BotHandler {
 
             try {
                 this.handleSkin(link);
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException ignored) {
                 this.reply(INVALID_IMG);
             }
 
@@ -407,7 +407,7 @@ public class BotHandler {
             final byte skinIndex;
             try {
                 skinIndex = Byte.parseByte(this.messageString);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException ignored) {
                 this.reply(INVALID_INDEX);
                 return false;
             }
@@ -436,7 +436,7 @@ public class BotHandler {
             final byte actionIndex;
             try {
                 actionIndex = Byte.parseByte(this.messageString);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException ignored) {
                 this.reply(INVALID_INDEX);
                 return false;
             }
@@ -481,7 +481,7 @@ public class BotHandler {
                         if (player != null) {
                             MSLogger.fine(player, SUCCESSFULLY_EDITED_MINE.args(text(skinName)));
                         }
-                    } catch (Exception e) {
+                    } catch (final Exception ignored) {
                         this.reply(INVALID_IMG);
                         return false;
                     }

@@ -8,6 +8,7 @@ import com.minersstudios.msessentials.MSEssentials;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -142,7 +143,13 @@ public class ResourcePack {
             }
         }).join();
 
-        final String hash = bytesToHexString(createSHA1(path));
+        final byte[] bytes = createSHA1(path);
+
+        if (bytes == null) {
+            throw new RuntimeException("Failed to generate hash of resource pack");
+        }
+
+        final String hash = bytesToHexString(bytes);
 
         if (path.toFile().delete()) {
             MSEssentials.logger().info("File deleted: " + path);
@@ -159,7 +166,7 @@ public class ResourcePack {
      * @param path The path to the file
      * @return The hash of the file
      */
-    private static byte @NotNull [] createSHA1(final @NotNull Path path) {
+    private static byte @Nullable [] createSHA1(final @NotNull Path path) {
         try (final var in = Files.newInputStream(path)) {
             final MessageDigest digest = MessageDigest.getInstance("SHA-1");
             final byte[] buffer = new byte[8192];
@@ -170,8 +177,8 @@ public class ResourcePack {
             }
 
             return digest.digest();
-        } catch (IOException | NoSuchAlgorithmException e) {
-            throw new RuntimeException("Failed to create SHA-1 hash", e);
+        } catch (final IOException | NoSuchAlgorithmException ignored) {
+            return null;
         }
     }
 
@@ -229,7 +236,7 @@ public class ResourcePack {
             final JsonObject latestTag = tags.get(0).getAsJsonObject();
 
             return Optional.of(latestTag.get("name").getAsString());
-        } catch (InterruptedException | IOException e) {
+        } catch (final InterruptedException | IOException e) {
             MSEssentials.logger().log(Level.WARNING, "Failed to get latest tag. Trying to get the latest tag from the config...", e);
             return Optional.empty();
         }

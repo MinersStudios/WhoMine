@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 @MSListener
 public class NotePlayListener extends AbstractMSListener {
-    private static final @NotNull NoteBlockData DEFAULT = NoteBlockData.getDefault();
+    private static final @NotNull NoteBlockData DEFAULT = NoteBlockData.defaultData();
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onNotePlay(final @NotNull NotePlayEvent event) {

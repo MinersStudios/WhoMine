@@ -1,6 +1,5 @@
 package com.minersstudios.msitem.item.renameable;
 
-import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -37,8 +36,13 @@ public class RenameEntry {
             final @NotNull String rename,
             final @NotNull ItemStack item
     ) throws IllegalArgumentException {
-        Preconditions.checkArgument(StringUtils.isNotBlank(rename), "Rename cannot be null or blank");
-        Preconditions.checkArgument(!item.getType().isAir(), "Item cannot be air");
+        if (StringUtils.isBlank(rename)) {
+            throw new IllegalArgumentException("Rename cannot be null or blank");
+        }
+
+        if (item.getType().isAir()) {
+            throw new IllegalArgumentException("Item cannot be air");
+        }
 
         this.rename = rename;
         this.item = item;

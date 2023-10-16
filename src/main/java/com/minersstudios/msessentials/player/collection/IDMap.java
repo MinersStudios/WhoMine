@@ -231,7 +231,7 @@ public class IDMap {
                         MSEssentials.logger().severe("Failed to read the player id : " + uuid.toString() + " in \"ids.json\"");
                     }
                 });
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 this.createBackupFile();
                 this.reloadIds();
             }
@@ -246,7 +246,7 @@ public class IDMap {
             if (this.file.createNewFile()) {
                 this.saveFile();
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to create a new \"ids.json\" file", e);
         }
     }
@@ -260,7 +260,7 @@ public class IDMap {
         try {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to create \"ids.json.OLD\" backup file", e);
         }
 
@@ -273,7 +273,7 @@ public class IDMap {
     private void saveFile() {
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to save ids", e);
         }
     }

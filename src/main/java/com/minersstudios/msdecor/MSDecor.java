@@ -1,9 +1,7 @@
 package com.minersstudios.msdecor;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.util.MSPluginUtils;
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
-import com.minersstudios.msdecor.utils.ConfigCache;
+import com.minersstudios.msdecor.customdecor.CustomDecorType;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -11,53 +9,80 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
 
+/**
+ * The main class of the MSDecor plugin
+ *
+ * @see MSPlugin
+ */
 public final class MSDecor extends MSPlugin {
     private static MSDecor instance;
+    private Config config;
+    private Cache cache;
     private CoreProtectAPI coreProtectAPI;
-    private ConfigCache configCache;
+
+    public MSDecor() {
+        instance = this;
+    }
+
+    @Override
+    public void load() {
+        initClass(CustomDecorType.class);
+    }
 
     @Override
     public void enable() {
-        instance = this;
-        coreProtectAPI = CoreProtect.getInstance().getAPI();
+        this.coreProtectAPI = CoreProtect.getInstance().getAPI();
+        this.cache = new Cache();
+        this.config = new Config(this, this.getConfigFile());
 
-        reloadConfigs();
+        this.config.reload();
     }
 
-    public static void reloadConfigs() {
-        instance.saveDefaultConfig();
-        instance.reloadConfig();
-        instance.configCache = new ConfigCache();
-
-        instance.configCache.registerCustomDecors();
-        instance.setLoadedCustoms(true);
-
-        instance.runTaskTimer(task -> {
-            if (MSPluginUtils.isLoadedCustoms()) {
-                task.cancel();
-                instance.configCache.recipeDecors.forEach(CustomDecorData::registerRecipes);
-                instance.configCache.recipeDecors.clear();
-            }
-        }, 0L, 10L);
-    }
-
-    public static MSDecor getInstance() {
+    /**
+     * @return The instance of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static MSDecor getInstance() throws NullPointerException {
         return instance;
     }
 
+    /**
+     * @return The logger of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
     public static @NotNull Logger logger() throws NullPointerException {
         return instance.getLogger();
     }
 
+    /**
+     * @return The component logger of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
     public static @NotNull ComponentLogger componentLogger() throws NullPointerException {
         return instance.getComponentLogger();
     }
 
-    public static ConfigCache getConfigCache() {
-        return instance.configCache;
+    /**
+     * @return The cache of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static Cache getCache() throws NullPointerException {
+        return instance.cache;
     }
 
-    public static CoreProtectAPI getCoreProtectAPI() {
+    /**
+     * @return The configuration of the plugin
+     * @throws NullPointerException If the plugin is not enabled
+     */
+    public static Config getConfiguration() throws NullPointerException {
+        return instance.config;
+    }
+
+    /**
+     * @return The CoreProtectAPI instance
+     * @throws NullPointerException If the {@link CoreProtect} is not enabled
+     */
+    public static CoreProtectAPI getCoreProtectAPI() throws NullPointerException {
         return instance.coreProtectAPI;
     }
 }

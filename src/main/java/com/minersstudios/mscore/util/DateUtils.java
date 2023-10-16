@@ -71,7 +71,7 @@ public final class DateUtils {
             TIMEZONE_CACHE.put(ip, timezone);
 
             return timezone;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSLogger.warning("Failed to get timezone from ip " + ip.getHostAddress(), e);
             return DEFAULT_TIMEZONE;
         }
@@ -202,7 +202,7 @@ public final class DateUtils {
                         case "y" -> now.plus(Math.multiplyExact(number, 365), ChronoUnit.DAYS);
                         default -> now.plus(number, ChronoUnit.DAYS);
                     };
-        } catch (DateTimeException | NumberFormatException | ArithmeticException e) {
+        } catch (final DateTimeException | NumberFormatException | ArithmeticException e) {
             if (throwException) throw e;
             return null;
         }

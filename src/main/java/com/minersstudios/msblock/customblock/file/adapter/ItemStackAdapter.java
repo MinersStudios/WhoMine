@@ -44,7 +44,7 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
 
             try {
                 nmsItemStack.setTag(TagParser.parseTag(nbt));
-            } catch (CommandSyntaxException e) {
+            } catch (final CommandSyntaxException e) {
                 throw new JsonParseException("Invalid NBT: " + nbt);
             }
 

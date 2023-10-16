@@ -116,7 +116,7 @@ public final class MSEssentials extends MSPlugin {
                         this.getLogger().warning("Annotated class with SlashCommand is not instance of SlashCommandExecutor (" + className + ")");
                     }
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 this.getLogger().log(Level.SEVERE, "Failed to load slash command", e);
             }
         });

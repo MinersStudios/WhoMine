@@ -166,7 +166,7 @@ public class MuteMap {
                         MSEssentials.logger().severe("Failed to read the player params : " + uuid.toString() + " in \"muted_players.json\"");
                     }
                 });
-            } catch (Exception e) {
+            } catch (final Exception ignored) {
                 this.createBackupFile();
                 this.reloadMutes();
             }
@@ -184,7 +184,7 @@ public class MuteMap {
             ) {
                 this.saveFile();
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to create a new \"muted_players.json\" file", e);
         }
     }
@@ -198,7 +198,7 @@ public class MuteMap {
         try {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to create \"muted_players.json.OLD\" backup file", e);
         }
 
@@ -211,7 +211,7 @@ public class MuteMap {
     private void saveFile() {
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to save muted players", e);
         }
     }

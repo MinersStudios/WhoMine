@@ -50,7 +50,7 @@ public final class LanguageFile {
             TRANSLATIONS_FIELD = registryImplClass.getDeclaredField("translations");
 
             TRANSLATIONS_FIELD.setAccessible(true);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException("Failed to initialize LanguageFile", e);
         }
     }
@@ -201,7 +201,7 @@ public final class LanguageFile {
     public static boolean isLoaded() {
         try {
             return !((Map<?, ?>) TRANSLATIONS_FIELD.get(registry)).isEmpty();
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             MSLogger.severe("Failed to check if language is loaded", e);
             return false;
         }
@@ -237,7 +237,7 @@ public final class LanguageFile {
                     final var out = new FileOutputStream(langFile)
             ) {
                 in.transferTo(out);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 MSLogger.severe("Failed to download language file: " + link, e);
             }
         }
@@ -258,7 +258,7 @@ public final class LanguageFile {
             final JsonElement element = JsonParser.parseString(content);
 
             return element.getAsJsonObject();
-        } catch (IOException | JsonSyntaxException e) {
+        } catch (final IOException | JsonSyntaxException e) {
             MSLogger.severe("Failed to load corrupted language file: " + this.code + ".json");
             MSLogger.severe("Creating backup file and trying to load language file again");
 
@@ -284,7 +284,7 @@ public final class LanguageFile {
 
         try {
             Files.move(filePath, backupFilePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("Failed to create" + backupFileName + " backup file", e);
         }
     }

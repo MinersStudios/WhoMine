@@ -1,7 +1,6 @@
 package com.minersstudios.msessentials.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.google.common.base.Preconditions;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
@@ -502,7 +501,7 @@ public class PlayerInfo {
         final Location playerLoc = player.getLocation();
         final Location getUpLocation = armorStand.getLocation().add(0.0d, 0.25d, 0.0d);
 
-        if (!BlockUtils.REPLACE.contains(getUpLocation.getBlock().getType())) {
+        if (!BlockUtils.REPLACEABLE_BLOCKS.contains(getUpLocation.getBlock().getType())) {
             getUpLocation.add(getUpLocation.getDirection().multiply(0.75d));
         }
 
@@ -689,7 +688,10 @@ public class PlayerInfo {
     public @NotNull String getMuteReason() throws IllegalStateException {
         final MuteMap.Entry muteEntry = this.getMuteEntry();
 
-        Preconditions.checkArgument(muteEntry != null, "Player is not muted");
+        if (muteEntry == null) {
+            throw new IllegalStateException("Player is not muted");
+        }
+
         return muteEntry.getReason();
     }
 
@@ -702,7 +704,10 @@ public class PlayerInfo {
     public @NotNull String getMutedBy() throws IllegalStateException {
         final MuteMap.Entry muteEntry = this.getMuteEntry();
 
-        Preconditions.checkArgument(muteEntry != null, "Player is not muted");
+        if (muteEntry == null) {
+            throw new IllegalStateException("Player is not muted");
+        }
+
         return muteEntry.getSource();
     }
 
@@ -741,7 +746,10 @@ public class PlayerInfo {
     public @NotNull Instant getMutedFrom() throws IllegalStateException {
         final MuteMap.Entry muteEntry = this.getMuteEntry();
 
-        Preconditions.checkArgument(muteEntry != null, "Player is not muted");
+        if (muteEntry == null) {
+            throw new IllegalStateException("Player is not muted");
+        }
+
         return muteEntry.getCreated();
     }
 
@@ -780,7 +788,10 @@ public class PlayerInfo {
     public @NotNull Instant getMutedTo() throws IllegalStateException {
         final MuteMap.Entry muteEntry = this.getMuteEntry();
 
-        Preconditions.checkArgument(muteEntry != null, "Player is not muted");
+        if (muteEntry == null) {
+            throw new IllegalStateException("Player is not muted");
+        }
+
         return muteEntry.getExpiration();
     }
 
@@ -926,7 +937,9 @@ public class PlayerInfo {
     public @NotNull Component getBanReason() throws IllegalStateException {
         final var banEntry = this.getBanEntry();
 
-        Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
 
         final String reason = banEntry.getReason();
         return reason == null ? LanguageFile.renderTranslationComponent("ms.command.ban.default_reason") : text(reason);
@@ -941,7 +954,9 @@ public class PlayerInfo {
     public void setBanReason(final @NotNull String reason) throws IllegalStateException {
         final var banEntry = this.getBanEntry();
 
-        Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
         
         banEntry.setReason(reason);
         banEntry.save();
@@ -956,7 +971,10 @@ public class PlayerInfo {
     public @NotNull String getBannedBy() throws IllegalStateException {
         final var banEntry = this.getBanEntry();
 
-        Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+
         return banEntry.getSource();
     }
 
@@ -969,7 +987,9 @@ public class PlayerInfo {
     public void setBannedBy(final @NotNull String source) throws IllegalStateException {
         final var banEntry = this.getBanEntry();
 
-        Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
         
         banEntry.setSource(source);
         banEntry.save();
@@ -1010,7 +1030,10 @@ public class PlayerInfo {
     public @NotNull Instant getBannedFrom() throws IllegalStateException {
         final var banEntry = this.getBanEntry();
 
-        Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+
         return banEntry.getCreated().toInstant();
     }
 
@@ -1026,7 +1049,9 @@ public class PlayerInfo {
     public @NotNull Component getBannedTo(final @NotNull CommandSender sender) throws IllegalStateException {
         final var banEntry = this.getBanEntry();
 
-        Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
 
         final Date expiration = banEntry.getExpiration();
         return expiration == null
@@ -1046,7 +1071,9 @@ public class PlayerInfo {
     public @NotNull Component getBannedTo(final @NotNull InetAddress address) throws IllegalStateException {
         final var banEntry = this.getBanEntry();
 
-        Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
 
         final Date expiration = banEntry.getExpiration();
         return expiration == null
@@ -1064,7 +1091,9 @@ public class PlayerInfo {
     public @Nullable Instant getBannedTo() throws IllegalStateException {
         final var banEntry = this.getBanEntry();
 
-        Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
 
         final Date expiration = banEntry.getExpiration();
         return expiration == null ? null : expiration.toInstant();
@@ -1080,7 +1109,9 @@ public class PlayerInfo {
     public void setBannedTo(final @Nullable Date expiration) throws IllegalStateException {
         final var banEntry = this.getBanEntry();
 
-        Preconditions.checkArgument(banEntry != null, "Player is not banned");
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
         
         banEntry.setExpiration(expiration);
         banEntry.save();

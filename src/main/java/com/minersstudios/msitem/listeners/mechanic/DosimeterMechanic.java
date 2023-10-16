@@ -5,7 +5,7 @@ import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msitem.MSItem;
-import com.minersstudios.msitem.item.CustomItemType;
+import com.minersstudios.msitem.item.CustomItem;
 import com.minersstudios.msitem.item.registry.items.Dosimeter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -47,7 +47,7 @@ public class DosimeterMechanic extends AbstractMSListener {
         if (equipmentSlot == EquipmentSlot.HAND) {
             final ItemStack dosimeterItem = player.getInventory().getItem(event.getPreviousSlot());
 
-            CustomItemType.fromItemStack(dosimeterItem, Dosimeter.class)
+            CustomItem.fromItemStack(dosimeterItem, Dosimeter.class)
             .ifPresent(dosimeter -> {
                 final Dosimeter copy = dosimeter.copy();
 
@@ -75,7 +75,7 @@ public class DosimeterMechanic extends AbstractMSListener {
 
         final ItemStack dosimeterItem = playerInventory.getItem(equipmentSlot);
 
-        CustomItemType.fromItemStack(dosimeterItem, Dosimeter.class)
+        CustomItem.fromItemStack(dosimeterItem, Dosimeter.class)
         .ifPresent(dosimeter -> {
             final Dosimeter copy = dosimeter.copy();
             final EquipmentSlot newEquipmentSlot = equipmentSlot == EquipmentSlot.HAND ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
@@ -118,9 +118,9 @@ public class DosimeterMechanic extends AbstractMSListener {
             final ItemStack drop = event.getItemDrop().getItemStack();
             final ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
-            CustomItemType.fromItemStack(itemStack, Dosimeter.class)
+            CustomItem.fromItemStack(itemStack, Dosimeter.class)
             .ifPresent(dosimeter -> {
-                if (CustomItemType.fromItemStack(drop, Dosimeter.class).isEmpty()) return;
+                if (CustomItem.fromItemStack(drop, Dosimeter.class).isEmpty()) return;
 
                 final Dosimeter copy = dosimeter.copy();
 
@@ -139,9 +139,9 @@ public class DosimeterMechanic extends AbstractMSListener {
         if (equipmentSlot != null) {
             final ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
-            CustomItemType.fromItemStack(itemStack, Dosimeter.class)
+            CustomItem.fromItemStack(itemStack, Dosimeter.class)
             .ifPresent(dosimeter -> {
-                Dosimeter copy = dosimeter.copy();
+                final Dosimeter copy = dosimeter.copy();
 
                 copy.setItem(itemStack);
                 copy.setEnabled(false);
@@ -163,9 +163,9 @@ public class DosimeterMechanic extends AbstractMSListener {
 
         final ItemStack itemInHand = player.getInventory().getItem(hand);
 
-        CustomItemType.fromItemStack(itemInHand, Dosimeter.class)
+        CustomItem.fromItemStack(itemInHand, Dosimeter.class)
         .ifPresent(dosimeter -> {
-            Dosimeter copy = dosimeter.copy();
+            final Dosimeter copy = dosimeter.copy();
 
             event.setCancelled(true);
             copy.setItem(itemInHand);
@@ -190,7 +190,7 @@ public class DosimeterMechanic extends AbstractMSListener {
 
                 final ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
-                if (CustomItemType.fromItemStack(itemStack).orElse(null) instanceof final Dosimeter dosimeter) {
+                if (CustomItem.fromItemStack(itemStack).orElse(null) instanceof final Dosimeter dosimeter) {
                     final Dosimeter copy = dosimeter.copy();
 
                     copy.setItem(itemStack);
@@ -250,8 +250,8 @@ public class DosimeterMechanic extends AbstractMSListener {
             Map.Entry<Anomaly, Double> minEntry = null;
             double minValue = Double.POSITIVE_INFINITY;
 
-            for (var entry : map.entrySet()) {
-                double value = entry.getValue();
+            for (final var entry : map.entrySet()) {
+                final double value = entry.getValue();
 
                 if (value < minValue) {
                     minValue = value;

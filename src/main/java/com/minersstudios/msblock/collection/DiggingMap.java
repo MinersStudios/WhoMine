@@ -356,7 +356,7 @@ public class DiggingMap {
     public int entriesSize() {
         int totalSize = 0;
 
-        for (var diggingEntrySet : this.diggingBlockMap.values()) {
+        for (final var diggingEntrySet : this.diggingBlockMap.values()) {
             totalSize += diggingEntrySet.size();
         }
 
@@ -386,10 +386,10 @@ public class DiggingMap {
         private boolean farAway;
 
         private Entry(
-                @NotNull Player player,
-                int taskId,
-                int stage,
-                boolean farAway
+                final @NotNull Player player,
+                final int taskId,
+                final int stage,
+                final boolean farAway
         ) {
             this.player = player;
             this.stage = stage;
@@ -535,7 +535,8 @@ public class DiggingMap {
         @Override
         public boolean equals(final Object obj) {
             if (obj == this) return true;
-            return obj instanceof final Entry entry && entry.taskId == this.taskId;
+            return obj instanceof final Entry entry
+                    && entry.taskId == this.taskId;
         }
 
         /**

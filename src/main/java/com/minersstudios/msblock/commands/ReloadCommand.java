@@ -17,7 +17,7 @@ import static net.kyori.adventure.text.Component.translatable;
 public class ReloadCommand {
     private static final TranslatableComponent RELOAD_SUCCESS = translatable("ms.command.msblock.reload.success");
 
-    public static boolean runCommand(@NotNull CommandSender sender) {
+    public static boolean runCommand(final @NotNull CommandSender sender) {
         final long time = System.currentTimeMillis();
         final Server server = sender.getServer();
         final var crafts = server.recipeIterator();

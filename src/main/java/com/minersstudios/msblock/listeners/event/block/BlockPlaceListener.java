@@ -3,7 +3,7 @@ package com.minersstudios.msblock.listeners.event.block;
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
-import com.minersstudios.msblock.customblock.file.SoundGroup;
+import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
@@ -34,7 +34,7 @@ public class BlockPlaceListener extends AbstractMSListener {
                 blockType != Material.NOTE_BLOCK
                 && BlockUtils.isWoodenSound(blockType)
         ) {
-            SoundGroup.wood().playPlaceSound(block.getLocation().toCenterLocation());
+            SoundGroup.WOOD.playPlaceSound(block.getLocation().toCenterLocation());
         }
 
         if (blockType == Material.NOTE_BLOCK) {

@@ -206,8 +206,10 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
             clone.setContents(this.getContents());
 
             return (S) clone;
-        } catch (CloneNotSupportedException | IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
+        } catch (final CloneNotSupportedException e) {
+            throw new AssertionError("An error occurred while cloning '" + this + "'", e);
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("Something went wrong while cloning '" + this + "'", e);
         }
     }
 }

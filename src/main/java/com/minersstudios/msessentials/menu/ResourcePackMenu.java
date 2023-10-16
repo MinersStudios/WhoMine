@@ -146,7 +146,7 @@ public class ResourcePackMenu {
                 .buttonAt(6, fullButton)
                 .buttonAt(7, liteButton)
                 .buttonAt(8, liteButton)
-                .closeAction(((event, inventory) -> {
+                .closeAction((event, inventory) -> {
                     final Player player = (Player) event.getPlayer();
                     final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
                     final ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
@@ -154,7 +154,7 @@ public class ResourcePackMenu {
                     if (type == ResourcePack.Type.NULL) {
                         MSEssentials.getInstance().runTask(() -> player.openInventory(inventory));
                     }
-                }));
+                });
     }
 
     public static void open(final @NotNull Player player) {

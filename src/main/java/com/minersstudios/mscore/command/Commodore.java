@@ -49,7 +49,7 @@ public final class Commodore {
             ARGUMENTS_FIELD.setAccessible(true);
             CUSTOM_SUGGESTIONS_FIELD.setAccessible(true);
             COMMAND_EXECUTE_FUNCTION_FIELD.setAccessible(true);
-        } catch (ReflectiveOperationException e) {
+        } catch (final ReflectiveOperationException e) {
             throw new ExceptionInInitializerError(e);
         }
 
@@ -160,7 +160,7 @@ public final class Commodore {
             ((Map<?, ?>) CHILDREN_FIELD.get(root)).remove(name);
             ((Map<?, ?>) LITERALS_FIELD.get(root)).remove(name);
             ((Map<?, ?>) ARGUMENTS_FIELD.get(root)).remove(name);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new RuntimeException("Failed to remove child", e);
         }
     }
@@ -185,7 +185,7 @@ public final class Commodore {
             ) {
                 CUSTOM_SUGGESTIONS_FIELD.set(argumentNode, suggestionProvider);
             }
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new RuntimeException("Failed to set fields", e);
         }
 

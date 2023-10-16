@@ -1,7 +1,6 @@
 package com.minersstudios.msessentials.player.skin;
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
-import com.google.common.base.Preconditions;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
@@ -74,9 +73,18 @@ public class Skin implements ConfigurationSerializable {
             final @NotNull String value,
             final @NotNull String signature
     ) throws IllegalArgumentException {
-        Preconditions.checkArgument(matchesNameRegex(name), "The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores");
-        Preconditions.checkArgument(isValidBase64(value), "The value must be a valid Base64 string");
-        Preconditions.checkArgument(isValidBase64(signature), "The signature must be a valid Base64 string");
+        if (!matchesNameRegex(name)) {
+            throw new IllegalArgumentException("The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores");
+        }
+
+        if (!isValidBase64(value)) {
+            throw new IllegalArgumentException("The value must be a valid Base64 string");
+        }
+
+        if (!isValidBase64(signature)) {
+            throw new IllegalArgumentException("The signature must be a valid Base64 string");
+        }
+
         return new Skin(name, value, signature);
     }
 
@@ -95,8 +103,13 @@ public class Skin implements ConfigurationSerializable {
             final @NotNull String name,
             final @NotNull String link
     ) throws IllegalArgumentException {
-        Preconditions.checkArgument(matchesNameRegex(name), "The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores");
-        Preconditions.checkArgument(isValidSkinImg(link), "The link must start with https:// and end with .png and the image must be 64x64 pixels");
+        if (!matchesNameRegex(name)) {
+            throw new IllegalArgumentException("The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores");
+        }
+
+        if (!isValidSkinImg(link)) {
+            throw new IllegalArgumentException("The link must start with https:// and end with .png and the image must be 64x64 pixels");
+        }
 
         final AtomicInteger retryAttempts = new AtomicInteger(0);
 
@@ -106,7 +119,7 @@ public class Skin implements ConfigurationSerializable {
             try {
                 final Skin skin = future.get();
                 if (skin != null) return skin;
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (final InterruptedException | ExecutionException e) {
                 MSEssentials.logger().log(Level.SEVERE, "An error occurred while attempting to retrieve a skin from a link", e);
             }
 
@@ -220,7 +233,7 @@ public class Skin implements ConfigurationSerializable {
 
         try {
             return Skin.create(name, value, signature);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             MSEssentials.logger().log(Level.SEVERE, "Failed to deserialize skin: " + name, e);
             return null;
         }
@@ -235,7 +248,7 @@ public class Skin implements ConfigurationSerializable {
         try {
             final BufferedImage image = ImageIO.read(new URL(link));
             return image.getWidth() == 64 && image.getHeight() == 64;
-        } catch (IOException e) {
+        } catch (final IOException ignored) {
             return false;
         }
     }
@@ -268,7 +281,7 @@ public class Skin implements ConfigurationSerializable {
             try {
                 response = MineSkinResponse.fromLink(link);
                 break;
-            } catch (IOException e) {
+            } catch (final IOException ignored) {
                 if (i >= 2) return null;
             }
         }
@@ -281,7 +294,7 @@ public class Skin implements ConfigurationSerializable {
 
                 try {
                     return Skin.create(name, value, signature);
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     MSEssentials.logger().log(Level.SEVERE, "Failed to create skin : '" + name + "' with value : '" + value + "' and signature : '" + signature + "'", e);
                 }
             }
@@ -293,7 +306,7 @@ public class Skin implements ConfigurationSerializable {
                     case "failed_to_create_id", "skin_change_failed" -> {
                         try {
                             TimeUnit.SECONDS.sleep(5);
-                        } catch (InterruptedException e) {
+                        } catch (final InterruptedException e) {
                             MSEssentials.logger().log(Level.SEVERE, "Failed to sleep thread", e);
                         }
                     }
@@ -340,7 +353,7 @@ public class Skin implements ConfigurationSerializable {
 
                 try {
                     TimeUnit.SECONDS.sleep(sleepDuration);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     MSEssentials.logger().log(Level.SEVERE, "Failed to sleep thread", e);
                 }
             }
@@ -358,7 +371,7 @@ public class Skin implements ConfigurationSerializable {
         try {
             Base64.getDecoder().decode(src);
             return true;
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException ignored) {
             return false;
         }
     }

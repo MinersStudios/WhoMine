@@ -1,11 +1,9 @@
 package com.minersstudios.msdecor.commands;
 
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
-import com.minersstudios.msdecor.customdecor.Typed;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
+import com.minersstudios.msessentials.player.PlayerInfo;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,69 +13,61 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 public class GiveCommand {
+    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
+    private static final TranslatableComponent PLAYER_NOT_ONLINE = translatable("ms.error.player_not_online");
+    private static final TranslatableComponent WRONG_DECOR = translatable("ms.command.msdecor.give.wrong_decor");
+    private static final TranslatableComponent WRONG_FORMAT = translatable("ms.error.wrong_format");
+    private static final TranslatableComponent GIVE_SUCCESS = translatable("ms.command.msdecor.give.success");
 
     public static boolean runCommand(
             final @NotNull CommandSender sender,
             final String @NotNull ... args
     ) {
         if (args.length < 3) return false;
-        if (args[1].length() > 2) {
-            int amount = 1;
-            final Player player = Bukkit.getPlayer(args[1]);
-            CustomDecorData customDecorData = MSPlugin.getGlobalCache().customDecorMap.getByPrimaryKey(args[2]);
 
-            if (player == null) {
-                MSLogger.severe(sender, translatable("ms.error.player_not_found"));
-                return true;
-            }
+        final String playerArg = args[1];
+        final String blockArg = args[2];
+        final String amountArg = args.length == 4 ? args[3] : "1";
+        final PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
 
-            if (customDecorData == null) {
-                MSLogger.severe(sender, translatable("ms.command.msdecor.give.wrong_decor"));
-                return true;
-            }
-
-            switch (args.length) {
-                case 4, 5 -> {
-                    try {
-                        amount = Integer.parseInt(args[args.length - 1]);
-                    } catch (NumberFormatException ignore) {
-                        MSLogger.severe(sender, translatable("ms.error.wrong_format"));
-                        return true;
-                    }
-                }
-            }
-
-            if (
-                    customDecorData instanceof final Typed typed
-                    && args.length == 4
-                    && !args[3].matches("\\d+")
-            ) {
-                for (final var type : typed.getTypes()) {
-                    if (args[3].equals(type.getNamespacedKey().getKey())) {
-                        customDecorData = typed.createCustomDecorData(type);
-                    }
-                }
-            }
-
-            final ItemStack itemStack = customDecorData.getItemStack();
-            final Component itemName = itemStack.displayName();
-
-            itemStack.setAmount(amount);
-            player.getInventory().addItem(itemStack);
-
-            MSLogger.info(
-                    sender,
-                    translatable(
-                            "ms.command.msdecor.give.success",
-                            text(amount),
-                            itemName,
-                            text(player.getName())
-                    )
-            );
+        if (playerInfo == null) {
+            MSLogger.severe(sender, PLAYER_NOT_FOUND);
             return true;
         }
 
-        MSLogger.warning(sender, translatable("ms.error.name_length"));
+        final Player player = playerInfo.getOnlinePlayer();
+
+        if (player == null) {
+            MSLogger.warning(sender, PLAYER_NOT_ONLINE);
+            return true;
+        }
+
+        CustomDecorData.fromKey(blockArg).ifPresentOrElse(
+                data -> {
+                    final int amount;
+
+                    try {
+                        amount = Integer.parseInt(amountArg);
+                    } catch (final NumberFormatException ignore) {
+                        MSLogger.severe(sender, WRONG_FORMAT);
+                        return;
+                    }
+
+                    final ItemStack itemStack = data.getItem();
+
+                    itemStack.setAmount(amount);
+                    player.getInventory().addItem(itemStack);
+                    MSLogger.fine(
+                            sender,
+                            GIVE_SUCCESS.args(
+                                    text(amount),
+                                    itemStack.displayName(),
+                                    playerInfo.getDefaultName()
+                            )
+                    );
+                },
+                () -> MSLogger.severe(sender, WRONG_DECOR)
+        );
         return true;
     }
 }

@@ -2,19 +2,12 @@ package com.minersstudios.msitem.listeners.mechanic;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.ItemUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
-import com.minersstudios.msdecor.customdecor.Sittable;
-import com.minersstudios.msdecor.customdecor.Typed;
-import com.minersstudios.msdecor.customdecor.Wrenchable;
-import com.minersstudios.msdecor.utils.CustomDecorUtils;
 import com.minersstudios.msitem.item.CustomItemType;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,10 +16,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @MSListener
 public class WrenchMechanic extends AbstractMSListener {
@@ -46,15 +36,17 @@ public class WrenchMechanic extends AbstractMSListener {
 
         if (
                 event.getHand() == EquipmentSlot.HAND
-                && CustomItemType.typeOf(itemInMainHand) == CustomItemType.WRENCH
+                && CustomItemType.fromItemStack(itemInMainHand) == CustomItemType.WRENCH
         ) {
             event.setCancelled(Tag.DIRT.isTagged(clickedBlock.getType()));
 
+            //TODO
+            /*
             if (
                     MSDecorUtils.isCustomDecorMaterial(clickedBlock.getType())
-                    && CustomDecorUtils.getCustomDecorDataByLocation(location).orElse(null) instanceof final Wrenchable wrenchable
+                    && MSDecorUtils.getCustomDecorDataByLocation(location).orElse(null) instanceof final Wrenchable wrenchable
             ) {
-                if (wrenchable instanceof Sittable && !player.isSneaking()) return;
+                if (wrenchable instanceof SittableDecorData && !player.isSneaking()) return;
 
                 for (final var nearbyEntity : clickedBlock.getWorld().getNearbyEntities(location, 0.5d, 0.5d, 0.5d)) {
                     if (nearbyEntity instanceof final ItemFrame itemFrame) {
@@ -70,6 +62,7 @@ public class WrenchMechanic extends AbstractMSListener {
                     }
                 }
             }
+             */
         }
     }
 
@@ -77,28 +70,33 @@ public class WrenchMechanic extends AbstractMSListener {
     public void onPlayerInteractAtEntity(final @NotNull PlayerInteractAtEntityEvent event) {
         final Entity entity = event.getRightClicked();
 
-        if (!MSDecorUtils.isCustomDecorEntity(entity)) return;
+        if (!MSDecorUtils.isCustomDecor(entity)) return;
 
         final Player player = event.getPlayer();
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
+        //TODO
+        /*
         if (
                 event.getHand() == EquipmentSlot.HAND
                 && CustomItemType.typeOf(itemInMainHand) == CustomItemType.WRENCH
-                && CustomDecorUtils.getCustomDecorDataByEntity(entity).orElse(null) instanceof final Wrenchable wrenchable
+                && MSDecorUtils.getCustomDecorDataByEntity(entity).orElse(null) instanceof final Wrenchable wrenchable
         ) {
             use(player, itemInMainHand, entity.getLocation(), entity, wrenchable);
         }
+         */
     }
 
+    //TODO
+    /*
     private static void use(
             final @NotNull Player player,
             final @NotNull ItemStack itemInMainHand,
             final @NotNull Location location,
             final @Nullable Entity entity,
-            final @NotNull Wrenchable wrenchable
+            final @NotNull CustomDecorData<?> decorData
     ) {
-        final Typed.Type type = wrenchable.getNextType(wrenchable.getType(wrenchable.getItemStack()));
+        final Typed.Type type = wrenchable.getNextType(wrenchable.getType(wrenchable.getItem()));
         if (type == null) return;
         final ItemStack customItem = wrenchable.createItemStack(type);
 
@@ -139,4 +137,5 @@ public class WrenchMechanic extends AbstractMSListener {
         player.swingMainHand();
         player.getWorld().playSound(location, Sound.ITEM_SPYGLASS_USE, SoundCategory.PLAYERS, 1.0f, 1.0f);
     }
+     */
 }

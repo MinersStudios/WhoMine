@@ -165,7 +165,7 @@ public final class Config extends MSConfig {
                     final Anomaly anomaly = Anomaly.fromConfig(file);
                     cache.anomalies.put(anomaly.getNamespacedKey(), anomaly);
                 });
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 MSEssentials.logger().log(Level.SEVERE, "An error occurred while loading anomalies!", e);
             }
         });
@@ -205,7 +205,7 @@ public final class Config extends MSConfig {
                         .build()
                         .awaitReady()
                         : null;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new RuntimeException("An error occurred while loading Discord bot!", e);
             }
 

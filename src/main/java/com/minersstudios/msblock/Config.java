@@ -88,7 +88,7 @@ public final class Config extends MSConfig {
 
             this.plugin.setLoadedCustoms(true);
             MSBlock.logger().info("Loaded " + CustomBlockRegistry.size() + " custom blocks in " + (System.currentTimeMillis() - start) + "ms");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MSBlock.logger().log(Level.SEVERE, "An error occurred while loading blocks", e);
         }
     }
