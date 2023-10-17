@@ -2,10 +2,9 @@ package com.minersstudios.mscore.util;
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import com.minersstudios.mscore.util.menu.ShulkerBoxMenu;
+import com.minersstudios.mscore.inventory.ShulkerBoxMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -13,30 +12,39 @@ import com.mojang.authlib.properties.PropertyMap;
 import net.kyori.adventure.text.Component;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.*;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.biome.BiomeManager;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R2.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventory;
-import org.bukkit.entity.*;
-import org.bukkit.event.Event;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerShowEntityEvent;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -155,19 +163,17 @@ public final class PlayerUtils {
     public static @Nullable Player loadPlayer(final @NotNull OfflinePlayer offlinePlayer) {
         if (!offlinePlayer.hasPlayedBefore()) return null;
 
-        final GameProfile profile = new GameProfile(
-                offlinePlayer.getUniqueId(),
-                offlinePlayer.getName() != null
-                ? offlinePlayer.getName()
-                : offlinePlayer.getUniqueId().toString()
-        );
         final MinecraftServer server = MinecraftServer.getServer();
-        final ServerLevel worldServer = server.overworld();
-        final Player online = new ServerPlayer(
-            server,
-            worldServer,
-            profile,
-            ((CraftPlayer) offlinePlayer).getHandle().clientInformation()
+        final CraftPlayer online = new ServerPlayer(
+                server,
+                server.overworld(),
+                new GameProfile(
+                        offlinePlayer.getUniqueId(),
+                        offlinePlayer.getName() != null
+                                ? offlinePlayer.getName()
+                                : offlinePlayer.getUniqueId().toString()
+                ),
+                ((CraftPlayer) offlinePlayer).getHandle().clientInformation()
         ).getBukkitEntity();
 
         online.loadData();
@@ -216,31 +222,10 @@ public final class PlayerUtils {
             return;
         }
 
-        final Location location = player.getLocation();
         final ServerGamePacketListenerImpl connection = serverPlayer.connection;
         final ServerLevel serverLevel = serverPlayer.serverLevel();
         final ServerPlayerGameMode gameMode = serverPlayer.gameMode;
         final var players = minecraftServer.getPlayerList().players;
-
-        final ClientboundRespawnPacket respawnPacket = new ClientboundRespawnPacket(
-            new CommonPlayerSpawnInfo(
-                serverLevel.dimensionTypeId(),
-                serverLevel.dimension(),
-                BiomeManager.obfuscateSeed(serverLevel.getSeed()),
-                gameMode.getGameModeForPlayer(),
-                gameMode.getPreviousGameModeForPlayer(),
-                serverLevel.isDebug(),
-                serverLevel.isFlat(),
-                serverPlayer.getLastDeathLocation(),
-                serverPlayer.getPortalCooldown()
-            ),
-            ClientboundRespawnPacket.KEEP_ALL_DATA
-        );
-        final ClientboundSetExperiencePacket experiencePacket = new ClientboundSetExperiencePacket(
-                serverPlayer.experienceProgress,
-                serverPlayer.totalExperience,
-                serverPlayer.experienceLevel
-        );
 
         for (final var forWho : players) {
             if (forWho.getBukkitEntity().canSee(player)) {
@@ -256,11 +241,32 @@ public final class PlayerUtils {
             }
         }
 
-        connection.send(respawnPacket);
+        connection.send(
+                new ClientboundRespawnPacket(
+                        new CommonPlayerSpawnInfo(
+                                serverLevel.dimensionTypeId(),
+                                serverLevel.dimension(),
+                                BiomeManager.obfuscateSeed(serverLevel.getSeed()),
+                                gameMode.getGameModeForPlayer(),
+                                gameMode.getPreviousGameModeForPlayer(),
+                                serverLevel.isDebug(),
+                                serverLevel.isFlat(),
+                                serverPlayer.getLastDeathLocation(),
+                                serverPlayer.getPortalCooldown()
+                        ),
+                        ClientboundRespawnPacket.KEEP_ALL_DATA
+                )
+        );
         serverPlayer.onUpdateAbilities();
-        connection.teleport(location);
+        connection.teleport(player.getLocation());
         minecraftServer.getPlayerList().sendAllPlayerInfo(serverPlayer);
-        connection.send(experiencePacket);
+        connection.send(
+                new ClientboundSetExperiencePacket(
+                        serverPlayer.experienceProgress,
+                        serverPlayer.totalExperience,
+                        serverPlayer.experienceLevel
+                )
+        );
 
         for (final var mobEffect : serverPlayer.getActiveEffects()) {
             connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), mobEffect));
@@ -283,10 +289,7 @@ public final class PlayerUtils {
             final @NotNull UUID uuid,
             final @NotNull String name
     ) {
-        final CraftServer craftServer = (CraftServer) Bukkit.getServer();
-        final GameProfile gameProfile = new GameProfile(uuid, name);
-
-        return craftServer.getOfflinePlayer(gameProfile);
+        return ((CraftServer) Bukkit.getServer()).getOfflinePlayer(new GameProfile(uuid, name));
     }
 
     /**
@@ -320,22 +323,39 @@ public final class PlayerUtils {
         final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         final Container inventory = ((CraftInventory) shulkerBox.getInventory()).getInventory();
 
-        if (inventory != null && !serverPlayer.isSpectator()) {
+        if (
+                inventory != null
+                && !serverPlayer.isSpectator()
+        ) {
             final int syncId = serverPlayer.nextContainerCounter();
-            final ShulkerBoxMenu shulkerBoxMenu = new ShulkerBoxMenu(syncId, serverPlayer.getInventory(), inventory);
-            final AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(serverPlayer, shulkerBoxMenu);
+            final AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEventWithTitle(
+                    serverPlayer,
+                    new ShulkerBoxMenu(syncId, serverPlayer.getInventory(), inventory)
+            ).getSecond();
 
             container.setTitle(((MenuProvider) inventory).getDisplayName());
 
             serverPlayer.containerMenu = container;
 
             if (playSound) {
-                shulkerBox.getWorld().playSound(shulkerBox.getLocation(), Sound.BLOCK_SHULKER_BOX_OPEN, SoundCategory.BLOCKS, 0.5f, serverPlayer.getRandom().nextFloat() * 0.1f + 0.9f);
+                final Location location = shulkerBox.getLocation();
+
+                serverPlayer.level().playSound(
+                        null,
+                        location.getX(),
+                        location.getY(),
+                        location.getZ(),
+                        SoundEvents.SHULKER_BOX_OPEN,
+                        SoundSource.BLOCKS,
+                        0.5f,
+                        serverPlayer.getRandom().nextFloat() * 0.1f + 0.9f
+                );
             }
 
             if (!serverPlayer.isImmobile()) {
-                ClientboundOpenScreenPacket packet = new ClientboundOpenScreenPacket(syncId, MenuType.SHULKER_BOX, container.getTitle());
-                serverPlayer.connection.send(packet);
+                serverPlayer.connection.send(
+                        new ClientboundOpenScreenPacket(syncId, MenuType.SHULKER_BOX, container.getTitle())
+                );
             }
 
             serverPlayer.initMenu(container);
@@ -391,16 +411,16 @@ public final class PlayerUtils {
             final @NotNull ServerPlayer forWho,
             final @NotNull ServerPlayer serverPlayer
     ) {
-        final ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
-        final ChunkMap.TrackedEntity entry = tracker.entityMap.get(serverPlayer.getId());
-        final ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(ImmutableList.of(serverPlayer.getUUID()));
+        final ChunkMap.TrackedEntity entry = forWho.serverLevel().getChunkSource().chunkMap.entityMap.get(serverPlayer.getId());
 
         if (entry != null) {
             entry.removePlayer(forWho);
         }
 
         if (serverPlayer.sentListPacket) {
-            forWho.connection.send(packet);
+            forWho.connection.send(
+                    new ClientboundPlayerInfoRemovePacket(Collections.singletonList(serverPlayer.getUUID()))
+            );
         }
     }
 
@@ -409,13 +429,11 @@ public final class PlayerUtils {
             final @NotNull ServerPlayer forWho,
             final @NotNull ServerPlayer serverPlayer
     ) {
-        final PluginManager pluginManager = serverPlayer.getBukkitEntity().getServer().getPluginManager();
-        final ChunkMap tracker = forWho.serverLevel().getChunkSource().chunkMap;
-        final ChunkMap.TrackedEntity trackedEntity = tracker.entityMap.get(serverPlayer.getId());
-        final ClientboundPlayerInfoUpdatePacket packet = ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(ImmutableList.of(serverPlayer));
-        final Event event = new PlayerShowEntityEvent(forWho.getBukkitEntity(), serverPlayer.getBukkitEntity());
+        final ChunkMap.TrackedEntity trackedEntity = forWho.serverLevel().getChunkSource().chunkMap.entityMap.get(serverPlayer.getId());
 
-        forWho.connection.send(packet);
+        forWho.connection.send(
+                ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(Collections.singletonList(serverPlayer))
+        );
 
         if (
                 trackedEntity != null
@@ -424,6 +442,11 @@ public final class PlayerUtils {
             trackedEntity.updatePlayer(forWho);
         }
 
-        pluginManager.callEvent(event);
+        serverPlayer.getBukkitEntity().getServer().getPluginManager().callEvent(
+                new PlayerShowEntityEvent(
+                        forWho.getBukkitEntity(),
+                        serverPlayer.getBukkitEntity()
+                )
+        );
     }
 }

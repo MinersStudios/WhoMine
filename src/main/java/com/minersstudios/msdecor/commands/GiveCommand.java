@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-public class GiveCommand {
+public final class GiveCommand {
     private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
     private static final TranslatableComponent PLAYER_NOT_ONLINE = translatable("ms.error.player_not_online");
     private static final TranslatableComponent WRONG_DECOR = translatable("ms.command.msdecor.give.wrong_decor");

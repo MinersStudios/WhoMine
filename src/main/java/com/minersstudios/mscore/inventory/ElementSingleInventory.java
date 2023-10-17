@@ -57,9 +57,7 @@ public class ElementSingleInventory extends CustomInventoryImpl<ElementSingleInv
     public @NotNull ElementSingleInventory elements(final @NotNull List<InventoryButton> elements) {
         this.elements.clear();
 
-        for (int i = 0; i < this.elementSlots.length; i++) {
-            if (i >= elements.size()) break;
-
+        for (int i = 0; i < elements.size(); ++i) {
             final InventoryButton button = elements.get(i);
 
             this.elements.add(button);

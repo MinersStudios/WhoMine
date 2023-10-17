@@ -71,14 +71,16 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      * @return This inventory
      */
     public @NotNull ElementPagedInventory elements(final @NotNull List<InventoryButton> elements) {
-        this.elements.clear();
-        this.setPagesSize((int) Math.ceil((double) elements.size() / this.elementSlots.length));
+        final int size = elements.size();
 
-        for (int page = 0; page < this.pagesSize; page++) {
-            for (int element = 0; element < this.elementSlots.length; element++) {
+        this.elements.clear();
+        this.setPagesSize((int) Math.ceil((double) size / this.elementSlots.length));
+
+        for (int page = 0; page < this.pagesSize; ++page) {
+            for (int element = 0; element < this.elementSlots.length; ++element) {
                 final int index = element + (page * this.elementSlots.length);
 
-                if (index >= elements.size()) break;
+                if (index >= size) break;
 
                 this.elements.put(page, elements.get(index));
             }
@@ -106,13 +108,14 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      */
     public @NotNull Map<Integer, InventoryButton> getPageContents(final int page) {
         final var buttons = new HashMap<Integer, InventoryButton>(this.elementSlots.length);
+        final var buttonList = this.elements.get(page);
 
-        for (int i = 0; i < this.elements.get(page).size(); i++) {
-            buttons.put(this.elementSlots[i], this.elements.get(page).get(i));
+        for (int i = 0; i < buttonList.size(); ++i) {
+            buttons.put(this.elementSlots[i], buttonList.get(i));
         }
 
         for (final int slot : this.elementSlots) {
-            buttons.computeIfAbsent(slot, k -> null);
+            buttons.putIfAbsent(slot, null);
         }
 
         return buttons;
@@ -143,7 +146,7 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
     public void updatePages() {
         this.pages.clear();
 
-        for (int page = 0; page < this.pagesSize; page++) {
+        for (int page = 0; page < this.pagesSize; ++page) {
             this.pages.put(page, this.createPage(page));
         }
 

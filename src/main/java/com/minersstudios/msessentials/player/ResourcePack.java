@@ -125,7 +125,7 @@ public class ResourcePack {
     private static @NotNull String generateHash(
             final @NotNull String url,
             final @NotNull String fileName
-    ) {
+    ) throws IllegalStateException {
         final URI uri = URI.create(url);
         final Path path = MSEssentials.getInstance().getPluginFolder().toPath().resolve(fileName);
 
@@ -139,14 +139,14 @@ public class ResourcePack {
         client.sendAsync(request, bodyHandler)
         .thenAccept(response -> {
             if (response.statusCode() != HttpURLConnection.HTTP_OK) {
-                throw new RuntimeException("Failed to download resource pack. Response code : " + response.statusCode());
+                throw new IllegalStateException("Failed to download resource pack. Response code : " + response.statusCode());
             }
         }).join();
 
         final byte[] bytes = createSHA1(path);
 
         if (bytes == null) {
-            throw new RuntimeException("Failed to generate hash of resource pack");
+            throw new IllegalStateException("Failed to generate hash of resource pack");
         }
 
         final String hash = bytesToHexString(bytes);

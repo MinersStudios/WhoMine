@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-public class ReloadCommand {
+public final class ReloadCommand {
     private static final TranslatableComponent RELOAD_SUCCESS = translatable("ms.command.msdecor.reload.success");
 
     public static boolean runCommand(final @NotNull CommandSender sender) {

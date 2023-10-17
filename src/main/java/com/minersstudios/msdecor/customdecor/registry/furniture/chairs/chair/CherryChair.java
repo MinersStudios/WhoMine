@@ -1,5 +1,7 @@
 package com.minersstudios.msdecor.customdecor.registry.furniture.chairs.chair;
 
+import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msdecor.customdecor.CustomDecorDataImpl;
@@ -8,11 +10,10 @@ import com.minersstudios.msdecor.customdecor.DecorHitBox;
 import com.minersstudios.msdecor.customdecor.Facing;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.Map;
 
 public final class CherryChair extends CustomDecorDataImpl<CherryChair> {
@@ -26,7 +27,7 @@ public final class CherryChair extends CustomDecorDataImpl<CherryChair> {
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Вишнёвый стул со спинкой"));
         itemStack.setItemMeta(itemMeta);
 
-        final Builder builder = new Builder()
+        return new Builder()
                 .key("cherry_chair")
                 .hitBox(new DecorHitBox(
                         1.0d,
@@ -36,22 +37,26 @@ public final class CherryChair extends CustomDecorDataImpl<CherryChair> {
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
-                .itemStack(itemStack);
-        final ShapedRecipe recipe = new ShapedRecipe(builder.key(), builder.itemStack())
-                .shape(
-                        "P  ",
-                        "PLP",
-                        "P P"
-                )
-                .setIngredient('P', Material.CHERRY_PLANKS)
-                .setIngredient('L', Material.LEATHER);
-
-        recipe.setGroup(CustomDecorType.NAMESPACE + ":chair");
-
-        return builder.recipes(
-                Collections.singletonList(Map.entry(
-                        recipe, true
-                ))
-        );
+                .itemStack(itemStack)
+                .recipes(
+                        builder -> Map.entry(
+                                RecipeBuilder.shapedBuilder()
+                                .namespacedKey(builder.key())
+                                .group(CustomDecorType.NAMESPACE + ":chair")
+                                .category(CraftingBookCategory.BUILDING)
+                                .result(builder.itemStack())
+                                .shape(
+                                        "P  ",
+                                        "PLP",
+                                        "P P"
+                                )
+                                .ingredients(
+                                        ShapedRecipeBuilder.material('P', Material.CHERRY_PLANKS),
+                                        ShapedRecipeBuilder.material('L', Material.LEATHER)
+                                )
+                                .build(),
+                                true
+                        )
+                );
     }
 }

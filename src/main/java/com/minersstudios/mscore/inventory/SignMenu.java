@@ -1,7 +1,8 @@
-package com.minersstudios.mscore.util.menu;
+package com.minersstudios.mscore.inventory;
 
 import com.minersstudios.mscore.listeners.packet.player.PlayerUpdateSignListener;
-import io.papermc.paper.adventure.PaperAdventure;
+import com.minersstudios.mscore.util.LocationUtils;
+import io.papermc.paper.adventure.AdventureComponent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -13,31 +14,23 @@ import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftLocation;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiPredicate;
 
 /**
  * A utility class for creating sign menus
- *
- * @see #create(Component, Component, Component, Component, BiPredicate)
  */
-public final class SignMenu {
+public final class SignMenu implements Cloneable {
     private final Component[] lines;
-    private BiPredicate<Player, String[]> response;
+    private final BiPredicate<Player, String[]> response;
     private Location location;
 
-    private static final Map<Player, SignMenu> SIGN_MENU_MAP = new HashMap<>();
-
-    private SignMenu(final Component @NotNull [] lines) {
-        this.lines = lines;
-    }
+    private static final Map<Player, SignMenu> SIGN_MENU_MAP = new ConcurrentHashMap<>();
 
     /**
      * Creates a new {@link SignMenu} instance with the given text.
@@ -52,20 +45,16 @@ public final class SignMenu {
      * @param third    The third line of the sign
      * @param fourth   The fourth line of the sign
      * @param response The response handler
-     * @return The SignMenu instance
      */
-    @Contract("_, _, _, _, _ -> new")
-    public static @NotNull SignMenu create(
+    public SignMenu(
             final @NotNull Component first,
             final @NotNull Component second,
             final @NotNull Component third,
             final @NotNull Component fourth,
             final @NotNull BiPredicate<Player, String[]> response
     ) {
-        final SignMenu menu = new SignMenu(new Component[] { first, second, third, fourth });
-        menu.response = response;
-
-        return menu;
+        this.lines = new Component[] { first, second, third, fourth };
+        this.response = response;
     }
 
     /**
@@ -109,32 +98,21 @@ public final class SignMenu {
      * @param player The player
      */
     public void open(@NotNull Player player) {
-        this.location = player.getLocation();
-        this.location.setY(this.location.getY() - 4.0d);
+        final SignMenu clone = this.clone();
+
+        clone.location = player.getLocation().subtract(0.0d, 4.0d, 0.0d);
 
         final ServerGamePacketListenerImpl connection = ((CraftPlayer) player).getHandle().connection;
-        final BlockPos blockPos = CraftLocation.toBlockPosition(this.location);
+        final BlockPos blockPos = LocationUtils.bukkitToNms(clone.location);
         final BlockState blockState = Blocks.OAK_SIGN.defaultBlockState();
         final SignBlockEntity sign = new SignBlockEntity(blockPos, blockState);
-        final net.minecraft.network.chat.Component[] components = new net.minecraft.network.chat.Component[4];
-
-        for (int i = 0; i < 4; i++) {
-            if (
-                    i < this.lines.length
-                    && this.lines[i] != null
-            ) {
-                components[i] = PaperAdventure.asVanilla(this.lines[i]);
-            } else {
-                components[i] = net.minecraft.network.chat.Component.literal("");
-            }
-        }
 
         sign.setText(
                 sign.getFrontText()
-                .setMessage(0, components[0])
-                .setMessage(1, components[1])
-                .setMessage(2, components[2])
-                .setMessage(3, components[3]),
+                .setMessage(0, new AdventureComponent(this.lines[0]))
+                .setMessage(1, new AdventureComponent(this.lines[1]))
+                .setMessage(2, new AdventureComponent(this.lines[2]))
+                .setMessage(3, new AdventureComponent(this.lines[3])),
                 true
         );
 
@@ -142,7 +120,7 @@ public final class SignMenu {
         connection.send(ClientboundBlockEntityDataPacket.create(sign));
         connection.send(new ClientboundOpenSignEditorPacket(blockPos, true));
 
-        SIGN_MENU_MAP.put(player, this);
+        SIGN_MENU_MAP.put(player, clone);
     }
 
     /**
@@ -153,8 +131,24 @@ public final class SignMenu {
      * @param player The player to close the sign for
      */
     public void close(final @NotNull Player player) {
-        if (SIGN_MENU_MAP.remove(player) != null) {
-            player.sendBlockChange(this.location, this.location.getBlock().getBlockData());
+        final SignMenu menu = SIGN_MENU_MAP.remove(player);
+
+        if (menu != null) {
+            player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());
+        }
+    }
+
+    /**
+     * Creates and returns a clone of this sign menu
+     *
+     * @return A clone of this sign menu
+     */
+    @Override
+    public @NotNull SignMenu clone() {
+        try {
+            return (SignMenu) super.clone();
+        } catch (final CloneNotSupportedException e) {
+            throw new AssertionError("An error occurred while cloning SignMenu", e);
         }
     }
 }

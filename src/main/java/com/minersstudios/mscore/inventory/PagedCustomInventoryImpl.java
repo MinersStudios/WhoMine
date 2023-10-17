@@ -130,11 +130,14 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
     public void updateStaticButtons() {
         if (!this.hasStaticButtons()) return;
 
-        this.staticButtons.forEach((slot, button) -> {
+        for (final var entry : this.staticButtons.entrySet()) {
+            final int slot = entry.getKey();
+            final StaticInventoryButton button = entry.getValue();
+
             for (final var pagedInventory : this.pages.values()) {
                 pagedInventory.setItem(slot, button == null ? EMPTY_ITEM : button.getButton(pagedInventory).item());
             }
-        });
+        }
     }
 
     @Override

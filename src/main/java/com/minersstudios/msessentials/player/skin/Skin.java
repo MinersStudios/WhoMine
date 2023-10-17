@@ -277,7 +277,7 @@ public class Skin implements ConfigurationSerializable {
     ) {
         MineSkinResponse response;
 
-        for (int i = 0; true; i++) {
+        for (int i = 0; true; ++i) {
             try {
                 response = MineSkinResponse.fromLink(link);
                 break;

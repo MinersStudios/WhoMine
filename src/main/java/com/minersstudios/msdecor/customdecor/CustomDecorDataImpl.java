@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
@@ -602,7 +603,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.namespacedKey;
         }
 
-        public Builder key(final @NotNull String key) throws IllegalArgumentException {
+        public @NotNull Builder key(final @NotNull String key) throws IllegalArgumentException {
             if (!KEY_PATTERN.matcher(key).matches()) {
                 throw new IllegalArgumentException("Key '" + key + "' does not match regex '" + KEY_REGEX + "'!");
             }
@@ -615,7 +616,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.hitBox;
         }
 
-        public Builder hitBox(final @NotNull DecorHitBox hitBox) {
+        public @NotNull Builder hitBox(final @NotNull DecorHitBox hitBox) {
             this.hitBox = hitBox;
             return this;
         }
@@ -624,7 +625,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.facing;
         }
 
-        public Builder facing(final @NotNull Facing facing) {
+        public @NotNull Builder facing(final @NotNull Facing facing) {
             this.facing = facing;
             return this;
         }
@@ -633,7 +634,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.soundGroup;
         }
 
-        public Builder soundGroup(final @NotNull SoundGroup soundGroup) {
+        public @NotNull Builder soundGroup(final @NotNull SoundGroup soundGroup) {
             this.soundGroup = soundGroup;
             return this;
         }
@@ -642,7 +643,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.itemStack;
         }
 
-        public Builder itemStack(final @NotNull ItemStack itemStack) throws IllegalStateException {
+        public @NotNull Builder itemStack(final @NotNull ItemStack itemStack) throws IllegalStateException {
             if (this.namespacedKey == null) {
                 throw new IllegalStateException("Key is not set! Set key before setting item stack!");
             }
@@ -667,8 +668,20 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.recipes;
         }
 
-        public Builder recipes(final @Nullable List<Map.Entry<Recipe, Boolean>> recipes) {
-            this.recipes = recipes;
+        @SafeVarargs
+        public final @NotNull Builder recipes(
+                final @NotNull Function<Builder, Map.Entry<Recipe, Boolean>> first,
+                final Function<Builder, Map.Entry<Recipe, Boolean>> @NotNull ... rest
+        ) {
+            final var recipeList = new ArrayList<Map.Entry<Recipe, Boolean>>();
+
+            recipeList.add(first.apply(this));
+
+            for (final var entry : rest) {
+                recipeList.add(entry.apply(this));
+            }
+
+            this.recipes = recipeList;
             return this;
         }
 
@@ -679,7 +692,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     : this.parameterSet.toArray(new DecorParameter[0]);
         }
 
-        public Builder parameters(
+        public @NotNull Builder parameters(
                 final @NotNull DecorParameter first,
                 final DecorParameter @NotNull ... rest
         ) throws IllegalArgumentException {
@@ -728,7 +741,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.sitHeight;
         }
 
-        public Builder sitHeight(final double sitHeight) throws IllegalStateException {
+        public @NotNull Builder sitHeight(final double sitHeight) throws IllegalStateException {
             if (this.parameterSet == null) {
                 throw new IllegalStateException("Parameters are not set! Set parameters before setting sit height!");
             }
@@ -745,8 +758,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.wrenchTypes;
         }
 
-        @SafeVarargs
-        public final Builder wrenchTypes(final Type<D> @NotNull ... wrenchTypes) throws IllegalStateException {
+        @SuppressWarnings("unchecked")
+        public @NotNull Builder wrenchTypes(
+                final @NotNull Type<D> first,
+                final Type<D> @NotNull ... rest
+        ) throws IllegalStateException {
             if (this.parameterSet == null) {
                 throw new IllegalStateException("Parameters are not set! Set parameters before setting wrench types!");
             }
@@ -755,7 +771,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalStateException("Wrenchable parameter is not set! Set wrenchable parameter before setting wrench types!");
             }
 
-            this.wrenchTypes = wrenchTypes;
+            this.wrenchTypes = (Type<D>[]) new Type<?>[rest.length + 1];
+
+            System.arraycopy(rest, 0, this.wrenchTypes, 1, rest.length);
+            this.wrenchTypes[0] = first;
+
             return this;
         }
 
@@ -763,7 +783,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.faceTypeMap;
         }
 
-        public Builder faceTypeMap(final @NotNull Map<Facing, Type<D>> faceTypeMap) throws IllegalStateException, IllegalArgumentException {
+        public @NotNull Builder faceTypeMap(final @NotNull Map<Facing, Type<D>> faceTypeMap) throws IllegalStateException, IllegalArgumentException {
             if (this.parameterSet == null) {
                 throw new IllegalStateException("Parameters are not set! Set parameters before setting face type map!");
             }
@@ -784,7 +804,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.lightLevels;
         }
 
-        public Builder lightLevels(final int @NotNull ... lightLevels) throws IllegalStateException, IllegalArgumentException {
+        public @NotNull Builder lightLevels(
+                final int first,
+                final int @NotNull ... rest
+        ) throws IllegalStateException, IllegalArgumentException {
             if (this.parameterSet == null) {
                 throw new IllegalStateException("Parameters are not set! Set parameters before setting light levels!");
             }
@@ -793,13 +816,17 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalStateException("Lightable parameter is not set! Set lightable parameter before setting light levels!");
             }
 
-            for (final var level : lightLevels) {
+            this.lightLevels = new int[rest.length + 1];
+
+            System.arraycopy(rest, 0, this.lightLevels, 1, rest.length);
+            this.lightLevels[0] = first;
+
+            for (final var level : this.lightLevels) {
                 if (level < 0 || level > 15) {
                     throw new IllegalArgumentException("Light level '" + level + "' is not in range [0, 15]!");
                 }
             }
 
-            this.lightLevels = lightLevels;
             return this;
         }
 
@@ -807,7 +834,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.lightLevelTypeMap;
         }
 
-        public Builder lightLevelTypeMap(final @NotNull Map<Integer, Type<D>> lightLevelTypeMap) throws IllegalStateException, IllegalArgumentException {
+        public @NotNull Builder lightLevelTypeMap(final @NotNull Map<Integer, Type<D>> lightLevelTypeMap) throws IllegalStateException, IllegalArgumentException {
             if (this.parameterSet == null) {
                 throw new IllegalStateException("Parameters are not set! Set parameters before setting light level type map!");
             }
@@ -828,7 +855,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.rightClickAction;
         }
 
-        public Builder rightClickAction(final @NotNull BiConsumer<PlayerInteractAtEntityEvent, Interaction> rightClickAction) {
+        public @NotNull Builder rightClickAction(final @NotNull BiConsumer<PlayerInteractAtEntityEvent, Interaction> rightClickAction) {
             this.rightClickAction = rightClickAction;
             return this;
         }

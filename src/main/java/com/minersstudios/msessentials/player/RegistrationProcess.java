@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.player;
 
 import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.menu.SignMenu;
+import com.minersstudios.mscore.inventory.SignMenu;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.menu.PronounsMenu;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
@@ -72,7 +72,7 @@ public class RegistrationProcess {
     }
 
     private void setFirstname() {
-        SignMenu.create(
+        new SignMenu(
                 LanguageFile.renderTranslationComponent("ms.registration.sign.first_name.0"),
                 LanguageFile.renderTranslationComponent("ms.registration.sign.first_name.1"),
                 LanguageFile.renderTranslationComponent("ms.registration.sign.first_name.2"),
@@ -94,11 +94,12 @@ public class RegistrationProcess {
 
                     MSEssentials.getInstance().runTaskLater(this::setLastname, 375L);
                     return true;
-                }).open(this.player);
+                }
+        ).open(this.player);
     }
 
     private void setLastname() {
-        SignMenu.create(
+        new SignMenu(
                 LanguageFile.renderTranslationComponent("ms.registration.sign.last_name.0"),
                 LanguageFile.renderTranslationComponent("ms.registration.sign.last_name.1"),
                 LanguageFile.renderTranslationComponent("ms.registration.sign.last_name.2"),
@@ -114,11 +115,12 @@ public class RegistrationProcess {
                     this.playerInfo.getPlayerFile().getPlayerName().setLastName(lastname);
                     MSEssentials.getInstance().runTaskLater(this::setPatronymic, 10L);
                     return true;
-                }).open(this.player);
+                }
+        ).open(this.player);
     }
 
     private void setPatronymic() {
-        SignMenu.create(
+        new SignMenu(
                 LanguageFile.renderTranslationComponent("ms.registration.sign.patronymic.0"),
                 LanguageFile.renderTranslationComponent("ms.registration.sign.patronymic.1"),
                 LanguageFile.renderTranslationComponent("ms.registration.sign.patronymic.2"),
@@ -153,7 +155,8 @@ public class RegistrationProcess {
 
                     MSEssentials.getInstance().runTaskLater(() -> PronounsMenu.open(this.player), 225L);
                     return true;
-                }).open(this.player);
+                }
+        ).open(this.player);
     }
 
     public void setPronouns(

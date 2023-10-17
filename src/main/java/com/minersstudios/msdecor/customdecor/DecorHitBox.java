@@ -117,11 +117,20 @@ public class DecorHitBox {
             final @NotNull net.minecraft.world.level.levelgen.structure.BoundingBox boundingBox
     ) {
         final Interaction firstInteraction = interactions.get(0);
+        final String firstUUID = firstInteraction.getUniqueId().toString();
         final PersistentDataContainer firstContainer = firstInteraction.getPersistentDataContainer();
         final var uuids = new ArrayList<String>();
 
-        for (int i = 1; i < interactions.size(); i++) {
-            uuids.add(interactions.get(i).getUniqueId().toString());
+        for (int i = 1; i < interactions.size(); ++i) {
+            final Interaction interaction = interactions.get(i);
+
+            uuids.add(interaction.getUniqueId().toString());
+            interaction.getPersistentDataContainer()
+            .set(
+                    DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY,
+                    PersistentDataType.STRING,
+                    firstUUID
+            );
         }
 
         firstContainer.set(
@@ -155,15 +164,6 @@ public class DecorHitBox {
                         String.valueOf(boundingBox.maxZ())
                 )
         );
-
-        for (int i = 1; i < interactions.size(); i++) {
-            interactions.get(i).getPersistentDataContainer()
-            .set(
-                    DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY,
-                    PersistentDataType.STRING,
-                    firstInteraction.getUniqueId().toString()
-            );
-        }
     }
 
     public static boolean isHitBoxParent(final @NotNull Interaction interaction) {

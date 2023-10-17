@@ -627,7 +627,7 @@ public abstract class MSPlugin extends JavaPlugin {
             if (keys.length != values.length) {
                 this.getLogger().severe("Permission and boolean array lengths do not match in command : " + name);
             } else {
-                for (int i = 0; i < keys.length; i++) {
+                for (int i = 0; i < keys.length; ++i) {
                     children.put(keys[i], values[i]);
                 }
             }

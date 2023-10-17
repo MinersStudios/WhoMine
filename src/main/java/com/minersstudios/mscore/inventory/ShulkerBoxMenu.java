@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.util.menu;
+package com.minersstudios.mscore.inventory;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,9 +21,9 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
 
     public ShulkerBoxMenu(
             final int syncId,
-            final Inventory playerInventory,
-            final Container inventory
-    ) {
+            final @NotNull Inventory playerInventory,
+            final @NotNull Container inventory
+    ) throws IllegalArgumentException {
         super(MenuType.SHULKER_BOX, syncId);
 
         checkContainerSize(inventory, CONTAINER_SIZE);
@@ -52,15 +52,13 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
 
     @Override
     public @NotNull CraftInventoryView getBukkitView() {
-        if (this.bukkitEntity == null) {
-            this.bukkitEntity = new CraftInventoryView(
-                    this.playerInventory.player.getBukkitEntity(),
-                    new CraftInventory(this.container),
-                    this
-            );
-        }
-
-        return this.bukkitEntity;
+        return this.bukkitEntity == null
+                ? this.bukkitEntity = new CraftInventoryView(
+                        this.playerInventory.player.getBukkitEntity(),
+                        new CraftInventory(this.container),
+                        this
+                )
+                : this.bukkitEntity;
     }
 
     @Override
@@ -77,18 +75,18 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
         final Slot slot = this.slots.get(index);
 
         if (slot.hasItem()) {
-            final ItemStack itemStack1 = slot.getItem();
-            itemstack = itemStack1.copy();
+            final ItemStack slotItem = slot.getItem();
+            itemstack = slotItem.copy();
 
             if (index < this.container.getContainerSize()) {
-                if (!this.moveItemStackTo(itemStack1, this.container.getContainerSize(), this.slots.size(), true)) {
+                if (!this.moveItemStackTo(slotItem, this.container.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(itemStack1, 0, this.container.getContainerSize(), false)) {
+            } else if (!this.moveItemStackTo(slotItem, 0, this.container.getContainerSize(), false)) {
                 return ItemStack.EMPTY;
             }
 
-            if (itemStack1.isEmpty()) {
+            if (slotItem.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();

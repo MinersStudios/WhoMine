@@ -4,7 +4,7 @@ import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
-import com.minersstudios.mscore.util.menu.SignMenu;
+import com.minersstudios.mscore.inventory.SignMenu;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

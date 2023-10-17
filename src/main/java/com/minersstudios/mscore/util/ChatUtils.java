@@ -120,7 +120,7 @@ public final class ChatUtils {
         final char[] chars = new char[length];
         chars[0] = Character.toUpperCase(text.charAt(0));
 
-        for (int i = 1; i < length; i++) {
+        for (int i = 1; i < length; ++i) {
             chars[i] = Character.toLowerCase(text.charAt(i));
         }
 
@@ -244,7 +244,7 @@ public final class ChatUtils {
     ) {
         final Component[] components = new Component[strings.size()];
 
-        for (int i = 0; i < strings.size(); i++) {
+        for (int i = 0; i < strings.size(); ++i) {
             components[i] = style == null
                     ? text(strings.get(i))
                     : text(strings.get(i), style);

@@ -278,9 +278,10 @@ public final class LocationUtils {
                 bukkitToAABB(boundingBox),
                 entity -> predicate == null || predicate.test(entity.getBukkitEntity())
         ).toArray(new net.minecraft.world.entity.Entity[0]);
-        final Entity[] bukkitEntities = new Entity[nmsEntities.length];
+        final int size = nmsEntities.length;
+        final Entity[] bukkitEntities = new Entity[size];
 
-        for (int i = 0; i < nmsEntities.length; i++) {
+        for (int i = 0; i < size; ++i) {
             bukkitEntities[i] = nmsEntities[i].getBukkitEntity();
         }
 
@@ -349,7 +350,7 @@ public final class LocationUtils {
         int nearestIndex = 0;
         float minDifference = Math.abs(normalized - yawValues[0]);
 
-        for (int i = 1; i < yawValues.length; i++) {
+        for (int i = 1; i < yawValues.length; ++i) {
             final int difference = Math.abs(normalized - yawValues[i]);
 
             if (difference < minDifference) {

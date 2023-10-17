@@ -68,9 +68,10 @@ public final class MSDecorUtils {
                 LocationUtils.bukkitToAABB(org.bukkit.util.BoundingBox.of(location, 0.5d, 0.5d, 0.5d)),
                 entity -> entity instanceof net.minecraft.world.entity.Interaction
         );
-        final Interaction[] interactions = new Interaction[entities.size()];
+        final int size = entities.size();
+        final Interaction[] interactions = new Interaction[size];
 
-        for (int i = 0; i < entities.size(); i++) {
+        for (int i = 0; i < size; ++i) {
             interactions[i] = (Interaction) entities.get(i).getBukkitEntity();
         }
 

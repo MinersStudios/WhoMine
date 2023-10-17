@@ -27,7 +27,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msdecor.*",
         permissionDefault = PermissionDefault.OP
 )
-public class MSDecorCommandHandler implements MSCommandExecutor {
+public final class MSDecorCommandHandler implements MSCommandExecutor {
 
     private static final List<String> TAB = ImmutableList.of("reload", "give");
     private static final CommandNode<?> COMMAND_NODE =
