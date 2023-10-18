@@ -254,15 +254,17 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final MSDecor plugin = MSDecor.getInstance();
         final Server server = plugin.getServer();
 
-        for (final var entry : this.recipes) {
-            final Recipe recipe = entry.getKey();
+        plugin.runTask(() -> {
+            for (final var entry : this.recipes) {
+                final Recipe recipe = entry.getKey();
 
-            plugin.runTask(() -> server.addRecipe(recipe));
+                server.addRecipe(recipe);
 
-            if (entry.getValue()) {
-                getGlobalCache().customDecorRecipes.add(recipe);
+                if (entry.getValue()) {
+                    getGlobalCache().customDecorRecipes.add(recipe);
+                }
             }
-        }
+        });
     }
 
     @Override

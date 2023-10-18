@@ -56,7 +56,8 @@ public interface CustomInventory extends Inventory, Cloneable {
             final @NotNull Component title,
             final @Range(from = 1, to = 6) int verticalSize
     ) {
-        RecipeBuilder.shapedBuilder().build();
+
+        RecipeBuilder.blastingBuilder().build();
         return new PagedInventory(title, verticalSize);
     }
 

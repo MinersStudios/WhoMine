@@ -1,24 +1,18 @@
 package com.minersstudios.mscore.inventory.recipe;
 
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.jetbrains.annotations.NotNull;
 
-public final class ShapelessRecipeBuilder implements RecipeBuilder<ShapelessRecipe, ShapelessRecipeBuilder> {
-    private NamespacedKey namespacedKey;
-    private ItemStack result;
+public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<ShapelessRecipeBuilder, ShapelessRecipe>  {
     private RecipeChoice[] ingredients;
-    private String group;
-    private CraftingBookCategory category;
 
     ShapelessRecipeBuilder() {}
 
     @Override
-    public @NotNull ShapelessRecipe build() throws IllegalStateException {
+    protected @NotNull ShapelessRecipe newRecipe() throws IllegalStateException {
         if (this.ingredients == null || this.ingredients.length == 0) {
             throw new IllegalStateException("Recipe must have at least one non-air ingredient");
         }
@@ -29,54 +23,7 @@ public final class ShapelessRecipeBuilder implements RecipeBuilder<ShapelessReci
             recipe.addIngredient(ingredient);
         }
 
-        recipe.setCategory(this.category == null ? CraftingBookCategory.MISC : this.category);
-        recipe.setGroup(this.group == null ? "" : this.group);
-
         return recipe;
-    }
-
-    @Override
-    public NamespacedKey namespacedKey() {
-        return this.namespacedKey;
-    }
-
-    @Override
-    public @NotNull ShapelessRecipeBuilder namespacedKey(@NotNull NamespacedKey key) {
-        this.namespacedKey = key;
-        return this;
-    }
-
-    @Override
-    public ItemStack result() {
-        return this.result;
-    }
-
-    @Override
-    public @NotNull ShapelessRecipeBuilder result(@NotNull ItemStack result) throws IllegalArgumentException {
-        if (result.getType().isAir()) {
-            throw new IllegalArgumentException("Recipe must have non-air result");
-        }
-
-        this.result = result;
-        return this;
-    }
-
-    public String group() {
-        return this.group;
-    }
-
-    public @NotNull ShapelessRecipeBuilder group(final @NotNull String group) {
-        this.group = group;
-        return this;
-    }
-
-    public CraftingBookCategory category() {
-        return this.category;
-    }
-
-    public @NotNull ShapelessRecipeBuilder category(final @NotNull CraftingBookCategory category) {
-        this.category = category;
-        return this;
     }
 
     public RecipeChoice[] ingredients() {

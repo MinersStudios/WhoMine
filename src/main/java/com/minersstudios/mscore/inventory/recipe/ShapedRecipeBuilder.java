@@ -1,28 +1,22 @@
 package com.minersstudios.mscore.inventory.recipe;
 
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ShapedRecipeBuilder implements RecipeBuilder<ShapedRecipe, ShapedRecipeBuilder> {
-    private NamespacedKey namespacedKey;
-    private ItemStack result;
+public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedRecipeBuilder, ShapedRecipe> {
     private String[] rows;
     private final Map<Character, RecipeChoice> ingredients = new HashMap<>();
-    private String group;
-    private CraftingBookCategory category;
 
     ShapedRecipeBuilder() {}
 
     @Override
-    public @NotNull ShapedRecipe build() throws IllegalStateException {
+    protected @NotNull ShapedRecipe newRecipe() throws IllegalStateException {
         if (this.rows == null) {
             throw new IllegalStateException("Recipe has no shape");
         }
@@ -43,54 +37,7 @@ public final class ShapedRecipeBuilder implements RecipeBuilder<ShapedRecipe, Sh
             recipe.setIngredient(entry.getKey(), entry.getValue());
         }
 
-        recipe.setCategory(this.category == null ? CraftingBookCategory.MISC : this.category);
-        recipe.setGroup(this.group == null ? "" : this.group);
-
         return recipe;
-    }
-
-    @Override
-    public NamespacedKey namespacedKey() {
-        return this.namespacedKey;
-    }
-
-    @Override
-    public @NotNull ShapedRecipeBuilder namespacedKey(@NotNull NamespacedKey key) {
-        this.namespacedKey = key;
-        return this;
-    }
-
-    @Override
-    public ItemStack result() {
-        return this.result;
-    }
-
-    @Override
-    public @NotNull ShapedRecipeBuilder result(@NotNull ItemStack result) throws IllegalArgumentException {
-        if (result.getType().isAir()) {
-            throw new IllegalArgumentException("Recipe must have non-air result");
-        }
-
-        this.result = result;
-        return this;
-    }
-
-    public String group() {
-        return this.group;
-    }
-
-    public @NotNull ShapedRecipeBuilder group(final @NotNull String group) {
-        this.group = group;
-        return this;
-    }
-
-    public CraftingBookCategory category() {
-        return this.category;
-    }
-
-    public @NotNull ShapedRecipeBuilder category(final @NotNull CraftingBookCategory category) {
-        this.category = category;
-        return this;
     }
 
     public String[] shape() {
@@ -114,31 +61,6 @@ public final class ShapedRecipeBuilder implements RecipeBuilder<ShapedRecipe, Sh
 
     public @NotNull ShapedRecipeBuilder shape(final @NotNull String first) throws IllegalArgumentException {
         return this.shape0(first);
-    }
-
-    private @NotNull ShapedRecipeBuilder shape0(final String @NotNull ... rows) throws IllegalArgumentException {
-        int lastLength = -1;
-
-        for (final var row : rows) {
-            if (row.isEmpty() || row.length() > 3) {
-                throw new IllegalArgumentException("Crafting rows should be 1, 2, or 3 characters, not " + row.length());
-            }
-
-            if (lastLength != -1 && lastLength != row.length()) {
-                throw new IllegalArgumentException("Crafting recipes must be rectangular");
-            }
-
-            lastLength = row.length();
-
-            for (final char c : row.toCharArray()) {
-                if (Character.isWhitespace(c)) continue;
-
-                this.ingredients.put(c, null);
-            }
-        }
-
-        this.rows = rows;
-        return this;
     }
 
     public Map<Character, RecipeChoice> ingredients() {
@@ -199,21 +121,6 @@ public final class ShapedRecipeBuilder implements RecipeBuilder<ShapedRecipe, Sh
         return this;
     }
 
-    private void putIngredient(
-            final @NotNull Character key,
-            final @NotNull RecipeChoice ingredient
-    ) throws IllegalArgumentException {
-        if (Character.isWhitespace(key)) {
-            throw new IllegalArgumentException("The ' ' character cannot be used as a key");
-        }
-
-        if (!this.ingredients.containsKey(key)) {
-            throw new IllegalArgumentException("Character '" + key + "' does not appear in the shape");
-        }
-
-        this.ingredients.put(key, ingredient);
-    }
-
     public static @NotNull MaterialEntry material(
             final @NotNull Character key,
             final @NotNull Material material
@@ -233,6 +140,46 @@ public final class ShapedRecipeBuilder implements RecipeBuilder<ShapedRecipe, Sh
             final @NotNull RecipeChoice ingredient
     ) {
         return new RecipeChoiceEntry(key, ingredient);
+    }
+
+    private @NotNull ShapedRecipeBuilder shape0(final String @NotNull ... rows) throws IllegalArgumentException {
+        int lastLength = -1;
+
+        for (final var row : rows) {
+            if (row.isEmpty() || row.length() > 3) {
+                throw new IllegalArgumentException("Crafting rows should be 1, 2, or 3 characters, not " + row.length());
+            }
+
+            if (lastLength != -1 && lastLength != row.length()) {
+                throw new IllegalArgumentException("Crafting recipes must be rectangular");
+            }
+
+            lastLength = row.length();
+
+            for (final char c : row.toCharArray()) {
+                if (Character.isWhitespace(c)) continue;
+
+                this.ingredients.put(c, null);
+            }
+        }
+
+        this.rows = rows;
+        return this;
+    }
+
+    private void putIngredient(
+            final @NotNull Character key,
+            final @NotNull RecipeChoice ingredient
+    ) throws IllegalArgumentException {
+        if (Character.isWhitespace(key)) {
+            throw new IllegalArgumentException("The ' ' character cannot be used as a key");
+        }
+
+        if (!this.ingredients.containsKey(key)) {
+            throw new IllegalArgumentException("Character '" + key + "' does not appear in the shape");
+        }
+
+        this.ingredients.put(key, ingredient);
     }
 
     public record MaterialEntry(
