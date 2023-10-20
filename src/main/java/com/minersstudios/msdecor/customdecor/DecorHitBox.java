@@ -78,7 +78,7 @@ public class DecorHitBox {
             final @NotNull Location location,
             final float yaw
     ) {
-        final Location secondLocation = getSecondLocation(location, yaw);
+        final Location secondLocation = this.getSecondLocation(location, yaw);
 
         return new BoundingBox(
                 location.x(),
@@ -98,7 +98,7 @@ public class DecorHitBox {
             final @NotNull Location location,
             final float yaw
     ) {
-        final Location secondLocation = getSecondLocation(location, yaw);
+        final Location secondLocation = this.getSecondLocation(location, yaw);
 
         return new net.minecraft.world.level.levelgen.structure.BoundingBox(
                 (int) Math.min(location.x(), secondLocation.x()),

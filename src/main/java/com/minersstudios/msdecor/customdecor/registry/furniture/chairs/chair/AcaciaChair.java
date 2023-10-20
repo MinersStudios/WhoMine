@@ -4,10 +4,7 @@ import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.SoundGroup;
-import com.minersstudios.msdecor.customdecor.CustomDecorDataImpl;
-import com.minersstudios.msdecor.customdecor.CustomDecorType;
-import com.minersstudios.msdecor.customdecor.DecorHitBox;
-import com.minersstudios.msdecor.customdecor.Facing;
+import com.minersstudios.msdecor.customdecor.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,10 +27,10 @@ public final class AcaciaChair extends CustomDecorDataImpl<AcaciaChair> {
         return new Builder()
                 .key("acacia_chair")
                 .hitBox(new DecorHitBox(
-                        1.0d,
-                        1.0d,
-                        1.0d,
-                        DecorHitBox.Type.BARRIER
+                        2.0d,
+                        3.0d,
+                        4.0d,
+                        DecorHitBox.Type.LIGHT
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
@@ -57,6 +54,8 @@ public final class AcaciaChair extends CustomDecorDataImpl<AcaciaChair> {
                                 .build(),
                                 true
                         )
-                );
+                )
+                .parameters(DecorParameter.SITTABLE)
+                .sitHeight(0.65d);
     }
 }

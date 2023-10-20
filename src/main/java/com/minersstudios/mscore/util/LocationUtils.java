@@ -2,6 +2,7 @@ package com.minersstudios.mscore.util;
 
 import io.papermc.paper.chunk.system.entity.EntityLookup;
 import io.papermc.paper.world.ChunkEntitySlices;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.FullChunkStatus;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.AABB;
@@ -151,6 +152,73 @@ public final class LocationUtils {
                 location.getBlockY(),
                 location.getBlockZ()
         );
+    }
+
+    public static BlockPos @NotNull [] getBlockPosesBetween(
+            final int x1,
+            final int y1,
+            final int z1,
+            final int x2,
+            final int y2,
+            final int z2
+    ) {
+        final int minX = Math.min(x1, x2);
+        final int minY = Math.min(y1, y2);
+        final int minZ = Math.min(z1, z2);
+        final int offsetX = Math.abs(x1 - x2) + 1;
+        final int offsetY = Math.abs(y1 - y2) + 1;
+        final int offsetZ = Math.abs(z1 - z2) + 1;
+        final BlockPos[] blockPoses = new BlockPos[offsetX * offsetY * offsetZ];
+
+        int i = 0;
+
+        for (int x = 0; x < offsetX; ++x) {
+            for (int y = 0; y < offsetY; ++y) {
+                for (int z = 0; z < offsetZ; ++z) {
+                    blockPoses[i++] = new BlockPos(
+                            minX + x,
+                            minY + y,
+                            minZ + z
+                    );
+                }
+            }
+        }
+
+        return blockPoses;
+    }
+
+    public static Location @NotNull [] getLocationsBetween(
+            final int x1,
+            final int y1,
+            final int z1,
+            final int x2,
+            final int y2,
+            final int z2
+    ) {
+        final int minX = Math.min(x1, x2);
+        final int minY = Math.min(y1, y2);
+        final int minZ = Math.min(z1, z2);
+        final int offsetX = Math.abs(x1 - x2) + 1;
+        final int offsetY = Math.abs(y1 - y2) + 1;
+        final int offsetZ = Math.abs(z1 - z2) + 1;
+        final Location[] locations = new Location[offsetX * offsetY * offsetZ];
+
+        int i = 0;
+
+        for (int x = 0; x < offsetX; ++x) {
+            for (int y = 0; y < offsetY; ++y) {
+                for (int z = 0; z < offsetZ; ++z) {
+                    locations[i++] = new Location(
+                            null,
+                            minX + x,
+                            minY + y,
+                            minZ + z
+                    );
+                }
+            }
+        }
+
+        return locations;
     }
 
     public static @NotNull Location offset(

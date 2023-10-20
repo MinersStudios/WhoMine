@@ -6,6 +6,7 @@ import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
+import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,12 +19,12 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
@@ -98,19 +99,30 @@ public class PlayerInteractListener extends AbstractMSListener {
                     if (!MSDecorUtils.isCustomDecor(itemInHand)) {
                         if (blockType != Material.BARRIER) return;
 
-                        final PluginManager pluginManager = player.getServer().getPluginManager();
                         final Location interactedLocation = event.getInteractionPoint();
 
-                        assert interactedLocation != null;
+                        if (interactedLocation == null) return;
 
-                        for (final var entity : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
-                            pluginManager.callEvent(
-                                    new PlayerInteractAtEntityEvent(
-                                            player,
-                                            entity,
-                                            interactedLocation.toVector(),
-                                            hand
-                                    )
+                        final PluginManager pluginManager = player.getServer().getPluginManager();
+                        final Vector interactedPosition = interactedLocation.toVector();
+
+                        for (final var interaction : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
+                            CustomDecorData.fromInteraction(interaction)
+                            .ifPresent(
+                                    data -> {
+                                        final CustomDecorRightClickEvent rightClickEvent = new CustomDecorRightClickEvent(
+                                                data,
+                                                event.getPlayer(),
+                                                event.getHand(),
+                                                interactedPosition
+                                        );
+
+                                        pluginManager.callEvent(rightClickEvent);
+
+                                        if (rightClickEvent.isCancelled()) return;
+
+                                        data.doRightClickAction(rightClickEvent, interaction);
+                                    }
                             );
                         }
                     } else if (

@@ -5,6 +5,7 @@ import com.minersstudios.mscore.util.LocationUtils;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.events.CustomDecorPlaceEvent;
+import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -16,11 +17,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.type.Light;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -53,7 +54,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     protected final Map<Facing, Type<D>> faceTypeMap;
     protected final int[] lightLevels;
     protected final Map<Integer, Type<D>> lightLevelTypeMap;
-    protected final BiConsumer<PlayerInteractAtEntityEvent, Interaction> rightClickAction;
+    protected final BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction;
 
     protected CustomDecorDataImpl() throws IllegalArgumentException {
         final Builder builder = this.builder();
@@ -205,6 +206,23 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
+    public int nextLightLevel(final int lightLevel) throws UnsupportedOperationException {
+        if (!this.parameterSet.contains(DecorParameter.LIGHTABLE)) {
+            throw new UnsupportedOperationException("This custom decor is not lightable!");
+        }
+
+        final int length = this.lightLevels.length;
+
+        for (int currentIndex = 0; currentIndex < length; ++currentIndex) {
+            if (this.lightLevels[currentIndex] == lightLevel) {
+                return this.lightLevels[Math.floorMod(currentIndex + 1, length)];
+            }
+        }
+
+        return this.lightLevels[0];
+    }
+
+    @Override
     public double getSitHeight() throws UnsupportedOperationException {
         if (!this.parameterSet.contains(DecorParameter.SITTABLE)) {
             throw new UnsupportedOperationException("This custom decor is not sittable!");
@@ -245,6 +263,31 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         customDecorData == this
                         || this.isSimilar(customDecorData.getItem())
                 );
+    }
+
+    @Override
+    public boolean isSittable() {
+        return this.parameterSet.contains(DecorParameter.SITTABLE);
+    }
+
+    @Override
+    public boolean isWrenchable() {
+        return this.parameterSet.contains(DecorParameter.WRENCHABLE);
+    }
+
+    @Override
+    public boolean isLightable() {
+        return this.parameterSet.contains(DecorParameter.LIGHTABLE);
+    }
+
+    @Override
+    public boolean isLightTyped() {
+        return this.parameterSet.contains(DecorParameter.LIGHT_TYPED);
+    }
+
+    @Override
+    public boolean isFaceTyped() {
+        return this.parameterSet.contains(DecorParameter.FACE_TYPED);
     }
 
     @Override
@@ -301,7 +344,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final ServerLevel serverLevel = ((CraftWorld) replaceableBlock.getWorld()).getHandle();
         final Location location = replaceableBlock.getLocation();
         final BoundingBox bb = this.hitBox.getNMSBoundingBox(location, player.getYaw());
-        final var blocksToReplace = BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ());
+        final BlockPos[] blocksToReplace = LocationUtils.getBlockPosesBetween(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ());
 
         for (final var blockPos : blocksToReplace) {
             if (!BlockUtils.isReplaceable(serverLevel.getBlockState(blockPos).getBlock())) return;
@@ -346,7 +389,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public void doRightClickAction(
-            final @NotNull PlayerInteractAtEntityEvent event,
+            final @NotNull CustomDecorRightClickEvent event,
             final @NotNull Interaction interaction
     ) {
         if (this.rightClickAction != null) {
@@ -379,7 +422,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final @NotNull Block block,
             final @NotNull ItemDisplay itemDisplay,
             final @NotNull BoundingBox boundingBox,
-            final @NotNull Iterable<BlockPos> blockPosList
+            final BlockPos @NotNull [] blockPoses
     ) {
         final World world = block.getWorld();
         final DecorHitBox.Type type = hitBox.getType();
@@ -410,7 +453,18 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         );
 
         if (type != DecorHitBox.Type.NONE) {
-            fillBlocks(placer, ((CraftWorld) world).getHandle(), blockPosList, type.getNMSBlock());
+            final var blocks = fillBlocks(placer, ((CraftWorld) world).getHandle(), blockPoses, type.getNMSBlock());
+
+            if (this.isLightable()) {
+                final int firstLightLevel = this.lightLevels[0];
+
+                for (final var currentBlock : blocks) {
+                    if (currentBlock.getBlockData() instanceof final Light light) {
+                        light.setLevel(firstLightLevel);
+                        currentBlock.setBlockData(light);
+                    }
+                }
+            }
         }
 
         if (
@@ -430,10 +484,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     ) {
         final var interactions = new ArrayList<Interaction>();
 
-        for (final var blockPos : BlockPos.betweenClosed(box.minX(), box.minY(), box.minZ(), box.maxX(), box.minY(), box.maxZ())) {
+        for (final var blockPos : LocationUtils.getBlockPosesBetween(box.minX(), box.minY(), box.minZ(), box.maxX(), box.minY(), box.maxZ())) {
             interactions.add(world.spawn(
                     new Location(
-                            world,
+                            null,
                             blockPos.getX() + 0.5d,
                             blockPos.getY() + offsetY,
                             blockPos.getZ() + 0.5d
@@ -446,19 +500,20 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         return interactions;
     }
 
-    static void fillBlocks(
+    static @NotNull List<Block> fillBlocks(
             final @NotNull String placer,
             final @NotNull ServerLevel serverLevel,
-            final @NotNull Iterable<BlockPos> blockPosList,
+            final BlockPos @NotNull [] blockPoses,
             final @NotNull net.minecraft.world.level.block.Block block
     ) {
+        final var blockList = new ArrayList<Block>();
         final var list = new ArrayList<BlockPos>();
         final BlockState fillBlockState = block.defaultBlockState();
         final Material fillMaterial = fillBlockState.getBukkitMaterial();
         final BlockData fillBlockData = fillBlockState.createCraftBlockData();
 
-        for (final var blockPos : blockPosList) {
-            final Location location = new Location(serverLevel.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        for (final var blockPos : blockPoses) {
+            final Location location = LocationUtils.nmsToBukkit(blockPos, serverLevel);
             BlockState blockState = net.minecraft.world.level.block.Block.updateFromNeighbourShapes(fillBlockState, serverLevel, blockPos);
 
             if (blockState.isAir()) {
@@ -474,6 +529,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
             serverLevel.setBlock(blockPos, blockState, 2);
             list.add(blockPos.immutable());
+            blockList.add(location.getBlock());
 
             if (!fillMaterial.isAir()) {
                 MSDecor.getCoreProtectAPI().logPlacement(
@@ -491,6 +547,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     serverLevel.getBlockState(blockPos).getBlock()
             );
         }
+
+        return blockList;
     }
 
     public class Builder {
@@ -506,7 +564,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         protected Map<Facing, Type<D>> faceTypeMap;
         protected int[] lightLevels;
         protected Map<Integer, Type<D>> lightLevelTypeMap;
-        protected BiConsumer<PlayerInteractAtEntityEvent, Interaction> rightClickAction;
+        protected BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction;
 
         private static final String KEY_REGEX = "[a-z0-9./_-]+";
         private static final Pattern KEY_PATTERN = Pattern.compile(KEY_REGEX);
@@ -577,6 +635,17 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     throw new IllegalArgumentException("Light levels are not set, but lightable parameter is set!");
                 }
 
+                if (
+                        (
+                                this.parameterSet.contains(DecorParameter.LIGHTABLE)
+                                || this.parameterSet.contains(DecorParameter.LIGHT_TYPED)
+                        )
+                        && !this.hitBox.getType().isLight()
+
+                ) {
+                    throw new IllegalArgumentException("Lightable or light typed parameter is set, but hit box type is not light!");
+                }
+
                 if (this.parameterSet.contains(DecorParameter.LIGHT_TYPED)) {
                     if (this.lightLevels == null) {
                         throw new IllegalArgumentException("Light levels are not set, but light typed parameter is set!");
@@ -595,6 +664,14 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         )
                 ) {
                     throw new IllegalArgumentException("Face type map is not set, but face typed parameter is set!");
+                }
+            }
+
+            if (this.rightClickAction == null) {
+                if (this.parameterSet.contains(DecorParameter.SITTABLE)) {
+                    this.rightClickAction = DecorParameter.SITTABLE_RIGHT_CLICK_ACTION;
+                } else if (this.parameterSet.contains(DecorParameter.LIGHTABLE)) {
+                    this.rightClickAction = DecorParameter.LIGHTABLE_RIGHT_CLICK_ACTION;
                 }
             }
 
@@ -829,6 +906,14 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 }
             }
 
+            for (int i = 0; i < this.lightLevels.length; i++) {
+                for (int j = i + 1; j < this.lightLevels.length; j++) {
+                    if (this.lightLevels[i] == this.lightLevels[j]) {
+                        throw new IllegalArgumentException("Light level '" + this.lightLevels[i] + "' is duplicated! Light levels must be unique!");
+                    }
+                }
+            }
+
             return this;
         }
 
@@ -853,11 +938,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public BiConsumer<PlayerInteractAtEntityEvent, Interaction> rightClickAction() {
+        public BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction() {
             return this.rightClickAction;
         }
 
-        public @NotNull Builder rightClickAction(final @NotNull BiConsumer<PlayerInteractAtEntityEvent, Interaction> rightClickAction) {
+        public @NotNull Builder rightClickAction(final @NotNull BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction) {
             this.rightClickAction = rightClickAction;
             return this;
         }

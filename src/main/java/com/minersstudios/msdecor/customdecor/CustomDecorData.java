@@ -4,8 +4,8 @@ import com.minersstudios.mscore.util.LocationUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msdecor.events.CustomDecorBreakEvent;
+import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
 import net.kyori.adventure.text.Component;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -18,7 +18,6 @@ import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -88,6 +87,8 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
 
     int @NotNull [] lightLevels() throws UnsupportedOperationException;
 
+    int nextLightLevel(final int lightLevel) throws UnsupportedOperationException;
+
     double getSitHeight() throws UnsupportedOperationException;
 
     boolean hasParameters(
@@ -120,6 +121,16 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     @Contract("null -> false")
     boolean isSimilar(final @Nullable CustomDecorData<? extends CustomDecorData<?>> data);
 
+    boolean isSittable();
+
+    boolean isWrenchable();
+
+    boolean isLightable();
+
+    boolean isLightTyped();
+
+    boolean isFaceTyped();
+
     /**
      * Register the associated recipes of this custom decor
      * with the server
@@ -148,7 +159,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
      * Perform the right click action of this custom decor
      */
     void doRightClickAction(
-            final @NotNull PlayerInteractAtEntityEvent event,
+            final @NotNull CustomDecorRightClickEvent event,
             final @NotNull Interaction interaction
     );
 
@@ -217,9 +228,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
 
         if (container.isEmpty()) return Optional.empty();
 
-        if (DecorHitBox.isHitBoxParent(interaction)) {
-            return fromKey(container.get(CustomDecorType.TYPE_NAMESPACED_KEY, PersistentDataType.STRING));
-        } else if (container.has(DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY)) {
+        if (DecorHitBox.isHitBoxChild(interaction)) {
             final String uuid = container.get(DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY, PersistentDataType.STRING);
 
             try {
@@ -230,6 +239,8 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
             } catch (final IllegalArgumentException ignored) {
                 return Optional.empty();
             }
+        } else if (DecorHitBox.isHitBoxParent(interaction)) {
+            return fromKey(container.get(CustomDecorType.TYPE_NAMESPACED_KEY, PersistentDataType.STRING));
         }
 
         return Optional.empty();
@@ -342,12 +353,11 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
 
                     if (!data.getHitBox().getType().isNone()) {
                         final BoundingBox bb = elements.getNMSBoundingBox();
-                        final var blockPositions = BlockPos.betweenClosed(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ());
 
                         CustomDecorDataImpl.fillBlocks(
                                 player.getName(),
                                 world.getHandle(),
-                                blockPositions,
+                                LocationUtils.getBlockPosesBetween(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ()),
                                 Blocks.AIR
                         );
                     }

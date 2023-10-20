@@ -30,7 +30,7 @@ public class PlayerInteractAtEntityListener extends AbstractMSListener {
 
                     if (rightClickEvent.isCancelled()) return;
 
-                    data.doRightClickAction(event, interaction);
+                    data.doRightClickAction(rightClickEvent, interaction);
                 }
         );
     }

@@ -71,7 +71,7 @@ public final class Commodore {
 
         plugin.getServer().getPluginManager().registerEvents(new Listener() {
 
-            @SuppressWarnings({"UnstableApiUsage"})
+            @SuppressWarnings("UnstableApiUsage")
             @EventHandler
             public void onPlayerSendCommandsEvent(final @NotNull AsyncPlayerSendCommandsEvent<?> event) {
                 if (event.isAsynchronous() || !event.hasFiredAsync()) {
