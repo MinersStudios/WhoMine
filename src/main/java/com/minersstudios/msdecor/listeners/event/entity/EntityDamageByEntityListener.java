@@ -28,7 +28,7 @@ public class EntityDamageByEntityListener extends AbstractMSListener {
         ) return;
 
         if (entity instanceof final Interaction interaction) {
-            CustomDecorData.destroy(player, interaction, entity.getLocation());
+            CustomDecorData.destroy(player, interaction);
         }
     }
 }

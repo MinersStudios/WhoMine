@@ -1,6 +1,6 @@
 package com.minersstudios.msdecor.events;
 
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
+import com.minersstudios.msdecor.customdecor.CustomDecor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -18,19 +18,19 @@ public class CustomDecorRightClickEvent extends CustomDecorEvent implements Canc
     /**
      * Constructs a new CustomBlockRightClickEvent
      *
-     * @param customDecorData    The custom decor data involved in this event
+     * @param customDecor        The custom decor involved in this event
      * @param player             The Player who right-clicked the custom decor
      * @param hand               The hand which was used to right-click
      *                           the custom decor
      * @param clickedPosition    The clicked position
      */
     public CustomDecorRightClickEvent(
-            final @NotNull CustomDecorData<?> customDecorData,
+            final @NotNull CustomDecor customDecor,
             final @NotNull Player player,
             final @NotNull EquipmentSlot hand,
             final @NotNull Vector clickedPosition
     ) {
-        super(customDecorData);
+        super(customDecor);
 
         this.player = player;
         this.hand = hand;

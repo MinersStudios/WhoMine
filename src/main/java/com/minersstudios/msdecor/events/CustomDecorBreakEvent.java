@@ -1,7 +1,6 @@
 package com.minersstudios.msdecor.events;
 
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
-import com.minersstudios.msdecor.customdecor.DecorHitBox;
+import com.minersstudios.msdecor.customdecor.CustomDecor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -9,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomDecorBreakEvent extends CustomDecorEvent implements Cancellable {
     protected boolean cancelled;
-    protected final DecorHitBox.Elements elements;
     protected final Player player;
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
@@ -17,27 +15,17 @@ public class CustomDecorBreakEvent extends CustomDecorEvent implements Cancellab
     /**
      * Constructs a new CustomDecorBreakEvent
      *
-     * @param customDecorData The custom decor data involved in this event
+     * @param customDecor     The custom decor involved in this event
      * @param player          The player who broke the custom decor
      *                        involved in this event
      */
     public CustomDecorBreakEvent(
-            final @NotNull CustomDecorData<?> customDecorData,
-            final @NotNull DecorHitBox.Elements elements,
+            final @NotNull CustomDecor customDecor,
             final @NotNull Player player
     ) {
-        super(customDecorData);
+        super(customDecor);
 
-        this.elements = elements;
         this.player = player;
-    }
-
-    /**
-     * @return The elements of the custom decor
-     *         involved in this event
-     */
-    public @NotNull DecorHitBox.Elements getElements() {
-        return this.elements;
     }
 
     /**

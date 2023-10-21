@@ -51,10 +51,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     protected final EnumSet<DecorParameter> parameterSet;
     protected final double sitHeight;
     protected final Type<D>[] wrenchTypes;
-    protected final Map<Facing, Type<D>> faceTypeMap;
     protected final int[] lightLevels;
+    protected final Map<Facing, Type<D>> faceTypeMap;
     protected final Map<Integer, Type<D>> lightLevelTypeMap;
     protected final BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction;
+    protected final boolean dropsType;
 
     protected CustomDecorDataImpl() throws IllegalArgumentException {
         final Builder builder = this.builder();
@@ -86,6 +87,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 ? Collections.emptyMap()
                 : builder.lightLevelTypeMap;
         this.rightClickAction = builder.rightClickAction;
+        this.dropsType = builder.dropsType;
     }
 
     protected abstract @NotNull Builder builder();
@@ -127,7 +129,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public Type<D> @NotNull [] wrenchTypes() throws UnsupportedOperationException {
-        if (!this.parameterSet.contains(DecorParameter.WRENCHABLE)) {
+        if (!this.isWrenchable()) {
             throw new UnsupportedOperationException("This custom decor is not wrenchable!");
         }
 
@@ -136,21 +138,79 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     @Contract("null -> null")
+    public @Nullable Type<D> getTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
+        if (!this.isWrenchable()) {
+            throw new UnsupportedOperationException("This custom decor is not wrenchable!");
+        }
+        
+        return interaction == null
+                ? null
+                : this.getTypeOf(
+                        CustomDecor.fromInteraction(interaction).map(
+                                customDecor -> customDecor.getDisplay().getItemStack()
+                        ).orElse(null)
+                );
+    }
+    
+    @Override
+    @Contract("null -> null")
+    public @Nullable Type<D> getTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
+        if (!this.isWrenchable()) {
+            throw new UnsupportedOperationException("This custom decor is not wrenchable!");
+        }
+
+        if (itemStack == null) return null;
+
+        final String key = itemStack.getItemMeta().getPersistentDataContainer().get(
+                CustomDecorType.TYPE_NAMESPACED_KEY,
+                PersistentDataType.STRING
+        );
+
+        if (key == null) return null;
+        if (!CustomDecorType.matchesTypedKey(key)) return this.wrenchTypes[0];
+        
+        for (final var type : this.wrenchTypes) {
+            if (key.equals(type.getKey().getKey())) {
+                return type;
+            }
+        }
+        
+        return null;
+    }
+
+    @Override
+    @Contract("null -> null")
+    public @Nullable Type<D> getNextType(final @Nullable Interaction interaction) throws UnsupportedOperationException {
+        return this.getNextType(this.getTypeOf(interaction));
+    }
+
+    @Override
+    @Contract("null -> null")
+    public @Nullable Type<D> getNextType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
+        return this.getNextType(this.getTypeOf(itemStack));
+    }
+
+    @Override
+    @Contract("null -> null")
     public @Nullable Type<D> getNextType(final @Nullable Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException {
-        if (!this.parameterSet.contains(DecorParameter.WRENCHABLE)) {
+        if (!this.isWrenchable()) {
             throw new UnsupportedOperationException("This custom decor is not wrenchable!");
         }
 
         if (
                 type == null
-                || type.getClass() != this.wrenchTypes[0].getClass()
+                || type.getDecorType() != this.wrenchTypes[0].getDecorType()
         ) return null;
 
-        final int currentIndex = Arrays.binarySearch(this.wrenchTypes, type);
+        final int length = this.wrenchTypes.length;
 
-        return currentIndex == -1
-                ? null
-                : this.wrenchTypes[(currentIndex + 1) % this.wrenchTypes.length];
+        for (int i = 0; i < length; ++i) {
+            if (this.wrenchTypes[i].equals(type)) {
+                return this.wrenchTypes[Math.floorMod(i + 1, length)];
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -291,6 +351,16 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
+    public boolean isTyped() {
+        return this.isWrenchable() || this.isLightTyped() || this.isFaceTyped();
+    }
+
+    @Override
+    public boolean isDropsType() {
+        return this.dropsType;
+    }
+
+    @Override
     public void registerRecipes() {
         if (this.recipes.isEmpty()) return;
 
@@ -336,11 +406,6 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     ) {
         if (!this.getFacing().hasFace(blockFace)) return;
 
-        final CustomDecorPlaceEvent event = new CustomDecorPlaceEvent(this, replaceableBlock.getState(), player, hand == null ? EquipmentSlot.HAND : hand);
-        Bukkit.getPluginManager().callEvent(event);
-
-        if (event.isCancelled()) return;
-
         final ServerLevel serverLevel = ((CraftWorld) replaceableBlock.getWorld()).getHandle();
         final Location location = replaceableBlock.getLocation();
         final BoundingBox bb = this.hitBox.getNMSBoundingBox(location, player.getYaw());
@@ -367,13 +432,25 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             itemInHand.setItemMeta(itemMeta);
         }
 
-        this.setHitBox(
-                player.getName(),
-                replaceableBlock,
-                this.summonItem(replaceableBlock, player, itemInHand),
-                bb,
-                blocksToReplace
+        final CustomDecorPlaceEvent event = new CustomDecorPlaceEvent(
+                this.setHitBox(
+                        player.getName(),
+                        replaceableBlock,
+                        this.summonItem(replaceableBlock, player, itemInHand),
+                        bb,
+                        blocksToReplace
+                ),
+                replaceableBlock.getState(),
+                player,
+                hand == null ? EquipmentSlot.HAND : hand
         );
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            event.getCustomDecor().destroy(player, false);
+            return;
+        }
+
         this.getSoundGroup().playPlaceSound(location.toCenterLocation());
         MSDecor.getCoreProtectAPI().logPlacement(player.getName(), location, Material.VOID_AIR, replaceableBlock.getBlockData());
 
@@ -417,7 +494,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         });
     }
 
-    private void setHitBox(
+    private @NotNull CustomDecor setHitBox(
             final @NotNull String placer,
             final @NotNull Block block,
             final @NotNull ItemDisplay itemDisplay,
@@ -429,10 +506,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final double x = this.hitBox.getX();
         final double y = this.hitBox.getY();
         final double z = this.hitBox.getZ();
-
-        DecorHitBox.processInteractions(
-                this,
-                itemDisplay,
+        final var interactions =
                 fillInteractions(
                         world,
                         boundingBox,
@@ -448,9 +522,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         y > 0.0d
                         ? 0.0d
                         : -Math.ceil(y)
-                ),
-                boundingBox
-        );
+                );
+
+        DecorHitBox.processInteractions(this, itemDisplay, interactions, boundingBox);
 
         if (type != DecorHitBox.Type.NONE) {
             final var blocks = fillBlocks(placer, ((CraftWorld) world).getHandle(), blockPoses, type.getNMSBlock());
@@ -474,6 +548,13 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             levelled.setLevel(this.lightLevels[0]);
             block.setBlockData(levelled, true);
         }
+
+        return new CustomDecor(
+                this,
+                itemDisplay,
+                interactions,
+                boundingBox
+        );
     }
 
     private static @NotNull List<Interaction> fillInteractions(
@@ -565,6 +646,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         protected int[] lightLevels;
         protected Map<Integer, Type<D>> lightLevelTypeMap;
         protected BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction;
+        protected boolean dropsType;
 
         private static final String KEY_REGEX = "[a-z0-9./_-]+";
         private static final Pattern KEY_PATTERN = Pattern.compile(KEY_REGEX);
@@ -670,6 +752,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             if (this.rightClickAction == null) {
                 if (this.parameterSet.contains(DecorParameter.SITTABLE)) {
                     this.rightClickAction = DecorParameter.SITTABLE_RIGHT_CLICK_ACTION;
+                } else if (this.parameterSet.contains(DecorParameter.WRENCHABLE)) {
+                    this.rightClickAction = DecorParameter.WRENCHABLE_RIGHT_CLICK_ACTION;
                 } else if (this.parameterSet.contains(DecorParameter.LIGHTABLE)) {
                     this.rightClickAction = DecorParameter.LIGHTABLE_RIGHT_CLICK_ACTION;
                 }
@@ -837,11 +921,31 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.wrenchTypes;
         }
 
+        @SafeVarargs
+        @SuppressWarnings("unchecked")
+        public final @NotNull Builder wrenchTypes(
+                final @NotNull Function<Builder, Type<D>> first,
+                final Function<Builder, Type<D>> @NotNull ... rest
+        ) {
+            final var firstType = first.apply(this);
+            final Type<D>[] restTypes = (Type<D>[]) new Type<?>[rest.length];
+
+            for (int i = 0; i < rest.length; i++) {
+                restTypes[i] = rest[i].apply(this);
+            }
+
+            return this.wrenchTypes(firstType,  restTypes);
+        }
+
         @SuppressWarnings("unchecked")
         public @NotNull Builder wrenchTypes(
                 final @NotNull Type<D> first,
                 final Type<D> @NotNull ... rest
         ) throws IllegalStateException {
+            if (this.itemStack == null) {
+                throw new IllegalStateException("Item stack is not set! Set item stack before setting wrench types!");
+            }
+
             if (this.parameterSet == null) {
                 throw new IllegalStateException("Parameters are not set! Set parameters before setting wrench types!");
             }
@@ -850,10 +954,18 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalStateException("Wrenchable parameter is not set! Set wrenchable parameter before setting wrench types!");
             }
 
-            this.wrenchTypes = (Type<D>[]) new Type<?>[rest.length + 1];
+            this.wrenchTypes = (Type<D>[]) new Type<?>[rest.length + 2];
 
-            System.arraycopy(rest, 0, this.wrenchTypes, 1, rest.length);
-            this.wrenchTypes[0] = first;
+            if (rest.length != 0) {
+                System.arraycopy(rest, 0, this.wrenchTypes, 2, this.wrenchTypes.length);
+            }
+
+            this.wrenchTypes[0] =
+                    new TypeBuilder()
+                    .key(this, "default")
+                    .itemStack(this.itemStack)
+                    .build();
+            this.wrenchTypes[1] = first;
 
             return this;
         }
@@ -947,9 +1059,128 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
+        public boolean dropsType() {
+            return this.dropsType;
+        }
+
+        public @NotNull Builder dropsType(final boolean dropsType) throws IllegalStateException {
+            if (
+                    this.parameterSet == null
+                    || (
+                            !this.parameterSet.contains(DecorParameter.WRENCHABLE)
+                            && !this.parameterSet.contains(DecorParameter.LIGHT_TYPED)
+                            && !this.parameterSet.contains(DecorParameter.FACE_TYPED)
+                    )
+            ) {
+                throw new IllegalStateException("Parameters are not set! Set parameters before setting drops type!");
+            }
+
+            this.dropsType = dropsType;
+            return this;
+        }
+
         private static boolean isGreaterThanOneWithDecimal(final double value) {
             return (value > 1.0d && Math.floor(value) - value != 0.0d)
                     || (value < -1.0d && Math.ceil(value) - value != 0.0d);
+        }
+    }
+
+    public class TypeBuilder {
+        protected NamespacedKey namespacedKey;
+        protected ItemStack itemStack;
+
+        public @NotNull Type<D> build() throws IllegalArgumentException {
+            return new TypeImpl(this) {};
+        }
+
+        public NamespacedKey key() {
+            return this.namespacedKey;
+        }
+
+        public @NotNull TypeBuilder key(
+                final @NotNull Builder builder,
+                final @NotNull String key
+        ) throws IllegalArgumentException {
+            if (!Builder.KEY_PATTERN.matcher(key).matches()) {
+                throw new IllegalArgumentException("Key '" + key + "' does not match regex '" + Builder.KEY_REGEX + "'!");
+            }
+
+            this.namespacedKey = new NamespacedKey(CustomDecorType.NAMESPACE, builder.namespacedKey.getKey() + ".type." + key);
+            return this;
+        }
+
+        public ItemStack itemStack() {
+            return this.itemStack;
+        }
+
+        public @NotNull TypeBuilder itemStack(final @NotNull ItemStack itemStack) throws IllegalStateException {
+            if (this.namespacedKey == null) {
+                throw new IllegalStateException("Key is not set! Set key before setting item stack!");
+            }
+
+            final ItemMeta meta = itemStack.getItemMeta();
+            final PersistentDataContainer container = meta.getPersistentDataContainer();
+
+            if (!container.has(CustomDecorType.TYPE_NAMESPACED_KEY, PersistentDataType.STRING)) {
+                container.set(
+                        CustomDecorType.TYPE_NAMESPACED_KEY,
+                        PersistentDataType.STRING,
+                        this.namespacedKey.getKey()
+                );
+                itemStack.setItemMeta(meta);
+            }
+
+            this.itemStack = itemStack;
+            return this;
+        }
+    }
+
+    private abstract class TypeImpl implements CustomDecorData.Type<D> {
+        private final NamespacedKey namespacedKey;
+        private final CustomDecorType decorType;
+        private final ItemStack itemStack;
+
+        @SuppressWarnings("unchecked")
+        private TypeImpl(final @NotNull TypeBuilder builder) {
+            this.namespacedKey = builder.namespacedKey;
+            this.decorType = CustomDecorType.fromClass((Class<D>) CustomDecorDataImpl.this.getClass());
+            this.itemStack = builder.itemStack;
+        }
+
+        @Override
+        public @NotNull NamespacedKey getKey() {
+            return this.namespacedKey;
+        }
+
+        @Override
+        public @NotNull CustomDecorType getDecorType() {
+            return this.decorType;
+        }
+
+        @Override
+        public @NotNull ItemStack getItem() {
+            return this.itemStack.clone();
+        }
+
+        @Override
+        @Contract("null -> false")
+        public boolean equals(final @Nullable Object type) {
+            return type == this
+                    || (
+                            type != null
+                            && type.getClass() == this.getClass()
+                            && ((Type<?>) type).getKey().equals(this.getKey())
+                    );
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public @NotNull D buildData() {
+            return (D) CustomDecorDataImpl.this.builder()
+                    .key(this.namespacedKey.getKey())
+                    .itemStack(this.itemStack)
+                    .preBuild()
+                    .build();
         }
     }
 }

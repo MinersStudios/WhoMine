@@ -27,10 +27,10 @@ public final class AcaciaChair extends CustomDecorDataImpl<AcaciaChair> {
         return new Builder()
                 .key("acacia_chair")
                 .hitBox(new DecorHitBox(
-                        2.0d,
-                        3.0d,
-                        4.0d,
-                        DecorHitBox.Type.LIGHT
+                        1.0d,
+                        1.0d,
+                        1.0d,
+                        DecorHitBox.Type.BARRIER
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)

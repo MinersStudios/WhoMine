@@ -19,6 +19,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public enum CustomDecorType {
     //CHRISTMAS_BALL(),
@@ -156,6 +158,8 @@ public enum CustomDecorType {
     public static final String NAMESPACE = "msdecor";
     public static final String TYPE_TAG_NAME = "type";
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(NAMESPACE, TYPE_TAG_NAME);
+    public static final String TYPED_KEY_REGEX = "([a-z0-9./_-]+)\\.type\\.([a-z0-9./_-]+)";
+    public static final Pattern TYPED_KEY_PATTERN = Pattern.compile(TYPED_KEY_REGEX);
 
     static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new ConcurrentHashMap<>();
     private static final Map<String, CustomDecorType> KEY_TO_TYPE_MAP = new ConcurrentHashMap<>();
@@ -215,9 +219,17 @@ public enum CustomDecorType {
 
     @Contract("null -> null")
     public static @Nullable CustomDecorType fromKey(final @Nullable String key) {
-        return StringUtils.isBlank(key)
-                ? null
-                : KEY_TO_TYPE_MAP.get(key.toLowerCase(Locale.ENGLISH));
+        if (StringUtils.isBlank(key)) return null;
+
+        if (matchesTypedKey(key)) {
+            final Matcher matcher = TYPED_KEY_PATTERN.matcher(key);
+
+            if (matcher.find()) {
+                return fromKey(matcher.group(1));
+            }
+        }
+
+        return KEY_TO_TYPE_MAP.get(key.toLowerCase(Locale.ENGLISH));
     }
 
     @Contract("null -> null")
@@ -235,8 +247,8 @@ public enum CustomDecorType {
         return itemMeta == null
                 ? null
                 : fromKey(
-                itemMeta.getPersistentDataContainer().get(TYPE_NAMESPACED_KEY, PersistentDataType.STRING)
-        );
+                        itemMeta.getPersistentDataContainer().get(TYPE_NAMESPACED_KEY, PersistentDataType.STRING)
+                );
     }
 
     public static @NotNull @UnmodifiableView Set<String> keySet() {
@@ -261,5 +273,25 @@ public enum CustomDecorType {
     public static boolean containsClass(final @Nullable Class<? extends CustomDecorData<?>> clazz) {
         return clazz != null
                 && CLASS_TO_TYPE_MAP.containsKey(clazz);
+    }
+
+    /**
+     * @param key Key to be checked
+     * @return True if string matches {@link #TYPED_KEY_REGEX}
+     */
+    @Contract(value = "null -> false")
+    public static boolean matchesTypedKey(final @Nullable NamespacedKey key) {
+        return key != null
+                && matchesTypedKey(key.getKey());
+    }
+
+    /**
+     * @param key Key to be checked
+     * @return True if string matches {@link #TYPED_KEY_REGEX}
+     */
+    @Contract(value = "null -> false")
+    public static boolean matchesTypedKey(final @Nullable String key) {
+        return StringUtils.isNotBlank(key)
+                && TYPED_KEY_PATTERN.matcher(key).matches();
     }
 }

@@ -1,6 +1,6 @@
 package com.minersstudios.msdecor.events;
 
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
+import com.minersstudios.msdecor.customdecor.CustomDecor;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -19,7 +19,7 @@ public class CustomDecorPlaceEvent extends CustomDecorEvent implements Cancellab
     /**
      * Constructs a new CustomBlockPlaceEvent
      *
-     * @param customDecorData    The custom decor data involved in this event
+     * @param customDecor        The custom decor involved in this event
      * @param replacedBlockState The BlockState for the block which was
      *                           replaced
      * @param player             The player who placed the custom decor
@@ -28,12 +28,12 @@ public class CustomDecorPlaceEvent extends CustomDecorEvent implements Cancellab
      *                           was used to place the custom decor
      */
     public CustomDecorPlaceEvent(
-            final @NotNull CustomDecorData<?> customDecorData,
+            final @NotNull CustomDecor customDecor,
             final @NotNull BlockState replacedBlockState,
             final @NotNull Player player,
             final @NotNull EquipmentSlot hand
     ) {
-        super(customDecorData);
+        super(customDecor);
 
         this.player = player;
         this.replacedBlockState = replacedBlockState;

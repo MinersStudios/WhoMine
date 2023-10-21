@@ -5,6 +5,7 @@ import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
+import com.minersstudios.msdecor.customdecor.CustomDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
 import org.bukkit.GameMode;
@@ -107,11 +108,11 @@ public class PlayerInteractListener extends AbstractMSListener {
                         final Vector interactedPosition = interactedLocation.toVector();
 
                         for (final var interaction : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
-                            CustomDecorData.fromInteraction(interaction)
+                            CustomDecor.fromInteraction(interaction)
                             .ifPresent(
-                                    data -> {
+                                    customDecor -> {
                                         final CustomDecorRightClickEvent rightClickEvent = new CustomDecorRightClickEvent(
-                                                data,
+                                                customDecor,
                                                 event.getPlayer(),
                                                 event.getHand(),
                                                 interactedPosition
@@ -121,7 +122,7 @@ public class PlayerInteractListener extends AbstractMSListener {
 
                                         if (rightClickEvent.isCancelled()) return;
 
-                                        data.doRightClickAction(rightClickEvent, interaction);
+                                        customDecor.getData().doRightClickAction(rightClickEvent, interaction);
                                     }
                             );
                         }

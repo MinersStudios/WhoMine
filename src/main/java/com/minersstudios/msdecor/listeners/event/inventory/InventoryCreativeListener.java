@@ -2,7 +2,7 @@ package com.minersstudios.msdecor.listeners.event.inventory;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
-import com.minersstudios.msdecor.customdecor.DecorHitBox;
+import com.minersstudios.msdecor.customdecor.CustomDecor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
@@ -25,11 +25,11 @@ public class InventoryCreativeListener extends AbstractMSListener {
                 clickedBlock != null
                 && (event.getCursor().getType() == Material.BARRIER || event.getCursor().getType() == Material.STRUCTURE_VOID)
         ) {
-            DecorHitBox.Elements.fromBlock(clickedBlock)
+            CustomDecor.fromBlock(clickedBlock)
             .ifPresent(
-                    elements -> {
+                    customDecor -> {
                         event.setCancelled(true);
-                        player.getInventory().setItem(event.getSlot(), elements.getDisplay().getItemStack());
+                        player.getInventory().setItem(event.getSlot(), customDecor.getDisplay().getItemStack());
                     }
             );
         }

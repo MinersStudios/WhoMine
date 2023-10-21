@@ -1,10 +1,8 @@
 package com.minersstudios.msdecor.customdecor;
 
 import com.minersstudios.mscore.util.LocationUtils;
-import com.minersstudios.mscore.util.MSDecorUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -14,10 +12,9 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DecorHitBox {
     private final double x;
@@ -193,154 +190,6 @@ public class DecorHitBox {
                 y > 0 ? y - 1 : y + 1,
                 z > 0 ? z - 1 : z + 1
         );
-    }
-
-    public static class Elements {
-        private final CustomDecorType type;
-        private final ItemDisplay display;
-        private final List<Interaction> interactions;
-        private final net.minecraft.world.level.levelgen.structure.BoundingBox nmsBoundingBox;
-
-        public Elements(
-                final @NotNull CustomDecorType type,
-                final @NotNull ItemDisplay display,
-                final @NotNull List<Interaction> interactions,
-                final @NotNull net.minecraft.world.level.levelgen.structure.BoundingBox nmsBoundingBox
-        ) {
-            this.type = type;
-            this.display = display;
-            this.interactions = Collections.unmodifiableList(interactions);
-            this.nmsBoundingBox = nmsBoundingBox;
-        }
-
-        public static @NotNull Optional<DecorHitBox.Elements> fromBlock(final @Nullable org.bukkit.block.Block block) {
-            return block == null
-                    ? Optional.empty()
-                    : fromInteraction(MSDecorUtils.getNearbyInteraction(block.getLocation().toCenterLocation()));
-        }
-
-        public static @NotNull Optional<DecorHitBox.Elements> fromInteraction(final @Nullable Interaction interaction) {
-            if (interaction == null) return Optional.empty();
-
-            final PersistentDataContainer container = interaction.getPersistentDataContainer();
-            return container.isEmpty()
-                    ? Optional.empty()
-                    : isHitBoxParent(interaction)
-                    ? Optional.ofNullable(fromParent(interaction))
-                    : isHitBoxChild(interaction)
-                    ? Optional.ofNullable(fromChild(interaction))
-                    : Optional.empty();
-        }
-
-        public @NotNull CustomDecorType getType() {
-            return this.type;
-        }
-
-        public @NotNull CustomDecorData<?> getData() {
-            return this.type.getCustomDecorData();
-        }
-
-        public @NotNull ItemDisplay getDisplay() {
-            return this.display;
-        }
-
-        public @NotNull @Unmodifiable List<Interaction> getInteractions() {
-            return this.interactions;
-        }
-
-        public @NotNull net.minecraft.world.level.levelgen.structure.BoundingBox getNMSBoundingBox() {
-            return this.nmsBoundingBox;
-        }
-
-        private static @Nullable DecorHitBox.Elements fromParent(final @NotNull Interaction interaction) {
-            final PersistentDataContainer container = interaction.getPersistentDataContainer();
-
-            if (container.isEmpty()) return null;
-
-            CustomDecorType type = null;
-            ItemDisplay display = null;
-            final var interactions = new ArrayList<Interaction>();
-            net.minecraft.world.level.levelgen.structure.BoundingBox boundingBox = null;
-
-            interactions.add(interaction);
-
-            for (final var key : container.getKeys()) {
-                final String value = container.get(key, PersistentDataType.STRING);
-
-                if (StringUtils.isBlank(value)) continue;
-
-                switch (key.getKey()) {
-                    case CustomDecorType.TYPE_TAG_NAME -> type = CustomDecorType.fromKey(value);
-                    case HITBOX_DISPLAY -> {
-                        try {
-                            if (interaction.getWorld().getEntity(UUID.fromString(value)) instanceof final ItemDisplay itemDisplay) {
-                                display = itemDisplay;
-                            }
-                        } catch (final IllegalArgumentException ignored) {
-                            return null;
-                        }
-                    }
-                    case HITBOX_INTERACTIONS -> {
-                        for (final var uuid : value.split(",")) {
-                            try {
-                                if (interaction.getWorld().getEntity(UUID.fromString(uuid)) instanceof final Interaction child) {
-                                    interactions.add(child);
-                                }
-                            } catch (final IllegalArgumentException ignored) {
-                                return null;
-                            }
-                        }
-                    }
-                    case HITBOX_BOUNDING_BOX -> {
-                        final String[] coordinates = value.split(",");
-
-                        if (coordinates.length != 6) return null;
-
-                        try {
-                            boundingBox = new net.minecraft.world.level.levelgen.structure.BoundingBox(
-                                    Integer.parseInt(coordinates[0]),
-                                    Integer.parseInt(coordinates[1]),
-                                    Integer.parseInt(coordinates[2]),
-                                    Integer.parseInt(coordinates[3]),
-                                    Integer.parseInt(coordinates[4]),
-                                    Integer.parseInt(coordinates[5])
-                            );
-                        } catch (final NumberFormatException ignored) {
-                            return null;
-                        }
-                    }
-                }
-            }
-
-            return type == null
-                    || display == null
-                    || boundingBox == null
-                    ? null
-                    : new Elements(
-                            type,
-                            display,
-                            interactions,
-                            boundingBox
-                    );
-        }
-
-        private static @Nullable DecorHitBox.Elements fromChild(final @NotNull Interaction interaction) {
-            final String uuid =
-                    interaction.getPersistentDataContainer()
-                    .get(
-                            DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY,
-                            PersistentDataType.STRING
-                    );
-
-            try {
-                return StringUtils.isBlank(uuid)
-                        || !(interaction.getWorld().getEntity(UUID.fromString(uuid)) instanceof final Interaction parent)
-                        ? null
-                        : fromParent(parent);
-            } catch (final IllegalArgumentException ignored) {
-                return null;
-            }
-        }
     }
 
     public enum Type {

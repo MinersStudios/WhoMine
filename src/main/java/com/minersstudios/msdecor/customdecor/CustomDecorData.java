@@ -3,20 +3,17 @@ package com.minersstudios.msdecor.customdecor;
 import com.minersstudios.mscore.util.LocationUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.mscore.util.SoundGroup;
-import com.minersstudios.msdecor.events.CustomDecorBreakEvent;
 import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
 import net.kyori.adventure.text.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Keyed;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Interaction;
-import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
 
@@ -71,6 +67,18 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     @NotNull @Unmodifiable Set<DecorParameter> parameterSet();
 
     Type<D> @NotNull [] wrenchTypes() throws UnsupportedOperationException;
+
+    @Contract("null -> null")
+    @Nullable Type<D> getTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException;
+    
+    @Contract("null -> null")
+    @Nullable Type<D> getTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
+
+    @Contract("null -> null")
+    @Nullable Type<D> getNextType(final @Nullable Interaction interaction) throws UnsupportedOperationException;
+
+    @Contract("null -> null")
+    @Nullable Type<D> getNextType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
 
     @Contract("null -> null")
     @Nullable Type<D> getNextType(final @Nullable Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException;
@@ -130,6 +138,10 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     boolean isLightTyped();
 
     boolean isFaceTyped();
+
+    boolean isTyped();
+
+    boolean isDropsType();
 
     /**
      * Register the associated recipes of this custom decor
@@ -308,79 +320,70 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
                 || block == null
         ) return;
 
-        final ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
-        final Location location = block.getLocation().toCenterLocation();
-        final AABB aabb = LocationUtils.bukkitToAABB(org.bukkit.util.BoundingBox.of(location, 5, 5, 5));
-        final Predicate<net.minecraft.world.entity.Entity> predicate = entity -> entity instanceof net.minecraft.world.entity.Interaction;
+        destroyInBlock(player, block, player.getGameMode() == GameMode.SURVIVAL);
+    }
 
-        for (final var entity : LocationUtils.getNearbyNMSEntities(level, aabb, predicate)) {
+    static void destroyInBlock(
+            final @Nullable Player player,
+            final @Nullable Block block,
+            final boolean dropItem
+    ) {
+        if (
+                player == null
+                || block == null
+        ) return;
+
+        for (
+                final var entity
+                : LocationUtils.getNearbyNMSEntities(
+                        ((CraftWorld) block.getWorld()).getHandle(),
+                        LocationUtils.bukkitToAABB(org.bukkit.util.BoundingBox.of(block.getLocation().toCenterLocation(), 5, 5, 5)),
+                        entity -> entity instanceof net.minecraft.world.entity.Interaction
+                )
+        ) {
             if (entity.getBukkitEntity() instanceof final Interaction interaction) {
-                destroy(player, interaction, location);
+                destroy(player, interaction, dropItem);
             }
         }
     }
 
     static void destroy(
             final @Nullable Player player,
-            final @Nullable Interaction interacted,
-            final @Nullable Location interactedLocation
+            final @Nullable Interaction interacted
     ) {
         if (
                 player == null
                 || interacted == null
-                || interactedLocation == null
         ) return;
 
-        DecorHitBox.Elements.fromInteraction(interacted)
-        .ifPresent(
-                elements -> {
-                    final var data = elements.getData();
-
-                    final CustomDecorBreakEvent event = new CustomDecorBreakEvent(data, elements, player);
-                    Bukkit.getPluginManager().callEvent(event);
-
-                    if (event.isCancelled()) return;
-
-                    final ItemDisplay display = elements.getDisplay();
-                    final CraftWorld world = (CraftWorld) player.getWorld();
-
-                    if (player.getGameMode() == GameMode.SURVIVAL) {
-                        world.dropItemNaturally(
-                                LocationUtils.nmsToBukkit(elements.getNMSBoundingBox().getCenter()).subtract(0.25d, 0.25d, 0.25d),
-                                display.getItemStack()
-                        );
-                    }
-
-                    if (!data.getHitBox().getType().isNone()) {
-                        final BoundingBox bb = elements.getNMSBoundingBox();
-
-                        CustomDecorDataImpl.fillBlocks(
-                                player.getName(),
-                                world.getHandle(),
-                                LocationUtils.getBlockPosesBetween(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ()),
-                                Blocks.AIR
-                        );
-                    }
-
-                    for (final var interaction : elements.getInteractions()) {
-                        interaction.remove();
-                    }
-
-                    display.remove();
-                    data.getSoundGroup().playBreakSound(interactedLocation.toCenterLocation());
-                }
-        );
+        destroy(player, interacted, player.getGameMode() == GameMode.SURVIVAL);
     }
 
-    interface Type<D extends CustomDecorData<D>> {
-        @NotNull Class<D> getParentClass();
+    static void destroy(
+            final @Nullable Player player,
+            final @Nullable Interaction interacted,
+            final boolean dropItem
+    ) {
+        if (
+                player == null
+                || interacted == null
+        ) return;
 
-        @NotNull String getKey();
+        CustomDecor.fromInteraction(interacted)
+        .ifPresent(customDecor -> customDecor.destroy(player, dropItem));
+    }
+
+    interface Type<D extends CustomDecorData<D>> extends Keyed {
+
+        @NotNull NamespacedKey getKey();
+
+        @NotNull CustomDecorType getDecorType();
 
         @NotNull ItemStack getItem();
 
+        @Override
         @Contract("null -> false")
-        boolean isSimilar(final @Nullable Type<? extends Type<?>> type);
+        boolean equals(final @Nullable Object type);
 
         @NotNull D buildData();
     }
