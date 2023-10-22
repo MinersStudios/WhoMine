@@ -25,7 +25,7 @@ import java.util.*;
 import static net.kyori.adventure.text.Component.text;
 
 @MSListener
-public class DosimeterMechanic extends AbstractMSListener {
+public class DosimeterMechanic extends AbstractMSListener<MSItem> {
 
     @EventHandler
     public void onPlayerSwapHandItems(final @NotNull PlayerSwapHandItemsEvent event) {

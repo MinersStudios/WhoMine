@@ -3,6 +3,7 @@ package com.minersstudios.msessentials.listeners.event.player;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.world.WorldDark;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.Player;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
-public class PlayerCommandPreprocessListener extends AbstractMSListener {
+public class PlayerCommandPreprocessListener extends AbstractMSListener<MSEssentials> {
     private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = translatable("ms.warning.you_cant_do_this_now");
 
     @EventHandler

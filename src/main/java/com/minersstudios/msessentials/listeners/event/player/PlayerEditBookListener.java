@@ -1,6 +1,7 @@
 package com.minersstudios.msessentials.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
@@ -13,7 +14,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
-public class PlayerEditBookListener extends AbstractMSListener {
+public class PlayerEditBookListener extends AbstractMSListener<MSEssentials> {
     private static final Component ANONYMOUS_AUTHOR = translatable("ms.book.anonymous");
 
     @EventHandler

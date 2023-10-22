@@ -2,6 +2,7 @@ package com.minersstudios.msitem.listeners.mechanic;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.item.CustomItemType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -13,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class BanSwordMechanic extends AbstractMSListener {
+public class BanSwordMechanic extends AbstractMSListener<MSItem> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDamageByEntity(final @NotNull EntityDamageByEntityEvent event) {

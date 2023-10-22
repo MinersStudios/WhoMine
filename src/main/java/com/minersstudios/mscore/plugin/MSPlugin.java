@@ -11,7 +11,7 @@ import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
-import com.minersstudios.mscore.packet.collection.PacketListenersMap;
+import com.minersstudios.mscore.packet.PacketListenersMap;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.*;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -51,13 +51,13 @@ import static net.kyori.adventure.text.Component.text;
  * @see #enable()
  * @see #disable()
  */
-public abstract class MSPlugin extends JavaPlugin {
+public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     private final File pluginFolder;
     private final File configFile;
     private final Set<String> classNames;
     private final Map<MSCommand, MSCommandExecutor> msCommands;
-    private final Set<AbstractMSListener> msListeners;
-    private final Set<AbstractMSPacketListener> msPacketListeners;
+    private final Set<AbstractMSListener<T>> msListeners;
+    private final Set<AbstractMSPacketListener<T>> msPacketListeners;
     private Commodore commodore;
     private FileConfiguration newConfig;
     private boolean loadedCustoms;
@@ -125,14 +125,14 @@ public abstract class MSPlugin extends JavaPlugin {
     /**
      * @return The unmodifiable set of event listeners
      */
-    public final @NotNull @UnmodifiableView Set<AbstractMSListener> getListeners() {
+    public final @NotNull @UnmodifiableView Set<AbstractMSListener<T>> getListeners() {
         return Collections.unmodifiableSet(this.msListeners);
     }
 
     /**
      * @return The unmodifiable set of packet listeners
      */
-    public final @NotNull @UnmodifiableView Set<AbstractMSPacketListener> getPacketListeners() {
+    public final @NotNull @UnmodifiableView Set<AbstractMSPacketListener<T>> getPacketListeners() {
         return Collections.unmodifiableSet(this.msPacketListeners);
     }
 
@@ -474,14 +474,15 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see AbstractMSListener
      * @see #registerListeners()
      */
+    @SuppressWarnings("unchecked")
     private void loadListeners() {
         this.classNames.stream().parallel().forEach(className -> {
             try {
                 final var clazz = this.getClassLoader().loadClass(className);
 
                 if (clazz.isAnnotationPresent(MSListener.class)) {
-                    if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSListener listener) {
-                        this.msListeners.add(listener);
+                    if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSListener<?> listener) {
+                        this.msListeners.add((AbstractMSListener<T>) listener);
                     } else {
                         this.getLogger().warning("Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")");
                     }
@@ -500,8 +501,9 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see MSListener
      * @see #loadListeners()
      */
+    @SuppressWarnings("unchecked")
     public void registerListeners() {
-        this.msListeners.forEach(listener -> listener.register(this));
+        this.msListeners.forEach(listener -> listener.register((T) this));
     }
 
     /**
@@ -513,14 +515,15 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see AbstractMSPacketListener
      * @see #registerPacketListeners()
      */
+    @SuppressWarnings("unchecked")
     private void loadPacketListeners() {
         this.classNames.stream().parallel().forEach(className -> {
             try {
                 final var clazz = this.getClassLoader().loadClass(className);
 
                 if (clazz.isAnnotationPresent(MSPacketListener.class)) {
-                    if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSPacketListener listener) {
-                        this.msPacketListeners.add(listener);
+                    if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSPacketListener<?> listener) {
+                        this.msPacketListeners.add((AbstractMSPacketListener<T>) listener);
                     } else {
                         this.getLogger().warning("Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")");
                     }
@@ -540,8 +543,9 @@ public abstract class MSPlugin extends JavaPlugin {
      * @see AbstractMSPacketListener
      * @see #loadPacketListeners()
      */
+    @SuppressWarnings("unchecked")
     public void registerPacketListeners() {
-        this.msPacketListeners.forEach(listener -> listener.register(this));
+        this.msPacketListeners.forEach(listener -> listener.register((T) this));
     }
 
     /**

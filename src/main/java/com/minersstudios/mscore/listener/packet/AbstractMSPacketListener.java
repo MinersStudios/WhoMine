@@ -14,11 +14,12 @@ import java.util.Set;
  * This class used for extending packet
  * listeners with the {@link MSPacketListener} annotation.
  *
+ * @param <P> The plugin, that this packet listener is registered to
  * @see MSPacketListener
  * @see MSPlugin#registerPacketListeners()
  */
-public abstract class AbstractMSPacketListener {
-    private MSPlugin plugin;
+public abstract class AbstractMSPacketListener<P extends MSPlugin<P>> {
+    private P plugin;
     private final Set<PacketType> sendWhiteList;
     private final Set<PacketType> receiveWhiteList;
 
@@ -55,7 +56,7 @@ public abstract class AbstractMSPacketListener {
      * @see #register(MSPlugin)
      * @see MSPlugin#registerPacketListeners()
      */
-    public final @NotNull MSPlugin getPlugin() throws IllegalStateException {
+    public final @NotNull P getPlugin() throws IllegalStateException {
         if (this.plugin == null) {
             throw new IllegalStateException("Packet listener " + this + " not registered!");
         }
@@ -91,7 +92,7 @@ public abstract class AbstractMSPacketListener {
      *
      * @param plugin The plugin to register this listener to
      */
-    public final void register(final @NotNull MSPlugin plugin) {
+    public final void register(final @NotNull P plugin) {
         if (this.isRegistered()) {
             throw new IllegalStateException("Packet listener " + this + " already registered!");
         }

@@ -1,5 +1,6 @@
 package com.minersstudios.msblock.listeners.event.block;
 
+import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
@@ -15,7 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class BlockPlaceListener extends AbstractMSListener {
+public class BlockPlaceListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onBlockPlace(final @NotNull BlockPlaceEvent event) {

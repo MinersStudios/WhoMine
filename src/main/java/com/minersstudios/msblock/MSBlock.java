@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @see MSPlugin
  */
-public final class MSBlock extends MSPlugin {
+public final class MSBlock extends MSPlugin<MSBlock> {
     private static MSBlock instance;
     private Cache cache;
     private Config config;

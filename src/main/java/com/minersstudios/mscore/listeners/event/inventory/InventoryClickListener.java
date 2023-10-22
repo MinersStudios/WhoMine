@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.listeners.event.inventory;
 
+import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
@@ -14,7 +15,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryClickListener extends AbstractMSListener {
+public class InventoryClickListener extends AbstractMSListener<MSCore> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryClick(final @NotNull InventoryClickEvent event) {

@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @see MSPlugin
  */
-public final class MSCore extends MSPlugin {
+public final class MSCore extends MSPlugin<MSCore> {
     private static MSCore instance;
 
     public MSCore() {

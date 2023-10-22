@@ -3,6 +3,7 @@ package com.minersstudios.msitem.listeners.block;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.item.renameable.RenameableItemRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Tag;
@@ -14,7 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class BlockDropItemListener extends AbstractMSListener {
+public class BlockDropItemListener extends AbstractMSListener<MSItem> {
 
     @EventHandler
     public void onBlockDropItem(final @NotNull BlockDropItemEvent event) {

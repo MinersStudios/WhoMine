@@ -1,5 +1,6 @@
 package com.minersstudios.msblock.listeners.event.block;
 
+import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
@@ -11,7 +12,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class EntityExplodeListener extends AbstractMSListener {
+public class EntityExplodeListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onEntityExplode(final @NotNull EntityExplodeEvent event) {

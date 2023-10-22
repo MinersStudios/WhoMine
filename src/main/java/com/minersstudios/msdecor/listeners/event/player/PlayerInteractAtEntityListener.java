@@ -2,6 +2,7 @@ package com.minersstudios.msdecor.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
 import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
 import org.bukkit.entity.Interaction;
@@ -10,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerInteractAtEntityListener extends AbstractMSListener {
+public class PlayerInteractAtEntityListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler
     public void onPlayerInteractAtEntity(final @NotNull PlayerInteractAtEntityEvent event) {

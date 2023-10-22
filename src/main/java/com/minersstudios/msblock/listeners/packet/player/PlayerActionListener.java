@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.minecraft.network.protocol.game.ServerboundPlayerActionPacket.Action.*;
 
 @MSPacketListener
-public class PlayerActionListener extends AbstractMSPacketListener {
+public class PlayerActionListener extends AbstractMSPacketListener<MSBlock> {
 
     public PlayerActionListener() {
         super(PacketType.Play.Server.PLAYER_ACTION);

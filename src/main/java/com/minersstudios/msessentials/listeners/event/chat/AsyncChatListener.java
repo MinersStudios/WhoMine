@@ -4,6 +4,7 @@ import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.chat.ChatBuffer;
 import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -21,7 +22,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
-public class AsyncChatListener extends AbstractMSListener {
+public class AsyncChatListener extends AbstractMSListener<MSEssentials> {
     private static final TranslatableComponent MUTED = translatable("ms.command.mute.already.receiver");
     private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = translatable("ms.warning.you_cant_do_this_now");
 

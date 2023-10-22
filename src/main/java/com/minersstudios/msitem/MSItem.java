@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @see MSPlugin
  */
-public final class MSItem extends MSPlugin {
+public final class MSItem extends MSPlugin<MSItem> {
     private static MSItem instance;
     private Config config;
     private Cache cache;

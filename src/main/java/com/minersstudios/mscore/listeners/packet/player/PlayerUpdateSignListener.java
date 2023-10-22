@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.listeners.packet.player;
 
+import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.packet.PacketEvent;
@@ -10,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @MSPacketListener
-public class PlayerUpdateSignListener extends AbstractMSPacketListener {
+public class PlayerUpdateSignListener extends AbstractMSPacketListener<MSCore> {
 
     public PlayerUpdateSignListener() {
         super(PacketType.Play.Server.UPDATE_SIGN);

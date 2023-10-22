@@ -5,6 +5,7 @@ import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.MSCustomUtils;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
+import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.item.CustomItem;
 import com.minersstudios.msitem.item.renameable.RenameableItem;
 import com.minersstudios.msitem.item.renameable.RenameableItemRegistry;
@@ -18,7 +19,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PrepareAnvilListener extends AbstractMSListener {
+public class PrepareAnvilListener extends AbstractMSListener<MSItem> {
 
     @EventHandler
     public void onPrepareAnvil(final @NotNull PrepareAnvilEvent event) {

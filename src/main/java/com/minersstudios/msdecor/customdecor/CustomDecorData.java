@@ -69,33 +69,55 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     Type<D> @NotNull [] wrenchTypes() throws UnsupportedOperationException;
 
     @Contract("null -> null")
-    @Nullable Type<D> getTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException;
+    @Nullable Type<D> getWrenchTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException;
     
     @Contract("null -> null")
-    @Nullable Type<D> getTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
+    @Nullable Type<D> getWrenchTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
 
     @Contract("null -> null")
-    @Nullable Type<D> getNextType(final @Nullable Interaction interaction) throws UnsupportedOperationException;
+    @Nullable Type<D> getNextWrenchType(final @Nullable Interaction interaction) throws UnsupportedOperationException;
 
     @Contract("null -> null")
-    @Nullable Type<D> getNextType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
+    @Nullable Type<D> getNextWrenchType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
 
     @Contract("null -> null")
-    @Nullable Type<D> getNextType(final @Nullable Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException;
+    @Nullable Type<D> getNextWrenchType(final @Nullable Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException;
 
     @NotNull @Unmodifiable Map<Facing, Type<D>> typeFaceMap() throws UnsupportedOperationException;
 
     @Contract("null -> null")
-    @Nullable Type<D> getTypeByFace(final @Nullable BlockFace blockFace) throws UnsupportedOperationException;
+    @Nullable Type<D> getFaceTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException;
+
+    @Contract("null -> null")
+    @Nullable Type<D> getFaceTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
+
+    @Contract("null -> null")
+    @Nullable Type<D> getFaceTypeOf(final @Nullable BlockFace blockFace) throws UnsupportedOperationException;
+
+    @Contract("null -> null")
+    @Nullable Type<D> getFaceTypeOf(final @Nullable Facing facing) throws UnsupportedOperationException;
 
     @NotNull @Unmodifiable Map<Integer, Type<D>> typeLightLevelMap() throws UnsupportedOperationException;
 
     @Contract("null -> null")
-    @Nullable Type<D> getTypeByLightLevel(final @Nullable Integer lightLevel) throws UnsupportedOperationException;
+    @Nullable Type<D> getLightTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException;
+
+    @Contract("null -> null")
+    @Nullable Type<D> getLightTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
+
+    @Nullable Type<D> getLightTypeOf(final int lightLevel) throws UnsupportedOperationException;
 
     int @NotNull [] lightLevels() throws UnsupportedOperationException;
 
-    int nextLightLevel(final int lightLevel) throws UnsupportedOperationException;
+    int getLightLevelOf(final @Nullable Interaction interaction) throws UnsupportedOperationException;
+
+    int getLightLevelOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
+
+    int getNextLightLevel(final @Nullable Interaction interaction) throws UnsupportedOperationException;
+
+    int getNextLightLevel(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
+
+    int getNextLightLevel(final int lightLevel) throws UnsupportedOperationException;
 
     double getSitHeight() throws UnsupportedOperationException;
 
@@ -337,7 +359,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
                 final var entity
                 : LocationUtils.getNearbyNMSEntities(
                         ((CraftWorld) block.getWorld()).getHandle(),
-                        LocationUtils.bukkitToAABB(org.bukkit.util.BoundingBox.of(block.getLocation().toCenterLocation(), 5, 5, 5)),
+                        LocationUtils.bukkitToAABB(org.bukkit.util.BoundingBox.of(block.getLocation().toCenterLocation(), 0.5, 0.5, 0.5)),
                         entity -> entity instanceof net.minecraft.world.entity.Interaction
                 )
         ) {

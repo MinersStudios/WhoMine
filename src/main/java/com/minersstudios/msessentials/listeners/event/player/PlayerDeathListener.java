@@ -1,6 +1,7 @@
 package com.minersstudios.msessentials.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.util.MessageUtils;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
@@ -10,7 +11,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerDeathListener extends AbstractMSListener {
+public class PlayerDeathListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerDeath(final @NotNull PlayerDeathEvent event) {

@@ -2,6 +2,7 @@ package com.minersstudios.msitem.listeners.inventory;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.item.CustomItem;
 import com.minersstudios.msitem.item.Wearable;
 import org.bukkit.enchantments.Enchantment;
@@ -16,7 +17,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryClickListener extends AbstractMSListener {
+public class InventoryClickListener extends AbstractMSListener<MSItem> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryClick(final @NotNull InventoryClickEvent event) {

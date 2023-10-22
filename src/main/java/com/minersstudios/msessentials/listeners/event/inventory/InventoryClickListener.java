@@ -20,7 +20,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
-public class InventoryClickListener extends AbstractMSListener {
+public class InventoryClickListener extends AbstractMSListener<MSEssentials> {
     private static final TranslatableComponent REMOVED_ITEM = translatable("ms.info.player_item_removed");
 
     @EventHandler(priority = EventPriority.MONITOR)

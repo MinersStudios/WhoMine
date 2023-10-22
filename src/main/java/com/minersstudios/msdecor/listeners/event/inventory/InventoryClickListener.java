@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.MSDecorUtils;
+import com.minersstudios.msdecor.MSDecor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -16,7 +17,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryClickListener extends AbstractMSListener {
+public class InventoryClickListener extends AbstractMSListener<MSDecor> {
     private static final ImmutableSet<InventoryType> IGNORABLE_INVENTORY_TYPES = Sets.immutableEnumSet(
             //<editor-fold desc="Ignorable inventory types" defaultstate="collapsed">
             InventoryType.CARTOGRAPHY,

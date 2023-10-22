@@ -1,5 +1,6 @@
 package com.minersstudios.msblock.listeners.event.block;
 
+import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.file.NoteBlockData;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
@@ -9,7 +10,7 @@ import org.bukkit.event.block.NotePlayEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class NotePlayListener extends AbstractMSListener {
+public class NotePlayListener extends AbstractMSListener<MSBlock> {
     private static final @NotNull NoteBlockData DEFAULT = NoteBlockData.defaultData();
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

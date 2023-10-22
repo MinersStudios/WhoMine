@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerMoveListener extends AbstractMSListener {
+public class PlayerMoveListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onPlayerMove(final @NotNull PlayerMoveEvent event) {

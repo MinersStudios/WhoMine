@@ -58,7 +58,7 @@ public enum DecorParameter {
 
                 final ItemDisplay itemDisplay = customDecor.getDisplay();
                 final ItemStack displayItem = itemDisplay.getItemStack();
-                final var nextType = data.getNextType(displayItem);
+                final var nextType = data.getNextWrenchType(displayItem);
 
                 if (nextType == null) return;
 
@@ -94,23 +94,78 @@ public enum DecorParameter {
                 if (!data.isLightable()) return;
 
                 final BoundingBox boundingBox = customDecor.getNMSBoundingBox();
+                final int nextLevel = data.getNextLightLevel(
+                        interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
+                        ? light.getLevel()
+                        : 0
+                );
 
                 for (
                         final var block
                         : BlockUtils.getBlocks(
-                        interaction.getWorld(),
-                        boundingBox.minX(),
-                        boundingBox.minY(),
-                        boundingBox.minZ(),
-                        boundingBox.maxX(),
-                        boundingBox.maxY(),
-                        boundingBox.maxZ()
-                )
+                                interaction.getWorld(),
+                                boundingBox.minX(),
+                                boundingBox.minY(),
+                                boundingBox.minZ(),
+                                boundingBox.maxX(),
+                                boundingBox.maxY(),
+                                boundingBox.maxZ()
+                        )
                 ) {
                     if (block.getBlockData() instanceof final Light light) {
-                        light.setLevel(data.nextLightLevel(light.getLevel()));
+                        light.setLevel(nextLevel);
                         block.setBlockData(light);
                     }
                 }
+            };
+
+    public static final BiConsumer<@NotNull CustomDecorRightClickEvent, @NotNull Interaction> LIGHT_TYPED_RIGHT_CLICK_ACTION =
+            (event, interaction) -> {
+                final CustomDecor customDecor = event.getCustomDecor();
+                final var data = customDecor.getData();
+
+                if (!data.isLightable()) return;
+
+                final BoundingBox boundingBox = customDecor.getNMSBoundingBox();
+                final World world = interaction.getWorld();
+                final int nextLevel = data.getNextLightLevel(
+                        world.getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
+                        ? light.getLevel()
+                        : 0
+                );
+
+                for (
+                        final var block
+                        : BlockUtils.getBlocks(
+                                world,
+                                boundingBox.minX(),
+                                boundingBox.minY(),
+                                boundingBox.minZ(),
+                                boundingBox.maxX(),
+                                boundingBox.maxY(),
+                                boundingBox.maxZ()
+                        )
+                ) {
+                    if (block.getBlockData() instanceof final Light light) {
+                        light.setLevel(nextLevel);
+                        block.setBlockData(light);
+                    }
+                }
+
+                final var nextType = data.getLightTypeOf(nextLevel);
+
+                if (nextType == null) return;
+
+                final ItemStack typeItem = nextType.getItem();
+                final ItemMeta itemMeta = typeItem.getItemMeta();
+
+                final ItemDisplay itemDisplay = customDecor.getDisplay();
+                final ItemStack displayItem = itemDisplay.getItemStack();
+                assert displayItem != null;
+
+                itemMeta.displayName(displayItem.getItemMeta().displayName());
+                typeItem.setItemMeta(itemMeta);
+
+                itemDisplay.setItemStack(typeItem);
             };
 }

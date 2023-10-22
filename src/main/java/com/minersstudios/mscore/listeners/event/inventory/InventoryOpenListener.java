@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.listeners.event.inventory;
 
+import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
@@ -8,7 +9,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryOpenListener extends AbstractMSListener {
+public class InventoryOpenListener extends AbstractMSListener<MSCore> {
 
     @EventHandler
     public void onInventoryOpen(final @NotNull InventoryOpenEvent event) {

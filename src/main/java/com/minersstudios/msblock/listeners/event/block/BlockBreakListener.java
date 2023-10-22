@@ -1,5 +1,6 @@
 package com.minersstudios.msblock.listeners.event.block;
 
+import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.util.SoundGroup;
@@ -41,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @MSListener
-public class BlockBreakListener extends AbstractMSListener {
+public class BlockBreakListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onBlockBreak(final @NotNull BlockBreakEvent event) {

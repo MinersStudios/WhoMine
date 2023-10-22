@@ -3,6 +3,7 @@ package com.minersstudios.msitem.listeners.mechanic;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.ItemUtils;
+import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.item.CustomItem;
 import com.minersstudios.msitem.item.registry.items.cards.CardsBicycle;
 import org.bukkit.event.EventHandler;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @MSListener
-public class CardBoxMechanic extends AbstractMSListener {
+public class CardBoxMechanic extends AbstractMSListener<MSItem> {
     private static final List<ItemStack> CARDS = new ArrayList<>();
 
     @EventHandler(priority = EventPriority.MONITOR)

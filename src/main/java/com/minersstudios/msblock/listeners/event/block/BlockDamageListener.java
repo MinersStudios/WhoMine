@@ -1,5 +1,6 @@
 package com.minersstudios.msblock.listeners.event.block;
 
+import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
@@ -18,7 +19,7 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class BlockDamageListener extends AbstractMSListener {
+public class BlockDamageListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onBlockDamage(final @NotNull BlockDamageEvent event) {

@@ -1,5 +1,6 @@
 package com.minersstudios.msblock.listeners.event.inventory;
 
+import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.customblock.CustomBlockData;
 import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
@@ -15,7 +16,7 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryCreativeListener extends AbstractMSListener {
+public class InventoryCreativeListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryCreative(final @NotNull InventoryCreativeEvent event) {

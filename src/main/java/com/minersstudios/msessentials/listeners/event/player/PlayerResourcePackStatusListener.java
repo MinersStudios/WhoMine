@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.ResourcePack;
 import org.bukkit.entity.Player;
@@ -10,7 +11,7 @@ import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerResourcePackStatusListener extends AbstractMSListener {
+public class PlayerResourcePackStatusListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerResourcePackStatus(final @NotNull PlayerResourcePackStatusEvent event) {

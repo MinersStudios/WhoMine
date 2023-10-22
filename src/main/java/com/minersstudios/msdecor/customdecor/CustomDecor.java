@@ -23,18 +23,18 @@ import java.util.*;
 public final class CustomDecor {
     private final CustomDecorData<?> data;
     private final ItemDisplay display;
-    private final List<Interaction> interactions;
+    private final Interaction[] interactions;
     private final net.minecraft.world.level.levelgen.structure.BoundingBox nmsBoundingBox;
 
     public CustomDecor(
             final @NotNull CustomDecorData<?> data,
             final @NotNull ItemDisplay display,
-            final @NotNull List<Interaction> interactions,
+            final Interaction @NotNull [] interactions,
             final @NotNull net.minecraft.world.level.levelgen.structure.BoundingBox nmsBoundingBox
     ) {
         this.data = data;
         this.display = display;
-        this.interactions = Collections.unmodifiableList(interactions);
+        this.interactions = interactions;
         this.nmsBoundingBox = nmsBoundingBox;
     }
 
@@ -66,7 +66,7 @@ public final class CustomDecor {
     }
 
     public @NotNull @Unmodifiable List<Interaction> getInteractions() {
-        return this.interactions;
+        return Arrays.asList(this.interactions);
     }
 
     public @NotNull net.minecraft.world.level.levelgen.structure.BoundingBox getNMSBoundingBox() {
@@ -88,7 +88,7 @@ public final class CustomDecor {
             final ItemStack displayItemStack = this.display.getItemStack();
             assert displayItemStack != null;
             final ItemStack itemStack =
-                    this.data.isDropsType()
+                    !this.data.isTyped() || this.data.isDropsType()
                     ? displayItemStack
                     : this.data.getItem();
             final ItemMeta itemMeta = itemStack.getItemMeta();
@@ -193,7 +193,7 @@ public final class CustomDecor {
                 : new CustomDecor(
                         data,
                         display,
-                        interactions,
+                        interactions.toArray(new Interaction[0]),
                         boundingBox
                 );
     }

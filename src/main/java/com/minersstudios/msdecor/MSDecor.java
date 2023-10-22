@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @see MSPlugin
  */
-public final class MSDecor extends MSPlugin {
+public final class MSDecor extends MSPlugin<MSDecor> {
     private static MSDecor instance;
     private Config config;
     private Cache cache;

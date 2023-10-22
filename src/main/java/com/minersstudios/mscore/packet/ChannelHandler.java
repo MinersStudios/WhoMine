@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
  * @see PacketEvent
  */
 public class ChannelHandler extends ChannelDuplexHandler {
-    private final MSPlugin plugin;
+    private final MSPlugin<? extends MSPlugin<?>> plugin;
     private final Connection connection;
 
     public static final String CHANNEL_HANDLER_NAME = "ms_channel_handler";
@@ -35,7 +35,7 @@ public class ChannelHandler extends ChannelDuplexHandler {
      * @param connection The connection associated with this channel handler
      */
     public ChannelHandler(
-            final @NotNull MSPlugin plugin,
+            final @NotNull MSPlugin<? extends MSPlugin<?>> plugin,
             final @NotNull Connection connection
     ) {
         this.plugin = plugin;
@@ -45,7 +45,7 @@ public class ChannelHandler extends ChannelDuplexHandler {
     /**
      * @return The plugin associated with this channel handler
      */
-    public @NotNull MSPlugin getPlugin() {
+    public @NotNull MSPlugin<? extends MSPlugin<?>> getPlugin() {
         return this.plugin;
     }
 
@@ -148,7 +148,7 @@ public class ChannelHandler extends ChannelDuplexHandler {
      */
     public static void injectConnection(
             final @NotNull Connection connection,
-            final @NotNull MSPlugin plugin
+            final @NotNull MSPlugin<? extends MSPlugin<?>> plugin
     ) {
         final ChannelPipeline pipeline = connection.channel.pipeline();
 

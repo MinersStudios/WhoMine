@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 @MSListener
-public class PlayerInteractListener extends AbstractMSListener {
+public class PlayerInteractListener extends AbstractMSListener<MSBlock> {
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
     private static final ImmutableSet<Material> IGNORABLE_MATERIALS = Sets.immutableEnumSet(
             //<editor-fold desc="Ignorable materials" defaultstate="collapsed">

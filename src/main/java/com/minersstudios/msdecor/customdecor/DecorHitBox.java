@@ -12,11 +12,11 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class DecorHitBox {
+public final class DecorHitBox {
     private final double x;
     private final double y;
     private final double z;
@@ -32,18 +32,14 @@ public class DecorHitBox {
     public static final NamespacedKey HITBOX_BOUNDING_BOX_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_BOUNDING_BOX);
 
     public DecorHitBox(
-            final double x,
-            final double y,
-            final double z,
+            final @Range(from = -8, to = 8) double x,
+            final @Range(from = -8, to = 8) double y,
+            final @Range(from = -8, to = 8) double z,
             final @NotNull Type type
     ) throws IllegalArgumentException {
-        if (
-                x == 0.0d
-                || y == 0.0d
-                || z == 0.0d
-        ) {
-            throw new IllegalArgumentException("Hit box values cannot be zero");
-        }
+        validSize(x);
+        validSize(y);
+        validSize(z);
 
         this.x = x;
         this.y = y;
@@ -110,16 +106,16 @@ public class DecorHitBox {
     public static void processInteractions(
             final @NotNull CustomDecorData<?> data,
             final @NotNull ItemDisplay display,
-            final @NotNull List<Interaction> interactions,
+            final Interaction @NotNull [] interactions,
             final @NotNull net.minecraft.world.level.levelgen.structure.BoundingBox boundingBox
     ) {
-        final Interaction firstInteraction = interactions.get(0);
+        final Interaction firstInteraction = interactions[0];
         final String firstUUID = firstInteraction.getUniqueId().toString();
         final PersistentDataContainer firstContainer = firstInteraction.getPersistentDataContainer();
         final var uuids = new ArrayList<String>();
 
-        for (int i = 1; i < interactions.size(); ++i) {
-            final Interaction interaction = interactions.get(i);
+        for (int i = 1; i < interactions.length; ++i) {
+            final Interaction interaction = interactions[i];
 
             uuids.add(interaction.getUniqueId().toString());
             interaction.getPersistentDataContainer()
@@ -173,6 +169,15 @@ public class DecorHitBox {
 
     public static boolean isHitBoxChild(final @NotNull Interaction interaction) {
         return interaction.getPersistentDataContainer().has(DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY);
+    }
+
+    public static void validSize(final double number) throws IllegalArgumentException {
+        if (number == 0.0d) {
+            throw new IllegalArgumentException("Size cannot equal 0");
+        }
+        if (number < -8.0d || number > 8.0d) {
+            throw new IllegalArgumentException("Size '" + number + "' is not in range [-8, 8]");
+        }
     }
 
     private @NotNull Location getSecondLocation(

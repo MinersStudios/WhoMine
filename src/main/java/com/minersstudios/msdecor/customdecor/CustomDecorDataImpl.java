@@ -16,7 +16,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Light;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Interaction;
@@ -28,10 +27,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -50,10 +46,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     protected final List<Map.Entry<Recipe, Boolean>> recipes;
     protected final EnumSet<DecorParameter> parameterSet;
     protected final double sitHeight;
-    protected final Type<D>[] wrenchTypes;
+    protected final CustomDecorData.Type<D>[] wrenchTypes;
     protected final int[] lightLevels;
-    protected final Map<Facing, Type<D>> faceTypeMap;
-    protected final Map<Integer, Type<D>> lightLevelTypeMap;
+    protected final EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
+    protected final Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
     protected final BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction;
     protected final boolean dropsType;
 
@@ -68,9 +64,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.soundGroup = builder.soundGroup;
         this.itemStack = builder.itemStack;
         this.recipes =
-                builder.recipes == null
+                builder.recipeList == null
                 ? Collections.emptyList()
-                : builder.recipes;
+                : builder.recipeList;
         this.parameterSet =
                 builder.parameterSet == null
                 ? EnumSet.noneOf(DecorParameter.class)
@@ -79,7 +75,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.wrenchTypes = builder.wrenchTypes;
         this.faceTypeMap =
                 builder.faceTypeMap == null
-                ? Collections.emptyMap()
+                ? new EnumMap<>(Facing.class)
                 : builder.faceTypeMap;
         this.lightLevels = builder.lightLevels;
         this.lightLevelTypeMap =
@@ -128,7 +124,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public Type<D> @NotNull [] wrenchTypes() throws UnsupportedOperationException {
+    public CustomDecorData.Type<D> @NotNull [] wrenchTypes() throws UnsupportedOperationException {
         if (!this.isWrenchable()) {
             throw new UnsupportedOperationException("This custom decor is not wrenchable!");
         }
@@ -138,14 +134,14 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     @Contract("null -> null")
-    public @Nullable Type<D> getTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
+    public @Nullable CustomDecorData.Type<D> getWrenchTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
         if (!this.isWrenchable()) {
             throw new UnsupportedOperationException("This custom decor is not wrenchable!");
         }
-        
+
         return interaction == null
                 ? null
-                : this.getTypeOf(
+                : this.getWrenchTypeOf(
                         CustomDecor.fromInteraction(interaction).map(
                                 customDecor -> customDecor.getDisplay().getItemStack()
                         ).orElse(null)
@@ -154,7 +150,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     
     @Override
     @Contract("null -> null")
-    public @Nullable Type<D> getTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
+    public @Nullable CustomDecorData.Type<D> getWrenchTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
         if (!this.isWrenchable()) {
             throw new UnsupportedOperationException("This custom decor is not wrenchable!");
         }
@@ -180,19 +176,19 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     @Contract("null -> null")
-    public @Nullable Type<D> getNextType(final @Nullable Interaction interaction) throws UnsupportedOperationException {
-        return this.getNextType(this.getTypeOf(interaction));
+    public @Nullable CustomDecorData.Type<D> getNextWrenchType(final @Nullable Interaction interaction) throws UnsupportedOperationException {
+        return this.getNextWrenchType(this.getWrenchTypeOf(interaction));
     }
 
     @Override
     @Contract("null -> null")
-    public @Nullable Type<D> getNextType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
-        return this.getNextType(this.getTypeOf(itemStack));
+    public @Nullable CustomDecorData.Type<D> getNextWrenchType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
+        return this.getNextWrenchType(this.getWrenchTypeOf(itemStack));
     }
 
     @Override
     @Contract("null -> null")
-    public @Nullable Type<D> getNextType(final @Nullable Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException {
+    public @Nullable CustomDecorData.Type<D> getNextWrenchType(final @Nullable CustomDecorData.Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException {
         if (!this.isWrenchable()) {
             throw new UnsupportedOperationException("This custom decor is not wrenchable!");
         }
@@ -214,32 +210,85 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public @NotNull @Unmodifiable Map<Facing, Type<D>> typeFaceMap() throws UnsupportedOperationException {
-        if (!this.parameterSet.contains(DecorParameter.FACE_TYPED)) {
+    public @NotNull @Unmodifiable Map<Facing, CustomDecorData.Type<D>> typeFaceMap() throws UnsupportedOperationException {
+        if (!this.isFaceTyped()) {
             throw new UnsupportedOperationException("This custom decor is not face typed!");
         }
 
-        return this.faceTypeMap;
+        return Collections.unmodifiableMap(this.faceTypeMap);
     }
 
     @Override
     @Contract("null -> null")
-    public @Nullable Type<D> getTypeByFace(final @Nullable BlockFace blockFace) throws UnsupportedOperationException {
-        if (!this.parameterSet.contains(DecorParameter.FACE_TYPED)) {
+    public @Nullable CustomDecorData.Type<D> getFaceTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
+        if (!this.isFaceTyped()) {
             throw new UnsupportedOperationException("This custom decor is not face typed!");
         }
 
-        if (!this.facing.hasFace(blockFace)) return null;
+        return interaction == null
+                ? null
+                : this.getFaceTypeOf(
+                        CustomDecor.fromInteraction(interaction).map(
+                                customDecor -> customDecor.getDisplay().getItemStack()
+                        ).orElse(null)
+                );
+    }
 
-        final Facing facing = Facing.fromBlockFace(blockFace);
+    @Override
+    @Contract("null -> null")
+    public @Nullable CustomDecorData.Type<D> getFaceTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
+        if (!this.isFaceTyped()) {
+            throw new UnsupportedOperationException("This custom decor is not face typed!");
+        }
+
+        if (itemStack == null) return null;
+
+        final String key = itemStack.getItemMeta().getPersistentDataContainer().get(
+                CustomDecorType.TYPE_NAMESPACED_KEY,
+                PersistentDataType.STRING
+        );
+
+        if (key == null) return null;
+        if (!CustomDecorType.matchesTypedKey(key)) {
+            return this.faceTypeMap.getOrDefault(Facing.FLOOR, null);
+        }
+
+        for (final var type : this.faceTypeMap.values()) {
+            if (key.equals(type.getKey().getKey())) {
+                return type;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    @Contract("null -> null")
+    public @Nullable CustomDecorData.Type<D> getFaceTypeOf(final @Nullable BlockFace blockFace) throws UnsupportedOperationException {
+        if (!this.isFaceTyped()) {
+            throw new UnsupportedOperationException("This custom decor is not face typed!");
+        }
+
+        return !this.facing.hasFace(blockFace)
+                ? null
+                : this.getFaceTypeOf(Facing.fromBlockFace(blockFace));
+    }
+
+    @Override
+    @Contract("null -> null")
+    public @Nullable CustomDecorData.Type<D> getFaceTypeOf(final @Nullable Facing facing) throws UnsupportedOperationException {
+        if (!this.isFaceTyped()) {
+            throw new UnsupportedOperationException("This custom decor is not face typed!");
+        }
+
         return facing == null
                 ? null
                 : this.faceTypeMap.getOrDefault(facing, null);
     }
 
     @Override
-    public @NotNull @Unmodifiable Map<Integer, Type<D>> typeLightLevelMap() throws UnsupportedOperationException {
-        if (!this.parameterSet.contains(DecorParameter.LIGHT_TYPED)) {
+    public @NotNull @Unmodifiable Map<Integer, CustomDecorData.Type<D>> typeLightLevelMap() throws UnsupportedOperationException {
+        if (!this.isLightTyped()) {
             throw new UnsupportedOperationException("This custom decor is not light typed!");
         }
 
@@ -248,8 +297,51 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     @Contract("null -> null")
-    public @Nullable Type<D> getTypeByLightLevel(final @Nullable Integer lightLevel) throws UnsupportedOperationException {
-        if (!this.parameterSet.contains(DecorParameter.LIGHT_TYPED)) {
+    public @Nullable CustomDecorData.Type<D> getLightTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
+        if (!this.isLightTyped()) {
+            throw new UnsupportedOperationException("This custom decor is not light typed!");
+        }
+
+        return interaction == null
+                ? null
+                : this.getLightTypeOf(
+                        CustomDecor.fromInteraction(interaction).map(
+                                customDecor -> customDecor.getDisplay().getItemStack()
+                        ).orElse(null)
+                );
+    }
+
+    @Override
+    @Contract("null -> null")
+    public @Nullable CustomDecorData.Type<D> getLightTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
+        if (!this.isLightTyped()) {
+            throw new UnsupportedOperationException("This custom decor is not light typed!");
+        }
+
+        if (itemStack == null) return null;
+
+        final String key = itemStack.getItemMeta().getPersistentDataContainer().get(
+                CustomDecorType.TYPE_NAMESPACED_KEY,
+                PersistentDataType.STRING
+        );
+
+        if (key == null) return null;
+        if (!CustomDecorType.matchesTypedKey(key)) {
+            return this.lightLevelTypeMap.getOrDefault(this.lightLevels[0], null);
+        }
+
+        for (final var type : this.lightLevelTypeMap.values()) {
+            if (key.equals(type.getKey().getKey())) {
+                return type;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public @Nullable CustomDecorData.Type<D> getLightTypeOf(final int lightLevel) throws UnsupportedOperationException {
+        if (!this.isLightTyped()) {
             throw new UnsupportedOperationException("This custom decor is not light typed!");
         }
 
@@ -258,7 +350,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public int @NotNull [] lightLevels() throws UnsupportedOperationException {
-        if (!this.parameterSet.contains(DecorParameter.LIGHTABLE)) {
+        if (!this.isLightable()) {
             throw new UnsupportedOperationException("This custom decor is not lightable!");
         }
 
@@ -266,8 +358,50 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public int nextLightLevel(final int lightLevel) throws UnsupportedOperationException {
-        if (!this.parameterSet.contains(DecorParameter.LIGHTABLE)) {
+    public int getLightLevelOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
+        return interaction != null
+                && interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
+                ? light.getLevel()
+                : 0;
+    }
+
+    @Override
+    public int getLightLevelOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
+        if (!this.isLightTyped()) {
+            throw new UnsupportedOperationException("This custom decor is not light typed!");
+        }
+
+        if (itemStack == null) return this.lightLevels[0];
+
+        final String key = itemStack.getItemMeta().getPersistentDataContainer().get(
+                CustomDecorType.TYPE_NAMESPACED_KEY,
+                PersistentDataType.STRING
+        );
+
+        if (!CustomDecorType.matchesTypedKey(key)) return this.lightLevels[0];
+
+        for (final var entry : this.lightLevelTypeMap.entrySet()) {
+            if (key.equals(entry.getValue().getKey().getKey())) {
+                return entry.getKey();
+            }
+        }
+
+        return this.lightLevels[0];
+    }
+
+    @Override
+    public int getNextLightLevel(final @Nullable Interaction interaction) throws UnsupportedOperationException {
+        return this.getNextLightLevel(this.getLightLevelOf(interaction));
+    }
+
+    @Override
+    public int getNextLightLevel(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
+        return this.getNextLightLevel(this.getLightLevelOf(itemStack));
+    }
+
+    @Override
+    public int getNextLightLevel(final int lightLevel) throws UnsupportedOperationException {
+        if (!this.isLightable()) {
             throw new UnsupportedOperationException("This custom decor is not lightable!");
         }
 
@@ -284,7 +418,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public double getSitHeight() throws UnsupportedOperationException {
-        if (!this.parameterSet.contains(DecorParameter.SITTABLE)) {
+        if (!this.isSittable()) {
             throw new UnsupportedOperationException("This custom decor is not sittable!");
         }
 
@@ -337,7 +471,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public boolean isLightable() {
-        return this.parameterSet.contains(DecorParameter.LIGHTABLE);
+        return this.parameterSet.contains(DecorParameter.LIGHTABLE)
+                || this.parameterSet.contains(DecorParameter.LIGHT_TYPED);
     }
 
     @Override
@@ -436,7 +571,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 this.setHitBox(
                         player.getName(),
                         replaceableBlock,
-                        this.summonItem(replaceableBlock, player, itemInHand),
+                        this.summonItem(replaceableBlock, blockFace, player, itemInHand),
                         bb,
                         blocksToReplace
                 ),
@@ -444,7 +579,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 player,
                 hand == null ? EquipmentSlot.HAND : hand
         );
-        Bukkit.getPluginManager().callEvent(event);
+        player.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             event.getCustomDecor().destroy(player, false);
@@ -476,6 +611,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     private @NotNull ItemDisplay summonItem(
             final @NotNull Block block,
+            final @NotNull BlockFace blockFace,
             final @NotNull Player player,
             final @NotNull ItemStack itemInHand
     ) {
@@ -488,7 +624,38 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     0.0f
             );
             itemDisplay.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.NONE);
-            itemDisplay.setItemStack(itemInHand);
+
+            final ItemMeta itemMeta = itemInHand.getItemMeta();
+            CustomDecorData.Type<D> type = null;
+
+            if (this.isLightTyped()) {
+                type = this.lightLevelTypeMap.get(this.lightLevels[0]);
+            } else if (this.isFaceTyped()) {
+                type = this.faceTypeMap.get(Facing.fromBlockFace(blockFace));
+            } else if (this.isWrenchable()) {
+                type = this.getWrenchTypeOf(itemInHand);
+            }
+
+            if (
+                    type == null
+                    || CustomDecorType.matchesTypedKey(
+                            itemMeta.getPersistentDataContainer().get(
+                                    CustomDecorType.TYPE_NAMESPACED_KEY,
+                                    PersistentDataType.STRING
+                            )
+                    )
+            ) {
+                itemDisplay.setItemStack(itemInHand);
+            } else {
+                final ItemStack typeItem = type.getItem();
+                final ItemMeta typeMeta = typeItem.getItemMeta();
+
+                typeMeta.displayName(itemMeta.displayName());
+                typeItem.setItemMeta(typeMeta);
+
+                itemDisplay.setItemStack(typeItem);
+            }
+
             itemDisplay.setDisplayHeight(1.0f);
             itemDisplay.setDisplayWidth(1.0f);
         });
@@ -506,7 +673,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final double x = this.hitBox.getX();
         final double y = this.hitBox.getY();
         final double z = this.hitBox.getZ();
-        final var interactions =
+        final Interaction[] interactions =
                 fillInteractions(
                         world,
                         boundingBox,
@@ -530,11 +697,13 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final var blocks = fillBlocks(placer, ((CraftWorld) world).getHandle(), blockPoses, type.getNMSBlock());
 
             if (this.isLightable()) {
-                final int firstLightLevel = this.lightLevels[0];
+                final int lightLevel = this.isLightTyped()
+                        ? this.getLightLevelOf(itemDisplay.getItemStack())
+                        : this.lightLevels[0];
 
                 for (final var currentBlock : blocks) {
                     if (currentBlock.getBlockData() instanceof final Light light) {
-                        light.setLevel(firstLightLevel);
+                        light.setLevel(lightLevel);
                         currentBlock.setBlockData(light);
                     }
                 }
@@ -542,11 +711,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         if (
-                block.getBlockData() instanceof final Levelled levelled
+                block.getBlockData() instanceof final Light light
                 && this.hasParameters(DecorParameter.LIGHTABLE)
         ) {
-            levelled.setLevel(this.lightLevels[0]);
-            block.setBlockData(levelled, true);
+            light.setLevel(this.lightLevels[0]);
+            block.setBlockData(light, true);
         }
 
         return new CustomDecor(
@@ -557,16 +726,19 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         );
     }
 
-    private static @NotNull List<Interaction> fillInteractions(
+    private static Interaction @NotNull [] fillInteractions(
             final @NotNull World world,
             final @NotNull BoundingBox box,
             final @NotNull Consumer<Interaction> function,
             final double offsetY
     ) {
-        final var interactions = new ArrayList<Interaction>();
+        final BlockPos[] blockPoses = LocationUtils.getBlockPosesBetween(box.minX(), box.minY(), box.minZ(), box.maxX(), box.minY(), box.maxZ());
+        final int length = blockPoses.length;
+        final Interaction[] interactions = new Interaction[length];
 
-        for (final var blockPos : LocationUtils.getBlockPosesBetween(box.minX(), box.minY(), box.minZ(), box.maxX(), box.minY(), box.maxZ())) {
-            interactions.add(world.spawn(
+        for (int i = 0; i < length; ++i) {
+            final BlockPos blockPos = blockPoses[i];
+            interactions[i] = world.spawn(
                     new Location(
                             null,
                             blockPos.getX() + 0.5d,
@@ -575,7 +747,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     ),
                     Interaction.class,
                     function
-            ));
+            );
         }
 
         return interactions;
@@ -632,21 +804,36 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         return blockList;
     }
 
-    public class Builder {
-        protected NamespacedKey namespacedKey;
-        protected DecorHitBox hitBox;
-        protected Facing facing;
-        protected ItemStack itemStack;
-        protected SoundGroup soundGroup;
-        protected List<Map.Entry<Recipe, Boolean>> recipes;
-        protected EnumSet<DecorParameter> parameterSet;
-        protected double sitHeight = Double.NaN;
-        protected Type<D>[] wrenchTypes;
-        protected Map<Facing, Type<D>> faceTypeMap;
-        protected int[] lightLevels;
-        protected Map<Integer, Type<D>> lightLevelTypeMap;
-        protected BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction;
-        protected boolean dropsType;
+    private static @NotNull ItemStack setTypeKey(
+            final @NotNull ItemStack itemStack,
+            final @NotNull String typeKey
+    ) {
+        final ItemMeta meta = itemStack.getItemMeta();
+        final PersistentDataContainer container = meta.getPersistentDataContainer();
+
+        if (!container.has(CustomDecorType.TYPE_NAMESPACED_KEY)) {
+            container.set(CustomDecorType.TYPE_NAMESPACED_KEY, PersistentDataType.STRING, typeKey);
+            itemStack.setItemMeta(meta);
+        }
+
+        return itemStack;
+    }
+
+    public final class Builder {
+        private NamespacedKey namespacedKey;
+        private DecorHitBox hitBox;
+        private Facing facing;
+        private ItemStack itemStack;
+        private SoundGroup soundGroup;
+        private List<Map.Entry<Recipe, Boolean>> recipeList;
+        private EnumSet<DecorParameter> parameterSet;
+        private double sitHeight = Double.NaN;
+        private CustomDecorData.Type<D>[] wrenchTypes;
+        private EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
+        private int[] lightLevels;
+        private Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
+        private BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction;
+        private boolean dropsType;
 
         private static final String KEY_REGEX = "[a-z0-9./_-]+";
         private static final Pattern KEY_PATTERN = Pattern.compile(KEY_REGEX);
@@ -689,8 +876,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalArgumentException("Item stack is not set!");
             }
 
-            if (this.recipes == null) {
-                this.recipes = Collections.emptyList();
+            if (this.recipeList == null) {
+                this.recipeList = Collections.emptyList();
             }
 
             if (this.parameterSet == null) {
@@ -733,7 +920,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         throw new IllegalArgumentException("Light levels are not set, but light typed parameter is set!");
                     }
 
-                    if (this.lightLevelTypeMap == null || this.lightLevelTypeMap.isEmpty()) {
+                    if (
+                            this.lightLevelTypeMap == null
+                            || this.lightLevelTypeMap.isEmpty()
+                    ) {
                         throw new IllegalArgumentException("Light level type map is not set, but light typed parameter is set!");
                     }
                 }
@@ -754,6 +944,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     this.rightClickAction = DecorParameter.SITTABLE_RIGHT_CLICK_ACTION;
                 } else if (this.parameterSet.contains(DecorParameter.WRENCHABLE)) {
                     this.rightClickAction = DecorParameter.WRENCHABLE_RIGHT_CLICK_ACTION;
+                } else if (this.parameterSet.contains(DecorParameter.LIGHT_TYPED)) {
+                    this.rightClickAction = DecorParameter.LIGHT_TYPED_RIGHT_CLICK_ACTION;
                 } else if (this.parameterSet.contains(DecorParameter.LIGHTABLE)) {
                     this.rightClickAction = DecorParameter.LIGHTABLE_RIGHT_CLICK_ACTION;
                 }
@@ -811,24 +1003,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalStateException("Key is not set! Set key before setting item stack!");
             }
 
-            final ItemMeta meta = itemStack.getItemMeta();
-            final PersistentDataContainer container = meta.getPersistentDataContainer();
-
-            if (!container.has(CustomDecorType.TYPE_NAMESPACED_KEY, PersistentDataType.STRING)) {
-                container.set(
-                        CustomDecorType.TYPE_NAMESPACED_KEY,
-                        PersistentDataType.STRING,
-                        this.namespacedKey.getKey()
-                );
-                itemStack.setItemMeta(meta);
-            }
-
-            this.itemStack = itemStack;
+            this.itemStack = setTypeKey(itemStack, this.namespacedKey.getKey());
             return this;
         }
 
-        public List<Map.Entry<Recipe, Boolean>> recipes() {
-            return this.recipes;
+        public List<Map.Entry<Recipe, Boolean>> recipeList() {
+            return this.recipeList;
         }
 
         @SafeVarargs
@@ -844,15 +1024,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 recipeList.add(entry.apply(this));
             }
 
-            this.recipes = recipeList;
+            this.recipeList = recipeList;
             return this;
         }
 
-        public DecorParameter[] parameters() {
-            return
-                    this.parameterSet == null
-                    ? new DecorParameter[0]
-                    : this.parameterSet.toArray(new DecorParameter[0]);
+        public EnumSet<DecorParameter> parameterSet() {
+            return this.parameterSet;
         }
 
         public @NotNull Builder parameters(
@@ -904,31 +1081,37 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.sitHeight;
         }
 
-        public @NotNull Builder sitHeight(final double sitHeight) throws IllegalStateException {
-            if (this.parameterSet == null) {
-                throw new IllegalStateException("Parameters are not set! Set parameters before setting sit height!");
-            }
+        public @NotNull Builder sitHeight(final @Range(from = -9, to = 9) double sitHeight) throws IllegalStateException, IllegalArgumentException {
+            this.validateParam(
+                    DecorParameter.SITTABLE,
+                    "Set sittable parameter before setting sit height!"
+            );
 
-            if (!this.parameterSet.contains(DecorParameter.SITTABLE)) {
-                throw new IllegalStateException("Sittable parameter is not set! Set sittable parameter before setting sit height!");
+            if (sitHeight < -9 || sitHeight > 9) {
+                throw new IllegalArgumentException("Sit height '" + sitHeight + "' is not in range [-9, 9]!");
             }
 
             this.sitHeight = sitHeight;
             return this;
         }
 
-        public Type<D>[] wrenchTypes() {
+        public CustomDecorData.Type<D>[] wrenchTypes() {
             return this.wrenchTypes;
         }
 
         @SafeVarargs
         @SuppressWarnings("unchecked")
         public final @NotNull Builder wrenchTypes(
-                final @NotNull Function<Builder, Type<D>> first,
-                final Function<Builder, Type<D>> @NotNull ... rest
+                final @NotNull Function<Builder, CustomDecorData.Type<D>> first,
+                final Function<Builder, CustomDecorData.Type<D>> @NotNull ... rest
         ) {
+            this.validateParam(
+                    DecorParameter.WRENCHABLE,
+                    "Set wrenchable parameter before setting wrench types!"
+            );
+
             final var firstType = first.apply(this);
-            final Type<D>[] restTypes = (Type<D>[]) new Type<?>[rest.length];
+            final CustomDecorData.Type<D>[] restTypes = (CustomDecorData.Type<D>[]) new CustomDecorData.Type<?>[rest.length];
 
             for (int i = 0; i < rest.length; i++) {
                 restTypes[i] = rest[i].apply(this);
@@ -937,57 +1120,74 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.wrenchTypes(firstType,  restTypes);
         }
 
+        @SafeVarargs
         @SuppressWarnings("unchecked")
-        public @NotNull Builder wrenchTypes(
-                final @NotNull Type<D> first,
-                final Type<D> @NotNull ... rest
+        public final @NotNull Builder wrenchTypes(
+                final @NotNull CustomDecorData.Type<D> first,
+                final CustomDecorData.Type<D> @NotNull ... rest
         ) throws IllegalStateException {
+            this.validateParam(
+                    DecorParameter.WRENCHABLE,
+                    "Set wrenchable parameter before setting wrench types!"
+            );
+
             if (this.itemStack == null) {
                 throw new IllegalStateException("Item stack is not set! Set item stack before setting wrench types!");
             }
 
-            if (this.parameterSet == null) {
-                throw new IllegalStateException("Parameters are not set! Set parameters before setting wrench types!");
-            }
-
-            if (!this.parameterSet.contains(DecorParameter.WRENCHABLE)) {
-                throw new IllegalStateException("Wrenchable parameter is not set! Set wrenchable parameter before setting wrench types!");
-            }
-
-            this.wrenchTypes = (Type<D>[]) new Type<?>[rest.length + 2];
+            this.wrenchTypes = (CustomDecorData.Type<D>[]) new CustomDecorData.Type<?>[rest.length + 2];
 
             if (rest.length != 0) {
                 System.arraycopy(rest, 0, this.wrenchTypes, 2, this.wrenchTypes.length);
             }
 
             this.wrenchTypes[0] =
-                    new TypeBuilder()
-                    .key(this, "default")
-                    .itemStack(this.itemStack)
-                    .build();
+                    new Type(
+                            this,
+                            "default",
+                            this.itemStack
+                    );
             this.wrenchTypes[1] = first;
 
             return this;
         }
 
-        public Map<Facing, Type<D>> faceTypeMap() {
+        public @NotNull EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap() {
             return this.faceTypeMap;
         }
 
-        public @NotNull Builder faceTypeMap(final @NotNull Map<Facing, Type<D>> faceTypeMap) throws IllegalStateException, IllegalArgumentException {
-            if (this.parameterSet == null) {
-                throw new IllegalStateException("Parameters are not set! Set parameters before setting face type map!");
-            }
+        public @NotNull Builder faceTypes(
+                final @NotNull Function<Builder, CustomDecorData.Type<D>> floorType,
+                final @NotNull Function<Builder, CustomDecorData.Type<D>> ceilingType,
+                final @NotNull Function<Builder, CustomDecorData.Type<D>> wallType
+        ) {
+            this.validateParam(
+                    DecorParameter.FACE_TYPED,
+                    "Set face typed parameter before setting face type map!"
+            );
 
-            if (!this.parameterSet.contains(DecorParameter.FACE_TYPED)) {
-                throw new IllegalStateException("Face typed parameter is not set! Set face typed parameter before setting face type map!");
-            }
+            return this.faceTypes(
+                    floorType.apply(this),
+                    ceilingType.apply(this),
+                    wallType.apply(this)
+            );
+        }
 
-            if (this.faceTypeMap.isEmpty()) {
-                throw new IllegalArgumentException("Face type map is empty! Set face type map before setting face type map!");
-            }
+        public @NotNull Builder faceTypes(
+                final @NotNull CustomDecorData.Type<D> floorType,
+                final @NotNull CustomDecorData.Type<D> ceilingType,
+                final @NotNull CustomDecorData.Type<D> wallType
+        ) throws IllegalStateException {
+            this.validateParam(
+                    DecorParameter.FACE_TYPED,
+                    "Set face typed parameter before setting face type map!"
+            );
 
-            this.faceTypeMap = faceTypeMap;
+            this.faceTypeMap = new EnumMap<>(Facing.class);
+            this.faceTypeMap.put(Facing.FLOOR, floorType);
+            this.faceTypeMap.put(Facing.CEILING, ceilingType);
+            this.faceTypeMap.put(Facing.WALL, wallType);
+
             return this;
         }
 
@@ -999,29 +1199,27 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 final int first,
                 final int @NotNull ... rest
         ) throws IllegalStateException, IllegalArgumentException {
-            if (this.parameterSet == null) {
-                throw new IllegalStateException("Parameters are not set! Set parameters before setting light levels!");
-            }
+            this.validateAnyOfParams(
+                    "Set lightable or light typed parameter before setting light levels!",
+                    DecorParameter.LIGHTABLE, DecorParameter.LIGHT_TYPED
+            );
 
-            if (!this.parameterSet.contains(DecorParameter.LIGHTABLE)) {
-                throw new IllegalStateException("Lightable parameter is not set! Set lightable parameter before setting light levels!");
-            }
-
+            final int length = rest.length + 1;
             this.lightLevels = new int[rest.length + 1];
 
             System.arraycopy(rest, 0, this.lightLevels, 1, rest.length);
             this.lightLevels[0] = first;
 
-            for (final var level : this.lightLevels) {
+            for (int i = 0; i < length; i++) {
+                final int level = this.lightLevels[i];
+
                 if (level < 0 || level > 15) {
                     throw new IllegalArgumentException("Light level '" + level + "' is not in range [0, 15]!");
                 }
-            }
 
-            for (int i = 0; i < this.lightLevels.length; i++) {
-                for (int j = i + 1; j < this.lightLevels.length; j++) {
-                    if (this.lightLevels[i] == this.lightLevels[j]) {
-                        throw new IllegalArgumentException("Light level '" + this.lightLevels[i] + "' is duplicated! Light levels must be unique!");
+                for (int j = i + 1; j < length; j++) {
+                    if (level == this.lightLevels[j]) {
+                        throw new IllegalArgumentException("Light level '" + level + "' is duplicated! Light levels must be unique!");
                     }
                 }
             }
@@ -1029,24 +1227,53 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public Map<Integer, Type<D>> lightLevelTypeMap() {
+        public Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap() {
             return this.lightLevelTypeMap;
         }
 
-        public @NotNull Builder lightLevelTypeMap(final @NotNull Map<Integer, Type<D>> lightLevelTypeMap) throws IllegalStateException, IllegalArgumentException {
-            if (this.parameterSet == null) {
-                throw new IllegalStateException("Parameters are not set! Set parameters before setting light level type map!");
+        @SafeVarargs
+        @SuppressWarnings("unchecked")
+        public final @NotNull Builder lightLevelTypes(
+                final @NotNull Function<Builder, Map.Entry<Integer, CustomDecorData.Type<D>>> first,
+                final Function<Builder, Map.Entry<Integer, CustomDecorData.Type<D>>> @NotNull ... rest
+        ) {
+            this.validateParam(
+                    DecorParameter.LIGHT_TYPED,
+                    "Set light typed parameter before setting light level type map!"
+            );
+
+            final var firstType = first.apply(this);
+            final var restTypes = (Map.Entry<Integer, CustomDecorData.Type<D>>[]) new Map.Entry<?, ?>[rest.length];
+
+            for (int i = 0; i < rest.length; i++) {
+                restTypes[i] = rest[i].apply(this);
             }
 
-            if (!this.parameterSet.contains(DecorParameter.LIGHT_TYPED)) {
-                throw new IllegalStateException("Light typed parameter is not set! Set light typed parameter before setting light level type map!");
+            return this.lightLevelTypes(firstType, restTypes);
+        }
+
+        @SafeVarargs
+        public final @NotNull Builder lightLevelTypes(
+                final @NotNull Map.Entry<Integer, CustomDecorData.Type<D>> first,
+                final Map.Entry<Integer, CustomDecorData.Type<D>> @NotNull ... rest
+        ) throws IllegalStateException {
+            this.validateParam(
+                    DecorParameter.LIGHT_TYPED,
+                    "Set light typed parameter before setting light level type map!"
+            );
+
+            this.lightLevelTypeMap = new HashMap<>();
+
+            this.putLightLevelType(first.getKey(), first.getValue());
+
+            for (final var entry : rest) {
+                this.putLightLevelType(entry.getKey(), entry.getValue());
             }
 
-            if (this.lightLevelTypeMap.isEmpty()) {
-                throw new IllegalArgumentException("Light level type map is empty! Set light level type map before setting light level type map!");
+            if (this.lightLevelTypeMap.size() != this.lightLevels.length) {
+                throw new IllegalStateException("Light level type map size is not equal to light levels size!");
             }
 
-            this.lightLevelTypeMap = lightLevelTypeMap;
             return this;
         }
 
@@ -1064,16 +1291,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         public @NotNull Builder dropsType(final boolean dropsType) throws IllegalStateException {
-            if (
-                    this.parameterSet == null
-                    || (
-                            !this.parameterSet.contains(DecorParameter.WRENCHABLE)
-                            && !this.parameterSet.contains(DecorParameter.LIGHT_TYPED)
-                            && !this.parameterSet.contains(DecorParameter.FACE_TYPED)
-                    )
-            ) {
-                throw new IllegalStateException("Parameters are not set! Set parameters before setting drops type!");
-            }
+            this.validateAnyOfParams(
+                    "Drop type can be set only if one of these parameters is set!",
+                    DecorParameter.WRENCHABLE,
+                    DecorParameter.LIGHT_TYPED,
+                    DecorParameter.FACE_TYPED
+            );
 
             this.dropsType = dropsType;
             return this;
@@ -1083,68 +1306,112 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return (value > 1.0d && Math.floor(value) - value != 0.0d)
                     || (value < -1.0d && Math.ceil(value) - value != 0.0d);
         }
+
+        private void putLightLevelType(
+                final int level,
+                final @NotNull CustomDecorData.Type<D> type
+        ) {
+            if (this.lightLevelTypeMap == null) {
+                throw new IllegalStateException("Light level type map is not set! Set light level type map before putting light level type!");
+            }
+
+            if (this.lightLevels == null) {
+                throw new IllegalStateException("Light levels are not set! Set light levels before putting light level type!");
+            }
+
+            if (this.lightLevelTypeMap.containsKey(level)) {
+                throw new IllegalArgumentException("Light level '" + level + "' is duplicated! Light levels must be unique!");
+            }
+
+
+            for (final var lightLevel : this.lightLevels) {
+                if (level == lightLevel) {
+                    this.lightLevelTypeMap.put(level, type);
+                    return;
+                }
+            }
+
+            throw new IllegalArgumentException("Light level '" + level + "' not found in light levels!");
+        }
+
+        private void validateParam(
+                final @NotNull DecorParameter param,
+                final @NotNull String message
+        ) throws IllegalStateException {
+            if (this.parameterSet == null) {
+                throw new IllegalStateException("Parameters are not set! First set parameters!");
+            }
+
+            if (!this.parameterSet.contains(param)) {
+                throw new IllegalStateException("Parameter '" + param + "' is not set! " + message);
+            }
+        }
+
+        private void validateParams(
+                final @NotNull String message,
+                final @NotNull DecorParameter first,
+                final DecorParameter @NotNull ... rest
+        ) throws IllegalStateException {
+            if (this.parameterSet == null) {
+                throw new IllegalStateException("Parameters are not set! First set parameters!");
+            }
+
+            if (!this.parameterSet.contains(first)) {
+                throw new IllegalStateException("Parameter '" + first + "' is not set! " + message);
+            }
+
+            for (final var param : rest) {
+                if (!this.parameterSet.contains(param)) {
+                    throw new IllegalStateException("Parameter '" + param + "' is not set! " + message);
+                }
+            }
+        }
+
+        private void validateAnyOfParams(
+                final @NotNull String message,
+                final @NotNull DecorParameter first,
+                final DecorParameter @NotNull ... rest
+        ) throws IllegalStateException {
+            if (this.parameterSet == null) {
+                throw new IllegalStateException("Parameters are not set! First set parameters!");
+            }
+
+            if (this.parameterSet.contains(first)) return;
+
+            for (final var param : rest) {
+                if (this.parameterSet.contains(param)) return;
+            }
+
+            final StringBuilder builder = new StringBuilder();
+
+            builder.append(first);
+
+            for (final var param : rest) {
+                builder.append(", ").append(param);
+            }
+
+            throw new IllegalStateException("Any of parameters : " + builder + " is not set! " + message);
+        }
     }
 
-    public class TypeBuilder {
-        protected NamespacedKey namespacedKey;
-        protected ItemStack itemStack;
-
-        public @NotNull Type<D> build() throws IllegalArgumentException {
-            return new TypeImpl(this) {};
-        }
-
-        public NamespacedKey key() {
-            return this.namespacedKey;
-        }
-
-        public @NotNull TypeBuilder key(
-                final @NotNull Builder builder,
-                final @NotNull String key
-        ) throws IllegalArgumentException {
-            if (!Builder.KEY_PATTERN.matcher(key).matches()) {
-                throw new IllegalArgumentException("Key '" + key + "' does not match regex '" + Builder.KEY_REGEX + "'!");
-            }
-
-            this.namespacedKey = new NamespacedKey(CustomDecorType.NAMESPACE, builder.namespacedKey.getKey() + ".type." + key);
-            return this;
-        }
-
-        public ItemStack itemStack() {
-            return this.itemStack;
-        }
-
-        public @NotNull TypeBuilder itemStack(final @NotNull ItemStack itemStack) throws IllegalStateException {
-            if (this.namespacedKey == null) {
-                throw new IllegalStateException("Key is not set! Set key before setting item stack!");
-            }
-
-            final ItemMeta meta = itemStack.getItemMeta();
-            final PersistentDataContainer container = meta.getPersistentDataContainer();
-
-            if (!container.has(CustomDecorType.TYPE_NAMESPACED_KEY, PersistentDataType.STRING)) {
-                container.set(
-                        CustomDecorType.TYPE_NAMESPACED_KEY,
-                        PersistentDataType.STRING,
-                        this.namespacedKey.getKey()
-                );
-                itemStack.setItemMeta(meta);
-            }
-
-            this.itemStack = itemStack;
-            return this;
-        }
-    }
-
-    private abstract class TypeImpl implements CustomDecorData.Type<D> {
+    protected final class Type implements CustomDecorData.Type<D> {
         private final NamespacedKey namespacedKey;
         private final CustomDecorType decorType;
         private final ItemStack itemStack;
 
         @SuppressWarnings("unchecked")
-        private TypeImpl(final @NotNull TypeBuilder builder) {
-            this.namespacedKey = builder.namespacedKey;
+        public Type(
+                final @NotNull Builder builder,
+                final @NotNull String key,
+                final @NotNull ItemStack itemStack
+        ) {
+            if (!Builder.KEY_PATTERN.matcher(key).matches()) {
+                throw new IllegalArgumentException("Key '" + key + "' does not match regex '" + Builder.KEY_REGEX + "'!");
+            }
+
+            this.namespacedKey = new NamespacedKey(CustomDecorType.NAMESPACE, builder.namespacedKey.getKey() + ".type." + key);
             this.decorType = CustomDecorType.fromClass((Class<D>) CustomDecorDataImpl.this.getClass());
-            this.itemStack = builder.itemStack;
+            this.itemStack = setTypeKey(itemStack, this.namespacedKey.getKey());
         }
 
         @Override
@@ -1169,7 +1436,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     || (
                             type != null
                             && type.getClass() == this.getClass()
-                            && ((Type<?>) type).getKey().equals(this.getKey())
+                            && ((CustomDecorData.Type<?>) type).getKey().equals(this.getKey())
                     );
         }
 

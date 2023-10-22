@@ -8,11 +8,12 @@ import org.jetbrains.annotations.NotNull;
  * This class used for extending listeners with the
  * {@link MSListener} annotation
  *
+ * @param <P> The plugin, that this listener is registered to
  * @see MSListener
  * @see MSPlugin#registerListeners()
  */
-public abstract class AbstractMSListener implements Listener {
-    protected MSPlugin plugin;
+public abstract class AbstractMSListener<P extends MSPlugin<P>> implements Listener {
+    private P plugin;
 
     /**
      * @return The plugin for this listener or null if not set
@@ -20,7 +21,7 @@ public abstract class AbstractMSListener implements Listener {
      * @see #register(MSPlugin)
      * @see MSPlugin#registerListeners()
      */
-    public final @NotNull MSPlugin getPlugin() throws IllegalStateException {
+    public final @NotNull P getPlugin() throws IllegalStateException {
         if (!this.isRegistered()) {
             throw new IllegalStateException("Listener " + this + " not registered!");
         }
@@ -40,7 +41,7 @@ public abstract class AbstractMSListener implements Listener {
      *
      * @param plugin The plugin to register this listener to
      */
-    public final void register(@NotNull MSPlugin plugin) {
+    public final void register(@NotNull P plugin) {
         if (this.isRegistered()) {
             throw new IllegalStateException("Listener " + this + " already registered!");
         }

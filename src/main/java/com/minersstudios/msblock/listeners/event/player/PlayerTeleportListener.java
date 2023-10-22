@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerTeleportListener extends AbstractMSListener {
+public class PlayerTeleportListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onPlayerTeleport(final @NotNull PlayerTeleportEvent event) {

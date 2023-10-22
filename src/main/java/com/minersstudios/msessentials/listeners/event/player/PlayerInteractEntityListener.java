@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.util.MessageUtils;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.security.SecureRandom;
 
 @MSListener
-public class PlayerInteractEntityListener extends AbstractMSListener {
+public class PlayerInteractEntityListener extends AbstractMSListener<MSEssentials> {
     private final SecureRandom random = new SecureRandom();
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

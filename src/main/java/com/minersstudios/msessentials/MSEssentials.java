@@ -37,7 +37,7 @@ import static net.kyori.adventure.text.Component.translatable;
  *
  * @see MSPlugin
  */
-public final class MSEssentials extends MSPlugin {
+public final class MSEssentials extends MSPlugin<MSEssentials> {
     private static MSEssentials instance;
     private Cache cache;
     private Config config;

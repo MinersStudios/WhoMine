@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerQuitListener extends AbstractMSListener {
+public class PlayerQuitListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onPlayerQuit(final @NotNull PlayerQuitEvent event) {

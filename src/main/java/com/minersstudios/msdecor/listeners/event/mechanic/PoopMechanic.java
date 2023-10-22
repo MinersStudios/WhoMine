@@ -4,6 +4,7 @@ import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.MSDecorUtils;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorType;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -17,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PoopMechanic extends AbstractMSListener {
+public class PoopMechanic extends AbstractMSListener<MSDecor> {
 
     @EventHandler
     public void onPlayerInteract(final @NotNull PlayerInteractEvent event) {

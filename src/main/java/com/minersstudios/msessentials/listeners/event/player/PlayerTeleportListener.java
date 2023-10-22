@@ -1,6 +1,7 @@
 package com.minersstudios.msessentials.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import org.bukkit.entity.Player;
@@ -9,7 +10,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerTeleportListener extends AbstractMSListener {
+public class PlayerTeleportListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerTeleport(final @NotNull PlayerTeleportEvent event) {

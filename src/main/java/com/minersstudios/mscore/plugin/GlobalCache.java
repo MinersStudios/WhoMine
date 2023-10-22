@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.plugin;
 
-import com.minersstudios.mscore.packet.collection.PacketListenersMap;
+import com.minersstudios.mscore.packet.PacketListenersMap;
 import org.bukkit.inventory.Recipe;
 
 import java.util.ArrayList;

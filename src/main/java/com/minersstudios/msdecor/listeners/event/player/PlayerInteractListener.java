@@ -5,6 +5,7 @@ import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
 import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
@@ -29,7 +30,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerInteractListener extends AbstractMSListener {
+public class PlayerInteractListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlaceArmorStand(final @NotNull PlayerInteractEvent event) {
@@ -67,7 +68,9 @@ public class PlayerInteractListener extends AbstractMSListener {
                                 || gameMode == GameMode.CREATIVE
                         )
                 ) {
-                    CustomDecorData.destroyInBlock(player, block);
+                    this.getPlugin().runTask(
+                            () -> CustomDecorData.destroyInBlock(player, block)
+                    );
                 }
             }
             case RIGHT_CLICK_BLOCK -> {
@@ -122,7 +125,9 @@ public class PlayerInteractListener extends AbstractMSListener {
 
                                         if (rightClickEvent.isCancelled()) return;
 
-                                        customDecor.getData().doRightClickAction(rightClickEvent, interaction);
+                                        this.getPlugin().runTask(
+                                                () -> customDecor.getData().doRightClickAction(rightClickEvent, interaction)
+                                        );
                                     }
                             );
                         }
@@ -142,14 +147,16 @@ public class PlayerInteractListener extends AbstractMSListener {
 
                         CustomDecorData.fromItemStack(itemInHand)
                         .ifPresent(data ->
-                                data.place(
-                                        BlockUtils.isReplaceable(block)
-                                                ? block
-                                                : block.getRelative(blockFace),
-                                        player,
-                                        blockFace,
-                                        finalHand,
-                                        null
+                                this.getPlugin().runTask(
+                                        () -> data.place(
+                                                BlockUtils.isReplaceable(block)
+                                                        ? block
+                                                        : block.getRelative(blockFace),
+                                                player,
+                                                blockFace,
+                                                finalHand,
+                                                null
+                                        )
                                 )
                         );
                     }

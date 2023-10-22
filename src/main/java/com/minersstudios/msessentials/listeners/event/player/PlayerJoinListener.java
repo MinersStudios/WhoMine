@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.world.WorldDark;
 import org.bukkit.entity.Player;
@@ -11,7 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerJoinListener extends AbstractMSListener {
+public class PlayerJoinListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerJoin(final @NotNull PlayerJoinEvent event) {

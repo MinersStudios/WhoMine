@@ -20,7 +20,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
-public class AsyncPlayerPreLoginListener extends AbstractMSListener {
+public class AsyncPlayerPreLoginListener extends AbstractMSListener<MSEssentials> {
     private static final TranslatableComponent LEAVE_MESSAGE_FORMAT = translatable("ms.format.leave.message").color(NamedTextColor.DARK_GRAY);
     private static final TranslatableComponent WHITELIST_TITLE = translatable("ms.pre_login.whitelisted.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
     private static final TranslatableComponent WHITELIST_SUBTITLE = translatable("ms.pre_login.whitelisted.subtitle").color(NamedTextColor.GRAY);
