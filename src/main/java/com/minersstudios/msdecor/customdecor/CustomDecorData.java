@@ -1,18 +1,17 @@
 package com.minersstudios.msdecor.customdecor;
 
-import com.minersstudios.mscore.util.LocationUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.mscore.util.SoundGroup;
-import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
+import com.minersstudios.msdecor.events.CustomDecorBreakEvent;
+import com.minersstudios.msdecor.events.CustomDecorClickEvent;
+import com.minersstudios.msdecor.events.CustomDecorPlaceEvent;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.GameMode;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -190,12 +189,23 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     );
 
     /**
-     * Perform the right click action of this custom decor
+     * Perform the click action of this custom decor
      */
-    void doRightClickAction(
-            final @NotNull CustomDecorRightClickEvent event,
-            final @NotNull Interaction interaction
-    );
+    void doClickAction(final @NotNull CustomDecorClickEvent event);
+
+    /**
+     * Perform the break action of this custom decor
+     * (called when the custom decor is broken)
+     */
+    void doBreakAction(final @NotNull CustomDecorBreakEvent event);
+
+    /**
+     * Perform the place action of this custom decor
+     * (called when the custom decor is placed)
+     *
+     * @param event The event to perform the place action
+     */
+    void doPlaceAction(final @NotNull CustomDecorPlaceEvent event);
 
     static @NotNull Optional<CustomDecorData<?>> fromKey(final @Nullable String key) {
         if (key == null) return Optional.empty();
@@ -331,68 +341,6 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
                 || clazz == null
                 ? Optional.empty()
                 : fromInteraction(MSDecorUtils.getNearbyInteraction(block.getLocation().toCenterLocation()), clazz);
-    }
-
-    static void destroyInBlock(
-            final @Nullable Player player,
-            final @Nullable Block block
-    ) {
-        if (
-                player == null
-                || block == null
-        ) return;
-
-        destroyInBlock(player, block, player.getGameMode() == GameMode.SURVIVAL);
-    }
-
-    static void destroyInBlock(
-            final @Nullable Player player,
-            final @Nullable Block block,
-            final boolean dropItem
-    ) {
-        if (
-                player == null
-                || block == null
-        ) return;
-
-        for (
-                final var entity
-                : LocationUtils.getNearbyNMSEntities(
-                        ((CraftWorld) block.getWorld()).getHandle(),
-                        LocationUtils.bukkitToAABB(org.bukkit.util.BoundingBox.of(block.getLocation().toCenterLocation(), 0.5, 0.5, 0.5)),
-                        entity -> entity instanceof net.minecraft.world.entity.Interaction
-                )
-        ) {
-            if (entity.getBukkitEntity() instanceof final Interaction interaction) {
-                destroy(player, interaction, dropItem);
-            }
-        }
-    }
-
-    static void destroy(
-            final @Nullable Player player,
-            final @Nullable Interaction interacted
-    ) {
-        if (
-                player == null
-                || interacted == null
-        ) return;
-
-        destroy(player, interacted, player.getGameMode() == GameMode.SURVIVAL);
-    }
-
-    static void destroy(
-            final @Nullable Player player,
-            final @Nullable Interaction interacted,
-            final boolean dropItem
-    ) {
-        if (
-                player == null
-                || interacted == null
-        ) return;
-
-        CustomDecor.fromInteraction(interacted)
-        .ifPresent(customDecor -> customDecor.destroy(player, dropItem));
     }
 
     interface Type<D extends CustomDecorData<D>> extends Keyed {

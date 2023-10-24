@@ -4,7 +4,7 @@ import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
-import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
+import com.minersstudios.msdecor.events.CustomDecorClickEvent;
 import org.bukkit.entity.Interaction;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -19,20 +19,16 @@ public class PlayerInteractAtEntityListener extends AbstractMSListener<MSDecor> 
 
         CustomDecor.fromInteraction(interaction)
         .ifPresent(
-                customDecor -> {
-                    final CustomDecorRightClickEvent rightClickEvent = new CustomDecorRightClickEvent(
-                            customDecor,
-                            event.getPlayer(),
-                            event.getHand(),
-                            event.getClickedPosition()
-                    );
-
-                    interaction.getServer().getPluginManager().callEvent(rightClickEvent);
-
-                    if (rightClickEvent.isCancelled()) return;
-
-                    customDecor.getData().doRightClickAction(rightClickEvent, interaction);
-                }
+                customDecor -> interaction.getServer().getPluginManager().callEvent(
+                        new CustomDecorClickEvent(
+                                customDecor,
+                                event.getPlayer(),
+                                event.getHand(),
+                                event.getClickedPosition(),
+                                interaction,
+                                CustomDecorClickEvent.ClickType.RIGHT_CLICK
+                        )
+                )
         );
     }
 }

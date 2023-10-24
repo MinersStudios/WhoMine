@@ -7,37 +7,44 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.util.Collections;
+import java.util.List;
 
 public class CustomDecorPlaceEvent extends CustomDecorEvent implements Cancellable {
     protected boolean cancelled;
-    protected final BlockState replacedBlockState;
     protected final Player player;
     protected final EquipmentSlot hand;
+    protected final List<BlockState> replacedBlocks;
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
     /**
      * Constructs a new CustomBlockPlaceEvent
      *
-     * @param customDecor        The custom decor involved in this event
-     * @param replacedBlockState The BlockState for the block which was
-     *                           replaced
-     * @param player             The player who placed the custom decor
-     *                           involved in this event
-     * @param hand               Main or off-hand, depending on which hand
-     *                           was used to place the custom decor
+     * @param customDecor    The custom decor involved in this event
+     * @param player         The player who placed the custom decor
+     *                       involved in this event
+     * @param hand           Main or off-hand, depending on which hand
+     *                       was used to place the custom decor
+     * @param replacedBlocks The replaced blocks
      */
     public CustomDecorPlaceEvent(
             final @NotNull CustomDecor customDecor,
-            final @NotNull BlockState replacedBlockState,
             final @NotNull Player player,
-            final @NotNull EquipmentSlot hand
-    ) {
+            final @NotNull EquipmentSlot hand,
+            final @NotNull List<BlockState> replacedBlocks
+            ) {
         super(customDecor);
 
         this.player = player;
-        this.replacedBlockState = replacedBlockState;
         this.hand = hand;
+        this.replacedBlocks = Collections.unmodifiableList(replacedBlocks);
+
+        if (!this.isCancelled()) {
+            customDecor.getData().doPlaceAction(this);
+        }
     }
 
     /**
@@ -49,19 +56,18 @@ public class CustomDecorPlaceEvent extends CustomDecorEvent implements Cancellab
     }
 
     /**
-     * @return The BlockState for the block which was replaced.
-     *         Material type air mostly.
-     */
-    public @NotNull BlockState getBlockReplacedState() {
-        return this.replacedBlockState;
-    }
-
-    /**
      * @return Main or off-hand, depending on which hand
      *         was used to place the custom decor
      */
     public @NotNull EquipmentSlot getHand() {
         return this.hand;
+    }
+
+    /**
+     * @return The replaced blocks
+     */
+    public @NotNull @Unmodifiable List<BlockState> getReplacedBlocks() {
+        return this.replacedBlocks;
     }
 
     /**

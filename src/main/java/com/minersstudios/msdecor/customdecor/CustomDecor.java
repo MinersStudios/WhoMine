@@ -3,13 +3,19 @@ package com.minersstudios.msdecor.customdecor;
 import com.minersstudios.mscore.util.LocationUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.events.CustomDecorBreakEvent;
+import net.kyori.adventure.text.Component;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -74,15 +80,15 @@ public final class CustomDecor {
     }
 
     public void destroy(
-            final @NotNull Player player,
+            final @NotNull Entity breaker,
             final boolean dropItem
     ) {
-        final CustomDecorBreakEvent event = new CustomDecorBreakEvent(this, player);
+        final CustomDecorBreakEvent event = new CustomDecorBreakEvent(this, breaker);
         Bukkit.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
 
-        final CraftWorld world = (CraftWorld) player.getWorld();
+        final CraftWorld world = (CraftWorld) breaker.getWorld();
 
         if (dropItem) {
             final ItemStack displayItemStack = this.display.getItemStack();
@@ -104,7 +110,7 @@ public final class CustomDecor {
 
         if (!this.data.getHitBox().getType().isNone()) {
             CustomDecorDataImpl.fillBlocks(
-                    player.getName(),
+                    breaker.getName(),
                     world.getHandle(),
                     LocationUtils.getBlockPosesBetween(
                             this.nmsBoundingBox.minX(),
@@ -123,7 +129,76 @@ public final class CustomDecor {
         }
 
         this.display.remove();
-        this.data.getSoundGroup().playBreakSound(LocationUtils.nmsToBukkit(this.nmsBoundingBox.getCenter(), player.getWorld()));
+        this.data.getSoundGroup().playBreakSound(LocationUtils.nmsToBukkit(this.nmsBoundingBox.getCenter(), world));
+    }
+
+    public static void place(
+            final @NotNull CustomDecorType type,
+            final @NotNull Block replaceableBlock,
+            final @NotNull Player player,
+            final @NotNull BlockFace blockFace
+    ) {
+        place(type, replaceableBlock, player, blockFace, null, null);
+    }
+
+    public static void place(
+            final @NotNull CustomDecorType type,
+            final @NotNull Block replaceableBlock,
+            final @NotNull Player player,
+            final @NotNull BlockFace blockFace,
+            final @Nullable EquipmentSlot hand
+    ) {
+        place(type, replaceableBlock, player, blockFace, hand, null);
+    }
+
+    public static void place(
+            final @NotNull CustomDecorType type,
+            final @NotNull Block replaceableBlock,
+            final @NotNull Player player,
+            final @NotNull BlockFace blockFace,
+            final @Nullable EquipmentSlot hand,
+            final @Nullable Component customName
+    ) {
+        type.getCustomDecorData().place(
+                replaceableBlock,
+                player,
+                blockFace,
+                hand,
+                customName
+        );
+    }
+
+    public static void destroyInBlock(
+            final @NotNull Player player,
+            final @NotNull Block block
+    ) {
+        destroyInBlock(player, block, player.getGameMode() == GameMode.SURVIVAL);
+    }
+
+    public static void destroyInBlock(
+            final @NotNull Entity destroyer,
+            final @NotNull Block block,
+            final boolean dropItem
+    ) {
+        for (final var interaction : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
+            destroy(destroyer, interaction, dropItem);
+        }
+    }
+
+    public static void destroy(
+            final @NotNull Player player,
+            final @NotNull Interaction interacted
+    ) {
+        destroy(player, interacted, player.getGameMode() == GameMode.SURVIVAL);
+    }
+
+    public static void destroy(
+            final @NotNull Entity destroyer,
+            final @NotNull Interaction interacted,
+            final boolean dropItem
+    ) {
+        fromInteraction(interacted)
+        .ifPresent(customDecor -> customDecor.destroy(destroyer, dropItem));
     }
 
     private static @Nullable CustomDecor fromParent(final @NotNull Interaction interaction) {
@@ -201,10 +276,10 @@ public final class CustomDecor {
     private static @Nullable CustomDecor fromChild(final @NotNull Interaction interaction) {
         final String uuid =
                 interaction.getPersistentDataContainer()
-                        .get(
-                                DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY,
-                                PersistentDataType.STRING
-                        );
+                .get(
+                        DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY,
+                        PersistentDataType.STRING
+                );
 
         try {
             return StringUtils.isBlank(uuid)

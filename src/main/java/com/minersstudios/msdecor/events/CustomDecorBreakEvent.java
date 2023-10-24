@@ -1,39 +1,42 @@
 package com.minersstudios.msdecor.events;
 
 import com.minersstudios.msdecor.customdecor.CustomDecor;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomDecorBreakEvent extends CustomDecorEvent implements Cancellable {
     protected boolean cancelled;
-    protected final Player player;
+    protected final Entity breaker;
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
     /**
      * Constructs a new CustomDecorBreakEvent
      *
-     * @param customDecor     The custom decor involved in this event
-     * @param player          The player who broke the custom decor
-     *                        involved in this event
+     * @param customDecor The custom decor involved in this event
+     * @param breaker     The entity who broke the custom decor
      */
     public CustomDecorBreakEvent(
             final @NotNull CustomDecor customDecor,
-            final @NotNull Player player
+            final @NotNull Entity breaker
     ) {
         super(customDecor);
 
-        this.player = player;
+        this.breaker = breaker;
+
+        if (!this.isCancelled()) {
+            customDecor.getData().doBreakAction(this);
+        }
     }
 
     /**
-     * @return The Player who broke the custom decor
-     *         involved in this event
+     * @return The entity who broke the custom decor involved in
+     *         this event
      */
-    public @NotNull Player getPlayer() {
-        return this.player;
+    public @NotNull Entity getBreaker() {
+        return this.breaker;
     }
 
     /**

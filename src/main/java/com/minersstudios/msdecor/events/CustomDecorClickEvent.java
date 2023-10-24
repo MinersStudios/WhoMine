@@ -1,6 +1,7 @@
 package com.minersstudios.msdecor.events;
 
 import com.minersstudios.msdecor.customdecor.CustomDecor;
+import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -8,11 +9,14 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-public class CustomDecorRightClickEvent extends CustomDecorEvent implements Cancellable {
+public class CustomDecorClickEvent extends CustomDecorEvent implements Cancellable {
     protected boolean cancelled;
     protected final Player player;
     protected final EquipmentSlot hand;
     protected final Vector clickedPosition;
+    protected final Interaction clickedInteraction;
+    protected final ClickType clickType;
+
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
     /**
@@ -23,18 +27,28 @@ public class CustomDecorRightClickEvent extends CustomDecorEvent implements Canc
      * @param hand               The hand which was used to right-click
      *                           the custom decor
      * @param clickedPosition    The clicked position
+     * @param clickedInteraction The clicked interaction
+     * @param clickType          The click type
      */
-    public CustomDecorRightClickEvent(
+    public CustomDecorClickEvent(
             final @NotNull CustomDecor customDecor,
             final @NotNull Player player,
             final @NotNull EquipmentSlot hand,
-            final @NotNull Vector clickedPosition
+            final @NotNull Vector clickedPosition,
+            final @NotNull Interaction clickedInteraction,
+            final @NotNull ClickType clickType
     ) {
         super(customDecor);
 
         this.player = player;
         this.hand = hand;
         this.clickedPosition = clickedPosition;
+        this.clickedInteraction = clickedInteraction;
+        this.clickType = clickType;
+
+        if (!this.isCancelled()) {
+            customDecor.getData().doClickAction(this);
+        }
     }
 
     /**
@@ -57,6 +71,20 @@ public class CustomDecorRightClickEvent extends CustomDecorEvent implements Canc
      */
     public @NotNull Vector getClickedPosition() {
         return this.clickedPosition;
+    }
+
+    /**
+     * @return The clicked interaction
+     */
+    public @NotNull Interaction getClickedInteraction() {
+        return this.clickedInteraction;
+    }
+
+    /**
+     * @return The click type
+     */
+    public @NotNull ClickType getClickType() {
+        return this.clickType;
     }
 
     /**
@@ -92,5 +120,17 @@ public class CustomDecorRightClickEvent extends CustomDecorEvent implements Canc
      */
     public static @NotNull HandlerList getHandlerList() {
         return HANDLER_LIST;
+    }
+
+    public enum ClickType {
+        LEFT_CLICK, RIGHT_CLICK;
+
+        public boolean isLeftClick() {
+            return this == LEFT_CLICK;
+        }
+
+        public boolean isRightClick() {
+            return this == RIGHT_CLICK;
+        }
     }
 }

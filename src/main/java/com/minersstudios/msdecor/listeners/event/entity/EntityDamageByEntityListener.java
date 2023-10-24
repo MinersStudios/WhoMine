@@ -3,9 +3,9 @@ package com.minersstudios.msdecor.listeners.event.entity;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.msdecor.MSDecor;
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
+import com.minersstudios.msdecor.customdecor.CustomDecor;
+import com.minersstudios.msdecor.events.CustomDecorClickEvent;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,18 +18,40 @@ public class EntityDamageByEntityListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDamageByEntity(final @NotNull EntityDamageByEntityEvent event) {
-        final Entity entity = event.getEntity();
-
         if (
                 !(event.getDamager() instanceof final Player player)
-                || player.getGameMode() == GameMode.ADVENTURE
-                || ((!player.isSneaking()
-                || player.getGameMode() != GameMode.SURVIVAL)
-                && player.getGameMode() != GameMode.CREATIVE)
+                || !(event.getEntity() instanceof final Interaction interaction)
         ) return;
 
-        if (entity instanceof final Interaction interaction) {
-            CustomDecorData.destroy(player, interaction);
+        final GameMode gameMode = player.getGameMode();
+
+        if (
+                gameMode == GameMode.ADVENTURE
+                || gameMode == GameMode.SPECTATOR
+        ) return;
+
+        if (
+                (
+                        player.isSneaking()
+                        && gameMode == GameMode.SURVIVAL
+                )
+                || gameMode == GameMode.CREATIVE
+        ) {
+            CustomDecor.destroy(player, interaction);
+        } else {
+            CustomDecor.fromInteraction(interaction)
+            .ifPresent(
+                    customDecor -> player.getServer().getPluginManager().callEvent(
+                            new CustomDecorClickEvent(
+                                    customDecor,
+                                    player,
+                                    player.getHandRaised(),
+                                    interaction.getLocation().toCenterLocation().toVector(),
+                                    interaction,
+                                    CustomDecorClickEvent.ClickType.LEFT_CLICK
+                            )
+                    )
+            );
         }
     }
 }

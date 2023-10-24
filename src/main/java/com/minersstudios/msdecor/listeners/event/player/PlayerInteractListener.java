@@ -7,7 +7,7 @@ import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecor;
 import com.minersstudios.msdecor.customdecor.CustomDecorData;
-import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
+import com.minersstudios.msdecor.events.CustomDecorClickEvent;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,15 +50,30 @@ public class PlayerInteractListener extends AbstractMSListener<MSDecor> {
             case LEFT_CLICK_BLOCK -> {
                 if (
                         MSDecorUtils.isCustomDecorMaterial(blockType)
-                        && (
-                                (
-                                        player.isSneaking()
-                                        && gameMode == GameMode.SURVIVAL
-                                )
-                                || gameMode == GameMode.CREATIVE
-                        )
+                        && gameMode != GameMode.ADVENTURE
+                        && gameMode != GameMode.SPECTATOR
                 ) {
-                    CustomDecorData.destroyInBlock(player, block);
+                    if (
+                            (
+                                    player.isSneaking()
+                                    && gameMode == GameMode.SURVIVAL
+                            )
+                            || gameMode == GameMode.CREATIVE
+                    ) {
+                        CustomDecor.destroyInBlock(player, block);
+                    } else {
+                        final Location interactedLocation = event.getInteractionPoint();
+
+                        if (interactedLocation != null) {
+                            callDecorClickEvent(
+                                    player,
+                                    block,
+                                    hand,
+                                    interactedLocation.toVector(),
+                                    CustomDecorClickEvent.ClickType.LEFT_CLICK
+                            );
+                        }
+                    }
                 }
             }
             case RIGHT_CLICK_BLOCK -> {
@@ -87,33 +102,15 @@ public class PlayerInteractListener extends AbstractMSListener<MSDecor> {
                 final ItemStack itemInHand = player.getInventory().getItem(hand);
 
                 if (!MSDecorUtils.isCustomDecor(itemInHand)) {
-                    if (blockType != Material.BARRIER) return;
-
                     final Location interactedLocation = event.getInteractionPoint();
 
-                    if (interactedLocation == null) return;
-
-                    final PluginManager pluginManager = player.getServer().getPluginManager();
-                    final Vector interactedPosition = interactedLocation.toVector();
-
-                    for (final var interaction : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
-                        CustomDecor.fromInteraction(interaction)
-                        .ifPresent(
-                                customDecor -> {
-                                    final CustomDecorRightClickEvent rightClickEvent = new CustomDecorRightClickEvent(
-                                            customDecor,
-                                            player,
-                                            hand,
-                                            interactedPosition
-                                    );
-
-                                    pluginManager.callEvent(rightClickEvent);
-
-                                    if (rightClickEvent.isCancelled()) return;
-
-                                    customDecor.getData().doRightClickAction(rightClickEvent, interaction);
-                                    doneForeMainHand(player);
-                                }
+                    if (interactedLocation != null) {
+                        callDecorClickEvent(
+                                player,
+                                block,
+                                hand,
+                                interactedLocation.toVector(),
+                                CustomDecorClickEvent.ClickType.RIGHT_CLICK
                         );
                     }
                 } else if (
@@ -139,14 +136,14 @@ public class PlayerInteractListener extends AbstractMSListener<MSDecor> {
                                 hand,
                                 null
                         );
-                        doneForeMainHand(player);
+                        doneForMainHand(player);
                     });
                 }
             }
         }
     }
 
-    private static void doneForeMainHand(final @NotNull Player player) {
+    private static void doneForMainHand(final @NotNull Player player) {
         HAND_HANDLER.add(player.getUniqueId());
     }
 
@@ -156,5 +153,37 @@ public class PlayerInteractListener extends AbstractMSListener<MSDecor> {
 
     private static boolean isDoneForMainHand(final @NotNull Player player) {
         return HAND_HANDLER.contains(player.getUniqueId());
+    }
+
+    private static void callDecorClickEvent(
+            final @NotNull Player player,
+            final @NotNull Block block,
+            final @NotNull EquipmentSlot hand,
+            final @NotNull Vector interactedPosition,
+            final @NotNull CustomDecorClickEvent.ClickType clickType
+    ) {
+        final PluginManager pluginManager = player.getServer().getPluginManager();
+
+        for (final var interaction : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
+            CustomDecor.fromInteraction(interaction)
+            .ifPresent(
+                    customDecor -> {
+                        final CustomDecorClickEvent rightClickEvent = new CustomDecorClickEvent(
+                                customDecor,
+                                player,
+                                hand,
+                                interactedPosition,
+                                interaction,
+                                clickType
+                        );
+
+                        pluginManager.callEvent(rightClickEvent);
+
+                        if (!rightClickEvent.isCancelled()) {
+                            doneForMainHand(player);
+                        }
+                    }
+            );
+        }
     }
 }

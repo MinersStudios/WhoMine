@@ -4,8 +4,9 @@ import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.LocationUtils;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msdecor.MSDecor;
+import com.minersstudios.msdecor.events.CustomDecorBreakEvent;
+import com.minersstudios.msdecor.events.CustomDecorClickEvent;
 import com.minersstudios.msdecor.events.CustomDecorPlaceEvent;
-import com.minersstudios.msdecor.events.CustomDecorRightClickEvent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -18,6 +19,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Light;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlockStates;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
@@ -30,7 +32,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -50,7 +51,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     protected final int[] lightLevels;
     protected final EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
     protected final Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
-    protected final BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction;
+    protected final Consumer<CustomDecorClickEvent> clickAction;
+    protected final Consumer<CustomDecorPlaceEvent> placeAction;
+    protected final Consumer<CustomDecorBreakEvent> breakAction;
     protected final boolean dropsType;
 
     protected CustomDecorDataImpl() throws IllegalArgumentException {
@@ -82,7 +85,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 builder.lightLevelTypeMap == null
                 ? Collections.emptyMap()
                 : builder.lightLevelTypeMap;
-        this.rightClickAction = builder.rightClickAction;
+        this.clickAction = builder.clickAction;
+        this.placeAction = builder.placeAction;
+        this.breakAction = builder.breakAction;
         this.dropsType = builder.dropsType;
     }
 
@@ -549,10 +554,17 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final ServerLevel serverLevel = ((CraftWorld) replaceableBlock.getWorld()).getHandle();
         final Location location = replaceableBlock.getLocation();
         final BoundingBox bb = this.hitBox.getNMSBoundingBox(location, player.getYaw());
+        final var blockStates = new ArrayList<org.bukkit.block.BlockState>();
         final BlockPos[] blocksToReplace = LocationUtils.getBlockPosesBetween(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ());
 
         for (final var blockPos : blocksToReplace) {
-            if (!BlockUtils.isReplaceable(serverLevel.getBlockState(blockPos).getBlock())) return;
+            final BlockState blockState = serverLevel.getBlockState(blockPos);
+
+            if (!BlockUtils.isReplaceable(blockState.getBlock())) {
+                return;
+            }
+
+            blockStates.add(CraftBlockStates.getUnplacedBlockState(serverLevel, blockPos, blockState));
         }
 
         if (this.hitBox.getType().isSolid()) {
@@ -580,14 +592,20 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         bb,
                         blocksToReplace
                 ),
-                replaceableBlock.getState(),
                 player,
-                hand == null ? EquipmentSlot.HAND : hand
+                hand == null ? EquipmentSlot.HAND : hand,
+                blockStates
         );
         player.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             event.getCustomDecor().destroy(player, false);
+
+            for (final var replacedBlock : event.getReplacedBlocks()) {
+                replacedBlock.setType(replacedBlock.getType());
+                replacedBlock.setBlockData(replacedBlock.getBlockData());
+            }
+
             return;
         }
 
@@ -605,12 +623,23 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public void doRightClickAction(
-            final @NotNull CustomDecorRightClickEvent event,
-            final @NotNull Interaction interaction
-    ) {
-        if (this.rightClickAction != null) {
-            this.rightClickAction.accept(event, interaction);
+    public void doClickAction(final @NotNull CustomDecorClickEvent event) {
+        if (this.clickAction != null) {
+            this.clickAction.accept(event);
+        }
+    }
+
+    @Override
+    public void doPlaceAction(final @NotNull CustomDecorPlaceEvent event) {
+        if (this.placeAction != null) {
+            this.placeAction.accept(event);
+        }
+    }
+
+    @Override
+    public void doBreakAction(final @NotNull CustomDecorBreakEvent event) {
+        if (this.breakAction != null) {
+            this.breakAction.accept(event);
         }
     }
 
@@ -847,7 +876,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         private EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
         private int[] lightLevels;
         private Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
-        private BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction;
+        private Consumer<CustomDecorClickEvent> clickAction;
+        private Consumer<CustomDecorPlaceEvent> placeAction;
+        private Consumer<CustomDecorBreakEvent> breakAction;
         private boolean dropsType;
 
         private static final String KEY_REGEX = "[a-z0-9./_-]+";
@@ -954,25 +985,25 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 }
             }
 
-            if (this.rightClickAction == null) {
+            if (this.clickAction == null) {
                 if (
                         this.isWrenchable()
                         && this.isSittable()
                 ) {
-                    this.rightClickAction = DecorParameter.WRENCHABLE_SITTABLE_CLICK_ACTION;
+                    this.clickAction = DecorParameter.WRENCHABLE_SITTABLE_CLICK_ACTION;
                 } else if (
                         this.isWrenchable()
                         && this.isLightable()
                 ) {
-                    this.rightClickAction = DecorParameter.WRENCHABLE_LIGHTABLE_CLICK_ACTION;
+                    this.clickAction = DecorParameter.WRENCHABLE_LIGHTABLE_CLICK_ACTION;
                 } else if (this.isSittable()) {
-                    this.rightClickAction = DecorParameter.SITTABLE_RIGHT_CLICK_ACTION;
+                    this.clickAction = DecorParameter.SITTABLE_RIGHT_CLICK_ACTION;
                 } else if (this.isWrenchable()) {
-                    this.rightClickAction = DecorParameter.WRENCHABLE_RIGHT_CLICK_ACTION;
+                    this.clickAction = DecorParameter.WRENCHABLE_RIGHT_CLICK_ACTION;
                 } else if (this.isLightTyped()) {
-                    this.rightClickAction = DecorParameter.LIGHT_TYPED_RIGHT_CLICK_ACTION;
+                    this.clickAction = DecorParameter.LIGHT_TYPED_RIGHT_CLICK_ACTION;
                 } else if (this.isLightable()) {
-                    this.rightClickAction = DecorParameter.LIGHTABLE_RIGHT_CLICK_ACTION;
+                    this.clickAction = DecorParameter.LIGHTABLE_RIGHT_CLICK_ACTION;
                 }
             }
 
@@ -1303,12 +1334,30 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction() {
-            return this.rightClickAction;
+        public Consumer<CustomDecorClickEvent> clickAction() {
+            return this.clickAction;
         }
 
-        public @NotNull Builder rightClickAction(final @NotNull BiConsumer<CustomDecorRightClickEvent, Interaction> rightClickAction) {
-            this.rightClickAction = rightClickAction;
+        public @NotNull Builder clickAction(final @NotNull Consumer<CustomDecorClickEvent> rightClickAction) {
+            this.clickAction = rightClickAction;
+            return this;
+        }
+
+        public Consumer<CustomDecorPlaceEvent> placeAction() {
+            return this.placeAction;
+        }
+
+        public @NotNull Builder placeAction(final @NotNull Consumer<CustomDecorPlaceEvent> placeAction) {
+            this.placeAction = placeAction;
+            return this;
+        }
+
+        public Consumer<CustomDecorBreakEvent> breakAction() {
+            return this.breakAction;
+        }
+
+        public @NotNull Builder breakAction(final @NotNull Consumer<CustomDecorBreakEvent> breakAction) {
+            this.breakAction = breakAction;
             return this;
         }
 
