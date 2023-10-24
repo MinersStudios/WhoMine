@@ -20,6 +20,9 @@ public final class DecorHitBox {
     private final double x;
     private final double y;
     private final double z;
+    private final double offsetX;
+    private final double offsetY;
+    private final double offsetZ;
     private final Type type;
 
     public static final String HITBOX_CHILD = "hitbox_child";
@@ -37,6 +40,18 @@ public final class DecorHitBox {
             final @Range(from = -8, to = 8) double z,
             final @NotNull Type type
     ) throws IllegalArgumentException {
+        this(x, y, z, 0.0d, 0.0d, 0.0d, type);
+    }
+
+    public DecorHitBox(
+            final @Range(from = -8, to = 8) double x,
+            final @Range(from = -8, to = 8) double y,
+            final @Range(from = -8, to = 8) double z,
+            final double modelOffsetX,
+            final double modelOffsetY,
+            final double modelOffsetZ,
+            final @NotNull Type type
+    ) throws IllegalArgumentException {
         validSize(x);
         validSize(y);
         validSize(z);
@@ -44,6 +59,9 @@ public final class DecorHitBox {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.offsetX = modelOffsetX;
+        this.offsetY = modelOffsetY;
+        this.offsetZ = modelOffsetZ;
         this.type = type;
     }
 
@@ -57,6 +75,18 @@ public final class DecorHitBox {
 
     public double getZ() {
         return this.z;
+    }
+
+    public double getModelOffsetX() {
+        return this.offsetX;
+    }
+
+    public double getModelOffsetY() {
+        return this.offsetY;
+    }
+
+    public double getModelOffsetZ() {
+        return this.offsetZ;
     }
 
     public @NotNull Type getType() {

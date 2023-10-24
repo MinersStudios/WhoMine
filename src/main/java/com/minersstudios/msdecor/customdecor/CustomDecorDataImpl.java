@@ -350,7 +350,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public int @NotNull [] lightLevels() throws UnsupportedOperationException {
-        if (!this.isLightable()) {
+        if (
+                !this.isLightable()
+                && !this.isLightTyped()
+        ) {
             throw new UnsupportedOperationException("This custom decor is not lightable!");
         }
 
@@ -401,7 +404,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public int getNextLightLevel(final int lightLevel) throws UnsupportedOperationException {
-        if (!this.isLightable()) {
+        if (
+                !this.isLightable()
+                && !this.isLightTyped()
+        ) {
             throw new UnsupportedOperationException("This custom decor is not lightable!");
         }
 
@@ -471,8 +477,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public boolean isLightable() {
-        return this.parameterSet.contains(DecorParameter.LIGHTABLE)
-                || this.parameterSet.contains(DecorParameter.LIGHT_TYPED);
+        return this.parameterSet.contains(DecorParameter.LIGHTABLE);
     }
 
     @Override
@@ -615,50 +620,57 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final @NotNull Player player,
             final @NotNull ItemStack itemInHand
     ) {
-        return block.getWorld().spawn(block.getLocation().toCenterLocation(), ItemDisplay.class, itemDisplay -> {
-            itemDisplay.setRotation(
-                    this.hitBox.getX() > 1.0d || this.hitBox.getZ() > 1.0d
-                    || this.hitBox.getX() < -1.0d || this.hitBox.getZ() < -1.0d
+        return block.getWorld().spawn(
+                block.getLocation().toCenterLocation().add(
+                        this.hitBox.getModelOffsetX(),
+                        this.hitBox.getModelOffsetY(),
+                        this.hitBox.getModelOffsetZ()
+                ),
+                ItemDisplay.class,
+                itemDisplay -> {
+                    itemDisplay.setRotation(
+                            this.hitBox.getX() > 1.0d || this.hitBox.getZ() > 1.0d
+                            || this.hitBox.getX() < -1.0d || this.hitBox.getZ() < -1.0d
                             ? LocationUtils.to90(player.getYaw())
                             : LocationUtils.to45(player.getYaw()),
-                    0.0f
-            );
-            itemDisplay.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.NONE);
+                            0.0f
+                    );
+                    itemDisplay.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.NONE);
 
-            final ItemMeta itemMeta = itemInHand.getItemMeta();
-            CustomDecorData.Type<D> type = null;
+                    final ItemMeta itemMeta = itemInHand.getItemMeta();
+                    CustomDecorData.Type<D> type = null;
 
-            if (this.isLightTyped()) {
-                type = this.lightLevelTypeMap.get(this.lightLevels[0]);
-            } else if (this.isFaceTyped()) {
-                type = this.faceTypeMap.get(Facing.fromBlockFace(blockFace));
-            } else if (this.isWrenchable()) {
-                type = this.getWrenchTypeOf(itemInHand);
-            }
+                    if (this.isLightTyped()) {
+                        type = this.lightLevelTypeMap.get(this.lightLevels[0]);
+                    } else if (this.isFaceTyped()) {
+                        type = this.faceTypeMap.get(Facing.fromBlockFace(blockFace));
+                    } else if (this.isWrenchable()) {
+                        type = this.getWrenchTypeOf(itemInHand);
+                    }
 
-            if (
-                    type == null
-                    || CustomDecorType.matchesTypedKey(
-                            itemMeta.getPersistentDataContainer().get(
-                                    CustomDecorType.TYPE_NAMESPACED_KEY,
-                                    PersistentDataType.STRING
+                    if (
+                            type == null
+                            || CustomDecorType.matchesTypedKey(
+                                    itemMeta.getPersistentDataContainer().get(
+                                            CustomDecorType.TYPE_NAMESPACED_KEY,
+                                            PersistentDataType.STRING
+                                    )
                             )
-                    )
-            ) {
-                itemDisplay.setItemStack(itemInHand);
-            } else {
-                final ItemStack typeItem = type.getItem();
-                final ItemMeta typeMeta = typeItem.getItemMeta();
+                    ) {
+                        itemDisplay.setItemStack(itemInHand);
+                    } else {
+                        final ItemStack typeItem = type.getItem();
+                        final ItemMeta typeMeta = typeItem.getItemMeta();
 
-                typeMeta.displayName(itemMeta.displayName());
-                typeItem.setItemMeta(typeMeta);
+                        typeMeta.displayName(itemMeta.displayName());
+                        typeItem.setItemMeta(typeMeta);
 
-                itemDisplay.setItemStack(typeItem);
-            }
+                        itemDisplay.setItemStack(typeItem);
+                    }
 
-            itemDisplay.setDisplayHeight(1.0f);
-            itemDisplay.setDisplayWidth(1.0f);
-        });
+                    itemDisplay.setDisplayHeight(1.0f);
+                    itemDisplay.setDisplayWidth(1.0f);
+                });
     }
 
     private @NotNull CustomDecor setHitBox(
@@ -696,7 +708,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         if (type != DecorHitBox.Type.NONE) {
             final var blocks = fillBlocks(placer, ((CraftWorld) world).getHandle(), blockPoses, type.getNMSBlock());
 
-            if (this.isLightable()) {
+            if (
+                    this.isLightable()
+                    || this.isLightTyped()
+            ) {
                 final int lightLevel = this.isLightTyped()
                         ? this.getLightLevelOf(itemDisplay.getItemStack())
                         : this.lightLevels[0];
@@ -884,21 +899,21 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 this.parameterSet = EnumSet.noneOf(DecorParameter.class);
             } else {
                 if (
-                        this.parameterSet.contains(DecorParameter.SITTABLE)
+                        this.isSittable()
                         && this.sitHeight != this.sitHeight
                 ) {
                     throw new IllegalArgumentException("Sit height is not set, but sittable parameter is set!");
                 }
 
                 if (
-                        this.parameterSet.contains(DecorParameter.WRENCHABLE)
+                        this.isWrenchable()
                         && this.wrenchTypes == null
                 ) {
                     throw new IllegalArgumentException("Wrench types are not set, but wrenchable parameter is set!");
                 }
 
                 if (
-                        this.parameterSet.contains(DecorParameter.LIGHTABLE)
+                        this.isLightable()
                         && this.lightLevels == null
                 ) {
                     throw new IllegalArgumentException("Light levels are not set, but lightable parameter is set!");
@@ -906,8 +921,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
                 if (
                         (
-                                this.parameterSet.contains(DecorParameter.LIGHTABLE)
-                                || this.parameterSet.contains(DecorParameter.LIGHT_TYPED)
+                                this.isLightable()
+                                || this.isLightTyped()
                         )
                         && !this.hitBox.getType().isLight()
 
@@ -915,7 +930,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     throw new IllegalArgumentException("Lightable or light typed parameter is set, but hit box type is not light!");
                 }
 
-                if (this.parameterSet.contains(DecorParameter.LIGHT_TYPED)) {
+                if (this.isLightTyped()) {
                     if (this.lightLevels == null) {
                         throw new IllegalArgumentException("Light levels are not set, but light typed parameter is set!");
                     }
@@ -929,7 +944,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 }
 
                 if (
-                        this.parameterSet.contains(DecorParameter.FACE_TYPED)
+                        this.isFaceTyped()
                         && (
                                 this.faceTypeMap == null
                                 || this.faceTypeMap.isEmpty()
@@ -940,13 +955,23 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             }
 
             if (this.rightClickAction == null) {
-                if (this.parameterSet.contains(DecorParameter.SITTABLE)) {
+                if (
+                        this.isWrenchable()
+                        && this.isSittable()
+                ) {
+                    this.rightClickAction = DecorParameter.WRENCHABLE_SITTABLE_CLICK_ACTION;
+                } else if (
+                        this.isWrenchable()
+                        && this.isLightable()
+                ) {
+                    this.rightClickAction = DecorParameter.WRENCHABLE_LIGHTABLE_CLICK_ACTION;
+                } else if (this.isSittable()) {
                     this.rightClickAction = DecorParameter.SITTABLE_RIGHT_CLICK_ACTION;
-                } else if (this.parameterSet.contains(DecorParameter.WRENCHABLE)) {
+                } else if (this.isWrenchable()) {
                     this.rightClickAction = DecorParameter.WRENCHABLE_RIGHT_CLICK_ACTION;
-                } else if (this.parameterSet.contains(DecorParameter.LIGHT_TYPED)) {
+                } else if (this.isLightTyped()) {
                     this.rightClickAction = DecorParameter.LIGHT_TYPED_RIGHT_CLICK_ACTION;
-                } else if (this.parameterSet.contains(DecorParameter.LIGHTABLE)) {
+                } else if (this.isLightable()) {
                     this.rightClickAction = DecorParameter.LIGHTABLE_RIGHT_CLICK_ACTION;
                 }
             }
@@ -1135,10 +1160,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalStateException("Item stack is not set! Set item stack before setting wrench types!");
             }
 
-            this.wrenchTypes = (CustomDecorData.Type<D>[]) new CustomDecorData.Type<?>[rest.length + 2];
+            final int restLength = rest.length;
+            this.wrenchTypes = (CustomDecorData.Type<D>[]) new CustomDecorData.Type<?>[restLength + 2];
 
-            if (rest.length != 0) {
-                System.arraycopy(rest, 0, this.wrenchTypes, 2, this.wrenchTypes.length);
+            if (restLength != 0) {
+                System.arraycopy(rest, 0, this.wrenchTypes, 2, restLength);
             }
 
             this.wrenchTypes[0] =
@@ -1300,6 +1326,30 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
             this.dropsType = dropsType;
             return this;
+        }
+
+        public boolean isSittable() {
+            return this.parameterSet.contains(DecorParameter.SITTABLE);
+        }
+
+        public boolean isWrenchable() {
+            return this.parameterSet.contains(DecorParameter.WRENCHABLE);
+        }
+
+        public boolean isLightable() {
+            return this.parameterSet.contains(DecorParameter.LIGHTABLE);
+        }
+
+        public boolean isLightTyped() {
+            return this.parameterSet.contains(DecorParameter.LIGHT_TYPED);
+        }
+
+        public boolean isFaceTyped() {
+            return this.parameterSet.contains(DecorParameter.FACE_TYPED);
+        }
+
+        public boolean isTyped() {
+            return this.isWrenchable() || this.isLightTyped() || this.isFaceTyped();
         }
 
         private static boolean isGreaterThanOneWithDecimal(final double value) {

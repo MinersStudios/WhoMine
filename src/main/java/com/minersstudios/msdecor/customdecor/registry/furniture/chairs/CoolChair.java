@@ -1,10 +1,13 @@
-package com.minersstudios.msdecor.customdecor.registry.furniture.chairs.chair;
+package com.minersstudios.msdecor.customdecor.registry.furniture.chairs;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.SoundGroup;
-import com.minersstudios.msdecor.customdecor.*;
+import com.minersstudios.msdecor.customdecor.CustomDecorDataImpl;
+import com.minersstudios.msdecor.customdecor.DecorHitBox;
+import com.minersstudios.msdecor.customdecor.DecorParameter;
+import com.minersstudios.msdecor.customdecor.Facing;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,19 +16,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public final class WarpedChair extends CustomDecorDataImpl<WarpedChair> {
+public final class CoolChair extends CustomDecorDataImpl<CoolChair> {
 
     @Override
-    protected @NotNull Builder builder() {
+    protected CustomDecorDataImpl<CoolChair>.@NotNull Builder builder() {
         final ItemStack itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
         final ItemMeta itemMeta = itemStack.getItemMeta();
 
-        itemMeta.setCustomModelData(1015);
-        itemMeta.displayName(ChatUtils.createDefaultStyledText("Искажённый стул со спинкой"));
+        itemMeta.setCustomModelData(1037);
+        itemMeta.displayName(ChatUtils.createDefaultStyledText("Стильный стул"));
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("warped_chair")
+                .key("cool_chair")
                 .hitBox(new DecorHitBox(
                         1.0d,
                         1.0d,
@@ -33,29 +36,28 @@ public final class WarpedChair extends CustomDecorDataImpl<WarpedChair> {
                         DecorHitBox.Type.BARRIER
                 ))
                 .facing(Facing.FLOOR)
-                .soundGroup(SoundGroup.WOOD)
+                .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(
                         builder -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .namespacedKey(builder.key())
-                                .group(CustomDecorType.NAMESPACE + ":chair")
                                 .category(CraftingBookCategory.BUILDING)
                                 .result(builder.itemStack())
                                 .shape(
-                                        "P  ",
-                                        "PLP",
-                                        "P P"
+                                        "LLL",
+                                        "IAI"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('P', Material.WARPED_PLANKS),
-                                        ShapedRecipeBuilder.material('L', Material.LEATHER)
+                                        ShapedRecipeBuilder.material('I', Material.IRON_NUGGET),
+                                        ShapedRecipeBuilder.material('L', Material.LEATHER),
+                                        ShapedRecipeBuilder.material('A', Material.AIR)
                                 )
                                 .build(),
                                 true
                         )
                 )
                 .parameters(DecorParameter.SITTABLE)
-                .sitHeight(0.65d);
+                .sitHeight(0.6d);
     }
 }

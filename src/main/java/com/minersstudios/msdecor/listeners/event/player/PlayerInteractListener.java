@@ -1,6 +1,5 @@
 package com.minersstudios.msdecor.listeners.event.player;
 
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
@@ -17,43 +16,34 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 @MSListener
 public class PlayerInteractListener extends AbstractMSListener<MSDecor> {
+    private static final Set<UUID> HAND_HANDLER = new HashSet<>();
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlaceArmorStand(final @NotNull PlayerInteractEvent event) {
-        if (
-                event.getAction() != Action.RIGHT_CLICK_BLOCK
-                || event.getClickedBlock() == null
-                || event.getHand() == null
-                || !MSDecorUtils.isCustomDecor(event.getItem())
-        ) return;
-
-        event.setUseItemInHand(Event.Result.DENY);
-    }
-
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(final @NotNull PlayerInteractEvent event) {
+        final Block block = event.getClickedBlock();
+        final EquipmentSlot hand = event.getHand();
+
         if (
-                event.getClickedBlock() == null
-                || event.getHand() == null
+                block == null
+                || hand == null
         ) return;
 
-        final Block block = event.getClickedBlock();
-        final Material blockType = block.getType();
         final Player player = event.getPlayer();
+        final Material blockType = block.getType();
         final GameMode gameMode = player.getGameMode();
 
         switch (event.getAction()) {
@@ -68,9 +58,7 @@ public class PlayerInteractListener extends AbstractMSListener<MSDecor> {
                                 || gameMode == GameMode.CREATIVE
                         )
                 ) {
-                    this.getPlugin().runTask(
-                            () -> CustomDecorData.destroyInBlock(player, block)
-                    );
+                    CustomDecorData.destroyInBlock(player, block);
                 }
             }
             case RIGHT_CLICK_BLOCK -> {
@@ -82,86 +70,91 @@ public class PlayerInteractListener extends AbstractMSListener<MSDecor> {
                     event.setCancelled(true);
                 }
 
-                final PlayerInventory inventory = player.getInventory();
-                final ItemStack itemInMainHand = inventory.getItemInMainHand();
-                EquipmentSlot hand = event.getHand();
+                if (
+                        gameMode == GameMode.ADVENTURE
+                        || gameMode == GameMode.SPECTATOR
+                ) return;
 
-                if (CustomBlockRegistry.isCustomBlock(itemInMainHand)) return;
-
-                if (hand != EquipmentSlot.HAND && MSDecorUtils.isCustomDecor(itemInMainHand)) {
-                    hand = EquipmentSlot.HAND;
+                if (
+                        hand == EquipmentSlot.OFF_HAND
+                        && isDoneForMainHand(player)
+                ) {
+                    undoneForMainHand(player);
+                    return;
                 }
 
                 final BlockFace blockFace = event.getBlockFace();
-                final ItemStack itemInHand = inventory.getItem(hand);
+                final ItemStack itemInHand = player.getInventory().getItem(hand);
 
-                if (
-                        (event.getHand() == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
-                        && gameMode != GameMode.ADVENTURE
-                        && gameMode != GameMode.SPECTATOR
-                ) {
-                    if (!MSDecorUtils.isCustomDecor(itemInHand)) {
-                        if (blockType != Material.BARRIER) return;
+                if (!MSDecorUtils.isCustomDecor(itemInHand)) {
+                    if (blockType != Material.BARRIER) return;
 
-                        final Location interactedLocation = event.getInteractionPoint();
+                    final Location interactedLocation = event.getInteractionPoint();
 
-                        if (interactedLocation == null) return;
+                    if (interactedLocation == null) return;
 
-                        final PluginManager pluginManager = player.getServer().getPluginManager();
-                        final Vector interactedPosition = interactedLocation.toVector();
+                    final PluginManager pluginManager = player.getServer().getPluginManager();
+                    final Vector interactedPosition = interactedLocation.toVector();
 
-                        for (final var interaction : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
-                            CustomDecor.fromInteraction(interaction)
-                            .ifPresent(
-                                    customDecor -> {
-                                        final CustomDecorRightClickEvent rightClickEvent = new CustomDecorRightClickEvent(
-                                                customDecor,
-                                                event.getPlayer(),
-                                                event.getHand(),
-                                                interactedPosition
-                                        );
+                    for (final var interaction : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
+                        CustomDecor.fromInteraction(interaction)
+                        .ifPresent(
+                                customDecor -> {
+                                    final CustomDecorRightClickEvent rightClickEvent = new CustomDecorRightClickEvent(
+                                            customDecor,
+                                            player,
+                                            hand,
+                                            interactedPosition
+                                    );
 
-                                        pluginManager.callEvent(rightClickEvent);
+                                    pluginManager.callEvent(rightClickEvent);
 
-                                        if (rightClickEvent.isCancelled()) return;
+                                    if (rightClickEvent.isCancelled()) return;
 
-                                        this.getPlugin().runTask(
-                                                () -> customDecor.getData().doRightClickAction(rightClickEvent, interaction)
-                                        );
-                                    }
-                            );
-                        }
-                    } else if (
-                            (
-                                    (
-                                            !blockType.isInteractable()
-                                            || Tag.STAIRS.isTagged(blockType)
-                                            || Tag.FENCES.isTagged(blockType)
-                                    )
-                                    || (player.isSneaking() && blockType.isInteractable())
-                                    || blockType == Material.NOTE_BLOCK
-                            )
-                            && BlockUtils.isReplaceable(block.getRelative(blockFace).getType())
-                    ) {
-                        final EquipmentSlot finalHand = hand;
-
-                        CustomDecorData.fromItemStack(itemInHand)
-                        .ifPresent(data ->
-                                this.getPlugin().runTask(
-                                        () -> data.place(
-                                                BlockUtils.isReplaceable(block)
-                                                        ? block
-                                                        : block.getRelative(blockFace),
-                                                player,
-                                                blockFace,
-                                                finalHand,
-                                                null
-                                        )
-                                )
+                                    customDecor.getData().doRightClickAction(rightClickEvent, interaction);
+                                    doneForeMainHand(player);
+                                }
                         );
                     }
+                } else if (
+                        (
+                                (
+                                        !blockType.isInteractable()
+                                        || Tag.STAIRS.isTagged(blockType)
+                                        || Tag.FENCES.isTagged(blockType)
+                                )
+                                || (player.isSneaking() && blockType.isInteractable())
+                                || blockType == Material.NOTE_BLOCK
+                        )
+                        && BlockUtils.isReplaceable(block.getRelative(blockFace).getType())
+                ) {
+                    CustomDecorData.fromItemStack(itemInHand)
+                    .ifPresent(data -> {
+                        data.place(
+                                BlockUtils.isReplaceable(block)
+                                        ? block
+                                        : block.getRelative(blockFace),
+                                player,
+                                blockFace,
+                                hand,
+                                null
+                        );
+                        doneForeMainHand(player);
+                    });
                 }
             }
         }
+    }
+
+    private static void doneForeMainHand(final @NotNull Player player) {
+        HAND_HANDLER.add(player.getUniqueId());
+    }
+
+    private static void undoneForMainHand(final @NotNull Player player) {
+        HAND_HANDLER.remove(player.getUniqueId());
+    }
+
+    private static boolean isDoneForMainHand(final @NotNull Player player) {
+        return HAND_HANDLER.contains(player.getUniqueId());
     }
 }
