@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 
 import static net.kyori.adventure.text.Component.translatable;
 
-public class CraftsMenu {
+public final class CraftsMenu {
     public static final int RESULT_SLOT = 15;
 
     private static final Component CATEGORIES_TITLE = translatable("ms.menu.crafts.categories.title", ChatUtils.DEFAULT_STYLE);

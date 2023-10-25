@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.util;
 
-import com.minersstudios.msitem.item.CustomItem;
-import com.minersstudios.msitem.item.CustomItemType;
+import com.minersstudios.msitem.api.CustomItem;
+import com.minersstudios.msitem.api.CustomItemType;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;

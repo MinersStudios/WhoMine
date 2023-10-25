@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see PacketFlow
  * @see <a href="https://wiki.vg/Protocol">Protocol Wiki</a>
  */
-public class PacketRegistry {
+public final class PacketRegistry {
     private static final Map<Class<?>, PacketType> CLASS_TO_TYPE = new ConcurrentHashMap<>();
     private static final Map<PacketType, Class<?>> TYPE_TO_CLASS = new ConcurrentHashMap<>();
 

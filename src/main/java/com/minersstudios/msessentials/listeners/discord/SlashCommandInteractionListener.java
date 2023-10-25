@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-public class SlashCommandInteractionListener extends ListenerAdapter {
+public final class SlashCommandInteractionListener extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(final @NotNull SlashCommandInteractionEvent event) {

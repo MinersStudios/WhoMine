@@ -2,7 +2,7 @@ package com.minersstudios.msdecor;
 
 import com.minersstudios.mscore.plugin.config.MSConfig;
 import com.minersstudios.mscore.util.MSPluginUtils;
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
+import com.minersstudios.msdecor.api.CustomDecorData;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

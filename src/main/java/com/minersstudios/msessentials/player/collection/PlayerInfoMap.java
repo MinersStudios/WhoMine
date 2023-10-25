@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see PlayerInfo
  * @see PlayerFile
  */
-public class PlayerInfoMap {
+public final class PlayerInfoMap {
     private final Map<UUID, PlayerInfo> map = new ConcurrentHashMap<>();
 
     /**

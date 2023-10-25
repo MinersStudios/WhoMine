@@ -21,10 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see SpawnParticlesAction
  */
 public abstract class AnomalyAction {
-    protected static final SecureRandom random = new SecureRandom();
+    private final long time;
+    private final int percentage;
 
-    protected final long time;
-    protected final int percentage;
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     /**
      * @param time       Time in ticks to perform action (1 second = 20 ticks)
@@ -39,16 +39,25 @@ public abstract class AnomalyAction {
     }
 
     /**
-     * Do action if the time is up and the percentage is reached
-     *
-     * @param player         The player to be influenced
-     * @param ignorableItems Ignorable items that will be damaged
-     *                       if player has them and the action will be performed
+     * @return Time in ticks to perform action (1 second = 20 ticks)
      */
-    public abstract void doAction(
-            final @NotNull Player player,
-            final @Nullable AnomalyIgnorableItems ignorableItems
-    );
+    public final long getTime() {
+        return this.time;
+    }
+
+    /**
+     * @return Percentage chance of completing the action
+     */
+    public final int getPercentage() {
+        return this.percentage;
+    }
+
+    /**
+     * @return True if the percentage is reached
+     */
+    public final boolean isPercentageReached() {
+        return RANDOM.nextInt(100) < this.percentage;
+    }
 
     /**
      * Puts this action to player's action map with current time
@@ -57,7 +66,7 @@ public abstract class AnomalyAction {
      * @return The previous action map associated with player,
      *         or null if there was no mapping for player
      */
-    public @Nullable Map<AnomalyAction, Long> putAction(final @NotNull Player player) {
+    public final @Nullable Map<AnomalyAction, Long> putAction(final @NotNull Player player) {
         final Cache cache = MSEssentials.getCache();
         final var actionMap = cache.playerAnomalyActionMap.getOrDefault(player, new ConcurrentHashMap<>());
 
@@ -71,7 +80,7 @@ public abstract class AnomalyAction {
      * @param player A player who has been influenced
      *               and from which the action will be removed
      */
-    public void removeAction(final @NotNull Player player) {
+    public final void removeAction(final @NotNull Player player) {
         final Cache cache = MSEssentials.getCache();
         final var actionMap = cache.playerAnomalyActionMap.get(player);
 
@@ -82,23 +91,14 @@ public abstract class AnomalyAction {
     }
 
     /**
-     * @return True if the percentage is reached
+     * Do action if the time is up and the percentage is reached
+     *
+     * @param player         The player to be influenced
+     * @param ignorableItems Ignorable items that will be damaged
+     *                       if player has them and the action will be performed
      */
-    public boolean isDo() {
-        return random.nextInt(100) < this.percentage;
-    }
-
-    /**
-     * @return Time in ticks to perform action (1 second = 20 ticks)
-     */
-    public long getTime() {
-        return this.time;
-    }
-
-    /**
-     * @return Percentage chance of completing the action
-     */
-    public int getPercentage() {
-        return this.percentage;
-    }
+    public abstract void doAction(
+            final @NotNull Player player,
+            final @Nullable AnomalyIgnorableItems ignorableItems
+    );
 }

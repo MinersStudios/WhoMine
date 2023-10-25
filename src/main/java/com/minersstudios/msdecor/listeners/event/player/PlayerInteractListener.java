@@ -5,9 +5,9 @@ import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.MSDecor;
-import com.minersstudios.msdecor.customdecor.CustomDecor;
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
-import com.minersstudios.msdecor.events.CustomDecorClickEvent;
+import com.minersstudios.msdecor.api.CustomDecor;
+import com.minersstudios.msdecor.api.CustomDecorData;
+import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @MSListener
-public class PlayerInteractListener extends AbstractMSListener<MSDecor> {
+public final class PlayerInteractListener extends AbstractMSListener<MSDecor> {
     private static final Set<UUID> HAND_HANDLER = new HashSet<>();
 
     @EventHandler(ignoreCancelled = true)
@@ -129,8 +129,8 @@ public class PlayerInteractListener extends AbstractMSListener<MSDecor> {
                     .ifPresent(data -> {
                         data.place(
                                 BlockUtils.isReplaceable(block)
-                                        ? block
-                                        : block.getRelative(blockFace),
+                                        ? block.getLocation()
+                                        : block.getRelative(blockFace).getLocation(),
                                 player,
                                 blockFace,
                                 hand,

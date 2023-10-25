@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import static net.kyori.adventure.text.Component.translatable;
 
-public class PronounsMenu {
+public final class PronounsMenu {
     private static final CustomInventory INVENTORY;
 
     static {

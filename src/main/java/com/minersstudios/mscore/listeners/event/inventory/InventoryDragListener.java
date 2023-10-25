@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryDragListener extends AbstractMSListener<MSCore> {
+public final class InventoryDragListener extends AbstractMSListener<MSCore> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryDrag(final @NotNull InventoryDragEvent event) {

@@ -3,7 +3,7 @@ package com.minersstudios.msitem.commands;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
-import com.minersstudios.msitem.item.CustomItemType;
+import com.minersstudios.msitem.api.CustomItemType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -27,7 +27,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msitem.*",
         permissionDefault = PermissionDefault.OP
 )
-public class MSItemCommandHandler implements MSCommandExecutor {
+public final class MSItemCommandHandler implements MSCommandExecutor {
     private static final List<String> TAB = Arrays.asList("reload", "give");
     private static final CommandNode<?> COMMAND_NODE = literal("msitem")
             .then(literal("reload"))

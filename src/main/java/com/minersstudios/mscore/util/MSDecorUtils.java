@@ -1,9 +1,9 @@
 package com.minersstudios.mscore.util;
 
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
-import com.minersstudios.msdecor.customdecor.CustomDecorType;
-import com.minersstudios.msdecor.customdecor.DecorHitBox;
-import com.minersstudios.msitem.item.CustomItem;
+import com.minersstudios.msdecor.api.CustomDecorData;
+import com.minersstudios.msdecor.api.CustomDecorType;
+import com.minersstudios.msdecor.api.DecorHitBox;
+import com.minersstudios.msitem.api.CustomItem;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;

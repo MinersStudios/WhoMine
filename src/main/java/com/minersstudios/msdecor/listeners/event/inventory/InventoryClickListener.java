@@ -17,7 +17,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryClickListener extends AbstractMSListener<MSDecor> {
+public final class InventoryClickListener extends AbstractMSListener<MSDecor> {
     private static final ImmutableSet<InventoryType> IGNORABLE_INVENTORY_TYPES = Sets.immutableEnumSet(
             //<editor-fold desc="Ignorable inventory types" defaultstate="collapsed">
             InventoryType.CARTOGRAPHY,

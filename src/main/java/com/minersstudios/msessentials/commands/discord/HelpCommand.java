@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 
 @SlashCommand
-public class HelpCommand extends SlashCommandExecutor {
+public final class HelpCommand extends SlashCommandExecutor {
 
     public HelpCommand() {
         super(

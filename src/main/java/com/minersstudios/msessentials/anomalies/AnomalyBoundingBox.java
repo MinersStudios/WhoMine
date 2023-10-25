@@ -1,22 +1,26 @@
 package com.minersstudios.msessentials.anomalies;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Bounding box with a list of radii and a map of bounding boxes for each radius.
  * This class is used to store the bounding boxes of anomalies.
  * Use {@link #getRadiusInside(Player)} to get the radius of the anomaly the player is inside.
  */
-public class AnomalyBoundingBox extends BoundingBox {
-    private final @NotNull World world;
-    private final @NotNull List<Double> radii = new ArrayList<>();
-    private final @NotNull Map<Double, BoundingBox> radiusBoundingBoxes = new HashMap<>();
+public final class AnomalyBoundingBox extends BoundingBox {
+    private final World world;
+    private final List<Double> radii;
+    private final Map<Double, BoundingBox> radiusBoundingBoxes;
 
     /**
      * Creates a new anomaly bounding box,
@@ -33,29 +37,14 @@ public class AnomalyBoundingBox extends BoundingBox {
             final @NotNull List<Double> radii
     ) {
         this.world = world;
-        this.radii.addAll(radii);
+        this.radii = ImmutableList.copyOf(radii);
+        final var mapBuilder = new ImmutableMap.Builder<Double, BoundingBox>();
 
         for (final var radius : radii) {
-            this.radiusBoundingBoxes.put(radius, boundingBox.clone().expand(radius));
-        }
-    }
-
-    /**
-     * Gets the radius if any bounding box contains the player position
-     *
-     * @param player The player to check
-     * @return -1 if the bounding box does not contain the player position
-     */
-    public double getRadiusInside(final @NotNull Player player) {
-        if (player.getWorld() != this.world) return -1.0d;
-
-        for (final var radiusBoundingBox : this.getRadiusBoundingBoxes().entrySet()) {
-            if (radiusBoundingBox.getValue().contains(player.getLocation().toVector())) {
-                return radiusBoundingBox.getKey();
-            }
+            mapBuilder.put(radius, boundingBox.clone().expand(radius));
         }
 
-        return -1.0d;
+        this.radiusBoundingBoxes = mapBuilder.build();
     }
 
     /**
@@ -68,14 +57,34 @@ public class AnomalyBoundingBox extends BoundingBox {
     /**
      * @return Unmodifiable list of anomaly radii
      */
-    public @NotNull @UnmodifiableView List<Double> getRadii() {
-        return Collections.unmodifiableList(this.radii);
+    public @NotNull @Unmodifiable List<Double> getRadii() {
+        return this.radii;
     }
 
     /**
      * @return Unmodifiable map of bounding boxes for each radius
      */
-    public @NotNull @UnmodifiableView Map<Double, BoundingBox> getRadiusBoundingBoxes() {
-        return Collections.unmodifiableMap(this.radiusBoundingBoxes);
+    public @NotNull @Unmodifiable Map<Double, BoundingBox> getRadiusBoundingBoxes() {
+        return this.radiusBoundingBoxes;
+    }
+
+    /**
+     * Gets the radius if any bounding box contains the player position
+     *
+     * @param player The player to check
+     * @return -1 if the bounding box does not contain the player position
+     */
+    public double getRadiusInside(final @NotNull Player player) {
+        if (player.getWorld() == this.world) {
+            final Vector playerPosition = player.getLocation().toVector();
+
+            for (final var entry : this.radiusBoundingBoxes.entrySet()) {
+                if (entry.getValue().contains(playerPosition)) {
+                    return entry.getKey();
+                }
+            }
+        }
+
+        return -1.0d;
     }
 }

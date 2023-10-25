@@ -1,7 +1,7 @@
 package com.minersstudios.msblock;
 
-import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.api.CustomBlockData;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.plugin.config.MSConfig;
 import org.jetbrains.annotations.NotNull;
 

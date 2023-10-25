@@ -1,6 +1,6 @@
 package com.minersstudios.msitem;
 
-import com.minersstudios.msitem.item.renameable.RenameableItem;
+import com.minersstudios.msitem.api.renameable.RenameableItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 

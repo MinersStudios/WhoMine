@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @MSPacketListener
-public class PlayerUpdateSignListener extends AbstractMSPacketListener<MSCore> {
+public final class PlayerUpdateSignListener extends AbstractMSPacketListener<MSCore> {
 
     public PlayerUpdateSignListener() {
         super(PacketType.Play.Server.UPDATE_SIGN);

@@ -18,7 +18,7 @@ import com.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
  * @see SpawnParticlesAction
  * @see AnomalyBoundingBox
  */
-public class ParticleTask implements Runnable {
+public final class ParticleTask implements Runnable {
 
     @Override
     public void run() {

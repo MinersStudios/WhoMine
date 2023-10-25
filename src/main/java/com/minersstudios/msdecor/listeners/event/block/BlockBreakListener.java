@@ -9,7 +9,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class BlockBreakListener extends AbstractMSListener<MSDecor> {
+public final class BlockBreakListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler
     public void onBlockBreak(final @NotNull BlockBreakEvent event) {

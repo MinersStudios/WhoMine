@@ -15,7 +15,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryClickListener extends AbstractMSListener<MSCore> {
+public final class InventoryClickListener extends AbstractMSListener<MSCore> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryClick(final @NotNull InventoryClickEvent event) {

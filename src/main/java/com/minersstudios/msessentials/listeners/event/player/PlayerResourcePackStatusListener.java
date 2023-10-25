@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerResourcePackStatusListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerResourcePackStatusListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerResourcePackStatus(final @NotNull PlayerResourcePackStatusEvent event) {

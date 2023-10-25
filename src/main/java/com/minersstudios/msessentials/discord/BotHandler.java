@@ -25,7 +25,7 @@ import static com.minersstudios.msessentials.MSEssentials.getInstance;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-public class BotHandler {
+public final class BotHandler {
     private final User user;
     private final long userId;
     private Message message;

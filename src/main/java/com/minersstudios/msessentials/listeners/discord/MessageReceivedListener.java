@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
 
-public class MessageReceivedListener extends ListenerAdapter {
+public final class MessageReceivedListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(final @NotNull MessageReceivedEvent event) {

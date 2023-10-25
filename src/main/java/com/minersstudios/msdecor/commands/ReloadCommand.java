@@ -3,7 +3,7 @@ package com.minersstudios.msdecor.commands;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msdecor.MSDecor;
-import com.minersstudios.msdecor.customdecor.CustomDecorType;
+import com.minersstudios.msdecor.api.CustomDecorType;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Keyed;
 import org.bukkit.Server;

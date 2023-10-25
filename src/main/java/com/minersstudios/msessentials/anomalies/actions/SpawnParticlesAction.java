@@ -3,13 +3,10 @@ package com.minersstudios.msessentials.anomalies.actions;
 import com.destroystokyo.paper.ParticleBuilder;
 import com.minersstudios.msessentials.anomalies.AnomalyAction;
 import com.minersstudios.msessentials.anomalies.AnomalyIgnorableItems;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Anomaly particle action class.
@@ -17,23 +14,55 @@ import java.util.List;
  * Particles are spawned only for receiving players.
  */
 public class SpawnParticlesAction extends AnomalyAction {
-    private final @NotNull List<ParticleBuilder> particleBuilderList;
+    private final ParticleBuilder[] particleBuilders;
 
     /**
      * Spawns particles when a player is in anomaly zone.
      * Particles are spawned only for receiving players.
      *
-     * @param time                Time in ticks to perform action (1 second = 20 ticks)
-     * @param percentage          Percentage chance of completing action
-     * @param particleBuilderList Particle builders to spawn when player is in anomaly zone
+     * @param time       Time in ticks to perform action (1 second = 20 ticks)
+     * @param percentage Percentage chance of completing action
+     * @param first      First particle builder to spawn when player is in anomaly zone
+     * @param rest       Rest of particle builders to spawn when player is in anomaly zone
      */
     public SpawnParticlesAction(
             final long time,
             final int percentage,
-            final @NotNull List<ParticleBuilder> particleBuilderList
+            final @NotNull ParticleBuilder first,
+            final ParticleBuilder @NotNull ... rest
     ) {
         super(time, percentage);
-        this.particleBuilderList = particleBuilderList;
+
+        final int restLength = rest.length;
+        this.particleBuilders = new ParticleBuilder[restLength + 1];
+
+        System.arraycopy(rest, 0, this.particleBuilders, 1, restLength);
+        this.particleBuilders[0] = first;
+    }
+
+    /**
+     * Spawns particles when a player is in anomaly zone.
+     * Particles are spawned only for receiving players.
+     *
+     * @param time              Time in ticks to perform action (1 second = 20 ticks)
+     * @param percentage        Percentage chance of completing action
+     * @param particleBuilders  Array of particle builders to spawn when player is in anomaly zone
+     */
+    public SpawnParticlesAction(
+            final long time,
+            final int percentage,
+            final ParticleBuilder @NotNull [] particleBuilders
+    ) {
+        super(time, percentage);
+
+        this.particleBuilders = particleBuilders;
+    }
+
+    /**
+     * @return Array of particle builders to spawn when player is in anomaly zone
+     */
+    public ParticleBuilder @NotNull [] getParticles() {
+        return this.particleBuilders.clone();
     }
 
     /**
@@ -47,15 +76,13 @@ public class SpawnParticlesAction extends AnomalyAction {
             final @NotNull Player player,
             final @Nullable AnomalyIgnorableItems ignorableItems
     ) {
-        for (final var particleBuilder : this.particleBuilderList) {
-            particleBuilder.receivers(player).location(player.getLocation()).spawn();
-        }
-    }
+        final Location location = player.getLocation();
 
-    /**
-     * @return Unmodifiable list of particle builders to spawn when player is in anomaly zone
-     */
-    public @NotNull @UnmodifiableView List<ParticleBuilder> getParticles() {
-        return Collections.unmodifiableList(this.particleBuilderList);
+        for (final var particleBuilder : this.particleBuilders) {
+            particleBuilder
+            .receivers(player)
+            .location(location)
+            .spawn();
+        }
     }
 }

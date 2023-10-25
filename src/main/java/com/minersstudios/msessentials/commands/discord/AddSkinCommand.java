@@ -19,7 +19,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 @SlashCommand
-public class AddSkinCommand extends SlashCommandExecutor {
+public final class AddSkinCommand extends SlashCommandExecutor {
     private static final String SERVICE_UNAVAILABLE = renderTranslation("ms.discord.skin.service_unavailable");
     private static final String INVALID_IMG = renderTranslation("ms.discord.skin.invalid_img");
     private static final String INVALID_NAME = renderTranslation("ms.discord.skin.invalid_name_regex");

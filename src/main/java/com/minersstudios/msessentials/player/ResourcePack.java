@@ -33,7 +33,7 @@ import java.util.logging.Level;
  * and the file will be deleted.
  * All settings stored in the "config/minersstudios/MSEssentials/config.yml" file.
  */
-public class ResourcePack {
+public final class ResourcePack {
     private final String url;
     private final String hash;
 

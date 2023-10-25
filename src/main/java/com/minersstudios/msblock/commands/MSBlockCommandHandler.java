@@ -1,7 +1,7 @@
 package com.minersstudios.msblock.commands;
 
 import com.google.common.collect.ImmutableList;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
@@ -27,7 +27,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msblock.*",
         permissionDefault = PermissionDefault.OP
 )
-public class MSBlockCommandHandler implements MSCommandExecutor {
+public final class MSBlockCommandHandler implements MSCommandExecutor {
     private static final List<String> TAB = ImmutableList.of("reload", "give");
     private static final CommandNode<?> COMMAND_NODE =
             literal("msblock")

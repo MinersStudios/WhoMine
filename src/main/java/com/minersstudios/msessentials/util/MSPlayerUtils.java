@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 /**
  * Utility class for players
  */
-@SuppressWarnings({"BooleanMethodIsAlwaysInverted"})
 public final class MSPlayerUtils {
     /**
      * Regex supports all <a href="https://jrgraphix.net/r/Unicode/0400-04FF">cyrillic</a> characters
@@ -26,7 +25,7 @@ public final class MSPlayerUtils {
     public static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
 
     private MSPlayerUtils() {
-        throw new IllegalStateException("Utility class");
+        throw new AssertionError("Utility class");
     }
 
     /**

@@ -23,7 +23,7 @@ import static net.kyori.adventure.text.Component.translatable;
  * It is used to register a player on the server on the first join.
  * All messages stored in the {@link LanguageFile}.
  */
-public class RegistrationProcess {
+public final class RegistrationProcess {
     private Player player;
     private PlayerInfo playerInfo;
     private Location playerLocation;

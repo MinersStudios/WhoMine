@@ -9,7 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerStopSpectatingEntityListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerStopSpectatingEntityListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerStopSpectatingEntity(final @NotNull PlayerStopSpectatingEntityEvent event) {

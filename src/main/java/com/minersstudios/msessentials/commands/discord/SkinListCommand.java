@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 
 @SlashCommand
-public class SkinListCommand extends SlashCommandExecutor {
+public final class SkinListCommand extends SlashCommandExecutor {
 
     public SkinListCommand() {
         super(

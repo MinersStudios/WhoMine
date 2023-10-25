@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 @MSListener
-public class PlayerSpawnLocationListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerSpawnLocationListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerSpawnLocation(final @NotNull PlayerSpawnLocationEvent event) {

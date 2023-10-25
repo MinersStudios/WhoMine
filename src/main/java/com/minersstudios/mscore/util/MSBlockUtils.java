@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.util;
 
-import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.api.CustomBlockData;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;

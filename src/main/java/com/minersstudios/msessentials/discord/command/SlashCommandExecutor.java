@@ -10,7 +10,7 @@ public abstract class SlashCommandExecutor {
         this.data = data;
     }
 
-    public @NotNull SlashCommandData getData() {
+    public final @NotNull SlashCommandData getData() {
         return this.data;
     }
 

@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.util;
 
-import com.minersstudios.msitem.item.damageable.DamageableItem;
+import com.minersstudios.msitem.api.damageable.DamageableItem;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

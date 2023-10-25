@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerChangedWorldListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerChangedWorldListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerChangedWorld(final @NotNull PlayerChangedWorldEvent event) {

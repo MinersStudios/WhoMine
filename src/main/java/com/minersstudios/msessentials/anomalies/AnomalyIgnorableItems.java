@@ -2,16 +2,17 @@ package com.minersstudios.msessentials.anomalies;
 
 import com.minersstudios.mscore.util.ItemUtils;
 import com.minersstudios.msessentials.MSEssentials;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * This class is used to store the items
@@ -19,11 +20,11 @@ import java.util.Objects;
  * All items that are ignored by the anomaly will be damaged
  * with the specified amount of damage when the anomaly action is performed.
  */
-public class AnomalyIgnorableItems {
-    private final @NotNull Map<EquipmentSlot, ItemStack> includedItems;
+public final class AnomalyIgnorableItems {
+    private final Map<EquipmentSlot, ItemStack> includedItems;
     private final int breakingPerAction;
 
-    private static final ItemStack EMPTY_ITEM = new ItemStack(Material.AIR);
+    private static final ItemStack EMPTY_ITEM = ItemStack.empty();
 
     /**
      * @param includedItems     Ignorable items that will protect the player
@@ -39,6 +40,22 @@ public class AnomalyIgnorableItems {
     }
 
     /**
+     * @return A map of ignorable items and their equipment slots,
+     *         that will protect the player
+     */
+    public @NotNull @Unmodifiable Map<EquipmentSlot, ItemStack> getIncludedItems() {
+        return Collections.unmodifiableMap(this.includedItems);
+    }
+
+    /**
+     * @return The amount of damage that will be dealt to the item,
+     *         when the action is performed
+     */
+    public int getBreakingValue() {
+        return this.breakingPerAction;
+    }
+
+    /**
      * @param equipmentSlot The equipment slot of the item
      * @param item          The item to check
      * @return True if the item is ignorable, false otherwise
@@ -48,7 +65,11 @@ public class AnomalyIgnorableItems {
             final @Nullable EquipmentSlot equipmentSlot,
             final @Nullable ItemStack item
     ) {
-        if (equipmentSlot == null || item == null) return false;
+        if (
+                equipmentSlot == null
+                || item == null
+        ) return false;
+
         final ItemStack ignorableItem = this.includedItems.get(equipmentSlot);
         return ignorableItem == null
                 || item.getType() == ignorableItem.getType()
@@ -64,6 +85,7 @@ public class AnomalyIgnorableItems {
             if (!this.includedItems.containsKey(entry.getKey())) continue;
             if (!this.isIgnorableItem(entry.getKey(), entry.getValue())) return false;
         }
+
         return true;
     }
 
@@ -73,6 +95,10 @@ public class AnomalyIgnorableItems {
      * @param inventory The player inventory whose items will be damaged
      */
     public void damageIgnorableItems(final @NotNull PlayerInventory inventory) {
+        final Player player = (Player) inventory.getHolder();
+
+        if (player == null) return;
+
         for (final var entry : getEquippedItems(inventory).entrySet()) {
             final EquipmentSlot equipmentSlot = entry.getKey();
             final ItemStack item = entry.getValue();
@@ -83,7 +109,7 @@ public class AnomalyIgnorableItems {
             ) {
                 MSEssentials.getInstance().runTask(() ->
                         ItemUtils.damageItem(
-                                (Player) Objects.requireNonNull(inventory.getHolder()),
+                                player,
                                 equipmentSlot,
                                 item,
                                 this.breakingPerAction
@@ -94,28 +120,12 @@ public class AnomalyIgnorableItems {
     }
 
     /**
-     * @return A map of ignorable items and their equipment slots,
-     *         that will protect the player
-     */
-    public @NotNull @UnmodifiableView Map<EquipmentSlot, ItemStack> getIncludedItems() {
-        return Collections.unmodifiableMap(this.includedItems);
-    }
-
-    /**
-     * @return The amount of damage that will be dealt to the item,
-     *         when the action is performed
-     */
-    public int getBreakingValue() {
-        return this.breakingPerAction;
-    }
-
-    /**
      * @param inventory The player inventory to get the equipped items from
      * @return A map of equipped items and their equipment slots of the player
      *         (HEAD, CHEST, LEGS, FEET)
      */
     @Contract("_ -> new")
-    private static @NotNull @Unmodifiable Map<@NotNull EquipmentSlot, @Nullable ItemStack> getEquippedItems(final @NotNull PlayerInventory inventory) {
+    private static @NotNull @Unmodifiable Map<EquipmentSlot, ItemStack> getEquippedItems(final @NotNull PlayerInventory inventory) {
         final ItemStack helmet = inventory.getHelmet();
         final ItemStack chestplate = inventory.getChestplate();
         final ItemStack leggings = inventory.getLeggings();

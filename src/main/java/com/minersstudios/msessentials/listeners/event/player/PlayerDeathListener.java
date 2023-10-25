@@ -11,7 +11,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerDeathListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerDeathListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerDeath(final @NotNull PlayerDeathEvent event) {

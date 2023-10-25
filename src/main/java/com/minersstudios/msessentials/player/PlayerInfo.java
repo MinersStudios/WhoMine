@@ -67,7 +67,7 @@ import static net.kyori.adventure.text.Component.translatable;
  * @see PlayerFile
  * @see PlayerInfoMap
  */
-public class PlayerInfo {
+public final class PlayerInfo {
     private final @NotNull UUID uuid;
     private final @NotNull String nickname;
     private final @NotNull PlayerProfile profile;

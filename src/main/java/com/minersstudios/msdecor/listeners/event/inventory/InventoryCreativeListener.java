@@ -3,7 +3,7 @@ package com.minersstudios.msdecor.listeners.event.inventory;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.msdecor.MSDecor;
-import com.minersstudios.msdecor.customdecor.CustomDecor;
+import com.minersstudios.msdecor.api.CustomDecor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
@@ -13,7 +13,7 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryCreativeListener extends AbstractMSListener<MSDecor> {
+public final class InventoryCreativeListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler
     public void onInventoryCreative(final @NotNull InventoryCreativeEvent event) {

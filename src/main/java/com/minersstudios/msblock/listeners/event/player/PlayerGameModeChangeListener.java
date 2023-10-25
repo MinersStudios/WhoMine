@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerGameModeChangeListener extends AbstractMSListener<MSBlock> {
+public final class PlayerGameModeChangeListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onPlayerGameModeChange(final @NotNull PlayerGameModeChangeEvent event) {

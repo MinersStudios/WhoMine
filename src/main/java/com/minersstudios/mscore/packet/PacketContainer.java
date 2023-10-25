@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @see PacketType
  */
-public class PacketContainer {
+public final class PacketContainer {
     private Packet<?> packet;
     private final PacketType type;
 

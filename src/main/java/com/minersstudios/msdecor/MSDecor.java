@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.msdecor.customdecor.CustomDecorType;
+import com.minersstudios.msdecor.api.CustomDecorType;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;

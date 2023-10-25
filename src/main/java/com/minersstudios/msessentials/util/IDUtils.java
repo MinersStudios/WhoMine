@@ -14,7 +14,7 @@ public final class IDUtils {
     public static final Pattern ID_PATTERN = Pattern.compile(ID_REGEX);
 
     private IDUtils() {
-        throw new IllegalStateException("Utility class");
+        throw new AssertionError("Utility class");
     }
 
     /**

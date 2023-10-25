@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryCloseListener extends AbstractMSListener<MSCore> {
+public final class InventoryCloseListener extends AbstractMSListener<MSCore> {
 
     @EventHandler
     public void onInventoryClose(final @NotNull InventoryCloseEvent event) {

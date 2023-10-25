@@ -1,7 +1,7 @@
 package com.minersstudios.msblock.commands;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-public class ReloadCommand {
+public final class ReloadCommand {
     private static final TranslatableComponent RELOAD_SUCCESS = translatable("ms.command.msblock.reload.success");
 
     public static boolean runCommand(final @NotNull CommandSender sender) {

@@ -1,7 +1,6 @@
 package com.minersstudios.mscore.inventory;
 
 import com.minersstudios.mscore.inventory.action.InventoryAction;
-import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -56,8 +55,6 @@ public interface CustomInventory extends Inventory, Cloneable {
             final @NotNull Component title,
             final @Range(from = 1, to = 6) int verticalSize
     ) {
-
-        RecipeBuilder.blastingBuilder().build();
         return new PagedInventory(title, verticalSize);
     }
 

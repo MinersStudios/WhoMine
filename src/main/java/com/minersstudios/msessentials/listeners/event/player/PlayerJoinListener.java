@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerJoinListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerJoinListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerJoin(final @NotNull PlayerJoinEvent event) {

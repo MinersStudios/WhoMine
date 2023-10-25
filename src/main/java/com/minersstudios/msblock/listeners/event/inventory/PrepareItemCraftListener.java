@@ -1,7 +1,7 @@
 package com.minersstudios.msblock.listeners.event.inventory;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.ItemUtils;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 @MSListener
-public class PrepareItemCraftListener extends AbstractMSListener<MSBlock> {
+public final class PrepareItemCraftListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onPrepareItemCraft(final @NotNull PrepareItemCraftEvent event) {

@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class BanListTask implements Runnable {
+public final class BanListTask implements Runnable {
     private final Set<BanEntry<PlayerProfile>> ignoreBanSet = new HashSet<>();
 
     @Override

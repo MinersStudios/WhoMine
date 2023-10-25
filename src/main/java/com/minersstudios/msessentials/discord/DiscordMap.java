@@ -33,12 +33,12 @@ import java.util.logging.Level;
  *
  * @see Params
  */
-public class DiscordMap {
+public final class DiscordMap {
     private final File file;
-    private final Map<Long, Params> map = new ConcurrentHashMap<>();
-    public final Map<Short, PlayerInfo> codeMap = new ConcurrentHashMap<>();
-    private final SecureRandom random = new SecureRandom();
+    private final Map<Long, Params> map;
+    public final Map<Short, PlayerInfo> codeMap;
 
+    private static final SecureRandom RANDOM = new SecureRandom();
     private static final Gson GSON =
             new GsonBuilder()
             .setPrettyPrinting()
@@ -50,6 +50,8 @@ public class DiscordMap {
      */
     public DiscordMap() {
         this.file = new File(MSEssentials.getInstance().getPluginFolder(), "discord_links.json");
+        this.map = new ConcurrentHashMap<>();
+        this.codeMap = new ConcurrentHashMap<>();
         this.reloadLinks();
     }
 
@@ -59,7 +61,9 @@ public class DiscordMap {
      */
     public long getId(final @NotNull Params params) {
         for (final var entry : this.map.entrySet()) {
-            if (entry.getValue().equals(params)) return entry.getKey();
+            if (entry.getValue().equals(params)) {
+                return entry.getKey();
+            }
         }
 
         return -1L;
@@ -114,11 +118,11 @@ public class DiscordMap {
             final long id,
             final @NotNull Params params
     ) {
-        this.map.forEach((key, value) -> {
-            if (value.equals(params)) {
-                this.map.remove(key);
+        for (final var entry : this.map.entrySet()) {
+            if (entry.getValue().equals(params)) {
+                this.map.remove(entry.getKey());
             }
-        });
+        }
 
         this.map.put(id, params);
         this.saveFile();
@@ -134,21 +138,23 @@ public class DiscordMap {
      */
     public short generateCode(final @NotNull PlayerInfo playerInfo) {
         if (this.codeMap.containsValue(playerInfo)) {
-            this.codeMap.forEach((code, info) -> {
-                if (info.equals(playerInfo)) {
-                    this.codeMap.remove(code);
+            for (final var entry : this.codeMap.entrySet()) {
+                if (entry.getValue().equals(playerInfo)) {
+                    this.codeMap.remove(entry.getKey());
                 }
-            });
+            }
         }
 
-        final short code = (short) (this.random.nextInt(9000) + 1000);
+        final short code = (short) (RANDOM.nextInt(9000) + 1000);
 
         if (this.codeMap.containsKey(code)) {
             return this.generateCode(playerInfo);
         }
 
         this.codeMap.put(code, playerInfo);
-        MSEssentials.getInstance().runTaskLater(() -> this.codeMap.remove(code, playerInfo), 6000L);
+        MSEssentials.getInstance().runTaskLater(
+                () -> this.codeMap.remove(code, playerInfo), 6000L
+        );
 
         return code;
     }

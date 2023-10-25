@@ -23,7 +23,7 @@ import static net.minecraft.network.protocol.PacketFlow.SERVERBOUND;
  * @see <a href="https://wiki.vg/Protocol">Protocol Wiki</a>
  */
 @SuppressWarnings("unused")
-public class PacketType {
+public final class PacketType {
     private final PacketFlow flow;
     private final int id;
     private final String name;

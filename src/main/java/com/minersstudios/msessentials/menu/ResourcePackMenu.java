@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.translatable;
 
-public class ResourcePackMenu {
+public final class ResourcePackMenu {
     private static final CustomInventory INVENTORY;
 
     static {

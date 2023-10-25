@@ -18,7 +18,11 @@ import static com.minersstudios.msessentials.MSEssentials.getCache;
 import static net.kyori.adventure.text.Component.space;
 import static net.kyori.adventure.text.Component.text;
 
-public class ChatBuffer {
+public final class ChatBuffer {
+
+    private ChatBuffer() {
+        throw new AssertionError("Utility class");
+    }
 
     public static void receiveMessage(
             final @NotNull Player player,

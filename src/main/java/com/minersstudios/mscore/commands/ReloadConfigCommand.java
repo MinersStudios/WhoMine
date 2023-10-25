@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-public class ReloadConfigCommand {
+public final class ReloadConfigCommand {
     private static final TranslatableComponent RELOAD_CONFIG_SUCCESS = translatable("ms.command.mscore.reload_config.success");
 
     public static boolean runCommand(@NotNull CommandSender sender) {

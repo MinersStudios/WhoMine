@@ -22,7 +22,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
-public class AsyncChatListener extends AbstractMSListener<MSEssentials> {
+public final class AsyncChatListener extends AbstractMSListener<MSEssentials> {
     private static final TranslatableComponent MUTED = translatable("ms.command.mute.already.receiver");
     private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = translatable("ms.warning.you_cant_do_this_now");
 

@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.tasks;
 
 import com.minersstudios.msessentials.MSEssentials;
 
-public class SeatsTask implements Runnable {
+public final class SeatsTask implements Runnable {
 
     @Override
     public void run() {

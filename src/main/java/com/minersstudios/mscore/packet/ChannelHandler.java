@@ -9,7 +9,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * The ChannelHandler class is responsible for handling
@@ -21,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
  * @see PacketContainer
  * @see PacketEvent
  */
-public class ChannelHandler extends ChannelDuplexHandler {
+public final class ChannelHandler extends ChannelDuplexHandler {
     private final MSPlugin<? extends MSPlugin<?>> plugin;
     private final Connection connection;
 
@@ -52,7 +51,7 @@ public class ChannelHandler extends ChannelDuplexHandler {
     /**
      * @return The connection associated with this channel handler
      */
-    public @Nullable Connection getConnection() {
+    public @NotNull Connection getConnection() {
         return this.connection;
     }
 

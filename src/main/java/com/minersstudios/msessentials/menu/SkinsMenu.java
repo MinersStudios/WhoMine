@@ -23,7 +23,7 @@ import java.util.HashMap;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-public class SkinsMenu {
+public final class SkinsMenu {
     private static final Component TITLE = translatable("ms.menu.skins.title", ChatUtils.DEFAULT_STYLE);
     private static final InventoryButton EMPTY_BUTTON = new InventoryButton().item(new ItemStack(Material.AIR));
     private static final InventoryButton APPLY_BUTTON;

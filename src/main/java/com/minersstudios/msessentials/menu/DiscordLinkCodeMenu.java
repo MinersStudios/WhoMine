@@ -15,7 +15,7 @@ import java.util.List;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-public class DiscordLinkCodeMenu {
+public final class DiscordLinkCodeMenu {
     private static final Component TITLE = translatable("ms.menu.discord.title", ChatUtils.DEFAULT_STYLE);
     private static final List<TranslatableComponent> NUMBERS = ImmutableList.of(
             translatable("ms.menu.discord.numbers.0"),

@@ -32,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @see #init()
  */
-public class WorldDark extends CraftWorld {
+public final class WorldDark extends CraftWorld {
     private static WorldDark singleton = null;
     private static ItemFrame darkEntity = null;
 

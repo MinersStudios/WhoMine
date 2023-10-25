@@ -1,10 +1,10 @@
 package com.minersstudios.msblock.listeners.event.block;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.api.CustomBlockData;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.util.SoundGroup;
-import com.minersstudios.msblock.customblock.file.ToolType;
+import com.minersstudios.msblock.api.file.ToolType;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @MSListener
-public class BlockBreakListener extends AbstractMSListener<MSBlock> {
+public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onBlockBreak(final @NotNull BlockBreakEvent event) {

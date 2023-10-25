@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryOpenListener extends AbstractMSListener<MSCore> {
+public final class InventoryOpenListener extends AbstractMSListener<MSCore> {
 
     @EventHandler
     public void onInventoryOpen(final @NotNull InventoryOpenEvent event) {

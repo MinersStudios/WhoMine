@@ -18,6 +18,7 @@ import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
 import java.util.*;
@@ -37,11 +38,11 @@ import java.util.*;
  * @see #fromConfig(File)
  */
 public class Anomaly {
-    private final @NotNull NamespacedKey namespacedKey;
-    private final @NotNull AnomalyBoundingBox anomalyBoundingBox;
-    private final @Nullable AnomalyIgnorableItems anomalyIgnorableItems;
-    private final @NotNull Map<Double, List<AnomalyAction>> anomalyActionMap;
-    private final @NotNull List<OfflinePlayer> ignorablePlayers;
+    private final NamespacedKey namespacedKey;
+    private final AnomalyBoundingBox anomalyBoundingBox;
+    private final AnomalyIgnorableItems anomalyIgnorableItems;
+    private final Map<Double, List<AnomalyAction>> anomalyActionMap;
+    private final Set<OfflinePlayer> ignorablePlayers;
 
     /**
      * @param namespacedKey         Namespaced key associated with anomaly
@@ -55,7 +56,7 @@ public class Anomaly {
             final @NotNull AnomalyBoundingBox anomalyBoundingBox,
             final @Nullable AnomalyIgnorableItems anomalyIgnorableItems,
             final @NotNull Map<Double, List<AnomalyAction>> anomalyActionMap,
-            final @NotNull List<OfflinePlayer> ignorablePlayers
+            final @NotNull Set<OfflinePlayer> ignorablePlayers
     ) {
         this.namespacedKey = namespacedKey;
         this.anomalyBoundingBox = anomalyBoundingBox;
@@ -155,7 +156,7 @@ public class Anomaly {
                         action = new AddPotionAction(
                                 radiusSection.getLong("add-potion-effect.time"),
                                 radiusSection.getInt("add-potion-effect.percentage"),
-                                potionEffects
+                                potionEffects.toArray(new PotionEffect[0])
                         );
                     }
                     case "spawn-particles" -> {
@@ -177,8 +178,9 @@ public class Anomaly {
                             particleBuilderList.add(
                                     particleBuilder.particle() == Particle.REDSTONE
                                             ? particleBuilder.color(
-                                            Color.fromRGB(particleSection.getInt("color")),
-                                            (float) particleSection.getDouble("particle-size"))
+                                                    Color.fromRGB(particleSection.getInt("color")),
+                                                    (float) particleSection.getDouble("particle-size")
+                                            )
                                             : particleBuilder
                             );
                         }
@@ -186,7 +188,7 @@ public class Anomaly {
                         action = new SpawnParticlesAction(
                                 radiusSection.getLong("spawn-particles.time"),
                                 radiusSection.getInt("spawn-particles.percentage"),
-                                particleBuilderList
+                                particleBuilderList.toArray(new ParticleBuilder[0])
                         );
                     }
                     default -> action = null;
@@ -205,7 +207,7 @@ public class Anomaly {
             }
         }
 
-        final var ignorablePlayers = new ArrayList<OfflinePlayer>();
+        final var ignorablePlayers = new HashSet<OfflinePlayer>();
 
         for (final var uuid : config.getStringList("ignorable-players")) {
             ignorablePlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
@@ -220,23 +222,6 @@ public class Anomaly {
                 anomalyActionMap,
                 ignorablePlayers
         );
-    }
-
-    /**
-     * @param anomalyAction Anomaly action to get the radius of
-     * @param radius        Radius to check
-     * @return True if the radios is the same as the anomaly action radius
-     */
-    public boolean isAnomalyActionRadius(
-            final @NotNull AnomalyAction anomalyAction,
-            final double radius
-    ) {
-        for (final var action : this.anomalyActionMap.entrySet()) {
-            if (action.getValue().contains(anomalyAction)) {
-                return action.getKey() == radius;
-            }
-        }
-        return false;
     }
 
     /**
@@ -265,16 +250,34 @@ public class Anomaly {
     /**
      * @return Map of anomaly actions and their radius to be executed when a player enters the anomaly
      */
-    public @NotNull Map<Double, List<AnomalyAction>> getAnomalyActionMap() {
-        return this.anomalyActionMap;
+    public @NotNull @Unmodifiable Map<Double, List<AnomalyAction>> getAnomalyActionMap() {
+        return Collections.unmodifiableMap(this.anomalyActionMap);
     }
 
     /**
-     * @return List of ignorable players of the anomaly,
+     * @return Set of ignorable players of the anomaly,
      *         empty list if the anomaly does not have ignorable players.
      *         These players will not be affected by the anomaly.
      */
-    public @NotNull List<OfflinePlayer> getIgnorablePlayers() {
-        return this.ignorablePlayers;
+    public @NotNull @Unmodifiable Set<OfflinePlayer> getIgnorablePlayers() {
+        return Collections.unmodifiableSet(this.ignorablePlayers);
+    }
+
+    /**
+     * @param anomalyAction Anomaly action to get the radius of
+     * @param radius        Radius to check
+     * @return True if the radios is the same as the anomaly action radius
+     */
+    public boolean isAnomalyActionRadius(
+            final @NotNull AnomalyAction anomalyAction,
+            final double radius
+    ) {
+        for (final var entry : this.anomalyActionMap.entrySet()) {
+            if (entry.getValue().contains(anomalyAction)) {
+                return entry.getKey() == radius;
+            }
+        }
+
+        return false;
     }
 }

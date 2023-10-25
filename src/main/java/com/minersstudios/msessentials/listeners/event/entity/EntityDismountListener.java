@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 @MSListener
-public class EntityDismountListener extends AbstractMSListener<MSEssentials> {
+public final class EntityDismountListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onEntityDismount(final @NotNull EntityDismountEvent event) {

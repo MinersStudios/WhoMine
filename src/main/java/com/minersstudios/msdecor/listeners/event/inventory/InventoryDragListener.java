@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class InventoryDragListener extends AbstractMSListener<MSDecor> {
+public final class InventoryDragListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler
     public void onInventoryDrag(final @NotNull InventoryDragEvent event) {

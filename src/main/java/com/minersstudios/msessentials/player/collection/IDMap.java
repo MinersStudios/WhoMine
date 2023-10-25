@@ -27,7 +27,7 @@ import java.util.logging.Level;
  * ID map with {@link UUID} and its ID.
  * All ids stored in the "config/minersstudios/MSEssentials/ids.json" file.
  */
-public class IDMap {
+public final class IDMap {
     private final File file;
     private final Map<UUID, Integer> map = new ConcurrentHashMap<>();
 

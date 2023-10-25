@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerDropItemListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerDropItemListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDropItem(final @NotNull PlayerDropItemEvent event) {

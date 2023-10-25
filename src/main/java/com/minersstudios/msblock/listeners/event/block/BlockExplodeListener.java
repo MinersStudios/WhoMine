@@ -1,8 +1,8 @@
 package com.minersstudios.msblock.listeners.event.block;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.api.CustomBlockData;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import org.bukkit.Material;
@@ -13,7 +13,7 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class BlockExplodeListener extends AbstractMSListener<MSBlock> {
+public final class BlockExplodeListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onBlockExplode(final @NotNull BlockExplodeEvent event) {

@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.commands;
 
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
+import com.minersstudios.msdecor.api.CustomDecorData;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;

@@ -20,7 +20,7 @@ import org.bukkit.Bukkit;
  * @see AnomalyAction
  * @see AnomalyBoundingBox
  */
-public class MainAnomalyActionsTask implements Runnable {
+public final class MainAnomalyActionsTask implements Runnable {
 
     @Override
     public void run() {
@@ -43,8 +43,14 @@ public class MainAnomalyActionsTask implements Runnable {
                         var actionMap = playerActionMap.get(player);
 
                         for (final var action : anomaly.getAnomalyActionMap().get(radiusInside)) {
-                            if (actionMap == null || !actionMap.containsKey(action)) {
-                                if (isIgnorable && action instanceof SpawnParticlesAction) {
+                            if (
+                                    actionMap == null
+                                    || !actionMap.containsKey(action)
+                            ) {
+                                if (
+                                        isIgnorable
+                                        && action instanceof SpawnParticlesAction
+                                ) {
                                     action.putAction(player);
                                     return;
                                 } else if (!isIgnorable) {
@@ -64,6 +70,7 @@ public class MainAnomalyActionsTask implements Runnable {
                                 action.removeAction(player);
                             }
                         }
+
                         return;
                     }
 

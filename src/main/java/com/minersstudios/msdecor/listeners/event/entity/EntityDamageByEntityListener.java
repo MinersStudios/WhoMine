@@ -3,8 +3,8 @@ package com.minersstudios.msdecor.listeners.event.entity;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.msdecor.MSDecor;
-import com.minersstudios.msdecor.customdecor.CustomDecor;
-import com.minersstudios.msdecor.events.CustomDecorClickEvent;
+import com.minersstudios.msdecor.api.CustomDecor;
+import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
@@ -14,7 +14,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class EntityDamageByEntityListener extends AbstractMSListener<MSDecor> {
+public final class EntityDamageByEntityListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDamageByEntity(final @NotNull EntityDamageByEntityEvent event) {

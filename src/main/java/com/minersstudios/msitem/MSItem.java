@@ -1,7 +1,7 @@
 package com.minersstudios.msitem;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.msitem.item.CustomItemType;
+import com.minersstudios.msitem.api.CustomItemType;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.jetbrains.annotations.NotNull;
 

@@ -9,7 +9,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class HangingBreakByEntityListener extends AbstractMSListener<MSEssentials> {
+public final class HangingBreakByEntityListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onHangingBreakByEntity(final @NotNull HangingBreakByEntityEvent event) {

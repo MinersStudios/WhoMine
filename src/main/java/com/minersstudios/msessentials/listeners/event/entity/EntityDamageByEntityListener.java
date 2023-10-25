@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class EntityDamageByEntityListener extends AbstractMSListener<MSEssentials> {
+public final class EntityDamageByEntityListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onEntityDamageByEntity(final @NotNull EntityDamageByEntityEvent event) {

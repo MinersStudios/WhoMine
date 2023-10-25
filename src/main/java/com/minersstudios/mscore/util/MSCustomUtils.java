@@ -1,12 +1,12 @@
 package com.minersstudios.mscore.util;
 
-import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
-import com.minersstudios.msdecor.customdecor.CustomDecorType;
-import com.minersstudios.msitem.item.CustomItem;
-import com.minersstudios.msitem.item.CustomItemType;
-import com.minersstudios.msitem.item.renameable.RenameableItemRegistry;
+import com.minersstudios.msblock.api.CustomBlockData;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
+import com.minersstudios.msdecor.api.CustomDecorData;
+import com.minersstudios.msdecor.api.CustomDecorType;
+import com.minersstudios.msitem.api.CustomItem;
+import com.minersstudios.msitem.api.CustomItemType;
+import com.minersstudios.msitem.api.renameable.RenameableItemRegistry;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;

@@ -27,7 +27,7 @@ import static net.kyori.adventure.text.Component.*;
 public final class MessageUtils {
 
     private MessageUtils() {
-        throw new IllegalStateException("Utility class");
+        throw new AssertionError("Utility class");
     }
 
     /**

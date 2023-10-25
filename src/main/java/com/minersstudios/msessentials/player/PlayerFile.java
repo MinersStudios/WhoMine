@@ -31,7 +31,7 @@ import static com.minersstudios.msessentials.MSEssentials.getInstance;
  * @see PlayerInfo
  */
 @SuppressWarnings("UnusedReturnValue")
-public class PlayerFile {
+public final class PlayerFile {
     private final @NotNull File file;
     private final @NotNull YamlConfiguration config;
 

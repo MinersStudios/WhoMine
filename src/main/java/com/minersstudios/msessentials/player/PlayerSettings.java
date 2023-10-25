@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @see PlayerFile
  */
-public class PlayerSettings {
+public final class PlayerSettings {
     private final @NotNull PlayerFile playerFile;
     private final @NotNull YamlConfiguration config;
 

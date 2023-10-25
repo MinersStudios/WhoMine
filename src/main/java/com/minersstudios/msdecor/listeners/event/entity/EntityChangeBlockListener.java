@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class EntityChangeBlockListener extends AbstractMSListener<MSDecor> {
+public final class EntityChangeBlockListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler
     public void onEntityChangeBlock(final @NotNull EntityChangeBlockEvent event) {

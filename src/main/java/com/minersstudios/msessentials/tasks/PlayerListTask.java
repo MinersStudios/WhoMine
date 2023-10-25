@@ -6,7 +6,7 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.world.WorldDark;
 import org.bukkit.Bukkit;
 
-public class PlayerListTask implements Runnable {
+public final class PlayerListTask implements Runnable {
 
     @Override
     public void run() {

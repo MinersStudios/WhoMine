@@ -17,7 +17,7 @@ import static net.kyori.adventure.text.Component.text;
  *
  * @see PlayerFile
  */
-public class PlayerName {
+public final class PlayerName {
     private @NotNull String nickname;
     private @NotNull String firstName;
     private @NotNull String lastName;

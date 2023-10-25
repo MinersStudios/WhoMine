@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 
 @SlashCommand
-public class EditSkinCommand extends SlashCommandExecutor {
+public final class EditSkinCommand extends SlashCommandExecutor {
 
     public EditSkinCommand() {
         super(

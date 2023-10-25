@@ -17,7 +17,7 @@ import java.util.Locale;
 import static net.kyori.adventure.text.Component.*;
 
 @MSListener
-public class PlayerAdvancementDoneListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerAdvancementDoneListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerAdvancementDone(final @NotNull PlayerAdvancementDoneEvent event) {

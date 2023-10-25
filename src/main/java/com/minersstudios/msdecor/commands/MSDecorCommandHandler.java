@@ -3,7 +3,7 @@ package com.minersstudios.msdecor.commands;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.msdecor.customdecor.CustomDecorType;
+import com.minersstudios.msdecor.api.CustomDecorType;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;

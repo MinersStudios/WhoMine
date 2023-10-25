@@ -4,9 +4,9 @@ import com.minersstudios.mscore.inventory.*;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msitem.MSItem;
-import com.minersstudios.msitem.item.renameable.RenameCollection;
-import com.minersstudios.msitem.item.renameable.RenameableItem;
-import com.minersstudios.msitem.item.renameable.RenameableItemRegistry;
+import com.minersstudios.msitem.api.renameable.RenameCollection;
+import com.minersstudios.msitem.api.renameable.RenameableItem;
+import com.minersstudios.msitem.api.renameable.RenameableItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.GameMode;
@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 import static com.minersstudios.mscore.inventory.InventoryButton.playClickSound;
 import static net.kyori.adventure.text.Component.translatable;
 
-public class RenamesMenu {
+public final class RenamesMenu {
     private static final int RENAMEABLE_ITEM_SLOT = 2;
     private static final int RENAMED_ITEM_SLOT = 6;
     private static final int QUIT_RENAME_BUTTON_SLOT = 40;
@@ -145,6 +145,8 @@ public class RenamesMenu {
             final ItemStack resultItem = renameCollection.getMainItem();
             final var renameableItemStacks = new ArrayList<>(renameCollection.items());
             final var renames = new ArrayList<String>();
+
+            assert resultItem != null;
 
             for (final var rename : renameCollection.renames()) {
                 renames.add(ChatUtils.normalize(rename));

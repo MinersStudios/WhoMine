@@ -14,7 +14,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
-public class PlayerEditBookListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerEditBookListener extends AbstractMSListener<MSEssentials> {
     private static final Component ANONYMOUS_AUTHOR = translatable("ms.book.anonymous");
 
     @EventHandler

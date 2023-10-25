@@ -19,7 +19,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
         description = "Открывает меню с переименованиями предметов",
         playerOnly = true
 )
-public class RenamesCommand implements MSCommandExecutor {
+public final class RenamesCommand implements MSCommandExecutor {
     private static final CommandNode<?> COMMAND_NODE = literal("renames").build();
 
     @Override

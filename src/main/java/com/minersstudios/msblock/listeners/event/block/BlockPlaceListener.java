@@ -1,9 +1,9 @@
 package com.minersstudios.msblock.listeners.event.block;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.customblock.CustomBlock;
-import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.api.CustomBlock;
+import com.minersstudios.msblock.api.CustomBlockData;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
@@ -16,7 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class BlockPlaceListener extends AbstractMSListener<MSBlock> {
+public final class BlockPlaceListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
     public void onBlockPlace(final @NotNull BlockPlaceEvent event) {

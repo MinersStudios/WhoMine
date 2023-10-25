@@ -36,7 +36,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Represents a response from the MineSkin API.
  */
-public class MineSkinResponse {
+public final class MineSkinResponse {
     private final int statusCode;
     private final String body;
 

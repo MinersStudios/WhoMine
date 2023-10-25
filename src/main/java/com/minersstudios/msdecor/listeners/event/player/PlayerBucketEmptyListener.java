@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerBucketEmptyListener extends AbstractMSListener<MSDecor> {
+public final class PlayerBucketEmptyListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBucketEmpty(final @NotNull PlayerBucketEmptyEvent event) {

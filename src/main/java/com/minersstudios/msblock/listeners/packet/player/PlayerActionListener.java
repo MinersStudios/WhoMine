@@ -2,9 +2,9 @@ package com.minersstudios.msblock.listeners.packet.player;
 
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.collection.DiggingMap;
-import com.minersstudios.msblock.customblock.CustomBlock;
-import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.api.CustomBlock;
+import com.minersstudios.msblock.api.CustomBlockData;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.minecraft.network.protocol.game.ServerboundPlayerActionPacket.Action.*;
 
 @MSPacketListener
-public class PlayerActionListener extends AbstractMSPacketListener<MSBlock> {
+public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock> {
 
     public PlayerActionListener() {
         super(PacketType.Play.Server.PLAYER_ACTION);

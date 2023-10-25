@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerMoveListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerMoveListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(final @NotNull PlayerMoveEvent event) {

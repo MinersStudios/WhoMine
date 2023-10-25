@@ -1,6 +1,6 @@
 package com.minersstudios.msblock.commands;
 
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-public class GiveCommand {
+public final class GiveCommand {
     private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
     private static final TranslatableComponent PLAYER_NOT_ONLINE = translatable("ms.error.player_not_online");
     private static final TranslatableComponent WRONG_BLOCK = translatable("ms.command.msblock.give.wrong_block");

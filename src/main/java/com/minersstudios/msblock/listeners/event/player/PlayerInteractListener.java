@@ -3,12 +3,12 @@ package com.minersstudios.msblock.listeners.event.player;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.customblock.CustomBlock;
-import com.minersstudios.msblock.customblock.CustomBlockData;
-import com.minersstudios.msblock.customblock.CustomBlockRegistry;
-import com.minersstudios.msblock.customblock.file.BlockSettings;
-import com.minersstudios.msblock.customblock.file.PlacingType;
-import com.minersstudios.msblock.events.CustomBlockRightClickEvent;
+import com.minersstudios.msblock.api.CustomBlock;
+import com.minersstudios.msblock.api.CustomBlockData;
+import com.minersstudios.msblock.api.CustomBlockRegistry;
+import com.minersstudios.msblock.api.file.BlockSettings;
+import com.minersstudios.msblock.api.file.PlacingType;
+import com.minersstudios.msblock.event.CustomBlockRightClickEvent;
 import com.minersstudios.msblock.util.UseBucketsAndSpawnableItems;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 @MSListener
-public class PlayerInteractListener extends AbstractMSListener<MSBlock> {
+public final class PlayerInteractListener extends AbstractMSListener<MSBlock> {
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
     private static final ImmutableSet<Material> IGNORABLE_MATERIALS = Sets.immutableEnumSet(
             //<editor-fold desc="Ignorable materials" defaultstate="collapsed">

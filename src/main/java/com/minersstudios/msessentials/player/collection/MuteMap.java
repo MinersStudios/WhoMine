@@ -33,7 +33,7 @@ import java.util.logging.Level;
  *
  * @see Entry
  */
-public class MuteMap {
+public final class MuteMap {
     private final File file;
     private final Map<UUID, Entry> map = new ConcurrentHashMap<>();
 

@@ -16,7 +16,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 @SlashCommand
-public class UnlinkCommand extends SlashCommandExecutor {
+public final class UnlinkCommand extends SlashCommandExecutor {
     private static final TranslatableComponent UNLINK_SUCCESS_DISCORD = translatable("ms.command.discord.unlink.discord.success");
     private static final TranslatableComponent UNLINK_SUCCESS_MINECRAFT = translatable("ms.command.discord.unlink.minecraft.success");
 

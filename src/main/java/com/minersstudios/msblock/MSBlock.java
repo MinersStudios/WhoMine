@@ -1,6 +1,6 @@
 package com.minersstudios.msblock;
 
-import com.minersstudios.msblock.customblock.CustomBlockData;
+import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;

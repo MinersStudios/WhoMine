@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  *
  * @see <a href="https://wiki.vg/Mojang_API#UUID_-.3E_Profile_.2B_Skin.2FCape">Mojang API</a>
  */
-public class Skin implements ConfigurationSerializable {
+public final class Skin implements ConfigurationSerializable {
     private final String name;
     private final String value;
     private final String signature;

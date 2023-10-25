@@ -1,6 +1,6 @@
 package com.minersstudios.msdecor;
 
-import com.minersstudios.msdecor.customdecor.CustomDecorData;
+import com.minersstudios.msdecor.api.CustomDecorData;
 
 import java.util.ArrayList;
 import java.util.List;

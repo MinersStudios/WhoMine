@@ -19,7 +19,7 @@ import java.util.Set;
  * to manage and access packet listeners based on their associated
  * packet types.
  */
-public class PacketListenersMap {
+public final class PacketListenersMap {
     private final Multimap<PacketType, AbstractMSPacketListener<? extends MSPlugin<?>>> receiveWhiteList = HashMultimap.create();
     private final Multimap<PacketType, AbstractMSPacketListener<? extends MSPlugin<?>>> sendWhiteList = HashMultimap.create();
 

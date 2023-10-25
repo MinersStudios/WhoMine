@@ -2,7 +2,7 @@ package com.minersstudios.msitem.commands;
 
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msitem.item.CustomItem;
+import com.minersstudios.msitem.api.CustomItem;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-public class GiveCommand {
+public final class GiveCommand {
     private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
     private static final TranslatableComponent PLAYER_NOT_ONLINE = translatable("ms.error.player_not_online");
     private static final TranslatableComponent WRONG_ITEM = translatable("ms.command.msitem.give.wrong_item");

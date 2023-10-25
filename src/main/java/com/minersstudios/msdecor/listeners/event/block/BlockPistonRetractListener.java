@@ -10,7 +10,7 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class BlockPistonRetractListener extends AbstractMSListener<MSDecor> {
+public final class BlockPistonRetractListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPistonRetract(final @NotNull BlockPistonRetractEvent event) {

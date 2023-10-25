@@ -2,9 +2,9 @@ package com.minersstudios.msitem;
 
 import com.minersstudios.mscore.plugin.config.MSConfig;
 import com.minersstudios.mscore.util.MSPluginUtils;
-import com.minersstudios.msitem.item.renameable.RenameableItem;
-import com.minersstudios.msitem.item.renameable.RenameableItemRegistry;
-import com.minersstudios.msitem.listeners.mechanic.DosimeterMechanic;
+import com.minersstudios.msitem.api.renameable.RenameableItem;
+import com.minersstudios.msitem.api.renameable.RenameableItemRegistry;
+import com.minersstudios.msitem.listeners.event.mechanic.DosimeterMechanic;
 import com.minersstudios.msitem.menu.RenamesMenu;
 import org.jetbrains.annotations.NotNull;
 

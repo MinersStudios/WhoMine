@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.security.SecureRandom;
 
 @MSListener
-public class PlayerInteractEntityListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerInteractEntityListener extends AbstractMSListener<MSEssentials> {
     private final SecureRandom random = new SecureRandom();
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

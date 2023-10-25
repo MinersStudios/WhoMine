@@ -14,10 +14,10 @@ import org.jetbrains.annotations.NotNull;
  * @see PacketContainer
  * @see Cancellable
  */
-public class PacketEvent implements Cancellable {
-    protected final PacketContainer packetContainer;
-    protected final Connection connection;
-    protected boolean cancelled;
+public final class PacketEvent implements Cancellable {
+    private final PacketContainer packetContainer;
+    private final Connection connection;
+    private boolean cancelled;
 
     /**
      * @param packetContainer The packet container

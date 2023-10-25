@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
-public class PlayerCommandPreprocessListener extends AbstractMSListener<MSEssentials> {
+public final class PlayerCommandPreprocessListener extends AbstractMSListener<MSEssentials> {
     private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = translatable("ms.warning.you_cant_do_this_now");
 
     @EventHandler
