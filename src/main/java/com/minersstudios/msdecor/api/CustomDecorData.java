@@ -66,22 +66,22 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
 
     @NotNull @Unmodifiable Set<DecorParameter> parameterSet();
 
-    Type<D> @NotNull [] wrenchTypes() throws UnsupportedOperationException;
+    Type<D> @NotNull [] types() throws UnsupportedOperationException;
 
     @Contract("null -> null")
-    @Nullable Type<D> getWrenchTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException;
+    @Nullable Type<D> getTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException;
     
     @Contract("null -> null")
-    @Nullable Type<D> getWrenchTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
+    @Nullable Type<D> getTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
 
     @Contract("null -> null")
-    @Nullable Type<D> getNextWrenchType(final @Nullable Interaction interaction) throws UnsupportedOperationException;
+    @Nullable Type<D> getNextType(final @Nullable Interaction interaction) throws UnsupportedOperationException;
 
     @Contract("null -> null")
-    @Nullable Type<D> getNextWrenchType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
+    @Nullable Type<D> getNextType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException;
 
     @Contract("null -> null")
-    @Nullable Type<D> getNextWrenchType(final @Nullable Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException;
+    @Nullable Type<D> getNextType(final @Nullable Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException;
 
     @NotNull @Unmodifiable Map<Facing, Type<D>> typeFaceMap() throws UnsupportedOperationException;
 
@@ -157,11 +157,13 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
 
     boolean isLightable();
 
+    boolean isTyped();
+
     boolean isLightTyped();
 
     boolean isFaceTyped();
 
-    boolean isTyped();
+    boolean isAnyTyped();
 
     boolean isDropsType();
 

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomItem}
  */
 public final class MSItemUtils {
-    public static final String NAMESPACED_KEY_REGEX = '(' + CustomItemType.NAMESPACE + "):([a-z0-9./_-]+)";
+    public static final String NAMESPACED_KEY_REGEX = '(' + CustomItemType.NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(value = " -> fail")

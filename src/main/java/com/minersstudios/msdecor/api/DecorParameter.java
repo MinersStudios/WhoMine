@@ -22,6 +22,7 @@ public enum DecorParameter {
     SITTABLE,
     WRENCHABLE,
     LIGHTABLE,
+    TYPED,
     LIGHT_TYPED,
     FACE_TYPED;
 
@@ -37,10 +38,7 @@ public enum DecorParameter {
 
     public static final Consumer<CustomDecorClickEvent> WRENCHABLE_RIGHT_CLICK_ACTION =
             event -> {
-                if (
-                        event.getClickType().isLeftClick()
-                        || !event.getCustomDecor().getData().isWrenchable()
-                ) return;
+                if (event.getClickType().isLeftClick()) return;
 
                 final ItemStack itemInUse = event.getPlayer().getInventory().getItem(event.getHand());
 
@@ -53,15 +51,7 @@ public enum DecorParameter {
             event -> {
                 if (event.getClickType().isLeftClick()) return;
 
-                final var data = event.getCustomDecor().getData();
-
-                if (
-                        !data.isWrenchable()
-                        || !data.isSittable()
-                ) return;
-
-                final Player player = event.getPlayer();
-                final ItemStack itemInUse = player.getInventory().getItem(event.getHand());
+                final ItemStack itemInUse = event.getPlayer().getInventory().getItem(event.getHand());
 
                 if (CustomItemType.fromItemStack(itemInUse) == CustomItemType.WRENCH) {
                     doWrench(event, itemInUse);
@@ -74,35 +64,23 @@ public enum DecorParameter {
             event -> {
                 if (event.getClickType().isLeftClick()) return;
 
-                final var data = event.getCustomDecor().getData();
+                final Interaction interaction = event.getClickedInteraction();
 
-                if (data.isLightable()) {
-                    final Interaction interaction = event.getClickedInteraction();
-
-                    doLight(
-                            event,
-                            data.getNextLightLevel(
-                                    interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
-                                    ? light.getLevel()
-                                    : 0
-                            )
-                    );
-                }
+                doLight(
+                        event,
+                        event.getCustomDecor().getData().getNextLightLevel(
+                                interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
+                                ? light.getLevel()
+                                : 0
+                        )
+                );
             };
 
     public static final Consumer<CustomDecorClickEvent> WRENCHABLE_LIGHTABLE_CLICK_ACTION =
             event -> {
                 if (event.getClickType().isLeftClick()) return;
 
-                final var data = event.getCustomDecor().getData();
-
-                if (
-                        !data.isWrenchable()
-                        && !data.isLightable()
-                ) return;
-
-                final Player player = event.getPlayer();
-                final ItemStack itemInUse = player.getInventory().getItem(event.getHand());
+                final ItemStack itemInUse = event.getPlayer().getInventory().getItem(event.getHand());
 
                 if (CustomItemType.fromItemStack(itemInUse) == CustomItemType.WRENCH) {
                     doWrench(event, itemInUse);
@@ -111,7 +89,7 @@ public enum DecorParameter {
 
                     doLight(
                             event,
-                            data.getNextLightLevel(
+                            event.getCustomDecor().getData().getNextLightLevel(
                                     interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
                                     ? light.getLevel()
                                     : 0
@@ -126,9 +104,6 @@ public enum DecorParameter {
 
                 final CustomDecor customDecor = event.getCustomDecor();
                 final var data = customDecor.getData();
-
-                if (!data.isLightTyped()) return;
-
                 final Interaction interaction = event.getClickedInteraction();
                 final int nextLevel = data.getNextLightLevel(
                         interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
@@ -155,11 +130,8 @@ public enum DecorParameter {
             };
 
     private static void doSit(final @NotNull CustomDecorClickEvent event) {
-        final CustomDecor customDecor = event.getCustomDecor();
-        final var data = customDecor.getData();
         final Player player = event.getPlayer();
-        final World world = player.getWorld();
-        final Location sitLocation = event.getClickedInteraction().getLocation().add(0.0d, data.getSitHeight(), 0.0d);
+        final Location sitLocation = event.getClickedInteraction().getLocation().add(0.0d, event.getCustomDecor().getData().getSitHeight(), 0.0d);
 
         for (final var nearbyPlayer : sitLocation.getNearbyEntitiesByType(Player.class, 0.5d)) {
             if (nearbyPlayer.getVehicle() != null) {
@@ -168,7 +140,7 @@ public enum DecorParameter {
         }
 
         PlayerUtils.setSitting(player, sitLocation);
-        world.playSound(
+        player.getWorld().playSound(
                 sitLocation,
                 Sound.ENTITY_HORSE_SADDLE,
                 SoundCategory.PLAYERS,
@@ -184,10 +156,9 @@ public enum DecorParameter {
             final @NotNull ItemStack itemInUse
     ) {
         final CustomDecor customDecor = event.getCustomDecor();
-        final var data = customDecor.getData();
         final ItemDisplay itemDisplay = customDecor.getDisplay();
         final ItemStack displayItem = itemDisplay.getItemStack();
-        final var nextType = data.getNextWrenchType(displayItem);
+        final var nextType = customDecor.getData().getNextType(displayItem);
 
         if (nextType == null) return;
 
@@ -206,7 +177,7 @@ public enum DecorParameter {
         }
 
         world.playSound(
-                LocationUtils.nmsToBukkit(customDecor.getNMSBoundingBox().getCenter()),
+                LocationUtils.nmsToBukkit(customDecor.getBoundingBox().getCenter()),
                 Sound.ITEM_SPYGLASS_USE,
                 SoundCategory.PLAYERS,
                 1.0f,
@@ -220,7 +191,7 @@ public enum DecorParameter {
             final int nextLevel
     ) {
         final World world = event.getClickedInteraction().getWorld();
-        final BoundingBox boundingBox = event.getCustomDecor().getNMSBoundingBox();
+        final BoundingBox boundingBox = event.getCustomDecor().getBoundingBox();
 
         for (
                 final var block

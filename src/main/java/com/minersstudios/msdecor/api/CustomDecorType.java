@@ -1,7 +1,20 @@
 package com.minersstudios.msdecor.api;
 
+import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.MSPluginUtils;
 import com.minersstudios.msdecor.MSDecor;
+import com.minersstudios.msdecor.registry.decoration.home.*;
+import com.minersstudios.msdecor.registry.decoration.home.head.DeerHead;
+import com.minersstudios.msdecor.registry.decoration.home.head.HoglinHead;
+import com.minersstudios.msdecor.registry.decoration.home.head.ZoglinHead;
+import com.minersstudios.msdecor.registry.decoration.home.plush.BMOPlush;
+import com.minersstudios.msdecor.registry.decoration.home.plush.BrownBearPlush;
+import com.minersstudios.msdecor.registry.decoration.home.plush.RacoonPlush;
+import com.minersstudios.msdecor.registry.decoration.home.plush.WhocintoshMini;
+import com.minersstudios.msdecor.registry.decoration.street.Brazier;
+import com.minersstudios.msdecor.registry.decoration.street.FireHydrant;
+import com.minersstudios.msdecor.registry.decoration.street.IronTrashcan;
+import com.minersstudios.msdecor.registry.decoration.street.Wheelbarrow;
 import com.minersstudios.msdecor.registry.furniture.Nightstand;
 import com.minersstudios.msdecor.registry.furniture.chair.*;
 import com.minersstudios.msdecor.registry.furniture.lamp.BigLamp;
@@ -39,29 +52,31 @@ public enum CustomDecorType {
     //SNOWMAN(),
     //TREE_STAR(),
     //SKELETON_HAND(),
-    //DEER_HEAD(),
-    //HOGLIN_HEAD(),
-    //ZOGLIN_HEAD(),
-    //BMO_PLUSH(),
-    //BROWN_BEAR_PLUSH(),
-    //RACOON_PLUSH(),
-    //CELL(),
-    //COOKING_POT(),
-    //OLD_CAMERA(),
-    //PATEFON(),
-    //CLAY_PIGGYBANK(),
-    //DIAMOND_PIGGYBANK(),
-    //EMERALD_PIGGYBANK(),
-    //GOLD_PIGGYBANK(),
-    //IRON_PIGGYBANK(),
-    //NETHERITE_PIGGYBANK(),
+    WHOCINTOSH(Whocintosh.class),
+    DEER_HEAD(DeerHead.class),
+    HOGLIN_HEAD(HoglinHead.class),
+    ZOGLIN_HEAD(ZoglinHead.class),
+    BMO_PLUSH(BMOPlush.class),
+    BROWN_BEAR_PLUSH(BrownBearPlush.class),
+    RACOON_PLUSH(RacoonPlush.class),
+    WHOCINTOSH_MINI(WhocintoshMini.class),
+    CELL(Cell.class),
+    COOKING_POT(CookingPot.class),
+    OLD_CAMERA(OldCamera.class),
+    PATEFON(Patefon.class),
+    CLAY_PIGGYBANK(Piggybank.Clay.class),
+    DIAMOND_PIGGYBANK(Piggybank.Diamond.class),
+    EMERALD_PIGGYBANK(Piggybank.Emerald.class),
+    GOLD_PIGGYBANK(Piggybank.Gold.class),
+    IRON_PIGGYBANK(Piggybank.Iron.class),
+    NETHERITE_PIGGYBANK(Piggybank.Netherite.class),
     //SMALL_CLOCK(),
-    //SMALL_GLOBE(),
-    //ATM(),
-    //BRAZIER(),
-    //FIRE_HYDRANT(),
-    //IRON_TRASHCAN(),
-    //WHEELBARROW(),
+    SMALL_GLOBE(SmallGlobe.class),
+    ATM(com.minersstudios.msdecor.registry.decoration.street.ATM.class),
+    BRAZIER(Brazier.class),
+    FIRE_HYDRANT(FireHydrant.class),
+    IRON_TRASHCAN(IronTrashcan.class),
+    WHEELBARROW(Wheelbarrow.class),
     BIG_LAMP(BigLamp.class),
     SMALL_LAMP(SmallLamp.class),
     BAR_STOOL(BarStool.class),
@@ -166,7 +181,7 @@ public enum CustomDecorType {
     public static final String NAMESPACE = "msdecor";
     public static final String TYPE_TAG_NAME = "type";
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(NAMESPACE, TYPE_TAG_NAME);
-    public static final String TYPED_KEY_REGEX = "([a-z0-9./_-]+)\\.type\\.([a-z0-9./_-]+)";
+    public static final String TYPED_KEY_REGEX = "(" + ChatUtils.KEY_REGEX + ")\\.type\\.(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern TYPED_KEY_PATTERN = Pattern.compile(TYPED_KEY_REGEX);
 
     static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new ConcurrentHashMap<>();

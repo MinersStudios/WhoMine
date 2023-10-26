@@ -1,5 +1,6 @@
 package com.minersstudios.msitem.api;
 
+import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msitem.MSItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
 
@@ -35,9 +35,6 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
     protected ItemStack itemStack;
     protected List<Map.Entry<Recipe, Boolean>> recipes;
 
-    private static final String KEY_REGEX = "[a-z0-9./_-]+";
-    private static final Pattern KEY_PATTERN = Pattern.compile(KEY_REGEX);
-
     /**
      * Protected constructor to initialize a custom item
      * with the given key and item stack. The constructor
@@ -49,18 +46,16 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
      *                  custom item
      * @throws IllegalArgumentException If the key format is invalid
      *                                  or the item stack type is air
-     * @see #KEY_REGEX
+     * @see ChatUtils#matchesKey(String)
      */
     protected CustomItemImpl(
             final @NotNull String key,
             final @NotNull ItemStack itemStack
     ) throws IllegalArgumentException {
-        if (!KEY_PATTERN.matcher(key).matches()) {
-            throw new IllegalArgumentException("Key '" + key + "' does not match regex " + KEY_REGEX);
-        }
+        ChatUtils.validateKey(key);
 
-        if (itemStack.getType().isAir()) {
-            throw new IllegalArgumentException("Item type cannot be air! Check " + key);
+        if (itemStack.isEmpty()) {
+            throw new IllegalArgumentException("Item type cannot be empty! Check " + key);
         }
 
         this.namespacedKey = new NamespacedKey(CustomItemType.NAMESPACE, key);

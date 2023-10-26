@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
 import java.util.*;
@@ -28,27 +29,69 @@ public class RenameableItem {
     private final String key;
     private final RenameCollection renameCollection;
     private final Set<UUID> whiteList;
-    private boolean showInRenameMenu;
+    private final boolean showInRenameMenu;
 
-    private RenameableItem(
+    /**
+     * Constructs a RenameableItem instance with the given
+     * unique key and rename collection
+     *
+     * @param key              The unique key associated with
+     *                         the item
+     * @param renameCollection The collection of renames
+     *                         associated with the item
+     */
+    public RenameableItem(
             final @NotNull String key,
-            final @NotNull RenameCollection renameCollection,
-            final @NotNull Collection<UUID> whiteList,
-            final boolean showInRenameMenu
+            final @NotNull RenameCollection renameCollection
     ) {
-        this.key = key.toLowerCase(Locale.ENGLISH);
-        this.renameCollection = renameCollection;
-        this.showInRenameMenu = showInRenameMenu;
-        this.whiteList = new HashSet<>(whiteList);
-
-        if (showInRenameMenu) {
-            MSItem.getCache().renameableItemsMenu.add(this);
-        }
+        this(key, renameCollection, true);
     }
 
     /**
-     * Creates a new RenameableItem instance with the provided
-     * parameters
+     * Constructs a RenameableItem instance with the given
+     * unique key, rename collection, and visibility in the
+     * rename menu
+     *
+     * @param key              The unique key associated with
+     *                         the item
+     * @param renameCollection The collection of renames
+     *                         associated with the item
+     * @param showInRenameMenu Whether the item should appear
+     *                         in the rename menu
+     */
+    public RenameableItem(
+            final @NotNull String key,
+            final @NotNull RenameCollection renameCollection,
+            final boolean showInRenameMenu
+    ) {
+        this(key, renameCollection, null, showInRenameMenu);
+    }
+
+    /**
+     * Constructs a RenameableItem instance with the given
+     * unique key, rename collection, and white-list
+     *
+     * @param key              The unique key associated with
+     *                         the item
+     * @param renameCollection The collection of renames
+     *                         associated with the item
+     * @param whiteList        The set of players that are
+     *                         allowed to rename the item
+     *                         (empty set means all players
+     *                         are allowed)
+     */
+    public RenameableItem(
+            final @NotNull String key,
+            final @NotNull RenameCollection renameCollection,
+            final @NotNull Collection<UUID> whiteList
+    ) {
+        this(key, renameCollection, whiteList, true);
+    }
+
+    /**
+     * Constructs a RenameableItem instance with the given
+     * unique key, rename collection, white-list, and
+     * visibility in the rename menu
      *
      * @param key              The unique key associated with
      *                         the item
@@ -60,15 +103,24 @@ public class RenameableItem {
      *                         allowed to rename the item
      *                         (empty set means all players
      *                         are allowed)
-     * @return A new RenameableItem instance
      */
-    public static @NotNull RenameableItem create(
+    public RenameableItem(
             final @NotNull String key,
-            final boolean showInRenameMenu,
             final @NotNull RenameCollection renameCollection,
-            final @NotNull Collection<UUID> whiteList
+            final @Nullable Collection<UUID> whiteList,
+            final boolean showInRenameMenu
     ) {
-        return new RenameableItem(key, renameCollection, whiteList, showInRenameMenu);
+        this.key = key.toLowerCase(Locale.ENGLISH);
+        this.renameCollection = renameCollection;
+        this.showInRenameMenu = showInRenameMenu;
+        this.whiteList =
+                whiteList == null
+                ? Collections.emptySet()
+                : new HashSet<>(whiteList);
+
+        if (showInRenameMenu) {
+            MSItem.getCache().renameableItemsMenu.add(this);
+        }
     }
 
     /**
@@ -97,17 +149,39 @@ public class RenameableItem {
             return null;
         }
 
-        final RenameCollection renameCollection = new RenameCollection(key);
         final var itemsString = renameableItemConfig.getStringList("items");
         final var renamesString = renameableItemConfig.getStringList("renames");
         final var loreString = renameableItemConfig.getStringList("lore");
-        final var lore = new ArrayList<Component>();
         final int customModelData = renameableItemConfig.getInt("custom-model-data", -1);
+
+        final RenameCollection renameCollection = new RenameCollection(key);
+        final var lore = new ArrayList<Component>();
         final var whiteList = new HashSet<UUID>();
 
-        if (customModelData < 0) {
-            MSItem.logger().severe("Custom model data is not valid! (in " + fileName + ")");
-            return null;
+        if (itemsString.isEmpty()) {
+            final String item = renameableItemConfig.getString("items");
+
+            if (item == null) {
+                MSItem.logger().severe("Items are not defined in " + fileName + "!");
+                return null;
+            }
+
+            itemsString.add(item);
+        }
+
+        if (renamesString.isEmpty()) {
+            final String rename = renameableItemConfig.getString("renames");
+
+            if (rename == null) {
+                MSItem.logger().severe("Renames are not defined in " + fileName + "!");
+                return null;
+            }
+
+            renameCollection.addRename(rename);
+        } else {
+            for (final var rename : renamesString) {
+                renameCollection.addRename(rename);
+            }
         }
 
         if (!loreString.isEmpty()) {
@@ -116,16 +190,9 @@ public class RenameableItem {
             }
         }
 
-        if (itemsString.isEmpty()) {
-            itemsString.add(renameableItemConfig.getString("items"));
-        }
-
-        if (renamesString.isEmpty()) {
-            renamesString.add(renameableItemConfig.getString("renames"));
-        }
-
-        for (var rename : renamesString) {
-            renameCollection.addRename(rename);
+        if (customModelData < 0) {
+            MSItem.logger().severe("Custom model data is not valid! (in " + fileName + ")");
+            return null;
         }
 
         for (final var item : itemsString) {
@@ -142,7 +209,10 @@ public class RenameableItem {
                         : new ItemStack(material);
             }
 
-            if (itemStack == null || itemStack.getType().isAir()) {
+            if (
+                    itemStack == null
+                    || itemStack.isEmpty()
+            ) {
                 MSItem.logger().severe("Item " + item + " is not valid! (in " + fileName + ")");
                 return null;
             }
@@ -166,7 +236,7 @@ public class RenameableItem {
         for (final var uuid : renameableItemConfig.getStringList("white-list")) {
             try {
                 whiteList.add(UUID.fromString(uuid));
-            } catch (final IllegalArgumentException e) {
+            } catch (final IllegalArgumentException ignored) {
                 MSItem.logger().severe("Invalid UUID " + uuid + " in white-list! (in " + fileName + ")");
             }
         }
@@ -197,8 +267,8 @@ public class RenameableItem {
      * @return The set of uuids of players that are allowed to rename
      *         the item (empty set means all players are allowed)
      */
-    public @NotNull Set<UUID> getWhiteList() {
-        return this.whiteList;
+    public @NotNull @Unmodifiable Set<UUID> getWhiteList() {
+        return Collections.unmodifiableSet(this.whiteList);
     }
 
     /**
@@ -206,15 +276,6 @@ public class RenameableItem {
      */
     public boolean isShowInRenameMenu() {
         return this.showInRenameMenu;
-    }
-
-    /**
-     * Sets whether the item should appear in the rename menu
-     *
-     * @param showInRenameMenu The new value for the property
-     */
-    public void setShowInRenameMenu(final boolean showInRenameMenu) {
-        this.showInRenameMenu = showInRenameMenu;
     }
 
     /**

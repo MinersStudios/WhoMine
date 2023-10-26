@@ -1,6 +1,7 @@
 package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.LocationUtils;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msdecor.MSDecor;
@@ -34,7 +35,6 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
 
@@ -47,7 +47,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     protected final List<Map.Entry<Recipe, Boolean>> recipes;
     protected final EnumSet<DecorParameter> parameterSet;
     protected final double sitHeight;
-    protected final CustomDecorData.Type<D>[] wrenchTypes;
+    protected final CustomDecorData.Type<D>[] types;
     protected final int[] lightLevels;
     protected final EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
     protected final Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
@@ -75,7 +75,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 ? EnumSet.noneOf(DecorParameter.class)
                 : builder.parameterSet;
         this.sitHeight = builder.sitHeight;
-        this.wrenchTypes = builder.wrenchTypes;
+        this.types = builder.types;
         this.faceTypeMap =
                 builder.faceTypeMap == null
                 ? new EnumMap<>(Facing.class)
@@ -129,24 +129,23 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public CustomDecorData.Type<D> @NotNull [] wrenchTypes() throws UnsupportedOperationException {
-        if (!this.isWrenchable()) {
-            throw new UnsupportedOperationException("This custom decor is not wrenchable!");
+    public CustomDecorData.Type<D> @NotNull [] types() throws UnsupportedOperationException {
+        if (
+                !this.isWrenchable()
+                || !this.isTyped()
+        ) {
+            throw new UnsupportedOperationException("This custom decor is not wrenchable or typed!");
         }
 
-        return this.wrenchTypes;
+        return this.types;
     }
 
     @Override
     @Contract("null -> null")
-    public @Nullable CustomDecorData.Type<D> getWrenchTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
-        if (!this.isWrenchable()) {
-            throw new UnsupportedOperationException("This custom decor is not wrenchable!");
-        }
-
+    public @Nullable CustomDecorData.Type<D> getTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
         return interaction == null
                 ? null
-                : this.getWrenchTypeOf(
+                : this.getTypeOf(
                         CustomDecor.fromInteraction(interaction).map(
                                 customDecor -> customDecor.getDisplay().getItemStack()
                         ).orElse(null)
@@ -155,9 +154,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     
     @Override
     @Contract("null -> null")
-    public @Nullable CustomDecorData.Type<D> getWrenchTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
-        if (!this.isWrenchable()) {
-            throw new UnsupportedOperationException("This custom decor is not wrenchable!");
+    public @Nullable CustomDecorData.Type<D> getTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
+        if (
+                !this.isWrenchable()
+                && !this.isTyped()
+        ) {
+            throw new UnsupportedOperationException("This custom decor is not wrenchable or typed!");
         }
 
         if (itemStack == null) return null;
@@ -168,9 +170,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         );
 
         if (key == null) return null;
-        if (!CustomDecorType.matchesTypedKey(key)) return this.wrenchTypes[0];
+        if (!CustomDecorType.matchesTypedKey(key)) return this.types[0];
         
-        for (final var type : this.wrenchTypes) {
+        for (final var type : this.types) {
             if (key.equals(type.getKey().getKey())) {
                 return type;
             }
@@ -181,30 +183,33 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     @Contract("null -> null")
-    public @Nullable CustomDecorData.Type<D> getNextWrenchType(final @Nullable Interaction interaction) throws UnsupportedOperationException {
-        return this.getNextWrenchType(this.getWrenchTypeOf(interaction));
+    public @Nullable CustomDecorData.Type<D> getNextType(final @Nullable Interaction interaction) throws UnsupportedOperationException {
+        return this.getNextType(this.getTypeOf(interaction));
     }
 
     @Override
     @Contract("null -> null")
-    public @Nullable CustomDecorData.Type<D> getNextWrenchType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
-        return this.getNextWrenchType(this.getWrenchTypeOf(itemStack));
+    public @Nullable CustomDecorData.Type<D> getNextType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
+        return this.getNextType(this.getTypeOf(itemStack));
     }
 
     @Override
     @Contract("null -> null")
-    public @Nullable CustomDecorData.Type<D> getNextWrenchType(final @Nullable CustomDecorData.Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException {
-        if (!this.isWrenchable()) {
-            throw new UnsupportedOperationException("This custom decor is not wrenchable!");
+    public @Nullable CustomDecorData.Type<D> getNextType(final @Nullable CustomDecorData.Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException {
+        if (
+                !this.isWrenchable()
+                && !this.isTyped()
+        ) {
+            throw new UnsupportedOperationException("This custom decor is not wrenchable or typed!");
         }
 
         if (type == null) return null;
 
-        final int length = this.wrenchTypes.length;
+        final int length = this.types.length;
 
         for (int i = 0; i < length; ++i) {
-            if (this.wrenchTypes[i].equals(type)) {
-                return this.wrenchTypes[Math.floorMod(i + 1, length)];
+            if (this.types[i].equals(type)) {
+                return this.types[Math.floorMod(i + 1, length)];
             }
         }
 
@@ -347,7 +352,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new UnsupportedOperationException("This custom decor is not light typed!");
         }
 
-        return this.lightLevelTypeMap.getOrDefault(lightLevel, null);
+        return lightLevel < 0 || lightLevel > 15
+                ? null
+                : this.lightLevelTypeMap.getOrDefault(lightLevel, null);
     }
 
     @Override
@@ -367,7 +374,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         return interaction != null
                 && interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
                 ? light.getLevel()
-                : 0;
+                : -1;
     }
 
     @Override
@@ -483,6 +490,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
+    public boolean isTyped() {
+        return this.parameterSet.contains(DecorParameter.TYPED);
+    }
+
+    @Override
     public boolean isLightTyped() {
         return this.parameterSet.contains(DecorParameter.LIGHT_TYPED);
     }
@@ -493,8 +505,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public boolean isTyped() {
-        return this.isWrenchable() || this.isLightTyped() || this.isFaceTyped();
+    public boolean isAnyTyped() {
+        return this.isWrenchable()
+                || this.isTyped()
+                || this.isLightTyped()
+                || this.isFaceTyped();
     }
 
     @Override
@@ -654,8 +669,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     itemDisplay.setRotation(
                             this.hitBox.getX() > 1.0d || this.hitBox.getZ() > 1.0d
                             || this.hitBox.getX() < -1.0d || this.hitBox.getZ() < -1.0d
-                            ? LocationUtils.to90(player.getYaw())
-                            : LocationUtils.to45(player.getYaw()),
+                            ? LocationUtils.to90(player.getYaw()) + 180.0f
+                            : LocationUtils.to45(player.getYaw()) + 180.0f,
                             0.0f
                     );
                     itemDisplay.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.NONE);
@@ -668,7 +683,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     } else if (this.isFaceTyped()) {
                         type = this.faceTypeMap.get(Facing.fromBlockFace(blockFace));
                     } else if (this.isWrenchable()) {
-                        type = this.getWrenchTypeOf(itemInHand);
+                        type = this.getTypeOf(itemInHand);
                     }
 
                     if (
@@ -855,7 +870,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         private List<Map.Entry<Recipe, Boolean>> recipeList;
         private EnumSet<DecorParameter> parameterSet;
         private double sitHeight = Double.NaN;
-        private CustomDecorData.Type<D>[] wrenchTypes;
+        private CustomDecorData.Type<D>[] types;
         private EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
         private int[] lightLevels;
         private Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
@@ -863,9 +878,6 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         private Consumer<CustomDecorPlaceEvent> placeAction;
         private Consumer<CustomDecorBreakEvent> breakAction;
         private boolean dropsType;
-
-        private static final String KEY_REGEX = "[a-z0-9./_-]+";
-        private static final Pattern KEY_PATTERN = Pattern.compile(KEY_REGEX);
 
         public @NotNull CustomDecorDataImpl<D> build() throws IllegalArgumentException {
             return new CustomDecorDataImpl<>() {
@@ -921,9 +933,16 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
                 if (
                         this.isWrenchable()
-                        && this.wrenchTypes == null
+                        && this.types == null
                 ) {
-                    throw new IllegalArgumentException("Wrench types are not set, but wrenchable parameter is set!");
+                    throw new IllegalArgumentException("Types are not set, but wrenchable parameter is set!");
+                }
+
+                if (
+                        this.isTyped()
+                        && this.types == null
+                ) {
+                    throw new IllegalArgumentException("Types are not set, but typed parameter is set!");
                 }
 
                 if (
@@ -998,9 +1017,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         public @NotNull Builder key(final @NotNull String key) throws IllegalArgumentException {
-            if (!KEY_PATTERN.matcher(key).matches()) {
-                throw new IllegalArgumentException("Key '" + key + "' does not match regex '" + KEY_REGEX + "'!");
-            }
+            ChatUtils.validateKey(key);
 
             this.namespacedKey = new NamespacedKey(CustomDecorType.NAMESPACE, key);
             return this;
@@ -1078,6 +1095,27 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final var parameters = EnumSet.of(first, rest);
 
             if (
+                    parameters.contains(DecorParameter.TYPED)
+                    && parameters.contains(DecorParameter.WRENCHABLE)
+            ) {
+                throw new IllegalArgumentException("Typed and wrenchable parameters cannot be set together!");
+            }
+
+            if (
+                    parameters.contains(DecorParameter.TYPED)
+                    && parameters.contains(DecorParameter.LIGHT_TYPED)
+            ) {
+                throw new IllegalArgumentException("Typed and sittable parameters cannot be set together!");
+            }
+
+            if (
+                    parameters.contains(DecorParameter.TYPED)
+                    && parameters.contains(DecorParameter.FACE_TYPED)
+            ) {
+                throw new IllegalArgumentException("Typed and face typed parameters cannot be set together!");
+            }
+
+            if (
                     parameters.contains(DecorParameter.WRENCHABLE)
                     && parameters.contains(DecorParameter.LIGHT_TYPED)
             ) {
@@ -1134,19 +1172,19 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public CustomDecorData.Type<D>[] wrenchTypes() {
-            return this.wrenchTypes;
+        public CustomDecorData.Type<D>[] types() {
+            return this.types;
         }
 
         @SafeVarargs
         @SuppressWarnings("unchecked")
-        public final @NotNull Builder wrenchTypes(
+        public final @NotNull Builder types(
                 final @NotNull Function<Builder, CustomDecorData.Type<D>> first,
                 final Function<Builder, CustomDecorData.Type<D>> @NotNull ... rest
         ) {
-            this.validateParam(
-                    DecorParameter.WRENCHABLE,
-                    "Set wrenchable parameter before setting wrench types!"
+            validateAnyOfParams(
+                    "Set wrenchable or typed parameter before setting types!",
+                    DecorParameter.WRENCHABLE, DecorParameter.TYPED
             );
 
             final var firstType = first.apply(this);
@@ -1156,18 +1194,18 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 restTypes[i] = rest[i].apply(this);
             }
 
-            return this.wrenchTypes(firstType,  restTypes);
+            return this.types(firstType,  restTypes);
         }
 
         @SafeVarargs
         @SuppressWarnings("unchecked")
-        public final @NotNull Builder wrenchTypes(
+        public final @NotNull Builder types(
                 final @NotNull CustomDecorData.Type<D> first,
                 final CustomDecorData.Type<D> @NotNull ... rest
         ) throws IllegalStateException {
-            this.validateParam(
-                    DecorParameter.WRENCHABLE,
-                    "Set wrenchable parameter before setting wrench types!"
+            validateAnyOfParams(
+                    "Set wrenchable or typed parameter before setting types!",
+                    DecorParameter.WRENCHABLE, DecorParameter.TYPED
             );
 
             if (this.itemStack == null) {
@@ -1175,19 +1213,19 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             }
 
             final int restLength = rest.length;
-            this.wrenchTypes = (CustomDecorData.Type<D>[]) new CustomDecorData.Type<?>[restLength + 2];
+            this.types = (CustomDecorData.Type<D>[]) new CustomDecorData.Type<?>[restLength + 2];
 
             if (restLength != 0) {
-                System.arraycopy(rest, 0, this.wrenchTypes, 2, restLength);
+                System.arraycopy(rest, 0, this.types, 2, restLength);
             }
 
-            this.wrenchTypes[0] =
+            this.types[0] =
                     new Type(
                             this,
                             "default",
                             this.itemStack
                     );
-            this.wrenchTypes[1] = first;
+            this.types[1] = first;
 
             return this;
         }
@@ -1372,6 +1410,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.parameterSet.contains(DecorParameter.LIGHTABLE);
         }
 
+        public boolean isTyped() {
+            return this.parameterSet.contains(DecorParameter.TYPED);
+        }
+
         public boolean isLightTyped() {
             return this.parameterSet.contains(DecorParameter.LIGHT_TYPED);
         }
@@ -1380,8 +1422,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.parameterSet.contains(DecorParameter.FACE_TYPED);
         }
 
-        public boolean isTyped() {
-            return this.isWrenchable() || this.isLightTyped() || this.isFaceTyped();
+        public boolean isAnyTyped() {
+            return this.isWrenchable()
+                    || this.isTyped()
+                    || this.isLightTyped()
+                    || this.isFaceTyped();
         }
 
         private static boolean isGreaterThanOneWithDecimal(final double value) {
@@ -1485,9 +1530,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 final @NotNull String key,
                 final @NotNull ItemStack itemStack
         ) {
-            if (!Builder.KEY_PATTERN.matcher(key).matches()) {
-                throw new IllegalArgumentException("Key '" + key + "' does not match regex '" + Builder.KEY_REGEX + "'!");
-            }
+            ChatUtils.validateKey(key);
 
             final String typedKey = builder.namespacedKey.getKey() + ".type." + key;
             this.namespacedKey = new NamespacedKey(CustomDecorType.NAMESPACE, typedKey);

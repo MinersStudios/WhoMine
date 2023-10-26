@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import static net.kyori.adventure.text.Component.*;
+import static net.kyori.adventure.text.Component.text;
 
 /**
  * The {@code DamageableItem} class represents an abstraction
@@ -97,48 +98,6 @@ public class DamageableItem {
     }
 
     /**
-     * Saves the damage-related data to an {@link ItemStack}'s
-     * persistent data container and updates the lore and damage
-     * value of the item
-     *
-     * @param itemStack The {@link ItemStack} to save the data to
-     * @return True if the data is successfully saved
-     */
-    public boolean saveForItemStack(final @NotNull ItemStack itemStack) {
-        if (
-                itemStack.getType().getMaxDurability() != this.defaultDamage
-                || !(itemStack.getItemMeta() instanceof final Damageable damageable)
-        ) return false;
-
-        damageable.getPersistentDataContainer().set(MAX_DAMAGE_NAMESPACED_KEY, PersistentDataType.INTEGER, this.maxDamage);
-        damageable.getPersistentDataContainer().set(REAL_DAMAGE_NAMESPACED_KEY, PersistentDataType.INTEGER, this.realDamage);
-        damageable.setDamage(Math.round((float) this.realDamage / (float) this.maxDamage * (float) this.defaultDamage));
-
-        final var lore = damageable.lore();
-        final var newLore = new ArrayList<Component>();
-
-        if (lore != null) {
-            newLore.addAll(lore);
-            if (newLore.get(newLore.size() - 1) instanceof TranslatableComponent) {
-                newLore.remove(newLore.size() - 1);
-                newLore.remove(newLore.size() - 1);
-            }
-        }
-
-        newLore.add(empty());
-        newLore.add(
-                DURABILITY.args(
-                        text(this.maxDamage - this.realDamage),
-                        text(this.maxDamage)
-                ).style(ChatUtils.COLORLESS_DEFAULT_STYLE)
-                .color(NamedTextColor.GRAY)
-        );
-        damageable.lore(newLore);
-
-        return itemStack.setItemMeta(damageable);
-    }
-
-    /**
      * @return The default damage value of the item
      */
     public int getDefaultDamage() {
@@ -176,5 +135,50 @@ public class DamageableItem {
      */
     public void setRealDamage(final int damage) {
         this.realDamage = damage;
+    }
+
+    /**
+     * Saves the damage-related data to an {@link ItemStack}'s
+     * persistent data container and updates the lore and damage
+     * value of the item
+     *
+     * @param itemStack The {@link ItemStack} to save the data to
+     * @return True if the data is successfully saved
+     */
+    public boolean saveForItemStack(final @NotNull ItemStack itemStack) {
+        if (
+                itemStack.getType().getMaxDurability() != this.defaultDamage
+                || !(itemStack.getItemMeta() instanceof final Damageable damageable)
+        ) return false;
+
+        damageable.getPersistentDataContainer().set(MAX_DAMAGE_NAMESPACED_KEY, PersistentDataType.INTEGER, this.maxDamage);
+        damageable.getPersistentDataContainer().set(REAL_DAMAGE_NAMESPACED_KEY, PersistentDataType.INTEGER, this.realDamage);
+        damageable.setDamage(Math.round((float) this.realDamage / (float) this.maxDamage * (float) this.defaultDamage));
+
+        final var lore = damageable.lore();
+        final var newLore = new ArrayList<Component>();
+
+        if (lore != null) {
+            newLore.addAll(lore);
+
+            if (newLore.get(newLore.size() - 1) instanceof TranslatableComponent) {
+                newLore.remove(newLore.size() - 1);
+                newLore.remove(newLore.size() - 1);
+            }
+        }
+
+        newLore.add(empty());
+        newLore.add(
+                DURABILITY
+                .args(
+                        text(this.maxDamage - this.realDamage),
+                        text(this.maxDamage)
+                )
+                .style(ChatUtils.COLORLESS_DEFAULT_STYLE)
+                .color(NamedTextColor.GRAY)
+        );
+        damageable.lore(newLore);
+
+        return itemStack.setItemMeta(damageable);
     }
 }

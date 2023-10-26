@@ -5,6 +5,7 @@ import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -23,26 +24,27 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.UUID;
 
 public final class CustomDecor {
     private final CustomDecorData<?> data;
     private final ItemDisplay display;
     private final Interaction[] interactions;
-    private final net.minecraft.world.level.levelgen.structure.BoundingBox nmsBoundingBox;
+    private final BoundingBox boundingBox;
 
     public CustomDecor(
             final @NotNull CustomDecorData<?> data,
             final @NotNull ItemDisplay display,
             final Interaction @NotNull [] interactions,
-            final @NotNull net.minecraft.world.level.levelgen.structure.BoundingBox nmsBoundingBox
+            final @NotNull BoundingBox boundingBox
     ) {
         this.data = data;
         this.display = display;
         this.interactions = interactions;
-        this.nmsBoundingBox = nmsBoundingBox;
+        this.boundingBox = boundingBox;
     }
 
     public static @NotNull Optional<CustomDecor> fromBlock(final @Nullable org.bukkit.block.Block block) {
@@ -72,12 +74,12 @@ public final class CustomDecor {
         return this.display;
     }
 
-    public @NotNull @Unmodifiable List<Interaction> getInteractions() {
-        return Arrays.asList(this.interactions);
+    public Interaction @NotNull [] getInteractions() {
+        return this.interactions.clone();
     }
 
-    public @NotNull net.minecraft.world.level.levelgen.structure.BoundingBox getNMSBoundingBox() {
-        return this.nmsBoundingBox;
+    public @NotNull BoundingBox getBoundingBox() {
+        return this.boundingBox;
     }
 
     public void destroy(
@@ -95,7 +97,7 @@ public final class CustomDecor {
             final ItemStack displayItemStack = this.display.getItemStack();
             assert displayItemStack != null;
             final ItemStack itemStack =
-                    !this.data.isTyped() || this.data.isDropsType()
+                    !this.data.isAnyTyped() || this.data.isDropsType()
                     ? displayItemStack
                     : this.data.getItem();
             final ItemMeta itemMeta = itemStack.getItemMeta();
@@ -104,7 +106,7 @@ public final class CustomDecor {
             itemStack.setItemMeta(itemMeta);
 
             world.dropItemNaturally(
-                    LocationUtils.nmsToBukkit(this.nmsBoundingBox.getCenter()).subtract(0.25d, 0.25d, 0.25d),
+                    LocationUtils.nmsToBukkit(this.boundingBox.getCenter()).subtract(0.25d, 0.25d, 0.25d),
                     itemStack
             );
         }
@@ -114,12 +116,12 @@ public final class CustomDecor {
                     breaker.getName(),
                     world.getHandle(),
                     LocationUtils.getBlockPosesBetween(
-                            this.nmsBoundingBox.minX(),
-                            this.nmsBoundingBox.minY(),
-                            this.nmsBoundingBox.minZ(),
-                            this.nmsBoundingBox.maxX(),
-                            this.nmsBoundingBox.maxY(),
-                            this.nmsBoundingBox.maxZ()
+                            this.boundingBox.minX(),
+                            this.boundingBox.minY(),
+                            this.boundingBox.minZ(),
+                            this.boundingBox.maxX(),
+                            this.boundingBox.maxY(),
+                            this.boundingBox.maxZ()
                     ),
                     Blocks.AIR
             );
@@ -130,7 +132,7 @@ public final class CustomDecor {
         }
 
         this.display.remove();
-        this.data.getSoundGroup().playBreakSound(LocationUtils.nmsToBukkit(this.nmsBoundingBox.getCenter(), world));
+        this.data.getSoundGroup().playBreakSound(LocationUtils.nmsToBukkit(this.boundingBox.getCenter(), world));
     }
 
     public static void place(
@@ -210,7 +212,7 @@ public final class CustomDecor {
         CustomDecorData<?> data = null;
         ItemDisplay display = null;
         final var interactions = new ArrayList<Interaction>();
-        net.minecraft.world.level.levelgen.structure.BoundingBox boundingBox = null;
+        BoundingBox boundingBox = null;
 
         interactions.add(interaction);
 
@@ -247,7 +249,7 @@ public final class CustomDecor {
                     if (coordinates.length != 6) return null;
 
                     try {
-                        boundingBox = new net.minecraft.world.level.levelgen.structure.BoundingBox(
+                        boundingBox = new BoundingBox(
                                 Integer.parseInt(coordinates[0]),
                                 Integer.parseInt(coordinates[1]),
                                 Integer.parseInt(coordinates[2]),

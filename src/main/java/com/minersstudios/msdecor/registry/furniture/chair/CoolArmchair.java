@@ -80,7 +80,7 @@ public final class CoolArmchair extends CustomDecorDataImpl<CoolArmchair> {
                         DecorParameter.WRENCHABLE
                 )
                 .sitHeight(0.55d)
-                .wrenchTypes(
+                .types(
                         builder -> new Type(
                                 builder,
                                 "left",

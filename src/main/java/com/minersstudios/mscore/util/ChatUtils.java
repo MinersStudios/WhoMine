@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
@@ -65,6 +66,8 @@ public final class ChatUtils {
             STRIKETHROUGH.withState(false),
             UNDERLINED.withState(false)
     );
+    public static final String KEY_REGEX = "[a-z0-9./_-]+";
+    public static final Pattern KEY_PATTERN = Pattern.compile(KEY_REGEX);
 
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
     private static final PlainTextComponentSerializer PLAIN_SERIALIZER = PlainTextComponentSerializer.plainText();
@@ -242,15 +245,17 @@ public final class ChatUtils {
             final @Nullable Style style,
             final @NotNull List<String> strings
     ) {
-        final Component[] components = new Component[strings.size()];
+        final var components = new ArrayList<Component>(strings.size());
 
-        for (int i = 0; i < strings.size(); ++i) {
-            components[i] = style == null
-                    ? text(strings.get(i))
-                    : text(strings.get(i), style);
+        for (final var string : strings) {
+            components.add(
+                    style == null
+                    ? text(string)
+                    : text(string, style)
+            );
         }
 
-        return Arrays.asList(components);
+        return components;
     }
 
     /**
@@ -308,11 +313,41 @@ public final class ChatUtils {
             final @NotNull String first,
             final String @NotNull ... rest
     ) {
-        final String[] strings = new String[rest.length + 1];
+        final int restLength = rest.length;
+        final Component[] components = new Component[restLength + 1];
+        components[0] =
+                style == null
+                ? text(first)
+                : text(first, style);
 
-        System.arraycopy(rest, 0, strings, 1, rest.length);
-        strings[0] = first;
+        for (int i = 0; i < restLength; ++i) {
+            components[i + 1] =
+                    style == null
+                    ? text(rest[i])
+                    : text(rest[i], style);
+        }
 
-        return convertStringsToComponents(style, Arrays.asList(strings));
+        return Arrays.asList(components);
+    }
+
+    /**
+     * @param string String to be checked
+     * @return True if string matches {@link #KEY_REGEX}
+     */
+    @Contract("null -> false")
+    public static boolean matchesKey(final @Nullable String string) {
+        return string != null
+                && KEY_PATTERN.matcher(string).matches();
+    }
+
+    /**
+     * @param string String to be checked
+     * @throws IllegalArgumentException If string does not match {@link #KEY_REGEX}
+     */
+    @Contract("null -> fail")
+    public static void validateKey(final @Nullable String string) {
+        if (!matchesKey(string)) {
+            throw new IllegalArgumentException("Key '" + string + "' does not match regex " + ChatUtils.KEY_REGEX);
+        }
     }
 }

@@ -68,39 +68,6 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
     }
 
     public @NotNull ShapedRecipeBuilder ingredients(
-            final @NotNull MaterialEntry first,
-            final MaterialEntry @NotNull ... rest
-    ) {
-        final RecipeChoiceEntry[] entries = new RecipeChoiceEntry[rest.length];
-
-        for (int i = 0; i < rest.length; ++i) {
-            final var entry = rest[i];
-            entries[i] = new RecipeChoiceEntry(entry.key, new RecipeChoice.MaterialChoice(entry.material));
-        }
-
-        return this.ingredients(
-                new RecipeChoiceEntry(first.key, new RecipeChoice.MaterialChoice(first.material)),
-                entries
-        );
-    }
-
-    public @NotNull ShapedRecipeBuilder ingredients(
-            final @NotNull ItemStackEntry first,
-            final ItemStackEntry @NotNull ... rest
-    ) {
-        final RecipeChoiceEntry[] entries = new RecipeChoiceEntry[rest.length];
-
-        for (int i = 0; i < rest.length; ++i) {
-            entries[i] = new RecipeChoiceEntry(rest[i].key, new RecipeChoice.ExactChoice(rest[i].ingredient));
-        }
-
-        return this.ingredients(
-                new RecipeChoiceEntry(first.key, new RecipeChoice.ExactChoice(first.ingredient)),
-                entries
-        );
-    }
-
-    public @NotNull ShapedRecipeBuilder ingredients(
             final @NotNull RecipeChoiceEntry first,
             final RecipeChoiceEntry @NotNull ... rest
     ) throws IllegalStateException, IllegalArgumentException {
@@ -121,22 +88,28 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
         return this;
     }
 
-    public static @NotNull MaterialEntry material(
-            final @NotNull Character key,
+    public static @NotNull RecipeChoiceEntry material(
+            final char key,
             final @NotNull Material material
     ) {
-        return new MaterialEntry(key, material);
+        return new RecipeChoiceEntry(
+                key,
+                new RecipeChoice.MaterialChoice(material)
+        );
     }
 
-    public static @NotNull ItemStackEntry itemStack(
-            final @NotNull Character key,
+    public static @NotNull RecipeChoiceEntry itemStack(
+            final char key,
             final @NotNull ItemStack ingredient
     ) {
-        return new ItemStackEntry(key, ingredient);
+        return new RecipeChoiceEntry(
+                key,
+                new RecipeChoice.ExactChoice(ingredient)
+        );
     }
 
     public static @NotNull RecipeChoiceEntry recipeChoice(
-            final @NotNull Character key,
+            final char key,
             final @NotNull RecipeChoice ingredient
     ) {
         return new RecipeChoiceEntry(key, ingredient);
@@ -168,7 +141,7 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
     }
 
     private void putIngredient(
-            final @NotNull Character key,
+            final char key,
             final @NotNull RecipeChoice ingredient
     ) throws IllegalArgumentException {
         if (Character.isWhitespace(key)) {
@@ -183,17 +156,17 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
     }
 
     public record MaterialEntry(
-            @NotNull Character key,
+            char key,
             @NotNull Material material
     ) {}
 
     public record ItemStackEntry(
-            @NotNull Character key,
+            char key,
             @NotNull ItemStack ingredient
     ) {}
 
     public record RecipeChoiceEntry(
-            @NotNull Character key,
+            char key,
             @NotNull RecipeChoice ingredient
     ) {}
 }

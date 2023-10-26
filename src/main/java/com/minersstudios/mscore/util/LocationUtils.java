@@ -5,6 +5,7 @@ import io.papermc.paper.world.ChunkEntitySlices;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.FullChunkStatus;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.bukkit.Location;
 import org.bukkit.Rotation;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spigotmc.AsyncCatcher;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -123,19 +125,19 @@ public final class LocationUtils {
         );
     }
 
-    public static @NotNull Location nmsToBukkit(final @NotNull net.minecraft.core.BlockPos blockPos) {
+    public static @NotNull Location nmsToBukkit(final @NotNull BlockPos blockPos) {
         return nmsToBukkit(blockPos, (World) null);
     }
 
     public static @NotNull Location nmsToBukkit(
-            final @NotNull net.minecraft.core.BlockPos blockPos,
-            final @Nullable net.minecraft.world.level.Level level
+            final @NotNull BlockPos blockPos,
+            final @Nullable Level level
     ) {
         return nmsToBukkit(blockPos, level == null ? null : level.getWorld());
     }
 
     public static @NotNull Location nmsToBukkit(
-            final @NotNull net.minecraft.core.BlockPos blockPos,
+            final @NotNull BlockPos blockPos,
             final @Nullable World world
     ) {
         return new Location(
@@ -146,8 +148,8 @@ public final class LocationUtils {
         );
     }
 
-    public static @NotNull net.minecraft.core.BlockPos bukkitToNms(final @NotNull Location location) {
-        return new net.minecraft.core.BlockPos(
+    public static @NotNull BlockPos bukkitToNms(final @NotNull Location location) {
+        return new BlockPos(
                 location.getBlockX(),
                 location.getBlockY(),
                 location.getBlockZ()
@@ -162,29 +164,11 @@ public final class LocationUtils {
             final int y2,
             final int z2
     ) {
-        final int minX = Math.min(x1, x2);
-        final int minY = Math.min(y1, y2);
-        final int minZ = Math.min(z1, z2);
-        final int offsetX = Math.abs(x1 - x2) + 1;
-        final int offsetY = Math.abs(y1 - y2) + 1;
-        final int offsetZ = Math.abs(z1 - z2) + 1;
-        final BlockPos[] blockPoses = new BlockPos[offsetX * offsetY * offsetZ];
-
-        int i = 0;
-
-        for (int x = 0; x < offsetX; ++x) {
-            for (int y = 0; y < offsetY; ++y) {
-                for (int z = 0; z < offsetZ; ++z) {
-                    blockPoses[i++] = new BlockPos(
-                            minX + x,
-                            minY + y,
-                            minZ + z
-                    );
-                }
-            }
-        }
-
-        return blockPoses;
+        return getBetween(
+                BlockPos.class,
+                x1, y1, z1,
+                x2, y2, z2
+        );
     }
 
     public static Location @NotNull [] getLocationsBetween(
@@ -195,30 +179,11 @@ public final class LocationUtils {
             final int y2,
             final int z2
     ) {
-        final int minX = Math.min(x1, x2);
-        final int minY = Math.min(y1, y2);
-        final int minZ = Math.min(z1, z2);
-        final int offsetX = Math.abs(x1 - x2) + 1;
-        final int offsetY = Math.abs(y1 - y2) + 1;
-        final int offsetZ = Math.abs(z1 - z2) + 1;
-        final Location[] locations = new Location[offsetX * offsetY * offsetZ];
-
-        int i = 0;
-
-        for (int x = 0; x < offsetX; ++x) {
-            for (int y = 0; y < offsetY; ++y) {
-                for (int z = 0; z < offsetZ; ++z) {
-                    locations[i++] = new Location(
-                            null,
-                            minX + x,
-                            minY + y,
-                            minZ + z
-                    );
-                }
-            }
-        }
-
-        return locations;
+        return getBetween(
+                Location.class,
+                x1, y1, z1,
+                x2, y2, z2
+        );
     }
 
     public static @NotNull Location offset(
@@ -408,6 +373,57 @@ public final class LocationUtils {
         }
 
         return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T @NotNull [] getBetween(
+            final @NotNull Class<T> clazz,
+            final int x1,
+            final int y1,
+            final int z1,
+            final int x2,
+            final int y2,
+            final int z2
+    ) throws IllegalArgumentException {
+        final boolean isLocation = clazz.isAssignableFrom(Location.class);
+
+        if (
+                !isLocation
+                && !clazz.isAssignableFrom(BlockPos.class)
+        ) throw new IllegalArgumentException("Class must be assignable from Location or BlockPos");
+
+        final int minX = Math.min(x1, x2);
+        final int minY = Math.min(y1, y2);
+        final int minZ = Math.min(z1, z2);
+        final int offsetX = Math.abs(x1 - x2) + 1;
+        final int offsetY = Math.abs(y1 - y2) + 1;
+        final int offsetZ = Math.abs(z1 - z2) + 1;
+        final var array = (T[]) Array.newInstance(clazz, offsetX * offsetY * offsetZ);
+
+        int i = 0;
+
+        for (int x = 0; x < offsetX; ++x) {
+            for (int y = 0; y < offsetY; ++y) {
+                for (int z = 0; z < offsetZ; ++z) {
+                    if (isLocation) {
+                        array[i++] = (T) new Location(
+                                null,
+                                minX + x,
+                                minY + y,
+                                minZ + z
+                        );
+                    } else {
+                        array[i++] = (T) new BlockPos(
+                                minX + x,
+                                minY + y,
+                                minZ + z
+                        );
+                    }
+                }
+            }
+        }
+
+        return array;
     }
 
     private static int nearestIndex(

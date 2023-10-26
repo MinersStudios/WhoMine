@@ -65,7 +65,7 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
                         )
                 )
                 .parameters(DecorParameter.WRENCHABLE)
-                .wrenchTypes(
+                .types(
                         builder -> new Type(
                                 builder,
                                 "second_left",
