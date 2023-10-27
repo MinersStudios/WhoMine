@@ -46,11 +46,9 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                 .soundGroup(SoundGroup.CHAIN)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "B B",
                                         "BBB",
@@ -59,8 +57,7 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('B', Material.IRON_BARS),
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 )

@@ -34,18 +34,16 @@ public abstract class SmallTable<C extends CustomDecorData<C>> extends CustomDec
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .group(CustomDecorType.NAMESPACE + ":small_table")
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "PPP",
                                         "PAP"
@@ -53,8 +51,7 @@ public abstract class SmallTable<C extends CustomDecorData<C>> extends CustomDec
                                 .ingredients(
                                         ShapedRecipeBuilder.material('P', planksMaterial),
                                         ShapedRecipeBuilder.material('A', Material.AIR)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

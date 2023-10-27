@@ -1,8 +1,7 @@
 package com.minersstudios.msdecor.api;
 
-import com.minersstudios.mscore.util.BlockUtils;
-import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.LocationUtils;
+import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
+import com.minersstudios.mscore.util.*;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
@@ -67,9 +66,31 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.soundGroup = builder.soundGroup;
         this.itemStack = builder.itemStack;
         this.recipes =
-                builder.recipeList == null
+                builder.recipeBuilderList == null
                 ? Collections.emptyList()
-                : builder.recipeList;
+                : new ArrayList<>(builder.recipeBuilderList.size());
+
+        if (builder.recipeBuilderList != null) {
+            for (final var entry : builder.recipeBuilderList) {
+                final var recipeBuilder = entry.getKey();
+
+                if (recipeBuilder.namespacedKey() == null) {
+                    recipeBuilder.namespacedKey(this.namespacedKey);
+                }
+
+                if (recipeBuilder.result() == null) {
+                    recipeBuilder.result(this.itemStack);
+                }
+
+                this.recipes.add(
+                        Map.entry(
+                                recipeBuilder.build(),
+                                entry.getValue()
+                        )
+                );
+            }
+        }
+
         this.parameterSet =
                 builder.parameterSet == null
                 ? EnumSet.noneOf(DecorParameter.class)
@@ -475,6 +496,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
+    public boolean isPaintable() {
+        return this.parameterSet.contains(DecorParameter.PAINTABLE);
+    }
+
+    @Override
     public boolean isSittable() {
         return this.parameterSet.contains(DecorParameter.SITTABLE);
     }
@@ -658,6 +684,22 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final @NotNull Player player,
             final @NotNull ItemStack itemInHand
     ) {
+        final ItemStack itemStack = itemInHand.clone();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        final CustomDecorData.Type<D> type;
+
+        itemStack.setAmount(1);
+
+        if (this.isLightTyped()) {
+            type = this.lightLevelTypeMap.get(this.lightLevels[0]);
+        } else if (this.isFaceTyped()) {
+            type = this.faceTypeMap.get(Facing.fromBlockFace(blockFace));
+        } else if (this.isWrenchable()) {
+            type = this.getTypeOf(itemStack);
+        } else {
+            type = null;
+        }
+
         return player.getWorld().spawn(
                 blockLocation.toCenterLocation().add(
                         this.hitBox.getModelOffsetX(),
@@ -675,17 +717,6 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     );
                     itemDisplay.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.NONE);
 
-                    final ItemMeta itemMeta = itemInHand.getItemMeta();
-                    CustomDecorData.Type<D> type = null;
-
-                    if (this.isLightTyped()) {
-                        type = this.lightLevelTypeMap.get(this.lightLevels[0]);
-                    } else if (this.isFaceTyped()) {
-                        type = this.faceTypeMap.get(Facing.fromBlockFace(blockFace));
-                    } else if (this.isWrenchable()) {
-                        type = this.getTypeOf(itemInHand);
-                    }
-
                     if (
                             type == null
                             || CustomDecorType.matchesTypedKey(
@@ -695,7 +726,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                                     )
                             )
                     ) {
-                        itemDisplay.setItemStack(itemInHand);
+                        itemDisplay.setItemStack(itemStack);
                     } else {
                         final ItemStack typeItem = type.getItem();
                         final ItemMeta typeMeta = typeItem.getItemMeta();
@@ -867,7 +898,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         private Facing facing;
         private ItemStack itemStack;
         private SoundGroup soundGroup;
-        private List<Map.Entry<Recipe, Boolean>> recipeList;
+        private List<Map.Entry<RecipeBuilder<?>, Boolean>> recipeBuilderList;
         private EnumSet<DecorParameter> parameterSet;
         private double sitHeight = Double.NaN;
         private CustomDecorData.Type<D>[] types;
@@ -917,13 +948,32 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalArgumentException("Item stack is not set!");
             }
 
-            if (this.recipeList == null) {
-                this.recipeList = Collections.emptyList();
-            }
+            if (this.parameterSet != null) {
+                if (
+                        this.isPaintable()
+                        || this.isWrenchable()
+                ) {
+                    final ItemMeta meta = this.itemStack.getItemMeta();
+                    final var currentLore = meta.lore();
+                    final var newLore = new ArrayList<Component>();
 
-            if (this.parameterSet == null) {
-                this.parameterSet = EnumSet.noneOf(DecorParameter.class);
-            } else {
+                    if (this.isPaintable()) {
+                        newLore.add(Badges.PAINTABLE_LORE);
+                    }
+
+                    if (this.isWrenchable()) {
+                        newLore.add(Badges.WRENCHABLE_LORE);
+                    }
+
+                    if (currentLore != null) {
+                        newLore.add(Component.empty());
+                        newLore.addAll(currentLore);
+                    }
+
+                    meta.lore(newLore);
+                    this.itemStack.setItemMeta(meta);
+                }
+
                 if (
                         this.isSittable()
                         && this.sitHeight != this.sitHeight
@@ -1063,24 +1113,40 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public List<Map.Entry<Recipe, Boolean>> recipeList() {
-            return this.recipeList;
+        public List<Map.Entry<RecipeBuilder<?>, Boolean>> recipeBuilderList() {
+            return this.recipeBuilderList;
         }
 
         @SafeVarargs
         public final @NotNull Builder recipes(
-                final @NotNull Function<Builder, Map.Entry<Recipe, Boolean>> first,
-                final Function<Builder, Map.Entry<Recipe, Boolean>> @NotNull ... rest
+                final @NotNull Function<Builder, Map.Entry<RecipeBuilder<?>, Boolean>> first,
+                final Function<Builder, Map.Entry<RecipeBuilder<?>, Boolean>> @NotNull ... rest
         ) {
-            final var recipeList = new ArrayList<Map.Entry<Recipe, Boolean>>();
+            this.recipeBuilderList = new ArrayList<>(rest.length + 1);
 
-            recipeList.add(first.apply(this));
+            this.recipeBuilderList.add(first.apply(this));
 
             for (final var entry : rest) {
-                recipeList.add(entry.apply(this));
+                this.recipeBuilderList.add(entry.apply(this));
             }
 
-            this.recipeList = recipeList;
+            return this;
+        }
+
+        @SafeVarargs
+        public final @NotNull Builder recipes(
+                final @NotNull Map.Entry<RecipeBuilder<?>, Boolean> first,
+                final Map.Entry<RecipeBuilder<?>, Boolean> @NotNull ... rest
+        ) {
+            final int restLength = rest.length;
+            this.recipeBuilderList = new ArrayList<>(restLength + 1);
+
+            this.recipeBuilderList.add(first);
+
+            if (restLength != 0) {
+                this.recipeBuilderList.addAll(Arrays.asList(rest));
+            }
+
             return this;
         }
 
@@ -1398,35 +1464,49 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
+        public boolean isPaintable() {
+            return this.parameterSet != null
+                    && this.parameterSet.contains(DecorParameter.PAINTABLE);
+        }
+
         public boolean isSittable() {
-            return this.parameterSet.contains(DecorParameter.SITTABLE);
+            return this.parameterSet != null
+                    && this.parameterSet.contains(DecorParameter.SITTABLE);
         }
 
         public boolean isWrenchable() {
-            return this.parameterSet.contains(DecorParameter.WRENCHABLE);
+            return this.parameterSet != null
+                    && this.parameterSet.contains(DecorParameter.WRENCHABLE);
         }
 
         public boolean isLightable() {
-            return this.parameterSet.contains(DecorParameter.LIGHTABLE);
+            return this.parameterSet != null
+                    && this.parameterSet.contains(DecorParameter.LIGHTABLE);
         }
 
         public boolean isTyped() {
-            return this.parameterSet.contains(DecorParameter.TYPED);
+            return this.parameterSet != null
+                    && this.parameterSet.contains(DecorParameter.TYPED);
         }
 
         public boolean isLightTyped() {
-            return this.parameterSet.contains(DecorParameter.LIGHT_TYPED);
+            return this.parameterSet != null
+                    && this.parameterSet.contains(DecorParameter.LIGHT_TYPED);
         }
 
         public boolean isFaceTyped() {
-            return this.parameterSet.contains(DecorParameter.FACE_TYPED);
+            return this.parameterSet != null
+                    && this.parameterSet.contains(DecorParameter.FACE_TYPED);
         }
 
         public boolean isAnyTyped() {
-            return this.isWrenchable()
-                    || this.isTyped()
-                    || this.isLightTyped()
-                    || this.isFaceTyped();
+            return this.parameterSet != null
+                    && (
+                            this.isWrenchable()
+                            || this.isTyped()
+                            || this.isLightTyped()
+                            || this.isFaceTyped()
+                    );
         }
 
         private static boolean isGreaterThanOneWithDecimal(final double value) {

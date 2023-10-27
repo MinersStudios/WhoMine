@@ -38,11 +38,9 @@ public final class WhocintoshMini extends CustomDecorDataImpl<WhocintoshMini> {
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "WWW",
                                         "WGW"
@@ -50,8 +48,7 @@ public final class WhocintoshMini extends CustomDecorDataImpl<WhocintoshMini> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('W', Material.GRAY_WOOL),
                                         ShapedRecipeBuilder.material('G', Material.GLASS_PANE)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

@@ -34,18 +34,16 @@ public abstract class RockingChair<C extends CustomDecorData<C>> extends CustomD
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .group(CustomDecorType.NAMESPACE + ":rocking_chair")
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "P  ",
                                         "PPP",
@@ -53,12 +51,14 @@ public abstract class RockingChair<C extends CustomDecorData<C>> extends CustomD
                                 )
                                 .ingredients(
                                         ShapedRecipeBuilder.material('P', planksMaterial)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 )
-                .parameters(DecorParameter.SITTABLE)
+                .parameters(
+                        DecorParameter.SITTABLE,
+                        DecorParameter.PAINTABLE
+                )
                 .sitHeight(0.5d);
     }
 

@@ -40,19 +40,16 @@ public abstract class Piggybank<C extends CustomDecorData<C>> extends CustomDeco
                 .soundGroup(SoundGroup.GLASS)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .group(CustomDecorType.NAMESPACE + ":piggybank")
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "  P",
                                         "PPP",
                                         "P P"
                                 )
-                                .ingredients(ShapedRecipeBuilder.material('P', material))
-                                .build(),
+                                .ingredients(ShapedRecipeBuilder.material('P', material)),
                                 true
                         )
                 );

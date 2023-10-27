@@ -2,7 +2,7 @@ package com.minersstudios.msblock.api.file.adapter;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import com.minersstudios.msblock.api.file.CustomChoice;
+import com.minersstudios.mscore.inventory.recipe.CustomChoice;
 import org.bukkit.inventory.RecipeChoice;
 import org.jetbrains.annotations.NotNull;
 

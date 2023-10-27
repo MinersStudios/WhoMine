@@ -38,11 +38,9 @@ public final class OldCamera extends CustomDecorDataImpl<OldCamera> {
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         " I ",
                                         " S ",
@@ -51,8 +49,7 @@ public final class OldCamera extends CustomDecorDataImpl<OldCamera> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT),
                                         ShapedRecipeBuilder.material('S', Material.STICK)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

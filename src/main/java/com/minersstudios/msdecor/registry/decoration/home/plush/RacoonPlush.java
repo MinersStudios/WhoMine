@@ -33,25 +33,22 @@ public final class RacoonPlush extends CustomDecorDataImpl<RacoonPlush> {
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "WWW",
                                         "WWW"
                                 )
                                 .ingredients(
                                         ShapedRecipeBuilder.material('W', Material.GRAY_WOOL)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 )

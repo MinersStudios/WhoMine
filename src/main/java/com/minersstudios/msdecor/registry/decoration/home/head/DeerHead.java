@@ -32,17 +32,15 @@ public final class DeerHead extends CustomDecorDataImpl<DeerHead> {
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.WALL)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "BBS",
                                         " LS",
@@ -52,8 +50,7 @@ public final class DeerHead extends CustomDecorDataImpl<DeerHead> {
                                         ShapedRecipeBuilder.material('L', Material.LEATHER),
                                         ShapedRecipeBuilder.material('B', Material.BONE),
                                         ShapedRecipeBuilder.material('S', Material.SPRUCE_LOG)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

@@ -33,17 +33,15 @@ public final class Whocintosh extends CustomDecorDataImpl<Whocintosh> {
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "III",
                                         "IGI",
@@ -53,8 +51,7 @@ public final class Whocintosh extends CustomDecorDataImpl<Whocintosh> {
                                         ShapedRecipeBuilder.itemStack('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem()),
                                         ShapedRecipeBuilder.material('G', Material.GLASS_PANE),
                                         ShapedRecipeBuilder.material('T', Material.REDSTONE_TORCH)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

@@ -40,24 +40,21 @@ public final class IronTrashcan extends CustomDecorDataImpl<IronTrashcan> {
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "III",
                                         "I I",
                                         "III"
                                 )
-                                .ingredients(ShapedRecipeBuilder.material('I', Material.IRON_INGOT))
-                                .build(),
+                                .ingredients(ShapedRecipeBuilder.material('I', Material.IRON_INGOT)),
                                 true
                         )
                 )

@@ -106,7 +106,7 @@ public final class CustomDecor {
             itemStack.setItemMeta(itemMeta);
 
             world.dropItemNaturally(
-                    LocationUtils.nmsToBukkit(this.boundingBox.getCenter()).subtract(0.25d, 0.25d, 0.25d),
+                    LocationUtils.nmsToBukkit(this.boundingBox.getCenter()),
                     itemStack
             );
         }

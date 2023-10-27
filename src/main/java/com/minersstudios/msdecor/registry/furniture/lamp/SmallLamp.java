@@ -39,11 +39,9 @@ public final class SmallLamp extends CustomDecorDataImpl<SmallLamp> {
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "L",
                                         "S"
@@ -51,12 +49,14 @@ public final class SmallLamp extends CustomDecorDataImpl<SmallLamp> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('S', Material.STICK),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 )
-                .parameters(DecorParameter.LIGHTABLE)
+                .parameters(
+                        DecorParameter.LIGHTABLE,
+                        DecorParameter.PAINTABLE
+                )
                 .lightLevels(0, 15);
     }
 }

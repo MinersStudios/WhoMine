@@ -38,17 +38,14 @@ public final class Patefon extends CustomDecorDataImpl<Patefon> {
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape("PJP")
                                 .ingredients(
                                         ShapedRecipeBuilder.material('J', Material.JUKEBOX),
                                         ShapedRecipeBuilder.material('P', Material.SPRUCE_PLANKS)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

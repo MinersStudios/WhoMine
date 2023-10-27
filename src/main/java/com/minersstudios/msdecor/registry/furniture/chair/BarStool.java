@@ -30,17 +30,15 @@ public final class BarStool extends CustomDecorDataImpl<BarStool> {
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.CHAIN)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "ILI",
                                         " I ",
@@ -49,12 +47,14 @@ public final class BarStool extends CustomDecorDataImpl<BarStool> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 )
-                .parameters(DecorParameter.SITTABLE)
+                .parameters(
+                        DecorParameter.SITTABLE,
+                        DecorParameter.PAINTABLE
+                )
                 .sitHeight(1.0d);
     }
 }

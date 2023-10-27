@@ -38,11 +38,9 @@ public final class SmallGlobe extends CustomDecorDataImpl<SmallGlobe> {
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "M",
                                         "S"
@@ -50,8 +48,7 @@ public final class SmallGlobe extends CustomDecorDataImpl<SmallGlobe> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('M', Material.MAP),
                                         ShapedRecipeBuilder.material('S', Material.STICK)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

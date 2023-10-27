@@ -18,7 +18,7 @@ public final class Badges {
     public static final Component SPEECH = createDefaultStyledText(" ꀕ ");
     public static final Component DISCORD = createDefaultStyledText(" ꀔ ");
     public static final Component PAINTABLE_LORE = createDefaultStyledText("ꀢ");
-    public static final Component WRENCHABLE_LORE = createDefaultStyledText("ꀢ");
+    public static final Component WRENCHABLE_LORE = createDefaultStyledText("ꀳ");
 
     public static final List<Component> PAINTABLE_LORE_LIST = ImmutableList.of(PAINTABLE_LORE);
     public static final List<Component> WRENCHABLE_LORE_LIST = ImmutableList.of(WRENCHABLE_LORE);

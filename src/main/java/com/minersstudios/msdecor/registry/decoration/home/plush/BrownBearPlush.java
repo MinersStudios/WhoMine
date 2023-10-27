@@ -38,11 +38,9 @@ public final class BrownBearPlush extends CustomDecorDataImpl<BrownBearPlush> {
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "AWA",
                                         "WAW"
@@ -50,8 +48,7 @@ public final class BrownBearPlush extends CustomDecorDataImpl<BrownBearPlush> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('W', Material.BROWN_WOOL),
                                         ShapedRecipeBuilder.material('A', Material.AIR)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

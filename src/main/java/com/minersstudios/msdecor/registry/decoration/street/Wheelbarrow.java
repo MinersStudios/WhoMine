@@ -32,17 +32,15 @@ public final class Wheelbarrow extends CustomDecorDataImpl<Wheelbarrow> {
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "S S",
                                         " C ",
@@ -52,8 +50,7 @@ public final class Wheelbarrow extends CustomDecorDataImpl<Wheelbarrow> {
                                         ShapedRecipeBuilder.material('S', Material.STICK),
                                         ShapedRecipeBuilder.material('C', Material.CAULDRON),
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

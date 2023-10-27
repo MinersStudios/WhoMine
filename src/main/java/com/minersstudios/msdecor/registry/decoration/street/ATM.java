@@ -27,7 +27,7 @@ public final class ATM extends CustomDecorDataImpl<ATM> {
                         1.0d,
                         2.0d,
                         1.0d,
-                        DecorHitBox.Type.NONE
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)

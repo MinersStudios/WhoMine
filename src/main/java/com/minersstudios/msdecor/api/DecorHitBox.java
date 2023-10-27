@@ -228,11 +228,7 @@ public final class DecorHitBox {
     }
 
     public enum Type {
-        STRUCTURE_VOID(
-                Material.STRUCTURE_VOID,
-                Blocks.STRUCTURE_VOID
-        ),
-        BARRIER(
+        SOLID(
                 Material.BARRIER,
                 Blocks.BARRIER
         ),
@@ -264,12 +260,8 @@ public final class DecorHitBox {
             return this.nmsBlock;
         }
 
-        public boolean isStructure() {
-            return this == STRUCTURE_VOID;
-        }
-
         public boolean isSolid() {
-            return this == BARRIER;
+            return this == SOLID;
         }
 
         public boolean isLight() {

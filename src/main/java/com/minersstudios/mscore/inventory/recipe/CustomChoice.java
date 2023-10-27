@@ -1,12 +1,17 @@
-package com.minersstudios.msblock.api.file;
+package com.minersstudios.mscore.inventory.recipe;
 
-import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.util.MSCustomUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -17,7 +22,7 @@ import java.util.regex.Pattern;
  * Use {@link #toExactChoice()} to convert this choice to an {@link ExactChoice}.
  * It is important, because bukkit does not support custom choices.
  */
-public class CustomChoice implements RecipeChoice {
+public final class CustomChoice implements RecipeChoice {
     private List<ItemStack> choices;
     private List<String> namespacedKeys;
 
@@ -31,7 +36,7 @@ public class CustomChoice implements RecipeChoice {
      * @throws IllegalArgumentException If the namespaced key is invalid
      */
     public CustomChoice(final @NotNull String namespacedKey) throws IllegalArgumentException {
-        this(ImmutableList.of(namespacedKey));
+        this(Collections.singletonList(namespacedKey));
     }
 
     /**
@@ -143,7 +148,9 @@ public class CustomChoice implements RecipeChoice {
     @Override
     public boolean test(final @NotNull ItemStack itemStack) {
         for (final var choice : this.choices) {
-            if (choice.isSimilar(itemStack)) return true;
+            if (choice.isSimilar(itemStack)) {
+                return true;
+            }
         }
 
         return false;
@@ -154,12 +161,7 @@ public class CustomChoice implements RecipeChoice {
      */
     @Override
     public int hashCode() {
-        final int prime = 41;
-        int result = 7;
-
-        result = prime * result + Objects.hashCode(this.choices);
-
-        return result;
+        return 41 * 7 + Objects.hashCode(this.choices);
     }
 
     /**
@@ -169,10 +171,12 @@ public class CustomChoice implements RecipeChoice {
     @Contract(value = "null -> false")
     @Override
     public boolean equals(final @Nullable Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        return Objects.equals(this.choices, ((CustomChoice) obj).choices);
+        return this == obj
+                || (
+                        obj != null
+                        && this.getClass() == obj.getClass()
+                        && Objects.equals(this.choices, ((CustomChoice) obj).choices)
+                );
     }
 
     /**

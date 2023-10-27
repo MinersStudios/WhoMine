@@ -5,9 +5,14 @@ import com.minersstudios.msdecor.api.CustomDecorType;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * The main class of the MSDecor plugin
@@ -25,7 +30,22 @@ public final class MSDecor extends MSPlugin<MSDecor> {
     }
 
     @Override
+    @SuppressWarnings("JavaReflectionMemberAccess")
     public void load() {
+        try {
+            final Field item = Item.class.getDeclaredField("d");
+
+            item.setAccessible(true);
+            item.setInt(Items.LEATHER_HORSE_ARMOR, 8);
+
+            final Field material = Material.class.getDeclaredField("maxStack");
+
+            material.setAccessible(true);
+            material.setInt(Material.LEATHER_HORSE_ARMOR, 8);
+        } catch (final Exception e) {
+            logger().log(Level.SEVERE, "Failed to set max stack size for leather horse armor", e);
+        }
+
         initClass(CustomDecorType.class);
     }
 

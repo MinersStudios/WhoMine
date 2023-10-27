@@ -32,17 +32,15 @@ public final class FireHydrant extends CustomDecorDataImpl<FireHydrant> {
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         " B ",
                                         " B ",
@@ -51,8 +49,7 @@ public final class FireHydrant extends CustomDecorDataImpl<FireHydrant> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('B', Material.IRON_BLOCK),
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

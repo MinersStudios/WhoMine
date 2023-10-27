@@ -38,11 +38,9 @@ public final class BMOPlush extends CustomDecorDataImpl<BMOPlush> {
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "II",
                                         "DI"
@@ -50,8 +48,7 @@ public final class BMOPlush extends CustomDecorDataImpl<BMOPlush> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('D', Material.LIGHT_BLUE_DYE),
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 );

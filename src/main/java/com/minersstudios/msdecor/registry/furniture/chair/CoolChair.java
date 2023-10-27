@@ -33,17 +33,15 @@ public final class CoolChair extends CustomDecorDataImpl<CoolChair> {
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "LLL",
                                         "IAI"
@@ -52,12 +50,14 @@ public final class CoolChair extends CustomDecorDataImpl<CoolChair> {
                                         ShapedRecipeBuilder.material('I', Material.IRON_NUGGET),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER),
                                         ShapedRecipeBuilder.material('A', Material.AIR)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 )
-                .parameters(DecorParameter.SITTABLE)
+                .parameters(
+                        DecorParameter.SITTABLE,
+                        DecorParameter.PAINTABLE
+                )
                 .sitHeight(0.6d);
     }
 }

@@ -39,11 +39,9 @@ public final class CookingPot extends CustomDecorDataImpl<CookingPot> {
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "ISI",
                                         "III"
@@ -51,8 +49,7 @@ public final class CookingPot extends CustomDecorDataImpl<CookingPot> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT),
                                         ShapedRecipeBuilder.material('S', Material.STICK)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 )

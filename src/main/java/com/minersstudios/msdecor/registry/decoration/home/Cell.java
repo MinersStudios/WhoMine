@@ -33,17 +33,15 @@ public final class Cell extends CustomDecorDataImpl<Cell> {
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.ALL)
                 .soundGroup(SoundGroup.CHAIN)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         " C ",
                                         "BBB",
@@ -52,8 +50,7 @@ public final class Cell extends CustomDecorDataImpl<Cell> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('B', Material.IRON_BARS),
                                         ShapedRecipeBuilder.material('C', Material.CHAIN)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 )

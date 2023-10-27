@@ -34,18 +34,16 @@ public abstract class Armchair<C extends CustomDecorData<C>> extends CustomDecor
                         1.0d,
                         1.0d,
                         1.0d,
-                        DecorHitBox.Type.BARRIER
+                        DecorHitBox.Type.SOLID
                 ))
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        builder -> Map.entry(
+                        Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .namespacedKey(builder.key())
                                 .group(CustomDecorType.NAMESPACE + ":armchair")
                                 .category(CraftingBookCategory.BUILDING)
-                                .result(builder.itemStack())
                                 .shape(
                                         "PP ",
                                         "PLP",
@@ -54,12 +52,14 @@ public abstract class Armchair<C extends CustomDecorData<C>> extends CustomDecor
                                 .ingredients(
                                         ShapedRecipeBuilder.material('P', planksMaterial),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
-                                )
-                                .build(),
+                                ),
                                 true
                         )
                 )
-                .parameters(DecorParameter.SITTABLE)
+                .parameters(
+                        DecorParameter.SITTABLE,
+                        DecorParameter.PAINTABLE
+                )
                 .sitHeight(0.6d);
     }
 

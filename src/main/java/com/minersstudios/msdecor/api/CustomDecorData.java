@@ -151,6 +151,8 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     @Contract("null -> false")
     boolean isSimilar(final @Nullable CustomDecorData<? extends CustomDecorData<?>> data);
 
+    boolean isPaintable();
+
     boolean isSittable();
 
     boolean isWrenchable();

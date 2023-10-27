@@ -112,7 +112,6 @@ public final class MSDecorUtils {
         if (!(entity instanceof final Interaction interaction)) return false;
 
         final PersistentDataContainer container = interaction.getPersistentDataContainer();
-
         return !container.isEmpty()
                 && (
                         (
@@ -127,13 +126,12 @@ public final class MSDecorUtils {
 
     @Contract("null -> false")
     public static boolean isCustomDecor(final @Nullable Block block) {
-        if (
-                block == null
-                || isCustomDecorMaterial(block.getType())
-        ) return false;
+        if (block == null) return false;
 
         for (final var entity : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
-            if (isCustomDecor(entity)) return true;
+            if (isCustomDecor(entity)) {
+                return true;
+            }
         }
 
         return false;
