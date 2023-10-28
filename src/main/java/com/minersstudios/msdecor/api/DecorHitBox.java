@@ -1,16 +1,16 @@
 package com.minersstudios.msdecor.api;
 
+import com.minersstudios.mscore.location.MSBoundingBox;
+import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.util.LocationUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -40,7 +40,11 @@ public final class DecorHitBox {
             final @Range(from = -8, to = 8) double z,
             final @NotNull Type type
     ) throws IllegalArgumentException {
-        this(x, y, z, 0.0d, 0.0d, 0.0d, type);
+        this(
+                x, y, z,
+                0.0d, 0.0d, 0.0d,
+                type
+        );
     }
 
     public DecorHitBox(
@@ -97,39 +101,13 @@ public final class DecorHitBox {
      * @return The bounding box of custom decor with location
      *         and rotation
      */
-    public @NotNull BoundingBox getBoundingBox(
-            final @NotNull Location location,
+    public @NotNull MSBoundingBox getBoundingBox(
+            final @NotNull MSPosition location,
             final float yaw
     ) {
-        final Location secondLocation = this.getSecondLocation(location, yaw);
-
-        return new BoundingBox(
-                location.x(),
-                location.y(),
-                location.z(),
-                secondLocation.x(),
-                secondLocation.y(),
-                secondLocation.z()
-        );
-    }
-
-    /**
-     * @return The bounding box of custom decor with location
-     *         and rotation
-     */
-    public @NotNull net.minecraft.world.level.levelgen.structure.BoundingBox getNMSBoundingBox(
-            final @NotNull Location location,
-            final float yaw
-    ) {
-        final Location secondLocation = this.getSecondLocation(location, yaw);
-
-        return new net.minecraft.world.level.levelgen.structure.BoundingBox(
-                (int) Math.min(location.x(), secondLocation.x()),
-                (int) Math.min(location.y(), secondLocation.y()),
-                (int) Math.min(location.z(), secondLocation.z()),
-                (int) Math.max(location.x(), secondLocation.x()),
-                (int) Math.max(location.y(), secondLocation.y()),
-                (int) Math.max(location.z(), secondLocation.z())
+        return MSBoundingBox.of(
+                location,
+                this.getSecondLocation(location, yaw)
         );
     }
 
@@ -137,7 +115,7 @@ public final class DecorHitBox {
             final @NotNull CustomDecorData<?> data,
             final @NotNull ItemDisplay display,
             final Interaction @NotNull [] interactions,
-            final @NotNull net.minecraft.world.level.levelgen.structure.BoundingBox boundingBox
+            final @NotNull MSBoundingBox msbb
     ) {
         final Interaction firstInteraction = interactions[0];
         final String firstUUID = firstInteraction.getUniqueId().toString();
@@ -179,12 +157,12 @@ public final class DecorHitBox {
                 PersistentDataType.STRING,
                 String.join(
                         ",",
-                        String.valueOf(boundingBox.minX()),
-                        String.valueOf(boundingBox.minY()),
-                        String.valueOf(boundingBox.minZ()),
-                        String.valueOf(boundingBox.maxX()),
-                        String.valueOf(boundingBox.maxY()),
-                        String.valueOf(boundingBox.maxZ())
+                        String.valueOf(msbb.minX()),
+                        String.valueOf(msbb.minY()),
+                        String.valueOf(msbb.minZ()),
+                        String.valueOf(msbb.maxX()),
+                        String.valueOf(msbb.maxY()),
+                        String.valueOf(msbb.maxZ())
                 )
         );
     }
@@ -210,20 +188,19 @@ public final class DecorHitBox {
         }
     }
 
-    private @NotNull Location getSecondLocation(
-            final @NotNull Location location,
+    private @NotNull MSPosition getSecondLocation(
+            final @NotNull MSPosition location,
             final float yaw
     ) {
         final int x = (int) this.x == 0 ? 1 : (int) this.x;
         final int y = (int) this.y == 0 ? 1 : (int) this.y;
         final int z = (int) this.z == 0 ? 1 : (int) this.z;
 
-        return LocationUtils.directionalOffset(
-                location,
-                LocationUtils.to90(yaw),
+        return location.directionalYawOffset(
                 x > 0 ? x - 1 : x + 1,
                 y > 0 ? y - 1 : y + 1,
-                z > 0 ? z - 1 : z + 1
+                z > 0 ? z - 1 : z + 1,
+                LocationUtils.to90(yaw)
         );
     }
 

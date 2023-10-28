@@ -189,9 +189,11 @@ public enum CustomDecorType {
     private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorType> CLASS_TO_TYPE_MAP = new ConcurrentHashMap<>();
 
     static {
+        final long startTime = System.currentTimeMillis();
+        final CustomDecorType[] values = values();
         final var recipesToRegister = new ArrayList<CustomDecorData<?>>();
 
-        for (final var registry : values()) {
+        for (final var registry : values) {
             final CustomDecorData<?> data;
 
             try {
@@ -206,6 +208,8 @@ public enum CustomDecorType {
             CLASS_TO_DATA_MAP.put(registry.clazz, data);
             recipesToRegister.add(data);
         }
+
+        MSDecor.logger().info("Loaded " + values.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms");
 
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 

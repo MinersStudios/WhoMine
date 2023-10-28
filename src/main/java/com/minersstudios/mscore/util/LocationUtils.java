@@ -1,27 +1,20 @@
 package com.minersstudios.mscore.util;
 
-import io.papermc.paper.chunk.system.entity.EntityLookup;
-import io.papermc.paper.world.ChunkEntitySlices;
+import com.minersstudios.mscore.location.MSBoundingBox;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.FullChunkStatus;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.bukkit.Location;
 import org.bukkit.Rotation;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spigotmc.AsyncCatcher;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 
 public final class LocationUtils {
@@ -83,9 +76,6 @@ public final class LocationUtils {
             360
             //</editor-fold>
     };
-
-    private static final int REGION_SHIFT = 5;
-    private static final int REGION_MASK = (1 << REGION_SHIFT) - 1;
 
     @Contract(" -> fail")
     private LocationUtils() {
@@ -248,20 +238,24 @@ public final class LocationUtils {
         return ROTATIONS_180[nearestIndex(degrees, DEGREES_180)];
     }
 
-    public static Entity @NotNull [] getNearbyEntities(
+    public static Entity @NotNull [] getEntities(
             final @NotNull Location location,
-            final double x,
-            final double y,
-            final double z
+            final double dx,
+            final double dy,
+            final double dz
     ) {
-        return getNearbyEntities(location, x, y, z, null);
+        return getEntities(
+                location,
+                dx, dy, dz,
+                null
+        );
     }
 
-    public static Entity @NotNull [] getNearbyEntities(
+    public static Entity @NotNull [] getEntities(
             final @NotNull Location location,
-            final double x,
-            final double y,
-            final double z,
+            final double dx,
+            final double dy,
+            final double dz,
             final @Nullable Predicate<Entity> predicate
     ) {
         final World world = location.getWorld();
@@ -270,109 +264,42 @@ public final class LocationUtils {
             throw new IllegalArgumentException("Location has no world");
         }
 
-        return getNearbyEntities(location.getWorld(), location, x, y, z, predicate);
+        return getEntities(
+                location.getWorld(),
+                location,
+                dx, dy, dz,
+                predicate
+        );
     }
 
-    public static Entity @NotNull [] getNearbyEntities(
+    public static Entity @NotNull [] getEntities(
             final @NotNull World world,
             final @NotNull Location location,
-            final double x,
-            final double y,
-            final double z
+            final double dx,
+            final double dy,
+            final double dz
     ) {
-        return getNearbyEntities(world, location, x, y, z, null);
+        return getEntities(
+                world,
+                location,
+                dx, dy, dz,
+                null
+        );
     }
 
-    public static Entity @NotNull [] getNearbyEntities(
+    public static Entity @NotNull [] getEntities(
             final @NotNull World world,
             final @NotNull Location location,
-            final double x,
-            final double y,
-            final double z,
+            final double dx,
+            final double dy,
+            final double dz,
             final @Nullable Predicate<Entity> predicate
     ) {
-        return getNearbyEntities(world, BoundingBox.of(location, x, y, z), predicate);
-    }
-
-    public static Entity @NotNull [] getNearbyEntities(
-            final @NotNull World world,
-            final @NotNull BoundingBox boundingBox
-    ) {
-        return getNearbyEntities(world, boundingBox, null);
-    }
-
-    public static Entity @NotNull [] getNearbyEntities(
-            final @NotNull World world,
-            final @NotNull BoundingBox boundingBox,
-            final @Nullable Predicate<Entity> predicate
-    ) {
-        final net.minecraft.world.entity.Entity[] nmsEntities = getNearbyNMSEntities(
-                ((CraftWorld) world).getHandle(),
-                bukkitToAABB(boundingBox),
-                entity -> predicate == null || predicate.test(entity.getBukkitEntity())
-        ).toArray(new net.minecraft.world.entity.Entity[0]);
-        final int size = nmsEntities.length;
-        final Entity[] bukkitEntities = new Entity[size];
-
-        for (int i = 0; i < size; ++i) {
-            bukkitEntities[i] = nmsEntities[i].getBukkitEntity();
-        }
-
-        return bukkitEntities;
-    }
-
-    public static @NotNull List<net.minecraft.world.entity.Entity> getNearbyNMSEntities(
-            final @NotNull ServerLevel level,
-            final @NotNull AABB aabb
-    ) {
-        return getNearbyNMSEntities(level, aabb, null);
-    }
-
-    public static @NotNull List<net.minecraft.world.entity.Entity> getNearbyNMSEntities(
-            final @NotNull ServerLevel level,
-            final @NotNull AABB aabb,
-            final @Nullable Predicate<net.minecraft.world.entity.Entity> predicate
-    ) {
-        AsyncCatcher.catchOp("getNearbyEntities");
-
-        final var list = new ArrayList<net.minecraft.world.entity.Entity>();
-        final EntityLookup entityLookup = level.getEntityLookup();
-
-        final int minChunkX = ((int) Math.floor(aabb.minX) - 2) >> 4;
-        final int minChunkZ = ((int) Math.floor(aabb.minZ) - 2) >> 4;
-        final int maxChunkX = ((int) Math.floor(aabb.maxX) + 2) >> 4;
-        final int maxChunkZ = ((int) Math.floor(aabb.maxZ) + 2) >> 4;
-
-        final int minRegionX = minChunkX >> REGION_SHIFT;
-        final int minRegionZ = minChunkZ >> REGION_SHIFT;
-        final int maxRegionX = maxChunkX >> REGION_SHIFT;
-        final int maxRegionZ = maxChunkZ >> REGION_SHIFT;
-
-        for (int currRegionZ = minRegionZ; currRegionZ <= maxRegionZ; ++currRegionZ) {
-            final int minZ = currRegionZ == minRegionZ ? minChunkZ & REGION_MASK : 0;
-            final int maxZ = currRegionZ == maxRegionZ ? maxChunkZ & REGION_MASK : REGION_MASK;
-
-            for (int currRegionX = minRegionX; currRegionX <= maxRegionX; ++currRegionX) {
-                final EntityLookup.ChunkSlicesRegion region = entityLookup.getRegion(currRegionX, currRegionZ);
-
-                if (region == null) continue;
-
-                final int minX = currRegionX == minRegionX ? minChunkX & REGION_MASK : 0;
-                final int maxX = currRegionX == maxRegionX ? maxChunkX & REGION_MASK : REGION_MASK;
-
-                for (int currZ = minZ; currZ <= maxZ; ++currZ) {
-                    for (int currX = minX; currX <= maxX; ++currX) {
-                        final ChunkEntitySlices chunk = region.get(currX | (currZ << REGION_SHIFT));
-
-                        if (chunk == null || !chunk.status.isOrAfter(FullChunkStatus.FULL)) continue;
-
-                        chunk.getEntities((net.minecraft.world.entity.Entity) null, aabb, list, predicate);
-                    }
-                }
-            }
-        }
-
-        return list;
+        return MSBoundingBox.ofSize(location, dx, dy, dz)
+                .getEntities(
+                        world,
+                        predicate
+                );
     }
 
     @SuppressWarnings("unchecked")

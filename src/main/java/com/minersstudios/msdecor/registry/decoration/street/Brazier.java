@@ -2,10 +2,14 @@ package com.minersstudios.msdecor.registry.decoration.street;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
-import com.minersstudios.mscore.util.*;
+import com.minersstudios.mscore.location.MSBoundingBox;
+import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.util.ItemUtils;
 import com.minersstudios.mscore.util.SoundGroup;
-import com.minersstudios.msdecor.api.*;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import com.minersstudios.msdecor.api.CustomDecorDataImpl;
+import com.minersstudios.msdecor.api.DecorHitBox;
+import com.minersstudios.msdecor.api.DecorParameter;
+import com.minersstudios.msdecor.api.Facing;
 import org.bukkit.*;
 import org.bukkit.block.data.type.Light;
 import org.bukkit.entity.ItemDisplay;
@@ -111,7 +115,7 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
 
                                     if (isShovel) {
                                         world.playSound(
-                                                LocationUtils.nmsToBukkit(customDecor.getBoundingBox().getCenter()),
+                                                customDecor.getBoundingBox().getCenter().toLocation(),
                                                 Sound.BLOCK_FIRE_EXTINGUISH,
                                                 SoundCategory.PLAYERS,
                                                 1.0f,
@@ -126,7 +130,7 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
 
                                     if (isFlintAndSteel) {
                                         world.playSound(
-                                                LocationUtils.nmsToBukkit(customDecor.getBoundingBox().getCenter()),
+                                                customDecor.getBoundingBox().getCenter().toLocation(),
                                                 Sound.ITEM_FLINTANDSTEEL_USE,
                                                 SoundCategory.PLAYERS,
                                                 1.0f,
@@ -153,20 +157,9 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                             typeItem.setItemMeta(typeMeta);
                             itemDisplay.setItemStack(typeItem);
 
-                            final BoundingBox boundingBox = event.getCustomDecor().getBoundingBox();
+                            final MSBoundingBox msbb = event.getCustomDecor().getBoundingBox();
 
-                            for (
-                                    final var block
-                                    : BlockUtils.getBlocks(
-                                            world,
-                                            boundingBox.minX(),
-                                            boundingBox.minY(),
-                                            boundingBox.minZ(),
-                                            boundingBox.maxX(),
-                                            boundingBox.maxY(),
-                                            boundingBox.maxZ()
-                                    )
-                            ) {
+                            for (final var block : msbb.getBlockStates(world)) {
                                 if (block.getBlockData() instanceof final Light light) {
                                     light.setLevel(nextLevel);
                                     block.setBlockData(light);

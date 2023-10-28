@@ -61,9 +61,11 @@ public enum CustomItemType {
     private static final Map<Class<? extends CustomItem>, CustomItemType> CLASS_TO_TYPE_MAP = new ConcurrentHashMap<>();
 
     static {
+        final long startTime = System.currentTimeMillis();
+        final CustomItemType[] values = values();
         final var recipesToRegister = new ArrayList<CustomItem>();
 
-        for (final var registry : values()) {
+        for (final var registry : values) {
             final CustomItem customItem;
 
             try {
@@ -82,6 +84,8 @@ public enum CustomItemType {
             CLASS_TO_ITEM_MAP.put(registry.clazz, customItem);
             recipesToRegister.add(customItem);
         }
+
+        MSItem.logger().info("Loaded " + values.length + " custom items in " + (System.currentTimeMillis() - startTime) + "ms");
 
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 

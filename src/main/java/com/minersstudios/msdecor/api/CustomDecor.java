@@ -1,15 +1,14 @@
 package com.minersstudios.msdecor.api;
 
-import com.minersstudios.mscore.util.LocationUtils;
+import com.minersstudios.mscore.location.MSBoundingBox;
+import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
@@ -33,18 +32,18 @@ public final class CustomDecor {
     private final CustomDecorData<?> data;
     private final ItemDisplay display;
     private final Interaction[] interactions;
-    private final BoundingBox boundingBox;
+    private final MSBoundingBox msbb;
 
     public CustomDecor(
             final @NotNull CustomDecorData<?> data,
             final @NotNull ItemDisplay display,
             final Interaction @NotNull [] interactions,
-            final @NotNull BoundingBox boundingBox
+            final @NotNull MSBoundingBox msbb
     ) {
         this.data = data;
         this.display = display;
         this.interactions = interactions;
-        this.boundingBox = boundingBox;
+        this.msbb = msbb;
     }
 
     public static @NotNull Optional<CustomDecor> fromBlock(final @Nullable org.bukkit.block.Block block) {
@@ -78,8 +77,8 @@ public final class CustomDecor {
         return this.interactions.clone();
     }
 
-    public @NotNull BoundingBox getBoundingBox() {
-        return this.boundingBox;
+    public @NotNull MSBoundingBox getBoundingBox() {
+        return this.msbb;
     }
 
     public void destroy(
@@ -106,7 +105,7 @@ public final class CustomDecor {
             itemStack.setItemMeta(itemMeta);
 
             world.dropItemNaturally(
-                    LocationUtils.nmsToBukkit(this.boundingBox.getCenter()),
+                    this.msbb.getCenter().toLocation(),
                     itemStack
             );
         }
@@ -115,14 +114,7 @@ public final class CustomDecor {
             CustomDecorDataImpl.fillBlocks(
                     breaker.getName(),
                     world.getHandle(),
-                    LocationUtils.getBlockPosesBetween(
-                            this.boundingBox.minX(),
-                            this.boundingBox.minY(),
-                            this.boundingBox.minZ(),
-                            this.boundingBox.maxX(),
-                            this.boundingBox.maxY(),
-                            this.boundingBox.maxZ()
-                    ),
+                    this.msbb.getBlockPositions(),
                     Blocks.AIR
             );
         }
@@ -132,12 +124,12 @@ public final class CustomDecor {
         }
 
         this.display.remove();
-        this.data.getSoundGroup().playBreakSound(LocationUtils.nmsToBukkit(this.boundingBox.getCenter(), world));
+        this.data.getSoundGroup().playBreakSound(this.msbb.getCenter(world));
     }
 
     public static void place(
             final @NotNull CustomDecorType type,
-            final @NotNull Location blockLocation,
+            final @NotNull MSPosition blockLocation,
             final @NotNull Player player,
             final @NotNull BlockFace blockFace
     ) {
@@ -146,7 +138,7 @@ public final class CustomDecor {
 
     public static void place(
             final @NotNull CustomDecorType type,
-            final @NotNull Location blockLocation,
+            final @NotNull MSPosition blockLocation,
             final @NotNull Player player,
             final @NotNull BlockFace blockFace,
             final @Nullable EquipmentSlot hand
@@ -156,7 +148,7 @@ public final class CustomDecor {
 
     public static void place(
             final @NotNull CustomDecorType type,
-            final @NotNull Location blockLocation,
+            final @NotNull MSPosition blockLocation,
             final @NotNull Player player,
             final @NotNull BlockFace blockFace,
             final @Nullable EquipmentSlot hand,
@@ -212,7 +204,7 @@ public final class CustomDecor {
         CustomDecorData<?> data = null;
         ItemDisplay display = null;
         final var interactions = new ArrayList<Interaction>();
-        BoundingBox boundingBox = null;
+        MSBoundingBox msbb = null;
 
         interactions.add(interaction);
 
@@ -249,13 +241,13 @@ public final class CustomDecor {
                     if (coordinates.length != 6) return null;
 
                     try {
-                        boundingBox = new BoundingBox(
-                                Integer.parseInt(coordinates[0]),
-                                Integer.parseInt(coordinates[1]),
-                                Integer.parseInt(coordinates[2]),
-                                Integer.parseInt(coordinates[3]),
-                                Integer.parseInt(coordinates[4]),
-                                Integer.parseInt(coordinates[5])
+                        msbb = MSBoundingBox.of(
+                                Double.parseDouble(coordinates[0]),
+                                Double.parseDouble(coordinates[1]),
+                                Double.parseDouble(coordinates[2]),
+                                Double.parseDouble(coordinates[3]),
+                                Double.parseDouble(coordinates[4]),
+                                Double.parseDouble(coordinates[5])
                         );
                     } catch (final NumberFormatException ignored) {
                         return null;
@@ -266,13 +258,13 @@ public final class CustomDecor {
 
         return data == null
                 || display == null
-                || boundingBox == null
+                || msbb == null
                 ? null
                 : new CustomDecor(
                         data,
                         display,
                         interactions.toArray(new Interaction[0]),
-                        boundingBox
+                        msbb
                 );
     }
 

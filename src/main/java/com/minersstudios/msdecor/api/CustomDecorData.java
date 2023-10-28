@@ -1,5 +1,6 @@
 package com.minersstudios.msdecor.api;
 
+import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
@@ -8,7 +9,6 @@ import com.minersstudios.msdecor.event.CustomDecorPlaceEvent;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Keyed;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -186,7 +186,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     void unregisterRecipes();
 
     void place(
-            final @NotNull Location blockLocation,
+            final @NotNull MSPosition blockLocation,
             final @NotNull Player player,
             final @NotNull BlockFace blockFace,
             final @Nullable EquipmentSlot hand,
@@ -301,7 +301,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     ) {
         if (
                 interaction == null
-                        || clazz == null
+                || clazz == null
         ) return Optional.empty();
 
         final PersistentDataContainer container = interaction.getPersistentDataContainer();

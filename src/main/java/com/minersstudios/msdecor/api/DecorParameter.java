@@ -1,12 +1,10 @@
 package com.minersstudios.msdecor.api;
 
-import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.util.ItemUtils;
-import com.minersstudios.mscore.util.LocationUtils;
 import com.minersstudios.mscore.util.PlayerUtils;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import com.minersstudios.msitem.api.CustomItemType;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.bukkit.*;
 import org.bukkit.block.data.type.Light;
 import org.bukkit.entity.Interaction;
@@ -178,7 +176,7 @@ public enum DecorParameter {
         }
 
         world.playSound(
-                LocationUtils.nmsToBukkit(customDecor.getBoundingBox().getCenter()),
+                customDecor.getBoundingBox().getCenter().toLocation(),
                 Sound.ITEM_SPYGLASS_USE,
                 SoundCategory.PLAYERS,
                 1.0f,
@@ -192,20 +190,9 @@ public enum DecorParameter {
             final int nextLevel
     ) {
         final World world = event.getClickedInteraction().getWorld();
-        final BoundingBox boundingBox = event.getCustomDecor().getBoundingBox();
+        final MSBoundingBox msbb = event.getCustomDecor().getBoundingBox();
 
-        for (
-                final var block
-                : BlockUtils.getBlocks(
-                        world,
-                        boundingBox.minX(),
-                        boundingBox.minY(),
-                        boundingBox.minZ(),
-                        boundingBox.maxX(),
-                        boundingBox.maxY(),
-                        boundingBox.maxZ()
-                )
-        ) {
+        for (final var block : msbb.getBlockStates(world)) {
             if (block.getBlockData() instanceof final Light light) {
                 light.setLevel(nextLevel);
                 block.setBlockData(light);
@@ -213,7 +200,7 @@ public enum DecorParameter {
         }
 
         world.playSound(
-                LocationUtils.nmsToBukkit(boundingBox.getCenter()),
+                msbb.getCenter().toLocation(),
                 Sound.BLOCK_LEVER_CLICK,
                 SoundCategory.PLAYERS,
                 1.0f,

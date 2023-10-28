@@ -77,7 +77,7 @@ public final class CoolArmchair extends CustomDecorDataImpl<CoolArmchair> {
                         DecorParameter.WRENCHABLE,
                         DecorParameter.PAINTABLE
                 )
-                .sitHeight(0.55d)
+                .sitHeight(0.6d)
                 .types(
                         builder -> new Type(
                                 builder,

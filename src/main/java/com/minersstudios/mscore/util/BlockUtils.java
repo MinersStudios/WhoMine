@@ -2,18 +2,15 @@ package com.minersstudios.mscore.util;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import io.papermc.paper.math.FinePosition;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import org.bukkit.Material;
 import org.bukkit.SoundGroup;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_20_R2.CraftSoundGroup;
 import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlock;
 import org.bukkit.entity.EntityType;
-import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -143,72 +140,6 @@ public final class BlockUtils {
     @Contract(value = " -> fail")
     private BlockUtils() {
         throw new AssertionError("Utility class");
-    }
-
-    public static Block @NotNull [] getBlocks(
-            final @NotNull World world,
-            final @NotNull BoundingBox boundingBox
-    ) {
-        return getBlocks(
-                world,
-                (int) boundingBox.getMinX(),
-                (int) boundingBox.getMinY(),
-                (int) boundingBox.getMinZ(),
-                (int) boundingBox.getMaxX(),
-                (int) boundingBox.getMaxY(),
-                (int) boundingBox.getMaxZ()
-        );
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public static Block @NotNull [] getBlocks(
-            final @NotNull World world,
-            final @NotNull FinePosition pos1,
-            final @NotNull FinePosition pos2
-    ) {
-        return getBlocks(
-                world,
-                (int) pos1.x(),
-                (int) pos1.y(),
-                (int) pos1.z(),
-                (int) pos2.x(),
-                (int) pos2.y(),
-                (int) pos2.z()
-        );
-    }
-
-    public static Block @NotNull [] getBlocks(
-            final @NotNull World world,
-            final int x1,
-            final int y1,
-            final int z1,
-            final int x2,
-            final int y2,
-            final int z2
-    ) {
-        final int minX = Math.min(x1, x2);
-        final int minY = Math.min(y1, y2);
-        final int minZ = Math.min(z1, z2);
-        final int offsetX = Math.abs(x1 - x2) + 1;
-        final int offsetY = Math.abs(y1 - y2) + 1;
-        final int offsetZ = Math.abs(z1 - z2) + 1;
-        final Block[] blocks = new Block[offsetX * offsetY * offsetZ];
-
-        int i = 0;
-
-        for (int x = 0; x < offsetX; ++x) {
-            for (int y = 0; y < offsetY; ++y) {
-                for (int z = 0; z < offsetZ; ++z) {
-                    blocks[i++] = world.getBlockAt(
-                            minX + x,
-                            minY + y,
-                            minZ + z
-                    );
-                }
-            }
-        }
-
-        return blocks;
     }
 
     /**

@@ -1,8 +1,10 @@
 package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
-import com.minersstudios.mscore.util.*;
+import com.minersstudios.mscore.location.MSBoundingBox;
+import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.mscore.util.*;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
@@ -11,8 +13,6 @@ import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.phys.AABB;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -581,7 +581,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public void place(
-            final @NotNull Location blockLocation,
+            final @NotNull MSPosition blockLocation,
             final @NotNull Player player,
             final @NotNull BlockFace blockFace,
             final @Nullable EquipmentSlot hand,
@@ -589,10 +589,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     ) {
         if (!this.getFacing().hasFace(blockFace)) return;
 
-        final ServerLevel serverLevel = ((CraftWorld) player.getWorld()).getHandle();
-        final BoundingBox bb = this.hitBox.getNMSBoundingBox(blockLocation, player.getYaw());
+        final CraftWorld world = (CraftWorld) player.getWorld();
+        final ServerLevel serverLevel = world.getHandle();
+        final MSBoundingBox msbb = this.hitBox.getBoundingBox(blockLocation, player.getYaw());
         final var blockStates = new ArrayList<org.bukkit.block.BlockState>();
-        final BlockPos[] blocksToReplace = LocationUtils.getBlockPosesBetween(bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(), bb.maxZ());
+        final BlockPos[] blocksToReplace = msbb.getBlockPositions();
 
         for (final var blockPos : blocksToReplace) {
             final BlockState blockState = serverLevel.getBlockState(blockPos);
@@ -604,11 +605,13 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             blockStates.add(CraftBlockStates.getUnplacedBlockState(serverLevel, blockPos, blockState));
         }
 
-        if (this.hitBox.getType().isSolid()) {
-            for (final var entity : LocationUtils.getNearbyNMSEntities(serverLevel, AABB.of(bb))) {
-                if (!BlockUtils.isIgnorableEntity(entity.getType())) return;
-            }
-        }
+        if (
+                this.hitBox.getType().isSolid()
+                && !msbb.getNMSEntities(
+                        serverLevel,
+                        entity -> !BlockUtils.isIgnorableEntity(entity.getType())
+                ).isEmpty()
+        ) return;
 
         final ItemStack itemInHand = hand != null
                 ? player.getInventory().getItem(hand)
@@ -625,7 +628,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 this.setHitBox(
                         player.getName(),
                         this.summonItem(blockLocation, blockFace, player, itemInHand),
-                        bb,
+                        msbb,
                         blocksToReplace
                 ),
                 player,
@@ -645,7 +648,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return;
         }
 
-        this.getSoundGroup().playPlaceSound(blockLocation.toCenterLocation());
+        this.getSoundGroup().playPlaceSound(blockLocation.center());
 
         if (hand != null) {
             itemInHand.setAmount(
@@ -679,7 +682,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     private @NotNull ItemDisplay summonItem(
-            final @NotNull Location blockLocation,
+            final @NotNull MSPosition blockLocation,
             final @NotNull BlockFace blockFace,
             final @NotNull Player player,
             final @NotNull ItemStack itemInHand
@@ -701,18 +704,18 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         return player.getWorld().spawn(
-                blockLocation.toCenterLocation().add(
+                blockLocation.center().offset(
                         this.hitBox.getModelOffsetX(),
                         this.hitBox.getModelOffsetY(),
                         this.hitBox.getModelOffsetZ()
-                ),
+                ).toLocation(),
                 ItemDisplay.class,
                 itemDisplay -> {
                     itemDisplay.setRotation(
                             this.hitBox.getX() > 1.0d || this.hitBox.getZ() > 1.0d
                             || this.hitBox.getX() < -1.0d || this.hitBox.getZ() < -1.0d
-                            ? LocationUtils.to90(player.getYaw()) + 180.0f
-                            : LocationUtils.to45(player.getYaw()) + 180.0f,
+                                    ? LocationUtils.to90(player.getYaw()) + 180.0f
+                                    : LocationUtils.to45(player.getYaw()) + 180.0f,
                             0.0f
                     );
                     itemDisplay.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.NONE);
@@ -745,7 +748,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     private @NotNull CustomDecor setHitBox(
             final @NotNull String placer,
             final @NotNull ItemDisplay itemDisplay,
-            final @NotNull BoundingBox boundingBox,
+            final @NotNull MSBoundingBox msbb,
             final BlockPos @NotNull [] blockPoses
     ) {
         final World world = itemDisplay.getWorld();
@@ -756,7 +759,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final Interaction[] interactions =
                 fillInteractions(
                         world,
-                        boundingBox,
+                        msbb,
                         interaction -> {
                             interaction.setInteractionHeight((float) y);
                             interaction.setInteractionWidth(
@@ -771,7 +774,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         : -Math.ceil(y)
                 );
 
-        DecorHitBox.processInteractions(this, itemDisplay, interactions, boundingBox);
+        DecorHitBox.processInteractions(this, itemDisplay, interactions, msbb);
 
         if (!type.isNone()) {
             final var blocks = fillBlocks(placer, ((CraftWorld) world).getHandle(), blockPoses, type.getNMSBlock());
@@ -797,17 +800,17 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 this,
                 itemDisplay,
                 interactions,
-                boundingBox
+                msbb
         );
     }
 
     private static Interaction @NotNull [] fillInteractions(
             final @NotNull World world,
-            final @NotNull BoundingBox box,
+            final @NotNull MSBoundingBox msbb,
             final @NotNull Consumer<Interaction> function,
             final double offsetY
     ) {
-        final BlockPos[] blockPoses = LocationUtils.getBlockPosesBetween(box.minX(), box.minY(), box.minZ(), box.maxX(), box.minY(), box.maxZ());
+        final BlockPos[] blockPoses = msbb.getBlockPositions();
         final int length = blockPoses.length;
         final Interaction[] interactions = new Interaction[length];
 

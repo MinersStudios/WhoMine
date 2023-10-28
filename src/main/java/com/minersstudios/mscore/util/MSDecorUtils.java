@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.util;
 
+import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.msdecor.api.CustomDecorData;
 import com.minersstudios.msdecor.api.CustomDecorType;
 import com.minersstudios.msdecor.api.DecorHitBox;
@@ -63,15 +64,15 @@ public final class MSDecorUtils {
     }
 
     public static Interaction @NotNull [] getNearbyInteractions(final @NotNull Location location) {
-        final var entities = LocationUtils.getNearbyNMSEntities(
-                ((CraftWorld) location.getWorld()).getHandle(),
-                LocationUtils.bukkitToAABB(org.bukkit.util.BoundingBox.of(location, 0.5d, 0.5d, 0.5d)),
-                entity -> entity instanceof net.minecraft.world.entity.Interaction
-        );
+        final var entities = MSBoundingBox.ofSize(location, 1.0d, 1.0d, 1.0d)
+                .getNMSEntities(
+                        ((CraftWorld) location.getWorld()).getHandle(),
+                        entity -> entity instanceof net.minecraft.world.entity.Interaction
+                );
         final int size = entities.size();
         final Interaction[] interactions = new Interaction[size];
 
-        for (int i = 0; i < size; ++i) {
+        for (int i = 0; i < size; i++) {
             interactions[i] = (Interaction) entities.get(i).getBukkitEntity();
         }
 
@@ -79,13 +80,14 @@ public final class MSDecorUtils {
     }
 
     public static @Nullable Interaction getNearbyInteraction(final @NotNull Location location) {
-        final var entities = LocationUtils.getNearbyNMSEntities(
-                ((CraftWorld) location.getWorld()).getHandle(),
-                LocationUtils.bukkitToAABB(org.bukkit.util.BoundingBox.of(location, 0.5d, 0.5d, 0.5d)),
-                entity -> entity instanceof net.minecraft.world.entity.Interaction
-        );
-
-        return entities.isEmpty() ? null : (Interaction) entities.get(0).getBukkitEntity();
+        final var entities = MSBoundingBox.ofSize(location, 1.0d, 1.0d, 1.0d)
+                .getNMSEntities(
+                        ((CraftWorld) location.getWorld()).getHandle(),
+                        entity -> entity instanceof net.minecraft.world.entity.Interaction
+                );
+        return entities.isEmpty()
+                ? null
+                : (Interaction) entities.get(0).getBukkitEntity();
     }
 
     /**

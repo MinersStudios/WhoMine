@@ -2,6 +2,7 @@ package com.minersstudios.mscore.util;
 
 import com.minersstudios.msblock.Config;
 import com.minersstudios.msblock.MSBlock;
+import com.minersstudios.mscore.location.MSPosition;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
@@ -183,7 +184,21 @@ public final class SoundGroup implements Cloneable {
      * the {@link Config} will be played instead. If the place sound is null,
      * nothing will be played.
      *
+     * @param position The location to play the place sound at
+     * @throws NullPointerException If the world of the position is null
+     */
+    public void playPlaceSound(final @NotNull MSPosition position) {
+        this.playPlaceSound(position.toLocation());
+    }
+
+    /**
+     * Plays the place sound of this SoundGroup at the specified location.
+     * If the place sound is "block.wood.place", the wood place sound from
+     * the {@link Config} will be played instead. If the place sound is null,
+     * nothing will be played.
+     *
      * @param location The location to play the place sound at
+     * @throws NullPointerException If the world of the location is null
      */
     public void playPlaceSound(final @NotNull Location location) {
         if (this.placeSound == null) return;
@@ -204,7 +219,21 @@ public final class SoundGroup implements Cloneable {
      * the {@link Config} will be played instead. If the break sound is null,
      * nothing will be played.
      *
+     * @param position The position to play the break sound at
+     * @throws NullPointerException If the world of the position is null
+     */
+    public void playBreakSound(final @NotNull MSPosition position) {
+        this.playBreakSound(position.toLocation());
+    }
+
+    /**
+     * Plays the break sound of this SoundGroup at the specified location.
+     * If the break sound is "block.wood.break", the wood break sound from
+     * the {@link Config} will be played instead. If the break sound is null,
+     * nothing will be played.
+     *
      * @param location The location to play the break sound at
+     * @throws NullPointerException If the world of the location is null
      */
     public void playBreakSound(final @NotNull Location location) {
         if (this.breakSound == null) return;
@@ -225,7 +254,21 @@ public final class SoundGroup implements Cloneable {
      * the {@link Config} will be played instead. If the hit sound is null,
      * nothing will be played.
      *
+     * @param position The position to play the hit sound at
+     * @throws NullPointerException If the world of the position is null
+     */
+    public void playHitSound(final @NotNull MSPosition position) {
+        this.playHitSound(position.toLocation());
+    }
+
+    /**
+     * Plays the hit sound of this SoundGroup at the specified location.
+     * If the hit sound is "block.wood.hit", the wood hit sound from
+     * the {@link Config} will be played instead. If the hit sound is null,
+     * nothing will be played.
+     *
      * @param location The location to play the hit sound at
+     * @throws NullPointerException If the world of the location is null
      */
     public void playHitSound(final @NotNull Location location) {
         if (this.hitSound == null) return;
@@ -246,7 +289,21 @@ public final class SoundGroup implements Cloneable {
      * the {@link Config} will be played instead. If the step sound is null,
      * nothing will be played.
      *
+     * @param position The position to play the step sound at
+     * @throws NullPointerException If the world of the position is null
+     */
+    public void playStepSound(final @NotNull MSPosition position) {
+        this.playStepSound(position.toLocation());
+    }
+
+    /**
+     * Plays the step sound of this SoundGroup at the specified location.
+     * If the step sound is "block.wood.step", the wood step sound from
+     * the {@link Config} will be played instead. If the step sound is null,
+     * nothing will be played.
+     *
      * @param location The location to play the step sound at
+     * @throws NullPointerException If the world of the location is null
      */
     public void playStepSound(final @NotNull Location location) {
         if (this.stepSound == null) return;

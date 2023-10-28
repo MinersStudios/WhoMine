@@ -2,6 +2,7 @@ package com.minersstudios.msdecor.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.MSDecor;
@@ -128,9 +129,11 @@ public final class PlayerInteractListener extends AbstractMSListener<MSDecor> {
                     CustomDecorData.fromItemStack(itemInHand)
                     .ifPresent(data -> {
                         data.place(
-                                BlockUtils.isReplaceable(block)
-                                        ? block.getLocation()
-                                        : block.getRelative(blockFace).getLocation(),
+                                MSPosition.of(
+                                        BlockUtils.isReplaceable(block)
+                                                ? block.getLocation()
+                                                : block.getRelative(blockFace).getLocation()
+                                ),
                                 player,
                                 blockFace,
                                 hand,

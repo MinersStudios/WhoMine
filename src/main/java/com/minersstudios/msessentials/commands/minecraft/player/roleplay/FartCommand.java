@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.commands.minecraft.player.roleplay;
 
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
+import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.ChatUtils;
@@ -78,7 +79,7 @@ public final class FartCommand implements MSCommandExecutor {
         if (withPoop) {
             CustomDecorType.POOP.getCustomDecorData()
             .place(
-                    location.toBlockLocation(),
+                    MSPosition.of(location.toBlockLocation()),
                     player,
                     BlockFace.UP,
                     null,
