@@ -28,12 +28,12 @@ public final class HoglinHead extends CustomDecorDataImpl<HoglinHead> {
 
         return new Builder()
                 .key("hoglin_head")
-                .hitBox(new DecorHitBox(
-                        1.0d,
-                        1.0d,
-                        1.0d,
-                        DecorHitBox.Type.SOLID
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.SOLID)
+                        .size(1.0d, 1.0d, 1.0d)
+                        .build()
+                )
                 .facing(Facing.WALL)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)

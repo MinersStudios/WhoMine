@@ -29,12 +29,12 @@ public final class Whocintosh extends CustomDecorDataImpl<Whocintosh> {
 
         return new Builder()
                 .key("whocintosh")
-                .hitBox(new DecorHitBox(
-                        1.0d,
-                        1.0d,
-                        1.0d,
-                        DecorHitBox.Type.SOLID
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.SOLID)
+                        .size(1.0d, 1.0d, 1.0d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)

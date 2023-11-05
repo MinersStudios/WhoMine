@@ -26,12 +26,12 @@ public final class BarStool extends CustomDecorDataImpl<BarStool> {
 
         return new Builder()
                 .key("barstool")
-                .hitBox(new DecorHitBox(
-                        1.0d,
-                        1.0d,
-                        1.0d,
-                        DecorHitBox.Type.SOLID
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.SOLID)
+                        .size(1.0d, 1.0d, 1.0d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.CHAIN)
                 .itemStack(itemStack)

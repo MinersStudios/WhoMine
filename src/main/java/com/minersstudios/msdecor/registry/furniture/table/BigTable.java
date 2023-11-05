@@ -30,12 +30,12 @@ public abstract class BigTable<C extends CustomDecorData<C>> extends CustomDecor
 
         return new Builder()
                 .key(key)
-                .hitBox(new DecorHitBox(
-                        1.0d,
-                        1.0d,
-                        1.0d,
-                        DecorHitBox.Type.SOLID
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.SOLID)
+                        .size(1.0d, 1.0d, 1.0d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)

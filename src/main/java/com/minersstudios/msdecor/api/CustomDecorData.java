@@ -3,6 +3,9 @@ package com.minersstudios.msdecor.api;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.msdecor.api.action.DecorBreakAction;
+import com.minersstudios.msdecor.api.action.DecorClickAction;
+import com.minersstudios.msdecor.api.action.DecorPlaceAction;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import com.minersstudios.msdecor.event.CustomDecorPlaceEvent;
@@ -120,6 +123,12 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     int getNextLightLevel(final int lightLevel) throws UnsupportedOperationException;
 
     double getSitHeight() throws UnsupportedOperationException;
+
+    @NotNull DecorClickAction getClickAction();
+
+    @NotNull DecorPlaceAction getPlaceAction();
+
+    @NotNull DecorBreakAction getBreakAction();
 
     boolean hasParameters(
             final @NotNull DecorParameter first,
@@ -277,7 +286,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
 
         if (container.isEmpty()) return Optional.empty();
 
-        if (DecorHitBox.isHitBoxChild(interaction)) {
+        if (DecorHitBox.isChild(interaction)) {
             final String uuid = container.get(DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY, PersistentDataType.STRING);
 
             try {
@@ -288,7 +297,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
             } catch (final IllegalArgumentException ignored) {
                 return Optional.empty();
             }
-        } else if (DecorHitBox.isHitBoxParent(interaction)) {
+        } else if (DecorHitBox.isParent(interaction)) {
             return fromKey(container.get(CustomDecorType.TYPE_NAMESPACED_KEY, PersistentDataType.STRING));
         }
 
@@ -308,7 +317,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
 
         if (container.isEmpty()) return Optional.empty();
 
-        if (DecorHitBox.isHitBoxParent(interaction)) {
+        if (DecorHitBox.isParent(interaction)) {
             return fromKey(
                     container.get(CustomDecorType.TYPE_NAMESPACED_KEY, PersistentDataType.STRING),
                     clazz

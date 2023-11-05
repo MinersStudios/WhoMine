@@ -7,6 +7,7 @@ import net.minecraft.world.phys.AABB;
 import org.bukkit.Location;
 import org.bukkit.Rotation;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -18,6 +19,19 @@ import java.lang.reflect.Array;
 import java.util.function.Predicate;
 
 public final class LocationUtils {
+    private static final BlockFace[] BLOCK_FACES_45 = {
+            //<editor-fold desc="Block faces 45" defaultstate="collapsed">
+            BlockFace.SOUTH,
+            BlockFace.SOUTH_WEST,
+            BlockFace.WEST,
+            BlockFace.NORTH_WEST,
+            BlockFace.NORTH,
+            BlockFace.NORTH_EAST,
+            BlockFace.EAST,
+            BlockFace.SOUTH_EAST,
+            BlockFace.SOUTH
+            //</editor-fold>
+    };
     private static final Rotation[] ROTATIONS_45 = {
             //<editor-fold desc="Rotations 45" defaultstate="collapsed">
             Rotation.NONE,
@@ -44,6 +58,15 @@ public final class LocationUtils {
             360
             //</editor-fold>
     };
+    private static final BlockFace[] BLOCK_FACES_90 = {
+            //<editor-fold desc="Block faces 90" defaultstate="collapsed">
+            BlockFace.SOUTH,
+            BlockFace.WEST,
+            BlockFace.NORTH,
+            BlockFace.EAST,
+            BlockFace.SOUTH
+            //</editor-fold>
+    };
     private static final Rotation[] ROTATIONS_90 = {
             //<editor-fold desc="Rotations 90" defaultstate="collapsed">
             Rotation.NONE,
@@ -60,6 +83,13 @@ public final class LocationUtils {
             180,
             270,
             360
+            //</editor-fold>
+    };
+    private static final BlockFace[] BLOCK_FACES_180 = {
+            //<editor-fold desc="Block faces 180" defaultstate="collapsed">
+            BlockFace.SOUTH,
+            BlockFace.NORTH,
+            BlockFace.SOUTH
             //</editor-fold>
     };
     private static final Rotation[] ROTATIONS_180 = {
@@ -224,6 +254,18 @@ public final class LocationUtils {
 
     public static float to180(final float degrees) {
         return DEGREES_180[nearestIndex(degrees, DEGREES_180)];
+    }
+
+    public static @NotNull BlockFace degreesToBlockFace45(final float degrees) {
+        return BLOCK_FACES_45[nearestIndex(degrees, DEGREES_45)];
+    }
+
+    public static @NotNull BlockFace degreesToBlockFace90(final float degrees) {
+        return BLOCK_FACES_90[nearestIndex(degrees, DEGREES_90)];
+    }
+
+    public static @NotNull BlockFace degreesToBlockFace180(final float degrees) {
+        return BLOCK_FACES_180[nearestIndex(degrees, DEGREES_180)];
     }
 
     public static @NotNull Rotation degreesToRotation45(final float degrees) {

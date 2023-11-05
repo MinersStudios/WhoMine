@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
 
 /**
@@ -18,6 +19,7 @@ import java.util.Objects;
  * the associated item, providing methods to manage and
  * compare rename entries.
  */
+@Immutable
 public final class RenameEntry {
     private final String rename;
     private final ItemStack item;

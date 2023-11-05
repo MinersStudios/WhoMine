@@ -27,32 +27,14 @@ public final class CoolArmchair extends CustomDecorDataImpl<CoolArmchair> {
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Стильный стул"));
         itemStack.setItemMeta(itemMeta);
 
-        final ItemStack itemStackLeft = itemStack.clone();
-        final ItemMeta itemMetaLeft = itemStackLeft.getItemMeta();
-
-        itemMetaLeft.setCustomModelData(1017);
-        itemStackLeft.setItemMeta(itemMetaLeft);
-
-        final ItemStack itemStackMiddle = itemStack.clone();
-        final ItemMeta itemMetaMiddle = itemStackMiddle.getItemMeta();
-
-        itemMetaMiddle.setCustomModelData(1018);
-        itemStackMiddle.setItemMeta(itemMetaMiddle);
-
-        final ItemStack itemStackRight = itemStack.clone();
-        final ItemMeta itemMetaRight = itemStackRight.getItemMeta();
-
-        itemMetaRight.setCustomModelData(1019);
-        itemStackRight.setItemMeta(itemMetaRight);
-
         return new Builder()
                 .key("cool_armchair")
-                .hitBox(new DecorHitBox(
-                        1.0d,
-                        1.0d,
-                        1.0d,
-                        DecorHitBox.Type.SOLID
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.SOLID)
+                        .size(1.0d, 1.0d, 1.0d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
@@ -79,21 +61,22 @@ public final class CoolArmchair extends CustomDecorDataImpl<CoolArmchair> {
                 )
                 .sitHeight(0.6d)
                 .types(
-                        builder -> new Type(
-                                builder,
-                                "left",
-                                itemStackLeft
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "middle",
-                                itemStackMiddle
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "right",
-                                itemStackRight
-                        )
+                        builder -> new Type(builder, "left",   createItem(itemStack, 1017)),
+                        builder -> new Type(builder, "middle", createItem(itemStack, 1018)),
+                        builder -> new Type(builder, "right",  createItem(itemStack, 1019))
                 );
+    }
+
+    private static @NotNull ItemStack createItem(
+            final @NotNull ItemStack parent,
+            final int customModelData
+    ) {
+        final ItemStack itemStack = parent.clone();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+
+        itemMeta.setCustomModelData(customModelData);
+        itemStack.setItemMeta(itemMeta);
+
+        return itemStack;
     }
 }

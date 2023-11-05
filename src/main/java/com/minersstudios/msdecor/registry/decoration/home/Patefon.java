@@ -28,13 +28,13 @@ public final class Patefon extends CustomDecorDataImpl<Patefon> {
 
         return new Builder()
                 .key("patefon")
-                .hitBox(new DecorHitBox(
-                        0.75d,
-                        0.5d,
-                        0.75d,
-                        DecorHitBox.Type.NONE
-                ))
-                .facing(Facing.FLOOR)
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.NONE)
+                        .size(0.75d, 0.5d, 0.75d)
+                        .build()
+                )
+                .facing(Facing.WALL)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(

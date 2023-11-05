@@ -30,12 +30,12 @@ public abstract class Piggybank<C extends CustomDecorData<C>> extends CustomDeco
 
         return new Builder()
                 .key(key)
-                .hitBox(new DecorHitBox(
-                        1.0d,
-                        0.675d,
-                        1.0d,
-                        DecorHitBox.Type.NONE
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.NONE)
+                        .size(1.0d, 0.675d, 1.0d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.GLASS)
                 .itemStack(itemStack)

@@ -23,12 +23,12 @@ public final class ATM extends CustomDecorDataImpl<ATM> {
 
         return new Builder()
                 .key("atm")
-                .hitBox(new DecorHitBox(
-                        1.0d,
-                        2.0d,
-                        1.0d,
-                        DecorHitBox.Type.SOLID
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.SOLID)
+                        .size(1.0d, 2.0d, 1.0d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack);

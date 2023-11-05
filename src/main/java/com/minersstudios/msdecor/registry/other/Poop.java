@@ -23,12 +23,12 @@ public final class Poop extends CustomDecorDataImpl<Poop> {
 
         return new Builder()
                 .key("poop")
-                .hitBox(new DecorHitBox(
-                        0.5d,
-                        0.5d,
-                        0.5d,
-                        DecorHitBox.Type.NONE
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.NONE)
+                        .size(0.5d, 0.5d, 0.5d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.MUD)
                 .itemStack(itemStack);

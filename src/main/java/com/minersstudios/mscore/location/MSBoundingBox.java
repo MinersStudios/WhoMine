@@ -9,6 +9,7 @@ import net.minecraft.server.level.FullChunkStatus;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
@@ -85,6 +86,14 @@ public final class MSBoundingBox {
     }
 
     @Contract("_ -> new")
+    public static @NotNull MSBoundingBox of(final @NotNull MSBoundingBox msbb) {
+        return ofDummy(
+                msbb.minX, msbb.minY, msbb.minZ,
+                msbb.maxX, msbb.maxY, msbb.maxZ
+        );
+    }
+
+    @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull BoundingBox bb) {
         return ofDummy(
                 bb.minX(), bb.minY(), bb.minZ(),
@@ -117,6 +126,14 @@ public final class MSBoundingBox {
     }
 
     @Contract("_ -> new")
+    public static @NotNull MSBoundingBox of(final @NotNull MSPosition pos) {
+        return ofDummy(
+                pos.x(), pos.y(), pos.z(),
+                pos.x(), pos.y(), pos.z()
+        );
+    }
+
+    @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull Position pos) {
         return ofDummy(
                 pos.x(), pos.y(), pos.z(),
@@ -134,8 +151,8 @@ public final class MSBoundingBox {
 
     @Contract("_, _ -> new")
     public static @NotNull MSBoundingBox of(
-            final @NotNull io.papermc.paper.math.Position first,
-            final @NotNull io.papermc.paper.math.Position second
+            final @NotNull MSPosition first,
+            final @NotNull MSPosition second
     ) {
         return of(
                 first.x(), first.y(), first.z(),
@@ -162,6 +179,30 @@ public final class MSBoundingBox {
         return of(
                 first.getX(), first.getY(), first.getZ(),
                 second.getX(), second.getY(), second.getZ()
+        );
+    }
+
+    @Contract("_, _ -> new")
+    public static @NotNull MSBoundingBox of(
+            final @NotNull io.papermc.paper.math.Position first,
+            final @NotNull io.papermc.paper.math.Position second
+    ) {
+        return of(
+                first.x(), first.y(), first.z(),
+                second.x(), second.y(), second.z()
+        );
+    }
+
+    @Contract("_, _, _, _ -> new")
+    public static @NotNull MSBoundingBox ofSize(
+            final @NotNull MSPosition pos,
+            final double dx,
+            final double dy,
+            final double dz
+    ) {
+        return ofSize(
+                pos.x(), pos.y(), pos.z(),
+                dx, dy, dz
         );
     }
 
@@ -256,6 +297,68 @@ public final class MSBoundingBox {
         return ofDummy(
                 this.minX, this.minY, Math.min(minZ, this.maxZ),
                 this.maxX, this.maxY, Math.max(minZ, this.maxZ)
+        );
+    }
+
+    public @NotNull MSPosition min() {
+        return MSPosition.of(this.minX, this.minY, this.minZ);
+    }
+
+    public @NotNull MSBoundingBox min(final @NotNull MSPosition pos) {
+        return this.min(pos.x(), pos.y(), pos.z());
+    }
+
+    public @NotNull MSBoundingBox min(final @NotNull Position pos) {
+        return this.min(pos.x(), pos.y(), pos.z());
+    }
+
+    public @NotNull MSBoundingBox min(final @NotNull Vec3i vec3i) {
+        return this.min(vec3i.getX(), vec3i.getY(), vec3i.getZ());
+    }
+
+    public @NotNull MSBoundingBox min(final @NotNull io.papermc.paper.math.Position pos) {
+        return this.min(pos.x(), pos.y(), pos.z());
+    }
+
+    public @NotNull MSBoundingBox min(
+            final double x,
+            final double y,
+            final double z
+    ) {
+        return of(
+                x, y, z,
+                this.maxX, this.maxY, this.maxZ
+        );
+    }
+
+    public @NotNull MSPosition max() {
+        return MSPosition.of(this.maxX, this.maxY, this.maxZ);
+    }
+
+    public @NotNull MSBoundingBox max(final @NotNull MSPosition pos) {
+        return this.max(pos.x(), pos.y(), pos.z());
+    }
+
+    public @NotNull MSBoundingBox max(final @NotNull Position pos) {
+        return this.max(pos.x(), pos.y(), pos.z());
+    }
+
+    public @NotNull MSBoundingBox max(final @NotNull Vec3i vec3i) {
+        return this.max(vec3i.getX(), vec3i.getY(), vec3i.getZ());
+    }
+
+    public @NotNull MSBoundingBox max(final @NotNull io.papermc.paper.math.Position pos) {
+        return this.max(pos.x(), pos.y(), pos.z());
+    }
+
+    public @NotNull MSBoundingBox max(
+            final double x,
+            final double y,
+            final double z
+    ) {
+        return of(
+                this.minX, this.minY, this.minZ,
+                x, y, z
         );
     }
 
@@ -444,6 +547,11 @@ public final class MSBoundingBox {
     }
 
     @Contract("_ -> new")
+    public @NotNull MSBoundingBox move(final @NotNull MSPosition pos) {
+        return this.move(pos.x(), pos.y(), pos.z());
+    }
+
+    @Contract("_ -> new")
     public @NotNull MSBoundingBox move(final @NotNull Position pos) {
         return this.move(pos.x(), pos.y(), pos.z());
     }
@@ -522,20 +630,119 @@ public final class MSBoundingBox {
         return this.getBlockStates(BlockState.class, world);
     }
 
+    public MSPosition @NotNull [] getMSPositions() {
+        return getPositions(
+                MSPosition.class,
+                (int) this.minX, (int) this.minY, (int) this.minZ,
+                (int) this.maxX, (int) this.maxY, (int) this.maxZ
+        );
+    }
+
     public Position @NotNull [] getPositions() {
-        return this.getPositions(Position.class);
+        return getPositions(
+                Position.class,
+                (int) this.minX, (int) this.minY, (int) this.minZ,
+                (int) this.maxX, (int) this.maxY, (int) this.maxZ
+        );
     }
 
     public Vec3i @NotNull [] getVec3i() {
-        return this.getPositions(Vec3i.class);
+        return getPositions(
+                Vec3i.class,
+                (int) this.minX, (int) this.minY, (int) this.minZ,
+                (int) this.maxX, (int) this.maxY, (int) this.maxZ
+        );
     }
 
     public BlockPos @NotNull [] getBlockPositions() {
-        return this.getPositions(BlockPos.class);
+        return getPositions(
+                BlockPos.class,
+                (int) this.minX, (int) this.minY, (int) this.minZ,
+                (int) this.maxX, (int) this.maxY, (int) this.maxZ
+        );
     }
 
     public io.papermc.paper.math.Position @NotNull [] getPaperPositions() {
-        return this.getPositions(io.papermc.paper.math.Position.class);
+        return getPositions(
+                io.papermc.paper.math.Position.class,
+                (int) this.minX, (int) this.minY, (int) this.minZ,
+                (int) this.maxX, (int) this.maxY, (int) this.maxZ
+        );
+    }
+
+    public MSPosition @NotNull [] getMSPositions(
+            final int minOffsetX,
+            final int minOffsetY,
+            final int minOffsetZ,
+            final int maxOffsetX,
+            final int maxOffsetY,
+            final int maxOffsetZ
+    ) {
+        return getPositions(
+                MSPosition.class,
+                (int) this.minX + minOffsetX, (int) this.minY + minOffsetY, (int) this.minZ + minOffsetZ,
+                (int) this.maxX + maxOffsetX, (int) this.maxY + maxOffsetY, (int) this.maxZ + maxOffsetZ
+        );
+    }
+
+    public Position @NotNull [] getPositions(
+            final int minOffsetX,
+            final int minOffsetY,
+            final int minOffsetZ,
+            final int maxOffsetX,
+            final int maxOffsetY,
+            final int maxOffsetZ
+    ) {
+        return getPositions(
+                Position.class,
+                (int) this.minX + minOffsetX, (int) this.minY + minOffsetY, (int) this.minZ + minOffsetZ,
+                (int) this.maxX + maxOffsetX, (int) this.maxY + maxOffsetY, (int) this.maxZ + maxOffsetZ
+        );
+    }
+
+    public Vec3i @NotNull [] getVec3i(
+            final int minOffsetX,
+            final int minOffsetY,
+            final int minOffsetZ,
+            final int maxOffsetX,
+            final int maxOffsetY,
+            final int maxOffsetZ
+    ) {
+        return getPositions(
+                Vec3i.class,
+                (int) this.minX + minOffsetX, (int) this.minY + minOffsetY, (int) this.minZ + minOffsetZ,
+                (int) this.maxX + maxOffsetX, (int) this.maxY + maxOffsetY, (int) this.maxZ + maxOffsetZ
+        );
+    }
+
+    public BlockPos @NotNull [] getBlockPositions(
+            final int minOffsetX,
+            final int minOffsetY,
+            final int minOffsetZ,
+            final int maxOffsetX,
+            final int maxOffsetY,
+            final int maxOffsetZ
+    ) {
+        return getPositions(
+                BlockPos.class,
+                (int) this.minX + minOffsetX, (int) this.minY + minOffsetY, (int) this.minZ + minOffsetZ,
+                (int) this.maxX + maxOffsetX, (int) this.maxY + maxOffsetY, (int) this.maxZ + maxOffsetZ
+        );
+    }
+
+    public io.papermc.paper.math.Position @NotNull [] getPaperPositions(
+            final int minOffsetX,
+            final int minOffsetY,
+            final int minOffsetZ,
+            final int maxOffsetX,
+            final int maxOffsetY,
+            final int maxOffsetZ
+    ) {
+        return getPositions(
+                io.papermc.paper.math.Position.class,
+                (int) this.minX + minOffsetX, (int) this.minY + minOffsetY, (int) this.minZ + minOffsetZ,
+                (int) this.maxX + maxOffsetX, (int) this.maxY + maxOffsetY, (int) this.maxZ + maxOffsetZ
+        );
     }
 
     public Entity @NotNull [] getEntities(final @NotNull World world) {
@@ -569,51 +776,32 @@ public final class MSBoundingBox {
 
     public @NotNull List<net.minecraft.world.entity.Entity> getNMSEntities(
             final @NotNull ServerLevel level,
-            final @Nullable Predicate<net.minecraft.world.entity.Entity> predicate
+            final @Nullable Predicate<? super net.minecraft.world.entity.Entity> predicate
     ) {
-        AsyncCatcher.catchOp("getNearbyEntities");
+        return this.nmsEntities(level, predicate, false);
+    }
 
-        final var list = new ArrayList<net.minecraft.world.entity.Entity>();
-        final EntityLookup entityLookup = level.getEntityLookup();
+    public boolean hasAnyEntity(final @NotNull ServerLevel level) {
+        return this.hasNMSEntity(level, null);
+    }
 
-        final int minChunkX = ((int) Math.floor(this.minX) - 2) >> 4;
-        final int minChunkZ = ((int) Math.floor(this.minZ) - 2) >> 4;
-        final int maxChunkX = ((int) Math.floor(this.maxX) + 2) >> 4;
-        final int maxChunkZ = ((int) Math.floor(this.maxZ) + 2) >> 4;
+    public boolean hasEntity(
+            final @NotNull World world,
+            final @Nullable Predicate<Entity> predicate
+    ) {
+        return this.hasNMSEntity(
+                ((CraftWorld) world).getHandle(),
+                entity ->
+                        predicate == null
+                        || predicate.test(entity.getBukkitEntity())
+        );
+    }
 
-        final int minRegionX = minChunkX >> REGION_SHIFT;
-        final int minRegionZ = minChunkZ >> REGION_SHIFT;
-        final int maxRegionX = maxChunkX >> REGION_SHIFT;
-        final int maxRegionZ = maxChunkZ >> REGION_SHIFT;
-
-        for (int currRegionZ = minRegionZ; currRegionZ <= maxRegionZ; ++currRegionZ) {
-            final int minZ = currRegionZ == minRegionZ ? minChunkZ & REGION_MASK : 0;
-            final int maxZ = currRegionZ == maxRegionZ ? maxChunkZ & REGION_MASK : REGION_MASK;
-
-            for (int currRegionX = minRegionX; currRegionX <= maxRegionX; ++currRegionX) {
-                final EntityLookup.ChunkSlicesRegion region = entityLookup.getRegion(currRegionX, currRegionZ);
-
-                if (region == null) continue;
-
-                final int minX = currRegionX == minRegionX ? minChunkX & REGION_MASK : 0;
-                final int maxX = currRegionX == maxRegionX ? maxChunkX & REGION_MASK : REGION_MASK;
-
-                for (int currZ = minZ; currZ <= maxZ; ++currZ) {
-                    for (int currX = minX; currX <= maxX; ++currX) {
-                        final ChunkEntitySlices chunk = region.get(currX | (currZ << REGION_SHIFT));
-
-                        if (
-                                chunk == null
-                                || !chunk.status.isOrAfter(FullChunkStatus.FULL)
-                        ) continue;
-
-                        chunk.getEntities((net.minecraft.world.entity.Entity) null, this.toAABB(), list, predicate);
-                    }
-                }
-            }
-        }
-
-        return list;
+    public boolean hasNMSEntity(
+            final @NotNull ServerLevel level,
+            final @Nullable Predicate<? super net.minecraft.world.entity.Entity> predicate
+    ) {
+        return !this.nmsEntities(level, predicate, true).isEmpty();
     }
 
     public boolean intersects(final @NotNull AABB aabb) {
@@ -658,6 +846,10 @@ public final class MSBoundingBox {
                 && this.minX <= maxX
                 && this.minY <= maxY
                 && this.minZ <= maxZ;
+    }
+
+    public boolean contains(final @NotNull MSPosition pos) {
+        return this.contains(pos.x(), pos.y(), pos.z());
     }
 
     public boolean contains(final @NotNull Position pos) {
@@ -733,6 +925,11 @@ public final class MSBoundingBox {
         );
     }
 
+    @Contract(" -> new")
+    public @NotNull MSBoundingBox copy() {
+        return of(this);
+    }
+
     @Override
     public int hashCode() {
         long l = Double.doubleToLongBits(this.minX);
@@ -776,63 +973,60 @@ public final class MSBoundingBox {
                 + "]";
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T @NotNull [] getPositions(final @NotNull Class<T> clazz) throws IllegalArgumentException {
-        final boolean isPosition = clazz.isAssignableFrom(Position.class);
-        final boolean isVec3i = clazz.isAssignableFrom(Vec3i.class);
-        final boolean isBlockPos = clazz.isAssignableFrom(BlockPos.class);
+    private @NotNull List<net.minecraft.world.entity.Entity> nmsEntities(
+            final @NotNull ServerLevel level,
+            final @Nullable Predicate<? super net.minecraft.world.entity.Entity> predicate,
+            final boolean checkForEmpty
+    ) {
+        AsyncCatcher.catchOp("getNearbyEntities");
 
-        if (
-                !isPosition
-                && !isVec3i
-                && !isBlockPos
-                && !clazz.isAssignableFrom(io.papermc.paper.math.Position.class)
-        ) throw new IllegalArgumentException("Class must be assignable from Position or Vec3i or BlockPos or io.papermc.paper.math.Position");
+        final AABB aabb = this.toAABB();
+        final var list = new ArrayList<net.minecraft.world.entity.Entity>();
+        final EntityLookup entityLookup = level.getEntityLookup();
 
-        final int minX = (int) this.minX;
-        final int minY = (int) this.minY;
-        final int minZ = (int) this.minZ;
-        final int offsetX = (int) (Math.abs(this.minX - this.maxX) + 1);
-        final int offsetY = (int) (Math.abs(this.minY - this.maxY) + 1);
-        final int offsetZ = (int) (Math.abs(this.minZ - this.maxZ) + 1);
-        final var array = (T[]) Array.newInstance(clazz, offsetX * offsetY * offsetZ);
+        final int minChunkX = ((int) Math.floor(this.minX) - 2) >> 4;
+        final int minChunkZ = ((int) Math.floor(this.minZ) - 2) >> 4;
+        final int maxChunkX = ((int) Math.floor(this.maxX) + 2) >> 4;
+        final int maxChunkZ = ((int) Math.floor(this.maxZ) + 2) >> 4;
 
-        int i = 0;
+        final int minRegionX = minChunkX >> REGION_SHIFT;
+        final int minRegionZ = minChunkZ >> REGION_SHIFT;
+        final int maxRegionX = maxChunkX >> REGION_SHIFT;
+        final int maxRegionZ = maxChunkZ >> REGION_SHIFT;
 
-        for (int x = 0; x < offsetX; ++x) {
-            for (int y = 0; y < offsetY; ++y) {
-                for (int z = 0; z < offsetZ; ++z) {
-                    if (isPosition) {
-                        array[i++] = (T) new Location(
-                                null,
-                                minX + x,
-                                minY + y,
-                                minZ + z
-                        );
-                    } else if (isVec3i) {
-                        array[i++] = (T) new Vec3i(
-                                minX + x,
-                                minY + y,
-                                minZ + z
-                        );
-                    } else if (isBlockPos) {
-                        array[i++] = (T) new BlockPos(
-                                minX + x,
-                                minY + y,
-                                minZ + z
-                        );
-                    }else {
-                        array[i++] = (T) MSPosition.of(
-                                minX + x,
-                                minY + y,
-                                minZ + z
-                        );
+        for (int currRegionZ = minRegionZ; currRegionZ <= maxRegionZ; ++currRegionZ) {
+            final int minZ = currRegionZ == minRegionZ ? minChunkZ & REGION_MASK : 0;
+            final int maxZ = currRegionZ == maxRegionZ ? maxChunkZ & REGION_MASK : REGION_MASK;
+
+            for (int currRegionX = minRegionX; currRegionX <= maxRegionX; ++currRegionX) {
+                final EntityLookup.ChunkSlicesRegion region = entityLookup.getRegion(currRegionX, currRegionZ);
+
+                if (region == null) continue;
+
+                final int minX = currRegionX == minRegionX ? minChunkX & REGION_MASK : 0;
+                final int maxX = currRegionX == maxRegionX ? maxChunkX & REGION_MASK : REGION_MASK;
+
+                for (int currZ = minZ; currZ <= maxZ; ++currZ) {
+                    for (int currX = minX; currX <= maxX; ++currX) {
+                        final ChunkEntitySlices chunk = region.get(currX | (currZ << REGION_SHIFT));
+
+                        if (
+                                chunk == null
+                                || !chunk.status.isOrAfter(FullChunkStatus.FULL)
+                        ) continue;
+
+                        chunk.getEntities((net.minecraft.world.entity.Entity) null, aabb, list, predicate);
+
+                        if (
+                                checkForEmpty
+                                && !list.isEmpty()
+                        ) return list;
                     }
                 }
             }
         }
 
-        return array;
+        return list;
     }
 
     @SuppressWarnings("unchecked")
@@ -878,5 +1072,75 @@ public final class MSBoundingBox {
         }
 
         return blockStates;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static  <T> T @NotNull [] getPositions(
+            final @NotNull Class<T> clazz,
+            final int minX,
+            final int minY,
+            final int minZ,
+            final int maxX,
+            final int maxY,
+            final int maxZ
+    ) throws IllegalArgumentException {
+        final boolean isMSPosition = clazz.isAssignableFrom(MSPosition.class);
+        final boolean isPosition = clazz.isAssignableFrom(Position.class);
+        final boolean isVec3i = clazz.isAssignableFrom(Vec3i.class);
+        final boolean isBlockPos = clazz.isAssignableFrom(BlockPos.class);
+
+        if (
+                !isMSPosition
+                && !isPosition
+                && !isVec3i
+                && !isBlockPos
+                && !clazz.isAssignableFrom(io.papermc.paper.math.Position.class)
+        ) throw new IllegalArgumentException("Class must be assignable from MSPosition or Position or Vec3i or BlockPos or io.papermc.paper.math.Position");
+
+        final int offsetX = Math.abs(minX - maxX) + 1;
+        final int offsetY = Math.abs(minY - maxY) + 1;
+        final int offsetZ = Math.abs(minZ - maxZ) + 1;
+        final var array = (T[]) Array.newInstance(clazz, offsetX * offsetY * offsetZ);
+
+        int i = 0;
+
+        for (int x = 0; x < offsetX; ++x) {
+            for (int y = 0; y < offsetY; ++y) {
+                for (int z = 0; z < offsetZ; ++z) {
+                    array[i++] = isMSPosition
+                            ? (T) MSPosition.of(
+                                    minX + x,
+                                    minY + y,
+                                    minZ + z
+                            )
+                            : isPosition
+                            ? (T) new Vec3(
+                                    minX + x,
+                                    minY + y,
+                                    minZ + z
+                            )
+                            : isVec3i
+                            ? (T) new Vec3i(
+                                    minX + x,
+                                    minY + y,
+                                    minZ + z
+                            )
+                            : isBlockPos
+                            ? (T) new BlockPos(
+                                    minX + x,
+                                    minY + y,
+                                    minZ + z
+                            )
+                            : (T) new Location(
+                                    null,
+                                    minX + x,
+                                    minY + y,
+                                    minZ + z
+                            );
+                }
+            }
+        }
+
+        return array;
     }
 }

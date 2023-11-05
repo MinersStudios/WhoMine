@@ -28,12 +28,12 @@ public final class BMOPlush extends CustomDecorDataImpl<BMOPlush> {
 
         return new Builder()
                 .key("bmo_plush")
-                .hitBox(new DecorHitBox(
-                        0.5d,
-                        0.75d,
-                        0.5d,
-                        DecorHitBox.Type.NONE
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.NONE)
+                        .size(0.5d, 0.75d, 0.5d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)

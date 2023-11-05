@@ -172,9 +172,8 @@ public enum CustomDecorType {
     OAK_SMALL_TABLE(SmallTable.Oak.class),
     SPRUCE_SMALL_TABLE(SmallTable.Spruce.class),
     WARPED_SMALL_TABLE(SmallTable.Warped.class),
-    POOP(Poop.class)
+    POOP(Poop.class);
     //</editor-fold>
-    ;
 
     private final Class<? extends CustomDecorData<?>> clazz;
 

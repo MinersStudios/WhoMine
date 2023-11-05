@@ -28,12 +28,12 @@ public final class BrownBearPlush extends CustomDecorDataImpl<BrownBearPlush> {
 
         return new Builder()
                 .key("brown_bear_plush")
-                .hitBox(new DecorHitBox(
-                        0.5d,
-                        0.90625d,
-                        0.5d,
-                        DecorHitBox.Type.NONE
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.NONE)
+                        .size(0.75d, 0.90625d, 0.75d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)

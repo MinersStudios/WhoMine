@@ -29,12 +29,12 @@ public final class Cell extends CustomDecorDataImpl<Cell> {
 
         return new Builder()
                 .key("cell")
-                .hitBox(new DecorHitBox(
-                        1.0d,
-                        1.0d,
-                        1.0d,
-                        DecorHitBox.Type.SOLID
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.SOLID)
+                        .size(1.0d, 1.0d, 1.0d)
+                        .build()
+                )
                 .facing(Facing.ALL)
                 .soundGroup(SoundGroup.CHAIN)
                 .itemStack(itemStack)
@@ -56,46 +56,14 @@ public final class Cell extends CustomDecorDataImpl<Cell> {
                 )
                 .parameters(DecorParameter.TYPED)
                 .types(
-                        builder -> new Type(
-                                builder,
-                                "bee",
-                                createItem(itemStack, 1175)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "chicken",
-                                createItem(itemStack, 1176)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "parrot_blue",
-                                createItem(itemStack, 1177)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "parrot_green",
-                                createItem(itemStack, 1178)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "parrot_gray",
-                                createItem(itemStack, 1179)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "parrot_red_blue",
-                                createItem(itemStack, 1180)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "parrot_yellow_blue",
-                                createItem(itemStack, 1181)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "slime",
-                                createItem(itemStack, 1182)
-                        )
+                        builder -> new Type(builder, "bee",                createItem(itemStack, 1175)),
+                        builder -> new Type(builder, "chicken",            createItem(itemStack, 1176)),
+                        builder -> new Type(builder, "parrot_blue",        createItem(itemStack, 1177)),
+                        builder -> new Type(builder, "parrot_green",       createItem(itemStack, 1178)),
+                        builder -> new Type(builder, "parrot_gray",        createItem(itemStack, 1179)),
+                        builder -> new Type(builder, "parrot_red_blue",    createItem(itemStack, 1180)),
+                        builder -> new Type(builder, "parrot_yellow_blue", createItem(itemStack, 1181)),
+                        builder -> new Type(builder, "slime",              createItem(itemStack, 1182))
                 );
     }
 

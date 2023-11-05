@@ -3,6 +3,7 @@ package com.minersstudios.msdecor.api;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.util.ItemUtils;
 import com.minersstudios.mscore.util.PlayerUtils;
+import com.minersstudios.msdecor.api.action.DecorClickAction;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import com.minersstudios.msitem.api.CustomItemType;
 import org.bukkit.*;
@@ -14,18 +15,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Consumer;
-
 public enum DecorParameter {
+    //<editor-fold desc="Parameters" defaultstate="collapsed">
     PAINTABLE,
-    SITTABLE,
-    WRENCHABLE,
-    LIGHTABLE,
-    TYPED,
-    LIGHT_TYPED,
-    FACE_TYPED;
-
-    public static final Consumer<CustomDecorClickEvent> SITTABLE_RIGHT_CLICK_ACTION =
+    SITTABLE(
             event -> {
                 if (
                         event.getClickType().isRightClick()
@@ -33,9 +26,9 @@ public enum DecorParameter {
                 ) {
                     doSit(event);
                 }
-            };
-
-    public static final Consumer<CustomDecorClickEvent> WRENCHABLE_RIGHT_CLICK_ACTION =
+            }
+    ),
+    WRENCHABLE(
             event -> {
                 if (event.getClickType().isLeftClick()) return;
 
@@ -44,9 +37,63 @@ public enum DecorParameter {
                 if (CustomItemType.fromItemStack(itemInUse) == CustomItemType.WRENCH) {
                     doWrench(event, itemInUse);
                 }
-            };
+            }
+    ),
+    LIGHTABLE(
+            event -> {
+                if (event.getClickType().isLeftClick()) return;
 
-    public static final Consumer<CustomDecorClickEvent> WRENCHABLE_SITTABLE_CLICK_ACTION =
+                final Interaction interaction = event.getClickedInteraction();
+
+                doLight(
+                        event,
+                        event.getCustomDecor().getData().getNextLightLevel(
+                                interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
+                                        ? light.getLevel()
+                                        : 0
+                        )
+                );
+            }
+    ),
+    TYPED,
+    LIGHT_TYPED(
+            event -> {
+                if (event.getClickType().isLeftClick()) return;
+
+                final CustomDecor customDecor = event.getCustomDecor();
+                final var data = customDecor.getData();
+                final Interaction interaction = event.getClickedInteraction();
+                final int nextLevel = data.getNextLightLevel(
+                        interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
+                                ? light.getLevel()
+                                : 0
+                );
+                final var nextType = data.getLightTypeOf(nextLevel);
+
+                doLight(event, nextLevel);
+
+                if (nextType == null) return;
+
+                final ItemStack typeItem = nextType.getItem();
+                final ItemMeta itemMeta = typeItem.getItemMeta();
+
+                final ItemDisplay itemDisplay = customDecor.getDisplay();
+                final ItemStack displayItem = itemDisplay.getItemStack();
+                assert displayItem != null;
+
+                itemMeta.displayName(displayItem.getItemMeta().displayName());
+                typeItem.setItemMeta(itemMeta);
+
+                itemDisplay.setItemStack(typeItem);
+            }
+    ),
+    FACE_TYPED;
+    //</editor-fold>
+
+    private final DecorClickAction clickAction;
+
+    //<editor-fold desc="Actions" defaultstate="collapsed">
+    private static final DecorClickAction WRENCHABLE_SITTABLE_CLICK_ACTION =
             event -> {
                 if (event.getClickType().isLeftClick()) return;
 
@@ -59,23 +106,7 @@ public enum DecorParameter {
                 }
             };
 
-    public static final Consumer<CustomDecorClickEvent> LIGHTABLE_RIGHT_CLICK_ACTION =
-            event -> {
-                if (event.getClickType().isLeftClick()) return;
-
-                final Interaction interaction = event.getClickedInteraction();
-
-                doLight(
-                        event,
-                        event.getCustomDecor().getData().getNextLightLevel(
-                                interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
-                                ? light.getLevel()
-                                : 0
-                        )
-                );
-            };
-
-    public static final Consumer<CustomDecorClickEvent> WRENCHABLE_LIGHTABLE_CLICK_ACTION =
+    private static final DecorClickAction WRENCHABLE_LIGHTABLE_CLICK_ACTION =
             event -> {
                 if (event.getClickType().isLeftClick()) return;
 
@@ -96,37 +127,43 @@ public enum DecorParameter {
                     );
                 }
             };
+    //</editor-fold>
 
-    public static final Consumer<CustomDecorClickEvent> LIGHT_TYPED_RIGHT_CLICK_ACTION =
-            event -> {
-                if (event.getClickType().isLeftClick()) return;
+    DecorParameter() {
+        this(DecorClickAction.NONE);
+    }
 
-                final CustomDecor customDecor = event.getCustomDecor();
-                final var data = customDecor.getData();
-                final Interaction interaction = event.getClickedInteraction();
-                final int nextLevel = data.getNextLightLevel(
-                        interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
-                        ? light.getLevel()
-                        : 0
-                );
-                final var nextType = data.getLightTypeOf(nextLevel);
+    DecorParameter(final @NotNull DecorClickAction clickAction) {
+        this.clickAction = clickAction;
+    }
 
-                doLight(event, nextLevel);
+    public @NotNull DecorClickAction getClickAction() {
+        return this.clickAction;
+    }
 
-                if (nextType == null) return;
+    public static @NotNull DecorClickAction sittableAction() {
+        return SITTABLE.getClickAction();
+    }
 
-                final ItemStack typeItem = nextType.getItem();
-                final ItemMeta itemMeta = typeItem.getItemMeta();
+    public static @NotNull DecorClickAction wrenchableAction() {
+        return WRENCHABLE.getClickAction();
+    }
 
-                final ItemDisplay itemDisplay = customDecor.getDisplay();
-                final ItemStack displayItem = itemDisplay.getItemStack();
-                assert displayItem != null;
+    public static @NotNull DecorClickAction lightableAction() {
+        return LIGHTABLE.getClickAction();
+    }
 
-                itemMeta.displayName(displayItem.getItemMeta().displayName());
-                typeItem.setItemMeta(itemMeta);
+    public static @NotNull DecorClickAction lightTypedAction() {
+        return LIGHT_TYPED.getClickAction();
+    }
 
-                itemDisplay.setItemStack(typeItem);
-            };
+    public static @NotNull DecorClickAction wrenchableSittableAction() {
+        return WRENCHABLE_SITTABLE_CLICK_ACTION;
+    }
+
+    public static @NotNull DecorClickAction wrenchableLightableAction() {
+        return WRENCHABLE_LIGHTABLE_CLICK_ACTION;
+    }
 
     private static void doSit(final @NotNull CustomDecorClickEvent event) {
         final Player player = event.getPlayer();

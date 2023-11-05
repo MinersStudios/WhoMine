@@ -36,12 +36,12 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
 
         return new Builder()
                 .key(key)
-                .hitBox(new DecorHitBox(
-                        1.0d,
-                        1.0d,
-                        1.0d,
-                        DecorHitBox.Type.SOLID
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.SOLID)
+                        .size(1.0d, 1.0d, 1.0d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
@@ -63,36 +63,12 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
                 )
                 .parameters(DecorParameter.WRENCHABLE)
                 .types(
-                        builder -> new Type(
-                                builder,
-                                "second_left",
-                                createItem(itemStack, cmdSecondLeft)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "second_middle",
-                                createItem(itemStack, cmdSecondMiddle)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "second_right",
-                                createItem(itemStack, cmdSecondRight)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "third_left",
-                                createItem(itemStack, cmdThirdLeft)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "third_middle",
-                                createItem(itemStack, cmdThirdMiddle)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "third_right",
-                                createItem(itemStack, cmdThirdRight)
-                        )
+                        builder -> new Type(builder, "second_left",   createItem(itemStack, cmdSecondLeft)),
+                        builder -> new Type(builder, "second_middle", createItem(itemStack, cmdSecondMiddle)),
+                        builder -> new Type(builder, "second_right",  createItem(itemStack, cmdSecondRight)),
+                        builder -> new Type(builder, "third_left",    createItem(itemStack, cmdThirdLeft)),
+                        builder -> new Type(builder, "third_middle",  createItem(itemStack, cmdThirdMiddle)),
+                        builder -> new Type(builder, "third_right",   createItem(itemStack, cmdThirdRight))
                 );
     }
 

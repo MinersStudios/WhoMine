@@ -29,12 +29,12 @@ public final class CookingPot extends CustomDecorDataImpl<CookingPot> {
 
         return new Builder()
                 .key("cooking_pot")
-                .hitBox(new DecorHitBox(
-                        0.75d,
-                        0.625d,
-                        0.75d,
-                        DecorHitBox.Type.NONE
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.NONE)
+                        .size(0.75d, 0.625d, 0.75d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
@@ -55,51 +55,15 @@ public final class CookingPot extends CustomDecorDataImpl<CookingPot> {
                 )
                 .parameters(DecorParameter.TYPED)
                 .types(
-                        builder -> new Type(
-                                builder,
-                                "honey",
-                                createItem(itemStack, 1165)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "honey_1",
-                                createItem(itemStack, 1166)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "honey_2",
-                                createItem(itemStack, 1167)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "portal",
-                                createItem(itemStack, 1168)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "lava",
-                                createItem(itemStack, 1169)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "snow",
-                                createItem(itemStack, 1170)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "water",
-                                createItem(itemStack, 1171)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "water_1",
-                                createItem(itemStack, 1172)
-                        ),
-                        builder -> new Type(
-                                builder,
-                                "water_2",
-                                createItem(itemStack, 1173)
-                        )
+                        builder -> new Type(builder, "honey",   createItem(itemStack, 1165)),
+                        builder -> new Type(builder, "honey_1", createItem(itemStack, 1166)),
+                        builder -> new Type(builder, "honey_2", createItem(itemStack, 1167)),
+                        builder -> new Type(builder, "portal",  createItem(itemStack, 1168)),
+                        builder -> new Type(builder, "lava",    createItem(itemStack, 1169)),
+                        builder -> new Type(builder, "snow",    createItem(itemStack, 1170)),
+                        builder -> new Type(builder, "water",   createItem(itemStack, 1171)),
+                        builder -> new Type(builder, "water_1", createItem(itemStack, 1172)),
+                        builder -> new Type(builder, "water_2", createItem(itemStack, 1173))
                 );
     }
 

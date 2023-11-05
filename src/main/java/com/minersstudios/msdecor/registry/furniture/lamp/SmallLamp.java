@@ -29,12 +29,12 @@ public final class SmallLamp extends CustomDecorDataImpl<SmallLamp> {
 
         return new Builder()
                 .key("small_lamp")
-                .hitBox(new DecorHitBox(
-                        0.625d,
-                        1.0625d,
-                        0.625d,
-                        DecorHitBox.Type.LIGHT
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.LIGHT)
+                        .size(0.625d, 1.0625d, 0.625d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)

@@ -40,12 +40,12 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
 
         return new Builder()
                 .key("brazier")
-                .hitBox(new DecorHitBox(
-                        0.875d,
-                        1.0d,
-                        0.875d,
-                        DecorHitBox.Type.LIGHT
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.LIGHT)
+                        .size(0.875d, 1.0d, 0.875d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.CHAIN)
                 .itemStack(itemStack)

@@ -29,15 +29,13 @@ public final class BigLamp extends CustomDecorDataImpl<BigLamp> {
 
         return new Builder()
                 .key("big_lamp")
-                .hitBox(new DecorHitBox(
-                        0.875d,
-                        2.3125d,
-                        0.875d,
-                        0.0d,
-                        0.375d,
-                        0.0d,
-                        DecorHitBox.Type.LIGHT
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.LIGHT)
+                        .size(0.875d, 2.3125d, 0.875d)
+                        .modelOffset(0.0d, 0.375d, 0.0d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)

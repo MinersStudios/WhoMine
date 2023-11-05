@@ -28,12 +28,12 @@ public final class OldCamera extends CustomDecorDataImpl<OldCamera> {
 
         return new Builder()
                 .key("old_camera")
-                .hitBox(new DecorHitBox(
-                        0.5d,
-                        1.625d,
-                        0.5d,
-                        DecorHitBox.Type.NONE
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.NONE)
+                        .size(0.5d, 1.625d, 0.5d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)

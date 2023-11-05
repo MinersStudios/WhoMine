@@ -26,7 +26,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 @SuppressWarnings("UnstableApiUsage")
-public final class MSPosition implements Position, Cloneable {
+public final class MSPosition implements Cloneable {
     private Reference<World> world;
     private double x;
     private double y;
@@ -360,7 +360,6 @@ public final class MSPosition implements Position, Cloneable {
         return clone;
     }
 
-    @Override
     public double x() {
         return this.x;
     }
@@ -371,7 +370,6 @@ public final class MSPosition implements Position, Cloneable {
         return clone;
     }
 
-    @Override
     public double y() {
         return this.y;
     }
@@ -382,7 +380,6 @@ public final class MSPosition implements Position, Cloneable {
         return clone;
     }
 
-    @Override
     public double z() {
         return this.z;
     }
@@ -423,6 +420,10 @@ public final class MSPosition implements Position, Cloneable {
 
     public int blockZ() {
         return (int) this.z;
+    }
+
+    public @NotNull MSPosition offset(final @NotNull MSPosition pos) {
+        return this.offset(pos.x(), pos.y(), pos.z());
     }
 
     public @NotNull MSPosition offset(final @NotNull Position pos) {
@@ -474,7 +475,7 @@ public final class MSPosition implements Position, Cloneable {
             final float pitch
     ) {
         return this
-                .yaw(0.0f)
+                .yaw(Float.NaN)
                 .pitch(pitch)
                 .directionalOffset(x, y, z);
     }
@@ -496,7 +497,7 @@ public final class MSPosition implements Position, Cloneable {
             final float yaw
     ) {
         return this
-                .pitch(0.0f)
+                .pitch(Float.NaN)
                 .yaw(yaw)
                 .directionalOffset(x, y, z);
     }
@@ -511,10 +512,10 @@ public final class MSPosition implements Position, Cloneable {
             final double z
     ) {
         final Vector vector = new Vector(x, y, -z);
-        final float normalizedYaw = LocationUtils.normalize360(this.yaw);
-        final float normalizedPitch = LocationUtils.normalize360(this.pitch);
 
-        if (normalizedYaw != 0.0f) {
+        if (!Float.isNaN(this.yaw)) {
+            final float normalizedYaw = LocationUtils.normalize360(this.yaw);
+
             vector.rotateAroundY(
                     Math.toRadians(
                             (normalizedYaw >= 0 && normalizedYaw <= 45)
@@ -525,7 +526,9 @@ public final class MSPosition implements Position, Cloneable {
             );
         }
 
-        if (normalizedPitch != 0.0f) {
+        if (!Float.isNaN(this.pitch)) {
+            final float normalizedPitch = LocationUtils.normalize360(this.pitch);
+
             vector.rotateAroundX(
                     Math.toRadians(
                             (normalizedPitch >= 0 && normalizedPitch <= 45)
@@ -636,6 +639,10 @@ public final class MSPosition implements Position, Cloneable {
                 + Math.pow(this.z, 2.0d);
     }
 
+    public double distance(final @NotNull MSPosition pos) {
+        return this.distance(pos.x(), pos.y(), pos.z());
+    }
+
     public double distance(final @NotNull Position pos) {
         return this.distance(pos.x(), pos.y(), pos.z());
     }
@@ -658,6 +665,10 @@ public final class MSPosition implements Position, Cloneable {
             final double z
     ) {
         return Math.sqrt(this.distanceSquared(x, y, z));
+    }
+
+    public double distanceSquared(final @NotNull MSPosition pos) {
+        return this.distanceSquared(pos.x(), pos.y(), pos.z());
     }
 
     public double distanceSquared(final @NotNull Position pos) {

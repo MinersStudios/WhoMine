@@ -58,9 +58,9 @@ public final class CustomDecor {
         final PersistentDataContainer container = interaction.getPersistentDataContainer();
         return container.isEmpty()
                 ? Optional.empty()
-                : DecorHitBox.isHitBoxParent(interaction)
+                : DecorHitBox.isParent(interaction)
                 ? Optional.ofNullable(fromParent(interaction))
-                : DecorHitBox.isHitBoxChild(interaction)
+                : DecorHitBox.isChild(interaction)
                 ? Optional.ofNullable(fromChild(interaction))
                 : Optional.empty();
     }
@@ -115,7 +115,7 @@ public final class CustomDecor {
                     breaker.getName(),
                     world.getHandle(),
                     this.msbb.getBlockPositions(),
-                    Blocks.AIR
+                    Blocks.AIR.defaultBlockState()
             );
         }
 

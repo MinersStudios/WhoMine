@@ -28,12 +28,12 @@ public final class WhocintoshMini extends CustomDecorDataImpl<WhocintoshMini> {
 
         return new Builder()
                 .key("whocintosh_mini")
-                .hitBox(new DecorHitBox(
-                        1.0d,
-                        0.5625d,
-                        1.0d,
-                        DecorHitBox.Type.NONE
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.NONE)
+                        .size(1.0d, 0.5625d, 1.0d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)

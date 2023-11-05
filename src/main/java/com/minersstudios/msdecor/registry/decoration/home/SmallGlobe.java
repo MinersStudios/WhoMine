@@ -28,12 +28,12 @@ public final class SmallGlobe extends CustomDecorDataImpl<SmallGlobe> {
 
         return new Builder()
                 .key("small_globe")
-                .hitBox(new DecorHitBox(
-                        0.390725d,
-                        0.515625d,
-                        0.390725d,
-                        DecorHitBox.Type.NONE
-                ))
+                .hitBox(
+                        DecorHitBox.builder()
+                        .type(DecorHitBox.Type.NONE)
+                        .size(0.390725d, 0.515625d, 0.390725d)
+                        .build()
+                )
                 .facing(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)

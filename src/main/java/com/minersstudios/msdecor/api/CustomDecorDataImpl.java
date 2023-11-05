@@ -6,6 +6,9 @@ import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.mscore.util.*;
 import com.minersstudios.msdecor.MSDecor;
+import com.minersstudios.msdecor.api.action.DecorBreakAction;
+import com.minersstudios.msdecor.api.action.DecorClickAction;
+import com.minersstudios.msdecor.api.action.DecorPlaceAction;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import com.minersstudios.msdecor.event.CustomDecorPlaceEvent;
@@ -32,7 +35,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
@@ -46,14 +48,14 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     protected final List<Map.Entry<Recipe, Boolean>> recipes;
     protected final EnumSet<DecorParameter> parameterSet;
     protected final double sitHeight;
-    protected final CustomDecorData.Type<D>[] types;
     protected final int[] lightLevels;
+    protected final CustomDecorData.Type<D>[] types;
     protected final EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
     protected final Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
-    protected final Consumer<CustomDecorClickEvent> clickAction;
-    protected final Consumer<CustomDecorPlaceEvent> placeAction;
-    protected final Consumer<CustomDecorBreakEvent> breakAction;
     protected final boolean dropsType;
+    protected final DecorClickAction clickAction;
+    protected final DecorPlaceAction placeAction;
+    protected final DecorBreakAction breakAction;
 
     protected CustomDecorDataImpl() throws IllegalArgumentException {
         final Builder builder = this.builder();
@@ -91,10 +93,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             }
         }
 
-        this.parameterSet =
-                builder.parameterSet == null
-                ? EnumSet.noneOf(DecorParameter.class)
-                : builder.parameterSet;
+        this.parameterSet = builder.parameterSet;
         this.sitHeight = builder.sitHeight;
         this.types = builder.types;
         this.faceTypeMap =
@@ -462,6 +461,21 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
+    public @NotNull DecorClickAction getClickAction() {
+        return this.clickAction;
+    }
+
+    @Override
+    public @NotNull DecorPlaceAction getPlaceAction() {
+        return this.placeAction;
+    }
+
+    @Override
+    public @NotNull DecorBreakAction getBreakAction() {
+        return this.breakAction;
+    }
+
+    @Override
     public boolean hasParameters(
             final @NotNull DecorParameter first,
             final @NotNull DecorParameter... rest
@@ -598,19 +612,17 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         for (final var blockPos : blocksToReplace) {
             final BlockState blockState = serverLevel.getBlockState(blockPos);
 
-            if (!BlockUtils.isReplaceable(blockState.getBlock())) {
-                return;
-            }
+            if (!BlockUtils.isReplaceable(blockState.getBlock())) return;
 
             blockStates.add(CraftBlockStates.getUnplacedBlockState(serverLevel, blockPos, blockState));
         }
 
         if (
                 this.hitBox.getType().isSolid()
-                && !msbb.getNMSEntities(
+                && msbb.max(msbb.max().offset(1.0d)).hasNMSEntity(
                         serverLevel,
                         entity -> !BlockUtils.isIgnorableEntity(entity.getType())
-                ).isEmpty()
+                )
         ) return;
 
         final ItemStack itemInHand = hand != null
@@ -627,7 +639,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final CustomDecorPlaceEvent event = new CustomDecorPlaceEvent(
                 this.setHitBox(
                         player.getName(),
-                        this.summonItem(blockLocation, blockFace, player, itemInHand),
+                        blockLocation,
+                        player.getYaw(),
+                        blockFace,
+                        itemInHand,
                         msbb,
                         blocksToReplace
                 ),
@@ -662,32 +677,83 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public void doClickAction(final @NotNull CustomDecorClickEvent event) {
-        if (this.clickAction != null) {
-            this.clickAction.accept(event);
+        if (this.clickAction.isSet()) {
+            this.clickAction.execute(event);
         }
     }
 
     @Override
     public void doPlaceAction(final @NotNull CustomDecorPlaceEvent event) {
-        if (this.placeAction != null) {
-            this.placeAction.accept(event);
+        if (this.placeAction.isSet()) {
+            this.placeAction.execute(event);
         }
     }
 
     @Override
     public void doBreakAction(final @NotNull CustomDecorBreakEvent event) {
-        if (this.breakAction != null) {
-            this.breakAction.accept(event);
+        if (this.breakAction.isSet()) {
+            this.breakAction.execute(event);
         }
     }
 
-    private @NotNull ItemDisplay summonItem(
-            final @NotNull MSPosition blockLocation,
+    private @NotNull CustomDecor setHitBox(
+            final @NotNull String placer,
+            final @NotNull MSPosition itemDisplayPosition,
+            final float yaw,
             final @NotNull BlockFace blockFace,
-            final @NotNull Player player,
-            final @NotNull ItemStack itemInHand
+            final @NotNull ItemStack item,
+            final @NotNull MSBoundingBox msbb,
+            final BlockPos @NotNull [] blockPoses
     ) {
-        final ItemStack itemStack = itemInHand.clone();
+        final ItemDisplay itemDisplay = this.summonItem(itemDisplayPosition.yaw(yaw), blockFace, item);
+        final World world = itemDisplay.getWorld();
+        final DecorHitBox.Type type = this.hitBox.getType();
+
+        if (!type.isNone()) {
+            final var blocks = fillBlocks(
+                    placer,
+                    ((CraftWorld) world).getHandle(),
+                    blockPoses,
+                    type.getNMSMaterial().defaultBlockState()
+            );
+
+            if (
+                    this.isLightable()
+                    || this.isLightTyped()
+            ) {
+                final int lightLevel =
+                        this.isLightTyped()
+                        ? this.getLightLevelOf(itemDisplay.getItemStack())
+                        : this.lightLevels[0];
+
+                for (final var currentBlock : blocks) {
+                    if (currentBlock.getBlockData() instanceof final Light light) {
+                        light.setLevel(lightLevel);
+                        currentBlock.setBlockData(light);
+                    }
+                }
+            }
+        }
+
+        return new CustomDecor(
+                this,
+                itemDisplay,
+                this.fillInteractions(
+                        world,
+                        itemDisplay,
+                        msbb,
+                        this.hitBox.getPositionInBlock(yaw)
+                ),
+                msbb
+        );
+    }
+
+    private @NotNull ItemDisplay summonItem(
+            final @NotNull MSPosition position,
+            final @NotNull BlockFace blockFace,
+            final @NotNull ItemStack item
+    ) {
+        final ItemStack itemStack = item.clone();
         final ItemMeta itemMeta = itemStack.getItemMeta();
         final CustomDecorData.Type<D> type;
 
@@ -703,21 +769,22 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             type = null;
         }
 
-        return player.getWorld().spawn(
-                blockLocation.center().offset(
+        return Objects.requireNonNull(position.world()).spawn(
+                position.center()
+                .offset(
                         this.hitBox.getModelOffsetX(),
                         this.hitBox.getModelOffsetY(),
                         this.hitBox.getModelOffsetZ()
-                ).toLocation(),
+                )
+                .yaw(
+                        this.hitBox.getX() > 1.0d || this.hitBox.getZ() > 1.0d
+                        || this.hitBox.getX() < -1.0d || this.hitBox.getZ() < -1.0d
+                                ? LocationUtils.to90(position.yaw()) + 180.0f
+                                : LocationUtils.to45(position.yaw()) + 180.0f
+                )
+                .toLocation(),
                 ItemDisplay.class,
                 itemDisplay -> {
-                    itemDisplay.setRotation(
-                            this.hitBox.getX() > 1.0d || this.hitBox.getZ() > 1.0d
-                            || this.hitBox.getX() < -1.0d || this.hitBox.getZ() < -1.0d
-                                    ? LocationUtils.to90(player.getYaw()) + 180.0f
-                                    : LocationUtils.to45(player.getYaw()) + 180.0f,
-                            0.0f
-                    );
                     itemDisplay.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.NONE);
 
                     if (
@@ -745,107 +812,125 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 });
     }
 
-    private @NotNull CustomDecor setHitBox(
-            final @NotNull String placer,
+    private Interaction @NotNull [] fillInteractions(
+            final @NotNull World world,
             final @NotNull ItemDisplay itemDisplay,
             final @NotNull MSBoundingBox msbb,
-            final BlockPos @NotNull [] blockPoses
+            final @NotNull MSPosition offset
     ) {
-        final World world = itemDisplay.getWorld();
-        final DecorHitBox.Type type = hitBox.getType();
-        final double x = this.hitBox.getX();
-        final double y = this.hitBox.getY();
-        final double z = this.hitBox.getZ();
-        final Interaction[] interactions =
-                fillInteractions(
-                        world,
-                        msbb,
-                        interaction -> {
-                            interaction.setInteractionHeight((float) y);
-                            interaction.setInteractionWidth(
-                                    x == z && x < 1.0d
-                                    ? (float) x
-                                    : 1.0f
-                            );
-                            interaction.setResponsive(false);
-                        },
-                        y > 0.0d
-                        ? 0.0d
-                        : -Math.ceil(y)
-                );
-
-        DecorHitBox.processInteractions(this, itemDisplay, interactions, msbb);
-
-        if (!type.isNone()) {
-            final var blocks = fillBlocks(placer, ((CraftWorld) world).getHandle(), blockPoses, type.getNMSBlock());
-
-            if (
-                    this.isLightable()
-                    || this.isLightTyped()
-            ) {
-                final int lightLevel = this.isLightTyped()
-                        ? this.getLightLevelOf(itemDisplay.getItemStack())
-                        : this.lightLevels[0];
-
-                for (final var currentBlock : blocks) {
-                    if (currentBlock.getBlockData() instanceof final Light light) {
-                        light.setLevel(lightLevel);
-                        currentBlock.setBlockData(light);
-                    }
-                }
-            }
-        }
-
-        return new CustomDecor(
-                this,
-                itemDisplay,
-                interactions,
-                msbb
+        final BlockPos[] spawnPoses = msbb.getBlockPositions(
+                0,
+                this.hitBox.getFacing() == Facing.CEILING
+                        ? (int) (this.hitBox.getY() - 1)
+                        : 0,
+                0,
+                0,
+                this.hitBox.getFacing() == Facing.CEILING
+                        ? 0
+                        : (int) (-this.hitBox.getY() + 1),
+                0
         );
-    }
-
-    private static Interaction @NotNull [] fillInteractions(
-            final @NotNull World world,
-            final @NotNull MSBoundingBox msbb,
-            final @NotNull Consumer<Interaction> function,
-            final double offsetY
-    ) {
-        final BlockPos[] blockPoses = msbb.getBlockPositions();
-        final int length = blockPoses.length;
+        final int length = spawnPoses.length;
         final Interaction[] interactions = new Interaction[length];
 
+        final float width = this.hitBox.getInteractionWidth();
+        final float height = this.hitBox.getInteractionHeight();
+
+        final double offsetX = offset.x();
+        final double offsetY = offset.y();
+        final double offsetZ = offset.z();
+
         for (int i = 0; i < length; ++i) {
-            final BlockPos blockPos = blockPoses[i];
+            final BlockPos blockPos = spawnPoses[i];
             interactions[i] = world.spawn(
                     new Location(
                             null,
-                            blockPos.getX() + 0.5d,
+                            blockPos.getX() + offsetX,
                             blockPos.getY() + offsetY,
-                            blockPos.getZ() + 0.5d
+                            blockPos.getZ() + offsetZ
                     ),
                     Interaction.class,
-                    function
+                    interaction -> {
+                        interaction.setInteractionHeight(height);
+                        interaction.setInteractionWidth(width);
+                        interaction.setResponsive(false);
+                    }
             );
         }
 
+        this.processInteractions(itemDisplay, interactions, msbb);
+
         return interactions;
+    }
+
+    private void processInteractions(
+            final @NotNull ItemDisplay display,
+            final Interaction @NotNull [] interactions,
+            final @NotNull MSBoundingBox msbb
+    ) {
+        final Interaction firstInteraction = interactions[0];
+        final String firstUUID = firstInteraction.getUniqueId().toString();
+        final PersistentDataContainer firstContainer = firstInteraction.getPersistentDataContainer();
+        final var uuids = new ArrayList<String>();
+
+        for (int i = 1; i < interactions.length; ++i) {
+            final Interaction interaction = interactions[i];
+
+            uuids.add(interaction.getUniqueId().toString());
+            interaction.getPersistentDataContainer().set(
+                    DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY,
+                    PersistentDataType.STRING,
+                    firstUUID
+            );
+        }
+
+        firstContainer.set(
+                CustomDecorType.TYPE_NAMESPACED_KEY,
+                PersistentDataType.STRING,
+                this.namespacedKey.getKey()
+        );
+
+        firstContainer.set(
+                DecorHitBox.HITBOX_DISPLAY_NAMESPACED_KEY,
+                PersistentDataType.STRING,
+                display.getUniqueId().toString()
+        );
+
+        firstContainer.set(
+                DecorHitBox.HITBOX_INTERACTIONS_NAMESPACED_KEY,
+                PersistentDataType.STRING,
+                String.join(",", uuids)
+        );
+
+        firstContainer.set(
+                DecorHitBox.HITBOX_BOUNDING_BOX_NAMESPACED_KEY,
+                PersistentDataType.STRING,
+                String.join(
+                        ",",
+                        String.valueOf(msbb.minX()),
+                        String.valueOf(msbb.minY()),
+                        String.valueOf(msbb.minZ()),
+                        String.valueOf(msbb.maxX()),
+                        String.valueOf(msbb.maxY()),
+                        String.valueOf(msbb.maxZ())
+                )
+        );
     }
 
     static @NotNull List<Block> fillBlocks(
             final @NotNull String placer,
             final @NotNull ServerLevel serverLevel,
             final BlockPos @NotNull [] blockPoses,
-            final @NotNull net.minecraft.world.level.block.Block block
+            final @NotNull BlockState fillBlockState
     ) {
         final var blockList = new ArrayList<Block>();
         final var list = new ArrayList<BlockPos>();
-        final BlockState fillBlockState = block.defaultBlockState();
         final Material fillMaterial = fillBlockState.getBukkitMaterial();
         final BlockData fillBlockData = fillBlockState.createCraftBlockData();
 
         for (final var blockPos : blockPoses) {
-            final Location location = LocationUtils.nmsToBukkit(blockPos, serverLevel);
             BlockState blockState = net.minecraft.world.level.block.Block.updateFromNeighbourShapes(fillBlockState, serverLevel, blockPos);
+            final Location location = LocationUtils.nmsToBukkit(blockPos, serverLevel);
 
             if (blockState.isAir()) {
                 blockState = fillBlockState;
@@ -903,15 +988,22 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         private SoundGroup soundGroup;
         private List<Map.Entry<RecipeBuilder<?>, Boolean>> recipeBuilderList;
         private EnumSet<DecorParameter> parameterSet;
-        private double sitHeight = Double.NaN;
+        private double sitHeight;
         private CustomDecorData.Type<D>[] types;
         private EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
         private int[] lightLevels;
         private Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
-        private Consumer<CustomDecorClickEvent> clickAction;
-        private Consumer<CustomDecorPlaceEvent> placeAction;
-        private Consumer<CustomDecorBreakEvent> breakAction;
+        private DecorClickAction clickAction;
+        private DecorPlaceAction placeAction;
+        private DecorBreakAction breakAction;
         private boolean dropsType;
+
+        public Builder() {
+            this.sitHeight = Double.NaN;
+            this.clickAction = DecorClickAction.NONE;
+            this.placeAction = DecorPlaceAction.NONE;
+            this.breakAction = DecorBreakAction.NONE;
+        }
 
         public @NotNull CustomDecorDataImpl<D> build() throws IllegalArgumentException {
             return new CustomDecorDataImpl<>() {
@@ -930,13 +1022,6 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
             if (this.hitBox == null) {
                 throw new IllegalArgumentException("Hit box is not set!");
-            }
-
-            if (
-                    isGreaterThanOneWithDecimal(this.hitBox.getX())
-                    || isGreaterThanOneWithDecimal(this.hitBox.getZ())
-            ) {
-                throw new IllegalArgumentException("Hit box x and z values cannot be greater than one with decimal!");
             }
 
             if (this.facing == null) {
@@ -1038,27 +1123,28 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 ) {
                     throw new IllegalArgumentException("Face type map is not set, but face typed parameter is set!");
                 }
+            } else {
+                this.parameterSet = EnumSet.noneOf(DecorParameter.class);
             }
 
-            if (this.clickAction == null) {
+            if (!this.clickAction.isSet()) {
                 if (
                         this.isWrenchable()
                         && this.isSittable()
                 ) {
-                    this.clickAction = DecorParameter.WRENCHABLE_SITTABLE_CLICK_ACTION;
+                    this.clickAction = DecorParameter.wrenchableSittableAction();
                 } else if (
                         this.isWrenchable()
                         && this.isLightable()
                 ) {
-                    this.clickAction = DecorParameter.WRENCHABLE_LIGHTABLE_CLICK_ACTION;
-                } else if (this.isSittable()) {
-                    this.clickAction = DecorParameter.SITTABLE_RIGHT_CLICK_ACTION;
-                } else if (this.isWrenchable()) {
-                    this.clickAction = DecorParameter.WRENCHABLE_RIGHT_CLICK_ACTION;
-                } else if (this.isLightTyped()) {
-                    this.clickAction = DecorParameter.LIGHT_TYPED_RIGHT_CLICK_ACTION;
-                } else if (this.isLightable()) {
-                    this.clickAction = DecorParameter.LIGHTABLE_RIGHT_CLICK_ACTION;
+                    this.clickAction = DecorParameter.wrenchableLightableAction();
+                } else {
+                    for (final var parameter : this.parameterSet) {
+                        if (parameter.getClickAction().isSet()) {
+                            this.clickAction = parameter.getClickAction();
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -1424,29 +1510,29 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public Consumer<CustomDecorClickEvent> clickAction() {
+        public DecorClickAction clickAction() {
             return this.clickAction;
         }
 
-        public @NotNull Builder clickAction(final @NotNull Consumer<CustomDecorClickEvent> rightClickAction) {
+        public @NotNull Builder clickAction(final @NotNull DecorClickAction rightClickAction) {
             this.clickAction = rightClickAction;
             return this;
         }
 
-        public Consumer<CustomDecorPlaceEvent> placeAction() {
+        public DecorPlaceAction placeAction() {
             return this.placeAction;
         }
 
-        public @NotNull Builder placeAction(final @NotNull Consumer<CustomDecorPlaceEvent> placeAction) {
+        public @NotNull Builder placeAction(final @NotNull DecorPlaceAction placeAction) {
             this.placeAction = placeAction;
             return this;
         }
 
-        public Consumer<CustomDecorBreakEvent> breakAction() {
+        public DecorBreakAction breakAction() {
             return this.breakAction;
         }
 
-        public @NotNull Builder breakAction(final @NotNull Consumer<CustomDecorBreakEvent> breakAction) {
+        public @NotNull Builder breakAction(final @NotNull DecorBreakAction breakAction) {
             this.breakAction = breakAction;
             return this;
         }
@@ -1510,11 +1596,6 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                             || this.isLightTyped()
                             || this.isFaceTyped()
                     );
-        }
-
-        private static boolean isGreaterThanOneWithDecimal(final double value) {
-            return (value > 1.0d && Math.floor(value) - value != 0.0d)
-                    || (value < -1.0d && Math.ceil(value) - value != 0.0d);
         }
 
         private void putLightLevelType(
