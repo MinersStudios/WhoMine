@@ -215,7 +215,7 @@ public final class CustomDecor {
 
             switch (key.getKey()) {
                 case CustomDecorType.TYPE_TAG_NAME -> data = CustomDecorData.fromKey(value).orElse(null);
-                case DecorHitBox.HITBOX_DISPLAY -> {
+                case DecorHitBox.HITBOX_DISPLAY_KEY -> {
                     try {
                         if (interaction.getWorld().getEntity(UUID.fromString(value)) instanceof final ItemDisplay itemDisplay) {
                             display = itemDisplay;
@@ -224,7 +224,7 @@ public final class CustomDecor {
                         return null;
                     }
                 }
-                case DecorHitBox.HITBOX_INTERACTIONS -> {
+                case DecorHitBox.HITBOX_INTERACTIONS_KEY -> {
                     for (final var uuid : value.split(",")) {
                         try {
                             if (interaction.getWorld().getEntity(UUID.fromString(uuid)) instanceof final Interaction child) {
@@ -235,7 +235,7 @@ public final class CustomDecor {
                         }
                     }
                 }
-                case DecorHitBox.HITBOX_BOUNDING_BOX -> {
+                case DecorHitBox.HITBOX_BOUNDING_BOX_KEY -> {
                     final String[] coordinates = value.split(",");
 
                     if (coordinates.length != 6) return null;

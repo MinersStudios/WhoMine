@@ -111,34 +111,34 @@ public final class MSPosition implements Cloneable {
     }
 
     @Contract("_ -> new")
-    public static @NotNull MSPosition of(final @NotNull Position pos) {
+    public static @NotNull MSPosition of(final @NotNull MSVector vec) {
         return of(
                 null,
-                pos
+                vec
         );
     }
 
     @Contract("_, _ -> new")
     public static @NotNull MSPosition of(
             final @Nullable World world,
-            final @NotNull Position pos
+            final @NotNull MSVector vec
     ) {
         return of(
                 world,
-                pos,
+                vec,
                 0.0f, 0.0f
         );
     }
 
     @Contract("_, _, _ -> new")
     public static @NotNull MSPosition of(
-            final @NotNull Position pos,
+            final @NotNull MSVector vec,
             final float pitch,
             final float yaw
     ) {
         return of(
                 null,
-                pos,
+                vec,
                 pitch, yaw
         );
     }
@@ -146,13 +146,60 @@ public final class MSPosition implements Cloneable {
     @Contract("_, _, _, _ -> new")
     public static @NotNull MSPosition of(
             final @Nullable World world,
-            final @NotNull Position pos,
+            final @NotNull MSVector vec,
             final float pitch,
             final float yaw
     ) {
         return of(
                 world,
-                pos.x(), pos.y(), pos.z(),
+                vec.x(), vec.y(), vec.z(),
+                pitch, yaw
+        );
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull MSPosition of(final @NotNull Vector vec) {
+        return of(
+                null,
+                vec
+        );
+    }
+
+    @Contract("_, _ -> new")
+    public static @NotNull MSPosition of(
+            final @Nullable World world,
+            final @NotNull Vector vec
+    ) {
+        return of(
+                world,
+                vec,
+                0.0f, 0.0f
+        );
+    }
+
+    @Contract("_, _, _ -> new")
+    public static @NotNull MSPosition of(
+            final @NotNull Vector vec,
+            final float pitch,
+            final float yaw
+    ) {
+        return of(
+                null,
+                vec,
+                pitch, yaw
+        );
+    }
+
+    @Contract("_, _, _, _ -> new")
+    public static @NotNull MSPosition of(
+            final @Nullable World world,
+            final @NotNull Vector vec,
+            final float pitch,
+            final float yaw
+    ) {
+        return of(
+                world,
+                vec.getX(), vec.getY(), vec.getZ(),
                 pitch, yaw
         );
     }
@@ -200,6 +247,53 @@ public final class MSPosition implements Cloneable {
         return of(
                 world,
                 vec.getX(), vec.getY(), vec.getZ(),
+                pitch, yaw
+        );
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull MSPosition of(final @NotNull Position pos) {
+        return of(
+                null,
+                pos
+        );
+    }
+
+    @Contract("_, _ -> new")
+    public static @NotNull MSPosition of(
+            final @Nullable World world,
+            final @NotNull Position pos
+    ) {
+        return of(
+                world,
+                pos,
+                0.0f, 0.0f
+        );
+    }
+
+    @Contract("_, _, _ -> new")
+    public static @NotNull MSPosition of(
+            final @NotNull Position pos,
+            final float pitch,
+            final float yaw
+    ) {
+        return of(
+                null,
+                pos,
+                pitch, yaw
+        );
+    }
+
+    @Contract("_, _, _, _ -> new")
+    public static @NotNull MSPosition of(
+            final @Nullable World world,
+            final @NotNull Position pos,
+            final float pitch,
+            final float yaw
+    ) {
+        return of(
+                world,
+                pos.x(), pos.y(), pos.z(),
                 pitch, yaw
         );
     }
@@ -298,54 +392,7 @@ public final class MSPosition implements Cloneable {
         );
     }
 
-    @Contract("_ -> new")
-    public static @NotNull MSPosition of(final @NotNull Vector vec) {
-        return of(
-                null,
-                vec
-        );
-    }
-
-    @Contract("_, _ -> new")
-    public static @NotNull MSPosition of(
-            final @Nullable World world,
-            final @NotNull Vector vec
-    ) {
-        return of(
-                world,
-                vec,
-                0.0f, 0.0f
-        );
-    }
-
-    @Contract("_, _, _ -> new")
-    public static @NotNull MSPosition of(
-            final @NotNull Vector vec,
-            final float pitch,
-            final float yaw
-    ) {
-        return of(
-                null,
-                vec,
-                pitch, yaw
-        );
-    }
-
-    @Contract("_, _, _, _ -> new")
-    public static @NotNull MSPosition of(
-            final @Nullable World world,
-            final @NotNull Vector vec,
-            final float pitch,
-            final float yaw
-    ) {
-        return of(
-                world,
-                vec.getX(), vec.getY(), vec.getZ(),
-                pitch, yaw
-        );
-    }
-
-    public World world() {
+    public @Nullable World world() {
         return this.world == null
                 ? null
                 : this.world.get();
@@ -422,6 +469,18 @@ public final class MSPosition implements Cloneable {
         return (int) this.z;
     }
 
+    public @NotNull MSPosition offset(final @NotNull MSVector vec) {
+        return this.offset(vec.x(), vec.y(), vec.z());
+    }
+
+    public @NotNull MSPosition offset(final @NotNull Vector vec) {
+        return this.offset(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    public @NotNull MSPosition offset(final @NotNull Vec3i vec) {
+        return this.offset(vec.getX(), vec.getY(), vec.getZ());
+    }
+
     public @NotNull MSPosition offset(final @NotNull MSPosition pos) {
         return this.offset(pos.x(), pos.y(), pos.z());
     }
@@ -430,16 +489,8 @@ public final class MSPosition implements Cloneable {
         return this.offset(pos.x(), pos.y(), pos.z());
     }
 
-    public @NotNull MSPosition offset(final @NotNull Vec3i vec) {
-        return this.offset(vec.getX(), vec.getY(), vec.getZ());
-    }
-
     public @NotNull MSPosition offset(final @NotNull io.papermc.paper.math.Position pos) {
         return this.offset(pos.x(), pos.y(), pos.z());
-    }
-
-    public @NotNull MSPosition offset(final @NotNull Vector vec) {
-        return this.offset(vec.getX(), vec.getY(), vec.getZ());
     }
 
     public @NotNull MSPosition offset(final double value) {
@@ -511,12 +562,12 @@ public final class MSPosition implements Cloneable {
             final double y,
             final double z
     ) {
-        final Vector vector = new Vector(x, y, -z);
+        MSVector vector = MSVector.of(x, y, -z);
 
         if (!Float.isNaN(this.yaw)) {
             final float normalizedYaw = LocationUtils.normalize360(this.yaw);
 
-            vector.rotateAroundY(
+            vector = vector.rotateAroundY(
                     Math.toRadians(
                             (normalizedYaw >= 0 && normalizedYaw <= 45)
                             || (normalizedYaw >= 180 && normalizedYaw <= 225)
@@ -529,7 +580,7 @@ public final class MSPosition implements Cloneable {
         if (!Float.isNaN(this.pitch)) {
             final float normalizedPitch = LocationUtils.normalize360(this.pitch);
 
-            vector.rotateAroundX(
+            vector = vector.rotateAroundX(
                     Math.toRadians(
                             (normalizedPitch >= 0 && normalizedPitch <= 45)
                             || (normalizedPitch >= 180 && normalizedPitch <= 225)
@@ -552,9 +603,11 @@ public final class MSPosition implements Cloneable {
             final double z
     ) {
         final MSPosition clone = this.clone();
+
         clone.x *= x;
         clone.y *= y;
         clone.z *= z;
+
         return clone;
     }
 
@@ -568,33 +621,41 @@ public final class MSPosition implements Cloneable {
             final double z
     ) {
         final MSPosition clone = this.clone();
+
         clone.x /= x;
         clone.y /= y;
         clone.z /= z;
+
         return clone;
     }
 
     public @NotNull MSPosition zero() {
         final MSPosition clone = this.clone();
+
         clone.x = 0.0d;
         clone.y = 0.0d;
         clone.z = 0.0d;
+
         return clone;
     }
 
     public @NotNull MSPosition block() {
         final MSPosition clone = this.clone();
+
         clone.x = this.blockX();
         clone.y = this.blockY();
         clone.z = this.blockZ();
+
         return clone;
     }
 
     public @NotNull MSPosition center() {
         final MSPosition clone = this.clone();
+
         clone.x = this.blockX() + 0.5;
         clone.y = this.blockY() + 0.5;
         clone.z = this.blockZ() + 0.5;
+
         return clone;
     }
 
@@ -639,6 +700,18 @@ public final class MSPosition implements Cloneable {
                 + Math.pow(this.z, 2.0d);
     }
 
+    public double distance(final @NotNull MSVector vec) {
+        return this.distance(vec.x(), vec.y(), vec.z());
+    }
+
+    public double distance(final @NotNull Vector vec) {
+        return this.distance(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    public double distance(final @NotNull Vec3i vec) {
+        return this.distance(vec.getX(), vec.getY(), vec.getZ());
+    }
+
     public double distance(final @NotNull MSPosition pos) {
         return this.distance(pos.x(), pos.y(), pos.z());
     }
@@ -647,16 +720,8 @@ public final class MSPosition implements Cloneable {
         return this.distance(pos.x(), pos.y(), pos.z());
     }
 
-    public double distance(final @NotNull Vec3i vec) {
-        return this.distance(vec.getX(), vec.getY(), vec.getZ());
-    }
-
     public double distance(final @NotNull io.papermc.paper.math.Position pos) {
         return this.distance(pos.x(), pos.y(), pos.z());
-    }
-
-    public double distance(final @NotNull Vector vec) {
-        return this.distance(vec.getX(), vec.getY(), vec.getZ());
     }
 
     public double distance(
@@ -667,6 +732,18 @@ public final class MSPosition implements Cloneable {
         return Math.sqrt(this.distanceSquared(x, y, z));
     }
 
+    public double distanceSquared(final @NotNull MSVector vec) {
+        return this.distanceSquared(vec.x(), vec.y(), vec.z());
+    }
+
+    public double distanceSquared(final @NotNull Vector vec) {
+        return this.distanceSquared(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    public double distanceSquared(final @NotNull Vec3i vec) {
+        return this.distanceSquared(vec.getX(), vec.getY(), vec.getZ());
+    }
+
     public double distanceSquared(final @NotNull MSPosition pos) {
         return this.distanceSquared(pos.x(), pos.y(), pos.z());
     }
@@ -675,16 +752,8 @@ public final class MSPosition implements Cloneable {
         return this.distanceSquared(pos.x(), pos.y(), pos.z());
     }
 
-    public double distanceSquared(final @NotNull Vec3i vec) {
-        return this.distanceSquared(vec.getX(), vec.getY(), vec.getZ());
-    }
-
     public double distanceSquared(final @NotNull io.papermc.paper.math.Position pos) {
         return this.distanceSquared(pos.x(), pos.y(), pos.z());
-    }
-
-    public double distanceSquared(final @NotNull Vector vec) {
-        return this.distanceSquared(vec.getX(), vec.getY(), vec.getZ());
     }
 
     public double distanceSquared(
@@ -697,7 +766,7 @@ public final class MSPosition implements Cloneable {
                 + Math.pow(this.z - z, 2.0d);
     }
 
-    public LevelChunk getNMSChunk() {
+    public @Nullable LevelChunk getNMSChunk() {
         final World world = this.world();
         return world == null
                 ? null
@@ -711,7 +780,7 @@ public final class MSPosition implements Cloneable {
         );
     }
 
-    public Chunk getChunk() {
+    public @Nullable Chunk getChunk() {
         final World world = this.world();
         return world == null
                 ? null
@@ -725,7 +794,7 @@ public final class MSPosition implements Cloneable {
         );
     }
 
-    public BlockState getNMSBlockState() {
+    public @Nullable BlockState getNMSBlockState() {
         final World world = this.world();
         return world == null
                 ? null
@@ -742,7 +811,7 @@ public final class MSPosition implements Cloneable {
         );
     }
 
-    public Block getBlock() {
+    public @Nullable Block getBlock() {
         final World world = this.world();
         return world == null
                 ? null
@@ -1013,53 +1082,6 @@ public final class MSPosition implements Cloneable {
         );
     }
 
-    public @NotNull Location toLocation() {
-        return new Location(
-                this.world == null
-                        ? null
-                        : this.world.get(),
-                this.x, this.y, this.z,
-                this.yaw, this.pitch
-        );
-    }
-
-    public @NotNull Location toLocation(final @Nullable World world) {
-        return new Location(
-                world,
-                this.x, this.y, this.z,
-                this.yaw, this.pitch
-        );
-    }
-
-    public @NotNull Vector toVector() {
-        return new Vector(this.x, this.y, this.z);
-    }
-
-    public @NotNull Vec3 toVec3() {
-        return new Vec3(this.x, this.y, this.z);
-    }
-
-    public @NotNull Vec3i toVec3i() {
-        return new Vec3i((int) this.x, (int) this.y, (int) this.z);
-    }
-
-    public @NotNull BlockPos toBlockPos() {
-        return new BlockPos(this.blockX(), this.blockY(), this.blockZ());
-    }
-
-    public @NotNull MSBoundingBox toBoundingBox() {
-        return MSBoundingBox.of(this);
-    }
-
-    @Override
-    public @NotNull MSPosition clone() {
-        try {
-            return (MSPosition) super.clone();
-        } catch (final CloneNotSupportedException e) {
-            throw new AssertionError("An error occurred while cloning an MSPosition", e);
-        }
-    }
-
     @Override
     public int hashCode() {
         int hash = 3;
@@ -1093,6 +1115,15 @@ public final class MSPosition implements Cloneable {
     }
 
     @Override
+    public @NotNull MSPosition clone() {
+        try {
+            return (MSPosition) super.clone();
+        } catch (final CloneNotSupportedException e) {
+            throw new AssertionError("An error occurred while cloning an MSPosition", e);
+        }
+    }
+
+    @Override
     public @NotNull String toString() {
         return "MSPosition{" +
                 "world=" + (this.world == null ? null : this.world.get()) +
@@ -1104,7 +1135,59 @@ public final class MSPosition implements Cloneable {
                 '}';
     }
 
+    @Contract(" -> new")
+    public @NotNull Location toLocation() {
+        return new Location(
+                this.world == null
+                        ? null
+                        : this.world.get(),
+                this.x, this.y, this.z,
+                this.yaw, this.pitch
+        );
+    }
+
+    @Contract("_ -> new")
+    public @NotNull Location toLocation(final @Nullable World world) {
+        return new Location(
+                world,
+                this.x, this.y, this.z,
+                this.yaw, this.pitch
+        );
+    }
+
+    @Contract(" -> new")
+    public @NotNull MSVector toMSVector() {
+        return MSVector.of(this);
+    }
+
+    @Contract(" -> new")
+    public @NotNull Vector toVector() {
+        return new Vector(this.x, this.y, this.z);
+    }
+
+    @Contract(" -> new")
+    public @NotNull Vec3 toVec3() {
+        return new Vec3(this.x, this.y, this.z);
+    }
+
+    @Contract(" -> new")
+    public @NotNull Vec3i toVec3i() {
+        return new Vec3i((int) this.x, (int) this.y, (int) this.z);
+    }
+
+    @Contract(" -> new")
+    public @NotNull BlockPos toBlockPos() {
+        return new BlockPos(this.blockX(), this.blockY(), this.blockZ());
+    }
+
+    @Contract(" -> new")
+    public @NotNull MSBoundingBox toBoundingBox() {
+        return MSBoundingBox.of(this);
+    }
+
     public void checkFinite() throws IllegalArgumentException {
-        if (!this.isFinite()) throw new IllegalArgumentException("Location is not finite");
+        if (!this.isFinite()) {
+            throw new IllegalArgumentException("Location is not finite");
+        }
     }
 }

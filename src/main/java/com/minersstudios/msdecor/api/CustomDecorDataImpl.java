@@ -3,6 +3,7 @@ package com.minersstudios.msdecor.api;
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
+import com.minersstudios.mscore.location.MSVector;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.mscore.util.*;
 import com.minersstudios.msdecor.MSDecor;
@@ -603,8 +604,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     ) {
         if (!this.getFacing().hasFace(blockFace)) return;
 
-        final CraftWorld world = (CraftWorld) player.getWorld();
-        final ServerLevel serverLevel = world.getHandle();
+        final ServerLevel serverLevel = ((CraftWorld) player.getWorld()).getHandle();
         final MSBoundingBox msbb = this.hitBox.getBoundingBox(blockLocation, player.getYaw());
         final var blockStates = new ArrayList<org.bukkit.block.BlockState>();
         final BlockPos[] blocksToReplace = msbb.getBlockPositions();
@@ -636,15 +636,14 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             itemInHand.setItemMeta(itemMeta);
         }
 
+        final float rotation = player.getYaw();
         final CustomDecorPlaceEvent event = new CustomDecorPlaceEvent(
-                this.setHitBox(
+                this.placeInWorld(
                         player.getName(),
-                        blockLocation,
-                        player.getYaw(),
-                        blockFace,
-                        itemInHand,
+                        this.summonItem(blockLocation.yaw(rotation), blockFace, itemInHand),
                         msbb,
-                        blocksToReplace
+                        blocksToReplace,
+                        rotation
                 ),
                 player,
                 hand == null ? EquipmentSlot.HAND : hand,
@@ -696,24 +695,25 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
     }
 
-    private @NotNull CustomDecor setHitBox(
-            final @NotNull String placer,
-            final @NotNull MSPosition itemDisplayPosition,
-            final float yaw,
-            final @NotNull BlockFace blockFace,
-            final @NotNull ItemStack item,
-            final @NotNull MSBoundingBox msbb,
-            final BlockPos @NotNull [] blockPoses
+    private @NotNull CustomDecor placeInWorld(
+            final @NotNull String placerName,
+            final @NotNull ItemDisplay itemDisplay,
+            final @NotNull MSBoundingBox boundingBox,
+            final BlockPos @NotNull [] replacePositions,
+            final float rotation
     ) {
-        final ItemDisplay itemDisplay = this.summonItem(itemDisplayPosition.yaw(yaw), blockFace, item);
-        final World world = itemDisplay.getWorld();
+        final Interaction[] interactions = this.fillInteractions(
+                itemDisplay,
+                boundingBox,
+                this.hitBox.getVectorInBlock(rotation)
+        );
         final DecorHitBox.Type type = this.hitBox.getType();
 
         if (!type.isNone()) {
             final var blocks = fillBlocks(
-                    placer,
-                    ((CraftWorld) world).getHandle(),
-                    blockPoses,
+                    placerName,
+                    ((CraftWorld) itemDisplay.getWorld()).getHandle(),
+                    replacePositions,
                     type.getNMSMaterial().defaultBlockState()
             );
 
@@ -735,17 +735,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             }
         }
 
-        return new CustomDecor(
-                this,
-                itemDisplay,
-                this.fillInteractions(
-                        world,
-                        itemDisplay,
-                        msbb,
-                        this.hitBox.getPositionInBlock(yaw)
-                ),
-                msbb
-        );
+        return new CustomDecor(this, itemDisplay, interactions, boundingBox);
     }
 
     private @NotNull ItemDisplay summonItem(
@@ -753,6 +743,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final @NotNull BlockFace blockFace,
             final @NotNull ItemStack item
     ) {
+        final World world = position.world();
+
+        if (world == null) {
+            throw new IllegalArgumentException("The world of the position cannot be null!");
+        }
+
         final ItemStack itemStack = item.clone();
         final ItemMeta itemMeta = itemStack.getItemMeta();
         final CustomDecorData.Type<D> type;
@@ -769,7 +765,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             type = null;
         }
 
-        return Objects.requireNonNull(position.world()).spawn(
+        return world.spawn(
                 position.center()
                 .offset(
                         this.hitBox.getModelOffsetX(),
@@ -813,12 +809,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     private Interaction @NotNull [] fillInteractions(
-            final @NotNull World world,
             final @NotNull ItemDisplay itemDisplay,
-            final @NotNull MSBoundingBox msbb,
-            final @NotNull MSPosition offset
+            final @NotNull MSBoundingBox boundingBox,
+            final @NotNull MSVector offset
     ) {
-        final BlockPos[] spawnPoses = msbb.getBlockPositions(
+        final World world = itemDisplay.getWorld();
+        final BlockPos[] spawnPoses = boundingBox.getBlockPositions(
                 0,
                 this.hitBox.getFacing() == Facing.CEILING
                         ? (int) (this.hitBox.getY() - 1)
@@ -858,7 +854,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             );
         }
 
-        this.processInteractions(itemDisplay, interactions, msbb);
+        this.processInteractions(itemDisplay, interactions, boundingBox);
 
         return interactions;
     }
@@ -918,9 +914,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     static @NotNull List<Block> fillBlocks(
-            final @NotNull String placer,
+            final @NotNull String changerName,
             final @NotNull ServerLevel serverLevel,
-            final BlockPos @NotNull [] blockPoses,
+            final BlockPos @NotNull [] replacePositions,
             final @NotNull BlockState fillBlockState
     ) {
         final var blockList = new ArrayList<Block>();
@@ -928,7 +924,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final Material fillMaterial = fillBlockState.getBukkitMaterial();
         final BlockData fillBlockData = fillBlockState.createCraftBlockData();
 
-        for (final var blockPos : blockPoses) {
+        for (final var blockPos : replacePositions) {
             BlockState blockState = net.minecraft.world.level.block.Block.updateFromNeighbourShapes(fillBlockState, serverLevel, blockPos);
             final Location location = LocationUtils.nmsToBukkit(blockPos, serverLevel);
 
@@ -936,7 +932,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 blockState = fillBlockState;
             } else {
                 MSDecor.getCoreProtectAPI().logRemoval(
-                        placer,
+                        changerName,
                         location,
                         blockState.getBukkitMaterial(),
                         blockState.createCraftBlockData()
@@ -949,7 +945,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
             if (!fillMaterial.isAir()) {
                 MSDecor.getCoreProtectAPI().logPlacement(
-                        placer,
+                        changerName,
                         location,
                         fillMaterial,
                         fillBlockData

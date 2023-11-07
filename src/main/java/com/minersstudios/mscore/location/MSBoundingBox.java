@@ -15,6 +15,7 @@ import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Entity;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,12 +30,12 @@ import java.util.function.Predicate;
 @SuppressWarnings("UnstableApiUsage")
 @Immutable
 public final class MSBoundingBox {
-    final double minX;
-    final double minY;
-    final double minZ;
-    final double maxX;
-    final double maxY;
-    final double maxZ;
+    private final double minX;
+    private final double minY;
+    private final double minZ;
+    private final double maxX;
+    private final double maxY;
+    private final double maxZ;
 
     private static final int REGION_SHIFT = 5;
     private static final int REGION_MASK = (1 << REGION_SHIFT) - 1;
@@ -118,10 +119,26 @@ public final class MSBoundingBox {
     }
 
     @Contract("_ -> new")
-    public static @NotNull MSBoundingBox of(final @NotNull io.papermc.paper.math.Position pos) {
+    public static @NotNull MSBoundingBox of(final @NotNull MSVector vec) {
         return ofDummy(
-                pos.x(), pos.y(), pos.z(),
-                pos.x(), pos.y(), pos.z()
+                vec.x(), vec.y(), vec.z(),
+                vec.x(), vec.y(), vec.z()
+        );
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull MSBoundingBox of(final @NotNull Vector vec) {
+        return ofDummy(
+                vec.getX(), vec.getY(), vec.getZ(),
+                vec.getX(), vec.getY(), vec.getZ()
+        );
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull MSBoundingBox of(final @NotNull Vec3i vec) {
+        return ofDummy(
+                vec.getX(), vec.getY(), vec.getZ(),
+                vec.getX(), vec.getY(), vec.getZ()
         );
     }
 
@@ -142,10 +159,43 @@ public final class MSBoundingBox {
     }
 
     @Contract("_ -> new")
-    public static @NotNull MSBoundingBox of(final @NotNull Vec3i vec3i) {
+    public static @NotNull MSBoundingBox of(final @NotNull io.papermc.paper.math.Position pos) {
         return ofDummy(
-                vec3i.getX(), vec3i.getY(), vec3i.getZ(),
-                vec3i.getX(), vec3i.getY(), vec3i.getZ()
+                pos.x(), pos.y(), pos.z(),
+                pos.x(), pos.y(), pos.z()
+        );
+    }
+
+    @Contract("_, _ -> new")
+    public static @NotNull MSBoundingBox of(
+            final @NotNull MSVector first,
+            final @NotNull MSVector second
+    ) {
+        return of(
+                first.x(), first.y(), first.z(),
+                second.x(), second.y(), second.z()
+        );
+    }
+
+    @Contract("_, _ -> new")
+    public static @NotNull MSBoundingBox of(
+            final @NotNull Vector first,
+            final @NotNull Vector second
+    ) {
+        return of(
+                first.getX(), first.getY(), first.getZ(),
+                second.getX(), second.getY(), second.getZ()
+        );
+    }
+
+    @Contract("_, _ -> new")
+    public static @NotNull MSBoundingBox of(
+            final @NotNull Vec3i first,
+            final @NotNull Vec3i second
+    ) {
+        return of(
+                first.getX(), first.getY(), first.getZ(),
+                second.getX(), second.getY(), second.getZ()
         );
     }
 
@@ -173,23 +223,51 @@ public final class MSBoundingBox {
 
     @Contract("_, _ -> new")
     public static @NotNull MSBoundingBox of(
-            final @NotNull Vec3i first,
-            final @NotNull Vec3i second
-    ) {
-        return of(
-                first.getX(), first.getY(), first.getZ(),
-                second.getX(), second.getY(), second.getZ()
-        );
-    }
-
-    @Contract("_, _ -> new")
-    public static @NotNull MSBoundingBox of(
             final @NotNull io.papermc.paper.math.Position first,
             final @NotNull io.papermc.paper.math.Position second
     ) {
         return of(
                 first.x(), first.y(), first.z(),
                 second.x(), second.y(), second.z()
+        );
+    }
+
+    @Contract("_, _, _, _ -> new")
+    public static @NotNull MSBoundingBox ofSize(
+            final @NotNull MSVector vec,
+            final double dx,
+            final double dy,
+            final double dz
+    ) {
+        return ofSize(
+                vec.x(), vec.y(), vec.z(),
+                dx, dy, dz
+        );
+    }
+
+    @Contract("_, _, _, _ -> new")
+    public static @NotNull MSBoundingBox ofSize(
+            final @NotNull Vector vec,
+            final double dx,
+            final double dy,
+            final double dz
+    ) {
+        return ofSize(
+                vec.getX(), vec.getY(), vec.getZ(),
+                dx, dy, dz
+        );
+    }
+
+    @Contract("_, _, _, _ -> new")
+    public static @NotNull MSBoundingBox ofSize(
+            final @NotNull Vec3i vec,
+            final double dx,
+            final double dy,
+            final double dz
+    ) {
+        return ofSize(
+                vec.getX(), vec.getY(), vec.getZ(),
+                dx, dy, dz
         );
     }
 
@@ -215,19 +293,6 @@ public final class MSBoundingBox {
     ) {
         return ofSize(
                 pos.x(), pos.y(), pos.z(),
-                dx, dy, dz
-        );
-    }
-
-    @Contract("_, _, _, _ -> new")
-    public static @NotNull MSBoundingBox ofSize(
-            final @NotNull Vec3i vec3i,
-            final double dx,
-            final double dy,
-            final double dz
-    ) {
-        return ofSize(
-                vec3i.getX(), vec3i.getY(), vec3i.getZ(),
                 dx, dy, dz
         );
     }
@@ -300,66 +365,9 @@ public final class MSBoundingBox {
         );
     }
 
-    public @NotNull MSPosition min() {
-        return MSPosition.of(this.minX, this.minY, this.minZ);
-    }
-
-    public @NotNull MSBoundingBox min(final @NotNull MSPosition pos) {
-        return this.min(pos.x(), pos.y(), pos.z());
-    }
-
-    public @NotNull MSBoundingBox min(final @NotNull Position pos) {
-        return this.min(pos.x(), pos.y(), pos.z());
-    }
-
-    public @NotNull MSBoundingBox min(final @NotNull Vec3i vec3i) {
-        return this.min(vec3i.getX(), vec3i.getY(), vec3i.getZ());
-    }
-
-    public @NotNull MSBoundingBox min(final @NotNull io.papermc.paper.math.Position pos) {
-        return this.min(pos.x(), pos.y(), pos.z());
-    }
-
-    public @NotNull MSBoundingBox min(
-            final double x,
-            final double y,
-            final double z
-    ) {
-        return of(
-                x, y, z,
-                this.maxX, this.maxY, this.maxZ
-        );
-    }
-
-    public @NotNull MSPosition max() {
-        return MSPosition.of(this.maxX, this.maxY, this.maxZ);
-    }
-
-    public @NotNull MSBoundingBox max(final @NotNull MSPosition pos) {
-        return this.max(pos.x(), pos.y(), pos.z());
-    }
-
-    public @NotNull MSBoundingBox max(final @NotNull Position pos) {
-        return this.max(pos.x(), pos.y(), pos.z());
-    }
-
-    public @NotNull MSBoundingBox max(final @NotNull Vec3i vec3i) {
-        return this.max(vec3i.getX(), vec3i.getY(), vec3i.getZ());
-    }
-
-    public @NotNull MSBoundingBox max(final @NotNull io.papermc.paper.math.Position pos) {
-        return this.max(pos.x(), pos.y(), pos.z());
-    }
-
-    public @NotNull MSBoundingBox max(
-            final double x,
-            final double y,
-            final double z
-    ) {
-        return of(
-                this.minX, this.minY, this.minZ,
-                x, y, z
-        );
+    @Contract(" -> new")
+    public @NotNull MSVector min() {
+        return MSVector.of(this.minX, this.minY, this.minZ);
     }
 
     public double maxX() {
@@ -396,6 +404,123 @@ public final class MSBoundingBox {
                 this.minX, this.minY, Math.min(maxZ, this.minZ),
                 this.maxX, this.maxY, Math.max(maxZ, this.minZ)
         );
+    }
+
+    @Contract(" -> new")
+    public @NotNull MSVector max() {
+        return MSVector.of(this.maxX, this.maxY, this.maxZ);
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox min(final @NotNull MSVector vec) {
+        return this.min(vec.x(), vec.y(), vec.z());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox min(final @NotNull Vector vec) {
+        return this.min(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox min(final @NotNull Vec3i vec) {
+        return this.min(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox min(final @NotNull MSPosition pos) {
+        return this.min(pos.x(), pos.y(), pos.z());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox min(final @NotNull Position pos) {
+        return this.min(pos.x(), pos.y(), pos.z());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox min(final @NotNull io.papermc.paper.math.Position pos) {
+        return this.min(pos.x(), pos.y(), pos.z());
+    }
+
+    @Contract("_, _, _ -> new")
+    public @NotNull MSBoundingBox min(
+            final double x,
+            final double y,
+            final double z
+    ) {
+        return of(
+                x, y, z,
+                this.maxX, this.maxY, this.maxZ
+        );
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox max(final @NotNull MSVector vec) {
+        return this.max(vec.x(), vec.y(), vec.z());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox max(final @NotNull Vector vec) {
+        return this.max(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox max(final @NotNull Vec3i vec) {
+        return this.max(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox max(final @NotNull MSPosition pos) {
+        return this.max(pos.x(), pos.y(), pos.z());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox max(final @NotNull Position pos) {
+        return this.max(pos.x(), pos.y(), pos.z());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox max(final @NotNull io.papermc.paper.math.Position pos) {
+        return this.max(pos.x(), pos.y(), pos.z());
+    }
+
+    @Contract("_, _, _ -> new")
+    public @NotNull MSBoundingBox max(
+            final double x,
+            final double y,
+            final double z
+    ) {
+        return of(
+                this.minX, this.minY, this.minZ,
+                x, y, z
+        );
+    }
+
+    public double centerX() {
+        return this.minX + 0.5D * this.sizeX();
+    }
+
+    public double centerY() {
+        return this.minY + 0.5D * this.sizeY();
+    }
+
+    public double centerZ() {
+        return this.minZ + 0.5D * this.sizeZ();
+    }
+
+    public double sizeX() {
+        return this.maxX - this.minX;
+    }
+
+    public double sizeY() {
+        return this.maxY - this.minY;
+    }
+
+    public double sizeZ() {
+        return this.maxZ - this.minZ;
+    }
+
+    public double volume() {
+        return this.sizeX() * this.sizeY() * this.sizeZ();
     }
 
     @Contract("_ -> new")
@@ -547,6 +672,21 @@ public final class MSBoundingBox {
     }
 
     @Contract("_ -> new")
+    public @NotNull MSBoundingBox move(final @NotNull MSVector vec) {
+        return this.move(vec.x(), vec.y(), vec.z());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox move(final @NotNull Vec3i vec) {
+        return this.move(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    @Contract("_ -> new")
+    public @NotNull MSBoundingBox move(final @NotNull Vector vec) {
+        return this.move(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    @Contract("_ -> new")
     public @NotNull MSBoundingBox move(final @NotNull MSPosition pos) {
         return this.move(pos.x(), pos.y(), pos.z());
     }
@@ -554,11 +694,6 @@ public final class MSBoundingBox {
     @Contract("_ -> new")
     public @NotNull MSBoundingBox move(final @NotNull Position pos) {
         return this.move(pos.x(), pos.y(), pos.z());
-    }
-
-    @Contract("_ -> new")
-    public @NotNull MSBoundingBox move(final @NotNull Vec3i vec3i) {
-        return this.move(vec3i.getX(), vec3i.getY(), vec3i.getZ());
     }
 
     @Contract("_ -> new")
@@ -578,37 +713,9 @@ public final class MSBoundingBox {
         );
     }
 
-    public double centerX() {
-        return this.minX + 0.5D * this.sizeX();
-    }
-
-    public double centerY() {
-        return this.minY + 0.5D * this.sizeY();
-    }
-
-    public double centerZ() {
-        return this.minZ + 0.5D * this.sizeZ();
-    }
-
-    public double sizeX() {
-        return this.maxX - this.minX;
-    }
-
-    public double sizeY() {
-        return this.maxY - this.minY;
-    }
-
-    public double sizeZ() {
-        return this.maxZ - this.minZ;
-    }
-
-    public double volume() {
-        return this.sizeX() * this.sizeY() * this.sizeZ();
-    }
-
     @Contract(" -> new")
-    public @NotNull MSPosition getCenter() {
-        return MSPosition.of(this.centerX(), this.centerY(), this.centerZ());
+    public @NotNull MSVector getCenter() {
+        return MSVector.of(this.centerX(), this.centerY(), this.centerZ());
     }
 
     @Contract("_ -> new")
@@ -630,6 +737,30 @@ public final class MSBoundingBox {
         return this.getBlockStates(BlockState.class, world);
     }
 
+    public MSVector @NotNull [] getMSVectors() {
+        return getPositions(
+                MSVector.class,
+                (int) this.minX, (int) this.minY, (int) this.minZ,
+                (int) this.maxX, (int) this.maxY, (int) this.maxZ
+        );
+    }
+
+    public Vector @NotNull [] getVectors() {
+        return getPositions(
+                Vector.class,
+                (int) this.minX, (int) this.minY, (int) this.minZ,
+                (int) this.maxX, (int) this.maxY, (int) this.maxZ
+        );
+    }
+
+    public Vec3i @NotNull [] getVec3i() {
+        return getPositions(
+                Vec3i.class,
+                (int) this.minX, (int) this.minY, (int) this.minZ,
+                (int) this.maxX, (int) this.maxY, (int) this.maxZ
+        );
+    }
+
     public MSPosition @NotNull [] getMSPositions() {
         return getPositions(
                 MSPosition.class,
@@ -641,14 +772,6 @@ public final class MSBoundingBox {
     public Position @NotNull [] getPositions() {
         return getPositions(
                 Position.class,
-                (int) this.minX, (int) this.minY, (int) this.minZ,
-                (int) this.maxX, (int) this.maxY, (int) this.maxZ
-        );
-    }
-
-    public Vec3i @NotNull [] getVec3i() {
-        return getPositions(
-                Vec3i.class,
                 (int) this.minX, (int) this.minY, (int) this.minZ,
                 (int) this.maxX, (int) this.maxY, (int) this.maxZ
         );
@@ -667,6 +790,51 @@ public final class MSBoundingBox {
                 io.papermc.paper.math.Position.class,
                 (int) this.minX, (int) this.minY, (int) this.minZ,
                 (int) this.maxX, (int) this.maxY, (int) this.maxZ
+        );
+    }
+
+    public MSVector @NotNull [] getMSVectors(
+            final int minOffsetX,
+            final int minOffsetY,
+            final int minOffsetZ,
+            final int maxOffsetX,
+            final int maxOffsetY,
+            final int maxOffsetZ
+    ) {
+        return getPositions(
+                MSVector.class,
+                (int) this.minX + minOffsetX, (int) this.minY + minOffsetY, (int) this.minZ + minOffsetZ,
+                (int) this.maxX + maxOffsetX, (int) this.maxY + maxOffsetY, (int) this.maxZ + maxOffsetZ
+        );
+    }
+
+    public Vector @NotNull [] getVectors(
+            final int minOffsetX,
+            final int minOffsetY,
+            final int minOffsetZ,
+            final int maxOffsetX,
+            final int maxOffsetY,
+            final int maxOffsetZ
+    ) {
+        return getPositions(
+                Vector.class,
+                (int) this.minX + minOffsetX, (int) this.minY + minOffsetY, (int) this.minZ + minOffsetZ,
+                (int) this.maxX + maxOffsetX, (int) this.maxY + maxOffsetY, (int) this.maxZ + maxOffsetZ
+        );
+    }
+
+    public Vec3i @NotNull [] getVec3i(
+            final int minOffsetX,
+            final int minOffsetY,
+            final int minOffsetZ,
+            final int maxOffsetX,
+            final int maxOffsetY,
+            final int maxOffsetZ
+    ) {
+        return getPositions(
+                Vec3i.class,
+                (int) this.minX + minOffsetX, (int) this.minY + minOffsetY, (int) this.minZ + minOffsetZ,
+                (int) this.maxX + maxOffsetX, (int) this.maxY + maxOffsetY, (int) this.maxZ + maxOffsetZ
         );
     }
 
@@ -695,21 +863,6 @@ public final class MSBoundingBox {
     ) {
         return getPositions(
                 Position.class,
-                (int) this.minX + minOffsetX, (int) this.minY + minOffsetY, (int) this.minZ + minOffsetZ,
-                (int) this.maxX + maxOffsetX, (int) this.maxY + maxOffsetY, (int) this.maxZ + maxOffsetZ
-        );
-    }
-
-    public Vec3i @NotNull [] getVec3i(
-            final int minOffsetX,
-            final int minOffsetY,
-            final int minOffsetZ,
-            final int maxOffsetX,
-            final int maxOffsetY,
-            final int maxOffsetZ
-    ) {
-        return getPositions(
-                Vec3i.class,
                 (int) this.minX + minOffsetX, (int) this.minY + minOffsetY, (int) this.minZ + minOffsetZ,
                 (int) this.maxX + maxOffsetX, (int) this.maxY + maxOffsetY, (int) this.maxZ + maxOffsetZ
         );
@@ -778,7 +931,7 @@ public final class MSBoundingBox {
             final @NotNull ServerLevel level,
             final @Nullable Predicate<? super net.minecraft.world.entity.Entity> predicate
     ) {
-        return this.nmsEntities(level, predicate, false);
+        return this.getEntities(level, predicate, false);
     }
 
     public boolean hasAnyEntity(final @NotNull ServerLevel level) {
@@ -801,7 +954,7 @@ public final class MSBoundingBox {
             final @NotNull ServerLevel level,
             final @Nullable Predicate<? super net.minecraft.world.entity.Entity> predicate
     ) {
-        return !this.nmsEntities(level, predicate, true).isEmpty();
+        return !this.getEntities(level, predicate, true).isEmpty();
     }
 
     public boolean intersects(final @NotNull AABB aabb) {
@@ -848,16 +1001,24 @@ public final class MSBoundingBox {
                 && this.minZ <= maxZ;
     }
 
+    public boolean contains(final @NotNull MSVector vec) {
+        return this.contains(vec.x(), vec.y(), vec.z());
+    }
+
+    public boolean contains(final @NotNull Vector vec) {
+        return this.contains(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    public boolean contains(final @NotNull Vec3i vec) {
+        return this.contains(vec.getX(), vec.getY(), vec.getZ());
+    }
+
     public boolean contains(final @NotNull MSPosition pos) {
         return this.contains(pos.x(), pos.y(), pos.z());
     }
 
     public boolean contains(final @NotNull Position pos) {
         return this.contains(pos.x(), pos.y(), pos.z());
-    }
-
-    public boolean contains(final @NotNull Vec3i vec3i) {
-        return this.contains(vec3i.getX(), vec3i.getY(), vec3i.getZ());
     }
 
     public boolean contains(final @NotNull io.papermc.paper.math.Position pos) {
@@ -901,35 +1062,6 @@ public final class MSBoundingBox {
                 && Double.isFinite(this.maxZ);
     }
 
-    @Contract(" -> new")
-    public @NotNull AABB toAABB() {
-        return new AABB(
-                this.minX, this.minY, this.minZ,
-                this.maxX, this.maxY, this.maxZ
-        );
-    }
-
-    @Contract(" -> new")
-    public @NotNull BoundingBox toBB() {
-        return new BoundingBox(
-                (int) this.minX, (int) this.minY, (int) this.minZ,
-                (int) this.maxX, (int) this.maxY, (int) this.maxZ
-        );
-    }
-
-    @Contract(" -> new")
-    public @NotNull org.bukkit.util.BoundingBox toBukkitBB() {
-        return new org.bukkit.util.BoundingBox(
-                this.minX, this.minY, this.minZ,
-                this.maxX, this.maxY, this.maxZ
-        );
-    }
-
-    @Contract(" -> new")
-    public @NotNull MSBoundingBox copy() {
-        return of(this);
-    }
-
     @Override
     public int hashCode() {
         long l = Double.doubleToLongBits(this.minX);
@@ -960,6 +1092,11 @@ public final class MSBoundingBox {
                 );
     }
 
+    @Contract(" -> new")
+    public @NotNull MSBoundingBox copy() {
+        return of(this);
+    }
+
     @Override
     public @NotNull String toString() {
         return "MSBoundingBox["
@@ -973,12 +1110,36 @@ public final class MSBoundingBox {
                 + "]";
     }
 
-    private @NotNull List<net.minecraft.world.entity.Entity> nmsEntities(
+    @Contract(" -> new")
+    public @NotNull AABB toAABB() {
+        return new AABB(
+                this.minX, this.minY, this.minZ,
+                this.maxX, this.maxY, this.maxZ
+        );
+    }
+
+    @Contract(" -> new")
+    public @NotNull BoundingBox toBB() {
+        return new BoundingBox(
+                (int) this.minX, (int) this.minY, (int) this.minZ,
+                (int) this.maxX, (int) this.maxY, (int) this.maxZ
+        );
+    }
+
+    @Contract(" -> new")
+    public @NotNull org.bukkit.util.BoundingBox toBukkitBB() {
+        return new org.bukkit.util.BoundingBox(
+                this.minX, this.minY, this.minZ,
+                this.maxX, this.maxY, this.maxZ
+        );
+    }
+
+    private @NotNull List<net.minecraft.world.entity.Entity> getEntities(
             final @NotNull ServerLevel level,
             final @Nullable Predicate<? super net.minecraft.world.entity.Entity> predicate,
             final boolean checkForEmpty
     ) {
-        AsyncCatcher.catchOp("getNearbyEntities");
+        AsyncCatcher.catchOp("retrieveEntities");
 
         final AABB aabb = this.toAABB();
         final var list = new ArrayList<net.minecraft.world.entity.Entity>();
@@ -1039,7 +1200,7 @@ public final class MSBoundingBox {
         if (
                 !isBukkit
                 && !clazz.isAssignableFrom(net.minecraft.world.level.block.state.BlockState.class)
-        ) throw new IllegalArgumentException("Class must be assignable from org.bukkit.block.BlockState or net.minecraft.world.level.block.state.BlockState");
+        ) throw new IllegalArgumentException("Invalid class");
 
         final ServerLevel serverLevel = ((CraftWorld) world).getHandle();
         final int offsetX = (int) Math.abs(this.minX - this.maxX) + 1;
@@ -1084,18 +1245,22 @@ public final class MSBoundingBox {
             final int maxY,
             final int maxZ
     ) throws IllegalArgumentException {
+        final boolean isMSVector = clazz.isAssignableFrom(MSVector.class);
+        final boolean isVector = clazz.isAssignableFrom(Vector.class);
+        final boolean isVec3i = clazz.isAssignableFrom(Vec3i.class);
         final boolean isMSPosition = clazz.isAssignableFrom(MSPosition.class);
         final boolean isPosition = clazz.isAssignableFrom(Position.class);
-        final boolean isVec3i = clazz.isAssignableFrom(Vec3i.class);
         final boolean isBlockPos = clazz.isAssignableFrom(BlockPos.class);
 
         if (
-                !isMSPosition
-                && !isPosition
+                !isMSVector
+                && !isVector
                 && !isVec3i
+                && !isMSPosition
+                && !isPosition
                 && !isBlockPos
                 && !clazz.isAssignableFrom(io.papermc.paper.math.Position.class)
-        ) throw new IllegalArgumentException("Class must be assignable from MSPosition or Position or Vec3i or BlockPos or io.papermc.paper.math.Position");
+        ) throw new IllegalArgumentException("Invalid class");
 
         final int offsetX = Math.abs(minX - maxX) + 1;
         final int offsetY = Math.abs(minY - maxY) + 1;
@@ -1107,7 +1272,26 @@ public final class MSBoundingBox {
         for (int x = 0; x < offsetX; ++x) {
             for (int y = 0; y < offsetY; ++y) {
                 for (int z = 0; z < offsetZ; ++z) {
-                    array[i++] = isMSPosition
+                    array[i++] =
+                            isMSVector
+                            ? (T) MSVector.of(
+                                    minX + x,
+                                    minY + y,
+                                    minZ + z
+                            )
+                            : isVector
+                            ? (T) new Vector(
+                                    minX + x,
+                                    minY + y,
+                                    minZ + z
+                            )
+                            : isVec3i
+                            ? (T) new Vec3i(
+                                    minX + x,
+                                    minY + y,
+                                    minZ + z
+                            )
+                            : isMSPosition
                             ? (T) MSPosition.of(
                                     minX + x,
                                     minY + y,
@@ -1115,12 +1299,6 @@ public final class MSBoundingBox {
                             )
                             : isPosition
                             ? (T) new Vec3(
-                                    minX + x,
-                                    minY + y,
-                                    minZ + z
-                            )
-                            : isVec3i
-                            ? (T) new Vec3i(
                                     minX + x,
                                     minY + y,
                                     minZ + z

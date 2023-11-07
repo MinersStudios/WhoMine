@@ -2,6 +2,7 @@ package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
+import com.minersstudios.mscore.location.MSVector;
 import com.minersstudios.mscore.util.LocationUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -19,32 +20,32 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class DecorHitBox {
     private final Type type;
+    private final Facing facing;
     private final double x;
     private final double y;
     private final double z;
     private final double modelOffsetX;
     private final double modelOffsetY;
     private final double modelOffsetZ;
-    private final Facing facing;
 
-    public static final String HITBOX_CHILD = "hitbox_child";
-    public static final String HITBOX_DISPLAY = "hitbox_display";
-    public static final String HITBOX_INTERACTIONS = "hitbox_interactions";
-    public static final String HITBOX_BOUNDING_BOX = "hitbox_bounding_box";
-    public static final NamespacedKey HITBOX_CHILD_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_CHILD);
-    public static final NamespacedKey HITBOX_DISPLAY_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_DISPLAY);
-    public static final NamespacedKey HITBOX_INTERACTIONS_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_INTERACTIONS);
-    public static final NamespacedKey HITBOX_BOUNDING_BOX_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_BOUNDING_BOX);
+    public static final String HITBOX_CHILD_KEY = "hitbox_child";
+    public static final String HITBOX_DISPLAY_KEY = "hitbox_display";
+    public static final String HITBOX_INTERACTIONS_KEY = "hitbox_interactions";
+    public static final String HITBOX_BOUNDING_BOX_KEY = "hitbox_bounding_box";
+    public static final NamespacedKey HITBOX_CHILD_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_CHILD_KEY);
+    public static final NamespacedKey HITBOX_DISPLAY_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_DISPLAY_KEY);
+    public static final NamespacedKey HITBOX_INTERACTIONS_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_INTERACTIONS_KEY);
+    public static final NamespacedKey HITBOX_BOUNDING_BOX_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_BOUNDING_BOX_KEY);
 
     private DecorHitBox(final @NotNull Builder builder) {
         this.type = builder.type;
+        this.facing = builder.facing;
         this.x = builder.x;
         this.y = builder.y;
         this.z = builder.z;
         this.modelOffsetX = builder.modelOffsetX;
         this.modelOffsetY = builder.modelOffsetY;
         this.modelOffsetZ = builder.modelOffsetZ;
-        this.facing = builder.facing;
     }
 
     public static @NotNull Builder builder() {
@@ -53,6 +54,10 @@ public final class DecorHitBox {
 
     public @NotNull Type getType() {
         return this.type;
+    }
+
+    public @NotNull Facing getFacing() {
+        return this.facing;
     }
 
     public double getX() {
@@ -67,6 +72,10 @@ public final class DecorHitBox {
         return this.z;
     }
 
+    public @NotNull MSVector getSize() {
+        return MSVector.of(this.x, this.y, this.z);
+    }
+
     public double getModelOffsetX() {
         return this.modelOffsetX;
     }
@@ -79,8 +88,8 @@ public final class DecorHitBox {
         return this.modelOffsetZ;
     }
 
-    public @NotNull Facing getFacing() {
-        return this.facing;
+    public @NotNull MSVector getModelOffset() {
+        return MSVector.of(this.modelOffsetX, this.modelOffsetY, this.modelOffsetZ);
     }
 
     public float getInteractionWidth() {
@@ -96,7 +105,7 @@ public final class DecorHitBox {
     }
 
     public @NotNull MSBoundingBox getBoundingBox(
-            final @NotNull MSPosition location,
+            final @NotNull MSPosition position,
             final float yaw
     ) {
         final int x = (int) this.x == 0 ? 1 : (int) this.x;
@@ -104,8 +113,8 @@ public final class DecorHitBox {
         final int z = (int) this.z == 0 ? 1 : (int) this.z;
 
         return MSBoundingBox.of(
-                location,
-                location
+                position,
+                position
                 .directionalYawOffset(
                         x > 0 ? x - 1 : x + 1,
                         y > 0 ? y - 1 : y + 1,
@@ -115,16 +124,16 @@ public final class DecorHitBox {
         );
     }
 
-    public @NotNull MSPosition getPositionInBlock(final float yaw) {
+    public @NotNull MSVector getVectorInBlock(final float rotation) {
         switch (this.facing) {
             case FLOOR -> {
-                return MSPosition.of(0.5d, 0.0d, 0.5d);
+                return MSVector.of(0.5d, 0.0d, 0.5d);
             }
             case CEILING -> {
-                return MSPosition.of(0.5d, 1.0d, 0.5d);
+                return MSVector.of(0.5d, 1.0d, 0.5d);
             }
             case WALL -> {
-                final BlockFace blockFace = LocationUtils.degreesToBlockFace45(-yaw);
+                final BlockFace blockFace = LocationUtils.degreesToBlockFace45(-rotation);
 
                 final boolean is45 =
                         blockFace == BlockFace.NORTH_WEST
@@ -151,10 +160,23 @@ public final class DecorHitBox {
                     }
                 }
 
-                return MSPosition.of(x, y, z);
+                return MSVector.of(x, y, z);
             }
             default -> throw new IllegalStateException("Unexpected value: " + this.facing);
         }
+    }
+
+    public static boolean isParent(final @NotNull Interaction interaction) {
+        final PersistentDataContainer container = interaction.getPersistentDataContainer();
+        return container.has(CustomDecorType.TYPE_NAMESPACED_KEY)
+                && container.has(DecorHitBox.HITBOX_DISPLAY_NAMESPACED_KEY)
+                && container.has(DecorHitBox.HITBOX_INTERACTIONS_NAMESPACED_KEY)
+                && container.has(DecorHitBox.HITBOX_BOUNDING_BOX_NAMESPACED_KEY);
+    }
+
+    public static boolean isChild(final @NotNull Interaction interaction) {
+        return interaction.getPersistentDataContainer()
+                .has(DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY);
     }
 
     public @NotNull Builder toBuilder() {
@@ -170,19 +192,6 @@ public final class DecorHitBox {
         builder.facing = this.facing;
 
         return builder;
-    }
-
-    public static boolean isParent(final @NotNull Interaction interaction) {
-        final PersistentDataContainer container = interaction.getPersistentDataContainer();
-        return container.has(CustomDecorType.TYPE_NAMESPACED_KEY)
-                && container.has(DecorHitBox.HITBOX_DISPLAY_NAMESPACED_KEY)
-                && container.has(DecorHitBox.HITBOX_INTERACTIONS_NAMESPACED_KEY)
-                && container.has(DecorHitBox.HITBOX_BOUNDING_BOX_NAMESPACED_KEY);
-    }
-
-    public static boolean isChild(final @NotNull Interaction interaction) {
-        return interaction.getPersistentDataContainer()
-                .has(DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY);
     }
 
     public static void validVerticalSize(final double number) throws IllegalArgumentException {
@@ -220,19 +229,19 @@ public final class DecorHitBox {
 
     public static final class Builder {
         private Type type;
+        private Facing facing;
         private double x;
         private double y;
         private double z;
         private double modelOffsetX;
         private double modelOffsetY;
         private double modelOffsetZ;
-        private Facing facing;
 
         private Builder() {
+            this.facing = Facing.FLOOR;
             this.x = Double.NaN;
             this.y = Double.NaN;
             this.z = Double.NaN;
-            this.facing = Facing.FLOOR;
         }
 
         public Type type() {
@@ -241,6 +250,19 @@ public final class DecorHitBox {
 
         public @NotNull Builder type(final @NotNull Type type) {
             this.type = type;
+            return this;
+        }
+
+        public @NotNull Facing facing() {
+            return this.facing;
+        }
+
+        public @NotNull Builder facing(final @NotNull Facing facing) throws IllegalArgumentException {
+            if (facing == Facing.ALL) {
+                throw new IllegalArgumentException("Facing cannot be ALL");
+            }
+
+            this.facing = facing;
             return this;
         }
 
@@ -339,19 +361,6 @@ public final class DecorHitBox {
             this.modelOffsetY = y;
             this.modelOffsetZ = z;
 
-            return this;
-        }
-
-        public @NotNull Facing facing() {
-            return this.facing;
-        }
-
-        public @NotNull Builder facing(final @NotNull Facing facing) throws IllegalArgumentException {
-            if (facing == Facing.ALL) {
-                throw new IllegalArgumentException("Facing cannot be ALL");
-            }
-
-            this.facing = facing;
             return this;
         }
 
