@@ -70,7 +70,7 @@ public enum CustomDecorType {
     GOLD_PIGGYBANK(Piggybank.Gold.class),
     IRON_PIGGYBANK(Piggybank.Iron.class),
     NETHERITE_PIGGYBANK(Piggybank.Netherite.class),
-    //SMALL_CLOCK(),
+    SMALL_CLOCK(SmallClock.class),
     SMALL_GLOBE(SmallGlobe.class),
     ATM(com.minersstudios.msdecor.registry.decoration.street.ATM.class),
     BRAZIER(Brazier.class),

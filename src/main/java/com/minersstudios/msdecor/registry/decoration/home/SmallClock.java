@@ -1,4 +1,4 @@
-package com.minersstudios.msdecor.registry.decoration.home.head;
+package com.minersstudios.msdecor.registry.decoration.home;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
@@ -6,6 +6,7 @@ import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msdecor.api.CustomDecorDataImpl;
 import com.minersstudios.msdecor.api.DecorHitBox;
+import com.minersstudios.msdecor.api.DecorParameter;
 import com.minersstudios.msdecor.api.Facing;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -15,24 +16,24 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public final class HoglinHead extends CustomDecorDataImpl<HoglinHead> {
+public final class SmallClock extends CustomDecorDataImpl<SmallClock> {
 
     @Override
     protected @NotNull Builder builder() {
         final ItemStack itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
         final ItemMeta itemMeta = itemStack.getItemMeta();
 
-        itemMeta.setCustomModelData(1162);
-        itemMeta.displayName(ChatUtils.createDefaultStyledText("Голова борова"));
+        itemMeta.setCustomModelData(1146);
+        itemMeta.displayName(ChatUtils.createDefaultStyledText("Маленькие настенные часы"));
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("hoglin_head")
+                .key("small_clock")
                 .hitBox(
                         DecorHitBox.builder()
-                        .type(DecorHitBox.Type.SOLID)
+                        .type(DecorHitBox.Type.NONE)
                         .facing(Facing.WALL)
-                        .size(1.0d, 1.0d, 1.0d)
+                        .size(0.6875d, 0.6875d, 0.6875d)
                         .build()
                 )
                 .facing(Facing.WALL)
@@ -43,17 +44,17 @@ public final class HoglinHead extends CustomDecorDataImpl<HoglinHead> {
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
-                                        " PS",
-                                        "BBS",
-                                        "  S"
+                                        "LLL",
+                                        "LCL",
+                                        "LLL"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('P', Material.PORKCHOP),
-                                        ShapedRecipeBuilder.material('B', Material.BONE),
-                                        ShapedRecipeBuilder.material('S', Material.SPRUCE_LOG)
+                                        ShapedRecipeBuilder.material('L', Material.CLAY_BALL),
+                                        ShapedRecipeBuilder.material('C', Material.CLOCK)
                                 ),
                                 true
                         )
-                );
+                )
+                .parameters(DecorParameter.PAINTABLE);
     }
 }

@@ -31,6 +31,7 @@ public final class ZoglinHead extends CustomDecorDataImpl<ZoglinHead> {
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.SOLID)
+                        .facing(Facing.WALL)
                         .size(1.0d, 1.0d, 1.0d)
                         .build()
                 )
