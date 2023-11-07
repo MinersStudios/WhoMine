@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import static net.kyori.adventure.text.Component.*;
-import static net.kyori.adventure.text.Component.text;
 
 /**
  * The {@code DamageableItem} class represents an abstraction
