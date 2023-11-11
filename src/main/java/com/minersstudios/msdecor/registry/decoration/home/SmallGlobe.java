@@ -34,7 +34,7 @@ public final class SmallGlobe extends CustomDecorDataImpl<SmallGlobe> {
                         .size(0.390725d, 0.515625d, 0.390725d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(

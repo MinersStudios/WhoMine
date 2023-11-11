@@ -34,7 +34,7 @@ public final class Wheelbarrow extends CustomDecorDataImpl<Wheelbarrow> {
                         .size(1.0d, 1.0d, 1.0d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(

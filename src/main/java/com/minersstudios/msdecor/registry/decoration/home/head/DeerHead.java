@@ -31,11 +31,11 @@ public final class DeerHead extends CustomDecorDataImpl<DeerHead> {
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.SOLID)
-                        .facing(Facing.WALL)
+                        .facings(Facing.WALL)
                         .size(1.0d, 1.0d, 1.0d)
                         .build()
                 )
-                .facing(Facing.WALL)
+                .facings(Facing.WALL)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(

@@ -3,6 +3,7 @@ package com.minersstudios.msdecor.api;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.MSPluginUtils;
 import com.minersstudios.msdecor.MSDecor;
+import com.minersstudios.msdecor.registry.christmas.*;
 import com.minersstudios.msdecor.registry.decoration.home.*;
 import com.minersstudios.msdecor.registry.decoration.home.head.DeerHead;
 import com.minersstudios.msdecor.registry.decoration.home.head.HoglinHead;
@@ -43,14 +44,14 @@ import java.util.regex.Pattern;
 
 public enum CustomDecorType {
     //<editor-fold desc="Types" defaultstate="collapsed">
-    //CHRISTMAS_BALL(),
-    //CHRISTMAS_TALL_BALL(),
-    //SNOWMAN_BALL(),
-    //STAR_ON_STRING(),
-    //SNOWFLAKE_ON_STRING(),
-    //SANTA_SOCK(),
-    //SNOWMAN(),
-    //TREE_STAR(),
+    CHRISTMAS_BALL(ChristmasBall.class),
+    CHRISTMAS_TALL_BALL(ChristmasTallBall.class),
+    SNOWMAN_BALL(SnowmanBall.class),
+    STAR_ON_STRING(StarOnString.class),
+    SNOWFLAKE_ON_STRING(SnowflakeOnString.class),
+    SANTA_SOCK(SantaSock.class),
+    SNOWMAN(Snowman.class),
+    TREE_STAR(TreeStar.class),
     //SKELETON_HAND(),
     WHOCINTOSH(Whocintosh.class),
     DEER_HEAD(DeerHead.class),
@@ -234,12 +235,10 @@ public enum CustomDecorType {
     }
 
     public <D extends CustomDecorData<D>> @NotNull D getCustomDecorData(final @NotNull Class<D> clazz) throws IllegalArgumentException {
-        final CustomDecorData<?> data = CLASS_TO_DATA_MAP.get(this.clazz);
-
         try {
-            return clazz.cast(data);
+            return clazz.cast(CLASS_TO_DATA_MAP.get(this.clazz));
         } catch (final ClassCastException e) {
-            throw new IllegalArgumentException("Custom decor " + this.name() + " is not an instance of " + clazz.getName() + "!");
+            throw new IllegalArgumentException("Custom decor " + this.name() + " is not an instance of " + clazz.getName() + "!", e);
         }
     }
 

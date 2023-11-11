@@ -4,11 +4,14 @@ import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.SoundGroup;
-import com.minersstudios.msdecor.api.CustomDecorDataImpl;
-import com.minersstudios.msdecor.api.DecorHitBox;
-import com.minersstudios.msdecor.api.DecorParameter;
-import com.minersstudios.msdecor.api.Facing;
+import com.minersstudios.msdecor.api.*;
+import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
+import org.bukkit.World;
+import org.bukkit.block.data.type.Light;
+import org.bukkit.entity.Interaction;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
@@ -33,10 +36,10 @@ public final class BigLamp extends CustomDecorDataImpl<BigLamp> {
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.LIGHT)
                         .size(0.875d, 2.3125d, 0.875d)
-                        .modelOffset(0.0d, 0.375d, 0.0d)
+                        .modelOffsetY(0.375d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
@@ -59,6 +62,32 @@ public final class BigLamp extends CustomDecorDataImpl<BigLamp> {
                         DecorParameter.LIGHTABLE,
                         DecorParameter.PAINTABLE
                 )
-                .lightLevels(0, 15);
+                .lightLevels(0, 15)
+                .clickAction(BigLamp::playClick);
+    }
+
+    static void playClick(final @NotNull CustomDecorClickEvent event) {
+        if (event.getClickType().isLeftClick()) return;
+
+        final CustomDecor customDecor = event.getCustomDecor();
+        final Interaction interaction = event.getClickedInteraction();
+        final World world = interaction.getWorld();
+
+        DecorParameter.doLight(
+                event,
+                customDecor.getData().getNextLightLevel(
+                        world.getBlockAt(interaction.getLocation()).getBlockData() instanceof final Light light
+                                ? light.getLevel()
+                                : 0
+                )
+        );
+        world.playSound(
+                customDecor.getBoundingBox().getCenter().toLocation(),
+                Sound.BLOCK_LEVER_CLICK,
+                SoundCategory.PLAYERS,
+                1.0f,
+                1.0f
+        );
+        event.getPlayer().swingHand(event.getHand());
     }
 }

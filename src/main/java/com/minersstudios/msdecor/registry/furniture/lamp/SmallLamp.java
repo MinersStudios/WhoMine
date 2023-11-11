@@ -35,7 +35,7 @@ public final class SmallLamp extends CustomDecorDataImpl<SmallLamp> {
                         .size(0.625d, 1.0625d, 0.625d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
@@ -57,6 +57,7 @@ public final class SmallLamp extends CustomDecorDataImpl<SmallLamp> {
                         DecorParameter.LIGHTABLE,
                         DecorParameter.PAINTABLE
                 )
-                .lightLevels(0, 15);
+                .lightLevels(0, 15)
+                .clickAction(BigLamp::playClick);
     }
 }

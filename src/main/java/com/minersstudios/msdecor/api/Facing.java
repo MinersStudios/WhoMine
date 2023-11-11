@@ -1,5 +1,9 @@
 package com.minersstudios.msdecor.api;
 
+import com.minersstudios.mscore.location.MSPosition;
+import com.minersstudios.mscore.util.LocationUtils;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -12,16 +16,6 @@ import java.util.Set;
 
 public enum Facing {
     //<editor-fold desc="Facings" defaultstate="collapsed">
-    ALL(
-            EnumSet.of(
-                    BlockFace.UP,
-                    BlockFace.DOWN,
-                    BlockFace.WEST,
-                    BlockFace.EAST,
-                    BlockFace.NORTH,
-                    BlockFace.SOUTH
-            )
-    ),
     FLOOR(
             EnumSet.of(
                     BlockFace.UP
@@ -34,10 +28,14 @@ public enum Facing {
     ),
     WALL(
             EnumSet.of(
-                    BlockFace.WEST,
-                    BlockFace.EAST,
                     BlockFace.NORTH,
-                    BlockFace.SOUTH
+                    BlockFace.NORTH_EAST,
+                    BlockFace.NORTH_WEST,
+                    BlockFace.EAST,
+                    BlockFace.SOUTH,
+                    BlockFace.SOUTH_WEST,
+                    BlockFace.SOUTH_EAST,
+                    BlockFace.WEST
             )
     );
     //</editor-fold>
@@ -52,13 +50,22 @@ public enum Facing {
      * @param blockFace Block face to be converted
      * @return The converted {@link Facing} or null
      */
-    public static @Nullable Facing fromBlockFace(final @NotNull BlockFace blockFace) {
-        return switch (blockFace) {
-            case DOWN -> CEILING;
-            case UP -> FLOOR;
-            case WEST, EAST, NORTH, SOUTH -> WALL;
-            default -> null;
-        };
+    public static @Nullable Facing fromBlockFace(final @Nullable BlockFace blockFace) {
+        return blockFace == null
+                ? null
+                : switch (blockFace) {
+                    case DOWN -> CEILING;
+                    case UP -> FLOOR;
+                    case NORTH,
+                         NORTH_EAST,
+                         NORTH_WEST,
+                         EAST,
+                         SOUTH,
+                         SOUTH_WEST,
+                         SOUTH_EAST,
+                         WEST -> WALL;
+                    default -> null;
+                };
     }
 
     /**
@@ -77,6 +84,38 @@ public enum Facing {
     public boolean hasFace(final @Nullable BlockFace blockFace) {
         return blockFace != null
                 && this.blockFaceSet.contains(blockFace);
+    }
+
+    @Contract("null, _ -> false")
+    public boolean hasFace(
+            final @Nullable MSPosition positionAtFace,
+            final float yaw
+    ) {
+        if (positionAtFace == null) return false;
+
+        if (positionAtFace.world() == null) {
+            throw new IllegalArgumentException("World cannot be null");
+        }
+
+        final MSPosition newPosition = switch (this) {
+            case FLOOR -> positionAtFace.clone().offset(0, -1, 0);
+            case CEILING -> positionAtFace.clone().offset(0, 1, 0);
+            case WALL -> positionAtFace.clone().offset(
+                    LocationUtils.degreesToBlockFace90(yaw).getDirection()
+            );
+        };
+
+        if (newPosition == positionAtFace) return true;
+
+        final Block block = newPosition.getBlock();
+        assert block != null;
+        final Material material = block.getType();
+
+        return !material.isAir()
+                && material != Material.LIGHT
+                && material != Material.WATER
+                && material != Material.LAVA
+                && material != Material.STRUCTURE_VOID;
     }
 
     /**

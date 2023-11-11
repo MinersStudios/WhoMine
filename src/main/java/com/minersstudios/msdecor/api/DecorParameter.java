@@ -48,7 +48,7 @@ public enum DecorParameter {
                 doLight(
                         event,
                         event.getCustomDecor().getData().getNextLightLevel(
-                                interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
+                                interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof final Light light
                                         ? light.getLevel()
                                         : 0
                         )
@@ -165,7 +165,7 @@ public enum DecorParameter {
         return WRENCHABLE_LIGHTABLE_CLICK_ACTION;
     }
 
-    private static void doSit(final @NotNull CustomDecorClickEvent event) {
+    public static void doSit(final @NotNull CustomDecorClickEvent event) {
         final Player player = event.getPlayer();
         final Location sitLocation = event.getClickedInteraction().getLocation().add(0.0d, event.getCustomDecor().getData().getSitHeight(), 0.0d);
 
@@ -187,7 +187,7 @@ public enum DecorParameter {
         player.swingHand(event.getHand());
     }
 
-    private static void doWrench(
+    public static void doWrench(
             final @NotNull CustomDecorClickEvent event,
             final @NotNull ItemStack itemInUse
     ) {
@@ -222,7 +222,7 @@ public enum DecorParameter {
         player.swingHand(event.getHand());
     }
 
-    private static void doLight(
+    public static void doLight(
             final @NotNull CustomDecorClickEvent event,
             final int nextLevel
     ) {
@@ -233,16 +233,8 @@ public enum DecorParameter {
             if (block.getBlockData() instanceof final Light light) {
                 light.setLevel(nextLevel);
                 block.setBlockData(light);
+                block.update();
             }
         }
-
-        world.playSound(
-                msbb.getCenter().toLocation(),
-                Sound.BLOCK_LEVER_CLICK,
-                SoundCategory.PLAYERS,
-                1.0f,
-                1.0f
-        );
-        event.getPlayer().swingHand(event.getHand());
     }
 }

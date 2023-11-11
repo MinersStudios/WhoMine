@@ -34,7 +34,7 @@ public final class OldCamera extends CustomDecorDataImpl<OldCamera> {
                         .size(0.5d, 1.625d, 0.5d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(

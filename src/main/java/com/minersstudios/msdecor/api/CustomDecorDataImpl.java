@@ -36,6 +36,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
@@ -43,7 +44,7 @@ import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
 public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implements CustomDecorData<D> {
     protected final NamespacedKey namespacedKey;
     protected final DecorHitBox hitBox;
-    protected final Facing facing;
+    protected final EnumSet<Facing> facingSet;
     protected final SoundGroup soundGroup;
     protected final ItemStack itemStack;
     protected final List<Map.Entry<Recipe, Boolean>> recipes;
@@ -58,6 +59,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     protected final DecorPlaceAction placeAction;
     protected final DecorBreakAction breakAction;
 
+    private static final int MAX_DECORATIONS_IN_BLOCK = 6;
+
     protected CustomDecorDataImpl() throws IllegalArgumentException {
         final Builder builder = this.builder();
 
@@ -65,7 +68,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
         this.namespacedKey = builder.namespacedKey;
         this.hitBox = builder.hitBox;
-        this.facing = builder.facing;
+        this.facingSet = builder.facingSet;
         this.soundGroup = builder.soundGroup;
         this.itemStack = builder.itemStack;
         this.recipes =
@@ -97,15 +100,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.parameterSet = builder.parameterSet;
         this.sitHeight = builder.sitHeight;
         this.types = builder.types;
-        this.faceTypeMap =
-                builder.faceTypeMap == null
-                ? new EnumMap<>(Facing.class)
-                : builder.faceTypeMap;
+        this.faceTypeMap = builder.faceTypeMap;
         this.lightLevels = builder.lightLevels;
-        this.lightLevelTypeMap =
-                builder.lightLevelTypeMap == null
-                ? Collections.emptyMap()
-                : builder.lightLevelTypeMap;
+        this.lightLevelTypeMap = builder.lightLevelTypeMap;
         this.clickAction = builder.clickAction;
         this.placeAction = builder.placeAction;
         this.breakAction = builder.breakAction;
@@ -125,8 +122,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public final @NotNull Facing getFacing() {
-        return this.facing;
+    public final @NotNull @Unmodifiable Set<Facing> getFacingSet() {
+        return Collections.unmodifiableSet(this.facingSet);
     }
 
     @Override
@@ -297,9 +294,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new UnsupportedOperationException("This custom decor is not face typed!");
         }
 
-        return !this.facing.hasFace(blockFace)
+        final Facing facing = Facing.fromBlockFace(blockFace);
+
+        return facing == null
+                || !this.facingSet.contains(facing)
                 ? null
-                : this.getFaceTypeOf(Facing.fromBlockFace(blockFace));
+                : this.faceTypeMap.get(facing);
     }
 
     @Override
@@ -311,7 +311,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
         return facing == null
                 ? null
-                : this.faceTypeMap.getOrDefault(facing, null);
+                : this.faceTypeMap.getOrDefault(facing, this.faceTypeMap.values().iterator().next());
     }
 
     @Override
@@ -601,13 +601,48 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final @NotNull BlockFace blockFace,
             final @Nullable EquipmentSlot hand,
             final @Nullable Component customName
-    ) {
-        if (!this.getFacing().hasFace(blockFace)) return;
+    ) throws IllegalArgumentException {
+        final CraftWorld world = (CraftWorld) blockLocation.world();
 
-        final ServerLevel serverLevel = ((CraftWorld) player.getWorld()).getHandle();
-        final MSBoundingBox msbb = this.hitBox.getBoundingBox(blockLocation, player.getYaw());
-        final var blockStates = new ArrayList<org.bukkit.block.BlockState>();
+        if (world == null) {
+            throw new IllegalArgumentException("The world of the position cannot be null!");
+        }
+
+        BlockFace finalFace = null;
+
+        for (final var facing : this.facingSet) {
+            if (facing.hasFace(blockFace)) {
+                finalFace = blockFace;
+                break;
+            }
+        }
+
+        if (finalFace == null) {
+            final float yaw = player.getYaw();
+
+            for (final var facing : this.facingSet) {
+                if (
+                        facing.hasFace(
+                                blockLocation,
+                                yaw
+                        )
+                ) {
+                    finalFace = switch (facing) {
+                        case WALL -> LocationUtils.degreesToBlockFace90(yaw);
+                        case FLOOR -> BlockFace.UP;
+                        case CEILING -> BlockFace.DOWN;
+                    };
+                    break;
+                }
+            }
+
+            if (finalFace == null) return;
+        }
+
+        final ServerLevel serverLevel = world.getHandle();
+        final MSBoundingBox msbb = this.hitBox.getBoundingBox(blockLocation, finalFace, player.getYaw());
         final BlockPos[] blocksToReplace = msbb.getBlockPositions();
+        final var blockStates = new ArrayList<org.bukkit.block.BlockState>();
 
         for (final var blockPos : blocksToReplace) {
             final BlockState blockState = serverLevel.getBlockState(blockPos);
@@ -618,10 +653,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         if (
-                this.hitBox.getType().isSolid()
-                && msbb.max(msbb.max().offset(1.0d)).hasNMSEntity(
+                this.hasEntitiesInside(
                         serverLevel,
-                        entity -> !BlockUtils.isIgnorableEntity(entity.getType())
+                        msbb.max(msbb.max().offset(1.0d))
                 )
         ) return;
 
@@ -640,9 +674,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final CustomDecorPlaceEvent event = new CustomDecorPlaceEvent(
                 this.placeInWorld(
                         player.getName(),
-                        this.summonItem(blockLocation.yaw(rotation), blockFace, itemInHand),
+                        this.summonItem(blockLocation.yaw(rotation), finalFace, itemInHand),
                         msbb,
                         blocksToReplace,
+                        finalFace,
                         rotation
                 ),
                 player,
@@ -700,12 +735,14 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final @NotNull ItemDisplay itemDisplay,
             final @NotNull MSBoundingBox boundingBox,
             final BlockPos @NotNull [] replacePositions,
+            final @NotNull BlockFace blockFace,
             final float rotation
     ) {
         final Interaction[] interactions = this.fillInteractions(
                 itemDisplay,
                 boundingBox,
-                this.hitBox.getVectorInBlock(rotation)
+                this.hitBox.getVectorInBlock(blockFace, rotation),
+                blockFace
         );
         final DecorHitBox.Type type = this.hitBox.getType();
 
@@ -758,7 +795,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         if (this.isLightTyped()) {
             type = this.lightLevelTypeMap.get(this.lightLevels[0]);
         } else if (this.isFaceTyped()) {
-            type = this.faceTypeMap.get(Facing.fromBlockFace(blockFace));
+            type = this.getFaceTypeOf(Facing.fromBlockFace(blockFace));
         } else if (this.isWrenchable()) {
             type = this.getTypeOf(itemStack);
         } else {
@@ -783,15 +820,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 itemDisplay -> {
                     itemDisplay.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.NONE);
 
-                    if (
-                            type == null
-                            || CustomDecorType.matchesTypedKey(
-                                    itemMeta.getPersistentDataContainer().get(
-                                            CustomDecorType.TYPE_NAMESPACED_KEY,
-                                            PersistentDataType.STRING
-                                    )
-                            )
-                    ) {
+                    if (type == null) {
                         itemDisplay.setItemStack(itemStack);
                     } else {
                         final ItemStack typeItem = type.getItem();
@@ -811,17 +840,21 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     private Interaction @NotNull [] fillInteractions(
             final @NotNull ItemDisplay itemDisplay,
             final @NotNull MSBoundingBox boundingBox,
-            final @NotNull MSVector offset
+            final @NotNull MSVector offset,
+            final @NotNull BlockFace blockFace
     ) {
         final World world = itemDisplay.getWorld();
+        final boolean isCeiling =
+                this.facingSet.contains(Facing.CEILING)
+                && blockFace == BlockFace.DOWN;
         final BlockPos[] spawnPoses = boundingBox.getBlockPositions(
                 0,
-                this.hitBox.getFacing() == Facing.CEILING
+                isCeiling
                         ? (int) (this.hitBox.getY() - 1)
                         : 0,
                 0,
                 0,
-                this.hitBox.getFacing() == Facing.CEILING
+                isCeiling
                         ? 0
                         : (int) (-this.hitBox.getY() + 1),
                 0
@@ -830,7 +863,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final Interaction[] interactions = new Interaction[length];
 
         final float width = this.hitBox.getInteractionWidth();
-        final float height = this.hitBox.getInteractionHeight();
+        final float height = this.hitBox.getInteractionHeight(blockFace);
 
         final double offsetX = offset.x();
         final double offsetY = offset.y();
@@ -857,6 +890,40 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.processInteractions(itemDisplay, interactions, boundingBox);
 
         return interactions;
+    }
+
+    private boolean hasEntitiesInside(
+            final @NotNull ServerLevel serverLevel,
+            final @NotNull MSBoundingBox searchBox
+    ) {
+        switch (this.hitBox.getType()) {
+            case NONE -> {
+                final AtomicInteger decorCounter = new AtomicInteger();
+
+                if (
+                        searchBox.hasNMSEntity(
+                                serverLevel,
+                                entity ->
+                                        entity instanceof net.minecraft.world.entity.Interaction
+                                                && decorCounter.incrementAndGet() >= MAX_DECORATIONS_IN_BLOCK
+                        )
+                ) return true;
+            }
+            case SOLID ->{
+                return searchBox.hasNMSEntity(
+                        serverLevel,
+                        entity -> !BlockUtils.isIgnorableEntity(entity.getType())
+                );
+            }
+            case LIGHT -> {
+                return searchBox.hasNMSEntity(
+                        serverLevel,
+                        entity -> entity instanceof net.minecraft.world.entity.Interaction
+                );
+            }
+        }
+
+        return false;
     }
 
     private void processInteractions(
@@ -979,7 +1046,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     public final class Builder {
         private NamespacedKey namespacedKey;
         private DecorHitBox hitBox;
-        private Facing facing;
+        private EnumSet<Facing> facingSet;
         private ItemStack itemStack;
         private SoundGroup soundGroup;
         private List<Map.Entry<RecipeBuilder<?>, Boolean>> recipeBuilderList;
@@ -1020,8 +1087,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalArgumentException("Hit box is not set!");
             }
 
-            if (this.facing == null) {
-                throw new IllegalArgumentException("Facing is not set!");
+            if (this.facingSet.isEmpty()) {
+                throw new IllegalArgumentException("Facings is not set!");
             }
 
             if (this.soundGroup == null) {
@@ -1167,12 +1234,15 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public Facing facing() {
-            return this.facing;
+        public @NotNull @Unmodifiable Set<Facing> facings() {
+            return Collections.unmodifiableSet(this.facingSet);
         }
 
-        public @NotNull Builder facing(final @NotNull Facing facing) {
-            this.facing = facing;
+        public @NotNull Builder facings(
+                final @NotNull Facing first,
+                final Facing @NotNull ... rest
+        ) {
+            this.facingSet = EnumSet.of(first, rest);
             return this;
         }
 
@@ -1294,13 +1364,6 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalArgumentException("Light typed and lightable parameters cannot be set together!");
             }
 
-            if (
-                    parameters.contains(DecorParameter.FACE_TYPED)
-                    && this.facing != Facing.ALL
-            ) {
-                throw new IllegalArgumentException("Face typed parameter cannot be set together with a non-all facing!");
-            }
-
             this.parameterSet = parameters;
             return this;
         }
@@ -1385,27 +1448,31 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.faceTypeMap;
         }
 
-        public @NotNull Builder faceTypes(
-                final @NotNull Function<Builder, CustomDecorData.Type<D>> floorType,
-                final @NotNull Function<Builder, CustomDecorData.Type<D>> ceilingType,
-                final @NotNull Function<Builder, CustomDecorData.Type<D>> wallType
+        @SuppressWarnings("unchecked")
+        @SafeVarargs
+        public final @NotNull Builder faceTypes(
+                final @NotNull Function<Builder, Map.Entry<Facing, CustomDecorData.Type<D>>> first,
+                final Function<Builder, Map.Entry<Facing, CustomDecorData.Type<D>>> @NotNull ... rest
         ) {
             this.validateParam(
                     DecorParameter.FACE_TYPED,
                     "Set face typed parameter before setting face type map!"
             );
 
-            return this.faceTypes(
-                    floorType.apply(this),
-                    ceilingType.apply(this),
-                    wallType.apply(this)
-            );
+            final var firstType = first.apply(this);
+            final var restTypes = (Map.Entry<Facing, CustomDecorData.Type<D>>[]) new Map.Entry<?, ?>[rest.length];
+
+            for (int i = 0; i < rest.length; i++) {
+                restTypes[i] = rest[i].apply(this);
+            }
+
+            return this.faceTypes(firstType, restTypes);
         }
 
-        public @NotNull Builder faceTypes(
-                final @NotNull CustomDecorData.Type<D> floorType,
-                final @NotNull CustomDecorData.Type<D> ceilingType,
-                final @NotNull CustomDecorData.Type<D> wallType
+        @SafeVarargs
+        public final @NotNull Builder faceTypes(
+                final @NotNull Map.Entry<Facing, CustomDecorData.Type<D>> first,
+                final Map.Entry<Facing, CustomDecorData.Type<D>> @NotNull ... rest
         ) throws IllegalStateException {
             this.validateParam(
                     DecorParameter.FACE_TYPED,
@@ -1413,9 +1480,18 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             );
 
             this.faceTypeMap = new EnumMap<>(Facing.class);
-            this.faceTypeMap.put(Facing.FLOOR, floorType);
-            this.faceTypeMap.put(Facing.CEILING, ceilingType);
-            this.faceTypeMap.put(Facing.WALL, wallType);
+
+            this.putFaceType(first.getKey(), first.getValue());
+
+            for (final var entry : rest) {
+                this.putFaceType(entry.getKey(), entry.getValue());
+            }
+
+            for (final var facing : this.facingSet) {
+                if (!this.faceTypeMap.containsKey(facing)) {
+                    throw new IllegalStateException("Face type map does not contain type for facing '" + facing + "'!");
+                }
+            }
 
             return this;
         }
@@ -1434,7 +1510,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             );
 
             final int length = rest.length + 1;
-            this.lightLevels = new int[rest.length + 1];
+            this.lightLevels = new int[length];
 
             System.arraycopy(rest, 0, this.lightLevels, 1, rest.length);
             this.lightLevels[0] = first;
@@ -1460,8 +1536,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.lightLevelTypeMap;
         }
 
-        @SafeVarargs
         @SuppressWarnings("unchecked")
+        @SafeVarargs
         public final @NotNull Builder lightLevelTypes(
                 final @NotNull Function<Builder, Map.Entry<Integer, CustomDecorData.Type<D>>> first,
                 final Function<Builder, Map.Entry<Integer, CustomDecorData.Type<D>>> @NotNull ... rest
@@ -1592,6 +1668,21 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                             || this.isLightTyped()
                             || this.isFaceTyped()
                     );
+        }
+
+        private void putFaceType(
+                final @NotNull Facing facing,
+                final @NotNull CustomDecorData.Type<D> type
+        ) {
+            if (this.faceTypeMap == null) {
+                throw new IllegalStateException("Face type map is not set! Set face type map before putting face type!");
+            }
+
+            if (this.faceTypeMap.containsKey(facing)) {
+                throw new IllegalArgumentException("Facing '" + facing + "' is duplicated! Facings must be unique!");
+            }
+
+            this.faceTypeMap.put(facing, type);
         }
 
         private void putLightLevelType(

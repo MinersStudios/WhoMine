@@ -32,11 +32,11 @@ public final class SmallClock extends CustomDecorDataImpl<SmallClock> {
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)
-                        .facing(Facing.WALL)
+                        .facings(Facing.WALL)
                         .size(0.6875d, 0.6875d, 0.6875d)
                         .build()
                 )
-                .facing(Facing.WALL)
+                .facings(Facing.WALL)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(

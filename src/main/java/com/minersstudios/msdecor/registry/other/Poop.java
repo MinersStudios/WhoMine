@@ -29,7 +29,7 @@ public final class Poop extends CustomDecorDataImpl<Poop> {
                         .size(0.5d, 0.5d, 0.5d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.MUD)
                 .itemStack(itemStack);
     }

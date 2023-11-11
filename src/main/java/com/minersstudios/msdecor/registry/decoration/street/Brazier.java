@@ -2,7 +2,6 @@ package com.minersstudios.msdecor.registry.decoration.street;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
-import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.ItemUtils;
 import com.minersstudios.mscore.util.SoundGroup;
@@ -11,7 +10,6 @@ import com.minersstudios.msdecor.api.DecorHitBox;
 import com.minersstudios.msdecor.api.DecorParameter;
 import com.minersstudios.msdecor.api.Facing;
 import org.bukkit.*;
-import org.bukkit.block.data.type.Light;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -46,7 +44,7 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                         .size(0.875d, 1.0d, 0.875d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.CHAIN)
                 .itemStack(itemStack)
                 .recipes(
@@ -85,6 +83,7 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                                 )
                         )
                 )
+                .dropsType(true)
                 .clickAction(
                         event -> {
                             if (event.getClickType().isLeftClick()) return;
@@ -157,20 +156,12 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                             typeItem.setItemMeta(typeMeta);
                             itemDisplay.setItemStack(typeItem);
 
-                            final MSBoundingBox msbb = event.getCustomDecor().getBoundingBox();
-
-                            for (final var block : msbb.getBlockStates(world)) {
-                                if (block.getBlockData() instanceof final Light light) {
-                                    light.setLevel(nextLevel);
-                                    block.setBlockData(light);
-                                }
-                            }
+                            DecorParameter.doLight(event, nextLevel);
+                            event.getPlayer().swingHand(event.getHand());
 
                             if (player.getGameMode() == GameMode.SURVIVAL) {
                                 ItemUtils.damageItem(player, itemInUse);
                             }
-
-                            player.swingHand(event.getHand());
                         }
                 );
     }

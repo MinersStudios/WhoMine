@@ -36,7 +36,7 @@ public abstract class Chair<C extends CustomDecorData<C>> extends CustomDecorDat
                         .size(1.0d, 1.0d, 1.0d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(

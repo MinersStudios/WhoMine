@@ -35,7 +35,7 @@ public final class Whocintosh extends CustomDecorDataImpl<Whocintosh> {
                         .size(1.0d, 1.0d, 1.0d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(

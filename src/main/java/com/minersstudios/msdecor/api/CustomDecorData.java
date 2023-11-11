@@ -48,7 +48,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     /**
      * @return The allowed place faces of custom decor
      */
-    @NotNull Facing getFacing();
+    @NotNull @Unmodifiable Set<Facing> getFacingSet();
 
     /**
      * @return The clone of the {@link ItemStack}
@@ -200,7 +200,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
             final @NotNull BlockFace blockFace,
             final @Nullable EquipmentSlot hand,
             final @Nullable Component customName
-    );
+    ) throws IllegalArgumentException;
 
     /**
      * Perform the click action of this custom decor

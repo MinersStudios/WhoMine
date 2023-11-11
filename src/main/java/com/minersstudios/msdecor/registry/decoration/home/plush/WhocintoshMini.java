@@ -31,10 +31,15 @@ public final class WhocintoshMini extends CustomDecorDataImpl<WhocintoshMini> {
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)
-                        .size(1.0d, 0.5625d, 1.0d)
+                        .facings(
+                                Facing.FLOOR,
+                                Facing.WALL
+                        )
+                        .wallDirected(true)
+                        .size(0.5d, 0.5625d, 0.5d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(

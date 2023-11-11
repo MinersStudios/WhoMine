@@ -1,4 +1,4 @@
-package com.minersstudios.msdecor.registry.furniture.chair;
+package com.minersstudios.msdecor.registry.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
@@ -6,7 +6,6 @@ import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.SoundGroup;
 import com.minersstudios.msdecor.api.CustomDecorDataImpl;
 import com.minersstudios.msdecor.api.DecorHitBox;
-import com.minersstudios.msdecor.api.DecorParameter;
 import com.minersstudios.msdecor.api.Facing;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -16,48 +15,44 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public final class CoolChair extends CustomDecorDataImpl<CoolChair> {
+public final class TreeStar extends CustomDecorDataImpl<TreeStar> {
 
     @Override
     protected @NotNull Builder builder() {
         final ItemStack itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
         final ItemMeta itemMeta = itemStack.getItemMeta();
 
-        itemMeta.setCustomModelData(1037);
-        itemMeta.displayName(ChatUtils.createDefaultStyledText("Стильный стул"));
+        itemMeta.setCustomModelData(1259);
+        itemMeta.displayName(ChatUtils.createDefaultStyledText("Новогодняя звезда"));
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("cool_chair")
+                .key("tree_star")
                 .hitBox(
                         DecorHitBox.builder()
-                        .type(DecorHitBox.Type.SOLID)
-                        .size(1.0d, 1.0d, 1.0d)
+                        .type(DecorHitBox.Type.NONE)
+                        .size(1.0d, 2.20625d, 1.0d)
+                        .modelOffsetY(0.23125d)
                         .build()
                 )
                 .facings(Facing.FLOOR)
-                .soundGroup(SoundGroup.WOOL)
+                .soundGroup(SoundGroup.STONE)
                 .itemStack(itemStack)
                 .recipes(
                         Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
-                                        "LLL",
-                                        "IAI"
+                                        " I ",
+                                        "III",
+                                        " B "
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('I', Material.IRON_NUGGET),
-                                        ShapedRecipeBuilder.material('L', Material.LEATHER),
-                                        ShapedRecipeBuilder.material('A', Material.AIR)
+                                        ShapedRecipeBuilder.material('I', Material.GOLD_INGOT),
+                                        ShapedRecipeBuilder.material('B', Material.GOLD_BLOCK)
                                 ),
                                 true
                         )
-                )
-                .parameters(
-                        DecorParameter.SITTABLE,
-                        DecorParameter.PAINTABLE
-                )
-                .sitHeight(0.6d);
+                );
     }
 }

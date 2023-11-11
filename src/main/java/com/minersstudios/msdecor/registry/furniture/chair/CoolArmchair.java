@@ -35,7 +35,7 @@ public final class CoolArmchair extends CustomDecorDataImpl<CoolArmchair> {
                         .size(1.0d, 1.0d, 1.0d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(

@@ -36,7 +36,7 @@ public abstract class Piggybank<C extends CustomDecorData<C>> extends CustomDeco
                         .size(1.0d, 0.675d, 1.0d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.GLASS)
                 .itemStack(itemStack)
                 .recipes(

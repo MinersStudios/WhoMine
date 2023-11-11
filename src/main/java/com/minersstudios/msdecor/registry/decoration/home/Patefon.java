@@ -34,7 +34,7 @@ public final class Patefon extends CustomDecorDataImpl<Patefon> {
                         .size(0.75d, 0.5d, 0.75d)
                         .build()
                 )
-                .facing(Facing.WALL)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(

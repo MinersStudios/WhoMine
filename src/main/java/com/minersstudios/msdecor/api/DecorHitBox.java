@@ -14,19 +14,24 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.Unmodifiable;
 
 import javax.annotation.concurrent.Immutable;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 @Immutable
 public final class DecorHitBox {
     private final Type type;
-    private final Facing facing;
+    private final EnumSet<Facing> facingSet;
     private final double x;
     private final double y;
     private final double z;
     private final double modelOffsetX;
     private final double modelOffsetY;
     private final double modelOffsetZ;
+    private final boolean wallDirected;
 
     public static final String HITBOX_CHILD_KEY = "hitbox_child";
     public static final String HITBOX_DISPLAY_KEY = "hitbox_display";
@@ -39,13 +44,14 @@ public final class DecorHitBox {
 
     private DecorHitBox(final @NotNull Builder builder) {
         this.type = builder.type;
-        this.facing = builder.facing;
+        this.facingSet = builder.facingSet;
         this.x = builder.x;
         this.y = builder.y;
         this.z = builder.z;
         this.modelOffsetX = builder.modelOffsetX;
         this.modelOffsetY = builder.modelOffsetY;
         this.modelOffsetZ = builder.modelOffsetZ;
+        this.wallDirected = builder.wallDirected;
     }
 
     public static @NotNull Builder builder() {
@@ -56,8 +62,8 @@ public final class DecorHitBox {
         return this.type;
     }
 
-    public @NotNull Facing getFacing() {
-        return this.facing;
+    public @NotNull @Unmodifiable Set<Facing> getFacingSet() {
+        return Collections.unmodifiableSet(this.facingSet);
     }
 
     public double getX() {
@@ -98,18 +104,22 @@ public final class DecorHitBox {
                 : (float) this.z;
     }
 
-    public float getInteractionHeight() {
-        return (float) (this.facing == Facing.CEILING
-                        ? -this.y
-                        : this.y);
+    public float getInteractionHeight(final @NotNull BlockFace blockFace) {
+        return this.facingSet.contains(Facing.CEILING)
+                && blockFace == BlockFace.DOWN
+                ? (float) -this.y
+                : (float) this.y;
     }
 
     public @NotNull MSBoundingBox getBoundingBox(
             final @NotNull MSPosition position,
+            final @NotNull BlockFace blockFace,
             final float yaw
     ) {
+        final int interactionHeight = (int) this.getInteractionHeight(blockFace);
+
         final int x = (int) this.x == 0 ? 1 : (int) this.x;
-        final int y = (int) this.getInteractionHeight() == 0 ? 1 : (int) this.getInteractionHeight();
+        final int y = interactionHeight == 0 ? 1 : interactionHeight;
         final int z = (int) this.z == 0 ? 1 : (int) this.z;
 
         return MSBoundingBox.of(
@@ -124,46 +134,75 @@ public final class DecorHitBox {
         );
     }
 
-    public @NotNull MSVector getVectorInBlock(final float rotation) {
-        switch (this.facing) {
-            case FLOOR -> {
-                return MSVector.of(0.5d, 0.0d, 0.5d);
-            }
-            case CEILING -> {
-                return MSVector.of(0.5d, 1.0d, 0.5d);
-            }
-            case WALL -> {
-                final BlockFace blockFace = LocationUtils.degreesToBlockFace45(-rotation);
+    public @NotNull MSVector getVectorInBlock(
+            final @NotNull BlockFace blockFace,
+            final float rotation
+    ) {
+        double x, y, z;
 
-                final boolean is45 =
-                        blockFace == BlockFace.NORTH_WEST
-                        || blockFace == BlockFace.NORTH_EAST
-                        || blockFace == BlockFace.SOUTH_WEST
-                        || blockFace == BlockFace.SOUTH_EAST;
-                final boolean isX = is45 || blockFace == BlockFace.WEST || blockFace == BlockFace.EAST;
-                final boolean isZ = is45 || blockFace == BlockFace.NORTH || blockFace == BlockFace.SOUTH;
+        final boolean isWall =
+                this.facingSet.contains(Facing.WALL)
+                && (
+                        this.wallDirected
+                        || Facing.WALL.hasFace(blockFace)
+                );
+        final boolean isCeiling =
+                this.facingSet.contains(Facing.CEILING)
+                && Facing.CEILING.hasFace(blockFace);
+        final boolean isFloor =
+                this.facingSet.contains(Facing.FLOOR)
+                && Facing.FLOOR.hasFace(blockFace);
 
-                double x = isX
-                        ? this.getInteractionWidth() / 2.0d
-                        : 0.5d;
-                double y = 0.5d - this.getInteractionHeight() / 2.0d;
-                double z = isZ
-                        ? this.getInteractionWidth() / 2.0d
-                        : 0.5d;
+        if (isWall) {
+            final BlockFace rotationFace = LocationUtils.degreesToBlockFace45(-rotation);
 
-                switch (blockFace) {
-                    case WEST, NORTH_WEST -> x = 1.0d - x;
-                    case SOUTH, SOUTH_EAST -> z = 1.0d - z;
-                    case SOUTH_WEST -> {
-                        x = 1.0d - x;
-                        z = 1.0d - z;
-                    }
+            final boolean is45 =
+                    rotationFace == BlockFace.NORTH_WEST
+                    || rotationFace == BlockFace.NORTH_EAST
+                    || rotationFace == BlockFace.SOUTH_WEST
+                    || rotationFace == BlockFace.SOUTH_EAST;
+            final boolean isX = is45 || rotationFace == BlockFace.WEST || rotationFace == BlockFace.EAST;
+            final boolean isZ = is45 || rotationFace == BlockFace.NORTH || rotationFace == BlockFace.SOUTH;
+
+            x =
+                    isX
+                    ? this.getInteractionWidth() / 2.0d
+                    : 0.5d;
+            z =
+                    isZ
+                    ? this.getInteractionWidth() / 2.0d
+                    : 0.5d;
+
+            switch (rotationFace) {
+                case WEST, NORTH_WEST -> x = 1.0d - x;
+                case SOUTH, SOUTH_EAST -> z = 1.0d - z;
+                case SOUTH_WEST -> {
+                    x = 1.0d - x;
+                    z = 1.0d - z;
                 }
-
-                return MSVector.of(x, y, z);
             }
-            default -> throw new IllegalStateException("Unexpected value: " + this.facing);
+        } else {
+            x = 0.5d;
+            z = 0.5d;
         }
+
+        if (
+                isWall
+                && !isCeiling
+                && !isFloor
+        ) {
+            y = 0.5d - this.getInteractionHeight(blockFace) / 2.0d;
+        } else if (isCeiling) {
+            y = 1.0d;
+        } else {
+            y = 0.0d;
+        }
+
+        return MSVector.of(x, y, z);
+    }
+
+    public boolean isWallDirected() {
+        return this.wallDirected;
     }
 
     public static boolean isParent(final @NotNull Interaction interaction) {
@@ -189,7 +228,7 @@ public final class DecorHitBox {
         builder.modelOffsetX = this.modelOffsetX;
         builder.modelOffsetY = this.modelOffsetY;
         builder.modelOffsetZ = this.modelOffsetZ;
-        builder.facing = this.facing;
+        builder.facingSet = this.facingSet;
 
         return builder;
     }
@@ -229,16 +268,17 @@ public final class DecorHitBox {
 
     public static final class Builder {
         private Type type;
-        private Facing facing;
+        private EnumSet<Facing> facingSet;
         private double x;
         private double y;
         private double z;
         private double modelOffsetX;
         private double modelOffsetY;
         private double modelOffsetZ;
+        private boolean wallDirected;
 
         private Builder() {
-            this.facing = Facing.FLOOR;
+            this.facingSet = EnumSet.of(Facing.FLOOR);
             this.x = Double.NaN;
             this.y = Double.NaN;
             this.z = Double.NaN;
@@ -253,16 +293,15 @@ public final class DecorHitBox {
             return this;
         }
 
-        public @NotNull Facing facing() {
-            return this.facing;
+        public @NotNull @Unmodifiable Set<Facing> facings() {
+            return Collections.unmodifiableSet(this.facingSet);
         }
 
-        public @NotNull Builder facing(final @NotNull Facing facing) throws IllegalArgumentException {
-            if (facing == Facing.ALL) {
-                throw new IllegalArgumentException("Facing cannot be ALL");
-            }
-
-            this.facing = facing;
+        public @NotNull Builder facings(
+                final @NotNull Facing first,
+                final Facing @NotNull ... rest
+        ) {
+            this.facingSet = EnumSet.of(first, rest);
             return this;
         }
 
@@ -364,6 +403,15 @@ public final class DecorHitBox {
             return this;
         }
 
+        public boolean wallDirected() {
+            return this.wallDirected;
+        }
+
+        public @NotNull Builder wallDirected(final boolean wallDirected) {
+            this.wallDirected = wallDirected;
+            return this;
+        }
+
         public @NotNull DecorHitBox build() throws IllegalStateException {
             if (this.type == null) {
                 throw new IllegalStateException("Type is not set");
@@ -379,6 +427,13 @@ public final class DecorHitBox {
 
             if (Double.isNaN(this.z)) {
                 throw new IllegalStateException("Z size is not set");
+            }
+
+            if (
+                    this.facingSet.contains(Facing.WALL)
+                    && this.facingSet.size() == 1
+            ) {
+                this.wallDirected = true;
             }
 
             return new DecorHitBox(this);

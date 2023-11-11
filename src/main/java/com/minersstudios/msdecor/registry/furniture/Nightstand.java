@@ -42,7 +42,7 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
                         .size(1.0d, 1.0d, 1.0d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(

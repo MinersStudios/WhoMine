@@ -35,7 +35,7 @@ public final class CookingPot extends CustomDecorDataImpl<CookingPot> {
                         .size(0.75d, 0.625d, 0.75d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(

@@ -34,7 +34,7 @@ public final class BMOPlush extends CustomDecorDataImpl<BMOPlush> {
                         .size(0.5d, 0.75d, 0.5d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(

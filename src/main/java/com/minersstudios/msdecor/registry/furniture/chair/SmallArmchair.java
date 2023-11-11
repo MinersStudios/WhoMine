@@ -36,7 +36,7 @@ public abstract class SmallArmchair<C extends CustomDecorData<C>> extends Custom
                         .size(1.0d, 1.0d, 1.0d)
                         .build()
                 )
-                .facing(Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(

@@ -1,4 +1,4 @@
-package com.minersstudios.msdecor.registry.furniture.chair;
+package com.minersstudios.msdecor.registry.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
@@ -16,48 +16,64 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public final class CoolChair extends CustomDecorDataImpl<CoolChair> {
+public final class Snowman extends CustomDecorDataImpl<Snowman> {
 
     @Override
     protected @NotNull Builder builder() {
         final ItemStack itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
         final ItemMeta itemMeta = itemStack.getItemMeta();
 
-        itemMeta.setCustomModelData(1037);
-        itemMeta.displayName(ChatUtils.createDefaultStyledText("Стильный стул"));
+        itemMeta.setCustomModelData(1187);
+        itemMeta.displayName(ChatUtils.createDefaultStyledText("Снеговик"));
         itemStack.setItemMeta(itemMeta);
 
+        final ItemStack broken = itemStack.clone();
+        final ItemMeta brokenMeta = broken.getItemMeta();
+
+        brokenMeta.setCustomModelData(1188);
+        itemMeta.displayName(ChatUtils.createDefaultStyledText("Сломанный снеговик"));
+        broken.setItemMeta(brokenMeta);
+
         return new Builder()
-                .key("cool_chair")
+                .key("snowman")
                 .hitBox(
                         DecorHitBox.builder()
-                        .type(DecorHitBox.Type.SOLID)
-                        .size(1.0d, 1.0d, 1.0d)
+                        .type(DecorHitBox.Type.NONE)
+                        .size(0.925d, 2.203125d, 0.925d)
+                        .modelOffsetY(0.075d)
                         .build()
                 )
                 .facings(Facing.FLOOR)
-                .soundGroup(SoundGroup.WOOL)
+                .soundGroup(SoundGroup.SNOW)
                 .itemStack(itemStack)
                 .recipes(
                         Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
-                                        "LLL",
-                                        "IAI"
+                                        " L ",
+                                        "SBS",
+                                        " B "
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('I', Material.IRON_NUGGET),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER),
-                                        ShapedRecipeBuilder.material('A', Material.AIR)
+                                        ShapedRecipeBuilder.material('S', Material.STICK),
+                                        ShapedRecipeBuilder.material('B', Material.SNOW_BLOCK)
                                 ),
                                 true
                         )
                 )
                 .parameters(
-                        DecorParameter.SITTABLE,
+                        DecorParameter.WRENCHABLE,
                         DecorParameter.PAINTABLE
                 )
-                .sitHeight(0.6d);
+                .types(
+                        builder -> new Type(
+                                builder,
+                                "broken",
+                                broken
+                        )
+                )
+                .dropsType(true);
     }
 }

@@ -32,10 +32,19 @@ public final class Cell extends CustomDecorDataImpl<Cell> {
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.SOLID)
+                        .facings(
+                                Facing.FLOOR,
+                                Facing.CEILING,
+                                Facing.WALL
+                        )
                         .size(1.0d, 1.0d, 1.0d)
                         .build()
                 )
-                .facing(Facing.ALL)
+                .facings(
+                        Facing.FLOOR,
+                        Facing.CEILING,
+                        Facing.WALL
+                )
                 .soundGroup(SoundGroup.CHAIN)
                 .itemStack(itemStack)
                 .recipes(

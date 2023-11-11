@@ -33,7 +33,7 @@ public final class MSDecor extends MSPlugin<MSDecor> {
     @SuppressWarnings("JavaReflectionMemberAccess")
     public void load() {
         try {
-            final Field item = Item.class.getDeclaredField("d");
+            final Field item = Item.class.getDeclaredField("d"); // "maxStackSize" field : https://nms.screamingsandals.org/1.20.2/net/minecraft/world/item/Item.html
 
             item.setAccessible(true);
             item.setInt(Items.LEATHER_HORSE_ARMOR, 8);

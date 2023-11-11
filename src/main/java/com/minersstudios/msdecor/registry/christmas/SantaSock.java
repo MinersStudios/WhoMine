@@ -1,4 +1,4 @@
-package com.minersstudios.msdecor.registry.furniture.chair;
+package com.minersstudios.msdecor.registry.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
@@ -16,26 +16,27 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public final class CoolChair extends CustomDecorDataImpl<CoolChair> {
+public final class SantaSock extends CustomDecorDataImpl<SantaSock> {
 
     @Override
     protected @NotNull Builder builder() {
         final ItemStack itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
         final ItemMeta itemMeta = itemStack.getItemMeta();
 
-        itemMeta.setCustomModelData(1037);
-        itemMeta.displayName(ChatUtils.createDefaultStyledText("Стильный стул"));
+        itemMeta.setCustomModelData(1186);
+        itemMeta.displayName(ChatUtils.createDefaultStyledText("Носок санты"));
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("cool_chair")
+                .key("santa_sock")
                 .hitBox(
                         DecorHitBox.builder()
-                        .type(DecorHitBox.Type.SOLID)
-                        .size(1.0d, 1.0d, 1.0d)
+                        .type(DecorHitBox.Type.NONE)
+                        .facings(Facing.WALL)
+                        .size(0.7875d, 0.7875d, 0.7875d)
                         .build()
                 )
-                .facings(Facing.FLOOR)
+                .facings(Facing.WALL)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(
@@ -43,21 +44,17 @@ public final class CoolChair extends CustomDecorDataImpl<CoolChair> {
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
-                                        "LLL",
-                                        "IAI"
+                                        "LA",
+                                        "LA",
+                                        "LL"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('I', Material.IRON_NUGGET),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER),
                                         ShapedRecipeBuilder.material('A', Material.AIR)
                                 ),
                                 true
                         )
                 )
-                .parameters(
-                        DecorParameter.SITTABLE,
-                        DecorParameter.PAINTABLE
-                )
-                .sitHeight(0.6d);
+                .parameters(DecorParameter.PAINTABLE);
     }
 }
