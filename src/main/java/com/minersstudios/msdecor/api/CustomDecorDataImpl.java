@@ -638,7 +638,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new IllegalArgumentException("The world of the position cannot be null!");
         }
 
-        final boolean inReplaceableBlock = BlockUtils.isReplaceable(blockLocation.getBlock());
+        final Material blockType = blockLocation.getBlock().getType();
+        final boolean inReplaceableBlock =
+                BlockUtils.isReplaceable(blockType)
+                && !blockType.isAir();
         final float rotation = player.getYaw();
         BlockFace finalFace = null;
 
