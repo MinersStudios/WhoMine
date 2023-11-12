@@ -17,7 +17,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
+import javax.annotation.concurrent.Immutable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -26,6 +28,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 @SuppressWarnings("UnstableApiUsage")
+@Immutable
 public final class MSPosition implements Cloneable {
     private Reference<World> world;
     private double x;
@@ -392,7 +395,7 @@ public final class MSPosition implements Cloneable {
         );
     }
 
-    public @Nullable World world() {
+    public @UnknownNullability World world() {
         return this.world == null
                 ? null
                 : this.world.get();
@@ -766,7 +769,7 @@ public final class MSPosition implements Cloneable {
                 + Math.pow(this.z - z, 2.0d);
     }
 
-    public @Nullable LevelChunk getNMSChunk() {
+    public @UnknownNullability LevelChunk getNMSChunk() {
         final World world = this.world();
         return world == null
                 ? null
@@ -780,7 +783,7 @@ public final class MSPosition implements Cloneable {
         );
     }
 
-    public @Nullable Chunk getChunk() {
+    public @UnknownNullability Chunk getChunk() {
         final World world = this.world();
         return world == null
                 ? null
@@ -794,7 +797,7 @@ public final class MSPosition implements Cloneable {
         );
     }
 
-    public @Nullable BlockState getNMSBlockState() {
+    public @UnknownNullability BlockState getNMSBlockState() {
         final World world = this.world();
         return world == null
                 ? null
@@ -811,7 +814,7 @@ public final class MSPosition implements Cloneable {
         );
     }
 
-    public @Nullable Block getBlock() {
+    public @UnknownNullability Block getBlock() {
         final World world = this.world();
         return world == null
                 ? null

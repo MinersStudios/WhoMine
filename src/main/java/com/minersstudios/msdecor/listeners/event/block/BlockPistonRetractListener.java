@@ -15,8 +15,9 @@ public final class BlockPistonRetractListener extends AbstractMSListener<MSDecor
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPistonRetract(final @NotNull BlockPistonRetractEvent event) {
         for (final var block : event.getBlocks()) {
-            if (MSDecorUtils.isCustomDecor(block)) {
+            if (MSDecorUtils.isCustomDecorMaterial(block.getType())) {
                 event.setCancelled(true);
+                break;
             }
         }
     }

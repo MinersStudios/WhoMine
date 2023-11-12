@@ -3,7 +3,7 @@ package com.minersstudios.msblock.listeners.event.block;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
-import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.msblock.api.file.ToolType;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;

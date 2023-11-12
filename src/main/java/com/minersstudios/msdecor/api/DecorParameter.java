@@ -13,6 +13,7 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
 
 public enum DecorParameter {
@@ -199,12 +200,19 @@ public enum DecorParameter {
         if (nextType == null) return;
 
         final Player player = event.getPlayer();
-        final World world = player.getWorld();
         final ItemStack typeItem = nextType.getItem();
-        final ItemMeta itemMeta = typeItem.getItemMeta();
+        final ItemMeta typeMeta = typeItem.getItemMeta();
+        final ItemMeta displayMeta = displayItem.getItemMeta();
 
-        itemMeta.displayName(displayItem.getItemMeta().displayName());
-        typeItem.setItemMeta(itemMeta);
+        if (
+                displayMeta instanceof LeatherArmorMeta displayColorable
+                && typeMeta instanceof LeatherArmorMeta typeColorable
+        ) {
+            typeColorable.setColor(displayColorable.getColor());
+        }
+
+        typeMeta.displayName(displayMeta.displayName());
+        typeItem.setItemMeta(typeMeta);
 
         itemDisplay.setItemStack(typeItem);
 
@@ -212,7 +220,7 @@ public enum DecorParameter {
             ItemUtils.damageItem(player, itemInUse);
         }
 
-        world.playSound(
+        player.getWorld().playSound(
                 customDecor.getBoundingBox().getCenter().toLocation(),
                 Sound.ITEM_SPYGLASS_USE,
                 SoundCategory.PLAYERS,

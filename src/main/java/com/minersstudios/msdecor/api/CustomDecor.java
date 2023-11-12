@@ -3,14 +3,16 @@ package com.minersstudios.msdecor.api;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.util.MSDecorUtils;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Light;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
@@ -19,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -82,40 +85,70 @@ public final class CustomDecor {
     }
 
     public void destroy(
-            final @NotNull Entity breaker,
+            final @NotNull Entity destroyer,
             final boolean dropItem
     ) {
-        final CustomDecorBreakEvent event = new CustomDecorBreakEvent(this, breaker);
-        Bukkit.getPluginManager().callEvent(event);
+        final CustomDecorBreakEvent event = new CustomDecorBreakEvent(this, destroyer);
+        destroyer.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
 
-        final CraftWorld world = (CraftWorld) breaker.getWorld();
+        final CraftWorld world = (CraftWorld) destroyer.getWorld();
+        final MSPosition center = this.msbb.getCenter(world);
 
         if (dropItem) {
-            final ItemStack displayItemStack = this.display.getItemStack();
-            assert displayItemStack != null;
-            final ItemStack itemStack =
-                    !this.data.isAnyTyped() || this.data.isDropsType()
-                    ? displayItemStack
-                    : this.data.getItem();
-            final ItemMeta itemMeta = itemStack.getItemMeta();
+            ItemStack displayItem = this.display.getItemStack();
 
-            itemMeta.displayName(displayItemStack.getItemMeta().displayName());
+            if (displayItem == null) {
+                displayItem = this.data.getItem();
+
+                MSDecor.logger().warning("Trying to drop a null item from a custom decor at " + this.display.getLocation());
+            }
+
+            final ItemStack itemStack =
+                    !this.data.isAnyTyped()
+                    || this.data.isDropsType()
+                            ? displayItem.clone()
+                            : this.data.getItem();
+            final ItemMeta itemMeta = itemStack.getItemMeta();
+            final ItemMeta displayMeta = displayItem.getItemMeta();
+
+            if (
+                    displayMeta instanceof final LeatherArmorMeta displayColorable
+                    && itemMeta instanceof final LeatherArmorMeta itemColorable
+            ) {
+                itemColorable.setColor(displayColorable.getColor());
+            }
+
+            itemMeta.displayName(displayMeta.displayName());
             itemStack.setItemMeta(itemMeta);
 
             world.dropItemNaturally(
-                    this.msbb.getCenter().toLocation(),
+                    center.toLocation(),
                     itemStack
             );
+
         }
 
         if (!this.data.getHitBox().getType().isNone()) {
             CustomDecorDataImpl.fillBlocks(
-                    breaker.getName(),
+                    destroyer.getName(),
                     world.getHandle(),
                     this.msbb.getBlockPositions(),
-                    Blocks.AIR.defaultBlockState()
+                    Blocks.AIR.defaultBlockState(),
+                    blockPos -> {
+                        final Block block = world.getBlockAt(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+
+                        if (
+                                block.getBlockData() instanceof final Light light
+                                && light.isWaterlogged()
+                        ) {
+                            block.setType(Material.WATER);
+                            return false;
+                        }
+
+                        return true;
+                    }
             );
         }
 
@@ -124,7 +157,7 @@ public final class CustomDecor {
         }
 
         this.display.remove();
-        this.data.getSoundGroup().playBreakSound(this.msbb.getCenter(world));
+        this.data.getSoundGroup().playBreakSound(center);
     }
 
     public static void place(

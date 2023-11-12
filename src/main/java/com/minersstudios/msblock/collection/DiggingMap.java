@@ -378,7 +378,6 @@ public class DiggingMap {
      * It contains information about the player, the stage,
      * and other properties related to the digging process.
      */
-    @SuppressWarnings("UnusedReturnValue")
     public static class Entry {
         private final Player player;
         private int taskId;
@@ -406,7 +405,7 @@ public class DiggingMap {
          * @return A new Entry instance with the specified player
          *         and default values
          */
-        @Contract(value = "_ -> new")
+        @Contract("_ -> new")
         public static @NotNull Entry create(final @NotNull Player player) {
             return new Entry(player, -1, 0, false);
         }
@@ -421,7 +420,7 @@ public class DiggingMap {
          * @return A new Entry instance with the specified player
          *         and task ID
          */
-        @Contract(value = "_, _ -> new")
+        @Contract("_, _ -> new")
         public static @NotNull Entry create(
                 final @NotNull Player player,
                 final int taskId
@@ -439,7 +438,7 @@ public class DiggingMap {
          *                 far away from the block being dug
          * @return A new Entry instance with the specified parameters
          */
-        @Contract(value = "_, _, _, _ -> new")
+        @Contract("_, _, _, _ -> new")
         public static @NotNull Entry create(
                 final @NotNull Player player,
                 final int taskId,
@@ -533,10 +532,13 @@ public class DiggingMap {
          * @return True if the object is equal to this Entry
          */
         @Override
-        public boolean equals(final Object obj) {
-            if (obj == this) return true;
-            return obj instanceof final Entry entry
-                    && entry.taskId == this.taskId;
+        @Contract("null -> false")
+        public boolean equals(final @Nullable Object obj) {
+            return obj == this
+                    || (
+                            obj instanceof final Entry entry
+                            && entry.taskId == this.taskId
+                    );
         }
 
         /**

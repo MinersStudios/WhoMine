@@ -67,7 +67,7 @@ public final class Skin implements ConfigurationSerializable {
      * @throws IllegalArgumentException If the name, value, or signature is invalid
      * @see <a href="https://wiki.vg/Mojang_API#UUID_-.3E_Profile_.2B_Skin.2FCape">Mojang API</a>
      */
-    @Contract(value = "_, _, _ -> new")
+    @Contract("_, _, _ -> new")
     public static @NotNull Skin create(
             final @NotNull String name,
             final @NotNull String value,
@@ -257,7 +257,7 @@ public final class Skin implements ConfigurationSerializable {
      * @param string String to be checked
      * @return True if string matches {@link #NAME_REGEX}
      */
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public static boolean matchesNameRegex(final @Nullable String string) {
         return string != null && NAME_PATTERN.matcher(string).matches();
     }

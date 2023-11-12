@@ -501,7 +501,7 @@ public final class PlayerInfo {
         final Location playerLoc = player.getLocation();
         final Location getUpLocation = armorStand.getLocation().add(0.0d, 0.25d, 0.0d);
 
-        if (!BlockUtils.REPLACEABLE_BLOCKS.contains(getUpLocation.getBlock().getType())) {
+        if (!BlockUtils.isReplaceable(getUpLocation.getBlock().getType())) {
             getUpLocation.add(getUpLocation.getDirection().multiply(0.75d));
         }
 

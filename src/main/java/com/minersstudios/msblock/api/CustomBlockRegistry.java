@@ -79,7 +79,7 @@ public final class CustomBlockRegistry {
         register(CustomBlockData.getDefault());
     }
 
-    @Contract(value = " -> fail")
+    @Contract(" -> fail")
     private CustomBlockRegistry() {
         throw new AssertionError("Utility class");
     }

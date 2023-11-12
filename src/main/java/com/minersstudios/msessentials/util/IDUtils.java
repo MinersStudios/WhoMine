@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,8 +36,9 @@ public final class IDUtils {
      * @param string String to be checked
      * @return True if string matches {@link #ID_REGEX}
      */
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public static boolean matchesIDRegex(final @Nullable String string) {
-        return string != null && ID_PATTERN.matcher(string).matches();
+        return StringUtils.isNotBlank(string)
+                && ID_PATTERN.matcher(string).matches();
     }
 }

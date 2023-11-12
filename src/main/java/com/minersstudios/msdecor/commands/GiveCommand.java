@@ -68,6 +68,7 @@ public final class GiveCommand {
                 },
                 () -> MSLogger.severe(sender, WRONG_DECOR)
         );
+
         return true;
     }
 }

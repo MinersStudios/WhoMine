@@ -13,7 +13,6 @@ import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +27,7 @@ public final class MSDecorUtils {
     public static final String NAMESPACED_KEY_REGEX = '(' + CustomDecorType.NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
-    @Contract(value = " -> fail")
+    @Contract(" -> fail")
     private MSDecorUtils() {
         throw new AssertionError("Utility class");
     }
@@ -97,11 +96,8 @@ public final class MSDecorUtils {
      */
     @Contract("null -> false")
     public static boolean isCustomDecorMaterial(final @Nullable Material material) {
-        return material != null
-                && switch (material) {
-                    case BARRIER, STRUCTURE_VOID, LIGHT -> true;
-                    default -> false;
-                };
+        return material == Material.BARRIER
+                || material == Material.LIGHT;
     }
 
     @Contract("null -> false")
@@ -110,40 +106,35 @@ public final class MSDecorUtils {
     }
 
     @Contract("null -> false")
-    public static boolean isCustomDecor(final @Nullable Entity entity) {
-        if (!(entity instanceof final Interaction interaction)) return false;
+    public static boolean isCustomDecor(final @Nullable net.minecraft.world.entity.Entity entity) {
+        return entity != null
+                && isCustomDecor(entity.getBukkitEntity());
+    }
 
-        final PersistentDataContainer container = interaction.getPersistentDataContainer();
-        return !container.isEmpty()
+    @Contract("null -> false")
+    public static boolean isCustomDecor(final @Nullable Entity entity) {
+        return entity instanceof final Interaction interaction
                 && (
-                        (
-                                container.has(CustomDecorType.TYPE_NAMESPACED_KEY)
-                                && container.has(DecorHitBox.HITBOX_DISPLAY_NAMESPACED_KEY)
-                                && container.has(DecorHitBox.HITBOX_INTERACTIONS_NAMESPACED_KEY)
-                                && container.has(DecorHitBox.HITBOX_BOUNDING_BOX_NAMESPACED_KEY)
-                        )
-                        || container.has(DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY)
+                        DecorHitBox.isChild(interaction)
+                        || DecorHitBox.isParent(interaction)
                 );
     }
 
     @Contract("null -> false")
     public static boolean isCustomDecor(final @Nullable Block block) {
-        if (block == null) return false;
-
-        for (final var entity : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
-            if (isCustomDecor(entity)) {
-                return true;
-            }
-        }
-
-        return false;
+        return block != null
+                && MSBoundingBox.of(block)
+                .hasNMSEntity(
+                        ((CraftWorld) block.getWorld()).getHandle(),
+                        MSDecorUtils::isCustomDecor
+                );
     }
 
     /**
      * @param string String to be checked
      * @return True if string matches {@link #NAMESPACED_KEY_REGEX}
      */
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public static boolean matchesNamespacedKey(final @Nullable String string) {
         return StringUtils.isNotBlank(string)
                 && NAMESPACED_KEY_PATTERN.matcher(string).matches();

@@ -4,8 +4,11 @@ import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.location.MSVector;
-import com.minersstudios.mscore.util.SoundGroup;
-import com.minersstudios.mscore.util.*;
+import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscore.util.Badges;
+import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.util.LocationUtils;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.action.DecorBreakAction;
 import com.minersstudios.msdecor.api.action.DecorClickAction;
@@ -21,9 +24,11 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Light;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlockStates;
+import org.bukkit.craftbukkit.v1_20_R2.block.data.CraftBlockData;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
@@ -31,16 +36,20 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
 
+@Immutable
 public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implements CustomDecorData<D> {
     protected final NamespacedKey namespacedKey;
     protected final DecorHitBox hitBox;
@@ -71,14 +80,23 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.facingSet = builder.facingSet;
         this.soundGroup = builder.soundGroup;
         this.itemStack = builder.itemStack;
-        this.recipes =
-                builder.recipeBuilderList == null
-                ? Collections.emptyList()
-                : new ArrayList<>(builder.recipeBuilderList.size());
+        this.parameterSet = builder.parameterSet;
+        this.sitHeight = builder.sitHeight;
+        this.types = builder.types;
+        this.faceTypeMap = builder.faceTypeMap;
+        this.lightLevels = builder.lightLevels;
+        this.lightLevelTypeMap = builder.lightLevelTypeMap;
+        this.clickAction = builder.clickAction;
+        this.placeAction = builder.placeAction;
+        this.breakAction = builder.breakAction;
+        this.dropsType = builder.dropsType;
 
         if (builder.recipeBuilderList != null) {
+            this.recipes = new ArrayList<>(builder.recipeBuilderList.size());
+
             for (final var entry : builder.recipeBuilderList) {
                 final var recipeBuilder = entry.getKey();
+                final boolean registerInCraftMenu = entry.getValue();
 
                 if (recipeBuilder.namespacedKey() == null) {
                     recipeBuilder.namespacedKey(this.namespacedKey);
@@ -91,22 +109,13 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 this.recipes.add(
                         Map.entry(
                                 recipeBuilder.build(),
-                                entry.getValue()
+                                registerInCraftMenu
                         )
                 );
             }
+        } else {
+            this.recipes = Collections.emptyList();
         }
-
-        this.parameterSet = builder.parameterSet;
-        this.sitHeight = builder.sitHeight;
-        this.types = builder.types;
-        this.faceTypeMap = builder.faceTypeMap;
-        this.lightLevels = builder.lightLevels;
-        this.lightLevelTypeMap = builder.lightLevelTypeMap;
-        this.clickAction = builder.clickAction;
-        this.placeAction = builder.placeAction;
-        this.breakAction = builder.breakAction;
-        this.dropsType = builder.dropsType;
     }
 
     protected abstract @NotNull Builder builder();
@@ -138,7 +147,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public final @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> recipes() {
-        return this.recipes;
+        return Collections.unmodifiableList(this.recipes);
     }
 
     @Override
@@ -559,6 +568,27 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
+    public void doClickAction(final @NotNull CustomDecorClickEvent event) {
+        if (this.clickAction.isSet()) {
+            this.clickAction.execute(event);
+        }
+    }
+
+    @Override
+    public void doPlaceAction(final @NotNull CustomDecorPlaceEvent event) {
+        if (this.placeAction.isSet()) {
+            this.placeAction.execute(event);
+        }
+    }
+
+    @Override
+    public void doBreakAction(final @NotNull CustomDecorBreakEvent event) {
+        if (this.breakAction.isSet()) {
+            this.breakAction.execute(event);
+        }
+    }
+
+    @Override
     public void registerRecipes() {
         if (this.recipes.isEmpty()) return;
 
@@ -608,27 +638,32 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new IllegalArgumentException("The world of the position cannot be null!");
         }
 
+        final boolean inReplaceableBlock = BlockUtils.isReplaceable(blockLocation.getBlock());
+        final float rotation = player.getYaw();
         BlockFace finalFace = null;
 
         for (final var facing : this.facingSet) {
             if (facing.hasFace(blockFace)) {
+                if (
+                        this.hitBox.getType().isNone()
+                        && inReplaceableBlock
+                ) continue;
+
                 finalFace = blockFace;
                 break;
             }
         }
 
         if (finalFace == null) {
-            final float yaw = player.getYaw();
-
             for (final var facing : this.facingSet) {
                 if (
                         facing.hasFace(
                                 blockLocation,
-                                yaw
+                                rotation
                         )
                 ) {
                     finalFace = switch (facing) {
-                        case WALL -> LocationUtils.degreesToBlockFace90(yaw);
+                        case WALL -> LocationUtils.degreesToBlockFace90(rotation);
                         case FLOOR -> BlockFace.UP;
                         case CEILING -> BlockFace.DOWN;
                     };
@@ -640,7 +675,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         final ServerLevel serverLevel = world.getHandle();
-        final MSBoundingBox msbb = this.hitBox.getBoundingBox(blockLocation, finalFace, player.getYaw());
+        final MSBoundingBox msbb = this.hitBox.getBoundingBox(blockLocation, finalFace, rotation);
         final BlockPos[] blocksToReplace = msbb.getBlockPositions();
         final var blockStates = new ArrayList<org.bukkit.block.BlockState>();
 
@@ -670,7 +705,6 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             itemInHand.setItemMeta(itemMeta);
         }
 
-        final float rotation = player.getYaw();
         final CustomDecorPlaceEvent event = new CustomDecorPlaceEvent(
                 this.placeInWorld(
                         player.getName(),
@@ -709,27 +743,6 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
     }
 
-    @Override
-    public void doClickAction(final @NotNull CustomDecorClickEvent event) {
-        if (this.clickAction.isSet()) {
-            this.clickAction.execute(event);
-        }
-    }
-
-    @Override
-    public void doPlaceAction(final @NotNull CustomDecorPlaceEvent event) {
-        if (this.placeAction.isSet()) {
-            this.placeAction.execute(event);
-        }
-    }
-
-    @Override
-    public void doBreakAction(final @NotNull CustomDecorBreakEvent event) {
-        if (this.breakAction.isSet()) {
-            this.breakAction.execute(event);
-        }
-    }
-
     private @NotNull CustomDecor placeInWorld(
             final @NotNull String placerName,
             final @NotNull ItemDisplay itemDisplay,
@@ -747,11 +760,13 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final DecorHitBox.Type type = this.hitBox.getType();
 
         if (!type.isNone()) {
+            final CraftWorld world = ((CraftWorld) itemDisplay.getWorld());
             final var blocks = fillBlocks(
                     placerName,
-                    ((CraftWorld) itemDisplay.getWorld()).getHandle(),
+                    world.getHandle(),
                     replacePositions,
-                    type.getNMSMaterial().defaultBlockState()
+                    type.getNMSMaterial().defaultBlockState(),
+                    null
             );
 
             if (
@@ -787,15 +802,14 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         final ItemStack itemStack = item.clone();
-        final ItemMeta itemMeta = itemStack.getItemMeta();
         final CustomDecorData.Type<D> type;
 
         itemStack.setAmount(1);
 
         if (this.isLightTyped()) {
-            type = this.lightLevelTypeMap.get(this.lightLevels[0]);
+            type = this.getLightTypeOf(itemStack);
         } else if (this.isFaceTyped()) {
-            type = this.getFaceTypeOf(Facing.fromBlockFace(blockFace));
+            type = this.getFaceTypeOf(blockFace);
         } else if (this.isWrenchable()) {
             type = this.getTypeOf(itemStack);
         } else {
@@ -825,6 +839,14 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     } else {
                         final ItemStack typeItem = type.getItem();
                         final ItemMeta typeMeta = typeItem.getItemMeta();
+                        final ItemMeta itemMeta = itemStack.getItemMeta();
+
+                        if (
+                                itemMeta instanceof LeatherArmorMeta colorable
+                                && typeMeta instanceof LeatherArmorMeta typeColorable
+                        ) {
+                            typeColorable.setColor(colorable.getColor());
+                        }
 
                         typeMeta.displayName(itemMeta.displayName());
                         typeItem.setItemMeta(typeMeta);
@@ -905,7 +927,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                                 serverLevel,
                                 entity ->
                                         entity instanceof net.minecraft.world.entity.Interaction
-                                                && decorCounter.incrementAndGet() >= MAX_DECORATIONS_IN_BLOCK
+                                        && decorCounter.incrementAndGet() >= MAX_DECORATIONS_IN_BLOCK
                         )
                 ) return true;
             }
@@ -984,7 +1006,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final @NotNull String changerName,
             final @NotNull ServerLevel serverLevel,
             final BlockPos @NotNull [] replacePositions,
-            final @NotNull BlockState fillBlockState
+            final @NotNull BlockState fillBlockState,
+            final @Nullable Predicate<BlockPos> predicate
     ) {
         final var blockList = new ArrayList<Block>();
         final var list = new ArrayList<BlockPos>();
@@ -992,32 +1015,45 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final BlockData fillBlockData = fillBlockState.createCraftBlockData();
 
         for (final var blockPos : replacePositions) {
-            BlockState blockState = net.minecraft.world.level.block.Block.updateFromNeighbourShapes(fillBlockState, serverLevel, blockPos);
-            final Location location = LocationUtils.nmsToBukkit(blockPos, serverLevel);
+            if (
+                    predicate != null
+                    && !predicate.test(blockPos)
+            ) continue;
 
-            if (blockState.isAir()) {
+            final Location location = LocationUtils.nmsToBukkit(blockPos, serverLevel);
+            final BlockData replacedData = location.getBlock().getBlockData();
+            BlockState blockState = net.minecraft.world.level.block.Block.updateFromNeighbourShapes(fillBlockState, serverLevel, blockPos);
+
+            if (
+                    fillBlockData instanceof Light light
+                    && replacedData instanceof Levelled levelled
+                    && levelled.getLevel() == levelled.getMinimumLevel()
+            ) {
+                light.setWaterlogged(true);
+
+                blockState = ((CraftBlockData) light).getState();
+            } else if (blockState.isAir()) {
                 blockState = fillBlockState;
-            } else {
-                MSDecor.getCoreProtectAPI().logRemoval(
-                        changerName,
-                        location,
-                        blockState.getBukkitMaterial(),
-                        blockState.createCraftBlockData()
-                );
             }
 
+            MSDecor.getCoreProtectAPI().logRemoval(
+                    changerName,
+                    location,
+                    replacedData.getMaterial(),
+                    replacedData
+            );
             serverLevel.setBlock(blockPos, blockState, 2);
             list.add(blockPos.immutable());
-            blockList.add(location.getBlock());
 
-            if (!fillMaterial.isAir()) {
-                MSDecor.getCoreProtectAPI().logPlacement(
-                        changerName,
-                        location,
-                        fillMaterial,
-                        fillBlockData
-                );
-            }
+            final Block newBlock = location.getBlock();
+
+            blockList.add(newBlock);
+            MSDecor.getCoreProtectAPI().logPlacement(
+                    changerName,
+                    location,
+                    fillMaterial,
+                    newBlock.getBlockData()
+            );
         }
 
         for (final var blockPos : list) {
@@ -1091,12 +1127,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalArgumentException("Facings is not set!");
             }
 
-            if (this.soundGroup == null) {
-                throw new IllegalArgumentException("Sound group is not set!");
-            }
-
             if (this.itemStack == null) {
                 throw new IllegalArgumentException("Item stack is not set!");
+            }
+
+            if (this.soundGroup == null) {
+                throw new IllegalArgumentException("Sound group is not set!");
             }
 
             if (this.parameterSet != null) {
@@ -1396,7 +1432,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 final @NotNull Function<Builder, CustomDecorData.Type<D>> first,
                 final Function<Builder, CustomDecorData.Type<D>> @NotNull ... rest
         ) {
-            validateAnyOfParams(
+            this.validateAnyOfParams(
                     "Set wrenchable or typed parameter before setting types!",
                     DecorParameter.WRENCHABLE, DecorParameter.TYPED
             );
@@ -1417,7 +1453,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 final @NotNull CustomDecorData.Type<D> first,
                 final CustomDecorData.Type<D> @NotNull ... rest
         ) throws IllegalStateException {
-            validateAnyOfParams(
+            this.validateAnyOfParams(
                     "Set wrenchable or typed parameter before setting types!",
                     DecorParameter.WRENCHABLE, DecorParameter.TYPED
             );

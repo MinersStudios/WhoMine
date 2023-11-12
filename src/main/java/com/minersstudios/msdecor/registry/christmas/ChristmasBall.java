@@ -3,7 +3,8 @@ package com.minersstudios.msdecor.registry.christmas;
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
 import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecorDataImpl;
 import com.minersstudios.msdecor.api.DecorHitBox;
 import com.minersstudios.msdecor.api.DecorParameter;
@@ -33,7 +34,7 @@ public final class ChristmasBall extends CustomDecorDataImpl<ChristmasBall> {
         wallMeta.setCustomModelData(1400);
         wall.setItemMeta(wallMeta);
 
-        return new Builder()
+        final Builder builder0 = new Builder()
                 .key("christmas_ball")
                 .hitBox(
                         DecorHitBox.builder()
@@ -51,22 +52,6 @@ public final class ChristmasBall extends CustomDecorDataImpl<ChristmasBall> {
                 )
                 .soundGroup(SoundGroup.GLASS)
                 .itemStack(ceiling)
-                .recipes(
-                        Map.entry(
-                                RecipeBuilder.shapedBuilder()
-                                .category(CraftingBookCategory.BUILDING)
-                                .shape(
-                                        " S ",
-                                        "CCC",
-                                        "CCC"
-                                )
-                                .ingredients(
-                                        ShapedRecipeBuilder.material('S', Material.STRING),
-                                        ShapedRecipeBuilder.material('C', Material.CLAY_BALL)
-                                ),
-                                true
-                        )
-                )
                 .parameters(DecorParameter.FACE_TYPED)
                 .faceTypes(
                         builder -> Map.entry(
@@ -86,5 +71,24 @@ public final class ChristmasBall extends CustomDecorDataImpl<ChristmasBall> {
                                 )
                         )
                 );
+
+        return MSDecor.getConfiguration().isChristmas
+                ? builder0.recipes(
+                        Map.entry(
+                                RecipeBuilder.shapedBuilder()
+                                .category(CraftingBookCategory.BUILDING)
+                                .shape(
+                                        " S ",
+                                        "CCC",
+                                        "CCC"
+                                )
+                                .ingredients(
+                                        ShapedRecipeBuilder.material('S', Material.STRING),
+                                        ShapedRecipeBuilder.material('C', Material.CLAY_BALL)
+                                ),
+                                true
+                        )
+                )
+                : builder0;
     }
 }

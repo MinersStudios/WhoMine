@@ -12,6 +12,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Entity;
@@ -163,6 +164,14 @@ public final class MSBoundingBox {
         return ofDummy(
                 pos.x(), pos.y(), pos.z(),
                 pos.x(), pos.y(), pos.z()
+        );
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull MSBoundingBox of(final @NotNull Block block) {
+        return ofDummy(
+                block.getX(), block.getY(), block.getZ(),
+                block.getX() + 1, block.getY() + 1, block.getZ() + 1
         );
     }
 

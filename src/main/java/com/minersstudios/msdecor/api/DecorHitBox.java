@@ -140,38 +140,23 @@ public final class DecorHitBox {
     ) {
         double x, y, z;
 
-        final boolean isWall =
-                this.facingSet.contains(Facing.WALL)
-                && (
-                        this.wallDirected
-                        || Facing.WALL.hasFace(blockFace)
-                );
-        final boolean isCeiling =
-                this.facingSet.contains(Facing.CEILING)
-                && Facing.CEILING.hasFace(blockFace);
-        final boolean isFloor =
-                this.facingSet.contains(Facing.FLOOR)
-                && Facing.FLOOR.hasFace(blockFace);
+        final boolean isWall = this.isWall(blockFace);
+        final boolean isCeiling = this.isCeiling(blockFace);
 
         if (isWall) {
             final BlockFace rotationFace = LocationUtils.degreesToBlockFace45(-rotation);
-
-            final boolean is45 =
-                    rotationFace == BlockFace.NORTH_WEST
-                    || rotationFace == BlockFace.NORTH_EAST
-                    || rotationFace == BlockFace.SOUTH_WEST
-                    || rotationFace == BlockFace.SOUTH_EAST;
-            final boolean isX = is45 || rotationFace == BlockFace.WEST || rotationFace == BlockFace.EAST;
-            final boolean isZ = is45 || rotationFace == BlockFace.NORTH || rotationFace == BlockFace.SOUTH;
+            final boolean diagonal = LocationUtils.isDiagonal(rotationFace);
 
             x =
-                    isX
-                    ? this.getInteractionWidth() / 2.0d
-                    : 0.5d;
+                    diagonal
+                    || LocationUtils.isX(rotationFace)
+                            ? this.getInteractionWidth() / 2.0d
+                            : 0.5d;
             z =
-                    isZ
-                    ? this.getInteractionWidth() / 2.0d
-                    : 0.5d;
+                    diagonal
+                    || LocationUtils.isZ(rotationFace)
+                            ? this.getInteractionWidth() / 2.0d
+                            : 0.5d;
 
             switch (rotationFace) {
                 case WEST, NORTH_WEST -> x = 1.0d - x;
@@ -189,7 +174,7 @@ public final class DecorHitBox {
         if (
                 isWall
                 && !isCeiling
-                && !isFloor
+                && !this.isFloor(blockFace)
         ) {
             y = 0.5d - this.getInteractionHeight(blockFace) / 2.0d;
         } else if (isCeiling) {
@@ -203,6 +188,24 @@ public final class DecorHitBox {
 
     public boolean isWallDirected() {
         return this.wallDirected;
+    }
+
+    public boolean isCeiling(final @NotNull BlockFace blockFace) {
+        return this.facingSet.contains(Facing.CEILING)
+                && blockFace == BlockFace.DOWN;
+    }
+
+    public boolean isFloor(final @NotNull BlockFace blockFace) {
+        return this.facingSet.contains(Facing.FLOOR)
+                && blockFace == BlockFace.UP;
+    }
+
+    public boolean isWall(final @NotNull BlockFace blockFace) {
+        return this.facingSet.contains(Facing.WALL)
+                && (
+                        this.wallDirected
+                        || Facing.WALL.hasFace(blockFace)
+                );
     }
 
     public static boolean isParent(final @NotNull Interaction interaction) {
@@ -222,13 +225,14 @@ public final class DecorHitBox {
         final Builder builder = new Builder();
 
         builder.type = this.type;
+        builder.facingSet = this.facingSet;
         builder.x = this.x;
         builder.y = this.y;
         builder.z = this.z;
         builder.modelOffsetX = this.modelOffsetX;
         builder.modelOffsetY = this.modelOffsetY;
         builder.modelOffsetZ = this.modelOffsetZ;
-        builder.facingSet = this.facingSet;
+        builder.wallDirected = this.wallDirected;
 
         return builder;
     }

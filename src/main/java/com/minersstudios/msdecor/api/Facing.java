@@ -1,9 +1,8 @@
 package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.location.MSPosition;
+import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.LocationUtils;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -16,14 +15,14 @@ import java.util.Set;
 
 public enum Facing {
     //<editor-fold desc="Facings" defaultstate="collapsed">
-    FLOOR(
-            EnumSet.of(
-                    BlockFace.UP
-            )
-    ),
     CEILING(
             EnumSet.of(
                     BlockFace.DOWN
+            )
+    ),
+    FLOOR(
+            EnumSet.of(
+                    BlockFace.UP
             )
     ),
     WALL(
@@ -57,13 +56,13 @@ public enum Facing {
                     case DOWN -> CEILING;
                     case UP -> FLOOR;
                     case NORTH,
-                         NORTH_EAST,
-                         NORTH_WEST,
-                         EAST,
-                         SOUTH,
-                         SOUTH_WEST,
-                         SOUTH_EAST,
-                         WEST -> WALL;
+                            NORTH_EAST,
+                            NORTH_WEST,
+                            EAST,
+                            SOUTH,
+                            SOUTH_WEST,
+                            SOUTH_EAST,
+                            WEST -> WALL;
                     default -> null;
                 };
     }
@@ -105,17 +104,7 @@ public enum Facing {
             );
         };
 
-        if (newPosition == positionAtFace) return true;
-
-        final Block block = newPosition.getBlock();
-        assert block != null;
-        final Material material = block.getType();
-
-        return !material.isAir()
-                && material != Material.LIGHT
-                && material != Material.WATER
-                && material != Material.LAVA
-                && material != Material.STRUCTURE_VOID;
+        return !BlockUtils.isReplaceable(newPosition.getBlock().getType());
     }
 
     /**
@@ -124,11 +113,19 @@ public enum Facing {
      */
     @Contract("null -> false")
     public static boolean isValid(final @Nullable BlockFace blockFace) {
-        return blockFace == BlockFace.DOWN
-                || blockFace == BlockFace.UP
-                || blockFace == BlockFace.WEST
-                || blockFace == BlockFace.EAST
-                || blockFace == BlockFace.NORTH
-                || blockFace == BlockFace.SOUTH;
+        return blockFace != null
+                && switch (blockFace) {
+                    case DOWN,
+                            UP,
+                            NORTH,
+                            NORTH_EAST,
+                            NORTH_WEST,
+                            EAST,
+                            SOUTH,
+                            SOUTH_WEST,
+                            SOUTH_EAST,
+                            WEST -> true;
+                    default -> false;
+                };
     }
 }

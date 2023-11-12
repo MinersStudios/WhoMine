@@ -34,7 +34,7 @@ public final class DateUtils {
     public static final String CHRONO_REGEX = "\\d+[smhdMy]";
     public static final Pattern CHRONO_PATTERN = Pattern.compile(CHRONO_REGEX);
 
-    @Contract(value = " -> fail")
+    @Contract(" -> fail")
     private DateUtils() {
         throw new AssertionError("Utility class");
     }
@@ -212,7 +212,7 @@ public final class DateUtils {
      * @param string String to be checked
      * @return True if the string matches the {@link #CHRONO_REGEX} regex
      */
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public static boolean matchesChrono(final @Nullable String string) {
         return StringUtils.isNotBlank(string) 
                 && CHRONO_PATTERN.matcher(string).matches();

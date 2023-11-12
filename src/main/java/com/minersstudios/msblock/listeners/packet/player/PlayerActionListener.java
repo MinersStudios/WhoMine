@@ -5,7 +5,7 @@ import com.minersstudios.msblock.collection.DiggingMap;
 import com.minersstudios.msblock.api.CustomBlock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
-import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.packet.PacketContainer;

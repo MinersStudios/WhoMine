@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.util;
+package com.minersstudios.mscore.sound;
 
 import com.minersstudios.msblock.Config;
 import com.minersstudios.msblock.MSBlock;
@@ -6,20 +6,24 @@ import com.minersstudios.mscore.location.MSPosition;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
 
 /**
  * Represents a group of sounds associated with a custom block
  */
+@Immutable
 public final class SoundGroup implements Cloneable {
     private Sound placeSound;
     private Sound breakSound;
     private Sound hitSound;
     private Sound stepSound;
 
+    //<editor-fold desc="Vanilla sounds" defaultstate="collapsed">
     public static final SoundGroup EMPTY = new SoundGroup(Sound.create("intentionally_empty", SoundCategory.BLOCKS), Sound.create("intentionally_empty", SoundCategory.BLOCKS), Sound.create("intentionally_empty", SoundCategory.BLOCKS, 0.5f, 0.5f), Sound.create("intentionally_empty", SoundCategory.PLAYERS, 0.3f, 0.9f));
     public static final SoundGroup WOOD = new SoundGroup(Sound.create("block.wood.place", SoundCategory.BLOCKS), Sound.create("block.wood.break", SoundCategory.BLOCKS), Sound.create("block.wood.hit", SoundCategory.BLOCKS, 0.5f, 0.5f), Sound.create("block.wood.step", SoundCategory.PLAYERS, 0.3f, 0.9f));
     public static final SoundGroup GRAVEL = new SoundGroup(Sound.create("block.gravel.place", SoundCategory.BLOCKS), Sound.create("block.gravel.break", SoundCategory.BLOCKS), Sound.create("block.gravel.hit", SoundCategory.BLOCKS, 0.5f, 0.5f), Sound.create("block.gravel.step", SoundCategory.PLAYERS, 0.3f, 0.9f));
@@ -125,6 +129,7 @@ public final class SoundGroup implements Cloneable {
     public static final SoundGroup DECORATED_POT_CRACKED = new SoundGroup(Sound.create("block.decorated_pot_cracked.place", SoundCategory.BLOCKS), Sound.create("block.decorated_pot_cracked.break", SoundCategory.BLOCKS), Sound.create("block.decorated_pot_cracked.hit", SoundCategory.BLOCKS, 0.5f, 0.5f), Sound.create("block.decorated_pot_cracked.step", SoundCategory.PLAYERS, 0.3f, 0.9f));
     public static final SoundGroup SPONGE = new SoundGroup(Sound.create("block.sponge.place", SoundCategory.BLOCKS), Sound.create("block.sponge.break", SoundCategory.BLOCKS), Sound.create("block.sponge.hit", SoundCategory.BLOCKS, 0.5f, 0.5f), Sound.create("block.sponge.step", SoundCategory.PLAYERS, 0.3f, 0.9f));
     public static final SoundGroup WET_SPONGE = new SoundGroup(Sound.create("block.wet_sponge.place", SoundCategory.BLOCKS), Sound.create("block.wet_sponge.break", SoundCategory.BLOCKS), Sound.create("block.wet_sponge.hit", SoundCategory.BLOCKS, 0.5f, 0.5f), Sound.create("block.wet_sponge.step", SoundCategory.PLAYERS, 0.3f, 0.9f));
+    //</editor-fold>
 
     /**
      * Constructs a SoundGroup with the specified sounds
@@ -185,9 +190,9 @@ public final class SoundGroup implements Cloneable {
      * nothing will be played.
      *
      * @param position The location to play the place sound at
-     * @throws NullPointerException If the world of the position is null
+     * @throws IllegalStateException If the world of the position is null
      */
-    public void playPlaceSound(final @NotNull MSPosition position) {
+    public void playPlaceSound(final @NotNull MSPosition position) throws IllegalStateException {
         this.playPlaceSound(position.toLocation());
     }
 
@@ -198,19 +203,12 @@ public final class SoundGroup implements Cloneable {
      * nothing will be played.
      *
      * @param location The location to play the place sound at
-     * @throws NullPointerException If the world of the location is null
+     * @throws IllegalStateException If the world of the location is null
      */
-    public void playPlaceSound(final @NotNull Location location) {
-        if (this.placeSound == null) return;
-        location.getWorld().playSound(
-                location,
-                this.placeSound.key.equalsIgnoreCase("block.wood.place")
-                ? MSBlock.getConfiguration().woodSoundPlace
-                : this.placeSound.key,
-                this.placeSound.category,
-                this.placeSound.volume,
-                this.placeSound.pitch
-        );
+    public void playPlaceSound(final @NotNull Location location) throws IllegalStateException {
+        if (this.placeSound != null) {
+            this.placeSound.play(location);
+        }
     }
 
     /**
@@ -220,9 +218,9 @@ public final class SoundGroup implements Cloneable {
      * nothing will be played.
      *
      * @param position The position to play the break sound at
-     * @throws NullPointerException If the world of the position is null
+     * @throws IllegalStateException If the world of the position is null
      */
-    public void playBreakSound(final @NotNull MSPosition position) {
+    public void playBreakSound(final @NotNull MSPosition position) throws IllegalStateException {
         this.playBreakSound(position.toLocation());
     }
 
@@ -233,19 +231,12 @@ public final class SoundGroup implements Cloneable {
      * nothing will be played.
      *
      * @param location The location to play the break sound at
-     * @throws NullPointerException If the world of the location is null
+     * @throws IllegalStateException If the world of the location is null
      */
-    public void playBreakSound(final @NotNull Location location) {
-        if (this.breakSound == null) return;
-        location.getWorld().playSound(
-                location,
-                this.breakSound.key.equalsIgnoreCase("block.wood.break")
-                ? MSBlock.getConfiguration().woodSoundBreak
-                : this.breakSound.key,
-                this.breakSound.category,
-                this.breakSound.volume,
-                this.breakSound.pitch
-        );
+    public void playBreakSound(final @NotNull Location location) throws IllegalStateException {
+        if (this.breakSound != null) {
+            this.breakSound.play(location);
+        }
     }
 
     /**
@@ -255,9 +246,9 @@ public final class SoundGroup implements Cloneable {
      * nothing will be played.
      *
      * @param position The position to play the hit sound at
-     * @throws NullPointerException If the world of the position is null
+     * @throws IllegalStateException If the world of the position is null
      */
-    public void playHitSound(final @NotNull MSPosition position) {
+    public void playHitSound(final @NotNull MSPosition position) throws IllegalStateException {
         this.playHitSound(position.toLocation());
     }
 
@@ -268,19 +259,12 @@ public final class SoundGroup implements Cloneable {
      * nothing will be played.
      *
      * @param location The location to play the hit sound at
-     * @throws NullPointerException If the world of the location is null
+     * @throws IllegalStateException If the world of the location is null
      */
-    public void playHitSound(final @NotNull Location location) {
-        if (this.hitSound == null) return;
-        location.getWorld().playSound(
-                location,
-                this.hitSound.key.equalsIgnoreCase("block.wood.hit")
-                ? MSBlock.getConfiguration().woodSoundHit
-                : this.hitSound.key,
-                this.hitSound.category,
-                this.hitSound.volume,
-                this.hitSound.pitch
-        );
+    public void playHitSound(final @NotNull Location location) throws IllegalStateException {
+        if (this.hitSound != null) {
+            this.hitSound.play(location);
+        }
     }
 
     /**
@@ -290,9 +274,9 @@ public final class SoundGroup implements Cloneable {
      * nothing will be played.
      *
      * @param position The position to play the step sound at
-     * @throws NullPointerException If the world of the position is null
+     * @throws IllegalStateException If the world of the position is null
      */
-    public void playStepSound(final @NotNull MSPosition position) {
+    public void playStepSound(final @NotNull MSPosition position) throws IllegalStateException {
         this.playStepSound(position.toLocation());
     }
 
@@ -303,19 +287,36 @@ public final class SoundGroup implements Cloneable {
      * nothing will be played.
      *
      * @param location The location to play the step sound at
-     * @throws NullPointerException If the world of the location is null
+     * @throws IllegalStateException If the world of the location is null
      */
-    public void playStepSound(final @NotNull Location location) {
-        if (this.stepSound == null) return;
-        location.getWorld().playSound(
-                location,
-                this.stepSound.key.equalsIgnoreCase("block.wood.step")
-                ? MSBlock.getConfiguration().woodSoundStep
-                : this.stepSound.key,
-                this.stepSound.category,
-                this.stepSound.volume,
-                this.stepSound.pitch
-        );
+    public void playStepSound(final @NotNull Location location) throws IllegalStateException {
+        if (this.stepSound != null) {
+            this.stepSound.play(location);
+        }
+    }
+
+    /**
+     * @return A hash code value for this SoundGroup
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.placeSound, this.breakSound, this.hitSound, this.stepSound);
+    }
+
+    /**
+     * @param obj The reference object with which to compare
+     * @return True if this SoundGroup is the same as the obj argument
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        return this == obj
+                || (
+                        obj instanceof SoundGroup soundGroup
+                        && Objects.equals(this.placeSound, soundGroup.placeSound)
+                        && Objects.equals(this.breakSound, soundGroup.breakSound)
+                        && Objects.equals(this.hitSound, soundGroup.hitSound)
+                        && Objects.equals(this.stepSound, soundGroup.stepSound)
+                );
     }
 
     /**
@@ -354,30 +355,6 @@ public final class SoundGroup implements Cloneable {
     }
 
     /**
-     * @return A hash code value for this SoundGroup
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.placeSound, this.breakSound, this.hitSound, this.stepSound);
-    }
-
-    /**
-     * @param obj The reference object with which to compare
-     * @return True if this SoundGroup is the same as the obj argument
-     */
-    @Override
-    public boolean equals(final Object obj) {
-        return this == obj
-                || (
-                        obj instanceof SoundGroup soundGroup
-                        && Objects.equals(this.placeSound, soundGroup.placeSound)
-                        && Objects.equals(this.breakSound, soundGroup.breakSound)
-                        && Objects.equals(this.hitSound, soundGroup.hitSound)
-                        && Objects.equals(this.stepSound, soundGroup.stepSound)
-                );
-    }
-
-    /**
      * Represents a sound with :
      * <ul>
      *     <li>A key {@link String}</li>
@@ -385,23 +362,57 @@ public final class SoundGroup implements Cloneable {
      *     <li>A volume float</li>
      *     <li>A pitch float</li>
      * </ul>
+     *
+     * Sound can be created with builder, example :
+     * <pre>
+     *     Sound sound = Sound.builder()
+     *        .key("block.wood.place")
+     *        .category(SoundCategory.BLOCKS)
+     *        .volume(1.0f)
+     *        .pitch(1.0f)
+     *        .build();
+     * </pre>
+     * Or with the :
+     * <ul>
+     *     <li>{@link #create(String)}</li>
+     *     <li>{@link #create(String, SoundCategory)}</li>
+     *     <li>{@link #create(String, SoundCategory, float, float)}</li>
+     * </ul>
      */
+    @Immutable
     public static final class Sound implements Cloneable {
-        private String key;
-        private SoundCategory category;
-        private float volume;
-        private float pitch;
+        private final String key;
+        private final SoundCategory category;
+        private final float volume;
+        private final float pitch;
 
-        private Sound(
-                final @NotNull String key,
-                final @NotNull SoundCategory category,
-                final float volume,
-                final float pitch
-        ) {
-            this.key = key;
-            this.category = category;
-            this.volume = volume;
-            this.pitch = pitch;
+        private static final String WOOD_PLACE_SOUND_KEY = "block.wood.place";
+        private static final String WOOD_BREAK_SOUND_KEY = "block.wood.break";
+        private static final String WOOD_HIT_SOUND_KEY = "block.wood.hit";
+        private static final String WOOD_STEP_SOUND_KEY = "block.wood.step";
+
+        private Sound(final @NotNull Builder builder) {
+            this.key = builder.key;
+            this.category = builder.category;
+            this.volume = builder.volume;
+            this.pitch = builder.pitch;
+        }
+
+        /**
+         * Creates a new Sound instance with 1.0f volume and pitch
+         * and {@link SoundCategory#MASTER} category
+         *
+         * @param key The key of the sound
+         * @return A new Sound instance
+         * @throws IllegalArgumentException If the key is blank
+         * @see #create(String, SoundCategory)
+         * @see #create(String, SoundCategory, float, float)
+         */
+        public static @NotNull Sound create(final @NotNull String key) throws IllegalArgumentException {
+            return create(
+                    key,
+                    SoundCategory.MASTER
+            );
         }
 
         /**
@@ -409,15 +420,19 @@ public final class SoundGroup implements Cloneable {
          *
          * @param key           The key of the sound
          * @param soundCategory The sound category of the sound
-         * @return The created Sound instance,
-         *         or null if the key is blank
+         * @return A new Sound instance
+         * @throws IllegalArgumentException If the key is blank
          * @see #create(String, SoundCategory, float, float)
          */
-        public static @Nullable Sound create(
-                final @Nullable String key,
+        public static @NotNull Sound create(
+                final @NotNull String key,
                 final @NotNull SoundCategory soundCategory
-        ) {
-            return create(key, soundCategory, 1.0f, 1.0f);
+        ) throws IllegalArgumentException {
+            return create(
+                    key,
+                    soundCategory,
+                    1.0f, 1.0f
+            );
         }
 
         /**
@@ -427,117 +442,58 @@ public final class SoundGroup implements Cloneable {
          * @param soundCategory The sound category of the sound
          * @param volume        The volume of the sound
          * @param pitch         The pitch of the sound
-         * @return The created Sound instance,
-         *         or null if the key is blank
+         * @return A new Sound instance
+         * @throws IllegalArgumentException If the key is blank
          */
-        public static @Nullable Sound create(
-                final @Nullable String key,
+        public static @NotNull Sound create(
+                final @NotNull String key,
                 final @NotNull SoundCategory soundCategory,
                 final float volume,
                 final float pitch
-        ) {
-            return StringUtils.isBlank(key)
-                    ? null
-                    : new Sound(key, soundCategory, volume, pitch);
+        ) throws IllegalArgumentException {
+            return new Sound.Builder()
+                    .key(key)
+                    .category(soundCategory)
+                    .volume(volume)
+                    .pitch(pitch)
+                    .build();
+        }
+
+        /**
+         * Creates a new builder for {@link Sound}
+         *
+         * @return A new builder
+         */
+        public static @NotNull Builder builder() {
+            return new Builder();
         }
 
         /**
          * @return The key of this Sound
          */
-        public @NotNull String key() {
+        public @NotNull String getKey() {
             return this.key;
-        }
-
-        /**
-         * Sets the key of this Sound
-         *
-         * @param key The key to set
-         * @return This Sound instance with the new key
-         */
-        public @NotNull Sound key(final @NotNull String key) {
-            this.key = key;
-            return this;
         }
 
         /**
          * @return The sound category of this Sound
          */
-        public @NotNull SoundCategory category() {
+        public @NotNull SoundCategory getCategory() {
             return this.category;
-        }
-
-        /**
-         * Sets the sound category of this Sound
-         *
-         * @param soundCategory The sound category to set
-         * @return This Sound instance with the new sound category
-         */
-        public @NotNull Sound category(final @NotNull SoundCategory soundCategory) {
-            this.category = soundCategory;
-            return this;
         }
 
         /**
          * @return The volume of this Sound
          */
-        public float volume() {
+        public float getVolume() {
             return this.volume;
-        }
-
-        /**
-         * Sets the volume of this Sound
-         *
-         * @param volume The volume to set
-         * @return This Sound instance with the new volume
-         */
-        public @NotNull Sound volume(final float volume) {
-            this.volume = volume;
-            return this;
         }
 
         /**
          * @return The pitch of this Sound
          */
-        public float pitch() {
+        public float getPitch() {
             return this.pitch;
-        }
-
-        /**
-         * Sets the pitch of this Sound
-         *
-         * @param pitch The pitch to set
-         * @return This Sound instance with the new pitch
-         */
-        public @NotNull Sound pitch(final float pitch) {
-            this.pitch = pitch;
-            return this;
-        }
-
-        /**
-         * Creates a clone of this Sound with the same values
-         *
-         * @return A clone of this Sound
-         */
-        @Override
-        public @NotNull Sound clone() {
-            try {
-                return (Sound) super.clone();
-            } catch (final CloneNotSupportedException e) {
-                throw new AssertionError("An error occurred while cloning '" + this + "'", e);
-            }
-        }
-
-        /**
-         * @return A string representation of this Sound
-         */
-        @Override
-        public @NotNull String toString() {
-            return "Sound{" +
-                    "key='" + this.key + '\'' +
-                    ", soundCategory=" + this.category +
-                    ", volume=" + this.volume +
-                    ", pitch=" + this.pitch +
-                    '}';
         }
 
         /**
@@ -562,6 +518,187 @@ public final class SoundGroup implements Cloneable {
                             && this.key.equals(sound.key)
                             && this.category == sound.category
                     );
+        }
+
+        /**
+         * Creates a clone of this Sound with the same values
+         *
+         * @return A clone of this Sound
+         */
+        @Override
+        public @NotNull Sound clone() {
+            try {
+                return (Sound) super.clone();
+            } catch (final CloneNotSupportedException e) {
+                throw new AssertionError("An error occurred while cloning '" + this + "'", e);
+            }
+        }
+
+        /**
+         * @return A string representation of this Sound
+         */
+        @Override
+        public @NotNull String toString() {
+            return "Sound{" +
+                    "key=" + this.key +
+                    ", soundCategory=" + this.category +
+                    ", volume=" + this.volume +
+                    ", pitch=" + this.pitch +
+                    '}';
+        }
+
+        /**
+         * @return A builder for this Sound
+         */
+        public @NotNull Builder toBuilder() {
+            final Builder builder = new Builder();
+
+            builder.key = this.key;
+            builder.category = this.category;
+            builder.volume = this.volume;
+            builder.pitch = this.pitch;
+
+            return builder;
+        }
+
+        /**
+         * Plays this Sound at the specified position
+         *
+         * @param position The position to play this Sound at
+         * @throws IllegalStateException If the world of the position is null
+         */
+        public void play(final @NotNull MSPosition position) {
+            this.play(position.toLocation());
+        }
+
+        /**
+         * Plays this Sound at the specified location
+         *
+         * @param location The location to play this Sound at
+         * @throws IllegalStateException If the world of the location is null
+         */
+        public void play(final @NotNull Location location) {
+            final World world = location.getWorld();
+
+            if (world == null) {
+                throw new IllegalStateException("The world of the location cannot be null");
+            }
+
+            world.playSound(
+                    location,
+                    switch (this.key) {
+                        case WOOD_PLACE_SOUND_KEY -> MSBlock.getConfiguration().woodSoundPlace;
+                        case WOOD_BREAK_SOUND_KEY -> MSBlock.getConfiguration().woodSoundBreak;
+                        case WOOD_HIT_SOUND_KEY -> MSBlock.getConfiguration().woodSoundHit;
+                        case WOOD_STEP_SOUND_KEY -> MSBlock.getConfiguration().woodSoundStep;
+                        default -> this.key;
+                    },
+                    this.category,
+                    this.volume,
+                    this.pitch
+            );
+        }
+
+        /**
+         * A builder for {@link Sound}
+         */
+        public static class Builder {
+            private String key;
+            private SoundCategory category;
+            private float volume;
+            private float pitch;
+
+            private Builder() {
+                this.category = SoundCategory.MASTER;
+                this.volume = 1.0f;
+                this.pitch = 1.0f;
+            }
+
+            /**
+             * @return The key of this Sound
+             */
+            public String key() {
+                return this.key;
+            }
+
+            /**
+             * Sets the key of this Sound
+             *
+             * @param key The key to set
+             * @return This builder, for chaining
+             */
+            public @NotNull Builder key(final @NotNull String key) {
+                this.key = key;
+                return this;
+            }
+
+            /**
+             * @return The sound category of this Sound
+             */
+            public SoundCategory category() {
+                return this.category;
+            }
+
+            /**
+             * Sets the sound category of this Sound
+             *
+             * @param category The sound category to set
+             * @return This builder, for chaining
+             */
+            public @NotNull Builder category(final @NotNull SoundCategory category) {
+                this.category = category;
+                return this;
+            }
+
+            /**
+             * @return The volume of this Sound
+             */
+            public float volume() {
+                return this.volume;
+            }
+
+            /**
+             * Sets the volume of this Sound
+             *
+             * @param volume The volume to set
+             * @return This builder, for chaining
+             */
+            public @NotNull Builder volume(final float volume) {
+                this.volume = volume;
+                return this;
+            }
+
+            /**
+             * @return The pitch of this Sound
+             */
+            public float pitch() {
+                return this.pitch;
+            }
+
+            /**
+             * Sets the pitch of this Sound
+             *
+             * @param pitch The pitch to set
+             * @return This builder, for chaining
+             */
+            public @NotNull Builder pitch(final float pitch) {
+                this.pitch = pitch;
+                return this;
+            }
+
+            /**
+             * Builds a Sound with the values of this builder
+             *
+             * @return The built Sound
+             * @throws IllegalStateException If the key is blank or null
+             */
+            public @NotNull Sound build() throws IllegalStateException {
+                if (StringUtils.isBlank(this.key)) {
+                    throw new IllegalArgumentException("Key cannot be blank or null!");
+                }
+
+                return new Sound(this);
+            }
         }
     }
 }

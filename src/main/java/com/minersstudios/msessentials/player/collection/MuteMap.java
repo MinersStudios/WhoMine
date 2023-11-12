@@ -256,7 +256,7 @@ public final class MuteMap {
          * @param source     Mute source, could be a player's nickname or CONSOLE
          * @return New {@link Entry}
          */
-        @Contract(value = "_, _, _, _ -> new")
+        @Contract("_, _, _, _ -> new")
         public static @NotNull MuteMap.Entry create(
                 final @NotNull Instant created,
                 final @NotNull Instant expiration,

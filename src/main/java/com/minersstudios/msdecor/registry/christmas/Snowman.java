@@ -3,7 +3,8 @@ package com.minersstudios.msdecor.registry.christmas;
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
 import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecorDataImpl;
 import com.minersstudios.msdecor.api.DecorHitBox;
 import com.minersstudios.msdecor.api.DecorParameter;
@@ -34,7 +35,7 @@ public final class Snowman extends CustomDecorDataImpl<Snowman> {
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Сломанный снеговик"));
         broken.setItemMeta(brokenMeta);
 
-        return new Builder()
+        final Builder builder0 = new Builder()
                 .key("snowman")
                 .hitBox(
                         DecorHitBox.builder()
@@ -46,7 +47,21 @@ public final class Snowman extends CustomDecorDataImpl<Snowman> {
                 .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.SNOW)
                 .itemStack(itemStack)
-                .recipes(
+                .parameters(
+                        DecorParameter.WRENCHABLE,
+                        DecorParameter.PAINTABLE
+                )
+                .types(
+                        builder -> new Type(
+                                builder,
+                                "broken",
+                                broken
+                        )
+                )
+                .dropsType(true);
+
+        return MSDecor.getConfiguration().isChristmas
+                ? builder0.recipes(
                         Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
@@ -63,17 +78,6 @@ public final class Snowman extends CustomDecorDataImpl<Snowman> {
                                 true
                         )
                 )
-                .parameters(
-                        DecorParameter.WRENCHABLE,
-                        DecorParameter.PAINTABLE
-                )
-                .types(
-                        builder -> new Type(
-                                builder,
-                                "broken",
-                                broken
-                        )
-                )
-                .dropsType(true);
+                : builder0;
     }
 }

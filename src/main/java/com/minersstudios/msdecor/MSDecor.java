@@ -11,8 +11,8 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The main class of the MSDecor plugin
@@ -21,8 +21,8 @@ import java.util.logging.Level;
  */
 public final class MSDecor extends MSPlugin<MSDecor> {
     private static MSDecor instance;
-    private Config config;
     private Cache cache;
+    private Config config;
     private CoreProtectAPI coreProtectAPI;
 
     public MSDecor() {
@@ -32,6 +32,12 @@ public final class MSDecor extends MSPlugin<MSDecor> {
     @Override
     @SuppressWarnings("JavaReflectionMemberAccess")
     public void load() {
+        this.cache = new Cache();
+        this.config = new Config(this, this.getConfigFile());
+
+        this.config.reload();
+        initClass(CustomDecorType.class);
+
         try {
             final Field item = Item.class.getDeclaredField("d"); // "maxStackSize" field : https://nms.screamingsandals.org/1.20.2/net/minecraft/world/item/Item.html
 
@@ -45,17 +51,11 @@ public final class MSDecor extends MSPlugin<MSDecor> {
         } catch (final Exception e) {
             logger().log(Level.SEVERE, "Failed to set max stack size for leather horse armor", e);
         }
-
-        initClass(CustomDecorType.class);
     }
 
     @Override
     public void enable() {
         this.coreProtectAPI = CoreProtect.getInstance().getAPI();
-        this.cache = new Cache();
-        this.config = new Config(this, this.getConfigFile());
-
-        this.config.reload();
     }
 
     /**

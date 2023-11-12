@@ -2,8 +2,6 @@ package com.minersstudios.mscore.util;
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.minersstudios.mscore.inventory.ShulkerBoxMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.authlib.GameProfile;
@@ -52,30 +50,8 @@ import java.util.function.Predicate;
  * Utility class for {@link Player}
  */
 public final class PlayerUtils {
-    private static final ImmutableSet<EntityType> MOB_FILTER = Sets.immutableEnumSet(
-            //<editor-fold desc="Ignorable mob types" defaultstate="collapsed">
-            EntityType.DROPPED_ITEM,
-            EntityType.ARROW,
-            EntityType.SPECTRAL_ARROW,
-            EntityType.AREA_EFFECT_CLOUD,
-            EntityType.DRAGON_FIREBALL,
-            EntityType.EGG,
-            EntityType.FISHING_HOOK,
-            EntityType.WITHER_SKULL,
-            EntityType.TRIDENT,
-            EntityType.SNOWBALL,
-            EntityType.SMALL_FIREBALL,
-            EntityType.FIREBALL,
-            EntityType.FIREWORK,
-            EntityType.SPLASH_POTION,
-            EntityType.THROWN_EXP_BOTTLE,
-            EntityType.EXPERIENCE_ORB,
-            EntityType.LLAMA_SPIT,
-            EntityType.LIGHTNING
-            //</editor-fold>
-    );
 
-    @Contract(value = " -> fail")
+    @Contract(" -> fail")
     private PlayerUtils() {
         throw new AssertionError("Utility class");
     }
@@ -393,7 +369,7 @@ public final class PlayerUtils {
             final @Nullable Block targetBlock
     ) {
         final Location eyeLocation = player.getEyeLocation();
-        final Predicate<Entity> filter = entity -> entity != player && !MOB_FILTER.contains(entity.getType());
+        final Predicate<Entity> filter = entity -> entity != player && !isIgnorableEntity(entity.getType());
         final RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
 
         if (rayTraceResult == null) return null;
@@ -405,6 +381,32 @@ public final class PlayerUtils {
                 && eyeLocation.distance(targetBlock.getLocation()) <= eyeLocation.distance(targetEntity.getLocation())
                 ? null
                 : targetEntity;
+    }
+
+    private static boolean isIgnorableEntity(final @NotNull EntityType entityType) {
+        return switch (entityType) {
+            //<editor-fold desc="Ignorable entities" defaultstate="collapsed">
+            case DROPPED_ITEM,
+                    ARROW,
+                    SPECTRAL_ARROW,
+                    AREA_EFFECT_CLOUD,
+                    DRAGON_FIREBALL,
+                    EGG,
+                    FISHING_HOOK,
+                    WITHER_SKULL,
+                    TRIDENT,
+                    SNOWBALL,
+                    SMALL_FIREBALL,
+                    FIREBALL,
+                    FIREWORK,
+                    SPLASH_POTION,
+                    THROWN_EXP_BOTTLE,
+                    EXPERIENCE_ORB,
+                    LLAMA_SPIT,
+                    LIGHTNING -> true;
+            //</editor-fold>
+            default -> false;
+        };
     }
 
     private static void unregisterEntity(

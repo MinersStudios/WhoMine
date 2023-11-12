@@ -30,10 +30,10 @@ allprojects {
 
     dependencies {
         paperweight.paperDevBundle("1.20.2-R0.1-SNAPSHOT")
+        compileOnly("org.jetbrains:annotations:24.0.1")
         compileOnly("net.coreprotect:coreprotect:21.3")
         compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
         implementation("net.dv8tion:JDA:5.0.0-beta.14")
-        implementation("org.jetbrains:annotations:24.0.0")
     }
 
     sourceSets {
@@ -131,6 +131,6 @@ tasks {
 
     javadoc {
         enabled = true
-        destinationDir = file("$rootDir/builds/javadoc")
+        setDestinationDir(file("$rootDir/builds/javadoc"))
     }
 }

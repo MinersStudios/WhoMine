@@ -51,6 +51,22 @@ public final class Config extends MSConfig {
         this.woodSoundStep = this.yaml.getString("wood-sound.step");
         this.woodSoundHit = this.yaml.getString("wood-sound.hit");
 
+        if (this.woodSoundPlace == null) {
+            this.woodSoundPlace = "block.wood.place";
+        }
+
+        if (this.woodSoundBreak == null) {
+            this.woodSoundBreak = "block.wood.break";
+        }
+
+        if (this.woodSoundStep == null) {
+            this.woodSoundStep = "block.wood.step";
+        }
+
+        if (this.woodSoundHit == null) {
+            this.woodSoundHit = "block.wood.hit";
+        }
+
         this.plugin.saveResource("blocks/example.json", true);
         this.plugin.runTaskAsync(this::loadBlocks);
     }

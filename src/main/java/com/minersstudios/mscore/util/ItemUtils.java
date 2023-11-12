@@ -22,7 +22,7 @@ import java.util.Collection;
 @SuppressWarnings("UnusedReturnValue")
 public final class ItemUtils {
 
-    @Contract(value = " -> fail")
+    @Contract(" -> fail")
     private ItemUtils() {
         throw new AssertionError("Utility class");
     }

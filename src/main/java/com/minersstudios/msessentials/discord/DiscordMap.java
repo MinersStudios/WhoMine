@@ -337,7 +337,7 @@ public final class DiscordMap {
          * @param nickname Player nickname
          * @return New {@link Params}
          */
-        @Contract(value = "_, _ -> new")
+        @Contract("_, _ -> new")
         public static @NotNull Params create(
                 final @NotNull UUID uuid,
                 final @NotNull String nickname

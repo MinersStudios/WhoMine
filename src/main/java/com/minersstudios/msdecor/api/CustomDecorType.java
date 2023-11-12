@@ -304,7 +304,7 @@ public enum CustomDecorType {
      * @param key Key to be checked
      * @return True if string matches {@link #TYPED_KEY_REGEX}
      */
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public static boolean matchesTypedKey(final @Nullable NamespacedKey key) {
         return key != null
                 && matchesTypedKey(key.getKey());
@@ -314,7 +314,7 @@ public enum CustomDecorType {
      * @param key Key to be checked
      * @return True if string matches {@link #TYPED_KEY_REGEX}
      */
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public static boolean matchesTypedKey(final @Nullable String key) {
         return StringUtils.isNotBlank(key)
                 && TYPED_KEY_PATTERN.matcher(key).matches();

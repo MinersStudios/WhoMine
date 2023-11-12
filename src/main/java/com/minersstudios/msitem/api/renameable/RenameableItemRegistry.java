@@ -55,7 +55,7 @@ public final class RenameableItemRegistry {
     private static final Map<String, RenameableItem> KEY_MAP = new ConcurrentHashMap<>();
     private static final Map<RenameEntry, String> RENAME_ENTRY_MAP = new ConcurrentHashMap<>();
 
-    @Contract(value = " -> fail")
+    @Contract(" -> fail")
     private RenameableItemRegistry() {
         throw new AssertionError("Utility class");
     }

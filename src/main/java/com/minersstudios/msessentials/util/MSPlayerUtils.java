@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.util;
 
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -67,8 +68,9 @@ public final class MSPlayerUtils {
      * @param string String to be checked
      * @return True if string matches {@link #NAME_REGEX}
      */
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public static boolean matchesNameRegex(final @Nullable String string) {
-        return string != null && NAME_PATTERN.matcher(string).matches();
+        return StringUtils.isNotBlank(string)
+                && NAME_PATTERN.matcher(string).matches();
     }
 }

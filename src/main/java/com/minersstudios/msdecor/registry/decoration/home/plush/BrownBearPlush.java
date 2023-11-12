@@ -3,7 +3,7 @@ package com.minersstudios.msdecor.registry.decoration.home.plush;
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
 import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.msdecor.api.CustomDecorDataImpl;
 import com.minersstudios.msdecor.api.DecorHitBox;
 import com.minersstudios.msdecor.api.Facing;
@@ -31,11 +31,10 @@ public final class BrownBearPlush extends CustomDecorDataImpl<BrownBearPlush> {
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)
-                        .facings(Facing.WALL, Facing.FLOOR)
                         .size(0.75d, 0.90625d, 0.75d)
                         .build()
                 )
-                .facings(Facing.WALL, Facing.FLOOR)
+                .facings(Facing.FLOOR)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(

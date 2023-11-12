@@ -52,7 +52,7 @@ public class NoteBlockData implements Cloneable {
      * @param powered    True if the note block is powered
      * @return New note block data
      */
-    @Contract(value = "_, _, _ -> new", pure = true)
+    @Contract("_, _, _ -> new")
     public static @NotNull NoteBlockData fromParams(
             final @NotNull Instrument instrument,
             final @NotNull Note note,

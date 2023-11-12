@@ -18,7 +18,7 @@ public final class MSItemUtils {
     public static final String NAMESPACED_KEY_REGEX = '(' + CustomItemType.NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
-    @Contract(value = " -> fail")
+    @Contract(" -> fail")
     private MSItemUtils() {
         throw new AssertionError("Utility class");
     }
@@ -70,7 +70,7 @@ public final class MSItemUtils {
      * @param string String to be checked
      * @return True if string matches {@link #NAMESPACED_KEY_REGEX}
      */
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public static boolean matchesNamespacedKey(final @Nullable String string) {
         return StringUtils.isNotBlank(string)
                 && NAMESPACED_KEY_PATTERN.matcher(string).matches();

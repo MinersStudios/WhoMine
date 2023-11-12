@@ -3,7 +3,8 @@ package com.minersstudios.msdecor.registry.christmas;
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
 import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecorDataImpl;
 import com.minersstudios.msdecor.api.DecorHitBox;
 import com.minersstudios.msdecor.api.DecorParameter;
@@ -33,7 +34,7 @@ public final class SnowmanBall extends CustomDecorDataImpl<SnowmanBall> {
         wallMeta.setCustomModelData(1397);
         wall.setItemMeta(wallMeta);
 
-        return new Builder()
+        final Builder builder0 = new Builder()
                 .key("snowman_ball")
                 .hitBox(
                         DecorHitBox.builder()
@@ -51,23 +52,6 @@ public final class SnowmanBall extends CustomDecorDataImpl<SnowmanBall> {
                 )
                 .soundGroup(SoundGroup.GLASS)
                 .itemStack(ceiling)
-                .recipes(
-                        Map.entry(
-                                RecipeBuilder.shapedBuilder()
-                                .category(CraftingBookCategory.BUILDING)
-                                .shape(
-                                        " S ",
-                                        "BLB",
-                                        "BBB"
-                                )
-                                .ingredients(
-                                        ShapedRecipeBuilder.material('S', Material.STRING),
-                                        ShapedRecipeBuilder.material('B', Material.SNOWBALL),
-                                        ShapedRecipeBuilder.material('L', Material.LEATHER)
-                                ),
-                                true
-                        )
-                )
                 .parameters(
                         DecorParameter.FACE_TYPED,
                         DecorParameter.PAINTABLE
@@ -90,5 +74,25 @@ public final class SnowmanBall extends CustomDecorDataImpl<SnowmanBall> {
                                 )
                         )
                 );
+
+        return MSDecor.getConfiguration().isChristmas
+                ? builder0.recipes(
+                        Map.entry(
+                                RecipeBuilder.shapedBuilder()
+                                .category(CraftingBookCategory.BUILDING)
+                                .shape(
+                                        " S ",
+                                        "BLB",
+                                        "BBB"
+                                )
+                                .ingredients(
+                                        ShapedRecipeBuilder.material('S', Material.STRING),
+                                        ShapedRecipeBuilder.material('B', Material.SNOWBALL),
+                                        ShapedRecipeBuilder.material('L', Material.LEATHER)
+                                ),
+                                true
+                        )
+                )
+                : builder0;
     }
 }

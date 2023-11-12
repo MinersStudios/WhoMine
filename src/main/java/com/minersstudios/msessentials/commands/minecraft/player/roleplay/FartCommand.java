@@ -64,7 +64,7 @@ public final class FartCommand implements MSCommandExecutor {
         boolean withPoop =
                 this.random.nextInt(10) == 0
                 && location.clone().subtract(0.0d, 0.5d, 0.0d).getBlock().getType().isSolid()
-                && BlockUtils.REPLACEABLE_BLOCKS.contains(location.clone().getBlock().getType());
+                && BlockUtils.isReplaceable(location.clone().getBlock().getType());
 
         for (final var nearbyEntity : player.getWorld().getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
             if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && nearbyEntity.getType() != EntityType.PLAYER) {

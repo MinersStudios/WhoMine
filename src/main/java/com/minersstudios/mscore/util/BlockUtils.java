@@ -1,8 +1,6 @@
 package com.minersstudios.mscore.util;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import org.bukkit.Material;
 import org.bukkit.SoundGroup;
@@ -10,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_20_R2.CraftSoundGroup;
 import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftEntityType;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -20,104 +19,6 @@ import java.util.Set;
  * Utility class for blocks
  */
 public final class BlockUtils {
-    public static final Set<Material> REPLACEABLE_BLOCKS = Sets.immutableEnumSet(
-            //<editor-fold desc="Replace materials" defaultstate="collapsed">
-            Material.AIR,
-            Material.CAVE_AIR,
-            Material.VOID_AIR,
-            Material.WATER,
-            Material.LAVA,
-            Material.GRASS,
-            Material.FERN,
-            Material.SEAGRASS,
-            Material.TALL_GRASS,
-            Material.LARGE_FERN,
-            Material.TALL_SEAGRASS,
-            Material.VINE,
-            Material.SNOW,
-            Material.FIRE
-            //</editor-fold>
-    );
-    public static final Set<net.minecraft.world.level.block.Block> NMS_REPLACEABLE_BLOCKS = ImmutableSet.of(
-            //<editor-fold desc="Replace NMS blocks" defaultstate="collapsed">
-            Blocks.AIR,
-            Blocks.CAVE_AIR,
-            Blocks.VOID_AIR,
-            Blocks.WATER,
-            Blocks.LAVA,
-            Blocks.GRASS,
-            Blocks.FERN,
-            Blocks.SEAGRASS,
-            Blocks.TALL_GRASS,
-            Blocks.LARGE_FERN,
-            Blocks.TALL_SEAGRASS,
-            Blocks.VINE,
-            Blocks.SNOW,
-            Blocks.FIRE
-            //</editor-fold>
-    );
-    public static final Set<EntityType> IGNORABLE_ENTITIES = Sets.immutableEnumSet(
-            //<editor-fold desc="Entities to be ignored when placing a block on their location" defaultstate="collapsed">
-            EntityType.DROPPED_ITEM,
-            EntityType.ITEM_FRAME,
-            EntityType.GLOW_ITEM_FRAME,
-            EntityType.LIGHTNING,
-            EntityType.LLAMA_SPIT,
-            EntityType.EXPERIENCE_ORB,
-            EntityType.THROWN_EXP_BOTTLE,
-            EntityType.EGG,
-            EntityType.SPLASH_POTION,
-            EntityType.FIREWORK,
-            EntityType.FIREBALL,
-            EntityType.FISHING_HOOK,
-            EntityType.SMALL_FIREBALL,
-            EntityType.SNOWBALL,
-            EntityType.TRIDENT,
-            EntityType.WITHER_SKULL,
-            EntityType.DRAGON_FIREBALL,
-            EntityType.AREA_EFFECT_CLOUD,
-            EntityType.ARROW,
-            EntityType.SPECTRAL_ARROW,
-            EntityType.ENDER_PEARL,
-            EntityType.EVOKER_FANGS,
-            EntityType.LEASH_HITCH
-            //</editor-fold>
-    );
-    public static final Set<net.minecraft.world.entity.EntityType<?>> NMS_IGNORABLE_ENTITIES = ImmutableSet.of(
-            //<editor-fold desc="NMS entities to be ignored when placing a block on their location" defaultstate="collapsed">
-            net.minecraft.world.entity.EntityType.ITEM,
-            net.minecraft.world.entity.EntityType.ITEM_FRAME,
-            net.minecraft.world.entity.EntityType.GLOW_ITEM_FRAME,
-            net.minecraft.world.entity.EntityType.LIGHTNING_BOLT,
-            net.minecraft.world.entity.EntityType.LLAMA_SPIT,
-            net.minecraft.world.entity.EntityType.EXPERIENCE_ORB,
-            net.minecraft.world.entity.EntityType.EXPERIENCE_BOTTLE,
-            net.minecraft.world.entity.EntityType.EGG,
-            net.minecraft.world.entity.EntityType.POTION,
-            net.minecraft.world.entity.EntityType.FIREWORK_ROCKET,
-            net.minecraft.world.entity.EntityType.FIREBALL,
-            net.minecraft.world.entity.EntityType.FISHING_BOBBER,
-            net.minecraft.world.entity.EntityType.SMALL_FIREBALL,
-            net.minecraft.world.entity.EntityType.SNOWBALL,
-            net.minecraft.world.entity.EntityType.TRIDENT,
-            net.minecraft.world.entity.EntityType.WITHER_SKULL,
-            net.minecraft.world.entity.EntityType.DRAGON_FIREBALL,
-            net.minecraft.world.entity.EntityType.AREA_EFFECT_CLOUD,
-            net.minecraft.world.entity.EntityType.ARROW,
-            net.minecraft.world.entity.EntityType.SPECTRAL_ARROW,
-            net.minecraft.world.entity.EntityType.ENDER_PEARL,
-            net.minecraft.world.entity.EntityType.EVOKER_FANGS,
-            net.minecraft.world.entity.EntityType.LEASH_KNOT
-            //</editor-fold>
-    );
-    public static final Set<Material> BREAK_ON_BLOCK_PLACE = Sets.immutableEnumSet(
-            //<editor-fold desc="Materials that will break on block place" defaultstate="collapsed">
-            Material.TALL_GRASS,
-            Material.LARGE_FERN,
-            Material.TALL_SEAGRASS
-            //</editor-fold>
-    );
-
     public static final Set<Material> WOOD_SOUND_MATERIAL_SET;
 
     static {
@@ -137,7 +38,7 @@ public final class BlockUtils {
         WOOD_SOUND_MATERIAL_SET = materialSet.build();
     }
 
-    @Contract(value = " -> fail")
+    @Contract(" -> fail")
     private BlockUtils() {
         throw new AssertionError("Utility class");
     }
@@ -151,11 +52,11 @@ public final class BlockUtils {
         final CraftBlock topBlock = (CraftBlock) centreBlock.getRelative(BlockFace.UP);
         final CraftBlock bottomBlock = (CraftBlock) centreBlock.getRelative(BlockFace.DOWN);
 
-        if (BREAK_ON_BLOCK_PLACE.contains(topBlock.getType())) {
+        if (isBreaksOnBlockPlace(topBlock.getType())) {
             topBlock.getHandle().destroyBlock(topBlock.getPosition(), true);
         }
 
-        if (BREAK_ON_BLOCK_PLACE.contains(bottomBlock.getType())) {
+        if (isBreaksOnBlockPlace(bottomBlock.getType())) {
             bottomBlock.getHandle().destroyBlock(bottomBlock.getPosition(), true);
         }
     }
@@ -170,46 +71,346 @@ public final class BlockUtils {
 
     /**
      * @param block Block that will be checked
-     * @return True if block is replaceable
-     * @see #REPLACEABLE_BLOCKS
+     * @return True if block can be interacted with right click
      */
-    public static boolean isReplaceable(final @NotNull Block block) {
-        return REPLACEABLE_BLOCKS.contains(block.getType());
+    public static boolean isRightClickBlock(final @NotNull net.minecraft.world.level.block.Block block) {
+        return isRightClickBlock(block.defaultBlockState().getBukkitMaterial());
+    }
+
+    /**
+     * @param block Block that will be checked
+     * @return True if block can be interacted with right click
+     */
+    public static boolean isRightClickBlock(final @NotNull Block block) {
+        return isRightClickBlock(block.getType());
     }
 
     /**
      * @param material Material that will be checked
-     * @return True if material is replaceable
-     * @see #REPLACEABLE_BLOCKS
+     * @return True if material can be interacted with right click
      */
-    public static boolean isReplaceable(final @NotNull Material material) {
-        return REPLACEABLE_BLOCKS.contains(material);
+    public static boolean isRightClickBlock(final @NotNull Material material) {
+        return switch (material) {
+            //<editor-fold desc="Materials that can be interacted with right click" defaultstate="collapsed">
+            case ACACIA_BUTTON,
+                    ACACIA_DOOR,
+                    ACACIA_FENCE_GATE,
+                    ACACIA_HANGING_SIGN,
+                    ACACIA_SIGN,
+                    ACACIA_TRAPDOOR,
+                    ACACIA_WALL_HANGING_SIGN,
+                    ACACIA_WALL_SIGN,
+                    ANVIL,
+                    BAMBOO_BUTTON,
+                    BAMBOO_DOOR,
+                    BAMBOO_FENCE_GATE,
+                    BAMBOO_HANGING_SIGN,
+                    BAMBOO_SIGN,
+                    BAMBOO_TRAPDOOR,
+                    BAMBOO_WALL_HANGING_SIGN,
+                    BAMBOO_WALL_SIGN,
+                    BARREL,
+                    BEACON,
+                    BIRCH_BUTTON,
+                    BIRCH_DOOR,
+                    BIRCH_FENCE_GATE,
+                    BIRCH_HANGING_SIGN,
+                    BIRCH_SIGN,
+                    BIRCH_TRAPDOOR,
+                    BIRCH_WALL_HANGING_SIGN,
+                    BIRCH_WALL_SIGN,
+                    BLACK_BED,
+                    BLACK_CANDLE_CAKE,
+                    BLACK_SHULKER_BOX,
+                    BLAST_FURNACE,
+                    BLUE_BED,
+                    BLUE_CANDLE_CAKE,
+                    BLUE_SHULKER_BOX,
+                    BREWING_STAND,
+                    BROWN_BED,
+                    BROWN_CANDLE_CAKE,
+                    BROWN_SHULKER_BOX,
+                    CAKE,
+                    CANDLE_CAKE,
+                    CARTOGRAPHY_TABLE,
+                    CHAIN_COMMAND_BLOCK,
+                    CHERRY_BUTTON,
+                    CHERRY_DOOR,
+                    CHERRY_FENCE_GATE,
+                    CHERRY_HANGING_SIGN,
+                    CHERRY_SIGN,
+                    CHERRY_TRAPDOOR,
+                    CHERRY_WALL_HANGING_SIGN,
+                    CHERRY_WALL_SIGN,
+                    CHEST,
+                    CHIPPED_ANVIL,
+                    COMMAND_BLOCK,
+                    COMPARATOR,
+                    CRAFTING_TABLE,
+                    CRIMSON_BUTTON,
+                    CRIMSON_DOOR,
+                    CRIMSON_FENCE_GATE,
+                    CRIMSON_HANGING_SIGN,
+                    CRIMSON_SIGN,
+                    CRIMSON_TRAPDOOR,
+                    CRIMSON_WALL_HANGING_SIGN,
+                    CRIMSON_WALL_SIGN,
+                    CYAN_BED,
+                    CYAN_CANDLE_CAKE,
+                    CYAN_SHULKER_BOX,
+                    DAMAGED_ANVIL,
+                    DARK_OAK_BUTTON,
+                    DARK_OAK_DOOR,
+                    DARK_OAK_FENCE_GATE,
+                    DARK_OAK_HANGING_SIGN,
+                    DARK_OAK_SIGN,
+                    DARK_OAK_TRAPDOOR,
+                    DARK_OAK_WALL_HANGING_SIGN,
+                    DARK_OAK_WALL_SIGN,
+                    DAYLIGHT_DETECTOR,
+                    DISPENSER,
+                    DROPPER,
+                    ENCHANTING_TABLE,
+                    ENDER_CHEST,
+                    FLETCHING_TABLE,
+                    FURNACE,
+                    GRAY_BED,
+                    GRAY_CANDLE_CAKE,
+                    GRAY_SHULKER_BOX,
+                    GREEN_BED,
+                    GREEN_CANDLE_CAKE,
+                    GREEN_SHULKER_BOX,
+                    GRINDSTONE,
+                    HOPPER,
+                    JIGSAW,
+                    JUNGLE_BUTTON,
+                    JUNGLE_DOOR,
+                    JUNGLE_FENCE_GATE,
+                    JUNGLE_HANGING_SIGN,
+                    JUNGLE_SIGN,
+                    JUNGLE_TRAPDOOR,
+                    JUNGLE_WALL_HANGING_SIGN,
+                    JUNGLE_WALL_SIGN,
+                    LECTERN,
+                    LEVER,
+                    LIGHT_BLUE_BED,
+                    LIGHT_BLUE_CANDLE_CAKE,
+                    LIGHT_BLUE_SHULKER_BOX,
+                    LIGHT_GRAY_BED,
+                    LIGHT_GRAY_CANDLE_CAKE,
+                    LIGHT_GRAY_SHULKER_BOX,
+                    LIME_BED,
+                    LIME_CANDLE_CAKE,
+                    LIME_SHULKER_BOX,
+                    LOOM,
+                    MAGENTA_BED,
+                    MAGENTA_CANDLE_CAKE,
+                    MAGENTA_SHULKER_BOX,
+                    MANGROVE_BUTTON,
+                    MANGROVE_DOOR,
+                    MANGROVE_FENCE_GATE,
+                    MANGROVE_HANGING_SIGN,
+                    MANGROVE_SIGN,
+                    MANGROVE_TRAPDOOR,
+                    MANGROVE_WALL_HANGING_SIGN,
+                    MANGROVE_WALL_SIGN,
+                    NOTE_BLOCK,
+                    OAK_BUTTON,
+                    OAK_DOOR,
+                    OAK_FENCE_GATE,
+                    OAK_HANGING_SIGN,
+                    OAK_SIGN,
+                    OAK_TRAPDOOR,
+                    OAK_WALL_HANGING_SIGN,
+                    OAK_WALL_SIGN,
+                    ORANGE_BED,
+                    ORANGE_CANDLE_CAKE,
+                    ORANGE_SHULKER_BOX,
+                    PINK_BED,
+                    PINK_CANDLE_CAKE,
+                    PINK_SHULKER_BOX,
+                    POLISHED_BLACKSTONE_BUTTON,
+                    POTTED_ACACIA_SAPLING,
+                    POTTED_ALLIUM,
+                    POTTED_AZALEA_BUSH,
+                    POTTED_AZURE_BLUET,
+                    POTTED_BAMBOO,
+                    POTTED_BIRCH_SAPLING,
+                    POTTED_BLUE_ORCHID,
+                    POTTED_BROWN_MUSHROOM,
+                    POTTED_CACTUS,
+                    POTTED_CHERRY_SAPLING,
+                    POTTED_CORNFLOWER,
+                    POTTED_CRIMSON_FUNGUS,
+                    POTTED_CRIMSON_ROOTS,
+                    POTTED_DANDELION,
+                    POTTED_DARK_OAK_SAPLING,
+                    POTTED_DEAD_BUSH,
+                    POTTED_FERN,
+                    POTTED_FLOWERING_AZALEA_BUSH,
+                    POTTED_JUNGLE_SAPLING,
+                    POTTED_LILY_OF_THE_VALLEY,
+                    POTTED_MANGROVE_PROPAGULE,
+                    POTTED_OAK_SAPLING,
+                    POTTED_ORANGE_TULIP,
+                    POTTED_OXEYE_DAISY,
+                    POTTED_PINK_TULIP,
+                    POTTED_POPPY,
+                    POTTED_RED_MUSHROOM,
+                    POTTED_RED_TULIP,
+                    POTTED_SPRUCE_SAPLING,
+                    POTTED_TORCHFLOWER,
+                    POTTED_WARPED_FUNGUS,
+                    POTTED_WARPED_ROOTS,
+                    POTTED_WHITE_TULIP,
+                    POTTED_WITHER_ROSE,
+                    PURPLE_BED,
+                    PURPLE_CANDLE_CAKE,
+                    PURPLE_SHULKER_BOX,
+                    REDSTONE_WIRE,
+                    RED_BED,
+                    RED_CANDLE_CAKE,
+                    RED_SHULKER_BOX,
+                    REPEATER,
+                    REPEATING_COMMAND_BLOCK,
+                    RESPAWN_ANCHOR,
+                    SHULKER_BOX,
+                    SMITHING_TABLE,
+                    SMOKER,
+                    SOUL_CAMPFIRE,
+                    SPRUCE_BUTTON,
+                    SPRUCE_DOOR,
+                    SPRUCE_FENCE_GATE,
+                    SPRUCE_HANGING_SIGN,
+                    SPRUCE_SIGN,
+                    SPRUCE_TRAPDOOR,
+                    SPRUCE_WALL_HANGING_SIGN,
+                    SPRUCE_WALL_SIGN,
+                    STONECUTTER,
+                    STONE_BUTTON,
+                    STRUCTURE_BLOCK,
+                    SWEET_BERRY_BUSH,
+                    TRAPPED_CHEST,
+                    WARPED_BUTTON,
+                    WARPED_DOOR,
+                    WARPED_FENCE_GATE,
+                    WARPED_HANGING_SIGN,
+                    WARPED_SIGN,
+                    WARPED_TRAPDOOR,
+                    WARPED_WALL_HANGING_SIGN,
+                    WARPED_WALL_SIGN,
+                    WATER_CAULDRON,
+                    WHITE_BED,
+                    WHITE_CANDLE,
+                    WHITE_CANDLE_CAKE,
+                    WHITE_SHULKER_BOX,
+                    YELLOW_BED,
+                    YELLOW_CANDLE,
+                    YELLOW_CANDLE_CAKE,
+                    YELLOW_SHULKER_BOX -> true;
+            //</editor-fold>
+            default -> false;
+        };
     }
 
     /**
      * @param block Block that will be checked
      * @return True if block is replaceable
-     * @see #NMS_REPLACEABLE_BLOCKS
      */
     public static boolean isReplaceable(final @NotNull net.minecraft.world.level.block.Block block) {
-        return NMS_REPLACEABLE_BLOCKS.contains(block);
+        return isReplaceable(block.defaultBlockState().getBukkitMaterial());
+    }
+
+    /**
+     * @param block Block that will be checked
+     * @return True if block is replaceable
+     */
+    public static boolean isReplaceable(final @NotNull Block block) {
+        return isReplaceable(block.getType());
+    }
+
+    /**
+     * @param material Material that will be checked
+     * @return True if material is replaceable
+     */
+    public static boolean isReplaceable(final @NotNull Material material) {
+        return switch (material) {
+            //<editor-fold desc="Materials that will be replaced" defaultstate="collapsed">
+            case SEAGRASS,
+                    FIRE,
+                    WARPED_ROOTS,
+                    FERN,
+                    LARGE_FERN,
+                    NETHER_SPROUTS,
+                    VINE,
+                    SOUL_FIRE,
+                    WATER,
+                    DEAD_BUSH,
+                    CAVE_AIR,
+                    TALL_SEAGRASS,
+                    SNOW,
+                    BUBBLE_COLUMN,
+                    GRASS,
+                    GLOW_LICHEN,
+                    STRUCTURE_VOID,
+                    LAVA,
+                    CRIMSON_ROOTS,
+                    AIR,
+                    LIGHT,
+                    VOID_AIR,
+                    HANGING_ROOTS,
+                    TALL_GRASS -> true;
+            //</editor-fold>
+            default -> false;
+        };
     }
 
     /**
      * @param entityType Entity type that will be checked
      * @return True if entity type is ignorable
-     * @see #IGNORABLE_ENTITIES
      */
     public static boolean isIgnorableEntity(final @NotNull EntityType entityType) {
-        return IGNORABLE_ENTITIES.contains(entityType);
+        return switch (entityType) {
+            //<editor-fold desc="Entities to be ignored when placing a block on their location" defaultstate="collapsed">
+            case DROPPED_ITEM,
+                    ITEM_FRAME,
+                    GLOW_ITEM_FRAME,
+                    LIGHTNING,
+                    LLAMA_SPIT,
+                    EXPERIENCE_ORB,
+                    THROWN_EXP_BOTTLE,
+                    EGG,
+                    SPLASH_POTION,
+                    FIREWORK,
+                    FIREBALL,
+                    FISHING_HOOK,
+                    SMALL_FIREBALL,
+                    SNOWBALL,
+                    TRIDENT,
+                    WITHER_SKULL,
+                    DRAGON_FIREBALL,
+                    AREA_EFFECT_CLOUD,
+                    ARROW,
+                    SPECTRAL_ARROW,
+                    ENDER_PEARL,
+                    EVOKER_FANGS,
+                    LEASH_HITCH -> true;
+            //</editor-fold>
+            default -> false;
+        };
     }
 
     /**
      * @param entityType Entity type that will be checked
      * @return True if entity type is ignorable
-     * @see #NMS_IGNORABLE_ENTITIES
      */
     public static boolean isIgnorableEntity(final @NotNull net.minecraft.world.entity.EntityType<?> entityType) {
-        return NMS_IGNORABLE_ENTITIES.contains(entityType);
+        return isIgnorableEntity(CraftEntityType.minecraftToBukkit(entityType));
+    }
+
+    private static boolean isBreaksOnBlockPlace(final Material material) {
+        return material == Material.TALL_GRASS
+                || material == Material.LARGE_FERN
+                || material == Material.TALL_SEAGRASS;
     }
 }

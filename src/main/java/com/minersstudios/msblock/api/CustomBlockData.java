@@ -5,7 +5,7 @@ import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.file.*;
 import com.minersstudios.msblock.api.file.adapter.RecipeAdapter;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.msessentials.menu.CraftsMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;

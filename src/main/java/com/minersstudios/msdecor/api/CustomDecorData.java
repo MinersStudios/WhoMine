@@ -2,7 +2,7 @@ package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.util.MSDecorUtils;
-import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.msdecor.api.action.DecorBreakAction;
 import com.minersstudios.msdecor.api.action.DecorClickAction;
 import com.minersstudios.msdecor.api.action.DecorPlaceAction;
@@ -179,6 +179,25 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     boolean isDropsType();
 
     /**
+     * Perform the click action of this custom decor
+     */
+    void doClickAction(final @NotNull CustomDecorClickEvent event);
+
+    /**
+     * Perform the break action of this custom decor
+     * (called when the custom decor is broken)
+     */
+    void doBreakAction(final @NotNull CustomDecorBreakEvent event);
+
+    /**
+     * Perform the place action of this custom decor
+     * (called when the custom decor is placed)
+     *
+     * @param event The event to perform the place action
+     */
+    void doPlaceAction(final @NotNull CustomDecorPlaceEvent event);
+
+    /**
      * Register the associated recipes of this custom decor
      * with the server
      *
@@ -201,25 +220,6 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
             final @Nullable EquipmentSlot hand,
             final @Nullable Component customName
     ) throws IllegalArgumentException;
-
-    /**
-     * Perform the click action of this custom decor
-     */
-    void doClickAction(final @NotNull CustomDecorClickEvent event);
-
-    /**
-     * Perform the break action of this custom decor
-     * (called when the custom decor is broken)
-     */
-    void doBreakAction(final @NotNull CustomDecorBreakEvent event);
-
-    /**
-     * Perform the place action of this custom decor
-     * (called when the custom decor is placed)
-     *
-     * @param event The event to perform the place action
-     */
-    void doPlaceAction(final @NotNull CustomDecorPlaceEvent event);
 
     static @NotNull Optional<CustomDecorData<?>> fromKey(final @Nullable String key) {
         if (key == null) return Optional.empty();

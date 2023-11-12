@@ -158,7 +158,7 @@ public final class PlayerInteractListener extends AbstractMSListener<MSBlock> {
                 && clickedBlock.getRelative(BlockFace.UP).getType() == Material.NOTE_BLOCK
                 && clickedBlock.getState() instanceof final ShulkerBox shulkerBox
                 && clickedBlock.getBlockData() instanceof final Directional directional
-                && BlockUtils.REPLACEABLE_BLOCKS.contains(clickedBlock.getRelative(directional.getFacing()).getType())
+                && BlockUtils.isReplaceable(clickedBlock.getRelative(directional.getFacing()).getType())
         ) {
             event.setCancelled(true);
             PlayerUtils.openShulkerBoxSilent(player, shulkerBox, true);
@@ -199,24 +199,23 @@ public final class PlayerInteractListener extends AbstractMSListener<MSBlock> {
         if (
                 CustomBlockRegistry.isCustomBlock(itemInHand)
                 && (event.getHand() == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
-                && BlockUtils.REPLACEABLE_BLOCKS.contains(blockAtFace.getType())
+                && BlockUtils.isReplaceable(blockAtFace.getType())
                 && validGameMode
                 && interactionPoint != null
         ) {
             if (
-                    ((clickedBlock.getType().isInteractable()
-                    && !Tag.STAIRS.isTagged(clickedBlock.getType()))
-                    && clickedBlock.getType() != Material.NOTE_BLOCK)
+                    BlockUtils.isRightClickBlock(clickedBlock.getType())
+                    && clickedBlock.getType() != Material.NOTE_BLOCK
                     && !player.isSneaking()
             ) return;
 
             final Block replaceableBlock =
-                    BlockUtils.REPLACEABLE_BLOCKS.contains(clickedBlock.getType())
+                    BlockUtils.isReplaceable(clickedBlock.getType())
                     ? clickedBlock
                     : blockAtFace;
 
             for (final var nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
-                if (!BlockUtils.IGNORABLE_ENTITIES.contains(nearbyEntity.getType())) return;
+                if (!BlockUtils.isIgnorableEntity(nearbyEntity.getType())) return;
             }
 
             final CustomBlockData customBlockData = CustomBlockRegistry.fromItemStack(itemInHand).orElseThrow();
@@ -301,7 +300,7 @@ public final class PlayerInteractListener extends AbstractMSListener<MSBlock> {
             blockAtFace.setBlockData(slab);
         }
 
-        if (!BlockUtils.REPLACEABLE_BLOCKS.contains(blockAtFace.getType())) return;
+        if (!BlockUtils.isReplaceable(blockAtFace.getType())) return;
 
         if (clickedCustomBlockData.getBlockSettings().getPlacing().isPlaceable(itemInHand.getType())) {
             blockAtFace.setType(itemInHand.getType(), false);

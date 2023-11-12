@@ -3,7 +3,8 @@ package com.minersstudios.msdecor.registry.christmas;
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
 import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.SoundGroup;
+import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecorDataImpl;
 import com.minersstudios.msdecor.api.DecorHitBox;
 import com.minersstudios.msdecor.api.DecorParameter;
@@ -27,7 +28,7 @@ public final class SantaSock extends CustomDecorDataImpl<SantaSock> {
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Носок санты"));
         itemStack.setItemMeta(itemMeta);
 
-        return new Builder()
+        final Builder builder0 = new Builder()
                 .key("santa_sock")
                 .hitBox(
                         DecorHitBox.builder()
@@ -39,7 +40,10 @@ public final class SantaSock extends CustomDecorDataImpl<SantaSock> {
                 .facings(Facing.WALL)
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
-                .recipes(
+                .parameters(DecorParameter.PAINTABLE);
+
+        return MSDecor.getConfiguration().isChristmas
+                ? builder0.recipes(
                         Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
@@ -55,6 +59,6 @@ public final class SantaSock extends CustomDecorDataImpl<SantaSock> {
                                 true
                         )
                 )
-                .parameters(DecorParameter.PAINTABLE);
+                : builder0;
     }
 }

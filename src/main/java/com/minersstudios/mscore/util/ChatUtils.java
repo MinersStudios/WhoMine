@@ -73,7 +73,7 @@ public final class ChatUtils {
     private static final PlainTextComponentSerializer PLAIN_SERIALIZER = PlainTextComponentSerializer.plainText();
     private static final GsonComponentSerializer GSON_SERIALIZER = GsonComponentSerializer.gson();
 
-    @Contract(value = " -> fail")
+    @Contract(" -> fail")
     private ChatUtils() {
         throw new AssertionError("Utility class");
     }
@@ -336,7 +336,7 @@ public final class ChatUtils {
      */
     @Contract("null -> false")
     public static boolean matchesKey(final @Nullable String string) {
-        return string != null
+        return StringUtils.isNotBlank(string)
                 && KEY_PATTERN.matcher(string).matches();
     }
 

@@ -134,7 +134,7 @@ public class BlockSettings {
          * @return A new Tool object with the {@link ToolType#HAND}
          *         tool type and not forced tool
          */
-        @Contract(value = " -> new")
+        @Contract(" -> new")
         public static @NotNull Tool create() {
             return new Tool(ToolType.HAND, false);
         }
@@ -147,7 +147,7 @@ public class BlockSettings {
          * @param force Whether the tool is forced
          * @return A new Tool object with the specified tool type
          */
-        @Contract(value = "_, _ -> new")
+        @Contract("_, _ -> new")
         public static @NotNull Tool create(
                 final @NotNull ToolType type,
                 final boolean force
@@ -228,7 +228,7 @@ public class BlockSettings {
          * @return A new Placing object with the specified placing type
          *         and placeable materials
          */
-        @Contract(value = "_, _ -> new")
+        @Contract("_, _ -> new")
         public static @NotNull Placing create(
                 final @NotNull PlacingType type,
                 final @NotNull Set<Material> placeableMaterials
@@ -324,7 +324,9 @@ public class BlockSettings {
          *         the custom block
          */
         public boolean isPlaceable(final @Nullable Material material) {
-            return material != null && this.placeableMaterials.contains(material);
+            return material != null
+                    && this.placeableMaterials != null
+                    && this.placeableMaterials.contains(material);
         }
 
         /**

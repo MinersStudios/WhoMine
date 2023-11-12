@@ -344,6 +344,41 @@ public final class LocationUtils {
                 );
     }
 
+
+    public static boolean isDiagonal(final @NotNull BlockFace blockFace) {
+        return blockFace == BlockFace.NORTH_EAST
+                || blockFace == BlockFace.NORTH_WEST
+                || blockFace == BlockFace.SOUTH_EAST
+                || blockFace == BlockFace.SOUTH_WEST;
+    }
+
+    public static boolean isDiagonal(final @NotNull Rotation rotation) {
+        return rotation == Rotation.CLOCKWISE_45
+                || rotation == Rotation.CLOCKWISE_135
+                || rotation == Rotation.COUNTER_CLOCKWISE
+                || rotation == Rotation.COUNTER_CLOCKWISE_45;
+    }
+
+    public static boolean isX(final @NotNull BlockFace blockFace) {
+        return blockFace == BlockFace.EAST
+                || blockFace == BlockFace.WEST;
+    }
+
+    public static boolean isX(final @NotNull Rotation rotation) {
+        return rotation == Rotation.CLOCKWISE
+                || rotation == Rotation.COUNTER_CLOCKWISE;
+    }
+
+    public static boolean isZ(final @NotNull BlockFace blockFace) {
+        return blockFace == BlockFace.NORTH
+                || blockFace == BlockFace.SOUTH;
+    }
+
+    public static boolean isZ(final @NotNull Rotation rotation) {
+        return rotation == Rotation.NONE
+                || rotation == Rotation.FLIPPED;
+    }
+
     @SuppressWarnings("unchecked")
     private static <T> T @NotNull [] getBetween(
             final @NotNull Class<T> clazz,

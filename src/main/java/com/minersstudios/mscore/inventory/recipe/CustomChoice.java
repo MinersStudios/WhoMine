@@ -168,7 +168,7 @@ public final class CustomChoice implements RecipeChoice {
      * @param obj The object to compare
      * @return True if the object is a CustomChoice and has the same choices
      */
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     @Override
     public boolean equals(final @Nullable Object obj) {
         return this == obj

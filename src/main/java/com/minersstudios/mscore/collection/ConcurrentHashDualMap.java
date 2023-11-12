@@ -72,19 +72,19 @@ public class ConcurrentHashDualMap<P, S, V> implements DualMap<P, S, V> {
     }
 
     @Override
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public boolean containsPrimaryKey(final @Nullable P primary) {
         return primary != null && this.map.containsKey(primary);
     }
 
     @Override
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public boolean containsSecondaryKey(final @Nullable S secondary) {
         return secondary != null && this.secondaryKeySet().contains(secondary);
     }
 
     @Override
-    @Contract(value = "null -> false")
+    @Contract("null -> false")
     public boolean containsValue(final @Nullable V value) {
         return value != null && this.values().contains(value);
     }

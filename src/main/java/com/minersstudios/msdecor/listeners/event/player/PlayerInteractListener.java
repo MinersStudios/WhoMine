@@ -114,25 +114,27 @@ public final class PlayerInteractListener extends AbstractMSListener<MSDecor> {
                                 CustomDecorClickEvent.ClickType.RIGHT_CLICK
                         );
                     }
-                } else if (
-                        (
-                                (
-                                        !blockType.isInteractable()
-                                        || Tag.STAIRS.isTagged(blockType)
-                                        || Tag.FENCES.isTagged(blockType)
-                                )
-                                || (player.isSneaking() && blockType.isInteractable())
+
+                    return;
+                }
+
+                final Block blockAtFace = block.getRelative(blockFace);
+
+                if (
+                        BlockUtils.isReplaceable(blockAtFace.getType())
+                        && (
+                                !BlockUtils.isRightClickBlock(blockType)
+                                || player.isSneaking()
                                 || blockType == Material.NOTE_BLOCK
                         )
-                        && BlockUtils.isReplaceable(block.getRelative(blockFace).getType())
                 ) {
                     CustomDecorData.fromItemStack(itemInHand)
                     .ifPresent(data -> {
                         data.place(
                                 MSPosition.of(
-                                        BlockUtils.isReplaceable(block)
+                                        BlockUtils.isReplaceable(blockType)
                                                 ? block.getLocation()
-                                                : block.getRelative(blockFace).getLocation()
+                                                : blockAtFace.getLocation()
                                 ),
                                 player,
                                 blockFace,
