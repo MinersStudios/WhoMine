@@ -11,12 +11,12 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Abstract configuration class, which provides a simple way to load
- * and save yaml configurations. Override {@link #reloadVariables()}
- * to reload variables of the extending class.
- * <p>
- * Use {@link #reload()} to reload configuration and {@link #save()}
- * to save configuration.
+ * Abstract configuration class, which provides a simple way to load and save 
+ * yaml configurations. Override {@link #reloadVariables()} to reload variables 
+ * of the extending class.
+ * <br>
+ * Use {@link #reload()} to reload configuration and {@link #save()} to save
+ * configuration.
  * Use {@link #reloadVariables()} to reload variables.
  */
 public abstract class MSConfig {
@@ -24,8 +24,8 @@ public abstract class MSConfig {
     protected final @NotNull YamlConfiguration yaml;
 
     /**
-     * Configuration constructor.
-     * All variables must be initialized in {@link #reloadVariables()}.
+     * Configuration constructor. All variables must be initialized in
+     * {@link #reloadVariables()}.
      *
      * @param file The config file, where the configuration is stored
      * @throws IllegalArgumentException If the given file does not exist
@@ -50,8 +50,8 @@ public abstract class MSConfig {
     }
 
     /**
-     * Sets the value of the given path to the given value.
-     * If the path does not exist, it will be created.
+     * Sets the value of the given path to the given value. If the path does not
+     * exist, it will be created.
      *
      * @param path  The path of the value
      * @param value The value to set
@@ -66,11 +66,11 @@ public abstract class MSConfig {
     }
 
     /**
-     * Reloads {@link #yaml} and variables from file.
-     * The yaml configuration is reloaded first, then the variables.
+     * Reloads {@link #yaml} and variables from file. The yaml configuration is
+     * reloaded first, then the variables.
      *
-     * @return True if the config was reloaded successfully, or false
-     *         when the given file cannot be read for any reason
+     * @return True if the config was reloaded successfully, or false when the
+     *         given file cannot be read for any reason
      * @see #reloadYaml()
      * @see #reloadVariables()
      */
@@ -88,7 +88,8 @@ public abstract class MSConfig {
     /**
      * Reloads {@link #yaml} from file
      *
-     * @throws ConfigurationException If the config file cannot be read or is not a valid Configuration
+     * @throws ConfigurationException If the config file cannot be read or is
+     *                                not a valid Configuration
      */
     public void reloadYaml() throws ConfigurationException {
         try {
@@ -117,8 +118,8 @@ public abstract class MSConfig {
     /**
      * Saves the config file
      *
-     * @return True if the config was saved successfully, or false
-     *         when the given file cannot be written to for any reason
+     * @return True if the config was saved successfully, or false when the
+     *         given file cannot be written to for any reason
      */
     public boolean save() {
         try {
@@ -131,8 +132,8 @@ public abstract class MSConfig {
     }
 
     /**
-     * Saves the default config file with default values.
-     * The default values are set in {@link #reloadDefaultVariables()}.
+     * Saves the default config file with default values. The default values are
+     * set in {@link #reloadDefaultVariables()}.
      *
      * @see #reloadDefaultVariables()
      * @see #save()
@@ -160,14 +161,20 @@ public abstract class MSConfig {
     }
 
     /**
-     * @return A string representation of this configuration.
-     *         The string representation consists of the class name,
-     *         the config file path and the config values.
+     * @return A string representation of this configuration. The string
+     *         representation consists of the class name, the config file path
+     *         and the config values.
      */
     @Override
     public @NotNull String toString() {
         final String path = this.file.getPath();
-        final String configValues = Joiner.on(",").withKeyValueSeparator("=").join(this.yaml.getValues(true));
-        return this.getClass().getName() + "{file=" + path + ", config=[" + configValues + "]}";
+        final String configValues =
+                Joiner.on(",")
+                .withKeyValueSeparator("=")
+                .join(this.yaml.getValues(true));
+        return this.getClass().getName()
+                + "{file=" + path
+                + ", config=[" + configValues
+                + "]}";
     }
 }

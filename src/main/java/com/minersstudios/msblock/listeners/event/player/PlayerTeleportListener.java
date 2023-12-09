@@ -15,9 +15,9 @@ public final class PlayerTeleportListener extends AbstractMSListener<MSBlock> {
     @EventHandler
     public void onPlayerTeleport(final @NotNull PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        Cache cache = MSBlock.getCache();
+        Cache cache = MSBlock.cache();
 
-        cache.diggingMap.removeAll(player);
-        cache.stepMap.put(player, 0.0d);
+        cache.getDiggingMap().removeAll(player);
+        cache.getStepMap().put(player, 0.0d);
     }
 }

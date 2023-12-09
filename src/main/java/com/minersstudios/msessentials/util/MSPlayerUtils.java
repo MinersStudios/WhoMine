@@ -36,8 +36,8 @@ public final class MSPlayerUtils {
      */
     public static void hideNameTag(final @Nullable Player player) {
         if (player != null) {
-            MSEssentials.getScoreboardHideTagsTeam().addEntry(player.getName());
-            player.setScoreboard(MSEssentials.getScoreboardHideTags());
+            MSEssentials.scoreboardHideTagsTeam().addEntry(player.getName());
+            player.setScoreboard(MSEssentials.scoreboardHideTags());
         }
     }
 

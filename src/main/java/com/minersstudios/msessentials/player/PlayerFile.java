@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslation;
-import static com.minersstudios.msessentials.MSEssentials.getInstance;
+import static com.minersstudios.msessentials.MSEssentials.singleton;
 
 /**
  * Player file with player data, settings, etc.
@@ -76,7 +76,7 @@ public final class PlayerFile {
         final ConfigurationSection lastLeaveSection = this.config.getConfigurationSection("locations.last-leave-location");
         final String lastLeaveWorldName = this.config.getString("locations.last-leave-location.world", "");
         final World lastLeaveWorld = Bukkit.getWorld(lastLeaveWorldName);
-        final Location spawnLocation = MSEssentials.getConfiguration().spawnLocation;
+        final Location spawnLocation = MSEssentials.config().spawnLocation;
         final World spawnWorld = spawnLocation.getWorld();
 
         this.lastLeaveLocation = lastLeaveSection == null
@@ -115,7 +115,7 @@ public final class PlayerFile {
             final @Nullable String nickname
     ) {
         final File dataFile = new File(
-                getInstance().getPluginFolder(),
+                singleton().getPluginFolder(),
                 "players/" + ("$Console".equals(nickname) ? "console" : uniqueId) + ".yml"
         );
         return new PlayerFile(dataFile, YamlConfiguration.loadConfiguration(dataFile));

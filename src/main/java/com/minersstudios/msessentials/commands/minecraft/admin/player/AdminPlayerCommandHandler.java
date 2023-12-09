@@ -250,7 +250,7 @@ public final class AdminPlayerCommandHandler implements MSCommandExecutor {
                     if (nickname == null) continue;
 
                     final UUID uuid = offlinePlayer.getUniqueId();
-                    final int id = MSEssentials.getCache().idMap.getID(uuid, false, false);
+                    final int id = MSEssentials.cache().getIdMap().getID(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));
@@ -345,7 +345,7 @@ public final class AdminPlayerCommandHandler implements MSCommandExecutor {
                         final OfflinePlayer offlinePlayer;
 
                         if (IDUtils.matchesIDRegex(args[0])) {
-                            final IDMap idMap = MSEssentials.getCache().idMap;
+                            final IDMap idMap = MSEssentials.cache().getIdMap();
                             offlinePlayer = idMap.getPlayerByID(args[0]);
                         } else if (args[0].length() > 2) {
                             offlinePlayer = sender.getServer().getOfflinePlayer(args[0]);

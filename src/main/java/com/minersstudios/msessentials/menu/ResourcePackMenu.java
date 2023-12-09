@@ -152,7 +152,7 @@ public final class ResourcePackMenu {
                     final ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
                     if (type == ResourcePack.Type.NULL) {
-                        MSEssentials.getInstance().runTask(() -> player.openInventory(inventory));
+                        MSEssentials.singleton().runTask(() -> player.openInventory(inventory));
                     }
                 });
     }

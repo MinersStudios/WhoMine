@@ -13,6 +13,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -38,6 +39,7 @@ public final class RawPlumbum extends CustomItemImpl {
         super(KEY, ITEM_STACK);
     }
 
+    @Contract(" -> new")
     @Override
     public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
         final ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
@@ -58,7 +60,10 @@ public final class RawPlumbum extends CustomItemImpl {
         return ImmutableList.of(
                 Map.entry(shapedRecipe, true),
                 Map.entry(
-                        new ShapedRecipe(new NamespacedKey(CustomItemType.NAMESPACE, "raw_plumbum_from_block"), this.itemStack.clone().add(8))
+                        new ShapedRecipe(
+                                new NamespacedKey(CustomItemType.NAMESPACE, "raw_plumbum_from_block"),
+                                this.itemStack.clone().add(8)
+                        )
                         .shape("I")
                         .setIngredient('I', new RecipeChoice.ExactChoice(rawPlumbumBlock.get())),
                         true

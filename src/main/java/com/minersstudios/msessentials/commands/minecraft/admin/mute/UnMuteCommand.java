@@ -70,8 +70,8 @@ public final class UnMuteCommand implements MSCommandExecutor {
         switch (args.length) {
             case 1 -> {
                 final var completions = new ArrayList<String>();
-                final Cache cache = MSEssentials.getCache();
-                final MuteMap muteMap = cache.muteMap;
+                final Cache cache = MSEssentials.cache();
+                final MuteMap muteMap = cache.getMuteMap();
                 final Server server = sender.getServer();
 
                 for (final var uuid : muteMap.uuidSet()) {
@@ -79,7 +79,7 @@ public final class UnMuteCommand implements MSCommandExecutor {
 
                     if (muteMap.isMuted(offlinePlayer)) {
                         final String name = offlinePlayer.getName();
-                        final int id = cache.idMap.getID(uuid, false, false);
+                        final int id = cache.getIdMap().getID(uuid, false, false);
 
                         if (id != -1) {
                             completions.add(String.valueOf(id));

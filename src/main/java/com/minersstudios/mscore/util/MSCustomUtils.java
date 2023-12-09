@@ -56,8 +56,8 @@ public final class MSCustomUtils {
     }
 
     /**
-     * Gets an {@link ItemStack} of custom item / block / decor
-     * from {@link NamespacedKey}
+     * Gets an {@link ItemStack} of custom item / block / decor from
+     * {@link NamespacedKey}
      *
      * @param namespacedKey NamespacedKey of custom item / block / decor,
      *                      example - (msitems:example)
@@ -72,8 +72,8 @@ public final class MSCustomUtils {
     }
 
     /**
-     * Gets an {@link ItemStack} of custom item / block / decor
-     * from namespace and key
+     * Gets an {@link ItemStack} of custom item / block / decor from namespace
+     * and key
      *
      * @param namespace The namespace of the plugin,
      *                  example - (msitems, msblock, msdecor)
@@ -100,16 +100,12 @@ public final class MSCustomUtils {
     }
 
     /**
-     * Gets {@link CustomBlockData}
-     * or {@link CustomDecorData}
-     * or {@link CustomItem}
-     * from {@link ItemStack}
+     * Gets {@link CustomBlockData} or {@link CustomDecorData}
+     * or {@link CustomItem} from {@link ItemStack}
      *
      * @param itemStack {@link ItemStack} of custom item / block / decor
-     * @return Optional of {@link CustomBlockData}
-     *         or {@link CustomDecorData}
-     *         or {@link CustomItem}
-     *         or empty optional if not found
+     * @return Optional of {@link CustomBlockData}  or {@link CustomDecorData}
+     *         or {@link CustomItem} or empty optional if not found
      * @see #getCustom(NamespacedKey)
      */
     public static @NotNull Optional<?> getCustom(final @Nullable ItemStack itemStack) {
@@ -128,17 +124,13 @@ public final class MSCustomUtils {
     }
 
     /**
-     * Gets {@link CustomBlockData}
-     * or {@link CustomDecorData}
-     * or {@link CustomItem}
-     * from namespaced key string
+     * Gets {@link CustomBlockData} or {@link CustomDecorData}
+     * or {@link CustomItem} from namespaced key string
      *
      * @param namespacedKeyStr Namespaced key string,
      *                         example - (msitems:example)
-     * @return Optional of {@link CustomBlockData}
-     *         or {@link CustomDecorData}
-     *         or {@link CustomItem}
-     *         or empty optional if not found
+     * @return Optional of {@link CustomBlockData} or {@link CustomDecorData}
+     *         or {@link CustomItem} or empty optional if not found
      * @see #getCustom(String, String)
      */
     public static @NotNull Optional<?> getCustom(final @Nullable String namespacedKeyStr) {
@@ -153,17 +145,13 @@ public final class MSCustomUtils {
     }
 
     /**
-     * Gets {@link CustomBlockData}
-     * or {@link CustomDecorData}
-     * or {@link CustomItem}
-     * from {@link NamespacedKey}
+     * Gets {@link CustomBlockData} or {@link CustomDecorData}
+     * or {@link CustomItem} from {@link NamespacedKey}
      *
      * @param namespacedKey NamespacedKey of custom item / block / decor,
      *                      example - (msitems:example)
-     * @return Optional of {@link CustomBlockData}
-     *         or {@link CustomDecorData}
-     *         or {@link CustomItem}
-     *         or empty optional if not found
+     * @return Optional of {@link CustomBlockData} or {@link CustomDecorData}
+     *         or {@link CustomItem} or empty optional if not found
      * @see #getCustom(String, String)
      */
     public static @NotNull Optional<?> getCustom(final @Nullable NamespacedKey namespacedKey) {
@@ -173,19 +161,15 @@ public final class MSCustomUtils {
     }
 
     /**
-     * Gets {@link CustomBlockData}
-     * or {@link CustomDecorData}
-     * or {@link CustomItem}
-     * from namespace and key
+     * Gets {@link CustomBlockData} or {@link CustomDecorData}
+     * or {@link CustomItem} from namespace and key
      *
      * @param namespace The namespace of the plugin,
      *                  example - (msitems, msblock, msdecor)
      * @param key       The key of the custom item / block / decor,
      *                  example - (example)
-     * @return Optional of {@link CustomBlockData}
-     *         or {@link CustomDecorData}
-     *         or {@link CustomItem}
-     *         or empty optional if not found
+     * @return Optional of {@link CustomBlockData} or {@link CustomDecorData}
+     *         or {@link CustomItem} or empty optional if not found
      * @see CustomBlockRegistry#fromKey(String)
      * @see CustomDecorType#fromKey(String)
      * @see CustomItemType#fromKey(String)

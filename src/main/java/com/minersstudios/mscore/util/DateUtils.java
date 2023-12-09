@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+/**
+ * Utility class for date and time
+ */
 public final class DateUtils {
     private static final ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
     private static final String DEFAULT_TIMEZONE = DEFAULT_ZONE_ID.toString();
@@ -43,9 +46,9 @@ public final class DateUtils {
      * Gets timezone from ip
      *
      * @param ip IP address to get timezone from
-     * @return Timezone from ip or default timezone
-     *         if ip is null or failed to get timezone
-     *         from ip
+     * @return Timezone from ip
+     *         or default timezone if ip is null
+     *         or failed to get timezone from ip
      */
     public static @NotNull String getTimezone(final @NotNull InetAddress ip) {
         final String cachedTimezone = TIMEZONE_CACHE.get(ip);
@@ -91,7 +94,7 @@ public final class DateUtils {
         if (address == null) {
             return date
                     .atZone(DEFAULT_ZONE_ID)
-                    .format(MSPlugin.getGlobalConfig().timeFormatter);
+                    .format(MSPlugin.globalConfig().getTimeFormatter());
         }
 
         final String timeZone = getTimezone(address);
@@ -101,7 +104,7 @@ public final class DateUtils {
                                 ? "Europe/Kiev"
                                 : timeZone
                         )
-                ).format(MSPlugin.getGlobalConfig().timeFormatter);
+                ).format(MSPlugin.globalConfig().getTimeFormatter());
     }
 
     /**
@@ -130,14 +133,13 @@ public final class DateUtils {
     }
 
     /**
-     * Gets time suggestions from a string number. Can be
-     * used for time arguments in tab completer.
+     * Gets time suggestions from a string number. Can be used for time
+     * arguments in tab completer.
      * <br>
      * Includes : s, m, h, d, M, y
      *
      * @param input Number of time in string
-     * @return Time suggestions or empty list
-     *         if the input is not a number
+     * @return Time suggestions or empty list if the input is not a number
      */
     public static @NotNull @Unmodifiable List<String> getTimeSuggestions(final @NotNull String input) {
         return StringUtils.isNumeric(input)

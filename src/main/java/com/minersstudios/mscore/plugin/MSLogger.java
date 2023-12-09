@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.plugin;
 
 import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.Badges;
+import com.minersstudios.mscore.util.Font;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -9,6 +9,7 @@ import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,15 +17,15 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static net.kyori.adventure.text.Component.space;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 /**
- * A custom logging utility designed to send formatted log messages
- * with different levels and colors to various targets. Supports
- * logging to the console, players, and command senders using the
- * AdventureAPI for text formatting.
- * <p>
+ * A custom logging utility designed to send formatted log messages with
+ * different levels and colors to various targets. Supports logging to the
+ * console, players, and command senders using AdventureAPI for text formatting.
+ * <br>
  * Available levels, and their corresponding colors:
  * <ul>
  *     <li>{@link Level#SEVERE} - Red</li>
@@ -38,16 +39,20 @@ public final class MSLogger {
     private static final Logger LOGGER = Logger.getLogger(NAME);
     private static final String ANSI_LIME = "\u001B[92m";
     private static final String ANSI_RESET = "\u001B[0m";
+    private static final int SEVERE = 1000;
+    private static final int WARNING = 900;
+    private static final int INFO = 800;
+    private static final int FINE = 500;
 
+    @Contract(" -> fail")
     private MSLogger() {
         throw new AssertionError("This class cannot be instantiated!");
     }
 
     /**
-     * Logs a message with the specified severity level.
-     * If the level is {@link Level#FINE}, the message will
-     * be logged with the {@link Level#INFO} level and
-     * colored lime green.
+     * Logs a message with the specified severity level. If the level is 
+     * {@link Level#FINE}, the message will be logged with the {@link Level#INFO}
+     * level and colored lime green.
      *
      * @param level   One of the message level identifiers
      * @param message The component message
@@ -61,10 +66,9 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the specified severity level.
-     * If the level is {@link Level#FINE}, the message will
-     * be logged with the {@link Level#INFO} level and
-     * colored lime green.
+     * Logs a message with the specified severity level. If the level is 
+     * {@link Level#FINE}, the message will be logged with the {@link Level#INFO}
+     * level and colored lime green.
      *
      * @param level   One of the message level identifiers
      * @param message The string message
@@ -82,10 +86,9 @@ public final class MSLogger {
     }
 
     /**
-     * Log a message with the specified severity level
-     * and associated array of parameters. If the level is
-     * {@link Level#FINE}, the message will be logged with
-     * the {@link Level#INFO} level and colored lime green.
+     * Log a message with the specified severity level and associated array of 
+     * parameters. If the level is {@link Level#FINE}, the message will be 
+     * logged with the {@link Level#INFO} level and colored lime green.
      *
      * @param level   One of the message level identifiers
      * @param message The component message
@@ -101,10 +104,9 @@ public final class MSLogger {
     }
 
     /**
-     * Log a message with the specified severity level
-     * and associated array of parameters. If the level is
-     * {@link Level#FINE}, the message will be logged with
-     * the {@link Level#INFO} level and colored lime green.
+     * Log a message with the specified severity level and associated array of 
+     * parameters. If the level is {@link Level#FINE}, the message will be 
+     * logged with the {@link Level#INFO} level and colored lime green.
      *
      * @param level   One of the message level identifiers
      * @param message The string message
@@ -124,10 +126,9 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the specified severity level
-     * and associated throwable. If the level is
-     * {@link Level#FINE}, the message will be logged with
-     * the {@link Level#INFO} level and colored lime green.
+     * Logs a message with the specified severity level and associated throwable.
+     * If the level is {@link Level#FINE}, the message will be logged with the
+     * {@link Level#INFO} level and colored lime green.
      *
      * @param level     One of the message level identifiers
      * @param message   The component message
@@ -143,10 +144,9 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the specified severity level
-     * and associated throwable. If the level is
-     * {@link Level#FINE}, the message will be logged with
-     * the {@link Level#INFO} level and colored lime green.
+     * Logs a message with the specified severity level and associated throwable.
+     * If the level is {@link Level#FINE}, the message will be logged with the 
+     * {@link Level#INFO} level and colored lime green.
      *
      * @param level     One of the message level identifiers
      * @param message   The string message
@@ -166,12 +166,10 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the specified severity level
-     * to the specified target. If the target is null,
-     * the message will be logged to the console.
-     * <p>
-     * All messages will be colored according to their
-     * severity level.
+     * Logs a message with the specified severity level to the specified target.
+     * If the target is null, the message will be logged to the console.
+     * <br>
+     * All messages will be colored according to their severity level.
      *
      * @param level   One of the message level identifiers
      * @param target  The target to send the message to
@@ -188,12 +186,10 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the specified severity level
-     * to the specified target. If the target is null,
-     * the message will be logged to the console.
-     * <p>
-     * All messages will be colored according to their
-     * severity level.
+     * Logs a message with the specified severity level  to the specified target.
+     * If the target is null, the message will be logged to the console.
+     * <br>
+     * All messages will be colored according to their severity level.
      *
      * @param level   One of the message level identifiers
      * @param target  The target to send the message to
@@ -206,35 +202,41 @@ public final class MSLogger {
             final @NotNull Component message
     ) {
         final Component coloredMessage = switch (level.intValue()) {
-            case 1000 -> message.color(RED);
-            case 900 -> message.color(GOLD);
-            case 500 -> message.color(GREEN);
-            default -> message;
+            case SEVERE ->  message.color(RED);
+            case WARNING -> message.color(GOLD);
+            case FINE ->    message.color(GREEN);
+            default ->      message;
         };
 
         if (target == null) {
-            Bukkit.getServer().getConsoleSender().sendMessage(coloredMessage);
+            try {
+                Bukkit.getServer().getConsoleSender().sendMessage(coloredMessage);
+            } catch (final Exception e) {
+                warning("Tried to log a message to the console, but the console was null!");
+            }
         } else if (target instanceof BlockCommandSender) {
             target.sendMessage(
-                    message instanceof TranslatableComponent translatableComponent
+                    message instanceof final TranslatableComponent translatableComponent
                     ? LanguageFile.renderTranslationComponent(translatableComponent)
                     : message
             );
         } else {
             target.sendMessage(
                     switch (level.intValue()) {
-                        case 1000 -> Badges.RED_EXCLAMATION_MARK.append(coloredMessage);
-                        case 900 -> Badges.YELLOW_EXCLAMATION_MARK.append(coloredMessage);
-                        case 500 -> Badges.GREEN_EXCLAMATION_MARK.append(coloredMessage);
-                        default -> coloredMessage;
+                        case SEVERE ->  space().append(Font.Components.RED_EXCLAMATION_MARK).append(space())
+                                        .append(coloredMessage);
+                        case WARNING -> space().append(Font.Components.YELLOW_EXCLAMATION_MARK).append(space())
+                                        .append(coloredMessage);
+                        case FINE ->    space().append(Font.Components.GREEN_EXCLAMATION_MARK).append(space())
+                                        .append(coloredMessage);
+                        default ->      coloredMessage;
                     }
             );
         }
     }
 
     /**
-     * Logs a message with the {@link Level#SEVERE}
-     * severity level
+     * Logs a message with the {@link Level#SEVERE} severity level
      *
      * @param message The string message
      * @see #log(Level, String)
@@ -244,8 +246,7 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#SEVERE}
-     * severity level
+     * Logs a message with the {@link Level#SEVERE} severity level
      *
      * @param message The component message
      * @see #log(Level, Component)
@@ -255,8 +256,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#SEVERE}
-     * severity level and associated array of parameters
+     * Logs a message with the {@link Level#SEVERE} severity level and 
+     * associated array of parameters
      *
      * @param message The string message
      * @param params  Array of parameters to the message
@@ -270,8 +271,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#SEVERE}
-     * severity level and associated array of parameters
+     * Logs a message with the {@link Level#SEVERE} severity level and 
+     * associated array of parameters
      *
      * @param message The component message
      * @param params  Array of parameters to the message
@@ -285,8 +286,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#SEVERE}
-     * severity level and associated throwable
+     * Logs a message with the {@link Level#SEVERE} severity level and
+     * associated throwable
      *
      * @param message   The string message
      * @param throwable Throwable associated with log message
@@ -300,8 +301,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#SEVERE}
-     * severity level and associated throwable
+     * Logs a message with the {@link Level#SEVERE} severity level and 
+     * associated throwable
      *
      * @param message   The component message
      * @param throwable Throwable associated with log message
@@ -315,8 +316,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#SEVERE}
-     * severity level to the specified target
+     * Logs a message with the {@link Level#SEVERE} severity level to the 
+     * specified target
      *
      * @param sender  The target to send the message to
      *                (null for console sender)
@@ -331,8 +332,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#SEVERE}
-     * severity level to the specified target
+     * Logs a message with the {@link Level#SEVERE} severity level to the 
+     * specified target
      *
      * @param sender  The target to send the message to
      *                (null for console sender)
@@ -347,8 +348,7 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#WARNING}
-     * severity level
+     * Logs a message with the {@link Level#WARNING} severity level
      *
      * @param message The string message
      * @see #log(Level, String)
@@ -358,8 +358,7 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#WARNING}
-     * severity level
+     * Logs a message with the {@link Level#WARNING} severity level
      *
      * @param message The component message
      * @see #log(Level, Component)
@@ -369,8 +368,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#WARNING}
-     * severity level and associated array of parameters
+     * Logs a message with the {@link Level#WARNING} severity level and 
+     * associated array of parameters
      *
      * @param message The string message
      * @param params  Array of parameters to the message
@@ -384,8 +383,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#WARNING}
-     * severity level and associated array of parameters
+     * Logs a message with the {@link Level#WARNING} severity level and
+     * associated array of parameters
      *
      * @param message The component message
      * @param params  Array of parameters to the message
@@ -399,8 +398,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#WARNING}
-     * severity level and associated throwable
+     * Logs a message with the {@link Level#WARNING} severity level and 
+     * associated throwable
      *
      * @param message   The string message
      * @param throwable Throwable associated with log message
@@ -414,8 +413,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#WARNING}
-     * severity level and associated throwable
+     * Logs a message with the {@link Level#WARNING} severity level and 
+     * associated throwable
      *
      * @param message   The component message
      * @param throwable Throwable associated with log message
@@ -429,8 +428,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#WARNING}
-     * severity level to the specified target
+     * Logs a message with the {@link Level#WARNING} severity level to the
+     * specified target
      *
      * @param sender  The target to send the message to
      *                (null for console sender)
@@ -445,8 +444,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#WARNING}
-     * severity level to the specified target
+     * Logs a message with the {@link Level#WARNING} severity level to the
+     * specified target
      *
      * @param sender  The target to send the message to
      *                (null for console sender)
@@ -461,8 +460,7 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#INFO}
-     * severity level
+     * Logs a message with the {@link Level#INFO} severity level
      *
      * @param message The string message
      * @see #log(Level, String)
@@ -472,8 +470,7 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#INFO}
-     * severity level
+     * Logs a message with the {@link Level#INFO} severity level
      *
      * @param message The component message
      * @see #log(Level, Component)
@@ -483,8 +480,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#INFO}
-     * severity level and associated array of parameters
+     * Logs a message with the {@link Level#INFO} severity level and associated 
+     * array of parameters
      *
      * @param message The string message
      * @param params  Array of parameters to the message
@@ -498,8 +495,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#INFO}
-     * severity level and associated array of parameters
+     * Logs a message with the {@link Level#INFO}  severity level and associated 
+     * array of parameters
      *
      * @param message The component message
      * @param params  Array of parameters to the message
@@ -513,8 +510,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#INFO}
-     * severity level and associated throwable
+     * Logs a message with the {@link Level#INFO} severity level and associated 
+     * throwable
      *
      * @param message   The string message
      * @param throwable Throwable associated with log message
@@ -528,8 +525,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#INFO}
-     * severity level and associated throwable
+     * Logs a message with the {@link Level#INFO}  severity level and associated 
+     * throwable
      *
      * @param message   The component message
      * @param throwable Throwable associated with log message
@@ -543,8 +540,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#INFO}
-     * severity level to the specified target
+     * Logs a message with the {@link Level#INFO} severity level to the 
+     * specified target
      *
      * @param sender  The target to send the message to
      *                (null for console sender)
@@ -559,8 +556,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#INFO}
-     * severity level to the specified target
+     * Logs a message with the {@link Level#INFO} severity level to the
+     * specified target
      *
      * @param sender  The target to send the message to
      *                (null for console sender)
@@ -575,8 +572,7 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#FINE}
-     * severity level
+     * Logs a message with the {@link Level#FINE} severity level
      *
      * @param message The string message
      * @see #log(Level, String)
@@ -586,8 +582,7 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#FINE}
-     * severity level
+     * Logs a message with the {@link Level#FINE} severity level
      *
      * @param message The component message
      * @see #log(Level, Component)
@@ -597,8 +592,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#FINE}
-     * severity level and associated array of parameters
+     * Logs a message with the {@link Level#FINE}  severity level and associated 
+     * array of parameters
      *
      * @param message The string message
      * @param params  Array of parameters to the message
@@ -612,8 +607,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#FINE}
-     * severity level and associated array of parameters
+     * Logs a message with the {@link Level#FINE} severity level and associated 
+     * array of parameters
      *
      * @param message The component message
      * @param params  Array of parameters to the message
@@ -627,8 +622,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#FINE}
-     * severity level and associated throwable
+     * Logs a message with the {@link Level#FINE} severity level and associated 
+     * throwable
      *
      * @param message   The string message
      * @param throwable Throwable associated with log message
@@ -642,8 +637,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#FINE}
-     * severity level and associated throwable
+     * Logs a message with the {@link Level#FINE} severity level and associated 
+     * throwable
      *
      * @param message   The component message
      * @param throwable Throwable associated with log message
@@ -657,8 +652,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#FINE}
-     * severity level to the specified target
+     * Logs a message with the {@link Level#FINE} severity level to the 
+     * specified target
      *
      * @param sender  The target to send the message to
      *                (null for console sender)
@@ -673,8 +668,8 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the {@link Level#FINE}
-     * severity level to the specified target
+     * Logs a message with the {@link Level#FINE} severity level to the
+     * specified target
      *
      * @param sender  The target to send the message to
      *                (null for console sender)
@@ -695,6 +690,11 @@ public final class MSLogger {
      * @return The serialized string
      */
     private static @NotNull String serialize(final @NotNull Component message) {
-        return PaperAdventure.ANSI_SERIALIZER.serialize(GlobalTranslator.render(message, Locale.getDefault()));
+        return PaperAdventure.ANSI_SERIALIZER.serialize(
+                GlobalTranslator.render(
+                        message,
+                        Locale.getDefault()
+                )
+        );
     }
 }

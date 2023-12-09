@@ -117,7 +117,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#playerInfoMap}
+     * Gets player info from {@link Cache#getPlayerInfoMap()}
      * by nickname and {@link UUID}.
      * If the player info is not cached, a new player info
      * is created with the player file and settings
@@ -127,17 +127,17 @@ public final class PlayerInfo {
      *
      * @param uuid     The player UUID
      * @param nickname The player nickname
-     * @return Player info from {@link Cache#playerInfoMap}
+     * @return Player info from {@link Cache#getPlayerInfoMap()}
      */
     public static @NotNull PlayerInfo fromProfile(
             final @NotNull UUID uuid,
             final @NotNull String nickname
     ) {
-        return MSEssentials.getCache().playerInfoMap.get(uuid, nickname);
+        return MSEssentials.cache().getPlayerInfoMap().get(uuid, nickname);
     }
 
     /**
-     * Gets player info from {@link Cache#playerInfoMap}
+     * Gets player info from {@link Cache#getPlayerInfoMap()}
      * by {@link Player} object.
      * If the player info is not cached, a new player info
      * is created with the player file and settings
@@ -146,14 +146,14 @@ public final class PlayerInfo {
      * and default settings, and then saved to the map.
      *
      * @param player The player
-     * @return Player info from {@link Cache#playerInfoMap}
+     * @return Player info from {@link Cache#getPlayerInfoMap()}
      */
     public static @NotNull PlayerInfo fromOnlinePlayer(final @NotNull Player player) {
-        return MSEssentials.getCache().playerInfoMap.get(player);
+        return MSEssentials.cache().getPlayerInfoMap().get(player);
     }
 
     /**
-     * Gets player info from {@link Cache#playerInfoMap}
+     * Gets player info from {@link Cache#getPlayerInfoMap()}
      * by {@link OfflinePlayer} object.
      * If the player info is not cached, a new player info
      * is created with the player file and settings
@@ -162,18 +162,18 @@ public final class PlayerInfo {
      * and default settings, and then saved to the map.
      *
      * @param offlinePlayer The offline player
-     * @return Player info from {@link Cache#playerInfoMap},
+     * @return Player info from {@link Cache#getPlayerInfoMap()},
      *         or null if player nickname is blank
      */
     @Contract("null -> null")
     public static @Nullable PlayerInfo fromOfflinePlayer(final @Nullable OfflinePlayer offlinePlayer) {
-        return MSEssentials.getCache().playerInfoMap.get(offlinePlayer);
+        return MSEssentials.cache().getPlayerInfoMap().get(offlinePlayer);
     }
 
     /**
-     * Gets player info from {@link Cache#playerInfoMap}
+     * Gets player info from {@link Cache#getPlayerInfoMap()}
      * by {@link OfflinePlayer} object, which was retrieved
-     * by the specified player ID from {@link Cache#idMap}.
+     * by the specified player ID from {@link Cache#getIdMap()}.
      * If the player info is not cached, a new player info
      * is created with the player file and settings
      * if the file exists, or a new player information
@@ -186,11 +186,11 @@ public final class PlayerInfo {
      * @see #fromOfflinePlayer(OfflinePlayer)
      */
     public static @Nullable PlayerInfo fromID(final int id) {
-        return fromOfflinePlayer(MSEssentials.getCache().idMap.getPlayerByID(id));
+        return fromOfflinePlayer(MSEssentials.cache().getIdMap().getPlayerByID(id));
     }
 
     /**
-     * Gets player info from {@link Cache#playerInfoMap}
+     * Gets player info from {@link Cache#getPlayerInfoMap()}
      * by {@link OfflinePlayer} object, which was retrieved
      * by the specified player nickname with
      * {@link Server#getOfflinePlayer(String)}.
@@ -210,7 +210,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#playerInfoMap}
+     * Gets player info from {@link Cache#getPlayerInfoMap()}
      * by {@link OfflinePlayer} object, which was retrieved
      * by the specified player {@link UUID} with
      * {@link Server#getOfflinePlayer(UUID)}.
@@ -230,7 +230,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#playerInfoMap}
+     * Gets player info from {@link Cache#getPlayerInfoMap()}
      * by {@link OfflinePlayer} object, which was retrieved
      * by the specified player ID or nickname.
      * It first checks if the string matches the ID regex
@@ -261,8 +261,8 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#playerInfoMap}
-     * by discord ID with {@link Cache#discordMap},
+     * Gets player info from {@link Cache#getPlayerInfoMap()}
+     * by discord ID with {@link Cache#getDiscordMap()},
      * then gets the player info from its uuid and nickname
      * with {@link #fromProfile(UUID, String)}.
      * If the player info is not cached, a new player info
@@ -278,7 +278,7 @@ public final class PlayerInfo {
      * @see #fromProfile(UUID, String)
      */
     public static @Nullable PlayerInfo fromDiscord(final long id) {
-        final DiscordMap.Params params = MSEssentials.getCache().discordMap.getParams(id);
+        final DiscordMap.Params params = MSEssentials.cache().getDiscordMap().getParams(id);
         return params == null
                 ? null
                 : fromProfile(params.getUuid(), params.getNickname());
@@ -372,7 +372,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return Player's id from {@link Cache#idMap}
+     * @return Player's id from {@link Cache#getIdMap()}
      * @see #getID(boolean, boolean)
      */
     public int getID() {
@@ -382,15 +382,15 @@ public final class PlayerInfo {
     /**
      * @param addPlayer  If true, the next available ID is added
      * @param zeroIfNull If true, returns 0 if the id is null
-     * @return Player's id from {@link Cache#idMap}
+     * @return Player's id from {@link Cache#getIdMap()}
      */
     public int getID(
             final boolean addPlayer,
             final boolean zeroIfNull
     ) {
-        return this == MSEssentials.getConsolePlayerInfo()
+        return this == MSEssentials.consolePlayerInfo()
                 ? -1
-                : MSEssentials.getCache().idMap.getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
+                : MSEssentials.cache().getIdMap().getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
     }
 
     /**
@@ -463,7 +463,7 @@ public final class PlayerInfo {
                 armorStand.setSmall(true);
                 armorStand.addPassenger(player);
                 armorStand.addScoreboardTag("customDecor");
-                MSEssentials.getCache().seats.put(player, armorStand);
+                MSEssentials.cache().getSeats().put(player, armorStand);
             }
         );
 
@@ -497,7 +497,7 @@ public final class PlayerInfo {
                 || !isSitting()
         ) return;
 
-        final ArmorStand armorStand = MSEssentials.getCache().seats.remove(player);
+        final ArmorStand armorStand = MSEssentials.cache().getSeats().remove(player);
         final Location playerLoc = player.getLocation();
         final Location getUpLocation = armorStand.getLocation().add(0.0d, 0.25d, 0.0d);
 
@@ -583,7 +583,7 @@ public final class PlayerInfo {
      * @see DiscordMap#getId(DiscordMap.Params)
      */
     public long getDiscordID() {
-        return MSEssentials.getCache().discordMap.getId(DiscordMap.Params.create(this.uuid, this.nickname));
+        return MSEssentials.cache().getDiscordMap().getId(DiscordMap.Params.create(this.uuid, this.nickname));
     }
 
     /**
@@ -593,7 +593,7 @@ public final class PlayerInfo {
      * @see DiscordMap#put(long, UUID, String)
      */
     public void linkDiscord(final long id) {
-        MSEssentials.getCache().discordMap.put(id, this.uuid, this.nickname);
+        MSEssentials.cache().getDiscordMap().put(id, this.uuid, this.nickname);
     }
 
     /**
@@ -603,9 +603,9 @@ public final class PlayerInfo {
      * @see DiscordMap#remove(long)
      */
     public long unlinkDiscord() {
-        final DiscordMap discordMap = MSEssentials.getCache().discordMap;
+        final DiscordMap discordMap = MSEssentials.cache().getDiscordMap();
         final long id = discordMap.getId(DiscordMap.Params.create(this.uuid, this.nickname));
-        final var botHandlers = MSEssentials.getCache().botHandlers;
+        final var botHandlers = MSEssentials.cache().getBotHandlers();
         final BotHandler botHandler = botHandlers.get(id);
 
         if (botHandler != null) {
@@ -643,7 +643,7 @@ public final class PlayerInfo {
 
         player.setResourcePack(url, hash, force, message);
 
-        MSEssentials.getInstance().runTaskLater(() -> {
+        MSEssentials.singleton().runTaskLater(() -> {
             if (
                     resourcePackStatus.equals(this.resourcePackStatus)
                     && !this.resourcePackStatus.isDone()
@@ -672,15 +672,15 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return Player's mute params from {@link Cache#muteMap}
+     * @return Player's mute params from {@link Cache#getMuteMap()}
      * @see MuteMap#getMuteEntry(OfflinePlayer)
      */
     public @Nullable MuteMap.Entry getMuteEntry() {
-        return MSEssentials.getCache().muteMap.getMuteEntry(this.offlinePlayer);
+        return MSEssentials.cache().getMuteMap().getMuteEntry(this.offlinePlayer);
     }
 
     /**
-     * @return Player's mute reason from {@link Cache#muteMap} params
+     * @return Player's mute reason from {@link Cache#getMuteMap()} params
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
      * @see MuteMap.Entry#getReason()
@@ -696,7 +696,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return Player's mute source from {@link Cache#muteMap} params
+     * @return Player's mute source from {@link Cache#getMuteMap()} params
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
      * @see MuteMap.Entry#getSource()
@@ -713,7 +713,7 @@ public final class PlayerInfo {
 
     /**
      * @param sender The command sender, used to get the time zone
-     * @return Date when the player was muted from {@link Cache#muteMap}
+     * @return Date when the player was muted from {@link Cache#getMuteMap()}
      *         with the sender's time zone or default time zone
      *         if the sender's time zone cannot be obtained
      * @throws IllegalStateException If the player is not muted,
@@ -726,7 +726,7 @@ public final class PlayerInfo {
 
     /**
      * @param address The IP address, used to get the time zone
-     * @return Date when the player was muted from {@link Cache#muteMap}
+     * @return Date when the player was muted from {@link Cache#getMuteMap()}
      *         with the time zone of the IP address or default time zone
      *         if the time zone cannot be obtained
      * @throws IllegalStateException If the player is not muted,
@@ -738,7 +738,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return Date when the player was muted from {@link Cache#muteMap}
+     * @return Date when the player was muted from {@link Cache#getMuteMap()}
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
      * @see MuteMap.Entry#getCreated()
@@ -755,7 +755,7 @@ public final class PlayerInfo {
 
     /**
      * @param sender The command sender, used to get the time zone
-     * @return Date when the player will be unmuted from {@link Cache#muteMap}
+     * @return Date when the player will be unmuted from {@link Cache#getMuteMap()}
      *         with the sender's time zone or default time zone
      *         if the sender's time zone cannot be obtained
      * @throws IllegalStateException If the player is not muted,
@@ -768,7 +768,7 @@ public final class PlayerInfo {
 
     /**
      * @param address The IP address, used to get the time zone
-     * @return Date when the player will be unmuted from {@link Cache#muteMap}
+     * @return Date when the player will be unmuted from {@link Cache#getMuteMap()}
      *         with the time zone of the IP address or default time zone
      *         if the time zone cannot be obtained
      * @throws IllegalStateException If the player is not muted,
@@ -780,7 +780,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return Date when the player will be unmuted from {@link Cache#muteMap}
+     * @return Date when the player will be unmuted from {@link Cache#getMuteMap()}
      * @throws IllegalStateException If the player is not muted,
      *                               check {@link #isMuted()} first
      * @see MuteMap.Entry#getExpiration()
@@ -796,7 +796,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * Mutes or unmutes the player in {@link Cache#muteMap}.
+     * Mutes or unmutes the player in {@link Cache#getMuteMap()}.
      * Also sends a message to the muted player if they are
      * online, and to the sender, who muted the player.
      *
@@ -816,7 +816,7 @@ public final class PlayerInfo {
             @Nullable CommandSender sender
     ) {
         final Player player = this.getOnlinePlayer();
-        final MuteMap muteMap = MSEssentials.getCache().muteMap;
+        final MuteMap muteMap = MSEssentials.cache().getMuteMap();
 
         if (sender == null) {
             sender = this.server.getConsoleSender();
@@ -907,7 +907,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * Unmutes the player in {@link Cache#muteMap}.
+     * Unmutes the player in {@link Cache#getMuteMap()}.
      * Also sends a message to the muted player if they are
      * online, and to the sender, who unmuted the player.
      *
@@ -1274,7 +1274,7 @@ public final class PlayerInfo {
      */
     public boolean isSitting() {
         final Player player = this.getOnlinePlayer();
-        return player != null && MSEssentials.getCache().seats.containsKey(player);
+        return player != null && MSEssentials.cache().getSeats().containsKey(player);
     }
 
     /**
@@ -1282,7 +1282,7 @@ public final class PlayerInfo {
      * @see DiscordMap#containsPlayer(DiscordMap.Params)
      */
     public boolean isLinked() {
-        return MSEssentials.getCache().discordMap.containsPlayer(DiscordMap.Params.create(this.uuid, this.nickname));
+        return MSEssentials.cache().getDiscordMap().containsPlayer(DiscordMap.Params.create(this.uuid, this.nickname));
     }
 
     /**
@@ -1294,11 +1294,11 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return True if the player is muted in {@link Cache#muteMap}
+     * @return True if the player is muted in {@link Cache#getMuteMap()}
      * @see MuteMap#isMuted(OfflinePlayer)
      */
     public boolean isMuted() {
-        return MSEssentials.getCache().muteMap.isMuted(this.offlinePlayer);
+        return MSEssentials.cache().getMuteMap().isMuted(this.offlinePlayer);
     }
 
     /**
@@ -1313,7 +1313,8 @@ public final class PlayerInfo {
      */
     public boolean isAuthenticated() {
         final Player player = this.getOnlinePlayer();
-        return player != null && AuthMeApi.getInstance().isAuthenticated(player);
+        return player != null
+                && AuthMeApi.getInstance().isAuthenticated(player);
     }
 
     /**
@@ -1357,10 +1358,13 @@ public final class PlayerInfo {
 
         if (
                 player == null
-                || this.joinTask != null && !this.joinTask.isCancelled()
+                || (
+                        this.joinTask != null
+                        && !this.joinTask.isCancelled()
+                )
         ) return;
 
-        MSEssentials.getInstance().runTaskTimer(task -> {
+        MSEssentials.singleton().runTaskTimer(task -> {
             this.joinTask = task;
 
             if (!player.isOnline()) task.cancel();
@@ -1403,7 +1407,7 @@ public final class PlayerInfo {
             this.joinTask.cancel();
         }
 
-        MSEssentials.getCache().playerAnomalyActionMap.remove(player);
+        MSEssentials.cache().getPlayerAnomalyActionMap().remove(player);
         this.savePlayerDataParams();
 
         if (!this.isInWorldDark()) {
@@ -1432,7 +1436,7 @@ public final class PlayerInfo {
                 return CompletableFuture.completedFuture(true);
             }
             case NULL -> {
-                MSEssentials.getInstance().runTaskTimer(task -> {
+                MSEssentials.singleton().runTaskTimer(task -> {
                     if (player.getOpenInventory().getTopInventory() instanceof CustomInventory) {
                         task.cancel();
                         return;
@@ -1487,7 +1491,7 @@ public final class PlayerInfo {
         if (player == null) return CompletableFuture.completedFuture(false);
 
         if (player.getGameMode() == GameMode.SPECTATOR) {
-            MSEssentials.getInstance().runTask(() -> player.setSpectatorTarget(null));
+            MSEssentials.singleton().runTask(() -> player.setSpectatorTarget(null));
         }
 
         Location location = this.playerFile.getLastLeaveLocation();
@@ -1496,7 +1500,7 @@ public final class PlayerInfo {
             location = player.getBedSpawnLocation();
 
             if (location == null) {
-                location = MSEssentials.getConfiguration().spawnLocation;
+                location = MSEssentials.config().spawnLocation;
             }
         }
 
@@ -1515,7 +1519,7 @@ public final class PlayerInfo {
         if (player == null) return CompletableFuture.completedFuture(false);
 
         if (player.getGameMode() == GameMode.SPECTATOR) {
-            MSEssentials.getInstance().runTask(() -> player.setSpectatorTarget(null));
+            MSEssentials.singleton().runTask(() -> player.setSpectatorTarget(null));
         }
 
         Location location = this.playerFile.getLastDeathLocation();
@@ -1524,7 +1528,7 @@ public final class PlayerInfo {
             location = player.getBedSpawnLocation();
 
             if (location == null) {
-                location = MSEssentials.getConfiguration().spawnLocation;
+                location = MSEssentials.config().spawnLocation;
             }
         }
 
@@ -1606,7 +1610,7 @@ public final class PlayerInfo {
      * @see DiscordMap#generateCode(PlayerInfo)
      */
     public short generateCode() {
-        return MSEssentials.getCache().discordMap.generateCode(this);
+        return MSEssentials.cache().getDiscordMap().generateCode(this);
     }
 
     /**
@@ -1634,7 +1638,7 @@ public final class PlayerInfo {
      * @param message Message to send
      * @return True if the player has linked their Discord account
      */
-    public boolean sendPrivateDiscordMessage(@NotNull CharSequence message) {
+    public boolean sendPrivateDiscordMessage(final @NotNull CharSequence message) {
         final long id = this.getDiscordID();
 
         if (id == -1) return false;
@@ -1664,7 +1668,7 @@ public final class PlayerInfo {
                 player.isDead()
                 ? player.getBedSpawnLocation() != null
                 ? player.getBedSpawnLocation()
-                : MSEssentials.getConfiguration().spawnLocation
+                : MSEssentials.config().spawnLocation
                 : player.getLocation()
         );
         this.playerFile.setGameMode(player.getGameMode());
@@ -1735,7 +1739,9 @@ public final class PlayerInfo {
                         sendJoinMessage(this);
                     } else {
                         player.kick();
-                        MSEssentials.logger().warning("Something went wrong while teleporting " + this.nickname + " to their last leave location");
+                        MSEssentials.logger().warning(
+                                "Something went wrong while teleporting " + this.nickname + " to their last leave location"
+                        );
                     }
                 });
             }

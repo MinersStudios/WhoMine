@@ -71,7 +71,7 @@ public final class AsyncPlayerPreLoginListener extends AbstractMSListener<MSEsse
         }
 
         if (
-                MSEssentials.getConfiguration().developerMode
+                MSEssentials.config().developerMode
                 && !playerInfo.getOfflinePlayer().isOp()
         ) {
             event.disallow(

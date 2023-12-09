@@ -16,7 +16,7 @@ import java.util.Locale;
  * This adapter handles ItemStack serialization by converting it into
  * a JsonObject, and deserialization by reading the JsonObject and
  * constructing the corresponding ItemStack.
- * <p>
+ * <br>
  * Serialized output you can see in the "MSBlock/blocks/example.json" file.
  */
 public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {

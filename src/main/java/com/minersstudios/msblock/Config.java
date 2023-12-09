@@ -3,6 +3,9 @@ package com.minersstudios.msblock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.plugin.config.MSConfig;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -14,8 +17,8 @@ import java.util.logging.Level;
 
 /**
  * Configuration loader class.
- * <p>
- * Use {@link MSBlock#getConfiguration()} to get configuration instance.
+ * <br>
+ * Use {@link MSBlock#config()} to get configuration instance.
  * Use {@link #reload()} to reload configuration and {@link #save()} to
  * save configuration.
  */
@@ -26,6 +29,8 @@ public final class Config extends MSConfig {
     public String woodSoundBreak;
     public String woodSoundStep;
     public String woodSoundHit;
+
+    private static final String BLOCKS_FOLDER = "blocks";
 
     /**
      * Configuration constructor
@@ -51,19 +56,19 @@ public final class Config extends MSConfig {
         this.woodSoundStep = this.yaml.getString("wood-sound.step");
         this.woodSoundHit = this.yaml.getString("wood-sound.hit");
 
-        if (this.woodSoundPlace == null) {
+        if (StringUtils.isBlank(this.woodSoundPlace)) {
             this.woodSoundPlace = "block.wood.place";
         }
 
-        if (this.woodSoundBreak == null) {
+        if (StringUtils.isBlank(this.woodSoundBreak)) {
             this.woodSoundBreak = "block.wood.break";
         }
 
-        if (this.woodSoundStep == null) {
+        if (StringUtils.isBlank(this.woodSoundStep)) {
             this.woodSoundStep = "block.wood.step";
         }
 
-        if (this.woodSoundHit == null) {
+        if (StringUtils.isBlank(this.woodSoundHit)) {
             this.woodSoundHit = "block.wood.hit";
         }
 
@@ -85,7 +90,7 @@ public final class Config extends MSConfig {
     private void loadBlocks() {
         final long start = System.currentTimeMillis();
 
-        try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + "/blocks"))) {
+        try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + '/' + BLOCKS_FOLDER))) {
             pathStream.parallel()
             .filter(file -> {
                 final String fileName = file.getFileName().toString();
@@ -103,9 +108,18 @@ public final class Config extends MSConfig {
             });
 
             this.plugin.setLoadedCustoms(true);
-            MSBlock.logger().info("Loaded " + CustomBlockRegistry.size() + " custom blocks in " + (System.currentTimeMillis() - start) + "ms");
+            this.plugin.getComponentLogger().info(
+                    Component.text(
+                            "Loaded " + CustomBlockRegistry.size() + " custom blocks in " + (System.currentTimeMillis() - start) + "ms",
+                            NamedTextColor.GREEN
+                    )
+            );
         } catch (final IOException e) {
-            MSBlock.logger().log(Level.SEVERE, "An error occurred while loading blocks", e);
+            this.plugin.getLogger().log(
+                    Level.SEVERE,
+                    "An error occurred while loading blocks",
+                    e
+            );
         }
     }
 }

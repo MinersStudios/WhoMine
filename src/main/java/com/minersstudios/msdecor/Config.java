@@ -1,14 +1,9 @@
 package com.minersstudios.msdecor;
 
 import com.minersstudios.mscore.plugin.config.MSConfig;
-import com.minersstudios.mscore.util.MSPluginUtils;
-import com.minersstudios.msdecor.api.CustomDecorData;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public final class Config extends MSConfig {
     private final MSDecor plugin;
@@ -36,19 +31,6 @@ public final class Config extends MSConfig {
         this.isHalloween = this.yaml.getBoolean("is-halloween");
 
         this.plugin.setLoadedCustoms(true);
-
-        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
-        executor.scheduleAtFixedRate(() -> {
-            if (MSPluginUtils.isLoadedCustoms()) {
-                executor.shutdown();
-
-                final Cache cache = MSDecor.getCache();
-
-                cache.recipeDecors.forEach(CustomDecorData::registerRecipes);
-                cache.recipeDecors.clear();
-            }
-        }, 0L, 10L, TimeUnit.MILLISECONDS);
     }
 
     @Override

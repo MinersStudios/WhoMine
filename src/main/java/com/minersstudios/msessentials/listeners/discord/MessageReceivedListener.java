@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.listeners.discord;
 
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.util.Badges;
+import com.minersstudios.mscore.util.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.util.DiscordUtil;
@@ -41,7 +41,7 @@ public final class MessageReceivedListener extends ListenerAdapter {
             MSLogger.info(null, messageComponent);
         } else if (event.isFromType(ChannelType.PRIVATE)) {
             final long userID = user.getIdLong();
-            final var handlerMap = MSEssentials.getCache().botHandlers;
+            final var handlerMap = MSEssentials.cache().getBotHandlers();
             BotHandler handler = handlerMap.get(userID);
 
             if (handler == null) {
@@ -58,7 +58,7 @@ public final class MessageReceivedListener extends ListenerAdapter {
             final @NotNull Message message,
             final @NotNull String reply
     ) {
-        return Badges.DISCORD
+        return Font.Components.DISCORD
                 .color(NamedTextColor.WHITE)
                 .append(text(message.getAuthor().getName(), TextColor.color(112, 125, 223)))
                 .append(text(reply, TextColor.color(152, 162, 249)))

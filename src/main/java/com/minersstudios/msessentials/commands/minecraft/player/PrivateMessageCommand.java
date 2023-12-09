@@ -59,7 +59,7 @@ public final class PrivateMessageCommand implements MSCommandExecutor {
 
         final PlayerInfo senderInfo = sender instanceof Player player
                 ? PlayerInfo.fromOnlinePlayer(player)
-                : MSEssentials.getConsolePlayerInfo();
+                : MSEssentials.consolePlayerInfo();
 
         if (senderInfo.isMuted()) {
             MSLogger.warning(sender, MUTED);

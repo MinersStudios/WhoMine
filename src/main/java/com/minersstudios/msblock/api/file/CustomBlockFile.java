@@ -27,10 +27,10 @@ import java.util.logging.Level;
  * Represents a handler for a custom block file,
  * that is used to load and save {@link CustomBlockData}
  * to and from a file in json format using {@link Gson}.
- * <p>
+ * <br>
  * You can create a {@link CustomBlockFile} using
  * {@link #create(File, CustomBlockData)} or {@link #create(File)}.
- * <p>
+ * <br>
  * The first method creates a new {@link CustomBlockFile} with the
  * specified file and data, and the second method creates a new
  * {@link CustomBlockFile} from the specified file and loads the
@@ -181,7 +181,7 @@ public class CustomBlockFile {
             jsonObject.remove("recipeEntries");
 
             final CustomBlockData data = GSON.fromJson(jsonObject, CustomBlockData.class);
-            MSBlock.getInstance().runTaskTimer(task -> {
+            MSBlock.singleton().runTaskTimer(task -> {
                 if (MSPluginUtils.isLoadedCustoms()) {
                     task.cancel();
                     data.registerRecipes(recipeEntries);

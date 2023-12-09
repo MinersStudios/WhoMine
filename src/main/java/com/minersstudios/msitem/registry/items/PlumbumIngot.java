@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -34,6 +35,7 @@ public final class PlumbumIngot extends CustomItemImpl {
         super(KEY, ITEM_STACK);
     }
 
+    @Contract(" -> new")
     @Override
     public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
         final ItemStack input = CustomItemType.RAW_PLUMBUM.getCustomItem().getItem();
@@ -66,7 +68,10 @@ public final class PlumbumIngot extends CustomItemImpl {
                 Map.entry(furnaceRecipe, false),
                 Map.entry(blastingRecipe, false),
                 Map.entry(
-                        new ShapedRecipe(new NamespacedKey(CustomItemType.NAMESPACE, "plumbum_ingot_from_block"), this.itemStack.clone().add(8))
+                        new ShapedRecipe(
+                                new NamespacedKey(CustomItemType.NAMESPACE, "plumbum_ingot_from_block"),
+                                this.itemStack.clone().add(8)
+                        )
                         .shape("I")
                         .setIngredient('I', new RecipeChoice.ExactChoice(plumbumBlock.get())),
                         true

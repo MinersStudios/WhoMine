@@ -10,11 +10,11 @@ public final class PlayerListTask implements Runnable {
 
     @Override
     public void run() {
-        final Cache cache = MSEssentials.getCache();
+        final Cache cache = MSEssentials.cache();
         final var onlinePlayers = Bukkit.getOnlinePlayers();
 
         if (
-                cache.playerInfoMap.isEmpty()
+                cache.getPlayerInfoMap().isEmpty()
                 || onlinePlayers.isEmpty()
         ) return;
 

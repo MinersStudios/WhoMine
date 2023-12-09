@@ -8,7 +8,7 @@ import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import org.bukkit.Material;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.lang.reflect.Field;
 import java.util.logging.Level;
@@ -20,19 +20,18 @@ import java.util.logging.Logger;
  * @see MSPlugin
  */
 public final class MSDecor extends MSPlugin<MSDecor> {
-    private static MSDecor instance;
-    private Cache cache;
+    private static MSDecor singleton;
+
     private Config config;
     private CoreProtectAPI coreProtectAPI;
 
     public MSDecor() {
-        instance = this;
+        singleton = this;
     }
 
     @Override
     @SuppressWarnings("JavaReflectionMemberAccess")
     public void load() {
-        this.cache = new Cache();
         this.config = new Config(this, this.getConfigFile());
 
         this.config.reload();
@@ -58,51 +57,64 @@ public final class MSDecor extends MSPlugin<MSDecor> {
         this.coreProtectAPI = CoreProtect.getInstance().getAPI();
     }
 
-    /**
-     * @return The instance of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static MSDecor getInstance() throws NullPointerException {
-        return instance;
-    }
-
-    /**
-     * @return The logger of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static @NotNull Logger logger() throws NullPointerException {
-        return instance.getLogger();
-    }
-
-    /**
-     * @return The component logger of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static @NotNull ComponentLogger componentLogger() throws NullPointerException {
-        return instance.getComponentLogger();
-    }
-
-    /**
-     * @return The cache of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static Cache getCache() throws NullPointerException {
-        return instance.cache;
+    @Override
+    public void disable() {
+        this.coreProtectAPI = null;
     }
 
     /**
      * @return The configuration of the plugin
-     * @throws NullPointerException If the plugin is not enabled
+     *         or null if the plugin is not enabled
      */
-    public static Config getConfiguration() throws NullPointerException {
-        return instance.config;
+    public @UnknownNullability Config getConfiguration() {
+        return this.config;
     }
 
     /**
      * @return The CoreProtectAPI instance
-     * @throws NullPointerException If the {@link CoreProtect} is not enabled
+     *         or null if the plugin is not enabled
      */
-    public static CoreProtectAPI getCoreProtectAPI() throws NullPointerException {
-        return instance.coreProtectAPI;
+    public @UnknownNullability CoreProtectAPI getCoreProtectAPI() {
+        return this.coreProtectAPI;
+    }
+
+    /**
+     * @return The instance of the plugin
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability MSDecor singleton() {
+        return singleton;
+    }
+
+    /**
+     * @return The logger of the plugin
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability Logger logger() {
+        return singleton == null ? null : singleton.getLogger();
+    }
+
+    /**
+     * @return The component logger of the plugin
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability ComponentLogger componentLogger() {
+        return singleton == null ? null : singleton.getComponentLogger();
+    }
+
+    /**
+     * @return The configuration of the plugin
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability Config config() {
+        return singleton == null ? null : singleton.config;
+    }
+
+    /**
+     * @return The CoreProtectAPI instance
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability CoreProtectAPI coreProtectAPI() {
+        return singleton == null ? null : singleton.coreProtectAPI;
     }
 }

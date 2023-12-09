@@ -10,7 +10,7 @@ import java.util.Set;
 
 /**
  * Cache for all custom data.
- * Use {@link MSPlugin#getGlobalCache()} to get cache instance.
+ * Use {@link MSPlugin#globalCache()} to get cache instance.
  */
 public final class GlobalCache {
     public final PacketListenersMap packetListenerMap = new PacketListenersMap();

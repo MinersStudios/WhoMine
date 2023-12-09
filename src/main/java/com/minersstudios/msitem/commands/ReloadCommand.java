@@ -35,10 +35,10 @@ public final class ReloadCommand {
             }
         }
 
-        MSPlugin.getGlobalCache().customItemRecipes.clear();
-        MSItem.getCache().renameableItemsMenu.clear();
+        MSPlugin.globalCache().customItemRecipes.clear();
+        MSItem.cache().getRenameableMenuItems().clear();
         RenameableItemRegistry.unregisterAll();
-        MSItem.getConfiguration().reload();
+        MSItem.config().reload();
         MSLogger.fine(sender, RELOAD_SUCCESS.args(text(System.currentTimeMillis() - time)));
         return true;
     }

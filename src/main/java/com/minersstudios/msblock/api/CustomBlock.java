@@ -111,7 +111,7 @@ public final class CustomBlock {
 
         if (event.isCancelled()) return;
 
-        MSBlock.getInstance().runTask(() -> {
+        MSBlock.singleton().runTask(() -> {
             this.block.setType(Material.NOTE_BLOCK);
 
             final String key = this.customBlockData.getKey();
@@ -140,7 +140,7 @@ public final class CustomBlock {
             this.block.setBlockData(noteBlock);
             this.customBlockData.getSoundGroup().playPlaceSound(this.block.getLocation().toCenterLocation());
             player.swingHand(hand);
-            MSBlock.getCoreProtectAPI().logPlacement(player.getName(), this.block.getLocation(), Material.NOTE_BLOCK, noteBlock);
+            MSBlock.coreProtectAPI().logPlacement(player.getName(), this.block.getLocation(), Material.NOTE_BLOCK, noteBlock);
             BlockUtils.removeBlocksAround(this.block);
 
             if (player.getGameMode() == GameMode.SURVIVAL) {
@@ -171,7 +171,7 @@ public final class CustomBlock {
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         final Material mainHandMaterial = itemInMainHand.getType();
 
-        MSBlock.getCache().diggingMap.removeAll(this.block);
+        MSBlock.cache().getDiggingMap().removeAll(this.block);
 
         final CraftBlock craftBlock = (CraftBlock) this.block;
         final LevelAccessor levelAccessor = craftBlock.getHandle();
@@ -183,7 +183,7 @@ public final class CustomBlock {
                 net.minecraft.world.level.block.Block.getId(blockState)
         );
         this.customBlockData.getSoundGroup().playBreakSound(this.block.getLocation().toCenterLocation());
-        MSBlock.getCoreProtectAPI().logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
+        MSBlock.coreProtectAPI().logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
         this.block.setType(Material.AIR);
 
         final BlockSettings.Tool tool = this.customBlockData.getBlockSettings().getTool();

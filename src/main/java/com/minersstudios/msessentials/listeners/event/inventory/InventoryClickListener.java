@@ -45,7 +45,7 @@ public final class InventoryClickListener extends AbstractMSListener<MSEssential
                 && cursorItem.getType() != Material.AIR
         ) {
             player.setItemOnCursor(null);
-            MSEssentials.getInstance().runTask(() -> player.getInventory().setHelmet(cursorItem));
+            MSEssentials.singleton().runTask(() -> player.getInventory().setHelmet(cursorItem));
         }
 
         if (currentItem != null && currentItem.getType() != Material.AIR) {

@@ -41,8 +41,8 @@ import java.util.logging.Level;
 
 /**
  * Configuration loader class.
- * <p>
- * Use {@link MSEssentials#getConfiguration()} to get configuration instance.
+ * <br>
+ * Use {@link MSEssentials#config()} to get configuration instance.
  * Use {@link #reload()} to reload configuration and {@link #save()} to save
  * configuration.
  */
@@ -91,7 +91,7 @@ public final class Config extends MSConfig {
      */
     @Override
     public void reloadVariables() {
-        final Cache cache = MSEssentials.getCache();
+        final Cache cache = MSEssentials.cache();
         final File pluginFolder = this.plugin.getPluginFolder();
 
         this.developerMode = this.yaml.getBoolean("developer-mode");
@@ -133,13 +133,13 @@ public final class Config extends MSConfig {
             );
         }
 
-        if (!cache.bukkitTasks.isEmpty()) {
-            cache.bukkitTasks.forEach(BukkitTask::cancel);
+        if (!cache.getBukkitTasks().isEmpty()) {
+            cache.getBukkitTasks().forEach(BukkitTask::cancel);
         }
 
-        cache.bukkitTasks.clear();
-        cache.playerAnomalyActionMap.clear();
-        cache.anomalies.clear();
+        cache.getBukkitTasks().clear();
+        cache.getPlayerAnomalyActionMap().clear();
+        cache.getAnomalies().clear();
 
         this.plugin.saveResource("anomalies/example.yml", true);
         final File consoleDataFile = new File(pluginFolder, "players/console.yml");
@@ -163,17 +163,17 @@ public final class Config extends MSConfig {
                 .map(Path::toFile)
                 .forEach(file -> {
                     final Anomaly anomaly = Anomaly.fromConfig(file);
-                    cache.anomalies.put(anomaly.getNamespacedKey(), anomaly);
+                    cache.getAnomalies().put(anomaly.getNamespacedKey(), anomaly);
                 });
             } catch (final IOException e) {
                 MSEssentials.logger().log(Level.SEVERE, "An error occurred while loading anomalies!", e);
             }
         });
 
-        cache.bukkitTasks.add(this.plugin.runTaskTimer(new MainAnomalyActionsTask(), 0L, this.anomalyCheckRate));
-        cache.bukkitTasks.add(this.plugin.runTaskTimer(new ParticleTask(), 0L, this.anomalyParticlesCheckRate));
+        cache.getBukkitTasks().add(this.plugin.runTaskTimer(new MainAnomalyActionsTask(), 0L, this.anomalyCheckRate));
+        cache.getBukkitTasks().add(this.plugin.runTaskTimer(new ParticleTask(), 0L, this.anomalyParticlesCheckRate));
 
-        final GlobalCache globalCache = MSPlugin.getGlobalCache();
+        final GlobalCache globalCache = MSPlugin.globalCache();
         final var customBlockRecipes = globalCache.customBlockRecipes;
         final var customDecorRecipes = globalCache.customDecorRecipes;
         final var customItemRecipes = globalCache.customItemRecipes;

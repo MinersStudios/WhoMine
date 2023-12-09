@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  * Represents a choice that will be valid only one of the stacks is exactly
  * matched (aside from stack size). It generates a new ItemStack by using
  * {@link MSCustomUtils#getItemStack(String)}.
- * <p>
+ * <br>
  * Use {@link #toExactChoice()} to convert this choice to an {@link ExactChoice}.
  * It is important, because bukkit does not support custom choices.
  */

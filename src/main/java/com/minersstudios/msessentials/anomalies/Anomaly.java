@@ -25,7 +25,7 @@ import java.util.*;
 
 /**
  * Anomaly class with all anomaly data and associated namespaced key.
- * All anomalies are cached in {@link Cache#anomalies}.
+ * All anomalies are cached in {@link Cache#getAnomalies()} .
  * <br>
  * Can have :
  * <ul>
@@ -214,7 +214,7 @@ public class Anomaly {
         }
 
         return new Anomaly(
-                new NamespacedKey(MSEssentials.getInstance(),
+                new NamespacedKey(MSEssentials.singleton(),
                         Objects.requireNonNull(config.getString("namespaced-key"), "namespaced-key in " + fileName + " is null")
                 ),
                 anomalyBoundingBox,

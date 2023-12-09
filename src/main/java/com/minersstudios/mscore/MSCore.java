@@ -5,7 +5,7 @@ import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minecraft.server.MinecraftServer;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.logging.Logger;
 
@@ -15,50 +15,56 @@ import java.util.logging.Logger;
  * @see MSPlugin
  */
 public final class MSCore extends MSPlugin<MSCore> {
-    private static MSCore instance;
+    private static MSCore singleton;
 
     public MSCore() {
-        instance = this;
+        singleton = this;
     }
 
     @Override
     public void enable() {
         if (!LanguageFile.isLoaded()) {
-            LanguageFile.loadLanguage(GLOBAL_CONFIG.languageFolderLink, GLOBAL_CONFIG.languageCode);
+            LanguageFile.loadLanguage(
+                    GLOBAL_CONFIG.getLanguageFolderLink(),
+                    GLOBAL_CONFIG.getLanguageCode()
+            );
         }
 
-        MinecraftServer.getServer().getConnection().getConnections()
-            .forEach(connection -> ChannelHandler.injectConnection(connection, this));
+        for (final var connection : MinecraftServer.getServer().getConnection().getConnections()) {
+            ChannelHandler.injectConnection(connection, this);
+        }
     }
 
     @Override
     public void disable() {
         LanguageFile.unloadLanguage();
-        MinecraftServer.getServer().getConnection().getConnections()
-            .forEach(ChannelHandler::uninjectConnection);
+
+        for (final var connection : MinecraftServer.getServer().getConnection().getConnections()) {
+            ChannelHandler.uninjectConnection(connection);
+        }
     }
 
     /**
-     * @return The instance of the plugin
-     * @throws NullPointerException If the plugin is not enabled
+     * @return The singleton of the plugin
+     *         or null if the plugin is not enabled
      */
-    public static @NotNull MSCore getInstance() throws NullPointerException {
-        return instance;
+    public static @UnknownNullability MSCore singleton() {
+        return singleton;
     }
 
     /**
      * @return The logger of the plugin
-     * @throws NullPointerException If the plugin is not enabled
+     *         or null if the plugin is not enabled
      */
-    public static @NotNull Logger logger() throws NullPointerException {
-        return instance.getLogger();
+    public static @UnknownNullability Logger logger() {
+        return singleton == null ? null : singleton.getLogger();
     }
 
     /**
      * @return The component logger of the plugin
-     * @throws NullPointerException If the plugin is not enabled
+     *         or null if the plugin is not enabled
      */
-    public static @NotNull ComponentLogger componentLogger() throws NullPointerException {
-        return instance.getComponentLogger();
+    public static @UnknownNullability ComponentLogger componentLogger() {
+        return singleton == null ? null : singleton.getComponentLogger();
     }
 }

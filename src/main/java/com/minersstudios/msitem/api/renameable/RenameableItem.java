@@ -29,7 +29,7 @@ public class RenameableItem {
     private final String key;
     private final RenameCollection renameCollection;
     private final Set<UUID> whiteList;
-    private final boolean showInRenameMenu;
+    private final boolean isShowInRenameMenu;
 
     /**
      * Constructs a RenameableItem instance with the given
@@ -56,15 +56,15 @@ public class RenameableItem {
      *                         the item
      * @param renameCollection The collection of renames
      *                         associated with the item
-     * @param showInRenameMenu Whether the item should appear
+     * @param isShowInRenameMenu Whether the item should appear
      *                         in the rename menu
      */
     public RenameableItem(
             final @NotNull String key,
             final @NotNull RenameCollection renameCollection,
-            final boolean showInRenameMenu
+            final boolean isShowInRenameMenu
     ) {
-        this(key, renameCollection, null, showInRenameMenu);
+        this(key, renameCollection, null, isShowInRenameMenu);
     }
 
     /**
@@ -95,7 +95,7 @@ public class RenameableItem {
      *
      * @param key              The unique key associated with
      *                         the item
-     * @param showInRenameMenu Whether the item should appear
+     * @param isShowInRenameMenu Whether the item should appear
      *                         in the rename menu
      * @param renameCollection The collection of renames
      *                         associated with the item
@@ -108,18 +108,18 @@ public class RenameableItem {
             final @NotNull String key,
             final @NotNull RenameCollection renameCollection,
             final @Nullable Collection<UUID> whiteList,
-            final boolean showInRenameMenu
+            final boolean isShowInRenameMenu
     ) {
         this.key = key.toLowerCase(Locale.ENGLISH);
         this.renameCollection = renameCollection;
-        this.showInRenameMenu = showInRenameMenu;
+        this.isShowInRenameMenu = isShowInRenameMenu;
         this.whiteList =
                 whiteList == null
                 ? Collections.emptySet()
                 : new HashSet<>(whiteList);
 
-        if (showInRenameMenu) {
-            MSItem.getCache().renameableItemsMenu.add(this);
+        if (isShowInRenameMenu) {
+            MSItem.cache().getRenameableMenuItems().add(this);
         }
     }
 
@@ -275,7 +275,7 @@ public class RenameableItem {
      * @return Whether the item should appear in the rename menu
      */
     public boolean isShowInRenameMenu() {
-        return this.showInRenameMenu;
+        return this.isShowInRenameMenu;
     }
 
     /**

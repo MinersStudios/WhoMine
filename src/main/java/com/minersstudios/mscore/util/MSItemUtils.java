@@ -54,8 +54,8 @@ public final class MSItemUtils {
     }
 
     /**
-     * Checks if the item stack is a custom item by verifying
-     * if it has a valid key associated with it
+     * Checks if the item stack is a custom item by verifying if it has a valid
+     * key associated with it
      *
      * @param itemStack The item stack to check
      * @return True if the item stack is a custom item

@@ -99,7 +99,7 @@ public abstract class AbstractMSPacketListener<P extends MSPlugin<P>> {
 
         this.plugin = plugin;
 
-        MSPlugin.getGlobalCache().packetListenerMap.addListener(this);
+        MSPlugin.globalCache().packetListenerMap.addListener(this);
     }
 
     /**

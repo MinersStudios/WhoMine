@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -33,6 +34,7 @@ public final class AntiRadiationTextile extends CustomItemImpl {
         super(KEY, ITEM_STACK);
     }
 
+    @Contract(" -> new")
     @Override
     public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
         return Collections.singletonList(Map.entry(

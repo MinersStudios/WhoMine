@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.util;
 
 import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.util.Badges;
+import com.minersstudios.mscore.util.Font;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
@@ -55,7 +55,7 @@ public final class MessageUtils {
             final @NotNull Location location,
             final double radius
     ) {
-        MSEssentials.getInstance().runTask(
+        MSEssentials.singleton().runTask(
                 () -> location.getWorld().getNearbyPlayers(location, radius)
                         .forEach(player -> player.sendMessage(message))
         );
@@ -75,7 +75,7 @@ public final class MessageUtils {
             final @NotNull ChatType chatType,
             final @NotNull Component message
     ) {
-        final Config config = MSEssentials.getConfiguration();
+        final Config config = MSEssentials.config();
 
         if (chatType == ChatType.LOCAL && location != null) {
             final Component localMessage = space()
@@ -89,7 +89,7 @@ public final class MessageUtils {
             final String stringLocalMessage = ChatUtils.serializePlainComponent(localMessage);
 
             sendLocalMessage(localMessage, location, config.localChatRadius);
-            MSEssentials.getInstance().runTaskAsync(
+            MSEssentials.singleton().runTaskAsync(
                     () -> DiscordUtil.sendMessage(ChatType.LOCAL, stringLocalMessage)
             );
             MSLogger.info(null, localMessage);
@@ -108,7 +108,7 @@ public final class MessageUtils {
         final String stringGlobalMessage = ChatUtils.serializePlainComponent(globalMessage);
 
         sendGlobalMessage(globalMessage);
-        MSCore.getInstance().runTaskAsync(() -> {
+        MSCore.singleton().runTaskAsync(() -> {
             DiscordUtil.sendMessage(ChatType.GLOBAL, stringGlobalMessage.replaceFirst("\\[WM]", ""));
             DiscordUtil.sendMessage(ChatType.LOCAL, stringGlobalMessage);
         });
@@ -128,7 +128,7 @@ public final class MessageUtils {
             final @NotNull PlayerInfo receiver,
             final @NotNull Component message
     ) {
-        final CommandSender commandSender = sender == MSEssentials.getConsolePlayerInfo()
+        final CommandSender commandSender = sender == MSEssentials.consolePlayerInfo()
                 ? Bukkit.getConsoleSender()
                 : sender.getOnlinePlayer();
         final Player receiverPlayer = receiver.getOnlinePlayer();
@@ -144,7 +144,7 @@ public final class MessageUtils {
             final String privateMessageString = ChatUtils.serializePlainComponent(privateMessage);
 
             commandSender.sendMessage(
-                    Badges.SPEECH.append(text()
+                    Font.Components.SPEECH.append(text()
                     .append(text("Вы -> ")
                     .append(receiver.getDefaultName()
                     .append(text(" : ")))
@@ -154,13 +154,13 @@ public final class MessageUtils {
                     .append(message.color(CHAT_COLOR_SECONDARY))
             );
             receiverPlayer.sendMessage(
-                    Badges.SPEECH.append(sender.getDefaultName().append(text(" -> Вам : "))
+                    Font.Components.SPEECH.append(sender.getDefaultName().append(text(" -> Вам : "))
                     .color(CHAT_COLOR_PRIMARY)
                     .hoverEvent(HoverEvent.showText(text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
                     .clickEvent(ClickEvent.suggestCommand("/pm " + sender.getID() + " ")))
                     .append(message.color(CHAT_COLOR_SECONDARY))
             );
-            MSCore.getInstance().runTaskAsync(
+            MSCore.singleton().runTaskAsync(
                     () -> DiscordUtil.sendMessage(ChatType.LOCAL, privateMessageString)
             );
             MSLogger.info(null, privateMessage);
@@ -183,7 +183,7 @@ public final class MessageUtils {
             final @NotNull Component action,
             final @NotNull RolePlayActionType rolePlayActionType
     ) {
-        final Config config = MSEssentials.getConfiguration();
+        final Config config = MSEssentials.config();
         final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(sender);
         final Component fullMessage = switch (rolePlayActionType) {
             case DO ->
@@ -217,8 +217,12 @@ public final class MessageUtils {
                     .append(text(" *", RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
         };
 
-        sendLocalMessage(Badges.YELLOW_EXCLAMATION_MARK.append(fullMessage), sender.getLocation(), config.localChatRadius);
-        MSCore.getInstance().runTaskAsync(
+        sendLocalMessage(
+                space().append(Font.Components.YELLOW_EXCLAMATION_MARK).append(space()).append(fullMessage),
+                sender.getLocation(),
+                config.localChatRadius
+        );
+        MSCore.singleton().runTaskAsync(
                 () -> DiscordUtil.sendMessage(ChatType.LOCAL, ChatUtils.serializePlainComponent(fullMessage))
         );
         MSLogger.info(null, fullMessage);
@@ -264,7 +268,7 @@ public final class MessageUtils {
 
         killedInfo.setLastDeathLocation(deathLocation);
         sendGlobalMessage(deathMessage);
-        MSCore.getInstance().runTaskAsync(() -> {
+        MSCore.singleton().runTaskAsync(() -> {
             DiscordUtil.sendActionMessage(ChatType.GLOBAL, killed.getName(), stringDeathMessage, 16757024);
             DiscordUtil.sendActionMessage(ChatType.LOCAL, killed.getName(), stringDeathMessage, 16757024);
         });
@@ -307,7 +311,7 @@ public final class MessageUtils {
         final String stringJoinMessage = ChatUtils.serializePlainComponent(joinMessage);
 
         sendGlobalMessage(joinMessage);
-        MSCore.getInstance().runTaskAsync(() -> {
+        MSCore.singleton().runTaskAsync(() -> {
             DiscordUtil.sendActionMessage(ChatType.GLOBAL, player.getName(), stringJoinMessage, 65280);
             DiscordUtil.sendActionMessage(ChatType.LOCAL, player.getName(), stringJoinMessage, 65280);
         });
@@ -334,7 +338,7 @@ public final class MessageUtils {
         final String stringQuitMessage = ChatUtils.serializePlainComponent(quitMessage);
 
         sendGlobalMessage(quitMessage);
-        MSCore.getInstance().runTaskAsync(() -> {
+        MSCore.singleton().runTaskAsync(() -> {
             DiscordUtil.sendActionMessage(ChatType.GLOBAL, player.getName(), stringQuitMessage, 16711680);
             DiscordUtil.sendActionMessage(ChatType.LOCAL, player.getName(), stringQuitMessage, 16711680);
         });

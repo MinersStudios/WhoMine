@@ -227,7 +227,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
         final CustomDecorType type = CustomDecorType.fromKey(key);
         return type == null
                 ? Optional.empty()
-                : Optional.of(CustomDecorType.CLASS_TO_DATA_MAP.get(type.getClazz()));
+                : Optional.of(CustomDecorType.CLASS_TO_DATA_MAP.get(type.getDataClass()));
     }
 
     static <D extends CustomDecorData<D>> @NotNull Optional<D> fromKey(

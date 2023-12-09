@@ -10,6 +10,8 @@ import com.minersstudios.msitem.registry.items.armor.hazmat.HazmatChestplate;
 import com.minersstudios.msitem.registry.items.armor.hazmat.HazmatHelmet;
 import com.minersstudios.msitem.registry.items.armor.hazmat.HazmatLeggings;
 import com.minersstudios.msitem.registry.items.cards.CardsBicycle;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -34,6 +36,7 @@ import java.util.logging.Level;
  * methods to manage and retrieve custom item instances, keys, and types.
  */
 public enum CustomItemType {
+    //<editor-fold desc="Types" defaultstate="collapsed">
     LEATHER_HAT(LeatherHat.class),
     PLUMBUM_INGOT(PlumbumIngot.class),
     RAW_PLUMBUM(RawPlumbum.class),
@@ -50,6 +53,7 @@ public enum CustomItemType {
     CARDS_BICYCLE_RED_1(CardsBicycle.Red1.class),
     CARDS_BICYCLE_RED_2(CardsBicycle.Red2.class),
     BAN_SWORD(BanSword.class);
+    //</editor-fold>
 
     private final Class<? extends CustomItem> clazz;
 
@@ -71,7 +75,11 @@ public enum CustomItemType {
             try {
                 customItem = registry.getClazz().getDeclaredConstructor().newInstance();
             } catch (final Exception e) {
-                MSItem.logger().log(Level.SEVERE, "Error while initializing custom item " + registry.name() + "!", e);
+                MSItem.logger().log(
+                        Level.SEVERE,
+                        "An error occurred while loading custom item " + registry.name(),
+                        e
+                );
                 continue;
             }
 
@@ -85,17 +93,28 @@ public enum CustomItemType {
             recipesToRegister.add(customItem);
         }
 
-        MSItem.logger().info("Loaded " + values.length + " custom items in " + (System.currentTimeMillis() - startTime) + "ms");
+        MSItem.componentLogger().info(
+                Component.text(
+                        "Loaded " + values.length + " custom items in " + (System.currentTimeMillis() - startTime) + "ms",
+                        NamedTextColor.GREEN
+                )
+        );
 
-        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        if (!recipesToRegister.isEmpty()) {
+            final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
-        executor.scheduleAtFixedRate(() -> {
-            if (MSPluginUtils.isLoadedCustoms()) {
-                executor.shutdown();
-                recipesToRegister.forEach(CustomItem::registerRecipes);
-                recipesToRegister.clear();
-            }
-        }, 0L, 10L, TimeUnit.MILLISECONDS);
+            executor.scheduleAtFixedRate(() -> {
+                if (MSPluginUtils.isLoadedCustoms()) {
+                    executor.shutdown();
+
+                    for (final var customItem : recipesToRegister) {
+                        customItem.registerRecipes();
+                    }
+
+                    recipesToRegister.clear();
+                }
+            }, 0L, 10L, TimeUnit.MILLISECONDS);
+        }
     }
 
     /**

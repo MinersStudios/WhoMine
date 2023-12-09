@@ -33,8 +33,8 @@ public final class ReloadCommand {
             }
         }
 
-        MSPlugin.getGlobalCache().customDecorRecipes.clear();
-        MSDecor.getConfiguration().reload();
+        MSPlugin.globalCache().customDecorRecipes.clear();
+        MSDecor.config().reload();
         MSLogger.fine(sender, RELOAD_SUCCESS.args(text(System.currentTimeMillis() - time)));
 
         return true;

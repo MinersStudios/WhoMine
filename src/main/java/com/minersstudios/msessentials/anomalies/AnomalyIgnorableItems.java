@@ -107,7 +107,7 @@ public final class AnomalyIgnorableItems {
                     this.includedItems.containsKey(equipmentSlot)
                     && this.isIgnorableItem(equipmentSlot, item)
             ) {
-                MSEssentials.getInstance().runTask(() ->
+                MSEssentials.singleton().runTask(() ->
                         ItemUtils.damageItem(
                                 player,
                                 equipmentSlot,

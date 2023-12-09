@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
  * This adapter handles NoteBlockData serialization by converting it into
  * a JsonObject, and deserialization by reading the JsonObject and
  * constructing the corresponding NoteBlockData.
- * <p>
+ * <br>
  * Serialized output you can see in the "MSBlock/blocks/example.json" file.
  */
 public class NoteBlockDataAdapter implements JsonSerializer<NoteBlockData>, JsonDeserializer<NoteBlockData> {

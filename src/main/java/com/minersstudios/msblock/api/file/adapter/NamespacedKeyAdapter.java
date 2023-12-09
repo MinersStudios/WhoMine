@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
  * a JsonObject, and deserialization by reading the JsonObject and
  * constructing the corresponding NamespacedKey with the default namespace
  * and the key from the JsonObject.
- * <p>
+ * <br>
  * Serialized output you can see in the "MSBlock/blocks/example.json" file.
  */
 public class NamespacedKeyAdapter implements JsonSerializer<NamespacedKey>, JsonDeserializer<NamespacedKey> {

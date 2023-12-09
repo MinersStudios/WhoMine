@@ -12,6 +12,6 @@ public final class PlayerGameModeChangeListener extends AbstractMSListener<MSBlo
 
     @EventHandler
     public void onPlayerGameModeChange(final @NotNull PlayerGameModeChangeEvent event) {
-        MSBlock.getCache().diggingMap.removeAll(event.getPlayer());
+        MSBlock.cache().getDiggingMap().removeAll(event.getPlayer());
     }
 }

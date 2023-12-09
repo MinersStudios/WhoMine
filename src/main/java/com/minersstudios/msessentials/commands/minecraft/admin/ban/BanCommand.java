@@ -99,7 +99,7 @@ public final class BanCommand implements MSCommandExecutor {
                             || offlinePlayer.isBanned()
                     ) continue;
 
-                    final int id = MSEssentials.getCache().idMap.getID(uuid, false, false);
+                    final int id = MSEssentials.cache().getIdMap().getID(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

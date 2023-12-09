@@ -67,11 +67,11 @@ public abstract class AnomalyAction {
      *         or null if there was no mapping for player
      */
     public final @Nullable Map<AnomalyAction, Long> putAction(final @NotNull Player player) {
-        final Cache cache = MSEssentials.getCache();
-        final var actionMap = cache.playerAnomalyActionMap.getOrDefault(player, new ConcurrentHashMap<>());
+        final Cache cache = MSEssentials.cache();
+        final var actionMap = cache.getPlayerAnomalyActionMap().getOrDefault(player, new ConcurrentHashMap<>());
 
         actionMap.put(this, System.currentTimeMillis());
-        return cache.playerAnomalyActionMap.put(player, actionMap);
+        return cache.getPlayerAnomalyActionMap().put(player, actionMap);
     }
 
     /**
@@ -81,12 +81,12 @@ public abstract class AnomalyAction {
      *               and from which the action will be removed
      */
     public final void removeAction(final @NotNull Player player) {
-        final Cache cache = MSEssentials.getCache();
-        final var actionMap = cache.playerAnomalyActionMap.get(player);
+        final Cache cache = MSEssentials.cache();
+        final var actionMap = cache.getPlayerAnomalyActionMap().get(player);
 
         if (actionMap != null) {
             actionMap.remove(this);
-            cache.playerAnomalyActionMap.put(player, actionMap);
+            cache.getPlayerAnomalyActionMap().put(player, actionMap);
         }
     }
 

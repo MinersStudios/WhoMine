@@ -10,7 +10,7 @@ public final class SlashCommandInteractionListener extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(final @NotNull SlashCommandInteractionEvent event) {
-        for (final var executor : MSEssentials.getSlashCommands()) {
+        for (final var executor : MSEssentials.cache().getSlashCommands()) {
             if (executor.getData().getName().equals(event.getName())) {
                 executor.onInteract(new InteractionHandler(event));
                 break;

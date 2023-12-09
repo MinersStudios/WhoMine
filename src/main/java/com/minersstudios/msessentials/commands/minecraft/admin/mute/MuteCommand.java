@@ -90,7 +90,7 @@ public final class MuteCommand implements MSCommandExecutor {
         switch (args.length) {
             case 1 -> {
                 final var completions = new ArrayList<String>();
-                final Cache cache = MSEssentials.getCache();
+                final Cache cache = MSEssentials.cache();
 
                 for (final var offlinePlayer : sender.getServer().getOfflinePlayers()) {
                     final String nickname = offlinePlayer.getName();
@@ -98,10 +98,10 @@ public final class MuteCommand implements MSCommandExecutor {
 
                     if (
                             StringUtils.isBlank(nickname)
-                            || cache.muteMap.isMuted(offlinePlayer)
+                            || cache.getMuteMap().isMuted(offlinePlayer)
                     ) continue;
 
-                    final int id = cache.idMap.getID(uuid, false, false);
+                    final int id = cache.getIdMap().getID(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

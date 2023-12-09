@@ -48,7 +48,7 @@ public final class MuteMap {
      * Loads mutes from the file.
      */
     public MuteMap() {
-        this.file = new File(MSEssentials.getInstance().getPluginFolder(), "muted_players.json");
+        this.file = new File(MSEssentials.singleton().getPluginFolder(), "muted_players.json");
         this.reloadMutes();
     }
 

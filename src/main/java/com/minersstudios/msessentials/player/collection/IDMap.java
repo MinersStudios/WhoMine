@@ -37,7 +37,7 @@ public final class IDMap {
             .create();
 
     public IDMap() {
-        this.file = new File(MSEssentials.getInstance().getPluginFolder(), "ids.json");
+        this.file = new File(MSEssentials.singleton().getPluginFolder(), "ids.json");
         this.reloadIds();
     }
 

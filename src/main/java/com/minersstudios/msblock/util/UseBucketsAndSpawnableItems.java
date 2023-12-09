@@ -230,7 +230,7 @@ public final class UseBucketsAndSpawnableItems {
                 && blockData instanceof final Levelled levelled
                 && levelled.getLevel() == levelled.getMinimumLevel()
         ) {
-            MSBlock.getCoreProtectAPI().logRemoval(playerName, blockLocation, Material.LAVA, blockData);
+            MSBlock.coreProtectAPI().logRemoval(playerName, blockLocation, Material.LAVA, blockData);
             this.world.playSound(blockLocation, Sound.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
             this.itemInHand.setType(
                     gameMode == GameMode.SURVIVAL
@@ -251,7 +251,7 @@ public final class UseBucketsAndSpawnableItems {
                 return;
             }
 
-            MSBlock.getCoreProtectAPI().logRemoval(playerName, blockLocation, Material.WATER, blockData);
+            MSBlock.coreProtectAPI().logRemoval(playerName, blockLocation, Material.WATER, blockData);
             this.world.playSound(blockLocation, Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
             this.itemInHand.setType(
                     gameMode == GameMode.SURVIVAL
@@ -268,7 +268,7 @@ public final class UseBucketsAndSpawnableItems {
 
         this.block.setType(Material.LAVA);
         this.world.playSound(blockLocation, Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
-        MSBlock.getCoreProtectAPI().logPlacement(this.player.getName(), blockLocation, Material.LAVA, this.block.getBlockData());
+        MSBlock.coreProtectAPI().logPlacement(this.player.getName(), blockLocation, Material.LAVA, this.block.getBlockData());
         setBucketIfSurvival();
     }
 
@@ -283,7 +283,7 @@ public final class UseBucketsAndSpawnableItems {
         }
 
         this.world.playSound(blockLocation, Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
-        MSBlock.getCoreProtectAPI().logPlacement(player.getName(), blockLocation, Material.WATER, this.block.getBlockData());
+        MSBlock.coreProtectAPI().logPlacement(player.getName(), blockLocation, Material.WATER, this.block.getBlockData());
         this.setBucketIfSurvival();
     }
 }

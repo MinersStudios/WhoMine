@@ -23,13 +23,13 @@ import java.util.function.Function;
  * checking for item similarity. This interface serves
  * as a foundation for creating custom item
  * implementations.
- * <p>
+ * <br>
  * It is recommended to extend the {@link CustomItemImpl}
  * class when creating custom items. This class provides
  * a base implementation of the {@code CustomItem} interface
  * and can be used to manage the properties, recipes, and
  * similarity checks of custom items.
- * <p>
+ * <br>
  * You can also use the
  * {@link CustomItemImpl#create(String, ItemStack)}
  * or {@link CustomItemImpl#create(String, ItemStack, Function)}

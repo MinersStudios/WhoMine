@@ -28,13 +28,13 @@ public final class MainAnomalyActionsTask implements Runnable {
 
         if (onlinePlayers.isEmpty()) return;
 
-        final Cache cache = MSEssentials.getCache();
-        final var playerActionMap = cache.playerAnomalyActionMap;
+        final Cache cache = MSEssentials.cache();
+        final var playerActionMap = cache.getPlayerAnomalyActionMap();
 
-        MSEssentials.getInstance().runTaskAsync(() ->
+        MSEssentials.singleton().runTaskAsync(() ->
                 onlinePlayers
                 .forEach(player -> {
-                    for (final var anomaly : cache.anomalies.values()) {
+                    for (final var anomaly : cache.getAnomalies().values()) {
                         final double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
                         final boolean isIgnorable = anomaly.getIgnorablePlayers().contains(player);
 

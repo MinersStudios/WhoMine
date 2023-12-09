@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Range;
 
 /**
  * Represents the data of a note block.
- * <p>
+ * <br>
  * Use {@link #craftNoteBlock(BlockData)} to create
  * a {@link NoteBlock} from the note block data.
  */
@@ -34,9 +34,11 @@ public class NoteBlockData implements Cloneable {
 
     /**
      * @return Default note block data, with the following values:
-     *     <p> - instrument: {@link Instrument#BIT},
-     *     <p> - note: 0,
-     *     <p> - powered: false
+     *         <ul>
+     *             <li>instrument: {@link Instrument#BIT},
+     *             <li>note: 0,
+     *             <li>powered: false
+     *         </ul>
      * @see #DEFAULT
      */
     public static @NotNull NoteBlockData defaultData() {

@@ -30,7 +30,7 @@ public final class DiscordUtil {
      *         or an empty Optional if not available
      */
     public static @NotNull Optional<JDA> getJDA() {
-        return Optional.ofNullable(MSEssentials.getCache().jda);
+        return Optional.ofNullable(MSEssentials.cache().getJda());
     }
 
     /**
@@ -43,7 +43,7 @@ public final class DiscordUtil {
      * @see Config#discordServerId
      */
     public static @NotNull Optional<Guild> getMainGuild() {
-        return Optional.ofNullable(MSEssentials.getCache().mainGuild);
+        return Optional.ofNullable(MSEssentials.cache().getMainGuild());
     }
 
     /**
@@ -87,7 +87,7 @@ public final class DiscordUtil {
      * @see Config#discordGlobalChannelId
      */
     public static @NotNull Optional<TextChannel> getGlobalChannel() {
-        return Optional.ofNullable(MSEssentials.getCache().discordGlobalChannel);
+        return Optional.ofNullable(MSEssentials.cache().getDiscordGlobalChannel());
     }
 
     /**
@@ -102,7 +102,7 @@ public final class DiscordUtil {
      * @see Config#discordLocalChannelId
      */
     public static @NotNull Optional<TextChannel> getLocalChannel() {
-        return Optional.ofNullable(MSEssentials.getCache().discordLocalChannel);
+        return Optional.ofNullable(MSEssentials.cache().getDiscordLocalChannel());
     }
 
     /**
@@ -116,7 +116,7 @@ public final class DiscordUtil {
      * @see #isVerified(User)
      */
     public static @NotNull Optional<Role> getMemberRole() {
-        return Optional.ofNullable(MSEssentials.getCache().memberRole);
+        return Optional.ofNullable(MSEssentials.cache().getMemberRole());
     }
 
     /**

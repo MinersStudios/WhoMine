@@ -112,12 +112,12 @@ public class CustomBlockData {
 
     /**
      * @return Default custom block data with the following parameters:
-     *     <p> - key: "default"
-     *     <p> - hardness: 11.0f
-     *     <p> - custom model data: 0
-     *     <p> - tool type: {@link ToolType#AXE}
-     *     <p> - note block data: {@link NoteBlockData#defaultData()}
-     *     <p> - sound group: {@link SoundGroup#WOOD}
+     *     <br> - key: "default"
+     *     <br> - hardness: 11.0f
+     *     <br> - custom model data: 0
+     *     <br> - tool type: {@link ToolType#AXE}
+     *     <br> - note block data: {@link NoteBlockData#defaultData()}
+     *     <br> - sound group: {@link SoundGroup#WOOD}
      * @see #DEFAULT
      */
     public static @NotNull CustomBlockData getDefault() {
@@ -255,7 +255,7 @@ public class CustomBlockData {
             return;
         }
 
-        final MSBlock plugin = MSBlock.getInstance();
+        final MSBlock plugin = MSBlock.singleton();
         final Server server = plugin.getServer();
 
         for (final var recipeEntry : this.recipeEntries) {
@@ -264,7 +264,7 @@ public class CustomBlockData {
             plugin.runTask(() -> server.addRecipe(recipe));
 
             if (recipeEntry.isShowInCraftsMenu()) {
-                MSPlugin.getGlobalCache().customBlockRecipes.add(recipe);
+                MSPlugin.globalCache().customBlockRecipes.add(recipe);
             }
         }
     }
@@ -273,7 +273,7 @@ public class CustomBlockData {
      * Unregisters the recipes of the custom block data
      */
     public void unregisterRecipes() {
-        final var recipes = MSPlugin.getGlobalCache().customBlockRecipes;
+        final var recipes = MSPlugin.globalCache().customBlockRecipes;
 
         for (final var recipeEntry : this.recipeEntries) {
             final Recipe recipe = recipeEntry.getRecipe();

@@ -19,14 +19,10 @@ import com.minersstudios.msessentials.util.DiscordUtil;
 import com.minersstudios.msessentials.world.WorldDark;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnknownNullability;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,12 +34,12 @@ import static net.kyori.adventure.text.Component.translatable;
  * @see MSPlugin
  */
 public final class MSEssentials extends MSPlugin<MSEssentials> {
-    private static MSEssentials instance;
+    private static MSEssentials singleton;
+
     private Cache cache;
     private Config config;
     private Scoreboard scoreboardHideTags;
     private Team scoreboardHideTagsTeam;
-    private List<SlashCommandExecutor> slashCommands;
 
     private static final TranslatableComponent DISABLE_TITLE = translatable("ms.on_disable.message.title");
     private static final TranslatableComponent DISABLE_SUBTITLE = translatable("ms.on_disable.message.subtitle");
@@ -56,12 +52,17 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     }
 
     public MSEssentials() {
-        instance = this;
+        singleton = this;
+    }
+
+    @Override
+    public void load() {
+        this.cache = new Cache();
+        this.config = new Config(this, this.getConfigFile());
     }
 
     @Override
     public void enable() {
-        this.cache = new Cache();
         this.scoreboardHideTags = this.getServer().getScoreboardManager().getNewScoreboard();
         this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam("hide_tags");
 
@@ -70,8 +71,7 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
 
         this.runTask(WorldDark::init);
 
-        this.config = new Config(this, this.getConfigFile());
-
+        this.cache.load();
         this.config.reload();
 
         this.runTaskTimer(new SeatsTask(), 0L, 1L);
@@ -82,7 +82,7 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
 
     @Override
     public void disable() {
-        final PlayerInfoMap playerInfoMap = this.cache.playerInfoMap;
+        final PlayerInfoMap playerInfoMap = this.cache.getPlayerInfoMap();
         final var onlinePlayers = this.getServer().getOnlinePlayers();
 
         if (this.cache.jda != null) {
@@ -93,108 +93,152 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
                 !playerInfoMap.isEmpty()
                 && !onlinePlayers.isEmpty()
         ) {
-            onlinePlayers.forEach(player -> playerInfoMap.get(player).kickPlayer(player, DISABLE_TITLE, DISABLE_SUBTITLE));
+            for (final var player : onlinePlayers) {
+                playerInfoMap
+                .get(player)
+                .kickPlayer(player, DISABLE_TITLE, DISABLE_SUBTITLE);
+            }
         }
 
-        this.cache.bukkitTasks.forEach(BukkitTask::cancel);
+        for (final var task : this.cache.getBukkitTasks()) {
+            task.cancel();
+        }
 
         DiscordUtil.sendMessage(ChatType.GLOBAL, SERVER_DISABLED);
         DiscordUtil.sendMessage(ChatType.LOCAL, SERVER_DISABLED);
+
+        this.cache.unload();
+
+        this.scoreboardHideTags = null;
+        this.scoreboardHideTagsTeam = null;
+    }
+
+    /**
+     * @return The cache of the plugin,
+     *         or null if the plugin is disabled
+     */
+    public @UnknownNullability Cache getCache() {
+        return this.cache;
+    }
+
+    /**
+     * @return The configuration of the plugin
+     *         or null if the plugin is disabled
+     */
+    public @UnknownNullability Config getConfiguration() {
+        return this.config;
+    }
+
+    /**
+     * @return The player info of the console
+     *         or null if the plugin is disabled
+     */
+    public @UnknownNullability Scoreboard getScoreboardHideTags() {
+        return this.scoreboardHideTags;
+    }
+
+    /**
+     * @return The player info of the console
+     *         or null if the plugin is disabled
+     */
+    public @UnknownNullability Team getScoreboardHideTagsTeam() {
+        return this.scoreboardHideTagsTeam;
+    }
+
+    /**
+     * @return Singleton instance of the plugin
+     */
+    public static @UnknownNullability MSEssentials singleton() {
+        return singleton;
+    }
+
+    /**
+     * @return The player info of the console
+     *         or null if the plugin is disabled
+     */
+    public static @UnknownNullability Logger logger() {
+        return singleton == null ? null : singleton.getLogger();
+    }
+
+    /**
+     * @return The player info of the console
+     *         or null if the plugin is disabled
+     */
+    public static @UnknownNullability ComponentLogger componentLogger() {
+        return singleton == null ? null : singleton.getComponentLogger();
+    }
+
+    /**
+     * @return The player info of the console
+     *         or null if the plugin is disabled
+     */
+    public static @UnknownNullability Cache cache() {
+        return singleton == null ? null : singleton.cache;
+    }
+
+    /**
+     * @return The player info of the console
+     *         or null if the plugin is disabled
+     */
+    public static @UnknownNullability Config config() {
+        return singleton == null ? null : singleton.config;
+    }
+
+    /**
+     * @return The player info of the console
+     *         or null if the plugin is disabled
+     */
+    public static @UnknownNullability PlayerInfo consolePlayerInfo() {
+        if (singleton == null) return null;
+
+        final Cache cache = singleton.cache;
+        return cache == null ? null : cache.consolePlayerInfo;
+    }
+
+    /**
+     * @return The player info of the console
+     *         or null if the plugin is disabled
+     */
+    public static @UnknownNullability Scoreboard scoreboardHideTags() {
+        return singleton == null ? null : singleton.scoreboardHideTags;
+    }
+
+    /**
+     * @return The player info of the console
+     *         or null if the plugin is disabled
+     */
+    public static @UnknownNullability Team scoreboardHideTagsTeam() {
+        return singleton == null ? null : singleton.scoreboardHideTagsTeam;
     }
 
     void loadSlashCommands() {
+        final Logger logger = this.getLogger();
+        final ClassLoader classLoader = this.getClassLoader();
         final var builder = new ImmutableList.Builder<SlashCommandExecutor>();
 
-        this.getClassNames().stream().parallel().forEach(className -> {
+        this.getClassNames().parallelStream()
+        .forEach(className -> {
             try {
-                final var clazz = this.getClassLoader().loadClass(className);
+                final var clazz = classLoader.loadClass(className);
 
                 if (clazz.isAnnotationPresent(SlashCommand.class)) {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof final SlashCommandExecutor executor) {
                         builder.add(executor);
                     } else {
-                        this.getLogger().warning("Annotated class with SlashCommand is not instance of SlashCommandExecutor (" + className + ")");
+                        logger.warning(
+                                "Annotated class with SlashCommand is not instance of SlashCommandExecutor (" + className + ")"
+                        );
                     }
                 }
             } catch (final Exception e) {
-                this.getLogger().log(Level.SEVERE, "Failed to load slash command", e);
+                logger.log(
+                        Level.SEVERE,
+                        "Failed to load slash command",
+                        e
+                );
             }
         });
 
-        this.slashCommands = builder.build();
-    }
-
-    /**
-     * @return The instance of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static MSEssentials getInstance() throws NullPointerException {
-        return instance;
-    }
-
-    /**
-     * @return The logger of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static @NotNull Logger logger() throws NullPointerException {
-        return instance.getLogger();
-    }
-
-    /**
-     * @return The component logger of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static @NotNull ComponentLogger componentLogger() throws NullPointerException {
-        return instance.getComponentLogger();
-    }
-
-    /**
-     * @return The cache of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static Cache getCache() throws NullPointerException {
-        return instance.cache;
-    }
-
-    /**
-     * @return The configuration of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static Config getConfiguration() throws NullPointerException {
-        return instance.config;
-    }
-
-    /**
-     * @return The player info of the console
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static PlayerInfo getConsolePlayerInfo() throws NullPointerException {
-        return instance.cache.consolePlayerInfo;
-    }
-
-    /**
-     * @return The scoreboard used to hide tags
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static Scoreboard getScoreboardHideTags() throws NullPointerException {
-        return instance.scoreboardHideTags;
-    }
-
-    /**
-     * @return The team used to hide tags
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static Team getScoreboardHideTagsTeam() throws NullPointerException {
-        return instance.scoreboardHideTagsTeam;
-    }
-
-    /**
-     * @return The list of slash commands or an empty list
-     *         if the list is not loaded
-     */
-    public static @NotNull @Unmodifiable List<SlashCommandExecutor> getSlashCommands() {
-        return instance == null || instance.slashCommands == null
-                ? Collections.emptyList()
-                : instance.slashCommands;
+        this.cache.slashCommands = builder.build();
     }
 }

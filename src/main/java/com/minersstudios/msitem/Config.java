@@ -6,6 +6,8 @@ import com.minersstudios.msitem.api.renameable.RenameableItem;
 import com.minersstudios.msitem.api.renameable.RenameableItemRegistry;
 import com.minersstudios.msitem.listeners.event.mechanic.DosimeterMechanic;
 import com.minersstudios.msitem.menu.RenamesMenu;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -17,8 +19,8 @@ import java.util.logging.Level;
 
 /**
  * Configuration loader class.
- * <p>
- * Use {@link MSItem#getConfiguration()} to get configuration instance.
+ * <br>
+ * Use {@link MSItem#config()} to get configuration instance.
  * Use {@link #reload()} to reload configuration and {@link #save()} to
  * save configuration.
  */
@@ -94,9 +96,18 @@ public final class Config extends MSConfig {
                 }
             });
 
-            MSItem.logger().info("Loaded " + RenameableItemRegistry.keysSize() + " renameable items in " + (System.currentTimeMillis() - start) + "ms");
+            MSItem.componentLogger().info(
+                    Component.text(
+                            "Loaded " + RenameableItemRegistry.keysSize() + " renameable items in " + (System.currentTimeMillis() - start) + "ms",
+                            NamedTextColor.GREEN
+                    )
+            );
         } catch (final IOException e) {
-            MSItem.logger().log(Level.SEVERE, "An error occurred while renameable loading items", e);
+            MSItem.logger().log(
+                    Level.SEVERE,
+                    "An error occurred while loading renameable items",
+                    e
+            );
         }
     }
 }

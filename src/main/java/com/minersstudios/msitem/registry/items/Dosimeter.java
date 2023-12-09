@@ -9,6 +9,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -37,6 +38,7 @@ public final class Dosimeter extends CustomItemImpl {
         this.setEnabled(false);
     }
 
+    @Contract(" -> new")
     @Override
     public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
         return Collections.singletonList(Map.entry(

@@ -15,9 +15,9 @@ public final class PlayerDeathListener extends AbstractMSListener<MSBlock> {
     @EventHandler
     public void onPlayerDeath(final @NotNull PlayerDeathEvent event) {
         final Player player = event.getEntity();
-        final Cache cache = MSBlock.getCache();
+        final Cache cache = MSBlock.cache();
 
-        cache.diggingMap.removeAll(player);
-        cache.stepMap.put(player, 0.0d);
+        cache.getDiggingMap().removeAll(player);
+        cache.getStepMap().put(player, 0.0d);
     }
 }

@@ -23,11 +23,11 @@ public final class AdminInfoCommand {
         Location lastDeathLocation = playerFile.getLastDeathLocation();
 
         if (lastLeaveLocation == null) {
-            lastLeaveLocation = MSEssentials.getConfiguration().spawnLocation;
+            lastLeaveLocation = MSEssentials.config().spawnLocation;
         }
 
         if (lastDeathLocation == null) {
-            lastDeathLocation = MSEssentials.getConfiguration().spawnLocation;
+            lastDeathLocation = MSEssentials.config().spawnLocation;
         }
 
         MSLogger.info(sender,

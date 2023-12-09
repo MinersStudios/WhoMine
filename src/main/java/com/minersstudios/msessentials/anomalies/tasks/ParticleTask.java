@@ -22,12 +22,12 @@ public final class ParticleTask implements Runnable {
 
     @Override
     public void run() {
-        final var map = MSEssentials.getCache().playerAnomalyActionMap;
-        final var anomalies = MSEssentials.getCache().anomalies.values();
+        final var map = MSEssentials.cache().getPlayerAnomalyActionMap();
+        final var anomalies = MSEssentials.cache().getAnomalies().values();
 
         if (anomalies.isEmpty() || map.isEmpty()) return;
 
-        MSEssentials.getInstance().runTaskAsync(() -> map.forEach(
+        MSEssentials.singleton().runTaskAsync(() -> map.forEach(
                 (player, actionMap) -> actionMap.keySet()
                 .forEach(action -> {
                     if (!(action instanceof SpawnParticlesAction)) return;

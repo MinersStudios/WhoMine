@@ -18,6 +18,9 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Array;
 import java.util.function.Predicate;
 
+/**
+ * Utility class for location
+ */
 public final class LocationUtils {
     private static final BlockFace[] BLOCK_FACES_45 = {
             //<editor-fold desc="Block faces 45" defaultstate="collapsed">

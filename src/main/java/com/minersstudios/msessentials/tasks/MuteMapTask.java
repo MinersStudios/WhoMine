@@ -13,11 +13,11 @@ public final class MuteMapTask implements Runnable {
 
     @Override
     public void run() {
-        final Cache cache = MSEssentials.getCache();
-        if (cache.muteMap.isEmpty()) return;
+        final Cache cache = MSEssentials.cache();
+        if (cache.getMuteMap().isEmpty()) return;
         final Instant currentInstant = Instant.now();
 
-        cache.muteMap.entrySet().stream().parallel()
+        cache.getMuteMap().entrySet().stream().parallel()
         .filter(entry -> entry.getValue().getExpiration().isBefore(currentInstant))
         .forEach(entry -> {
             final OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());

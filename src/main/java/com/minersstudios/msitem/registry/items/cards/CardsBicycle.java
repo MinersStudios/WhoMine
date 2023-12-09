@@ -13,6 +13,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -179,8 +180,8 @@ public interface CardsBicycle {
                     .style(ChatUtils.DEFAULT_STYLE))
                     .decorate(TextDecoration.BOLD)
             );
-            bundleMeta.setCustomModelData(2);
-            bundleMeta.setItems(RED_CARD_ITEMS);
+            bundleMeta.setCustomModelData(1);
+            bundleMeta.setItems(BLUE_CARD_ITEMS);
             ITEM_STACK.setItemMeta(bundleMeta);
         }
 
@@ -188,6 +189,8 @@ public interface CardsBicycle {
             super(KEY, ITEM_STACK);
         }
 
+        @Contract(" -> new")
+        @Override
         public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
             return Collections.singletonList(
                     Map.entry(
@@ -221,7 +224,7 @@ public interface CardsBicycle {
                     .decorate(TextDecoration.BOLD)
             );
             bundleMeta.setCustomModelData(2);
-            bundleMeta.setItems(RED_CARD_ITEMS);
+            bundleMeta.setItems(BLUE_CARD_ITEMS);
             ITEM_STACK.setItemMeta(bundleMeta);
         }
 
@@ -229,6 +232,8 @@ public interface CardsBicycle {
             super(KEY, ITEM_STACK);
         }
 
+        @Contract(" -> new")
+        @Override
         public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
             return Collections.singletonList(
                     Map.entry(
@@ -271,6 +276,8 @@ public interface CardsBicycle {
             super(KEY, ITEM_STACK);
         }
 
+        @Contract(" -> new")
+        @Override
         public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
             return Collections.singletonList(
                     Map.entry(
@@ -312,6 +319,8 @@ public interface CardsBicycle {
             super(KEY, ITEM_STACK);
         }
 
+        @Contract(" -> new")
+        @Override
         public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
             return Collections.singletonList(
                     Map.entry(

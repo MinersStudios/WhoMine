@@ -23,6 +23,8 @@ import com.minersstudios.msdecor.registry.furniture.lamp.SmallLamp;
 import com.minersstudios.msdecor.registry.furniture.table.BigTable;
 import com.minersstudios.msdecor.registry.furniture.table.SmallTable;
 import com.minersstudios.msdecor.registry.other.Poop;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -197,9 +199,13 @@ public enum CustomDecorType {
             final CustomDecorData<?> data;
 
             try {
-                data = registry.getClazz().getDeclaredConstructor().newInstance();
+                data = registry.getDataClass().getDeclaredConstructor().newInstance();
             } catch (final Exception e) {
-                MSDecor.logger().log(Level.SEVERE, "Error while initializing custom decor " + registry.name() + "!", e);
+                MSDecor.logger().log(
+                        Level.SEVERE,
+                        "An error occurred while loading custom decor " + registry.name() + "!",
+                        e
+                );
                 continue;
             }
 
@@ -209,24 +215,35 @@ public enum CustomDecorType {
             recipesToRegister.add(data);
         }
 
-        MSDecor.logger().info("Loaded " + values.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms");
+        MSDecor.componentLogger().info(
+                Component.text(
+                        "Loaded " + values.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",
+                        NamedTextColor.GREEN
+                )
+        );
 
-        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        if (!recipesToRegister.isEmpty()) {
+            final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
-        executor.scheduleAtFixedRate(() -> {
-            if (MSPluginUtils.isLoadedCustoms()) {
-                executor.shutdown();
-                recipesToRegister.forEach(CustomDecorData::registerRecipes);
-                recipesToRegister.clear();
-            }
-        }, 0L, 10L, TimeUnit.MILLISECONDS);
+            executor.scheduleAtFixedRate(() -> {
+                if (MSPluginUtils.isLoadedCustoms()) {
+                    executor.shutdown();
+
+                    for (final var data : recipesToRegister) {
+                        data.registerRecipes();
+                    }
+
+                    recipesToRegister.clear();
+                }
+            }, 0L, 10L, TimeUnit.MILLISECONDS);
+        }
     }
 
     CustomDecorType(final @NotNull Class<? extends CustomDecorData<?>> clazz) {
         this.clazz = clazz;
     }
 
-    public @NotNull Class<? extends CustomDecorData<?>> getClazz() {
+    public @NotNull Class<? extends CustomDecorData<?>> getDataClass() {
         return this.clazz;
     }
 

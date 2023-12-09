@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.chat;
 
-import com.minersstudios.mscore.util.Badges;
+import com.minersstudios.mscore.util.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.LinkedList;
 import java.util.UUID;
 
-import static com.minersstudios.msessentials.MSEssentials.getCache;
+import static com.minersstudios.msessentials.MSEssentials.cache;
 import static net.kyori.adventure.text.Component.space;
 import static net.kyori.adventure.text.Component.text;
 
@@ -65,7 +65,7 @@ public final class ChatBuffer {
             final @NotNull Player player,
             final @NotNull String message
     ) {
-        final var chatQueue = getCache().chatQueue;
+        final var chatQueue = cache().getChatQueue();
         final UUID uuid = player.getUniqueId();
 
         if (!chatQueue.containsKey(uuid)) {
@@ -81,8 +81,8 @@ public final class ChatBuffer {
             final @NotNull UUID uuid,
             final int delay
     ) {
-        MSEssentials.getInstance().runTaskLater(() -> {
-            final var chatQueue = getCache().chatQueue;
+        MSEssentials.singleton().runTaskLater(() -> {
+            final var chatQueue = cache().getChatQueue();
 
             if (
                     !player.isOnline()
@@ -121,7 +121,7 @@ public final class ChatBuffer {
     ) {
         return spawnPoint.getWorld().spawn(spawnPoint, AreaEffectCloud.class, entity -> {
             entity.customName(
-                    (firstLine ? Badges.SPEECH : Component.empty())
+                    (firstLine ? Font.Components.SPEECH : Component.empty())
                     .append(text(text))
                     .append(space())
                     .color(NamedTextColor.WHITE)

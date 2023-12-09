@@ -521,7 +521,7 @@ public class DiggingMap {
          *                              that means the plugin is not enabled
          */
         public boolean isStageTheBiggest(final @NotNull Block block) throws NullPointerException {
-            Entry biggestStageEntry = MSBlock.getCache().diggingMap.getBiggestStageEntry(block);
+            Entry biggestStageEntry = MSBlock.cache().getDiggingMap().getBiggestStageEntry(block);
             return biggestStageEntry != null
                     && (this.equals(biggestStageEntry)
                     || this.stage > biggestStageEntry.stage());

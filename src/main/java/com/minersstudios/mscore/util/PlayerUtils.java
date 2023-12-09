@@ -81,13 +81,12 @@ public final class PlayerUtils {
     }
 
     /**
-     * Sets player to a seated position in specified location
-     * with message
+     * Sets player to a seated position in specified location with message
      *
      * @param player   Player that will sit
      * @param location Location where the player will sit
-     * @param message  Message that will be sent to the players
-     *                 around the player who is sitting
+     * @param message  Message that will be sent to the players around the
+     *                 player who is sitting
      * @see PlayerInfo#setSitting(Location, Component)
      */
     public static void setSitting(
@@ -101,8 +100,7 @@ public final class PlayerUtils {
     /**
      * Unsets the sitting position of the player
      *
-     * @param player Player who is currently sitting
-     *               and will be unset
+     * @param player Player who is currently sitting and will be unset
      * @see #unsetSitting(Player, Component)
      */
     public static void unsetSitting(final @NotNull Player player) {
@@ -112,10 +110,9 @@ public final class PlayerUtils {
     /**
      * Unsets the sitting position of the player with message
      *
-     * @param player  Player who is currently sitting
-     *                and will be unset
-     * @param message Message that will be sent to the players
-     *                around the player who is sitting
+     * @param player  Player who is currently sitting and will be unset
+     * @param message Message that will be sent to the players  around the
+     *                player who is sitting
      * @see PlayerInfo#unsetSitting(Component)
      */
     public static void unsetSitting(
@@ -126,11 +123,10 @@ public final class PlayerUtils {
     }
 
     /**
-     * Loads the players current location, health, inventory, motion, and
-     * other information from the [uuid].dat file, in the
-     * [level-name]/playerdata/ folder.
-     * <p>
-     * Note: This will overwrite the players current inventory, health,
+     * Loads the players current location, health, inventory, motion, and other
+     * information from the [uuid].dat file, in [level-name]/playerdata folder.
+     * <br>
+     * <b>NOTE:</b> This will overwrite the players current inventory, health,
      * motion, etc., with the state from the saved dat file.
      *
      * @param offlinePlayer Offline player whose data will be loaded
@@ -157,10 +153,9 @@ public final class PlayerUtils {
     }
 
     /**
-     * Sets player's skin with specified value and signature.
-     * Also updates the skin for all players on the server.
-     * If wanted to reset the skin, set both value and signature
-     * to null.
+     * Sets player's skin with specified value and signature. Also updates the
+     * skin for all players on the server. If wanted to reset the skin, set both
+     * value and signature to null.
      *
      * @param player    Player whose skin will be set
      * @param value     Value of the skin
@@ -274,7 +269,8 @@ public final class PlayerUtils {
      * @param uuid     The UUID of the player
      * @param nickname The nickname of the player
      * @return New player profile object
-     * @throws IllegalArgumentException If uuid and nickname are both null or empty
+     * @throws IllegalArgumentException If uuid and nickname are both null
+     *                                  or empty
      */
     @Contract("_, _ -> new")
     public static @NotNull PlayerProfile craftProfile(
@@ -285,8 +281,7 @@ public final class PlayerUtils {
     }
 
     /**
-     * Opens the shulker box for the player without animation
-     * and block updates
+     * Opens the shulker box for the player without animation and block updates
      *
      * @param player     The player to open the shulker box
      * @param shulkerBox The shulker box to open
@@ -340,8 +335,7 @@ public final class PlayerUtils {
 
 
     /**
-     * @param player The player to get the target block
-     *               from
+     * @param player The player to get the target block from
      * @return The target block
      */
     public static @Nullable Block getTargetBlock(final @NotNull Player player) {
@@ -359,8 +353,7 @@ public final class PlayerUtils {
     }
 
     /**
-     * @param player      The player to get the target entity
-     *                    from
+     * @param player      The player to get the target entity from
      * @param targetBlock The target block
      * @return The target entity
      */

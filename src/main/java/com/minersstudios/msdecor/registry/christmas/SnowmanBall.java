@@ -75,7 +75,7 @@ public final class SnowmanBall extends CustomDecorDataImpl<SnowmanBall> {
                         )
                 );
 
-        return MSDecor.getConfiguration().isChristmas
+        return MSDecor.config().isChristmas
                 ? builder0.recipes(
                         Map.entry(
                                 RecipeBuilder.shapedBuilder()

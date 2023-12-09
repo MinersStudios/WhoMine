@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslation;
-import static com.minersstudios.msessentials.MSEssentials.getInstance;
+import static com.minersstudios.msessentials.MSEssentials.singleton;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
@@ -247,7 +247,7 @@ public final class BotHandler {
     }
 
     private void handleCode(final short code) {
-        final DiscordMap discordMap = MSEssentials.getCache().discordMap;
+        final DiscordMap discordMap = MSEssentials.cache().getDiscordMap();
         final PlayerInfo fromCode = discordMap.validateCode(code);
 
         if (fromCode == null) {
@@ -274,7 +274,7 @@ public final class BotHandler {
                         onlinePlayer.getOpenInventory().getTopInventory() instanceof CustomInventory customInventory
                         && customInventory.getTitle().startsWith(MENU_TITLE)
                 ) {
-                    getInstance().runTask(() -> onlinePlayer.closeInventory());
+                    singleton().runTask(() -> onlinePlayer.closeInventory());
                 }
 
                 MSLogger.fine(onlinePlayer, SUCCESSFULLY_LINKED_MINE.args(text(this.user.getName())));
@@ -287,7 +287,7 @@ public final class BotHandler {
         final String skinName = this.messageString;
 
         if (playerFile.containsSkin(skinName)) {
-            getInstance().runTask(() -> this.handleEditTask(link, skinName));
+            singleton().runTask(() -> this.handleEditTask(link, skinName));
 
             this.replyEmbed(
                     renderTranslation(
@@ -325,7 +325,7 @@ public final class BotHandler {
                 MSLogger.fine(player, SKIN_SUCCESSFULLY_ADDED_MINE.args(text(skinName)));
             }
         } else {
-            getInstance().runTask(this::handleShowSkinListTask);
+            singleton().runTask(this::handleShowSkinListTask);
 
             this.replyEmbed(
                     renderTranslation(
@@ -385,7 +385,7 @@ public final class BotHandler {
                 }
 
                 this.replyEmbed(renderTranslation(LIST_OF_SKINS.args(text(skinList.toString()))));
-                getInstance().runTask(this::handleSkinListTask);
+                singleton().runTask(this::handleSkinListTask);
             } else if (reply.equals(VARIANT_NO)) {
                 this.reply(VARIANT_NO_REPLY);
             } else {
@@ -419,7 +419,7 @@ public final class BotHandler {
                 return false;
             }
 
-            getInstance().runTask(() -> this.handleSkinTask(skin));
+            singleton().runTask(() -> this.handleSkinTask(skin));
             return true;
         };
     }
@@ -442,9 +442,9 @@ public final class BotHandler {
             }
 
             switch (actionIndex) {
-                case 1 -> getInstance().runTask(() -> this.handleEditImageTask(skin));
-                case 2 -> getInstance().runTask(() -> this.handleEditNameTask(skin));
-                case 3 -> getInstance().runTask(() -> this.handleDeleteTask(skin));
+                case 1 -> singleton().runTask(() -> this.handleEditImageTask(skin));
+                case 2 -> singleton().runTask(() -> this.handleEditNameTask(skin));
+                case 3 -> singleton().runTask(() -> this.handleDeleteTask(skin));
                 default -> {
                     this.reply(INVALID_INDEX);
                     return false;

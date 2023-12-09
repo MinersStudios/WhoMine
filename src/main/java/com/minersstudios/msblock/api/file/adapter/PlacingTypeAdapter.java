@@ -17,7 +17,7 @@ import java.util.Map;
  * This adapter handles PlacingType serialization by converting it into
  * a JsonObject, and deserialization by reading the JsonObject and
  * constructing the corresponding PlacingType.
- * <p>
+ * <br>
  * Serialized output you can see in the "MSBlock/blocks/example.json" file.
  */
 public class PlacingTypeAdapter implements JsonSerializer<PlacingType>, JsonDeserializer<PlacingType> {

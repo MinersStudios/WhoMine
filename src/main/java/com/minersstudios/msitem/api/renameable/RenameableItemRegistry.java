@@ -19,17 +19,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * renameable item data. It provides various methods to register, unregister,
  * and retrieve renameable items based on different criteria, such as keys,
  * rename entries, or item stacks.
- * <p>
+ * <br>
  * The RenameableItemRegistry uses two concurrent maps, one to store items
  * associated with their lowercase keys and another to store rename entries
  * associated with their keys. The keys are used as identifiers for the items,
  * and rename entries are used to look up items based on rename values and item
  * stacks.
- * <p>
+ * <br>
  * Make sure to use the provided methods and their respective Optional return
  * types to handle cases where the desired renameable item data might not be
  * present.
- * <p>
+ * <br>
  * Example usage:
  * <pre>{@code
  * // Register a renameable item

@@ -30,8 +30,8 @@ public final class ItemUtils {
     /**
      * @param first  First {@link ItemStack}
      * @param second Second {@link ItemStack}
-     * @return True if the CustomModelData and {@link Material}
-     *         of the two items are the same
+     * @return True if the CustomModelData and {@link Material} of the two items
+     *         are the same
      */
     @Contract("null, null -> false")
     public static boolean isSimilarItemStacks(
@@ -54,8 +54,7 @@ public final class ItemUtils {
 
     /**
      * @param items Collection of items that will be checked
-     * @param item  Item that will be checked
-     *              for its presence in the list
+     * @param item  Item that will be checked for its presence in the list
      * @return True if the list contains the item
      * @see #isSimilarItemStacks(ItemStack, ItemStack)
      */
@@ -77,9 +76,8 @@ public final class ItemUtils {
      *
      * @param holder Player who is holding the item
      * @param item   The item to damage
-     * @return False if the {@link ItemMeta} of the item
-     *         is not an instance of {@link Damageable}
-     *         or if the damage event is cancelled
+     * @return False if the {@link ItemMeta} of the item is not an instance of
+     *         {@link Damageable} or if the damage event is cancelled
      * @see #damageItem(Player, ItemStack, int)
      */
     @Contract("_, null -> false")
@@ -96,9 +94,8 @@ public final class ItemUtils {
      * @param holder         Player who is holding the item
      * @param item           The item to damage
      * @param originalDamage Damage you want to inflict on the item
-     * @return False if the {@link ItemMeta} of the item
-     *         is not an instance of {@link Damageable}
-     *         or if the damage event is cancelled
+     * @return False if the {@link ItemMeta} of the item is not an instance of
+     *         {@link Damageable} or if the damage event is cancelled
      * @see #damageItem(Player, EquipmentSlot, ItemStack, int)
      */
     @Contract("_, null, _ -> false")
@@ -118,9 +115,8 @@ public final class ItemUtils {
      *                       (used for item break effect)
      * @param item           The item to damage
      * @param originalDamage Damage you want to inflict on the item
-     * @return False if the {@link ItemMeta} of the item
-     *         is not an instance of {@link Damageable}
-     *         or if the damage event is cancelled
+     * @return False if the {@link ItemMeta} of the item is not an instance of
+     *         {@link Damageable} or if the damage event is cancelled
      */
     @Contract("_, _, null, _ -> false")
     public static boolean damageItem(

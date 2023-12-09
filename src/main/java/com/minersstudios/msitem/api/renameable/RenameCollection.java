@@ -179,13 +179,13 @@ public final class RenameCollection {
      * @see #addRename(String)
      */
     public boolean addAllRenames(final @NotNull Collection<String> renames) {
-        boolean added = false;
+        boolean isAdded = false;
 
         for (final var rename : renames) {
-            added |= this.addRename(rename);
+            isAdded |= this.addRename(rename);
         }
 
-        return added;
+        return isAdded;
     }
 
     /**
@@ -237,13 +237,13 @@ public final class RenameCollection {
      * @see #addItem(ItemStack)
      */
     public boolean addAllItems(final @NotNull Collection<ItemStack> items) {
-        boolean added = false;
+        boolean isAdded = false;
 
         for (final var item : items) {
-            added |= this.addItem(item);
+            isAdded |= this.addItem(item);
         }
 
-        return added;
+        return isAdded;
     }
 
     /**

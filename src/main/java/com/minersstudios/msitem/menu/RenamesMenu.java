@@ -140,7 +140,7 @@ public final class RenamesMenu {
     public static void update() {
         final var elements = new ArrayList<InventoryButton>();
 
-        for (final var renameableItem : MSItem.getCache().renameableItemsMenu) {
+        for (final var renameableItem : MSItem.cache().getRenameableMenuItems()) {
             final RenameCollection renameCollection = renameableItem.getRenames();
             final ItemStack resultItem = renameCollection.getMainItem();
             final var renameableItemStacks = new ArrayList<>(renameCollection.items());
@@ -157,7 +157,7 @@ public final class RenamesMenu {
             .clickAction((buttonEvent, inventory) -> {
                 if (buttonEvent.getClick().isCreativeAction()) return;
 
-                final MSItem plugin = MSItem.getInstance();
+                final MSItem plugin = MSItem.singleton();
                 final Player player = (Player) buttonEvent.getWhoClicked();
                 final SingleInventory renameInventory = CustomInventory.single(RENAME_TITLE, 5);
 

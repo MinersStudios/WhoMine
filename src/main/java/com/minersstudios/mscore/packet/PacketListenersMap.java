@@ -153,11 +153,15 @@ public final class PacketListenersMap {
         final var sendWhiteList = listener.getSendWhiteList();
 
         if (!receiveWhiteList.isEmpty()) {
-            receiveWhiteList.forEach(packetType -> this.receiveWhiteList.put(packetType, listener));
+            for (final var packetType : receiveWhiteList) {
+                this.receiveWhiteList.put(packetType, listener);
+            }
         }
 
         if (!sendWhiteList.isEmpty()) {
-            sendWhiteList.forEach(packetType -> this.sendWhiteList.put(packetType, listener));
+            for (final var packetType : sendWhiteList) {
+                this.sendWhiteList.put(packetType, listener);
+            }
         }
     }
 
@@ -174,11 +178,15 @@ public final class PacketListenersMap {
         final var sendWhiteList = listener.getSendWhiteList();
 
         if (!receiveWhiteList.isEmpty()) {
-            receiveWhiteList.forEach(packetType -> this.receiveWhiteList.remove(packetType, listener));
+            for (final var packetType : receiveWhiteList) {
+                this.receiveWhiteList.remove(packetType, listener);
+            }
         }
 
         if (!sendWhiteList.isEmpty()) {
-            sendWhiteList.forEach(packetType -> this.sendWhiteList.remove(packetType, listener));
+            for (final var packetType : sendWhiteList) {
+                this.sendWhiteList.remove(packetType, listener);
+            }
         }
     }
 

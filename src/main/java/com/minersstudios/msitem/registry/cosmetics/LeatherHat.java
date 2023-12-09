@@ -1,6 +1,7 @@
 package com.minersstudios.msitem.registry.cosmetics;
 
-import com.minersstudios.mscore.util.Badges;
+import com.google.common.collect.ImmutableList;
+import com.minersstudios.mscore.util.Font;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msitem.api.CustomItemImpl;
 import com.minersstudios.msitem.api.Wearable;
@@ -12,7 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +33,7 @@ public final class LeatherHat extends CustomItemImpl implements Wearable {
 
         meta.displayName(ChatUtils.createDefaultStyledText("Кожаная шляпа"));
         meta.setCustomModelData(999);
-        meta.lore(Badges.PAINTABLE_LORE_LIST);
+        meta.lore(ImmutableList.of(Font.Components.PAINTABLE));
         meta.addAttributeModifier(
                 Attribute.GENERIC_ARMOR,
                 new AttributeModifier(UUID.randomUUID(), "armor", 1.0f, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
@@ -42,8 +45,9 @@ public final class LeatherHat extends CustomItemImpl implements Wearable {
         super(KEY, ITEM_STACK);
     }
 
+    @Contract(" -> new")
     @Override
-    public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
+    public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
         return Collections.singletonList(Map.entry(
                 new ShapedRecipe(this.namespacedKey, this.itemStack)
                 .shape(

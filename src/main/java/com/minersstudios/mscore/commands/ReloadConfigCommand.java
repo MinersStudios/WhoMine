@@ -15,7 +15,7 @@ public final class ReloadConfigCommand {
     public static boolean runCommand(@NotNull CommandSender sender) {
         final long time = System.currentTimeMillis();
 
-        MSPlugin.getGlobalConfig().reload();
+        MSPlugin.globalConfig().reload();
         MSLogger.fine(sender, RELOAD_CONFIG_SUCCESS.args(text(System.currentTimeMillis() - time)));
 
         return true;

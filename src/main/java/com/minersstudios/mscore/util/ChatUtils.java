@@ -24,18 +24,14 @@ import static net.kyori.adventure.text.format.TextDecoration.*;
 public final class ChatUtils {
     /**
      * Default style for components.
-     * <br>
-     * <b>Color:</b> {@link NamedTextColor#WHITE}
-     * <br>
-     * <b>Obfuscated:</b> false
-     * <br>
-     * <b>Bold:</b> false
-     * <br>
-     * <b>Italic:</b> false
-     * <br>
-     * <b>Strikethrough:</b> false
-     * <br>
-     * <b>Underlined:</b> false
+     * <ul>
+     *     <li><b>Color:</b> {@link NamedTextColor#WHITE}
+     *     <li><b>OBFUSCATED:</b> false
+     *     <li><b>BOLD:</b> false
+     *     <li><b>ITALIC:</b> false
+     *     <li><b>STRIKETHROUGH:</b> false
+     *     <li><b>UNDERLINED:</b> false
+     * </ul>
      */
     public static final Style DEFAULT_STYLE = Style.style(
             WHITE,
@@ -48,16 +44,13 @@ public final class ChatUtils {
 
     /**
      * Colorless default style for components.
-     * <br>
-     * <b>Obfuscated:</b> false
-     * <br>
-     * <b>Bold:</b> false
-     * <br>
-     * <b>Italic:</b> false
-     * <br>
-     * <b>Strikethrough:</b> false
-     * <br>
-     * <b>Underlined:</b> false
+     * <ul>
+     *     <li><b>OBFUSCATED:</b> false
+     *     <li><b>BOLD:</b> false
+     *     <li><b>ITALIC:</b> false
+     *     <li><b>STRIKETHROUGH:</b> false
+     *     <li><b>UNDERLINED:</b> false
+     * </ul>
      */
     public static final Style COLORLESS_DEFAULT_STYLE = Style.style(
             OBFUSCATED.withState(false),
@@ -79,8 +72,8 @@ public final class ChatUtils {
     }
 
     /**
-     * Extracts message from array of arguments. Joins all arguments
-     * starting from the given index with spaces between them.
+     * Extracts message from array of arguments. Joins all arguments starting
+     * from the given index with spaces between them.
      * <br>
      * Example:
      * <pre>{@code
@@ -101,8 +94,8 @@ public final class ChatUtils {
     }
 
     /**
-     * Normalizes the given text by capitalizing the first letter and
-     * converting the rest of the letters to lowercase using the
+     * Normalizes the given text by capitalizing the first letter and converting
+     * the rest of the letters to lowercase using the
      * {@link Locale#ROOT} locale.
      * <br>
      * Example:
@@ -172,7 +165,8 @@ public final class ChatUtils {
     }
 
     /**
-     * Serializes component to legacy string with hex colors and unusual X repeated character hex format enabled
+     * Serializes component to legacy string with hex colors and unusual X
+     * repeated character hex format enabled
      *
      * @param component Component to be serialized
      * @return Serialized component
@@ -205,9 +199,8 @@ public final class ChatUtils {
     }
 
     /**
-     * Deserializes component from legacy string with
-     * hex colors and unusual X repeated character hex
-     * format enabled
+     * Deserializes component from legacy string with hex colors and unusual X
+     * repeated character hex format enabled
      *
      * @param text Text to be deserialized
      * @return Deserialized component
@@ -342,7 +335,7 @@ public final class ChatUtils {
 
     /**
      * @param string String to be checked
-     * @throws IllegalArgumentException If string does not match {@link #KEY_REGEX}
+     * @throws IllegalArgumentException If string doesn't match {@link #KEY_REGEX}
      */
     @Contract("null -> fail")
     public static void validateKey(final @Nullable String string) {

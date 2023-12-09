@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.minersstudios.mscore.util.SharedConstants;
 import com.minersstudios.mscore.plugin.GlobalConfig;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
@@ -30,10 +31,9 @@ import java.util.Map;
 import static net.kyori.adventure.text.Component.translatable;
 
 /**
- * Language file loader
- * <br>
- * Loads the language file from the language repository and adds it to {@link GlobalTranslator}.
- * All downloaded language files are stored in the "/config/minersstudios/language" folder
+ * Language file loader. Loads the language file from the language repository
+ * and adds it to {@link GlobalTranslator}. All downloaded language files are
+ * stored in the {@link SharedConstants#LANGUAGE_FOLDER_PATH} folder.
  */
 public final class LanguageFile {
     private final String folderLink;
@@ -94,10 +94,9 @@ public final class LanguageFile {
     }
 
     /**
-     * Loads the translations from the language file to
-     * {@link GlobalTranslator}. If the language file does
-     * not exist, it will be downloaded from the language
-     * repository.
+     * Loads the translations from the language file to {@link GlobalTranslator}.
+     * If the language file does not exist, it will be downloaded from the
+     * language repository.
      *
      * @param folderLink The folder link of the language repository
      * @param code Language code of the language file
@@ -123,11 +122,14 @@ public final class LanguageFile {
         );
         GlobalTranslator.translator().addSource(registry);
 
-        MSLogger.fine("Loaded language file: " + languageFile.file.getName() + " in " + (System.currentTimeMillis() - time) + "ms");
+        MSLogger.fine(
+                "Loaded language file: " + languageFile.file.getName() + " in " + (System.currentTimeMillis() - time) + "ms"
+        );
     }
 
     /**
-     * Unloads all languages registered in {@link #registry} from {@link GlobalTranslator}
+     * Unloads all languages registered in {@link #registry} from
+     * {@link GlobalTranslator}
      */
     public static void unloadLanguage() {
         GlobalTranslator.translator().removeSource(registry);
@@ -141,20 +143,23 @@ public final class LanguageFile {
      * @see #loadLanguage(String, String)
      */
     public static void reloadLanguage() {
-        final GlobalConfig config = MSPlugin.getGlobalConfig();
+        final GlobalConfig config = MSPlugin.globalConfig();
 
         unloadLanguage();
-        loadLanguage(config.languageFolderLink, config.languageCode);
+        loadLanguage(config.getLanguageFolderLink(), config.getLanguageCode());
     }
 
     /**
-     * Renders the translation from {@link #registry} as {@link TranslatableComponent}.
+     * Renders the translation from {@link #registry} as
+     * {@link TranslatableComponent}.
      * <br>
-     * <b>NOTE:</b> Use only for custom translations loaded from the language file.
-     * Usually used for item names and lore, because they are renders it's without fallback
+     * <b>NOTE:</b> Use only for custom translations loaded from the language
+     * file. Usually used for item names and lore, because they are renders it's
+     * without fallback
      *
      * @param key Translation key
-     * @return TranslatableComponent with translation from {@link #registry} or key if translation is not found
+     * @return TranslatableComponent with translation from {@link #registry} or
+     *         key if translation is not found
      * @see #renderTranslation(String)
      */
     public static @NotNull TranslatableComponent renderTranslationComponent(final @NotNull String key) {
@@ -174,7 +179,7 @@ public final class LanguageFile {
     /**
      * Renders the translation from {@link #registry} as {@link String}
      * <br>
-     * <b>NOTE:</b> Use only for custom translations loaded from the language file
+     * <b>NOTE:</b> Use only for custom translations loaded from language file
      *
      * @param key Translation key
      * @return Translated string or key if translation is not found
@@ -191,7 +196,9 @@ public final class LanguageFile {
      * @return Translated string or key if translation is not found
      */
     public static @NotNull String renderTranslation(final @NotNull TranslatableComponent translatable) {
-        return ChatUtils.serializePlainComponent(renderTranslationComponent(translatable));
+        return ChatUtils.serializePlainComponent(
+                renderTranslationComponent(translatable)
+        );
     }
 
     /**
@@ -208,13 +215,13 @@ public final class LanguageFile {
     }
 
     /**
-     * Loads language file from the language repository.
-     * File will be downloaded to "/config/minersstudios/language" folder
+     * Loads language file from the language repository. File will be downloaded
+     * to {@link SharedConstants#LANGUAGE_FOLDER_PATH} folder.
      *
      * @return Language file
      */
     private @NotNull File loadFile() {
-        final File langFolder = new File("config/minersstudios/language");
+        final File langFolder = new File(SharedConstants.LANGUAGE_FOLDER_PATH);
 
         if (!langFolder.exists() && !langFolder.mkdirs()) {
             throw new RuntimeException("Failed to create language folder");
@@ -246,7 +253,8 @@ public final class LanguageFile {
     }
 
     /**
-     * Loads language file as JsonObject from file path specified in {@link #file}
+     * Loads language file as {@link JsonObject} from the file path specified in
+     * {@link #file}
      *
      * @return JsonObject of language file
      * @throws JsonSyntaxException If language file is corrupted
@@ -270,9 +278,9 @@ public final class LanguageFile {
     }
 
     /**
-     * Creates a backup file of the corrupted language file.
-     * The backup file will be named as the original file with ".OLD" appended to the end.
-     * If the backup file already exists, it will be replaced
+     * Creates a backup file of the corrupted language file. The backup file
+     * will be named as the original file with ".OLD" appended to the end. If
+     * the backup file already exists, it will be replaced
      *
      * @throws RuntimeException If failed to create backup file
      */

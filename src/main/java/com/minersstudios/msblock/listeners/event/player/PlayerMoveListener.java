@@ -31,7 +31,7 @@ public final class PlayerMoveListener extends AbstractMSListener<MSBlock> {
 
             if (
                     distance != 0.0d
-                    && MSBlock.getCache().stepMap.addDistance(player, distance)
+                    && MSBlock.cache().getStepMap().addDistance(player, distance)
                     && BlockUtils.isWoodenSound(block.getType())
             ) {
                 final Location stepLocation = block.getLocation().toCenterLocation();

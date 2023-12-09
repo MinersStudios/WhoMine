@@ -5,7 +5,7 @@ import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.location.MSVector;
 import com.minersstudios.mscore.sound.SoundGroup;
-import com.minersstudios.mscore.util.Badges;
+import com.minersstudios.mscore.util.Font;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.LocationUtils;
@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
+import static com.minersstudios.mscore.plugin.MSPlugin.globalCache;
 
 @Immutable
 public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implements CustomDecorData<D> {
@@ -592,7 +592,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     public void registerRecipes() {
         if (this.recipes.isEmpty()) return;
 
-        final MSDecor plugin = MSDecor.getInstance();
+        final MSDecor plugin = MSDecor.singleton();
         final Server server = plugin.getServer();
 
         plugin.runTask(() -> {
@@ -602,7 +602,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 server.addRecipe(recipe);
 
                 if (entry.getValue()) {
-                    getGlobalCache().customDecorRecipes.add(recipe);
+                    globalCache().customDecorRecipes.add(recipe);
                 }
             }
         });
@@ -618,7 +618,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 Bukkit.removeRecipe(keyed.getKey());
 
                 if (entry.getValue()) {
-                    getGlobalCache().customDecorRecipes.remove(recipe);
+                    globalCache().customDecorRecipes.remove(recipe);
                 }
             }
         }
@@ -869,22 +869,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final @NotNull BlockFace blockFace
     ) {
         final World world = itemDisplay.getWorld();
-        final boolean isCeiling =
-                this.facingSet.contains(Facing.CEILING)
-                && blockFace == BlockFace.DOWN;
-        final BlockPos[] spawnPoses = boundingBox.getBlockPositions(
-                0,
-                isCeiling
-                        ? (int) (this.hitBox.getY() - 1)
-                        : 0,
-                0,
-                0,
-                isCeiling
-                        ? 0
-                        : (int) (-this.hitBox.getY() + 1),
-                0
-        );
-        final int length = spawnPoses.length;
+        final BlockPos[] spawnPositions = this.getSpawnPositions(boundingBox, blockFace);
+        final int length = spawnPositions.length;
         final Interaction[] interactions = new Interaction[length];
 
         final float width = this.hitBox.getInteractionWidth();
@@ -895,7 +881,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final double offsetZ = offset.z();
 
         for (int i = 0; i < length; ++i) {
-            final BlockPos blockPos = spawnPoses[i];
+            final BlockPos blockPos = spawnPositions[i];
             interactions[i] = world.spawn(
                     new Location(
                             null,
@@ -915,6 +901,27 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.processInteractions(itemDisplay, interactions, boundingBox);
 
         return interactions;
+    }
+
+    private BlockPos @NotNull [] getSpawnPositions(
+            final @NotNull MSBoundingBox boundingBox,
+            final @NotNull BlockFace blockFace
+    ) {
+        final boolean isCeiling =
+                this.facingSet.contains(Facing.CEILING)
+                && blockFace == BlockFace.DOWN;
+        return boundingBox.getBlockPositions(
+                0,
+                isCeiling
+                        ? (int) (this.hitBox.getY() - 1)
+                        : 0,
+                0,
+                0,
+                isCeiling
+                        ? 0
+                        : (int) (-this.hitBox.getY() + 1),
+                0
+        );
     }
 
     private boolean hasEntitiesInside(
@@ -1039,7 +1046,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 blockState = fillBlockState;
             }
 
-            MSDecor.getCoreProtectAPI().logRemoval(
+            MSDecor.coreProtectAPI().logRemoval(
                     changerName,
                     location,
                     replacedData.getMaterial(),
@@ -1051,7 +1058,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final Block newBlock = location.getBlock();
 
             blockList.add(newBlock);
-            MSDecor.getCoreProtectAPI().logPlacement(
+            MSDecor.coreProtectAPI().logPlacement(
                     changerName,
                     location,
                     fillMaterial,
@@ -1148,11 +1155,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     final var newLore = new ArrayList<Component>();
 
                     if (this.isPaintable()) {
-                        newLore.add(Badges.PAINTABLE_LORE);
+                        newLore.add(Font.Components.PAINTABLE);
                     }
 
                     if (this.isWrenchable()) {
-                        newLore.add(Badges.WRENCHABLE_LORE);
+                        newLore.add(Font.Components.WRENCHABLE);
                     }
 
                     if (currentLore != null) {

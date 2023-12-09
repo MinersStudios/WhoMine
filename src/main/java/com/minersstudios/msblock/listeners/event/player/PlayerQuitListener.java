@@ -15,9 +15,13 @@ public final class PlayerQuitListener extends AbstractMSListener<MSBlock> {
     @EventHandler
     public void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        final Cache cache = MSBlock.getCache();
+        final Cache cache = MSBlock.cache();
 
-        cache.diggingMap.removeAll(player);
-        cache.stepMap.remove(player);
+        if (cache == null) {
+            return;
+        }
+
+        cache.getDiggingMap().removeAll(player);
+        cache.getStepMap().remove(player);
     }
 }

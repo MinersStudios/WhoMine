@@ -16,10 +16,10 @@ public final class UpdateIdsCommand {
 
     public static boolean runCommand(@NotNull CommandSender sender) {
         final long time = System.currentTimeMillis();
-        final Cache cache = MSEssentials.getCache();
+        final Cache cache = MSEssentials.cache();
 
-        cache.idMap.reloadIds();
-        cache.playerInfoMap.playerInfos().forEach(PlayerInfo::initNames);
+        cache.getIdMap().reloadIds();
+        cache.getPlayerInfoMap().playerInfos().forEach(PlayerInfo::initNames);
 
         MSLogger.fine(sender, UPDATE_IDS_SUCCESS.args(text(System.currentTimeMillis() - time)));
         return true;

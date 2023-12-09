@@ -399,7 +399,7 @@ public final class PlayerInteractListener extends AbstractMSListener<MSBlock> {
         final BlockData blockData = itemType.createBlockData();
         final SoundGroup soundGroup = blockData.getSoundGroup();
 
-        MSBlock.getCoreProtectAPI().logPlacement(player.getName(), blockLocation, itemType, blockData);
+        MSBlock.coreProtectAPI().logPlacement(player.getName(), blockLocation, itemType, blockData);
         blockAtFace.getWorld().playSound(
                 blockLocation,
                 soundGroup.getPlaceSound(),

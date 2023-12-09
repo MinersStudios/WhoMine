@@ -1,16 +1,17 @@
 package com.minersstudios.msblock;
 
 import com.minersstudios.msblock.api.CustomBlockData;
+import com.minersstudios.mscore.util.SharedConstants;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,92 +21,134 @@ import java.util.logging.Logger;
  * @see MSPlugin
  */
 public final class MSBlock extends MSPlugin<MSBlock> {
-    private static MSBlock instance;
+    private static MSBlock singleton;
+
     private Cache cache;
     private Config config;
     private CoreProtectAPI coreProtectAPI;
 
+    private static final String NOTE_BLOCK_UPDATES = "block-updates.disable-noteblock-updates";
+
     public MSBlock() {
-        instance = this;
+        singleton = this;
     }
 
     @Override
     public void load() {
-        final MinecraftServer server = MinecraftServer.getServer();
-        final File paperGlobalConfig = new File("config/paper-global.yml");
-        final YamlConfiguration paperConfig = YamlConfiguration.loadConfiguration(paperGlobalConfig);
-        final String noteBlockUpdates = "block-updates.disable-noteblock-updates";
+        this.cache = new Cache();
+        this.config = new Config(this, this.getConfigFile());
 
-        if (!paperConfig.getBoolean(noteBlockUpdates, false)) {
-            paperConfig.set(noteBlockUpdates, true);
-
-            try {
-                paperConfig.save(paperGlobalConfig);
-            } catch (final IOException e) {
-                this.getLogger().log(Level.SEVERE, "Failed to save paper-global.yml with " + noteBlockUpdates + " enabled", e);
-            }
-
-            server.paperConfigurations.reloadConfigs(server);
-            server.server.reloadCount++;
-        }
-
+        disableNoteBlockUpdates();
         initClass(CustomBlockData.class);
     }
 
     @Override
     public void enable() {
         this.coreProtectAPI = CoreProtect.getInstance().getAPI();
-        this.cache = new Cache();
-        this.config = new Config(this, this.getConfigFile());
 
+        this.cache.load();
         this.config.reload();
     }
 
-    /**
-     * @return The instance of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static MSBlock getInstance() throws NullPointerException {
-        return instance;
-    }
+    @Override
+    public void disable() {
+        this.cache.unload();
 
-    /**
-     * @return The logger of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static @NotNull Logger logger() throws NullPointerException {
-        return instance.getLogger();
-    }
-
-    /**
-     * @return The component logger of the plugin
-     * @throws NullPointerException If the plugin is not enabled
-     */
-    public static @NotNull ComponentLogger componentLogger() throws NullPointerException {
-        return instance.getComponentLogger();
+        this.coreProtectAPI = null;
     }
 
     /**
      * @return The cache of the plugin
-     * @throws NullPointerException If the plugin is not enabled
+     *         or null if the plugin is not enabled
      */
-    public static Cache getCache() throws NullPointerException {
-        return instance.cache;
+    public @UnknownNullability Cache getCache() {
+        return this.cache;
     }
 
     /**
      * @return The configuration of the plugin
-     * @throws NullPointerException If the plugin is not enabled
+     *         or null if the plugin is not enabled
      */
-    public static Config getConfiguration() throws NullPointerException {
-        return instance.config;
+    public @UnknownNullability Config getConfiguration() {
+        return this.config;
     }
 
     /**
      * @return The CoreProtectAPI instance
-     * @throws NullPointerException If the {@link CoreProtect} is not enabled
+     *         or null if the plugin is not enabled
      */
-    public static CoreProtectAPI getCoreProtectAPI() throws NullPointerException {
-        return instance.coreProtectAPI;
+    public @UnknownNullability CoreProtectAPI getCoreProtectAPI() {
+        return this.coreProtectAPI;
+    }
+
+    /**
+     * @return The instance of the plugin
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability MSBlock singleton() {
+        return singleton;
+    }
+
+    /**
+     * @return The logger of the plugin
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability Logger logger() {
+        return singleton == null ? null : singleton.getLogger();
+    }
+
+    /**
+     * @return The component logger of the plugin
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability ComponentLogger componentLogger() {
+        return singleton == null ? null : singleton.getComponentLogger();
+    }
+
+    /**
+     * @return The cache of the plugin
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability Cache cache()  {
+        return singleton == null ? null : singleton.cache;
+    }
+
+    /**
+     * @return The configuration of the plugin
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability Config config() {
+        return singleton == null ? null : singleton.config;
+    }
+
+    /**
+     * @return The CoreProtectAPI instance
+     *         or null if the plugin is not enabled
+     */
+    public static @UnknownNullability CoreProtectAPI coreProtectAPI() {
+        return singleton == null ? null : singleton.coreProtectAPI;
+    }
+
+    private static void disableNoteBlockUpdates() {
+        final MinecraftServer server = MinecraftServer.getServer();
+        final File paperGlobalConfig = new File(SharedConstants.PAPER_GLOBAL_CONFIG_PATH);
+        final YamlConfiguration paperConfig = YamlConfiguration.loadConfiguration(paperGlobalConfig);
+
+        if (!paperConfig.getBoolean(NOTE_BLOCK_UPDATES, false)) {
+            paperConfig.set(NOTE_BLOCK_UPDATES, true);
+
+            try {
+                paperConfig.save(paperGlobalConfig);
+            } catch (final Exception e) {
+                MSLogger.log(
+                        Level.SEVERE,
+                        "Failed to save paper-global.yml with " + NOTE_BLOCK_UPDATES + " enabled",
+                        e
+                );
+            }
+
+            server.paperConfigurations.reloadConfigs(server);
+            server.server.reloadCount++;
+        }
     }
 }

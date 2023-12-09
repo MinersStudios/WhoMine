@@ -51,7 +51,7 @@ public final class ResourcePack {
      * @see ResourcePack
      */
     public static void init() {
-        final Config config = MSEssentials.getConfiguration();
+        final Config config = MSEssentials.config();
         final String user = config.user;
         final String repo = config.repo;
         final String tagName = getLatestTagName(config.user, config.repo).orElse(config.version);
@@ -127,7 +127,7 @@ public final class ResourcePack {
             final @NotNull String fileName
     ) throws IllegalStateException {
         final URI uri = URI.create(url);
-        final Path path = MSEssentials.getInstance().getPluginFolder().toPath().resolve(fileName);
+        final Path path = MSEssentials.singleton().getPluginFolder().toPath().resolve(fileName);
 
         final HttpClient client = HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.ALWAYS)

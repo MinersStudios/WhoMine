@@ -226,7 +226,7 @@ public final class SetServerSpawn implements MSCommandExecutor {
             final @NotNull CommandSender sender,
             final @NotNull Location location
     ) {
-        final Config config = MSEssentials.getConfiguration();
+        final Config config = MSEssentials.config();
         config.spawnLocation = location;
 
         config.save();

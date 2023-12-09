@@ -67,7 +67,7 @@ public final class AdminMuteInfoCommand {
             return true;
         }
 
-        final MuteMap muteMap = MSEssentials.getCache().muteMap;
+        final MuteMap muteMap = MSEssentials.cache().getMuteMap();
 
         switch (paramString) {
             case "reason" -> {

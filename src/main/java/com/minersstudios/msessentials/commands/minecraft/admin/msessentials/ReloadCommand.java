@@ -15,7 +15,7 @@ public final class ReloadCommand {
     public static boolean runCommand(@NotNull CommandSender sender) {
         final long time = System.currentTimeMillis();
 
-        MSEssentials.getConfiguration().reload();
+        MSEssentials.config().reload();
         MSLogger.fine(sender, RELOAD_SUCCESS.args(text(System.currentTimeMillis() - time)));
         return true;
     }

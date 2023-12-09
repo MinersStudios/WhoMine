@@ -7,6 +7,7 @@ import com.minersstudios.msdecor.api.action.DecorClickAction;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import com.minersstudios.msitem.api.CustomItemType;
 import org.bukkit.*;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Light;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
@@ -117,11 +118,13 @@ public enum DecorParameter {
                     doWrench(event, itemInUse);
                 } else {
                     final Interaction interaction = event.getClickedInteraction();
+                    final BlockData lightBlockData =
+                            interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData();
 
                     doLight(
                             event,
                             event.getCustomDecor().getData().getNextLightLevel(
-                                    interaction.getWorld().getBlockAt(interaction.getLocation()).getBlockData() instanceof Light light
+                                    lightBlockData instanceof final Light light
                                     ? light.getLevel()
                                     : 0
                             )
@@ -168,7 +171,12 @@ public enum DecorParameter {
 
     public static void doSit(final @NotNull CustomDecorClickEvent event) {
         final Player player = event.getPlayer();
-        final Location sitLocation = event.getClickedInteraction().getLocation().add(0.0d, event.getCustomDecor().getData().getSitHeight(), 0.0d);
+
+        if (player.getVehicle() != null) return;
+
+        final Location sitLocation =
+                event.getClickedInteraction().getLocation()
+                .add(0.0d, event.getCustomDecor().getData().getSitHeight(), 0.0d);
 
         for (final var nearbyPlayer : sitLocation.getNearbyEntitiesByType(Player.class, 0.5d)) {
             if (nearbyPlayer.getVehicle() != null) {

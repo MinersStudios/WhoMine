@@ -54,7 +54,7 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
                 && action != STOP_DESTROY_BLOCK
         ) return;
 
-        final DiggingMap diggingMap = MSBlock.getCache().diggingMap;
+        final DiggingMap diggingMap = MSBlock.cache().getDiggingMap();
         final Player player = serverPlayer.getBukkitEntity();
         final ServerLevel serverLevel = serverPlayer.serverLevel();
         final BlockPos blockPos = packet.getPos();

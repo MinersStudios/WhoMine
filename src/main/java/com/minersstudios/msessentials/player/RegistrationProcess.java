@@ -68,7 +68,7 @@ public final class RegistrationProcess {
         this.sendDialogueMessage(M_5, 400L);
         this.sendDialogueMessage(M_6, 450L);
 
-        MSEssentials.getInstance().runTaskLater(this::setFirstname, 550L);
+        MSEssentials.singleton().runTaskLater(this::setFirstname, 550L);
     }
 
     private void setFirstname() {
@@ -92,7 +92,7 @@ public final class RegistrationProcess {
                     this.sendDialogueMessage(M_9, 225L);
                     this.sendDialogueMessage(M_10, 300L);
 
-                    MSEssentials.getInstance().runTaskLater(this::setLastname, 375L);
+                    MSEssentials.singleton().runTaskLater(this::setLastname, 375L);
                     return true;
                 }
         ).open(this.player);
@@ -113,7 +113,7 @@ public final class RegistrationProcess {
                     }
 
                     this.playerInfo.getPlayerFile().getPlayerName().setLastName(lastname);
-                    MSEssentials.getInstance().runTaskLater(this::setPatronymic, 10L);
+                    MSEssentials.singleton().runTaskLater(this::setPatronymic, 10L);
                     return true;
                 }
         ).open(this.player);
@@ -153,7 +153,7 @@ public final class RegistrationProcess {
                     this.sendDialogueMessage(M_12, 100L);
                     this.sendDialogueMessage(M_13, 150L);
 
-                    MSEssentials.getInstance().runTaskLater(() -> PronounsMenu.open(this.player), 225L);
+                    MSEssentials.singleton().runTaskLater(() -> PronounsMenu.open(this.player), 225L);
                     return true;
                 }
         ).open(this.player);
@@ -179,7 +179,7 @@ public final class RegistrationProcess {
                 175L
         );
 
-        MSEssentials.getInstance().runTaskLater(this::setOther, 225L);
+        MSEssentials.singleton().runTaskLater(this::setOther, 225L);
     }
 
     private void setOther() {
@@ -197,7 +197,7 @@ public final class RegistrationProcess {
             final @NotNull Component message,
             final long delay
     ) {
-        MSEssentials.getInstance().runTaskLater(() -> {
+        MSEssentials.singleton().runTaskLater(() -> {
             this.player.sendMessage(
                     LOCAL_FORMAT.args(
                             ANONYMOUS_NAME,

@@ -15,7 +15,7 @@ import java.util.Locale;
  * This adapter handles RecipeChoice serialization by converting it into
  * a JsonObject, and deserialization by reading the JsonObject and
  * constructing the corresponding RecipeChoice object.
- * <p>
+ * <br>
  * Serialized output you can see in the "MSBlock/blocks/example.json" file.
  */
 public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDeserializer<RecipeChoice> {

@@ -75,7 +75,7 @@ public class AddPotionAction extends AnomalyAction {
             final @NotNull Player player,
             final @Nullable AnomalyIgnorableItems ignorableItems
     ) {
-        final var actionMap = MSEssentials.getCache().playerAnomalyActionMap.get(player);
+        final var actionMap = MSEssentials.cache().getPlayerAnomalyActionMap().get(player);
 
         if (
                 actionMap.containsKey(this)
@@ -90,7 +90,7 @@ public class AddPotionAction extends AnomalyAction {
                 ) {
                     ignorableItems.damageIgnorableItems(player.getInventory());
                 } else {
-                    MSEssentials.getInstance().runTask(() -> {
+                    MSEssentials.singleton().runTask(() -> {
                         for (final var potionEffect : this.potionEffects) {
                             player.addPotionEffect(potionEffect);
                         }

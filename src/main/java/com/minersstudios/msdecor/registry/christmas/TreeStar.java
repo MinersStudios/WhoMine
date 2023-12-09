@@ -40,7 +40,7 @@ public final class TreeStar extends CustomDecorDataImpl<TreeStar> {
                 .soundGroup(SoundGroup.STONE)
                 .itemStack(itemStack);
 
-        return MSDecor.getConfiguration().isChristmas
+        return MSDecor.config().isChristmas
                 ? builder0.recipes(
                         Map.entry(
                                 RecipeBuilder.shapedBuilder()

@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.minersstudios.mscore.plugin.MSPlugin.getGlobalCache;
+import static com.minersstudios.mscore.plugin.MSPlugin.globalCache;
 
 /**
  * The {@code CustomItemImpl} class serves as a base
@@ -139,7 +139,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
     @Override
     public final void registerRecipes() {
-        final MSItem plugin = MSItem.getInstance();
+        final MSItem plugin = MSItem.singleton();
         final Server server = plugin.getServer();
 
         if (this.recipes.isEmpty()) {
@@ -152,7 +152,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
             plugin.runTask(() -> server.addRecipe(recipe));
 
             if (entry.getValue()) {
-                getGlobalCache().customItemRecipes.add(recipe);
+                globalCache().customItemRecipes.add(recipe);
             }
         }
     }
@@ -166,7 +166,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
                 Bukkit.removeRecipe(keyed.getKey());
 
                 if (entry.getValue()) {
-                    getGlobalCache().customItemRecipes.remove(recipe);
+                    globalCache().customItemRecipes.remove(recipe);
                 }
             }
         }

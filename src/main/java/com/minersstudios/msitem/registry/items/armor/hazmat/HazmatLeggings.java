@@ -11,6 +11,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -47,6 +48,7 @@ public final class HazmatLeggings extends CustomItemImpl implements Damageable {
         super(KEY, ITEM_STACK);
     }
 
+    @Contract(" -> new")
     @Override
     public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
         return Collections.singletonList(Map.entry(

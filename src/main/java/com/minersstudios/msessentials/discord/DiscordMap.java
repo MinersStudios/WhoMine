@@ -49,7 +49,7 @@ public final class DiscordMap {
      * Loads mutes from the file.
      */
     public DiscordMap() {
-        this.file = new File(MSEssentials.getInstance().getPluginFolder(), "discord_links.json");
+        this.file = new File(MSEssentials.singleton().getPluginFolder(), "discord_links.json");
         this.map = new ConcurrentHashMap<>();
         this.codeMap = new ConcurrentHashMap<>();
         this.reloadLinks();
@@ -152,7 +152,7 @@ public final class DiscordMap {
         }
 
         this.codeMap.put(code, playerInfo);
-        MSEssentials.getInstance().runTaskLater(
+        MSEssentials.singleton().runTaskLater(
                 () -> this.codeMap.remove(code, playerInfo), 6000L
         );
 

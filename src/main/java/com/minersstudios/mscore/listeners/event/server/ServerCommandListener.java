@@ -16,7 +16,7 @@ import static net.kyori.adventure.text.Component.translatable;
 
 @MSListener
 public final class ServerCommandListener extends AbstractMSListener<MSCore> {
-    private static final Set<String> ONLY_PLAYER_COMMAND_SET = MSPlugin.getGlobalCache().onlyPlayerCommandSet;
+    private static final Set<String> ONLY_PLAYER_COMMAND_SET = MSPlugin.globalCache().onlyPlayerCommandSet;
     private static final TranslatableComponent ONLY_PLAYER_COMMAND = translatable("ms.error.only_player_command");
 
     @EventHandler

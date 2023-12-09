@@ -33,9 +33,9 @@ public final class ReloadCommand {
             }
         }
 
-        MSPlugin.getGlobalCache().customBlockRecipes.clear();
+        MSPlugin.globalCache().customBlockRecipes.clear();
         CustomBlockRegistry.unregisterAll();
-        MSBlock.getConfiguration().reload();
+        MSBlock.config().reload();
         MSLogger.fine(sender, RELOAD_SUCCESS.args(text(System.currentTimeMillis() - time)));
         return true;
     }

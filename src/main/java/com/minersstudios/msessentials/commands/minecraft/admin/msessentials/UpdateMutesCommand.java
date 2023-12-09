@@ -15,7 +15,7 @@ public final class UpdateMutesCommand {
     public static boolean runCommand(@NotNull CommandSender sender) {
         final long time = System.currentTimeMillis();
 
-        MSEssentials.getCache().muteMap.reloadMutes();
+        MSEssentials.cache().getMuteMap().reloadMutes();
         MSLogger.fine(sender, UPDATE_MUTES_SUCCESS.args(text(System.currentTimeMillis() - time)));
         return true;
     }
