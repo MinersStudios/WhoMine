@@ -17,6 +17,8 @@ import com.minersstudios.msessentials.tasks.PlayerListTask;
 import com.minersstudios.msessentials.tasks.SeatsTask;
 import com.minersstudios.msessentials.util.DiscordUtil;
 import com.minersstudios.msessentials.world.WorldDark;
+import fr.xephi.authme.AuthMe;
+import fr.xephi.authme.api.v3.AuthMeApi;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.scoreboard.Scoreboard;
@@ -78,6 +80,8 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
         this.runTaskTimer(new PlayerListTask(), 6000L, 6000L);
         this.runTaskTimer(new MuteMapTask(), 0L, 50L);
         this.runTaskTimer(new BanListTask(), 0L, 6000L);
+
+        this.setupAuthMe();
     }
 
     @Override
@@ -240,5 +244,25 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
         });
 
         this.cache.slashCommands = builder.build();
+    }
+
+    private void setupAuthMe() {
+        try {
+            final AuthMe authMe = AuthMeApi.getInstance().getPlugin();
+
+            if (!authMe.isEnabled()) {
+                this.getLogger().log(
+                        Level.SEVERE,
+                        "AuthMe is not enabled, MSEssentials will not work properly"
+                );
+                this.getServer().getPluginManager().disablePlugin(this);
+            }
+        } catch (final Throwable e) {
+            this.getLogger().log(
+                    Level.SEVERE,
+                    "AuthMe is not installed, MSEssentials will not work properly"
+            );
+            this.getServer().getPluginManager().disablePlugin(this);
+        }
     }
 }

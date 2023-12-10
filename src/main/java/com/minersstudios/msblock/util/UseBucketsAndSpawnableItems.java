@@ -1,7 +1,7 @@
 package com.minersstudios.msblock.util;
 
-import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.CoreProtectUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -230,7 +230,7 @@ public final class UseBucketsAndSpawnableItems {
                 && blockData instanceof final Levelled levelled
                 && levelled.getLevel() == levelled.getMinimumLevel()
         ) {
-            MSBlock.coreProtectAPI().logRemoval(playerName, blockLocation, Material.LAVA, blockData);
+            CoreProtectUtils.logRemoval(playerName, blockLocation, Material.LAVA, blockData);
             this.world.playSound(blockLocation, Sound.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
             this.itemInHand.setType(
                     gameMode == GameMode.SURVIVAL
@@ -251,7 +251,7 @@ public final class UseBucketsAndSpawnableItems {
                 return;
             }
 
-            MSBlock.coreProtectAPI().logRemoval(playerName, blockLocation, Material.WATER, blockData);
+            CoreProtectUtils.logRemoval(playerName, blockLocation, Material.WATER, blockData);
             this.world.playSound(blockLocation, Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
             this.itemInHand.setType(
                     gameMode == GameMode.SURVIVAL
@@ -268,7 +268,7 @@ public final class UseBucketsAndSpawnableItems {
 
         this.block.setType(Material.LAVA);
         this.world.playSound(blockLocation, Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
-        MSBlock.coreProtectAPI().logPlacement(this.player.getName(), blockLocation, Material.LAVA, this.block.getBlockData());
+        CoreProtectUtils.logPlacement(this.player.getName(), blockLocation, Material.LAVA, this.block.getBlockData());
         setBucketIfSurvival();
     }
 
@@ -283,7 +283,7 @@ public final class UseBucketsAndSpawnableItems {
         }
 
         this.world.playSound(blockLocation, Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
-        MSBlock.coreProtectAPI().logPlacement(player.getName(), blockLocation, Material.WATER, this.block.getBlockData());
+        CoreProtectUtils.logPlacement(player.getName(), blockLocation, Material.WATER, this.block.getBlockData());
         this.setBucketIfSurvival();
     }
 }

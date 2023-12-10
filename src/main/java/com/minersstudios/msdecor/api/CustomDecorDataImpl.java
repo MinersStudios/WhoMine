@@ -5,10 +5,7 @@ import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.location.MSVector;
 import com.minersstudios.mscore.sound.SoundGroup;
-import com.minersstudios.mscore.util.Font;
-import com.minersstudios.mscore.util.BlockUtils;
-import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.LocationUtils;
+import com.minersstudios.mscore.util.*;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.action.DecorBreakAction;
 import com.minersstudios.msdecor.api.action.DecorClickAction;
@@ -1046,7 +1043,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 blockState = fillBlockState;
             }
 
-            MSDecor.coreProtectAPI().logRemoval(
+            CoreProtectUtils.logRemoval(
                     changerName,
                     location,
                     replacedData.getMaterial(),
@@ -1058,7 +1055,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final Block newBlock = location.getBlock();
 
             blockList.add(newBlock);
-            MSDecor.coreProtectAPI().logPlacement(
+            CoreProtectUtils.logPlacement(
                     changerName,
                     location,
                     fillMaterial,

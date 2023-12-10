@@ -16,7 +16,3 @@ dependencies:
     version: $version
   - name: MSEssentials
     version: $version
-  - name: CoreProtect
-    version: '21.3'
-load-after:
-  - name: CoreProtect

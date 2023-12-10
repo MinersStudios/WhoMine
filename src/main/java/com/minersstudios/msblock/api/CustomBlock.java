@@ -7,6 +7,7 @@ import com.minersstudios.msblock.api.file.ToolType;
 import com.minersstudios.msblock.event.CustomBlockBreakEvent;
 import com.minersstudios.msblock.event.CustomBlockPlaceEvent;
 import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.CoreProtectUtils;
 import com.minersstudios.mscore.util.ItemUtils;
 import net.coreprotect.CoreProtectAPI;
 import net.minecraft.world.level.LevelAccessor;
@@ -140,7 +141,7 @@ public final class CustomBlock {
             this.block.setBlockData(noteBlock);
             this.customBlockData.getSoundGroup().playPlaceSound(this.block.getLocation().toCenterLocation());
             player.swingHand(hand);
-            MSBlock.coreProtectAPI().logPlacement(player.getName(), this.block.getLocation(), Material.NOTE_BLOCK, noteBlock);
+            CoreProtectUtils.logPlacement(player.getName(), this.block.getLocation(), Material.NOTE_BLOCK, noteBlock);
             BlockUtils.removeBlocksAround(this.block);
 
             if (player.getGameMode() == GameMode.SURVIVAL) {
@@ -183,7 +184,7 @@ public final class CustomBlock {
                 net.minecraft.world.level.block.Block.getId(blockState)
         );
         this.customBlockData.getSoundGroup().playBreakSound(this.block.getLocation().toCenterLocation());
-        MSBlock.coreProtectAPI().logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
+        CoreProtectUtils.logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
         this.block.setType(Material.AIR);
 
         final BlockSettings.Tool tool = this.customBlockData.getBlockSettings().getTool();

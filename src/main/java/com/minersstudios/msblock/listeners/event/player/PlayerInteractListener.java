@@ -13,6 +13,7 @@ import com.minersstudios.msblock.util.UseBucketsAndSpawnableItems;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
 import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.util.BlockUtils;
+import com.minersstudios.mscore.util.CoreProtectUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.mscore.util.PlayerUtils;
 import net.minecraft.server.level.ServerPlayer;
@@ -399,7 +400,7 @@ public final class PlayerInteractListener extends AbstractMSListener<MSBlock> {
         final BlockData blockData = itemType.createBlockData();
         final SoundGroup soundGroup = blockData.getSoundGroup();
 
-        MSBlock.coreProtectAPI().logPlacement(player.getName(), blockLocation, itemType, blockData);
+        CoreProtectUtils.logPlacement(player.getName(), blockLocation, itemType, blockData);
         blockAtFace.getWorld().playSound(
                 blockLocation,
                 soundGroup.getPlaceSound(),

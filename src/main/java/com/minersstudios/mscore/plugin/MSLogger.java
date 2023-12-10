@@ -41,7 +41,6 @@ public final class MSLogger {
     private static final String ANSI_RESET = "\u001B[0m";
     private static final int SEVERE = 1000;
     private static final int WARNING = 900;
-    private static final int INFO = 800;
     private static final int FINE = 500;
 
     @Contract(" -> fail")

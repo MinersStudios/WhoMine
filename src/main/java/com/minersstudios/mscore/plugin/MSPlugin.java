@@ -1,7 +1,6 @@
 package com.minersstudios.mscore.plugin;
 
 import com.google.common.base.Charsets;
-import com.minersstudios.mscore.util.SharedConstants;
 import com.minersstudios.mscore.command.Commodore;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
@@ -10,9 +9,9 @@ import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.packet.PacketEvent;
+import com.minersstudios.mscore.packet.PacketListenersMap;
 import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
-import com.minersstudios.mscore.packet.PacketListenersMap;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.util.*;
@@ -37,6 +36,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -282,13 +282,15 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         this.registerPacketListeners();
         this.enable();
 
-        this.getComponentLogger()
-        .info(
-                text(
-                        "Enabled in " + (System.currentTimeMillis() - time) + "ms",
-                        NamedTextColor.GREEN
-                )
-        );
+        if (this.isEnabled()) {
+            this.getComponentLogger()
+            .info(
+                    text(
+                            "Enabled in " + (System.currentTimeMillis() - time) + "ms",
+                            NamedTextColor.GREEN
+                    )
+            );
+        }
     }
 
     /**
@@ -320,7 +322,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      *
      * @see MSPlugin#onLoad()
      */
-    public void load() {}
+    public void load() {
+        // plugin load logic
+    }
 
     /**
      * Called when this plugin is enabled.
@@ -328,7 +332,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      *
      * @see MSPlugin#onEnable()
      */
-    public void enable() {}
+    public void enable() {
+        // plugin enable logic
+    }
 
     /**
      * Called when this plugin is disabled.
@@ -336,7 +342,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      *
      * @see MSPlugin#onDisable()
      */
-    public void disable() {}
+    public void disable() {
+        // plugin disable logic
+    }
 
     /**
      * Discards any data in {@link #getConfig()} and reloads from disk.
@@ -510,10 +518,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @see #registerListeners()
      */
     @SuppressWarnings("unchecked")
-    private <P extends MSPlugin<P>> @NotNull List<AbstractMSListener<P>> loadListeners() {
+    private @NotNull List<AbstractMSListener<T>> loadListeners() {
         final Logger logger = this.getLogger();
         final ClassLoader classLoader = this.getClassLoader();
-        final var listeners = new HashSet<AbstractMSListener<P>>();
+        final var listeners = new HashSet<AbstractMSListener<T>>();
 
         for (final var className : this.classNames) {
             try {
@@ -521,7 +529,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
                 if (!clazz.isAnnotationPresent(MSListener.class)) continue;
                 if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSListener<?> listener) {
-                    listeners.add((AbstractMSListener<P>) listener);
+                    listeners.add((AbstractMSListener<T>) listener);
                 } else {
                     logger.warning(
                             "Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")"
@@ -561,10 +569,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @see #registerPacketListeners()
      */
     @SuppressWarnings("unchecked")
-    private <P extends MSPlugin<P>> @NotNull List<AbstractMSPacketListener<P>> loadPacketListeners() {
+    private @NotNull List<AbstractMSPacketListener<T>> loadPacketListeners() {
         final Logger logger = this.getLogger();
         final ClassLoader classLoader = this.getClassLoader();
-        final var listeners = new HashSet<AbstractMSPacketListener<P>>();
+        final var listeners = new HashSet<AbstractMSPacketListener<T>>();
 
         for (final var className : this.classNames) {
             try {
@@ -572,7 +580,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
                 if (!clazz.isAnnotationPresent(MSPacketListener.class)) continue;
                 if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSPacketListener<?> listener) {
-                    listeners.add((AbstractMSPacketListener<P>) listener);
+                    listeners.add((AbstractMSPacketListener<T>) listener);
                 } else {
                     logger.warning(
                             "Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")"
@@ -936,61 +944,59 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @param packageName The package name
      * @return The list of class names
      * @throws Error If the class names could not be loaded
-     * @throws NullPointerException If the package does not exist
+     * @throws IllegalArgumentException If the package does not exist
      */
     protected static @NotNull List<String> loadClassNames(
             final @NotNull ClassLoader classLoader,
             final @NotNull String packageName
-    ) throws Error, NullPointerException {
+    ) throws Error, IllegalArgumentException {
         final var classNames = new ArrayList<String>();
         final var url = classLoader.getResource(packageName.replace(".", "/"));
 
         if (url == null) {
-            throw new NullPointerException("Package " + packageName + " does not exist");
+            throw new IllegalArgumentException("Package " + packageName + " does not exist");
         }
 
         try {
             final URI uri = new URI(url.getPath().split("!")[0]);
 
             if (uri.isAbsolute()) {
-                final JarFile jarFile = new JarFile(new File(uri));
-
-                jarFile.stream()
-                .map(JarEntry::getName)
-                .filter(name ->
-                        name.endsWith(".class")
-                        && !"module-info.class".equals(name)
-                )
-                .map(name ->
-                        name
-                        .replace('/', '.')
-                        .replace(".class", "")
-                )
-                .forEach(classNames::add);
-
-                jarFile.close();
+                try (final var jarFile = new JarFile(new File(uri))) {
+                    jarFile.stream()
+                    .map(JarEntry::getName)
+                    .filter(name ->
+                            name.endsWith(".class")
+                            && !"module-info.class".equals(name)
+                    )
+                    .map(name ->
+                            name
+                            .replace('/', '.')
+                            .replace(".class", "")
+                    )
+                    .forEach(classNames::add);
+                }
             } else {
-                final var paths = Files.list(Path.of(url.toURI()));
+                try (final var paths = Files.list(Path.of(url.toURI()))) {
+                    paths
+                    .forEach(path -> {
+                        final String fileName = path.getFileName().toString();
 
-                paths
-                .forEach(path -> {
-                    final String fileName = path.getFileName().toString();
-
-                    if (Files.isDirectory(path)) {
-                        classNames.addAll(
-                                loadClassNames(
-                                        classLoader,
-                                        packageName + '.' + fileName
-                                )
-                        );
-                    } else if (fileName.endsWith(".class")) {
-                        classNames.add(packageName + '.' + fileName.substring(0, fileName.length() - 6));
-                    }
-                });
-
-                paths.close();
+                        if (Files.isDirectory(path)) {
+                            classNames.addAll(
+                                    loadClassNames(
+                                            classLoader,
+                                            packageName + '.' + fileName
+                                    )
+                            );
+                        } else if (fileName.endsWith(".class")) {
+                            classNames.add(
+                                    packageName + '.' + fileName.substring(0, fileName.length() - 6)
+                            );
+                        }
+                    });
+                }
             }
-        } catch (final Exception e) {
+        } catch (final IOException | URISyntaxException e) {
             throw new Error("Failed to load class names", e);
         }
 

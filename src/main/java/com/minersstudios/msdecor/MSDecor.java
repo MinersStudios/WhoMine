@@ -2,8 +2,6 @@ package com.minersstudios.msdecor;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msdecor.api.CustomDecorType;
-import net.coreprotect.CoreProtect;
-import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -23,7 +21,6 @@ public final class MSDecor extends MSPlugin<MSDecor> {
     private static MSDecor singleton;
 
     private Config config;
-    private CoreProtectAPI coreProtectAPI;
 
     public MSDecor() {
         singleton = this;
@@ -52,30 +49,12 @@ public final class MSDecor extends MSPlugin<MSDecor> {
         }
     }
 
-    @Override
-    public void enable() {
-        this.coreProtectAPI = CoreProtect.getInstance().getAPI();
-    }
-
-    @Override
-    public void disable() {
-        this.coreProtectAPI = null;
-    }
-
     /**
      * @return The configuration of the plugin
      *         or null if the plugin is not enabled
      */
     public @UnknownNullability Config getConfiguration() {
         return this.config;
-    }
-
-    /**
-     * @return The CoreProtectAPI instance
-     *         or null if the plugin is not enabled
-     */
-    public @UnknownNullability CoreProtectAPI getCoreProtectAPI() {
-        return this.coreProtectAPI;
     }
 
     /**
@@ -108,13 +87,5 @@ public final class MSDecor extends MSPlugin<MSDecor> {
      */
     public static @UnknownNullability Config config() {
         return singleton == null ? null : singleton.config;
-    }
-
-    /**
-     * @return The CoreProtectAPI instance
-     *         or null if the plugin is not enabled
-     */
-    public static @UnknownNullability CoreProtectAPI coreProtectAPI() {
-        return singleton == null ? null : singleton.coreProtectAPI;
     }
 }

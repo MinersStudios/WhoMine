@@ -1,11 +1,9 @@
 package com.minersstudios.msblock;
 
 import com.minersstudios.msblock.api.CustomBlockData;
-import com.minersstudios.mscore.util.SharedConstants;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import net.coreprotect.CoreProtect;
-import net.coreprotect.CoreProtectAPI;
+import com.minersstudios.mscore.util.SharedConstants;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -25,7 +23,6 @@ public final class MSBlock extends MSPlugin<MSBlock> {
 
     private Cache cache;
     private Config config;
-    private CoreProtectAPI coreProtectAPI;
 
     private static final String NOTE_BLOCK_UPDATES = "block-updates.disable-noteblock-updates";
 
@@ -44,8 +41,6 @@ public final class MSBlock extends MSPlugin<MSBlock> {
 
     @Override
     public void enable() {
-        this.coreProtectAPI = CoreProtect.getInstance().getAPI();
-
         this.cache.load();
         this.config.reload();
     }
@@ -53,8 +48,6 @@ public final class MSBlock extends MSPlugin<MSBlock> {
     @Override
     public void disable() {
         this.cache.unload();
-
-        this.coreProtectAPI = null;
     }
 
     /**
@@ -71,14 +64,6 @@ public final class MSBlock extends MSPlugin<MSBlock> {
      */
     public @UnknownNullability Config getConfiguration() {
         return this.config;
-    }
-
-    /**
-     * @return The CoreProtectAPI instance
-     *         or null if the plugin is not enabled
-     */
-    public @UnknownNullability CoreProtectAPI getCoreProtectAPI() {
-        return this.coreProtectAPI;
     }
 
     /**
@@ -119,14 +104,6 @@ public final class MSBlock extends MSPlugin<MSBlock> {
      */
     public static @UnknownNullability Config config() {
         return singleton == null ? null : singleton.config;
-    }
-
-    /**
-     * @return The CoreProtectAPI instance
-     *         or null if the plugin is not enabled
-     */
-    public static @UnknownNullability CoreProtectAPI coreProtectAPI() {
-        return singleton == null ? null : singleton.coreProtectAPI;
     }
 
     private static void disableNoteBlockUpdates() {

@@ -1,7 +1,7 @@
 plugins {
     java
-    kotlin("jvm") version "1.9.10"
-    id("io.papermc.paperweight.userdev") version "1.5.9"
+    kotlin("jvm") version "2.0.0-Beta1"
+    id("io.papermc.paperweight.userdev") version "1.5.11"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -68,12 +68,12 @@ allprojects {
 subprojects {
     val lowercaseName = project.name.lowercase()
     val description = when (project.name) {
-        "mscore" -> "A Minecraft core plugin for WhoMine plugins"
+        "mscore" ->       "A Minecraft core plugin for WhoMine plugins"
         "msessentials" -> "A Minecraft plugin with custom features for WhoMine"
-        "msblock" -> "A Minecraft plugin with custom blocks for WhoMine"
-        "msdecor" -> "A Minecraft plugin with decorations for WhoMine"
-        "msitem" -> "A Minecraft plugin with custom items for WhoMine"
-        else -> "A Minecraft plugin for WhoMine"
+        "msblock" ->      "A Minecraft plugin with custom blocks for WhoMine"
+        "msdecor" ->      "A Minecraft plugin with decorations for WhoMine"
+        "msitem" ->       "A Minecraft plugin with custom items for WhoMine"
+        else ->           "A Minecraft plugin for WhoMine"
     }
 
     dependencies {
@@ -84,7 +84,7 @@ subprojects {
         main {
             java {
                 srcDir("../src/main/java")
-                include("**/$lowercaseName/**")
+                include("**/com/minersstudios/$lowercaseName/**")
             }
 
             resources {
@@ -104,14 +104,14 @@ subprojects {
 
         processResources {
             val props = mapOf(
-                    "name" to project.name,
-                    "version" to rootProject.version,
-                    "description" to description,
-                    "authors" to authors.joinToString(", "),
+                    "name" to         project.name,
+                    "version" to      rootProject.version,
+                    "description" to  description,
+                    "authors" to      authors.joinToString(", "),
                     "contributors" to contributors.joinToString(", "),
-                    "website" to website,
-                    "apiVersion" to apiVersion,
-                    "main" to "${rootProject.group}.$lowercaseName.${project.name}"
+                    "website" to      website,
+                    "apiVersion" to   apiVersion,
+                    "main" to         "${rootProject.group}.$lowercaseName.${project.name}"
             )
 
             inputs.properties(props)
