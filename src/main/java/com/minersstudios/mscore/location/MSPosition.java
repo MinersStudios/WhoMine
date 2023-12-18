@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.location;
 
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.util.LocationUtils;
+import com.minersstudios.mscore.utility.LocationUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;

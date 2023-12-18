@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.plugin;
 
-import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.Font;
+import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.utility.Font;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;

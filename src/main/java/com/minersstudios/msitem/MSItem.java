@@ -2,6 +2,7 @@ package com.minersstudios.msitem;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msitem.api.CustomItemType;
+import com.minersstudios.msitem.listener.event.mechanic.DosimeterMechanic;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -18,6 +19,8 @@ public final class MSItem extends MSPlugin<MSItem> {
     private Config config;
     private Cache cache;
 
+    public static final String NAMESPACE = "msitems";
+
     public MSItem() {
         singleton = this;
     }
@@ -27,13 +30,18 @@ public final class MSItem extends MSPlugin<MSItem> {
         this.cache = new Cache(this);
         this.config = new Config(this, this.getConfigFile());
 
+        this.cache.load();
         initClass(CustomItemType.class);
     }
 
     @Override
     public void enable() {
-        this.cache.load();
         this.config.reload();
+
+        this.runTaskTimer(
+                () -> new DosimeterMechanic.DosimeterTask(this).run(),
+                0L, this.config.getDosimeterCheckRate()
+        );
     }
 
     @Override

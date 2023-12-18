@@ -1,10 +1,9 @@
 package com.minersstudios.msitem;
 
 import com.minersstudios.mscore.plugin.config.PluginConfig;
-import com.minersstudios.mscore.util.MSPluginUtils;
+import com.minersstudios.mscore.utility.MSPluginUtils;
 import com.minersstudios.msitem.api.renameable.RenameableItem;
 import com.minersstudios.msitem.api.renameable.RenameableItemRegistry;
-import com.minersstudios.msitem.listeners.event.mechanic.DosimeterMechanic;
 import com.minersstudios.msitem.menu.RenamesMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -25,7 +24,7 @@ import java.util.logging.Level;
  * save configuration.
  */
 public final class Config extends PluginConfig<MSItem> {
-    public long dosimeterCheckRate;
+    private long dosimeterCheckRate;
 
     /**
      * Configuration constructor
@@ -50,16 +49,6 @@ public final class Config extends PluginConfig<MSItem> {
 
         final MSItem plugin = this.getPlugin();
 
-        for (final var task : plugin.getServer().getScheduler().getPendingTasks()) {
-            if (task.getOwner().equals(plugin)) {
-                task.cancel();
-            }
-        }
-
-        plugin.runTaskTimer(
-                () -> new DosimeterMechanic.DosimeterTask(plugin).run(),
-                0L, this.dosimeterCheckRate
-        );
         plugin.saveResource("items/example.yml", true);
         plugin.setLoadedCustoms(true);
         plugin.runTaskTimer(task -> {
@@ -77,6 +66,13 @@ public final class Config extends PluginConfig<MSItem> {
     @Override
     public void reloadDefaultVariables() {
         this.setIfNotExists("dosimeter-check-rate", 100);
+    }
+
+    /**
+     * @return The dosimeter check rate
+     */
+    public long getDosimeterCheckRate() {
+        return this.dosimeterCheckRate;
     }
 
     private void loadRenames() {

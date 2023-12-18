@@ -23,10 +23,10 @@ import java.util.logging.Level;
  * save configuration.
  */
 public final class Config extends PluginConfig<MSBlock> {
-    public String woodSoundPlace;
-    public String woodSoundBreak;
-    public String woodSoundStep;
-    public String woodSoundHit;
+    private String woodSoundPlace;
+    private String woodSoundBreak;
+    private String woodSoundStep;
+    private String woodSoundHit;
 
     private static final String BLOCKS_FOLDER = "blocks";
 
@@ -85,6 +85,34 @@ public final class Config extends PluginConfig<MSBlock> {
         this.setIfNotExists("wood-sound.break", "custom.block.wood.break");
         this.setIfNotExists("wood-sound.step", "custom.block.wood.step");
         this.setIfNotExists("wood-sound.hit", "custom.block.wood.hit");
+    }
+
+    /**
+     * @return The wood sound place
+     */
+    public @NotNull String getWoodSoundPlace() {
+        return this.woodSoundPlace;
+    }
+
+    /**
+     * @return The wood sound break
+     */
+    public @NotNull String getWoodSoundBreak() {
+        return this.woodSoundBreak;
+    }
+
+    /**
+     * @return The wood sound step
+     */
+    public @NotNull String getWoodSoundStep() {
+        return this.woodSoundStep;
+    }
+
+    /**
+     * @return The wood sound hit
+     */
+    public @NotNull String getWoodSoundHit() {
+        return this.woodSoundHit;
     }
 
     private void loadBlocks() {

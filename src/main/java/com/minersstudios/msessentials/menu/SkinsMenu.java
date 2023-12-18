@@ -3,9 +3,10 @@ package com.minersstudios.msessentials.menu;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
+import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerFile;
@@ -22,10 +23,9 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 public final class SkinsMenu {
-    private static final Component TITLE = translatable("ms.menu.skins.title", ChatUtils.DEFAULT_STYLE);
+    private static final Component TITLE = LanguageRegistry.Components.MENU_SKINS_TITLE.style(ChatUtils.DEFAULT_STYLE);
     private static final InventoryButton EMPTY_BUTTON = new InventoryButton().item(new ItemStack(Material.AIR));
     private static final InventoryButton APPLY_BUTTON;
     private static final InventoryButton APPLY_BUTTON_EMPTY;
@@ -34,15 +34,13 @@ public final class SkinsMenu {
     private static final CustomInventory CUSTOM_INVENTORY;
 
     static {
-        final MSEssentials plugin = MSEssentials.singleton();
-
         final ItemStack applyItem = new ItemStack(Material.PAPER);
         final ItemMeta applyMeta = applyItem.getItemMeta();
 
         final ItemStack applyEmpty = applyItem.clone();
         final ItemMeta applyEmptyMeta = applyEmpty.getItemMeta();
 
-        final Component applyName = LanguageFile.renderTranslationComponent("ms.menu.skins.button.apply").style(ChatUtils.DEFAULT_STYLE);
+        final Component applyName = LanguageRegistry.Components.MENU_SKINS_BUTTON_APPLY.style(ChatUtils.DEFAULT_STYLE);
 
         applyMeta.displayName(applyName);
         applyMeta.setCustomModelData(5004);
@@ -54,7 +52,7 @@ public final class SkinsMenu {
 
         APPLY_BUTTON = new InventoryButton(applyItem, (event, inv) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
             final Skin skin = playerInfo.getPlayerFile().getSkin((int) inv.args().get(0));
 
             if (skin == null) {
@@ -72,7 +70,7 @@ public final class SkinsMenu {
         final ItemStack deleteEmpty = deleteItem.clone();
         final ItemMeta deleteEmptyMeta = deleteEmpty.getItemMeta();
 
-        final Component deleteName = LanguageFile.renderTranslationComponent("ms.menu.skins.button.delete").style(ChatUtils.DEFAULT_STYLE);
+        final Component deleteName = LanguageRegistry.Components.MENU_SKINS_BUTTON_DELETE.style(ChatUtils.DEFAULT_STYLE);
 
         deleteMeta.displayName(deleteName);
         deleteMeta.setCustomModelData(5005);
@@ -83,6 +81,7 @@ public final class SkinsMenu {
         deleteEmpty.setItemMeta(deleteEmptyMeta);
 
         DELETE_BUTTON = new InventoryButton(deleteItem, (event, inv) -> {
+            final MSEssentials plugin = MSEssentials.singleton();
             final Player player = (Player) event.getWhoClicked();
             final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
@@ -99,23 +98,24 @@ public final class SkinsMenu {
                 playerFile.removeSkin(selectedSkin);
                 MSLogger.fine(
                         player,
-                        translatable(
-                                "ms.discord.skin.successfully_removed.minecraft",
-                                skinName
-                        )
+                        LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT
+                        .args(skinName)
                 );
                 playerInfo.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                         LanguageFile.renderTranslation(
-                                translatable(
-                                        "ms.discord.skin.successfully_removed",
+                                LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED
+                                .args(
                                         skinName,
                                         playerInfo.getDefaultName(),
                                         text(playerInfo.getNickname())
                                 )
                         )
                 ));
-            } catch (final Exception ignored) {
-                MSLogger.severe(player, translatable("ms.error.something_went_wrong"));
+            } catch (final Throwable ignored) {
+                MSLogger.severe(
+                        player,
+                        LanguageRegistry.Components.ERROR_SOMETHING_WENT_WRONG
+                );
             }
 
             open(plugin, player);

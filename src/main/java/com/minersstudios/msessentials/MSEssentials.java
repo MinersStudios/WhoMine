@@ -1,21 +1,20 @@
 package com.minersstudios.msessentials;
 
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.discord.DiscordHandler;
 import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;
 import com.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.minersstudios.msessentials.menu.SkinsMenu;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
-import com.minersstudios.msessentials.tasks.BanListTask;
-import com.minersstudios.msessentials.tasks.MuteMapTask;
-import com.minersstudios.msessentials.tasks.PlayerListTask;
-import com.minersstudios.msessentials.tasks.SeatsTask;
+import com.minersstudios.msessentials.task.BanListTask;
+import com.minersstudios.msessentials.task.MuteMapTask;
+import com.minersstudios.msessentials.task.PlayerListTask;
+import com.minersstudios.msessentials.task.SeatsTask;
 import com.minersstudios.msessentials.world.WorldDark;
 import fr.xephi.authme.AuthMe;
 import fr.xephi.authme.api.v3.AuthMeApi;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scoreboard.Scoreboard;
@@ -24,8 +23,6 @@ import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static net.kyori.adventure.text.Component.translatable;
 
 /**
  * The main class of the MSEssentials plugin
@@ -39,10 +36,6 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     private Config config;
     private Scoreboard scoreboardHideTags;
     private Team scoreboardHideTagsTeam;
-
-    private static final TranslatableComponent DISABLE_TITLE = translatable("ms.on_disable.message.title");
-    private static final TranslatableComponent DISABLE_SUBTITLE = translatable("ms.on_disable.message.subtitle");
-    private static final String SERVER_DISABLED = LanguageFile.renderTranslation("ms.discord.server.disabled");
 
     public static final String NAMESPACE = "msessentials";
 
@@ -95,7 +88,11 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
             for (final var player : onlinePlayers) {
                 playerInfoMap
                 .get(player)
-                .kickPlayer(player, DISABLE_TITLE, DISABLE_SUBTITLE);
+                .kickPlayer(
+                        player,
+                        LanguageRegistry.Components.ON_DISABLE_MESSAGE_TITLE,
+                        LanguageRegistry.Components.ON_DISABLE_MESSAGE_SUBTITLE
+                );
             }
         }
 
@@ -105,8 +102,8 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
 
         final DiscordHandler discordHandler = this.cache.getDiscordHandler();
 
-        discordHandler.sendMessage(ChatType.GLOBAL, SERVER_DISABLED);
-        discordHandler.sendMessage(ChatType.LOCAL, SERVER_DISABLED);
+        discordHandler.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
+        discordHandler.sendMessage(ChatType.LOCAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
 
         this.cache.unload();
 

@@ -1,8 +1,8 @@
 package com.minersstudios.msessentials;
 
 import com.minersstudios.mscore.plugin.cache.PluginCache;
-import com.minersstudios.msessentials.anomalies.Anomaly;
-import com.minersstudios.msessentials.anomalies.AnomalyAction;
+import com.minersstudios.msessentials.anomaly.Anomaly;
+import com.minersstudios.msessentials.anomaly.AnomalyAction;
 import com.minersstudios.msessentials.chat.ChatBuffer;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.discord.DiscordHandler;

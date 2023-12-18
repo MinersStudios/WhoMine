@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.api.renameable;
 
 import com.google.common.collect.ImmutableSet;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

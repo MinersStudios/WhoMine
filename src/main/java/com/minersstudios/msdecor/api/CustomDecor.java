@@ -3,7 +3,7 @@ package com.minersstudios.msdecor.api;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.util.MSDecorUtils;
+import com.minersstudios.mscore.utility.MSDecorUtils;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.level.block.Blocks;

@@ -2,8 +2,9 @@ package com.minersstudios.msdecor.registry.furniture.chair;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -42,7 +43,7 @@ public abstract class Chair<C extends CustomDecorData<C>> extends CustomDecorDat
                 .recipes(
                         Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                .group(CustomDecorType.NAMESPACE + ":chair")
+                                .group(MSDecor.NAMESPACE + ":chair")
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
                                         "P  ",

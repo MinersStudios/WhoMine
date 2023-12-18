@@ -1,13 +1,13 @@
 package com.minersstudios.msessentials.player;
 
-import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.inventory.SignMenu;
+import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.menu.PronounsMenu;
-import com.minersstudios.msessentials.util.MSPlayerUtils;
-import com.minersstudios.msessentials.util.MessageUtils;
+import com.minersstudios.msessentials.utility.MSPlayerUtils;
+import com.minersstudios.msessentials.utility.MessageUtils;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 /**
  * Registration process class.
@@ -28,28 +27,6 @@ public final class RegistrationProcess {
     private Player player;
     private PlayerInfo playerInfo;
     private Location playerLocation;
-
-    private static final TranslatableComponent M_0 = translatable("ms.registration.message.0");
-    private static final TranslatableComponent M_1 = translatable("ms.registration.message.1");
-    private static final TranslatableComponent M_2 = translatable("ms.registration.message.2");
-    private static final TranslatableComponent M_3 = translatable("ms.registration.message.3");
-    private static final TranslatableComponent M_4 = translatable("ms.registration.message.4");
-    private static final TranslatableComponent M_5 = translatable("ms.registration.message.5");
-    private static final TranslatableComponent M_6 = translatable("ms.registration.message.6");
-    private static final TranslatableComponent M_7 = translatable("ms.registration.message.7");
-    private static final TranslatableComponent M_8 = translatable("ms.registration.message.8");
-    private static final TranslatableComponent M_9 = translatable("ms.registration.message.9");
-    private static final TranslatableComponent M_10 = translatable("ms.registration.message.10");
-    private static final TranslatableComponent M_11 = translatable("ms.registration.message.11");
-    private static final TranslatableComponent M_12 = translatable("ms.registration.message.12");
-    private static final TranslatableComponent M_13 = translatable("ms.registration.message.13");
-    private static final TranslatableComponent M_14 = translatable("ms.registration.message.14");
-    private static final TranslatableComponent M_15 = translatable("ms.registration.message.15");
-    private static final TranslatableComponent M_16 = translatable("ms.registration.message.16");
-    private static final TranslatableComponent M_17 = translatable("ms.registration.message.17");
-    private static final TranslatableComponent ONLY_CYRILLIC = translatable("ms.registration.only_cyrillic", NamedTextColor.GOLD);
-    private static final TranslatableComponent LOCAL_FORMAT = translatable("ms.chat.local.format");
-    private static final TranslatableComponent ANONYMOUS_NAME = translatable("ms.registration.anonymous.name");
 
     public RegistrationProcess(final @NotNull MSEssentials plugin) {
         this.plugin = plugin;
@@ -67,23 +44,23 @@ public final class RegistrationProcess {
         this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, SoundCategory.MUSIC, 0.15f, 1.25f);
         playerInfo.createPlayerFile();
 
-        this.sendDialogueMessage(M_0, 100L);
-        this.sendDialogueMessage(M_1, 150L);
-        this.sendDialogueMessage(M_2, 225L);
-        this.sendDialogueMessage(M_3, 300L);
-        this.sendDialogueMessage(M_4, 350L);
-        this.sendDialogueMessage(M_5, 400L);
-        this.sendDialogueMessage(M_6, 450L);
+        this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_0, 100L);
+        this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_1, 150L);
+        this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_2, 225L);
+        this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_3, 300L);
+        this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_4, 350L);
+        this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_5, 400L);
+        this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_6, 450L);
 
         this.plugin.runTaskLater(this::setFirstname, 550L);
     }
 
     private void setFirstname() {
         new SignMenu(
-                LanguageFile.renderTranslationComponent("ms.registration.sign.first_name.0"),
-                LanguageFile.renderTranslationComponent("ms.registration.sign.first_name.1"),
-                LanguageFile.renderTranslationComponent("ms.registration.sign.first_name.2"),
-                LanguageFile.renderTranslationComponent("ms.registration.sign.first_name.3"),
+                LanguageRegistry.Components.REGISTRATION_SIGN_FIRST_NAME_0,
+                LanguageRegistry.Components.REGISTRATION_SIGN_FIRST_NAME_1,
+                LanguageRegistry.Components.REGISTRATION_SIGN_FIRST_NAME_2,
+                LanguageRegistry.Components.REGISTRATION_SIGN_FIRST_NAME_3,
                 (player, strings) -> {
                     final String firstname = strings[0].trim();
 
@@ -94,10 +71,10 @@ public final class RegistrationProcess {
 
                     this.playerInfo.getPlayerFile().getPlayerName().setFirstName(firstname);
 
-                    this.sendDialogueMessage(M_7, 25L);
-                    this.sendDialogueMessage(M_8, 100L);
-                    this.sendDialogueMessage(M_9, 225L);
-                    this.sendDialogueMessage(M_10, 300L);
+                    this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_7, 25L);
+                    this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_8, 100L);
+                    this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_9, 225L);
+                    this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_10, 300L);
 
                     this.plugin.runTaskLater(this::setLastname, 375L);
 
@@ -108,10 +85,10 @@ public final class RegistrationProcess {
 
     private void setLastname() {
         new SignMenu(
-                LanguageFile.renderTranslationComponent("ms.registration.sign.last_name.0"),
-                LanguageFile.renderTranslationComponent("ms.registration.sign.last_name.1"),
-                LanguageFile.renderTranslationComponent("ms.registration.sign.last_name.2"),
-                LanguageFile.renderTranslationComponent("ms.registration.sign.last_name.3"),
+                LanguageRegistry.Components.REGISTRATION_SIGN_LAST_NAME_0,
+                LanguageRegistry.Components.REGISTRATION_SIGN_LAST_NAME_1,
+                LanguageRegistry.Components.REGISTRATION_SIGN_LAST_NAME_2,
+                LanguageRegistry.Components.REGISTRATION_SIGN_LAST_NAME_3,
                 (player, strings) -> {
                     final String lastname = strings[0].trim();
 
@@ -130,10 +107,10 @@ public final class RegistrationProcess {
 
     private void setPatronymic() {
         new SignMenu(
-                LanguageFile.renderTranslationComponent("ms.registration.sign.patronymic.0"),
-                LanguageFile.renderTranslationComponent("ms.registration.sign.patronymic.1"),
-                LanguageFile.renderTranslationComponent("ms.registration.sign.patronymic.2"),
-                LanguageFile.renderTranslationComponent("ms.registration.sign.patronymic.3"),
+                LanguageRegistry.Components.REGISTRATION_SIGN_PATRONYMIC_0,
+                LanguageRegistry.Components.REGISTRATION_SIGN_PATRONYMIC_1,
+                LanguageRegistry.Components.REGISTRATION_SIGN_PATRONYMIC_2,
+                LanguageRegistry.Components.REGISTRATION_SIGN_PATRONYMIC_3,
                 (player, strings) -> {
                     final String patronymic = strings[0].trim();
 
@@ -151,7 +128,7 @@ public final class RegistrationProcess {
                     this.playerInfo.initNames();
 
                     this.sendDialogueMessage(
-                            M_11.args(
+                            LanguageRegistry.Components.REGISTRATION_MESSAGE_11.args(
                                     text(this.playerInfo.getID(true, false)),
                                     text(name.getFirstName()),
                                     text(name.getLastName()),
@@ -159,8 +136,8 @@ public final class RegistrationProcess {
                             ),
                             25L
                     );
-                    this.sendDialogueMessage(M_12, 100L);
-                    this.sendDialogueMessage(M_13, 150L);
+                    this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_12, 100L);
+                    this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_13, 150L);
 
                     this.plugin.runTaskLater(() -> PronounsMenu.open(this.player), 225L);
 
@@ -178,11 +155,12 @@ public final class RegistrationProcess {
         this.playerInfo = playerInfo;
         final Pronouns pronouns = this.playerInfo.getPlayerFile().getPronouns();
 
-        this.sendDialogueMessage(M_14, 25L);
-        this.sendDialogueMessage(M_15, 75L);
-        this.sendDialogueMessage(M_16, 125L);
+        this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_14, 25L);
+        this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_15, 75L);
+        this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_16, 125L);
         this.sendDialogueMessage(
-                M_17.args(
+                LanguageRegistry.Components.REGISTRATION_MESSAGE_17
+                .args(
                         pronouns.getPronouns(),
                         pronouns.getTraveler()
                 ),
@@ -200,7 +178,10 @@ public final class RegistrationProcess {
     }
 
     private void sendWarningMessage() {
-        this.player.sendMessage(ONLY_CYRILLIC);
+        this.player.sendMessage(
+                LanguageRegistry.Components.REGISTRATION_ONLY_CYRILLIC
+                        .color(NamedTextColor.GOLD)
+        );
     }
 
     private void sendDialogueMessage(
@@ -209,10 +190,12 @@ public final class RegistrationProcess {
     ) {
         this.plugin.runTaskLater(() -> {
             this.player.sendMessage(
-                    LOCAL_FORMAT.args(
-                            ANONYMOUS_NAME,
+                    LanguageRegistry.Components.CHAT_LOCAL_FORMAT
+                    .args(
+                            LanguageRegistry.Components.REGISTRATION_ANONYMOUS_NAME,
                             message.color(MessageUtils.Colors.CHAT_COLOR_SECONDARY)
-                    ).color(MessageUtils.Colors.CHAT_COLOR_PRIMARY)
+                    )
+                    .color(MessageUtils.Colors.CHAT_COLOR_PRIMARY)
             );
             this.player.playSound(
                     this.playerLocation,

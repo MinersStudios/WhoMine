@@ -1,6 +1,7 @@
 package com.minersstudios.msitem.api;
 
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.msitem.MSItem;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
@@ -56,7 +57,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
             throw new IllegalArgumentException("Item type cannot be empty! Check " + key);
         }
 
-        this.namespacedKey = new NamespacedKey(CustomItemType.NAMESPACE, key);
+        this.namespacedKey = new NamespacedKey(MSItem.NAMESPACE, key);
         this.itemStack = itemStack;
         this.recipes = new ArrayList<>();
 

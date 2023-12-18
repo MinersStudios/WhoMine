@@ -3,8 +3,8 @@ package com.minersstudios.mscore;
 import com.minersstudios.mscore.packet.ChannelHandler;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.CoreProtectUtils;
+import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.utility.CoreProtectUtils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 public final class MSCore extends MSPlugin<MSCore> {
     private static MSCore singleton;
 
+    public static final String NAMESPACE = "mscore";
+
     public MSCore() {
         singleton = this;
     }
@@ -31,8 +33,8 @@ public final class MSCore extends MSPlugin<MSCore> {
 
         if (!LanguageFile.isLoaded()) {
             LanguageFile.loadLanguage(
-                    GLOBAL_CONFIG.getLanguageFolderLink(),
-                    GLOBAL_CONFIG.getLanguageCode()
+                    globalConfig().getLanguageFolderLink(),
+                    globalConfig().getLanguageCode()
             );
         }
 

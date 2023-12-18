@@ -2,9 +2,9 @@ package com.minersstudios.msdecor.registry.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.sound.SoundGroup;
-import com.minersstudios.msdecor.MSDecor;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msdecor.api.CustomDecorDataImpl;
 import com.minersstudios.msdecor.api.DecorHitBox;
 import com.minersstudios.msdecor.api.Facing;
@@ -27,7 +27,7 @@ public final class TreeStar extends CustomDecorDataImpl<TreeStar> {
         itemMeta.displayName(ChatUtils.createDefaultStyledText("Новогодняя звезда"));
         itemStack.setItemMeta(itemMeta);
 
-        final Builder builder0 = new Builder()
+        final Builder builder = new Builder()
                 .key("tree_star")
                 .hitBox(
                         DecorHitBox.builder()
@@ -40,8 +40,8 @@ public final class TreeStar extends CustomDecorDataImpl<TreeStar> {
                 .soundGroup(SoundGroup.STONE)
                 .itemStack(itemStack);
 
-        return MSDecor.config().isChristmas
-                ? builder0.recipes(
+        return MSPlugin.globalConfig().isChristmas()
+                ? builder.recipes(
                         Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
@@ -57,6 +57,6 @@ public final class TreeStar extends CustomDecorDataImpl<TreeStar> {
                                 true
                         )
                 )
-                : builder0;
+                : builder;
     }
 }

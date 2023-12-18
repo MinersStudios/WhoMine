@@ -1,20 +1,21 @@
 package com.minersstudios.mscore.plugin;
 
 import com.google.common.base.Charsets;
-import com.minersstudios.mscore.command.Commodore;
-import com.minersstudios.mscore.command.MSCommand;
-import com.minersstudios.mscore.command.MSCommandExecutor;
-import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSEventListener;
-import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
-import com.minersstudios.mscore.listener.packet.MSPacketListener;
+import com.minersstudios.mscore.command.api.Commodore;
+import com.minersstudios.mscore.command.api.Command;
+import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
+import com.minersstudios.mscore.listener.api.event.EventListener;
+import com.minersstudios.mscore.listener.api.packet.AbstractPacketListener;
+import com.minersstudios.mscore.listener.api.packet.PacketListener;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketListenersMap;
 import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
+import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.sound.SoundGroup;
-import com.minersstudios.mscore.util.*;
+import com.minersstudios.mscore.utility.*;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.StringUtils;
@@ -61,16 +62,16 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     private final File pluginFolder;
     private final File configFile;
     private final List<String> classNames;
-    private final Map<MSCommand, MSCommandExecutor<T>> msCommands;
-    private final List<AbstractMSListener<T>> msListeners;
-    private final List<AbstractMSPacketListener<T>> msPacketListeners;
+    private final Map<Command, CommandExecutor<T>> commands;
+    private final List<AbstractEventListener<T>> eventListeners;
+    private final List<AbstractPacketListener<T>> packetListeners;
     private Commodore commodore;
     private FileConfiguration newConfig;
     private boolean isLoadedCustoms;
 
-    protected static final File GLOBAL_FOLDER = new File(SharedConstants.GLOBAL_FOLDER_PATH);
-    protected static final GlobalCache GLOBAL_CACHE = new GlobalCache();
-    protected static final GlobalConfig GLOBAL_CONFIG = new GlobalConfig();
+    private static final File GLOBAL_FOLDER = new File(SharedConstants.GLOBAL_FOLDER_PATH);
+    private static final GlobalCache GLOBAL_CACHE = new GlobalCache();
+    private static final GlobalConfig GLOBAL_CONFIG = new GlobalConfig();
 
     private static final Field DATA_FOLDER_FIELD;
     private static final Constructor<PluginCommand> COMMAND_CONSTRUCTOR;
@@ -98,6 +99,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             throw new RuntimeException("Could not find command constructor", e);
         }
 
+        initClass(LanguageRegistry.Keys.class);
+        initClass(LanguageRegistry.Components.class);
+        initClass(LanguageRegistry.Strings.class);
         initClass(PacketRegistry.class);
         initClass(Font.class);
         initClass(BlockUtils.class);
@@ -114,14 +118,19 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                 this.getClassLoader(),
                 SharedConstants.GLOBAL_PACKAGE + '.' + this.getName().toLowerCase()
         );
-        this.msCommands = this.loadCommands();
-        this.msListeners = this.loadListeners();
-        this.msPacketListeners = this.loadPacketListeners();
+        this.commands = this.loadCommands();
+        this.eventListeners = this.loadEventListeners();
+        this.packetListeners = this.loadPacketListeners();
 
         try {
             DATA_FOLDER_FIELD.set(this, this.pluginFolder);
-        } catch (final IllegalAccessException e) {
-            throw new RuntimeException("Could not set data folder", e);
+        } catch (final Throwable e) {
+            this.getLogger().log(
+                    Level.SEVERE,
+                    "Could not set data folder",
+                    e
+            );
+            this.getServer().getPluginManager().disablePlugin(this);
         }
     }
 
@@ -139,22 +148,22 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     /**
      * @return The unmodifiable list of event listeners
      */
-    public final @NotNull @UnmodifiableView List<AbstractMSListener<T>> getListeners() {
-        return Collections.unmodifiableList(this.msListeners);
+    public final @NotNull @UnmodifiableView List<AbstractEventListener<T>> getListeners() {
+        return Collections.unmodifiableList(this.eventListeners);
     }
 
     /**
      * @return The unmodifiable list of packet listeners
      */
-    public final @NotNull @UnmodifiableView List<AbstractMSPacketListener<T>> getPacketListeners() {
-        return Collections.unmodifiableList(this.msPacketListeners);
+    public final @NotNull @UnmodifiableView List<AbstractPacketListener<T>> getPacketListeners() {
+        return Collections.unmodifiableList(this.packetListeners);
     }
 
     /**
      * @return The unmodifiable map of commands
      */
-    public final @NotNull @UnmodifiableView Map<MSCommand, MSCommandExecutor<T>> getCommands() {
-        return Collections.unmodifiableMap(this.msCommands);
+    public final @NotNull @UnmodifiableView Map<Command, CommandExecutor<T>> getCommands() {
+        return Collections.unmodifiableMap(this.commands);
     }
 
     /**
@@ -204,34 +213,6 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     /**
-     * @return The global folder of the MSPlugins
-     */
-    public static @NotNull File globalFolder() {
-        return GLOBAL_FOLDER;
-    }
-
-    /**
-     * @return The cache of the MSPlugins
-     */
-    public static @NotNull GlobalCache globalCache() {
-        return GLOBAL_CACHE;
-    }
-
-    /**
-     * @return The global config of the MSPlugins
-     */
-    public static @NotNull GlobalConfig globalConfig() {
-        return GLOBAL_CONFIG;
-    }
-
-    /**
-     * Used in :
-     * <ul>
-     *     <li>MSBlock</li>
-     *     <li>MSDecor</li>
-     *     <li>MSItem</li>
-     * </ul>
-     *
      * @return True if the plugin has loaded the customs to the cache
      */
     public final boolean isLoadedCustoms() {
@@ -461,32 +442,32 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     /**
-     * Loads all commands annotated with {@link MSCommand} in the project. All
-     * commands must be implemented using {@link MSCommandExecutor}.
+     * Loads all commands annotated with {@link Command} in the project. All
+     * commands must be implemented using {@link CommandExecutor}.
      *
      * @return The map of commands
-     * @see MSCommand
-     * @see MSCommandExecutor
+     * @see Command
+     * @see CommandExecutor
      * @see #registerCommands()
      */
     @SuppressWarnings("unchecked")
-    private @NotNull Map<MSCommand, MSCommandExecutor<T>> loadCommands() {
+    private @NotNull Map<Command, CommandExecutor<T>> loadCommands() {
         final Logger logger = this.getLogger();
         final ClassLoader classLoader = this.getClassLoader();
-        final var commands = new HashMap<MSCommand, MSCommandExecutor<T>>();
+        final var commands = new HashMap<Command, CommandExecutor<T>>();
 
         for (final var className : this.classNames) {
             try {
                 final var clazz = classLoader.loadClass(className);
-                final MSCommand command = clazz.getAnnotation(MSCommand.class);
+                final Command command = clazz.getAnnotation(Command.class);
 
                 if (command == null) {
                     continue;
                 }
 
-                if (clazz.getDeclaredConstructor().newInstance() instanceof final MSCommandExecutor<?> msCommandExecutor) {
-                    msCommandExecutor.setPlugin(this);
-                    commands.put(command, (MSCommandExecutor<T>) msCommandExecutor);
+                if (clazz.getDeclaredConstructor().newInstance() instanceof final CommandExecutor<?> commandExecutor) {
+                    commandExecutor.setPlugin(this);
+                    commands.put(command, (CommandExecutor<T>) commandExecutor);
                 } else {
                     logger.warning(
                             "Annotated class with MSCommand is not instance of MSCommandExecutor (" + className + ")"
@@ -502,43 +483,43 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Registers all command in the project that is annotated with
-     * {@link MSCommand}. All commands must be implemented using
-     * {@link MSCommandExecutor}.
+     * {@link Command}. All commands must be implemented using
+     * {@link CommandExecutor}.
      *
-     * @see MSCommand
-     * @see MSCommandExecutor
+     * @see Command
+     * @see CommandExecutor
      * @see #loadCommands()
-     * @see #registerCommand(MSCommand, MSCommandExecutor)
+     * @see #registerCommand(Command, CommandExecutor)
      */
     public void registerCommands() {
-        this.msCommands.forEach(this::registerCommand);
+        this.commands.forEach(this::registerCommand);
     }
 
     /**
-     * Loads all event listeners annotated with {@link MSEventListener} in the
-     * project. All listeners must be extended using {@link AbstractMSListener}.
+     * Loads all event listeners annotated with {@link EventListener} in the
+     * project. All listeners must be extended using {@link AbstractEventListener}.
      *
      * @return The list of listeners
-     * @see MSEventListener
-     * @see AbstractMSListener
+     * @see EventListener
+     * @see AbstractEventListener
      * @see #registerListeners()
      */
     @SuppressWarnings("unchecked")
-    private @NotNull List<AbstractMSListener<T>> loadListeners() {
+    private @NotNull List<AbstractEventListener<T>> loadEventListeners() {
         final Logger logger = this.getLogger();
         final ClassLoader classLoader = this.getClassLoader();
-        final var listeners = new HashSet<AbstractMSListener<T>>();
+        final var listeners = new HashSet<AbstractEventListener<T>>();
 
         for (final var className : this.classNames) {
             try {
                 final var clazz = classLoader.loadClass(className);
 
-                if (!clazz.isAnnotationPresent(MSEventListener.class)) {
+                if (!clazz.isAnnotationPresent(EventListener.class)) {
                     continue;
                 }
 
-                if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSListener<?> listener) {
-                    listeners.add((AbstractMSListener<T>) listener);
+                if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractEventListener<?> listener) {
+                    listeners.add((AbstractEventListener<T>) listener);
                 } else {
                     logger.warning(
                             "Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")"
@@ -554,45 +535,45 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Registers all event listeners in the project that is annotated with
-     * {@link MSEventListener}. All listeners must be extended using
-     * {@link AbstractMSListener}.
+     * {@link EventListener}. All listeners must be extended using
+     * {@link AbstractEventListener}.
      *
-     * @see MSEventListener
-     * @see #loadListeners()
+     * @see EventListener
+     * @see #loadEventListeners()
      */
     @SuppressWarnings("unchecked")
     public void registerListeners() {
-        for (final var listener : this.msListeners) {
+        for (final var listener : this.eventListeners) {
             listener.register((T) this);
         }
     }
 
     /**
-     * Loads all packet listeners annotated with {@link MSPacketListener} in the
+     * Loads all packet listeners annotated with {@link PacketListener} in the
      * project. All listeners must be extended using
-     * {@link AbstractMSPacketListener}.
+     * {@link AbstractPacketListener}.
      *
      * @return The list of packet listeners
-     * @see MSPacketListener
-     * @see AbstractMSPacketListener
+     * @see PacketListener
+     * @see AbstractPacketListener
      * @see #registerPacketListeners()
      */
     @SuppressWarnings("unchecked")
-    private @NotNull List<AbstractMSPacketListener<T>> loadPacketListeners() {
+    private @NotNull List<AbstractPacketListener<T>> loadPacketListeners() {
         final Logger logger = this.getLogger();
         final ClassLoader classLoader = this.getClassLoader();
-        final var listeners = new HashSet<AbstractMSPacketListener<T>>();
+        final var listeners = new HashSet<AbstractPacketListener<T>>();
 
         for (final var className : this.classNames) {
             try {
                 final var clazz = classLoader.loadClass(className);
 
-                if (!clazz.isAnnotationPresent(MSPacketListener.class)) {
+                if (!clazz.isAnnotationPresent(PacketListener.class)) {
                     continue;
                 }
 
-                if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSPacketListener<?> listener) {
-                    listeners.add((AbstractMSPacketListener<T>) listener);
+                if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractPacketListener<?> listener) {
+                    listeners.add((AbstractPacketListener<T>) listener);
                 } else {
                     logger.warning(
                             "Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")"
@@ -608,16 +589,16 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Registers all packet listeners in the project that is annotated with
-     * {@link MSPacketListener}. All listeners must be extended using
-     * {@link AbstractMSPacketListener}.
+     * {@link PacketListener}. All listeners must be extended using
+     * {@link AbstractPacketListener}.
      *
-     * @see MSPacketListener
-     * @see AbstractMSPacketListener
+     * @see PacketListener
+     * @see AbstractPacketListener
      * @see #loadPacketListeners()
      */
     @SuppressWarnings("unchecked")
     public void registerPacketListeners() {
-        for (final var listener : this.msPacketListeners) {
+        for (final var listener : this.packetListeners) {
             listener.register((T) this);
         }
     }
@@ -661,18 +642,18 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     /**
      * Registers a command with the plugin
      *
-     * @param msCommand Command to be registered
+     * @param command Command to be registered
      * @param executor  Command executor
-     * @see MSCommand
-     * @see MSCommandExecutor
+     * @see Command
+     * @see CommandExecutor
      * @see #loadCommands()
      * @see #registerCommands()
      */
     public final void registerCommand(
-            final @NotNull MSCommand msCommand,
-            final @NotNull MSCommandExecutor<T> executor
+            final @NotNull Command command,
+            final @NotNull CommandExecutor<T> executor
     ) {
-        final String name = msCommand.command();
+        final String name = command.command();
         final var commandNode = executor.getCommandNode();
         final PluginCommand bukkitCommand = this.getCommand(name);
         final PluginCommand pluginCommand =
@@ -686,10 +667,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             return;
         }
 
-        final var aliases = Arrays.asList(msCommand.aliases());
-        final String usage = msCommand.usage();
-        final String description = msCommand.description();
-        final String permissionStr = msCommand.permission();
+        final var aliases = Arrays.asList(command.aliases());
+        final String usage = command.usage();
+        final String description = command.description();
+        final String permissionStr = command.permission();
 
         if (!aliases.isEmpty()) {
             pluginCommand.setAliases(aliases);
@@ -706,8 +687,8 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         if (!permissionStr.isEmpty()) {
             final PluginManager pluginManager = server.getPluginManager();
             final var children = new HashMap<String, Boolean>();
-            final String[] keys = msCommand.permissionParentKeys();
-            final boolean[] values = msCommand.permissionParentValues();
+            final String[] keys = command.permissionParentKeys();
+            final boolean[] values = command.permissionParentValues();
 
             if (keys.length != values.length) {
                 this.getLogger().severe("Permission and boolean array lengths do not match in command : " + name);
@@ -718,7 +699,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             }
 
             if (pluginManager.getPermission(permissionStr) == null) {
-                final Permission permission = new Permission(permissionStr, msCommand.permissionDefault(), children);
+                final Permission permission = new Permission(permissionStr, command.permissionDefault(), children);
 
                 pluginManager.addPermission(permission);
             }
@@ -726,7 +707,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             pluginCommand.setPermission(permissionStr);
         }
 
-        if (msCommand.playerOnly()) {
+        if (command.playerOnly()) {
             GLOBAL_CACHE.onlyPlayerCommandSet.add(name);
             GLOBAL_CACHE.onlyPlayerCommandSet.addAll(aliases);
         }
@@ -948,6 +929,27 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             final long period
     ) {
         this.getServer().getScheduler().runTaskTimer(this, task, delay, period);
+    }
+
+    /**
+     * @return The global folder of the MSPlugins
+     */
+    public static @NotNull File globalFolder() {
+        return GLOBAL_FOLDER;
+    }
+
+    /**
+     * @return The cache of the MSPlugins
+     */
+    public static @NotNull GlobalCache globalCache() {
+        return GLOBAL_CACHE;
+    }
+
+    /**
+     * @return The global config of the MSPlugins
+     */
+    public static @NotNull GlobalConfig globalConfig() {
+        return GLOBAL_CONFIG;
     }
 
     /**

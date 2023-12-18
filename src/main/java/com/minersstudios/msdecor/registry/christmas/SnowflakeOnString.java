@@ -2,9 +2,9 @@ package com.minersstudios.msdecor.registry.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.sound.SoundGroup;
-import com.minersstudios.msdecor.MSDecor;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msdecor.api.CustomDecorDataImpl;
 import com.minersstudios.msdecor.api.DecorHitBox;
 import com.minersstudios.msdecor.api.DecorParameter;
@@ -75,7 +75,7 @@ public final class SnowflakeOnString extends CustomDecorDataImpl<SnowflakeOnStri
                         )
                 );
 
-        return MSDecor.config().isChristmas
+        return MSPlugin.globalConfig().isChristmas()
                 ? builder0.recipes(
                         Map.entry(
                                 RecipeBuilder.shapedBuilder()

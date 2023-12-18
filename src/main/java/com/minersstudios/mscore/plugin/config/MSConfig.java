@@ -78,6 +78,7 @@ public abstract class MSConfig {
         try {
             this.saveDefaultConfig();
             this.reloadVariables();
+
             return true;
         } catch (final ConfigurationException e) {
             MSLogger.severe("An error occurred while loading the config!", e);

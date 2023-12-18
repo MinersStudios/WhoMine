@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslation;
+import static com.minersstudios.mscore.language.LanguageFile.renderTranslation;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 

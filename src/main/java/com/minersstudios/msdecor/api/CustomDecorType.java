@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.api;
 
-import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.mscore.util.MSPluginUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.mscore.utility.MSPluginUtils;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.registry.christmas.*;
 import com.minersstudios.msdecor.registry.decoration.home.*;
@@ -181,9 +181,8 @@ public enum CustomDecorType {
 
     private final Class<? extends CustomDecorData<?>> clazz;
 
-    public static final String NAMESPACE = "msdecor";
     public static final String TYPE_TAG_NAME = "type";
-    public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(NAMESPACE, TYPE_TAG_NAME);
+    public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSDecor.NAMESPACE, TYPE_TAG_NAME);
     public static final String TYPED_KEY_REGEX = "(" + ChatUtils.KEY_REGEX + ")\\.type\\.(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern TYPED_KEY_PATTERN = Pattern.compile(TYPED_KEY_REGEX);
 
@@ -218,6 +217,7 @@ public enum CustomDecorType {
             recipesToRegister.add(data);
         }
 
+        plugin.setLoadedCustoms(true);
         plugin.getComponentLogger().info(
                 Component.text(
                         "Loaded " + values.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",

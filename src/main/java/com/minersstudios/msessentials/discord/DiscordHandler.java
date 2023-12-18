@@ -1,14 +1,14 @@
 package com.minersstudios.msessentials.discord;
 
-import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.discord.command.SlashCommand;
 import com.minersstudios.msessentials.discord.command.SlashCommandExecutor;
-import com.minersstudios.msessentials.discord.listener.AbstractMSDiscordListener;
-import com.minersstudios.msessentials.discord.listener.MSDiscordListener;
+import com.minersstudios.msessentials.listener.api.discord.AbstractDiscordListener;
+import com.minersstudios.msessentials.listener.api.discord.DiscordListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -40,7 +40,7 @@ import java.util.logging.Logger;
 public final class DiscordHandler {
     private final MSEssentials plugin;
     private final Map<String, SlashCommandExecutor<MSEssentials>> slashCommandMap;
-    private final List<AbstractMSDiscordListener<MSEssentials>> listeners;
+    private final List<AbstractDiscordListener<MSEssentials>> listeners;
     private JDA jda;
     private Guild mainGuild;
     private TextChannel globalChannel;
@@ -120,7 +120,7 @@ public final class DiscordHandler {
     /**
      * @return An unmodifiable view of the discord listeners list
      */
-    public @UnknownNullability @UnmodifiableView List<AbstractMSDiscordListener<MSEssentials>> listeners() {
+    public @UnknownNullability @UnmodifiableView List<AbstractDiscordListener<MSEssentials>> listeners() {
         return Collections.unmodifiableList(this.listeners);
     }
 
@@ -466,7 +466,7 @@ public final class DiscordHandler {
                 return;
             }
 
-            this.mainGuild = this.jda.getGuildById(config.discordServerId);
+            this.mainGuild = this.jda.getGuildById(config.getDiscordServerId());
 
             if (this.mainGuild == null) {
                 logger.warning("Discord server not found!");
@@ -476,24 +476,28 @@ public final class DiscordHandler {
                 return;
             }
 
-            if (config.memberRoleId != 0) {
-                this.memberRole = this.mainGuild.getRoleById(config.memberRoleId);
+            final long memberRoleId = config.getMemberRoleId();
+            final long globalChannelId = config.getDiscordGlobalChannelId();
+            final long localChannelId = config.getDiscordLocalChannelId();
+
+            if (memberRoleId != 0) {
+                this.memberRole = this.mainGuild.getRoleById(memberRoleId);
 
                 if (this.memberRole == null) {
                     logger.warning("Discord member role not found!");
                 }
             }
 
-            if (config.discordGlobalChannelId != 0) {
-                this.globalChannel = this.jda.getTextChannelById(config.discordGlobalChannelId);
+            if (globalChannelId != 0) {
+                this.globalChannel = this.jda.getTextChannelById(globalChannelId);
 
                 if (this.globalChannel == null) {
                     logger.warning("Discord global channel not found!");
                 }
             }
 
-            if (config.discordLocalChannelId != 0) {
-                this.localChannel = this.jda.getTextChannelById(config.discordLocalChannelId);
+            if (localChannelId != 0) {
+                this.localChannel = this.jda.getTextChannelById(localChannelId);
 
                 if (this.localChannel == null) {
                     logger.warning("Discord local channel not found!");
@@ -502,7 +506,7 @@ public final class DiscordHandler {
 
             final Presence presence = this.jda.getPresence();
 
-            if (config.developerMode) {
+            if (config.isDeveloperMode()) {
                 presence.setStatus(OnlineStatus.DO_NOT_DISTURB);
             }
 
@@ -534,8 +538,8 @@ public final class DiscordHandler {
     /**
      * Reloads the Discord listeners
      *
-     * @see MSDiscordListener
-     * @see AbstractMSDiscordListener
+     * @see DiscordListener
+     * @see AbstractDiscordListener
      */
     @SuppressWarnings("unchecked")
     public void reloadDiscordListeners() {
@@ -555,9 +559,9 @@ public final class DiscordHandler {
             try {
                 final var clazz = classLoader.loadClass(className);
 
-                if (clazz.isAnnotationPresent(MSDiscordListener.class)) {
-                    if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSDiscordListener<?> listener) {
-                        final var castedListener = (AbstractMSDiscordListener<MSEssentials>) listener;
+                if (clazz.isAnnotationPresent(DiscordListener.class)) {
+                    if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractDiscordListener<?> listener) {
+                        final var castedListener = (AbstractDiscordListener<MSEssentials>) listener;
 
                         castedListener.register(this.plugin);
                         this.listeners.add(castedListener);

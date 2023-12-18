@@ -1,8 +1,8 @@
 package com.minersstudios.msitem.menu;
 
 import com.minersstudios.mscore.inventory.*;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.renameable.RenameCollection;
 import com.minersstudios.msitem.api.renameable.RenameableItem;
@@ -112,7 +112,8 @@ public final class RenamesMenu {
 
         final InventoryButton backButton = new InventoryButton()
                 .clickAction((event, customInventory) -> {
-                    Player player = (Player) event.getWhoClicked();
+                    final Player player = (Player) event.getWhoClicked();
+
                     player.closeInventory();
                     playClickSound(player);
                 });

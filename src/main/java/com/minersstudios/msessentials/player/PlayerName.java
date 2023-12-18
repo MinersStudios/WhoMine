@@ -7,8 +7,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.minersstudios.mscore.util.ChatUtils.normalize;
-import static com.minersstudios.msessentials.util.MessageUtils.Colors.*;
+import static com.minersstudios.mscore.utility.ChatUtils.normalize;
+import static com.minersstudios.msessentials.utility.MessageUtils.Colors.*;
 import static net.kyori.adventure.text.Component.text;
 
 /**

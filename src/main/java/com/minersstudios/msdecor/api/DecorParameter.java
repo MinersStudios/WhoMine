@@ -1,8 +1,8 @@
 package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.location.MSBoundingBox;
-import com.minersstudios.mscore.util.ItemUtils;
-import com.minersstudios.mscore.util.PlayerUtils;
+import com.minersstudios.mscore.utility.ItemUtils;
+import com.minersstudios.mscore.utility.PlayerUtils;
 import com.minersstudios.msdecor.api.action.DecorClickAction;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import com.minersstudios.msessentials.MSEssentials;

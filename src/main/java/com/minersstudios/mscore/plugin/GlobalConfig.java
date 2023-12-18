@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.plugin;
 
-import com.minersstudios.mscore.util.SharedConstants;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
+import com.minersstudios.mscore.utility.SharedConstants;
+import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.plugin.config.MSConfig;
 
 import java.io.File;
@@ -18,6 +18,8 @@ public final class GlobalConfig extends MSConfig {
     private String languageFolderLink;
     private String timeFormat;
     private DateTimeFormatter timeFormatter;
+    private boolean isChristmas;
+    private boolean isHalloween;
 
     public static final String FILE_PATH = SharedConstants.GLOBAL_FOLDER_PATH + "config.yml";
 
@@ -27,6 +29,36 @@ public final class GlobalConfig extends MSConfig {
      */
     public GlobalConfig() {
         super(new File(FILE_PATH));
+    }
+
+    /**
+     * Reloads config variables.
+     * <br>
+     * NOTE: Not updates the {@link LanguageFile}. Use
+     * {@link LanguageFile#reloadLanguage()} to reload language file.
+     */
+    public void reloadVariables() {
+        this.languageCode = this.yaml.getString("language.code");
+        this.languageFolderLink = this.yaml.getString("language.folder-link");
+        this.timeFormat = this.yaml.getString("date-format");
+        this.timeFormatter = DateTimeFormatter.ofPattern(
+                this.timeFormat == null
+                ? SharedConstants.DATE_FORMAT
+                : this.timeFormat
+        );
+        this.isChristmas = this.yaml.getBoolean("is-christmas");
+        this.isHalloween = this.yaml.getBoolean("is-halloween");
+    }
+
+    /**
+     * Reloads default config variables
+     */
+    public void reloadDefaultVariables() {
+        this.setIfNotExists("language.code", SharedConstants.LANGUAGE_CODE);
+        this.setIfNotExists("language.folder-link", SharedConstants.LANGUAGE_FOLDER_LINK);
+        this.setIfNotExists("date-format", SharedConstants.DATE_FORMAT);
+        this.setIfNotExists("is-christmas", false);
+        this.setIfNotExists("is-halloween", false);
     }
 
     /**
@@ -58,28 +90,16 @@ public final class GlobalConfig extends MSConfig {
     }
 
     /**
-     * Reloads config variables.
-     * <br>
-     * NOTE: Not updates the {@link LanguageFile}. Use
-     * {@link LanguageFile#reloadLanguage()} to reload language file.
+     * @return True if it is Christmas
      */
-    public void reloadVariables() {
-        this.languageCode = this.yaml.getString("language.code");
-        this.languageFolderLink = this.yaml.getString("language.folder-link");
-        this.timeFormat = this.yaml.getString("date-format");
-        this.timeFormatter = DateTimeFormatter.ofPattern(
-                this.timeFormat == null
-                ? SharedConstants.DATE_FORMAT
-                : this.timeFormat
-        );
+    public boolean isChristmas() {
+        return this.isChristmas;
     }
 
     /**
-     * Reloads default config variables
+     * @return True if it is Halloween
      */
-    public void reloadDefaultVariables() {
-        this.setIfNotExists("language.code", SharedConstants.LANGUAGE_CODE);
-        this.setIfNotExists("language.folder-link", SharedConstants.LANGUAGE_FOLDER_LINK);
-        this.setIfNotExists("date-format", SharedConstants.DATE_FORMAT);
+    public boolean isHalloween() {
+        return this.isHalloween;
     }
 }

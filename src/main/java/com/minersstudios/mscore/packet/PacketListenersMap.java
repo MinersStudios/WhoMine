@@ -3,7 +3,7 @@ package com.minersstudios.mscore.packet;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
+import com.minersstudios.mscore.listener.api.packet.AbstractPacketListener;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -20,8 +20,8 @@ import java.util.Set;
  * packet types.
  */
 public final class PacketListenersMap {
-    private final Multimap<PacketType, AbstractMSPacketListener<? extends MSPlugin<?>>> receiveWhiteList = HashMultimap.create();
-    private final Multimap<PacketType, AbstractMSPacketListener<? extends MSPlugin<?>>> sendWhiteList = HashMultimap.create();
+    private final Multimap<PacketType, AbstractPacketListener<? extends MSPlugin<?>>> receiveWhiteList = HashMultimap.create();
+    private final Multimap<PacketType, AbstractPacketListener<? extends MSPlugin<?>>> sendWhiteList = HashMultimap.create();
 
     /**
      * Gets an unmodifiable view of the receive packet type
@@ -30,9 +30,9 @@ public final class PacketListenersMap {
      * @return The unmodifiable multimap containing receive
      *         packet type to packet listener mappings
      * @see PacketType
-     * @see AbstractMSPacketListener
+     * @see AbstractPacketListener
      */
-    public @NotNull @UnmodifiableView Multimap<PacketType, AbstractMSPacketListener<? extends MSPlugin<?>>> getReceiveWhiteList() {
+    public @NotNull @UnmodifiableView Multimap<PacketType, AbstractPacketListener<? extends MSPlugin<?>>> getReceiveWhiteList() {
         return Multimaps.unmodifiableMultimap(this.receiveWhiteList);
     }
 
@@ -43,9 +43,9 @@ public final class PacketListenersMap {
      * @return The unmodifiable multimap containing send
      *         packet type to packet listener mappings
      * @see PacketType
-     * @see AbstractMSPacketListener
+     * @see AbstractPacketListener
      */
-    public @NotNull @UnmodifiableView Multimap<PacketType, AbstractMSPacketListener<? extends MSPlugin<?>>> getSendWhiteList() {
+    public @NotNull @UnmodifiableView Multimap<PacketType, AbstractPacketListener<? extends MSPlugin<?>>> getSendWhiteList() {
         return Multimaps.unmodifiableMultimap(this.sendWhiteList);
     }
 
@@ -57,10 +57,10 @@ public final class PacketListenersMap {
      *                   the associated packet listeners
      * @return The unmodifiable collection of packet listeners
      *         associated with the given packet type
-     * @see AbstractMSPacketListener
+     * @see AbstractPacketListener
      * @see PacketType
      */
-    public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener<? extends MSPlugin<?>>> getListeners(final @NotNull PacketType packetType) {
+    public @NotNull @UnmodifiableView Collection<AbstractPacketListener<? extends MSPlugin<?>>> getListeners(final @NotNull PacketType packetType) {
         return packetType.isReceive()
                 ? Collections.unmodifiableCollection(this.receiveWhiteList.get(packetType))
                 : Collections.unmodifiableCollection(this.sendWhiteList.get(packetType));
@@ -72,10 +72,10 @@ public final class PacketListenersMap {
      *
      * @return The unmodifiable collection of all packet listeners
      *         associated with any packet type
-     * @see AbstractMSPacketListener
+     * @see AbstractPacketListener
      */
-    public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener<? extends MSPlugin<?>>> listeners() {
-        final var listeners = new HashSet<AbstractMSPacketListener<? extends MSPlugin<?>>>(this.listenersSize());
+    public @NotNull @UnmodifiableView Collection<AbstractPacketListener<? extends MSPlugin<?>>> listeners() {
+        final var listeners = new HashSet<AbstractPacketListener<? extends MSPlugin<?>>>(this.listenersSize());
 
         listeners.addAll(this.sendWhiteList.values());
         listeners.addAll(this.receiveWhiteList.values());
@@ -87,9 +87,9 @@ public final class PacketListenersMap {
      * Gets an unmodifiable collection of all receive packet listeners
      *
      * @return The unmodifiable collection of all receive packet listeners
-     * @see AbstractMSPacketListener
+     * @see AbstractPacketListener
      */
-    public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener<? extends MSPlugin<?>>> receiveListeners() {
+    public @NotNull @UnmodifiableView Collection<AbstractPacketListener<? extends MSPlugin<?>>> receiveListeners() {
         return Collections.unmodifiableCollection(this.receiveWhiteList.values());
     }
 
@@ -97,9 +97,9 @@ public final class PacketListenersMap {
      * Gets an unmodifiable collection of all send packet listeners
      *
      * @return The unmodifiable collection of all send packet listeners
-     * @see AbstractMSPacketListener
+     * @see AbstractPacketListener
      */
-    public @NotNull @UnmodifiableView Collection<AbstractMSPacketListener<? extends MSPlugin<?>>> sendListeners() {
+    public @NotNull @UnmodifiableView Collection<AbstractPacketListener<? extends MSPlugin<?>>> sendListeners() {
         return Collections.unmodifiableCollection(this.sendWhiteList.values());
     }
 
@@ -144,11 +144,11 @@ public final class PacketListenersMap {
      * Adds a packet listener to the map based on its white lists
      *
      * @param listener The packet listener to add
-     * @see AbstractMSPacketListener
-     * @see AbstractMSPacketListener#getReceiveWhiteList()
-     * @see AbstractMSPacketListener#getSendWhiteList()
+     * @see AbstractPacketListener
+     * @see AbstractPacketListener#getReceiveWhiteList()
+     * @see AbstractPacketListener#getSendWhiteList()
      */
-    public void addListener(final @NotNull AbstractMSPacketListener<? extends MSPlugin<?>> listener) {
+    public void addListener(final @NotNull AbstractPacketListener<? extends MSPlugin<?>> listener) {
         final var receiveWhiteList = listener.getReceiveWhiteList();
         final var sendWhiteList = listener.getSendWhiteList();
 
@@ -169,11 +169,11 @@ public final class PacketListenersMap {
      * Removes a packet listener from the map based on its white lists
      *
      * @param listener The packet listener to remove
-     * @see AbstractMSPacketListener
-     * @see AbstractMSPacketListener#getReceiveWhiteList()
-     * @see AbstractMSPacketListener#getSendWhiteList()
+     * @see AbstractPacketListener
+     * @see AbstractPacketListener#getReceiveWhiteList()
+     * @see AbstractPacketListener#getSendWhiteList()
      */
-    public void removeListener(final @NotNull AbstractMSPacketListener<? extends MSPlugin<?>> listener) {
+    public void removeListener(final @NotNull AbstractPacketListener<? extends MSPlugin<?>> listener) {
         final var receiveWhiteList = listener.getReceiveWhiteList();
         final var sendWhiteList = listener.getSendWhiteList();
 
@@ -212,7 +212,7 @@ public final class PacketListenersMap {
      * @param listener The packet listener to check for
      * @return True if the packet listener is present in the map
      */
-    public boolean containsListener(final @NotNull AbstractMSPacketListener<? extends MSPlugin<?>> listener) {
+    public boolean containsListener(final @NotNull AbstractPacketListener<? extends MSPlugin<?>> listener) {
         return this.receiveWhiteList.containsValue(listener)
                 || this.sendWhiteList.containsValue(listener);
     }
@@ -254,7 +254,7 @@ public final class PacketListenersMap {
      * @return The total number of distinct packet types associated
      *         with all packet listeners
      * @see PacketType
-     * @see AbstractMSPacketListener
+     * @see AbstractPacketListener
      */
     public int packetTypesSize() {
         return this.receiveWhiteList.size() + this.sendWhiteList.size();
@@ -266,7 +266,7 @@ public final class PacketListenersMap {
      *
      * @return The total number of packet listeners associated
      *         with all packet types
-     * @see AbstractMSPacketListener
+     * @see AbstractPacketListener
      * @see PacketType
      */
     public int listenersSize() {

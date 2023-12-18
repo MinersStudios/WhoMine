@@ -76,7 +76,7 @@ public final class MineSkinResponse {
         }
 
         final String requestBody = "url=" + URLEncoder.encode(link, StandardCharsets.UTF_8);
-        final String apiKey = plugin.getConfiguration().mineSkinApiKey;
+        final String apiKey = plugin.getConfiguration().getMineSkinApiKey();
         final HttpURLConnection connection = (HttpURLConnection) new URL(MINE_SKIN_API_URL).openConnection();
 
         connection.setRequestMethod("POST");

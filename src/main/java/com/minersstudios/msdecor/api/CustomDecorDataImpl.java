@@ -5,7 +5,8 @@ import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.location.MSVector;
 import com.minersstudios.mscore.sound.SoundGroup;
-import com.minersstudios.mscore.util.*;
+import com.minersstudios.mscore.utility.*;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.action.DecorBreakAction;
 import com.minersstudios.msdecor.api.action.DecorClickAction;
 import com.minersstudios.msdecor.api.action.DecorPlaceAction;
@@ -1323,7 +1324,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         public @NotNull Builder key(final @NotNull String key) throws IllegalArgumentException {
             ChatUtils.validateKey(key);
 
-            this.namespacedKey = new NamespacedKey(CustomDecorType.NAMESPACE, key);
+            this.namespacedKey = new NamespacedKey(MSDecor.NAMESPACE, key);
             return this;
         }
 
@@ -1900,7 +1901,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             ChatUtils.validateKey(key);
 
             final String typedKey = builder.namespacedKey.getKey() + ".type." + key;
-            this.namespacedKey = new NamespacedKey(CustomDecorType.NAMESPACE, typedKey);
+            this.namespacedKey = new NamespacedKey(MSDecor.NAMESPACE, typedKey);
             this.itemStack = setTypeKey(itemStack, typedKey);
         }
 

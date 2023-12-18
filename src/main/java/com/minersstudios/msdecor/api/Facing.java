@@ -1,8 +1,8 @@
 package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.location.MSPosition;
-import com.minersstudios.mscore.util.BlockUtils;
-import com.minersstudios.mscore.util.LocationUtils;
+import com.minersstudios.mscore.utility.BlockUtils;
+import com.minersstudios.mscore.utility.LocationUtils;
 import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

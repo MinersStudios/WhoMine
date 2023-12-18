@@ -1,15 +1,15 @@
 package com.minersstudios.msitem.api;
 
-import com.minersstudios.mscore.util.MSPluginUtils;
+import com.minersstudios.mscore.utility.MSPluginUtils;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.damageable.Damageable;
 import com.minersstudios.msitem.registry.cosmetics.LeatherHat;
-import com.minersstudios.msitem.registry.items.*;
-import com.minersstudios.msitem.registry.items.armor.hazmat.HazmatBoots;
-import com.minersstudios.msitem.registry.items.armor.hazmat.HazmatChestplate;
-import com.minersstudios.msitem.registry.items.armor.hazmat.HazmatHelmet;
-import com.minersstudios.msitem.registry.items.armor.hazmat.HazmatLeggings;
-import com.minersstudios.msitem.registry.items.cards.CardsBicycle;
+import com.minersstudios.msitem.registry.item.*;
+import com.minersstudios.msitem.registry.item.armor.hazmat.HazmatBoots;
+import com.minersstudios.msitem.registry.item.armor.hazmat.HazmatChestplate;
+import com.minersstudios.msitem.registry.item.armor.hazmat.HazmatHelmet;
+import com.minersstudios.msitem.registry.item.armor.hazmat.HazmatLeggings;
+import com.minersstudios.msitem.registry.item.cards.CardsBicycle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.StringUtils;
@@ -58,8 +58,7 @@ public enum CustomItemType {
 
     private final Class<? extends CustomItem> clazz;
 
-    public static final String NAMESPACE = "msitems";
-    public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(NAMESPACE, "type");
+    public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, "type");
 
     static final Map<String, CustomItemType> KEY_TO_TYPE_MAP = new ConcurrentHashMap<>();
     static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new ConcurrentHashMap<>();

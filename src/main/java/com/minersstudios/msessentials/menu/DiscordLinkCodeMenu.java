@@ -2,7 +2,9 @@ package com.minersstudios.msessentials.menu;
 
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
@@ -14,21 +16,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 public final class DiscordLinkCodeMenu {
-    private static final Component TITLE = translatable("ms.menu.discord.title", ChatUtils.DEFAULT_STYLE);
+    private static final Component TITLE = LanguageRegistry.Components.MENU_DISCORD_TITLE.style(ChatUtils.DEFAULT_STYLE);
     private static final List<TranslatableComponent> NUMBERS = ImmutableList.of(
-            translatable("ms.menu.discord.numbers.0"),
-            translatable("ms.menu.discord.numbers.1"),
-            translatable("ms.menu.discord.numbers.2"),
-            translatable("ms.menu.discord.numbers.3"),
-            translatable("ms.menu.discord.numbers.4"),
-            translatable("ms.menu.discord.numbers.5"),
-            translatable("ms.menu.discord.numbers.6"),
-            translatable("ms.menu.discord.numbers.7"),
-            translatable("ms.menu.discord.numbers.8"),
-            translatable("ms.menu.discord.numbers.9")
+            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_0,
+            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_1,
+            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_2,
+            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_3,
+            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_4,
+            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_5,
+            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_6,
+            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_7,
+            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_8,
+            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_9
     );
 
     public static void open(
@@ -50,7 +51,7 @@ public final class DiscordLinkCodeMenu {
     }
 
     private static @NotNull Component generateNumbers(final short code) {
-        return text("뀔").toBuilder()
+        return text(Font.Chars.PIXEL_SPLIT_M111).toBuilder()
                 .append(
                         String.valueOf(code).chars()
                         .mapToObj(c -> NUMBERS.get(Character.getNumericValue((char) c)))

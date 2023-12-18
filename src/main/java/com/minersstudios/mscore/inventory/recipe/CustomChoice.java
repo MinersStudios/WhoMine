@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.inventory.recipe;
 
-import com.minersstudios.mscore.util.MSCustomUtils;
+import com.minersstudios.mscore.utility.MSCustomUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.jetbrains.annotations.Contract;
@@ -83,7 +83,9 @@ public final class CustomChoice implements RecipeChoice {
 
     /**
      * @return A clone of the first item stack
+     * @deprecated Use {@link #getChoices()} instead
      */
+    @Deprecated
     @Override
     public @NotNull ItemStack getItemStack() {
         return this.choices.get(0).clone();

@@ -1,7 +1,7 @@
 package com.minersstudios.msblock.api.file.adapter;
 
 import com.google.gson.*;
-import com.minersstudios.msblock.api.CustomBlockRegistry;
+import com.minersstudios.msblock.MSBlock;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public class NamespacedKeyAdapter implements JsonSerializer<NamespacedKey>, Json
             final @NotNull JsonDeserializationContext context
     ) throws JsonParseException {
         return new NamespacedKey(
-                CustomBlockRegistry.NAMESPACE,
+                MSBlock.NAMESPACE,
                 json.getAsString()
         );
     }

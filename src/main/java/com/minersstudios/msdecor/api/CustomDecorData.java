@@ -2,7 +2,7 @@ package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.sound.SoundGroup;
-import com.minersstudios.mscore.util.MSDecorUtils;
+import com.minersstudios.mscore.utility.MSDecorUtils;
 import com.minersstudios.msdecor.api.action.DecorBreakAction;
 import com.minersstudios.msdecor.api.action.DecorClickAction;
 import com.minersstudios.msdecor.api.action.DecorPlaceAction;

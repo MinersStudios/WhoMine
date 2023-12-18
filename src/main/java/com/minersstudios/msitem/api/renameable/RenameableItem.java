@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.api.renameable;
 
-import com.minersstudios.mscore.util.MSCustomUtils;
+import com.minersstudios.mscore.utility.MSCustomUtils;
 import com.minersstudios.msitem.MSItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;

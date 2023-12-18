@@ -5,7 +5,7 @@ import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.file.adapter.*;
 import com.minersstudios.mscore.plugin.config.ConfigurationException;
-import com.minersstudios.mscore.util.MSPluginUtils;
+import com.minersstudios.mscore.utility.MSPluginUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.SoundCategory;
 import org.bukkit.inventory.ItemStack;

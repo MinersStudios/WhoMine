@@ -3,7 +3,8 @@ package com.minersstudios.msdecor.api;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.location.MSVector;
-import com.minersstudios.mscore.util.LocationUtils;
+import com.minersstudios.mscore.utility.LocationUtils;
+import com.minersstudios.msdecor.MSDecor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.bukkit.Material;
@@ -36,10 +37,10 @@ public final class DecorHitBox {
     public static final String HITBOX_DISPLAY_KEY = "hitbox_display";
     public static final String HITBOX_INTERACTIONS_KEY = "hitbox_interactions";
     public static final String HITBOX_BOUNDING_BOX_KEY = "hitbox_bounding_box";
-    public static final NamespacedKey HITBOX_CHILD_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_CHILD_KEY);
-    public static final NamespacedKey HITBOX_DISPLAY_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_DISPLAY_KEY);
-    public static final NamespacedKey HITBOX_INTERACTIONS_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_INTERACTIONS_KEY);
-    public static final NamespacedKey HITBOX_BOUNDING_BOX_NAMESPACED_KEY = new NamespacedKey(CustomDecorType.NAMESPACE, HITBOX_BOUNDING_BOX_KEY);
+    public static final NamespacedKey HITBOX_CHILD_NAMESPACED_KEY = new NamespacedKey(MSDecor.NAMESPACE, HITBOX_CHILD_KEY);
+    public static final NamespacedKey HITBOX_DISPLAY_NAMESPACED_KEY = new NamespacedKey(MSDecor.NAMESPACE, HITBOX_DISPLAY_KEY);
+    public static final NamespacedKey HITBOX_INTERACTIONS_NAMESPACED_KEY = new NamespacedKey(MSDecor.NAMESPACE, HITBOX_INTERACTIONS_KEY);
+    public static final NamespacedKey HITBOX_BOUNDING_BOX_NAMESPACED_KEY = new NamespacedKey(MSDecor.NAMESPACE, HITBOX_BOUNDING_BOX_KEY);
 
     private DecorHitBox(final @NotNull Builder builder) {
         this.type = builder.type;

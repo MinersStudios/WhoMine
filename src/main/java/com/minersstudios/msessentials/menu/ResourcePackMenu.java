@@ -3,7 +3,7 @@ package com.minersstudios.msessentials.menu;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerSettings;
@@ -16,8 +16,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslationComponent;
-import static com.minersstudios.mscore.util.ChatUtils.COLORLESS_DEFAULT_STYLE;
+import static com.minersstudios.mscore.language.LanguageFile.renderTranslationComponent;
+import static com.minersstudios.mscore.utility.ChatUtils.COLORLESS_DEFAULT_STYLE;
 import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
@@ -25,8 +25,6 @@ public final class ResourcePackMenu {
     private static final CustomInventory INVENTORY;
 
     static {
-        final MSEssentials plugin = MSEssentials.singleton();
-
         final ItemStack infoItem = new ItemStack(Material.KNOWLEDGE_BOOK);
         final ItemMeta infoMeta = infoItem.getItemMeta();
 
@@ -87,7 +85,7 @@ public final class ResourcePackMenu {
 
         final InventoryButton noneButton = new InventoryButton(noneItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
             final PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
             final ResourcePack.Type packType = playerSettings.getResourcePackType();
 
@@ -113,7 +111,7 @@ public final class ResourcePackMenu {
 
         final InventoryButton fullButton = new InventoryButton(fullItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
             final PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
             playerSettings.setResourcePackType(ResourcePack.Type.FULL);
@@ -129,7 +127,7 @@ public final class ResourcePackMenu {
 
         final InventoryButton liteButton = new InventoryButton(liteItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
             final PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
             playerSettings.setResourcePackType(ResourcePack.Type.LITE);
@@ -155,7 +153,7 @@ public final class ResourcePackMenu {
                 .buttonAt(8, liteButton)
                 .closeAction((event, inventory) -> {
                     final Player player = (Player) event.getPlayer();
-                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
+                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
                     final ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
                     if (type == ResourcePack.Type.NULL) {

@@ -1,6 +1,6 @@
 package com.minersstudios.msdecor.registry.decoration.street;
 
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.msdecor.api.CustomDecorDataImpl;
 import com.minersstudios.msdecor.api.DecorHitBox;

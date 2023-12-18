@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.api.damageable;
 
-import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.msitem.api.CustomItemType;
+import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.msitem.MSItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,8 +29,8 @@ public class DamageableItem {
     protected int maxDamage;
     protected int realDamage;
 
-    public static final NamespacedKey MAX_DAMAGE_NAMESPACED_KEY = new NamespacedKey(CustomItemType.NAMESPACE, "max_damage");
-    public static final NamespacedKey REAL_DAMAGE_NAMESPACED_KEY = new NamespacedKey(CustomItemType.NAMESPACE, "real_damage");
+    public static final NamespacedKey MAX_DAMAGE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, "max_damage");
+    public static final NamespacedKey REAL_DAMAGE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, "real_damage");
 
     private static final TranslatableComponent DURABILITY = translatable("item.durability");
 

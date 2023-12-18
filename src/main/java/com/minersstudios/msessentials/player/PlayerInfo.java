@@ -3,10 +3,10 @@ package com.minersstudios.msessentials.player;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.BlockUtils;
-import com.minersstudios.mscore.util.DateUtils;
-import com.minersstudios.mscore.util.PlayerUtils;
+import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.utility.BlockUtils;
+import com.minersstudios.mscore.utility.DateUtils;
+import com.minersstudios.mscore.utility.PlayerUtils;
 import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
@@ -16,8 +16,8 @@ import com.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.util.IDUtils;
-import com.minersstudios.msessentials.util.MSPlayerUtils;
+import com.minersstudios.msessentials.utility.IDUtils;
+import com.minersstudios.msessentials.utility.MSPlayerUtils;
 import com.minersstudios.msessentials.world.WorldDark;
 import com.mojang.authlib.GameProfile;
 import fr.xephi.authme.api.v3.AuthMeApi;
@@ -50,9 +50,9 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 
-import static com.minersstudios.msessentials.util.MessageUtils.RolePlayActionType.ME;
-import static com.minersstudios.msessentials.util.MessageUtils.RolePlayActionType.TODO;
-import static com.minersstudios.msessentials.util.MessageUtils.*;
+import static com.minersstudios.msessentials.utility.MessageUtils.RolePlayActionType.ME;
+import static com.minersstudios.msessentials.utility.MessageUtils.RolePlayActionType.TODO;
+import static com.minersstudios.msessentials.utility.MessageUtils.*;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
@@ -1604,7 +1604,7 @@ public final class PlayerInfo {
             location = player.getBedSpawnLocation();
 
             if (location == null) {
-                location = this.plugin.getConfiguration().spawnLocation;
+                location = this.plugin.getConfiguration().getSpawnLocation();
             }
         }
 
@@ -1635,7 +1635,7 @@ public final class PlayerInfo {
             location = player.getBedSpawnLocation();
 
             if (location == null) {
-                location = this.plugin.getConfiguration().spawnLocation;
+                location = this.plugin.getConfiguration().getSpawnLocation();
             }
         }
 
@@ -1787,7 +1787,7 @@ public final class PlayerInfo {
                 player.isDead()
                 ? player.getBedSpawnLocation() != null
                 ? player.getBedSpawnLocation()
-                : this.plugin.getConfiguration().spawnLocation
+                : this.plugin.getConfiguration().getSpawnLocation()
                 : player.getLocation()
         );
         this.playerFile.setGameMode(player.getGameMode());

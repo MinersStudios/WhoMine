@@ -3,7 +3,7 @@ package com.minersstudios.msblock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.util.SharedConstants;
+import com.minersstudios.mscore.utility.SharedConstants;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,6 +24,7 @@ public final class MSBlock extends MSPlugin<MSBlock> {
     private Cache cache;
     private Config config;
 
+    public static final String NAMESPACE = "msblock";
     private static final String NOTE_BLOCK_UPDATES = "block-updates.disable-noteblock-updates";
 
     public MSBlock() {

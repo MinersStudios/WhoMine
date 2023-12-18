@@ -17,7 +17,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslation;
+import static com.minersstudios.mscore.language.LanguageFile.renderTranslation;
 
 /**
  * Player file with player data, settings, etc.
@@ -75,7 +75,7 @@ public final class PlayerFile {
         final ConfigurationSection lastLeaveSection = this.config.getConfigurationSection("locations.last-leave-location");
         final String lastLeaveWorldName = this.config.getString("locations.last-leave-location.world", "");
         final World lastLeaveWorld = Bukkit.getWorld(lastLeaveWorldName);
-        final Location spawnLocation = plugin.getConfiguration().spawnLocation;
+        final Location spawnLocation = plugin.getConfiguration().getSpawnLocation();
         final World spawnWorld = spawnLocation.getWorld();
 
         this.lastLeaveLocation = lastLeaveSection == null

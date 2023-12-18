@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.inventory;
 
-import com.minersstudios.mscore.listeners.packet.player.PlayerUpdateSignListener;
-import com.minersstudios.mscore.util.LocationUtils;
+import com.minersstudios.mscore.listener.impl.packet.player.PlayerUpdateSignListener;
+import com.minersstudios.mscore.utility.LocationUtils;
 import io.papermc.paper.adventure.AdventureComponent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;

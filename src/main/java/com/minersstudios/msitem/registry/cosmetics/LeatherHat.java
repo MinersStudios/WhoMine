@@ -1,8 +1,8 @@
 package com.minersstudios.msitem.registry.cosmetics;
 
 import com.google.common.collect.ImmutableList;
-import com.minersstudios.mscore.util.Font;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.utility.Font;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msitem.api.CustomItemImpl;
 import com.minersstudios.msitem.api.Wearable;
 import org.bukkit.Material;

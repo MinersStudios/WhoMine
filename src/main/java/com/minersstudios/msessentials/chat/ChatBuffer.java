@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.chat;
 
-import com.minersstudios.mscore.util.Font;
+import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

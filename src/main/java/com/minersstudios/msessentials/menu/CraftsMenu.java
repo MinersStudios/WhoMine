@@ -2,8 +2,8 @@ package com.minersstudios.msessentials.menu;
 
 import com.minersstudios.mscore.inventory.*;
 import com.minersstudios.mscore.inventory.action.ButtonClickAction;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.utility.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

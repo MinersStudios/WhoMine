@@ -2,8 +2,8 @@ package com.minersstudios.msessentials.menu;
 
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
-import com.minersstudios.mscore.plugin.config.LanguageFile;
-import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -25,8 +25,6 @@ public final class PronounsMenu {
     private static final CustomInventory INVENTORY;
 
     static {
-        final MSEssentials plugin = MSEssentials.singleton();
-
         final ItemStack heItem = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
         final ItemMeta heMeta = heItem.getItemMeta();
         final var loreHe = new ArrayList<Component>();
@@ -56,7 +54,7 @@ public final class PronounsMenu {
 
         final InventoryButton heButton = new InventoryButton(heItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.HE);
@@ -67,7 +65,7 @@ public final class PronounsMenu {
 
         final InventoryButton sheButton = new InventoryButton(sheItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.SHE);
@@ -78,7 +76,7 @@ public final class PronounsMenu {
 
         final InventoryButton theyButton = new InventoryButton(theyItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.THEY);
@@ -98,6 +96,7 @@ public final class PronounsMenu {
                 .buttonAt(7, theyButton)
                 .buttonAt(8, theyButton)
                 .closeAction((event, inventory) -> {
+                    final MSEssentials plugin = MSEssentials.singleton();
                     final Player player = (Player) event.getPlayer();
                     final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
 

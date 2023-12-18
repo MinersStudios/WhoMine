@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,9 +53,11 @@ public final class ResourcePack {
     public static void init(final @NotNull MSEssentials plugin) {
         final Config config = plugin.getConfiguration();
         final Logger logger = plugin.getLogger();
-        final String user = config.user;
-        final String repo = config.repo;
-        final String tagName = getLatestTagName(logger, config.user, config.repo).orElse(config.version);
+        final String user = config.getResourcePackUser();
+        final String repo = config.getResourcePackRepo();
+        final String tagName =
+                getLatestTagName(logger, user, repo)
+                .orElse(config.getResourcePackVersion());
 
         if (StringUtils.isBlank(tagName)) {
             logger.severe("""
@@ -72,35 +73,29 @@ public final class ResourcePack {
         }
 
         final boolean upToDate =
-                config.version != null
-                && config.version.equals(tagName)
-                && config.fullHash != null
-                && config.liteHash != null;
+                config.getResourcePackVersion() != null
+                && config.getResourcePackVersion().equals(tagName)
+                && config.getResourcePackFullHash() != null
+                && config.getResourcePackLiteHash() != null;
 
-        final String fullFileName = String.format(config.fullFileName, tagName);
-        final String liteFileName = String.format(config.liteFileName, tagName);
+        final String fullFileName = String.format(config.getResourcePackFullFileName(), tagName);
+        final String liteFileName = String.format(config.getResourcePackLiteFileName(), tagName);
 
         final String fullUrl = "https://github.com/" + user + "/" + repo + "/releases/download/" + tagName + "/" + fullFileName;
         final String liteUrl = "https://github.com/" + user + "/" + repo + "/releases/download/" + tagName + "/" + liteFileName;
 
         final String fullHash = upToDate
-                ? config.fullHash
+                ? config.getResourcePackFullHash()
                 : generateHash(plugin, fullUrl, fullFileName);
         final String liteHash = upToDate
-                ? config.liteHash
+                ? config.getResourcePackLiteHash()
                 : generateHash(plugin, liteUrl, liteFileName);
 
         Type.FULL.resourcePack = new ResourcePack(fullUrl, fullHash);
         Type.LITE.resourcePack = new ResourcePack(liteUrl, liteHash);
 
         if (!upToDate) {
-            final YamlConfiguration configYaml = config.getYaml();
-
-            configYaml.set("resource-pack.version", tagName);
-            configYaml.set("resource-pack.full.hash", fullHash);
-            configYaml.set("resource-pack.lite.hash", liteHash);
-
-            config.save();
+            config.setResourcePack(tagName, fullHash, liteHash);
         }
     }
 

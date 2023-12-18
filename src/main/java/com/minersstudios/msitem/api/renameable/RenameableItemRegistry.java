@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.api.renameable;
 
-import com.minersstudios.msitem.api.CustomItemType;
+import com.minersstudios.msitem.MSItem;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -50,7 +50,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * }</pre>
  */
 public final class RenameableItemRegistry {
-    public static final NamespacedKey RENAMEABLE_NAMESPACED_KEY = new NamespacedKey(CustomItemType.NAMESPACE, "renameable");
+    public static final NamespacedKey RENAMEABLE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, "renameable");
 
     private static final Map<String, RenameableItem> KEY_MAP = new ConcurrentHashMap<>();
     private static final Map<RenameEntry, String> RENAME_ENTRY_MAP = new ConcurrentHashMap<>();

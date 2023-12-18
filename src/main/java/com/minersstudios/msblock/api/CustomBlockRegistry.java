@@ -73,8 +73,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * ConcurrentHashMap for the storage of custom block data and recipes.
  */
 public final class CustomBlockRegistry {
-    public static final String NAMESPACE = "msblock";
-    public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(NAMESPACE, "type");
+    public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSBlock.NAMESPACE, "type");
 
     private static final Map<Integer, CustomBlockData> HASH_CODE_MAP = new ConcurrentHashMap<>();
     private static final Map<String, Set<Integer>> KEY_MAP = new ConcurrentHashMap<>();

@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public final class MSDecor extends MSPlugin<MSDecor> {
     private static MSDecor singleton;
 
-    private Config config;
+    public static final String NAMESPACE = "msdecor";
 
     public MSDecor() {
         singleton = this;
@@ -29,9 +29,6 @@ public final class MSDecor extends MSPlugin<MSDecor> {
     @Override
     @SuppressWarnings("JavaReflectionMemberAccess")
     public void load() {
-        this.config = new Config(this, this.getConfigFile());
-
-        this.config.reload();
         initClass(CustomDecorType.class);
 
         try {
@@ -51,14 +48,6 @@ public final class MSDecor extends MSPlugin<MSDecor> {
                     e
             );
         }
-    }
-
-    /**
-     * @return The configuration of the plugin
-     *         or null if the plugin is not enabled
-     */
-    public @UnknownNullability Config getConfiguration() {
-        return this.config;
     }
 
     /**
@@ -83,13 +72,5 @@ public final class MSDecor extends MSPlugin<MSDecor> {
      */
     public static @UnknownNullability ComponentLogger componentLogger() {
         return singleton == null ? null : singleton.getComponentLogger();
-    }
-
-    /**
-     * @return The configuration of the plugin
-     *         or null if the plugin is not enabled
-     */
-    public static @UnknownNullability Config config() {
-        return singleton == null ? null : singleton.config;
     }
 }

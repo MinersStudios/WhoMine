@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslation;
+import static com.minersstudios.mscore.language.LanguageFile.renderTranslation;
 
 public final class InteractionHandler {
     private final MSEssentials plugin;
