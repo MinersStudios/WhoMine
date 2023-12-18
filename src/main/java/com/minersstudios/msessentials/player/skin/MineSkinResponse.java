@@ -56,14 +56,18 @@ public final class MineSkinResponse {
      * It uses the MineSkin API to generate a skin from the image, and returns the response.
      * If a MineSkin API key is set in the configuration, it will be used.
      *
-     * @param link The link to the skin, must start with https:// and end with .png
+     * @param plugin The plugin instance
+     * @param link   The link to the skin, must start with https:// and end with .png
      * @return The response from the MineSkin API
      * @throws IOException if the connection could not be established
      * @throws IllegalArgumentException if the link does not start with https:// and end with .png
      * @see #MINE_SKIN_API_URL
      */
-    @Contract("_ -> new")
-    public static @NotNull MineSkinResponse fromLink(final @NotNull String link) throws IOException, IllegalArgumentException {
+    @Contract("_, _ -> new")
+    public static @NotNull MineSkinResponse fromLink(
+            final @NotNull MSEssentials plugin,
+            final @NotNull String link
+    ) throws IOException, IllegalArgumentException {
         if (
                 !link.startsWith("https://")
                 || !link.endsWith(".png")
@@ -72,7 +76,7 @@ public final class MineSkinResponse {
         }
 
         final String requestBody = "url=" + URLEncoder.encode(link, StandardCharsets.UTF_8);
-        final String apiKey = MSEssentials.config().mineSkinApiKey;
+        final String apiKey = plugin.getConfiguration().mineSkinApiKey;
         final HttpURLConnection connection = (HttpURLConnection) new URL(MINE_SKIN_API_URL).openConnection();
 
         connection.setRequestMethod("POST");

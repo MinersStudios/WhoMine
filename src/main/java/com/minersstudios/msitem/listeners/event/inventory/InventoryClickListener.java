@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.listeners.event.inventory;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.CustomItem;
 import com.minersstudios.msitem.api.Wearable;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class InventoryClickListener extends AbstractMSListener<MSItem> {
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -35,7 +35,10 @@ public final class InventoryClickListener extends AbstractMSListener<MSItem> {
             CustomItem.fromItemStack(currentItem, Wearable.class)
             .ifPresent(w -> {
                 assert currentItem != null;
-                if (currentItem.getEnchantments().containsKey(Enchantment.BINDING_CURSE)) return;
+
+                if (currentItem.getEnchantments().containsKey(Enchantment.BINDING_CURSE)) {
+                    return;
+                }
 
                 this.getPlugin().runTask(() -> {
                     inventory.setHelmet(cursorItem);

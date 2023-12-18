@@ -262,7 +262,9 @@ public final class CustomBlockRegistry {
      */
     @Contract("null -> false")
     public static boolean containsCustomBlockData(final @Nullable CustomBlockData customBlockData) {
-        if (customBlockData == null) return false;
+        if (customBlockData == null) {
+            return false;
+        }
 
         final PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
 

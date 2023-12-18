@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.commands.discord;
 
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.command.InteractionHandler;
 import com.minersstudios.msessentials.discord.command.SlashCommand;
 import com.minersstudios.msessentials.discord.command.SlashCommandExecutor;
@@ -9,7 +10,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 
 @SlashCommand
-public final class SkinListCommand extends SlashCommandExecutor {
+public final class SkinListCommand extends SlashCommandExecutor<MSEssentials> {
 
     public SkinListCommand() {
         super(
@@ -21,7 +22,9 @@ public final class SkinListCommand extends SlashCommandExecutor {
     public void onInteract(@NotNull InteractionHandler handler) {
         final PlayerInfo playerInfo = handler.retrievePlayerInfo();
 
-        if (playerInfo == null) return;
+        if (playerInfo == null) {
+            return;
+        }
 
         handler.deferReply();
 

@@ -1,3 +1,4 @@
+<!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
   <br>
   <a href="https://minersstudios.com">

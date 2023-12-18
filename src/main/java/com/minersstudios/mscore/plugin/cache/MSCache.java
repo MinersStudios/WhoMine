@@ -1,13 +1,7 @@
-package com.minersstudios.mscore.plugin;
+package com.minersstudios.mscore.plugin.cache;
 
-/**
- * This abstract class represents a cache for a plugin. It provides methods to
- * load and unload the cache, and to check if the cache is loaded. Subclasses
- * must implement the {@link #onLoad()} and {@link #onUnload()} methods to
- * define what happens when the cache is loaded and unloaded.
- */
-public abstract class PluginCache {
-    private boolean loaded = false;
+public abstract class MSCache {
+    private boolean loaded;
 
     /**
      * Loads the cache
@@ -15,7 +9,7 @@ public abstract class PluginCache {
      * @throws IllegalStateException If the cache is already loaded
      */
     public final void load() throws IllegalStateException {
-        if (this.loaded) {
+        if (this.isLoaded()) {
             throw new IllegalStateException("Cache is already loaded");
         }
 
@@ -29,7 +23,7 @@ public abstract class PluginCache {
      * @throws IllegalStateException If the cache is not loaded
      */
     public final void unload() throws IllegalStateException {
-        if (!this.loaded) {
+        if (!this.isLoaded()) {
             throw new IllegalStateException("Cache is not loaded");
         }
 

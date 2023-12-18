@@ -5,7 +5,7 @@ import com.minersstudios.mscore.command.Commodore;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.packet.PacketEvent;
@@ -61,7 +61,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     private final File pluginFolder;
     private final File configFile;
     private final List<String> classNames;
-    private final Map<MSCommand, MSCommandExecutor> msCommands;
+    private final Map<MSCommand, MSCommandExecutor<T>> msCommands;
     private final List<AbstractMSListener<T>> msListeners;
     private final List<AbstractMSPacketListener<T>> msPacketListeners;
     private Commodore commodore;
@@ -104,7 +104,6 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         initClass(ChatUtils.class);
         initClass(DateUtils.class);
         initClass(LocationUtils.class);
-        initClass(PlayerUtils.class);
         initClass(SoundGroup.class);
     }
 
@@ -154,7 +153,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     /**
      * @return The unmodifiable map of commands
      */
-    public final @NotNull @UnmodifiableView Map<MSCommand, MSCommandExecutor> getCommands() {
+    public final @NotNull @UnmodifiableView Map<MSCommand, MSCommandExecutor<T>> getCommands() {
         return Collections.unmodifiableMap(this.msCommands);
     }
 
@@ -354,7 +353,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         this.newConfig = YamlConfiguration.loadConfiguration(this.configFile);
         final InputStream defaultInput = this.getResource("config.yml");
 
-        if (defaultInput == null) return;
+        if (defaultInput == null) {
+            return;
+        }
 
         final InputStreamReader inputReader = new InputStreamReader(defaultInput, Charsets.UTF_8);
         final YamlConfiguration configuration = YamlConfiguration.loadConfiguration(inputReader);
@@ -468,25 +469,30 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @see MSCommandExecutor
      * @see #registerCommands()
      */
-    private @NotNull Map<MSCommand, MSCommandExecutor> loadCommands() {
+    @SuppressWarnings("unchecked")
+    private @NotNull Map<MSCommand, MSCommandExecutor<T>> loadCommands() {
         final Logger logger = this.getLogger();
         final ClassLoader classLoader = this.getClassLoader();
-        final var commands = new HashMap<MSCommand, MSCommandExecutor>();
+        final var commands = new HashMap<MSCommand, MSCommandExecutor<T>>();
 
         for (final var className : this.classNames) {
             try {
                 final var clazz = classLoader.loadClass(className);
                 final MSCommand command = clazz.getAnnotation(MSCommand.class);
 
-                if (command == null) continue;
-                if (clazz.getDeclaredConstructor().newInstance() instanceof final MSCommandExecutor msCommandExecutor) {
-                    commands.put(command, msCommandExecutor);
+                if (command == null) {
+                    continue;
+                }
+
+                if (clazz.getDeclaredConstructor().newInstance() instanceof final MSCommandExecutor<?> msCommandExecutor) {
+                    msCommandExecutor.setPlugin(this);
+                    commands.put(command, (MSCommandExecutor<T>) msCommandExecutor);
                 } else {
                     logger.warning(
                             "Annotated class with MSCommand is not instance of MSCommandExecutor (" + className + ")"
                     );
                 }
-            } catch (final Exception e) {
+            } catch (final Throwable e) {
                 logger.log(Level.SEVERE, "Failed to load command", e);
             }
         }
@@ -509,11 +515,11 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     /**
-     * Loads all event listeners annotated with {@link MSListener} in the
+     * Loads all event listeners annotated with {@link MSEventListener} in the
      * project. All listeners must be extended using {@link AbstractMSListener}.
      *
      * @return The list of listeners
-     * @see MSListener
+     * @see MSEventListener
      * @see AbstractMSListener
      * @see #registerListeners()
      */
@@ -527,7 +533,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             try {
                 final var clazz = classLoader.loadClass(className);
 
-                if (!clazz.isAnnotationPresent(MSListener.class)) continue;
+                if (!clazz.isAnnotationPresent(MSEventListener.class)) {
+                    continue;
+                }
+
                 if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSListener<?> listener) {
                     listeners.add((AbstractMSListener<T>) listener);
                 } else {
@@ -545,10 +554,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Registers all event listeners in the project that is annotated with
-     * {@link MSListener}. All listeners must be extended using
+     * {@link MSEventListener}. All listeners must be extended using
      * {@link AbstractMSListener}.
      *
-     * @see MSListener
+     * @see MSEventListener
      * @see #loadListeners()
      */
     @SuppressWarnings("unchecked")
@@ -578,7 +587,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             try {
                 final var clazz = classLoader.loadClass(className);
 
-                if (!clazz.isAnnotationPresent(MSPacketListener.class)) continue;
+                if (!clazz.isAnnotationPresent(MSPacketListener.class)) {
+                    continue;
+                }
+
                 if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractMSPacketListener<?> listener) {
                     listeners.add((AbstractMSPacketListener<T>) listener);
                 } else {
@@ -658,7 +670,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      */
     public final void registerCommand(
             final @NotNull MSCommand msCommand,
-            final @NotNull MSCommandExecutor executor
+            final @NotNull MSCommandExecutor<T> executor
     ) {
         final String name = msCommand.command();
         final var commandNode = executor.getCommandNode();
@@ -707,6 +719,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
             if (pluginManager.getPermission(permissionStr) == null) {
                 final Permission permission = new Permission(permissionStr, msCommand.permissionDefault(), children);
+
                 pluginManager.addPermission(permission);
             }
 

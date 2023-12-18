@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.world.WorldDark;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.translatable;
 
-@MSListener
+@MSEventListener
 public final class PlayerCommandPreprocessListener extends AbstractMSListener<MSEssentials> {
     private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = translatable("ms.warning.you_cant_do_this_now");
 
@@ -27,7 +27,9 @@ public final class PlayerCommandPreprocessListener extends AbstractMSListener<MS
                 && !message.startsWith("/logout"))
                 || message.startsWith("/reg")
                 || !WorldDark.isInWorldDark(player)
-        ) return;
+        ) {
+            return;
+        }
 
         event.setCancelled(true);
         MSLogger.warning(event.getPlayer(), YOU_CANT_DO_THIS_NOW);

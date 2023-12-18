@@ -3,7 +3,9 @@ package com.minersstudios.msessentials.commands.minecraft.admin;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
+import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -30,7 +32,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permission = "msessentials.whitelist",
         permissionDefault = PermissionDefault.OP
 )
-public final class WhitelistCommand implements MSCommandExecutor {
+public final class WhitelistCommand extends MSCommandExecutor<MSEssentials> {
     private static final List<String> TAB = Arrays.asList("add", "remove", "reload");
     private static final CommandNode<?> COMMAND_NODE =
             literal("whitelist")
@@ -59,7 +61,9 @@ public final class WhitelistCommand implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        if (args.length == 0) return false;
+        if (args.length == 0) {
+            return false;
+        }
 
         final Server server = sender.getServer();
         final String actionArg = args[0];
@@ -69,12 +73,15 @@ public final class WhitelistCommand implements MSCommandExecutor {
             case "reload" -> {
                 server.reloadWhitelist();
                 MSLogger.fine(sender, RELOAD);
+
                 return true;
             }
             case "add" -> {
-                if (playerArg == null) return false;
+                if (playerArg == null) {
+                    return false;
+                }
 
-                final PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
+                final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), playerArg);
 
                 if (playerInfo == null) {
                     MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -99,12 +106,15 @@ public final class WhitelistCommand implements MSCommandExecutor {
                                 text(playerInfo.getNickname())
                         )
                 );
+
                 return true;
             }
             case "remove" -> {
-                if (playerArg == null) return false;
+                if (playerArg == null) {
+                    return false;
+                }
 
-                final PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
+                final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), playerArg);
 
                 if (playerInfo == null) {
                     MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -129,6 +139,7 @@ public final class WhitelistCommand implements MSCommandExecutor {
                                 text(playerArg)
                         )
                 );
+
                 return true;
             }
             default -> {
@@ -150,9 +161,13 @@ public final class WhitelistCommand implements MSCommandExecutor {
                 final var completions = new ArrayList<String>();
 
                 if (args[0].equals("remove")) {
-                    for (var offlinePlayer : sender.getServer().getWhitelistedPlayers()) {
-                        PlayerInfo playerInfo = PlayerInfo.fromProfile(offlinePlayer.getUniqueId(), args[1]);
-                        int id = playerInfo.getID(false, false);
+                    final PlayerInfoMap playerInfoMap = this.getPlugin().getCache().getPlayerInfoMap();
+
+                    for (final var offlinePlayer : sender.getServer().getWhitelistedPlayers()) {
+                        final int id =
+                                playerInfoMap
+                                .get(offlinePlayer.getUniqueId(), args[1])
+                                .getID(false, false);
 
                         if (id != -1) {
                             completions.add(String.valueOf(id));

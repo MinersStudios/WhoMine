@@ -64,7 +64,9 @@ public final class AdminNameCommand {
 
         switch (paramString) {
             case "reset" -> {
-                if (haveArg) return false;
+                if (haveArg) {
+                    return false;
+                }
 
                 MSLogger.fine(
                         sender,

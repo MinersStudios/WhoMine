@@ -67,7 +67,9 @@ public final class BigLamp extends CustomDecorDataImpl<BigLamp> {
     }
 
     static void playClick(final @NotNull CustomDecorClickEvent event) {
-        if (event.getClickType().isLeftClick()) return;
+        if (event.getClickType().isLeftClick()) {
+            return;
+        }
 
         final CustomDecor customDecor = event.getCustomDecor();
         final Interaction interaction = event.getClickedInteraction();

@@ -1,14 +1,15 @@
 package com.minersstudios.msessentials.anomalies;
 
-import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomalies.actions.AddPotionAction;
 import com.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.security.SecureRandom;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,21 +22,41 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see SpawnParticlesAction
  */
 public abstract class AnomalyAction {
-    private final long time;
-    private final int percentage;
+    protected final MSEssentials plugin;
+    protected final Map<Player, Map<AnomalyAction, Long>> actionMap;
+    protected final long time;
+    protected final int percentage;
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
     /**
+     * @param plugin     MSEssentials plugin
      * @param time       Time in ticks to perform action (1 second = 20 ticks)
      * @param percentage Percentage chance of completing action
      */
     protected AnomalyAction(
+            final @NotNull MSEssentials plugin,
             final long time,
             final int percentage
     ) {
+        this.plugin = plugin;
+        this.actionMap = plugin.getCache().getPlayerAnomalyActionMap();
         this.time = time;
         this.percentage = percentage;
+    }
+
+    /**
+     * @return MSEssentials plugin
+     */
+    public final @NotNull MSEssentials getPlugin() {
+        return this.plugin;
+    }
+
+    /**
+     * @return Map of actions to player's last action time
+     */
+    public final @NotNull @UnmodifiableView Map<Player, Map<AnomalyAction, Long>> getActionMap() {
+        return Collections.unmodifiableMap(this.actionMap);
     }
 
     /**
@@ -67,11 +88,10 @@ public abstract class AnomalyAction {
      *         or null if there was no mapping for player
      */
     public final @Nullable Map<AnomalyAction, Long> putAction(final @NotNull Player player) {
-        final Cache cache = MSEssentials.cache();
-        final var actionMap = cache.getPlayerAnomalyActionMap().getOrDefault(player, new ConcurrentHashMap<>());
+        final var action = this.actionMap.getOrDefault(player, new ConcurrentHashMap<>());
 
-        actionMap.put(this, System.currentTimeMillis());
-        return cache.getPlayerAnomalyActionMap().put(player, actionMap);
+        action.put(this, System.currentTimeMillis());
+        return this.actionMap.put(player, action);
     }
 
     /**
@@ -81,12 +101,11 @@ public abstract class AnomalyAction {
      *               and from which the action will be removed
      */
     public final void removeAction(final @NotNull Player player) {
-        final Cache cache = MSEssentials.cache();
-        final var actionMap = cache.getPlayerAnomalyActionMap().get(player);
+        final var action = this.actionMap.get(player);
 
-        if (actionMap != null) {
-            actionMap.remove(this);
-            cache.getPlayerAnomalyActionMap().put(player, actionMap);
+        if (action != null) {
+            action.remove(this);
+            this.actionMap.put(player, action);
         }
     }
 

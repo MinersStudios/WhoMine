@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.listeners.event.mechanic;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecorType;
 import org.bukkit.GameMode;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class PoopMechanic extends AbstractMSListener<MSDecor> {
 
     @EventHandler
@@ -24,22 +24,30 @@ public final class PoopMechanic extends AbstractMSListener<MSDecor> {
                 event.getClickedBlock() == null
                 || event.getHand() == null
                 || event.getAction().isLeftClick()
-        ) return;
+        ) {
+            return;
+        }
 
         final Block clickedBlock = event.getClickedBlock();
 
-        if (clickedBlock.getType() != Material.COMPOSTER) return;
+        if (clickedBlock.getType() != Material.COMPOSTER) {
+            return;
+        }
 
         final Player player = event.getPlayer();
         final EquipmentSlot hand = event.getHand();
         final ItemStack itemInHand = player.getInventory().getItem(hand);
         final GameMode gameMode = player.getGameMode();
+        final Material handType = itemInHand.getType();
 
         if (
                 gameMode != GameMode.SPECTATOR
                 && !player.isSneaking()
                 && clickedBlock.getBlockData() instanceof final Levelled levelled
-                && (!itemInHand.getType().isBlock() || itemInHand.getType() == Material.AIR)
+                && (
+                        !handType.isBlock()
+                        || handType == Material.AIR
+                )
                 && levelled.getLevel() < levelled.getMaximumLevel()
                 && CustomDecorType.fromItemStack(itemInHand) == CustomDecorType.POOP
         ) {

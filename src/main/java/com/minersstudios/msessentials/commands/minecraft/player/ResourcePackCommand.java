@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.commands.minecraft.player;
 
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
@@ -21,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
         description = "Открывает меню с ресурспаками",
         playerOnly = true
 )
-public final class ResourcePackCommand implements MSCommandExecutor {
+public final class ResourcePackCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE = LiteralArgumentBuilder.literal("resourcepack").build();
 
     @Override

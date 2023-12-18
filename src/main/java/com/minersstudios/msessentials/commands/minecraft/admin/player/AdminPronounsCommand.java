@@ -64,8 +64,10 @@ public final class AdminPronounsCommand {
                             text(pronouns.name().toLowerCase(Locale.ROOT))
                     )
             );
+
             return true;
         }
+
         return false;
     }
 }

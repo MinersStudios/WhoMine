@@ -6,6 +6,7 @@ import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -33,6 +34,8 @@ public final class SkinsMenu {
     private static final CustomInventory CUSTOM_INVENTORY;
 
     static {
+        final MSEssentials plugin = MSEssentials.singleton();
+
         final ItemStack applyItem = new ItemStack(Material.PAPER);
         final ItemMeta applyMeta = applyItem.getItemMeta();
 
@@ -51,10 +54,12 @@ public final class SkinsMenu {
 
         APPLY_BUTTON = new InventoryButton(applyItem, (event, inv) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final Skin skin = playerInfo.getPlayerFile().getSkin((int) inv.args().get(0));
 
-            if (skin == null) return;
+            if (skin == null) {
+                return;
+            }
 
             playerInfo.setSkin(skin);
             player.closeInventory();
@@ -79,12 +84,16 @@ public final class SkinsMenu {
 
         DELETE_BUTTON = new InventoryButton(deleteItem, (event, inv) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             try {
                 final Skin selectedSkin = playerFile.getSkin((int) inv.args().get(0));
-                if (selectedSkin == null) return;
+
+                if (selectedSkin == null) {
+                    return;
+                }
+
                 final Component skinName = text(selectedSkin.getName());
 
                 playerFile.removeSkin(selectedSkin);
@@ -109,7 +118,7 @@ public final class SkinsMenu {
                 MSLogger.severe(player, translatable("ms.error.something_went_wrong"));
             }
 
-            open(player);
+            open(plugin, player);
         });
         DELETE_BUTTON_EMPTY = DELETE_BUTTON.clone().item(deleteEmpty);
 
@@ -125,10 +134,13 @@ public final class SkinsMenu {
         );
     }
 
-    public static void open(final @NotNull Player player) {
+    public static void open(
+            final @NotNull MSEssentials plugin,
+            final @NotNull Player player
+    ) {
         final CustomInventory customInventory = CUSTOM_INVENTORY.clone();
 
-        final var skins = PlayerInfo.fromOnlinePlayer(player).getPlayerFile().getSkins();
+        final var skins = PlayerInfo.fromOnlinePlayer(plugin, player).getPlayerFile().getSkins();
         final var skinButtons = new HashMap<Integer, InventoryButton>();
 
         for (int i = 0; i < skins.size(); i++) {

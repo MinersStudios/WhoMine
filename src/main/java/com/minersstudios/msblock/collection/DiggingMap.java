@@ -2,13 +2,14 @@ package com.minersstudios.msblock.collection;
 
 import com.google.common.collect.ImmutableSet;
 import com.minersstudios.msblock.MSBlock;
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.*;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -78,10 +79,14 @@ public class DiggingMap {
      */
     public @Nullable Block getBlock(final @NotNull Entry diggingEntry) {
         for (final var entry : this.diggingBlockMap.entrySet()) {
-            if (!entry.getValue().contains(diggingEntry)) continue;
+            if (!entry.getValue().contains(diggingEntry)) {
+                continue;
+            }
 
             for (final var digging : entry.getValue()) {
-                if (digging.equals(diggingEntry)) return entry.getKey();
+                if (digging.equals(diggingEntry)) {
+                    return entry.getKey();
+                }
             }
         }
 
@@ -98,7 +103,9 @@ public class DiggingMap {
     public @Nullable Block getBlock(final @NotNull Player player) {
         for (final var entry : this.diggingBlockMap.entrySet()) {
             for (final var diggingEntry : entry.getValue()) {
-                if (diggingEntry.player.equals(player)) return entry.getKey();
+                if (diggingEntry.player.equals(player)) {
+                    return entry.getKey();
+                }
             }
         }
 
@@ -115,10 +122,14 @@ public class DiggingMap {
             final @NotNull Block block,
             final @NotNull Player player
     ) {
-        if (!this.diggingBlockMap.containsKey(block)) return null;
+        if (!this.diggingBlockMap.containsKey(block)) {
+            return null;
+        }
 
         for (final var diggingEntry : this.diggingBlockMap.get(block)) {
-            if (diggingEntry.player.equals(player)) return diggingEntry;
+            if (diggingEntry.player.equals(player)) {
+                return diggingEntry;
+            }
         }
 
         return null;
@@ -135,7 +146,9 @@ public class DiggingMap {
     public @Nullable Entry getBiggestStageEntry(final @NotNull Block block) {
         final var entrySet = this.entries(block);
 
-        if (entrySet.isEmpty()) return null;
+        if (entrySet.isEmpty()) {
+            return null;
+        }
 
         Entry maxStageEntry = null;
         int maxStage = Integer.MIN_VALUE;
@@ -166,7 +179,10 @@ public class DiggingMap {
             final @NotNull Block block,
             final @NotNull Entry diggingEntry
     ) {
-        final var diggingEntrySet = this.diggingBlockMap.computeIfAbsent(block, b -> ConcurrentHashMap.newKeySet());
+        final var diggingEntrySet = this.diggingBlockMap.computeIfAbsent(
+                block,
+                b -> ConcurrentHashMap.newKeySet()
+        );
 
         diggingEntrySet.add(diggingEntry);
         this.diggingBlockMap.put(block, diggingEntrySet);
@@ -216,7 +232,9 @@ public class DiggingMap {
             final @NotNull Block block,
             final @NotNull Player player
     ) {
-        if (!this.diggingBlockMap.containsKey(block)) return;
+        if (!this.diggingBlockMap.containsKey(block)) {
+            return;
+        }
 
         this.diggingBlockMap.forEach((diggingBlock, diggingEntrySet) ->
                 diggingEntrySet.forEach(diggingEntry -> {
@@ -304,7 +322,9 @@ public class DiggingMap {
      */
     public boolean containsEntry(final @NotNull Entry diggingEntry) {
         for (final var diggingEntrySet : this.diggingBlockMap.values()) {
-            if (diggingEntrySet.contains(diggingEntry)) return true;
+            if (diggingEntrySet.contains(diggingEntry)) {
+                return true;
+            }
         }
 
         return false;
@@ -321,7 +341,9 @@ public class DiggingMap {
     public boolean containsPlayer(final @NotNull Player player) {
         for (final var diggingEntrySet : this.diggingBlockMap.values()) {
             for (final var diggingEntry : diggingEntrySet) {
-                if (diggingEntry.player.equals(player)) return true;
+                if (diggingEntry.player.equals(player)) {
+                    return true;
+                }
             }
         }
 
@@ -514,17 +536,24 @@ public class DiggingMap {
          * Checks if the player's current stage is the biggest stage
          * for the specified block in the DiggingMap
          *
-         * @param block The block for which to check if the player's
-         *              stage is the biggest
+         * @param plugin The plugin that owns the DiggingMap
+         * @param block  The block for which to check if the player's
+         *               stage is the biggest
          * @return True if the player's stage is the biggest for the block
          * @throws NullPointerException If the plugin's cache is null,
          *                              that means the plugin is not enabled
          */
-        public boolean isStageTheBiggest(final @NotNull Block block) throws NullPointerException {
-            Entry biggestStageEntry = MSBlock.cache().getDiggingMap().getBiggestStageEntry(block);
+        public boolean isStageTheBiggest(
+                final @NotNull MSBlock plugin,
+                final @NotNull Block block
+        ) throws NullPointerException {
+            final Entry biggestStageEntry = plugin.getCache().getDiggingMap().getBiggestStageEntry(block);
+
             return biggestStageEntry != null
-                    && (this.equals(biggestStageEntry)
-                    || this.stage > biggestStageEntry.stage());
+                    && (
+                            this.equals(biggestStageEntry)
+                            || this.stage > biggestStageEntry.stage()
+                    );
         }
 
         /**
@@ -563,7 +592,7 @@ public class DiggingMap {
          */
         public void cancelTask() throws NullPointerException {
             if (this.taskId != -1) {
-                Bukkit.getScheduler().cancelTask(this.taskId);
+                player.getServer().getScheduler().cancelTask(this.taskId);
                 this.taskId = -1;
             }
         }

@@ -129,7 +129,10 @@ public final class PacketType {
         final var map = new HashMap<Integer, PacketType>();
 
         for (final var field : clazz.getDeclaredFields()) {
-            if (field.getType() != PacketType.class) continue;
+            if (field.getType() != PacketType.class) {
+                continue;
+            }
+
             try {
                 final PacketType packetType = (PacketType) field.get(null);
 

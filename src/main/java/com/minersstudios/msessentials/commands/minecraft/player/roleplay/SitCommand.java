@@ -4,6 +4,7 @@ import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -27,7 +28,7 @@ import static net.kyori.adventure.text.Component.translatable;
         description = "Сядь на картаны и порви жопу",
         playerOnly = true
 )
-public final class SitCommand implements MSCommandExecutor {
+public final class SitCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("sit")
             .then(argument("speech", StringArgumentType.greedyString()))
@@ -44,7 +45,7 @@ public final class SitCommand implements MSCommandExecutor {
             final String @NotNull ... args
     ) {
         final Player player = (Player) sender;
-        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
 
         if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
             MSLogger.warning(player, IN_AIR);

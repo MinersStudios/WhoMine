@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.listeners.event.mechanic;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.CustomItemType;
 import org.bukkit.entity.Entity;
@@ -13,7 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class BanSwordMechanic extends AbstractMSListener<MSItem> {
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -21,7 +21,9 @@ public final class BanSwordMechanic extends AbstractMSListener<MSItem> {
         if (
                 !(event.getDamager() instanceof final Player damager)
                 || CustomItemType.fromItemStack(damager.getInventory().getItemInMainHand()) != CustomItemType.BAN_SWORD
-        ) return;
+        ) {
+            return;
+        }
 
         final Entity damagedEntity = event.getEntity();
         event.setCancelled(!damager.isOp() || damagedEntity instanceof Player);
@@ -38,7 +40,9 @@ public final class BanSwordMechanic extends AbstractMSListener<MSItem> {
         if (
                 currentItem == null
                 || CustomItemType.fromItemStack(currentItem) != CustomItemType.BAN_SWORD
-        ) return;
+        ) {
+            return;
+        }
 
         currentItem.setAmount(0);
         event.setCancelled(true);

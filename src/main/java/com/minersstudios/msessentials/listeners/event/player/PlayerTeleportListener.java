@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.listeners.event.player;
 
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
@@ -9,13 +9,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class PlayerTeleportListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerTeleport(final @NotNull PlayerTeleportEvent event) {
         final Player player = event.getPlayer();
-        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
 
         if (playerInfo.isSitting()) {
             playerInfo.unsetSitting();

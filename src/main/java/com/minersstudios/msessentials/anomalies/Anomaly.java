@@ -35,7 +35,7 @@ import java.util.*;
  *     <li>{@link OfflinePlayer} - ignorable players, which will be ignored by anomaly actions</li>
  * </ul>
  *
- * @see #fromConfig(File)
+ * @see #fromConfig(MSEssentials, File)
  */
 public class Anomaly {
     private final NamespacedKey namespacedKey;
@@ -73,8 +73,11 @@ public class Anomaly {
      * @return Loaded anomaly from config
      * @throws IllegalArgumentException If anomaly config is invalid
      */
-    @Contract("_ -> new")
-    public static @NotNull Anomaly fromConfig(final @NotNull File file) throws IllegalArgumentException {
+    @Contract("_, _ -> new")
+    public static @NotNull Anomaly fromConfig(
+            final @NotNull MSEssentials plugin,
+            final @NotNull File file
+    ) throws IllegalArgumentException {
         final String fileName = file.getName();
         final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         final World world = Bukkit.getWorld(
@@ -118,6 +121,7 @@ public class Anomaly {
         }
 
         final AnomalyIgnorableItems anomalyIgnorableItems = new AnomalyIgnorableItems(
+                plugin,
                 items,
                 config.getInt("ignorable-items.breaking-per-action")
         );
@@ -154,6 +158,7 @@ public class Anomaly {
                         }
 
                         action = new AddPotionAction(
+                                plugin,
                                 radiusSection.getLong("add-potion-effect.time"),
                                 radiusSection.getInt("add-potion-effect.percentage"),
                                 potionEffects.toArray(new PotionEffect[0])
@@ -186,6 +191,7 @@ public class Anomaly {
                         }
 
                         action = new SpawnParticlesAction(
+                                plugin,
                                 radiusSection.getLong("spawn-particles.time"),
                                 radiusSection.getInt("spawn-particles.percentage"),
                                 particleBuilderList.toArray(new ParticleBuilder[0])
@@ -214,11 +220,14 @@ public class Anomaly {
         }
 
         return new Anomaly(
-                new NamespacedKey(MSEssentials.singleton(),
+                new NamespacedKey(
+                        MSEssentials.NAMESPACE,
                         Objects.requireNonNull(config.getString("namespaced-key"), "namespaced-key in " + fileName + " is null")
                 ),
                 anomalyBoundingBox,
-                equipmentSlots.isEmpty() ? null : anomalyIgnorableItems,
+                equipmentSlots.isEmpty()
+                        ? null
+                        : anomalyIgnorableItems,
                 anomalyActionMap,
                 ignorablePlayers
         );

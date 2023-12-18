@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.listener.packet;
 
+import com.minersstudios.mscore.listener.event.MSListener;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.plugin.MSPlugin;
@@ -18,7 +19,7 @@ import java.util.Set;
  * @see MSPacketListener
  * @see MSPlugin#registerPacketListeners()
  */
-public abstract class AbstractMSPacketListener<P extends MSPlugin<P>> {
+public abstract class AbstractMSPacketListener<P extends MSPlugin<P>> implements MSListener<P> {
     private P plugin;
     private final Set<PacketType> sendWhiteList;
     private final Set<PacketType> receiveWhiteList;
@@ -50,12 +51,7 @@ public abstract class AbstractMSPacketListener<P extends MSPlugin<P>> {
         }
     }
 
-    /**
-     * @return The plugin for this packet listener or null if not set
-     * @throws IllegalStateException If this packet listener is not registered
-     * @see #register(MSPlugin)
-     * @see MSPlugin#registerPacketListeners()
-     */
+    @Override
     public final @NotNull P getPlugin() throws IllegalStateException {
         if (this.plugin == null) {
             throw new IllegalStateException("Packet listener " + this + " not registered!");
@@ -80,19 +76,14 @@ public abstract class AbstractMSPacketListener<P extends MSPlugin<P>> {
         return Collections.unmodifiableSet(this.sendWhiteList);
     }
 
-    /**
-     * @return True if this listener is registered to a plugin
-     */
+    @Override
     public final boolean isRegistered() {
-        return this.plugin != null && this.plugin.getPacketListeners().contains(this);
+        return this.plugin != null
+                && this.plugin.getPacketListeners().contains(this);
     }
 
-    /**
-     * Registers this packet listener to the plugin
-     *
-     * @param plugin The plugin to register this listener to
-     */
-    public final void register(final @NotNull P plugin) {
+    @Override
+    public final void register(final @NotNull P plugin) throws IllegalStateException {
         if (this.isRegistered()) {
             throw new IllegalStateException("Packet listener " + this + " already registered!");
         }
@@ -100,6 +91,15 @@ public abstract class AbstractMSPacketListener<P extends MSPlugin<P>> {
         this.plugin = plugin;
 
         MSPlugin.globalCache().packetListenerMap.addListener(this);
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return this.getClass().getSimpleName() +
+                "plugin=" + this.plugin +
+                ", sendWhiteList=" + this.sendWhiteList +
+                ", receiveWhiteList=" + this.receiveWhiteList +
+                '}';
     }
 
     /**
@@ -118,17 +118,5 @@ public abstract class AbstractMSPacketListener<P extends MSPlugin<P>> {
      */
     public void onPacketSend(final @NotNull PacketEvent event) {
         throw new UnsupportedOperationException("Packet send not implemented for " + event.getPacketContainer().getType().getName());
-    }
-
-    /**
-     * @return The string representation of this packet listener
-     */
-    @Override
-    public @NotNull String toString() {
-        return this.getClass().getSimpleName() +
-                "plugin=" + this.plugin +
-                ", sendWhiteList=" + this.sendWhiteList +
-                ", receiveWhiteList=" + this.receiveWhiteList +
-                '}';
     }
 }

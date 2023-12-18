@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Represents a handler for a custom block file,
@@ -29,7 +30,7 @@ import java.util.logging.Level;
  * to and from a file in json format using {@link Gson}.
  * <br>
  * You can create a {@link CustomBlockFile} using
- * {@link #create(File, CustomBlockData)} or {@link #create(File)}.
+ * {@link #create(File, CustomBlockData)} or {@link #create(MSBlock, File)}.
  * <br>
  * The first method creates a new {@link CustomBlockFile} with the
  * specified file and data, and the second method creates a new
@@ -90,23 +91,38 @@ public class CustomBlockFile {
      * errors are logged to the console and null is returned if
      * an error occurs.
      *
-     * @param file The file to load
+     * @param plugin The plugin to load the data for
+     * @param file   The file to load
      * @return The loaded {@link CustomBlockFile} from the file,
      *         or null if the file is not found,
      *         or if the file is not a valid json file
-     * @see #load()
+     * @see #load(MSBlock)
      */
-    public static @Nullable CustomBlockFile create(final @NotNull File file) {
+    public static @Nullable CustomBlockFile create(
+            final @NotNull MSBlock plugin,
+            final @NotNull File file
+    ) {
+        final Logger logger = plugin.getLogger();
+
         try {
             final CustomBlockFile customBlockFile = new CustomBlockFile(file, null);
 
-            customBlockFile.load();
+            customBlockFile.load(plugin);
             return customBlockFile;
         } catch (final ConfigurationException e) {
-            MSBlock.logger().log(Level.SEVERE, "Failed to create a custom block file from file", e);
+            logger.log(
+                    Level.SEVERE,
+                    "Failed to create a custom block file from file",
+                    e
+            );
         } catch (final IllegalArgumentException e) {
-            MSBlock.logger().log(Level.SEVERE, "The file is not a json file", e);
+            logger.log(
+                    Level.SEVERE,
+                    "The file is not a json file",
+                    e
+            );
         }
+
         return null;
     }
 
@@ -131,7 +147,7 @@ public class CustomBlockFile {
      *                                or if the file is not a valid json file,
      *                                or if an I/O error occurs
      */
-    public void load() throws ConfigurationException {
+    public void load(final @NotNull MSBlock plugin) throws ConfigurationException {
         final String path = this.file.getAbsolutePath();
 
         if (!this.file.exists()) {
@@ -139,7 +155,10 @@ public class CustomBlockFile {
         }
 
         try {
-            this.data = deserialize(Files.readString(this.file.toPath(), StandardCharsets.UTF_8));
+            this.data = deserialize(
+                    plugin,
+                    Files.readString(this.file.toPath(), StandardCharsets.UTF_8)
+            );
         } catch (final Exception e) {
             throw new ConfigurationException("Failed to load custom block data from file: " + path, e);
         }
@@ -161,7 +180,11 @@ public class CustomBlockFile {
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.data, writer);
         } catch (final IOException e) {
-            MSBlock.logger().log(Level.SEVERE, "Failed to save a file: " + this.file.getAbsolutePath(), e);
+            MSBlock.logger().log(
+                    Level.SEVERE,
+                    "Failed to save a file: " + this.file.getAbsolutePath(),
+                    e
+            );
         }
     }
 
@@ -173,7 +196,10 @@ public class CustomBlockFile {
         return GSON;
     }
 
-    private static @NotNull CustomBlockData deserialize(final @NotNull String json) {
+    private static @NotNull CustomBlockData deserialize(
+            final @NotNull MSBlock plugin,
+            final @NotNull String json
+    ) {
         final JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
         final JsonElement recipeEntries = jsonObject.get("recipeEntries");
 
@@ -181,10 +207,11 @@ public class CustomBlockFile {
             jsonObject.remove("recipeEntries");
 
             final CustomBlockData data = GSON.fromJson(jsonObject, CustomBlockData.class);
-            MSBlock.singleton().runTaskTimer(task -> {
+
+            plugin.runTaskTimer(task -> {
                 if (MSPluginUtils.isLoadedCustoms()) {
                     task.cancel();
-                    data.registerRecipes(recipeEntries);
+                    data.registerRecipes(plugin, recipeEntries);
                 }
             }, 0L, 10L);
 

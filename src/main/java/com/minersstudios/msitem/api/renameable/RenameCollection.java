@@ -412,7 +412,9 @@ public final class RenameCollection {
                 || !this.isInitialized()
                 || item.getType().isAir()
                 || StringUtils.isBlank(rename)
-        ) return null;
+        ) {
+            return null;
+        }
 
         final ItemStack newItem = new ItemStack(item);
         final ItemMeta meta = item.getItemMeta();

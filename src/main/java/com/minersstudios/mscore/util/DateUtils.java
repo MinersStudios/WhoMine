@@ -53,7 +53,9 @@ public final class DateUtils {
     public static @NotNull String getTimezone(final @NotNull InetAddress ip) {
         final String cachedTimezone = TIMEZONE_CACHE.get(ip);
 
-        if (cachedTimezone != null) return cachedTimezone;
+        if (cachedTimezone != null) {
+            return cachedTimezone;
+        }
 
         try (
                 final var input = new URL("http://ip-api.com/json/" + ip.getHostAddress()).openStream();
@@ -121,7 +123,9 @@ public final class DateUtils {
             final @NotNull Instant date,
             final @Nullable CommandSender sender
     ) {
-        if (!(sender instanceof final Player player)) return getDate(date, null);
+        if (!(sender instanceof final Player player)) {
+            return getDate(date, null);
+        }
 
         final InetSocketAddress socketAddress = player.getAddress();
         return getDate(
@@ -188,7 +192,9 @@ public final class DateUtils {
             final @NotNull String string,
             final boolean throwException
     ) throws NumberFormatException, DateTimeException, ArithmeticException {
-        if (!matchesChrono(string)) return null;
+        if (!matchesChrono(string)) {
+            return null;
+        }
 
         final Instant now = Instant.now();
         final String numberString = string.replaceAll("[smhdMy]", "");

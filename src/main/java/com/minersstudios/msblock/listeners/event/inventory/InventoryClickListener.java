@@ -5,14 +5,14 @@ import com.google.common.collect.Sets;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class InventoryClickListener extends AbstractMSListener<MSBlock> {
     private static final ImmutableSet<InventoryType> IGNORABLE_INVENTORY_TYPES = Sets.immutableEnumSet(
             //<editor-fold desc="Ignorable inventory types" defaultstate="collapsed">

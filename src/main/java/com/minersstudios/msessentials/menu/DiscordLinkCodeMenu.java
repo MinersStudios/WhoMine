@@ -3,6 +3,7 @@ package com.minersstudios.msessentials.menu;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -30,10 +31,19 @@ public final class DiscordLinkCodeMenu {
             translatable("ms.menu.discord.numbers.9")
     );
 
-    public static void open(final @NotNull Player player) {
+    public static void open(
+            final @NotNull MSEssentials plugin,
+            final @NotNull Player player
+    ) {
         CustomInventory.single(
                 TITLE
-                .append(generateNumbers(PlayerInfo.fromOnlinePlayer(player).generateCode()))
+                .append(
+                        generateNumbers(
+                                PlayerInfo
+                                .fromOnlinePlayer(plugin, player)
+                                .generateCode()
+                        )
+                )
                 .color(NamedTextColor.WHITE),
                 4
         ).open(player);

@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.listeners.event.mechanic;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.util.ItemUtils;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.CustomItem;
@@ -20,13 +20,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-@MSListener
+@MSEventListener
 public final class CardBoxMechanic extends AbstractMSListener<MSItem> {
     private static final List<ItemStack> CARDS = new ArrayList<>();
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryMoveItem(final @NotNull InventoryMoveItemEvent event) {
-        if (event.getDestination().getType() != InventoryType.SHULKER_BOX) return;
+        if (event.getDestination().getType() != InventoryType.SHULKER_BOX) {
+            return;
+        }
 
         CustomItem.fromItemStack(event.getItem())
         .filter(customItem -> customItem instanceof CardsBicycle)
@@ -37,7 +39,9 @@ public final class CardBoxMechanic extends AbstractMSListener<MSItem> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryDrag(final @NotNull InventoryDragEvent event) {
-        if (event.getInventory().getType() != InventoryType.SHULKER_BOX) return;
+        if (event.getInventory().getType() != InventoryType.SHULKER_BOX) {
+            return;
+        }
 
         CustomItem.fromItemStack(event.getOldCursor())
         .filter(customItem -> customItem instanceof CardsBicycle)
@@ -53,17 +57,27 @@ public final class CardBoxMechanic extends AbstractMSListener<MSItem> {
         final Inventory clickedInventory = event.getClickedInventory();
 
         if (
-                (clickedInventory != null
-                && clickedInventory.getType() == InventoryType.SHULKER_BOX
-                && CustomItem.fromItemStack(cursorItem).orElse(null) instanceof CardsBicycle)
-                || (event.isShiftClick()
-                && event.getWhoClicked().getOpenInventory().getType() == InventoryType.SHULKER_BOX
-                && CustomItem.fromItemStack(currentItem).orElse(null) instanceof CardsBicycle)
+                (
+                        clickedInventory != null
+                        && clickedInventory.getType() == InventoryType.SHULKER_BOX
+                        && CustomItem.fromItemStack(cursorItem).orElse(null) instanceof CardsBicycle
+                )
+                || (
+                        event.isShiftClick()
+                        && event.getWhoClicked().getOpenInventory().getType() == InventoryType.SHULKER_BOX
+                        && CustomItem.fromItemStack(currentItem).orElse(null) instanceof CardsBicycle
+                )
         ) {
             event.setCancelled(true);
         }
 
-        if (currentItem == null || !event.isRightClick()) return;
+        if (
+                currentItem == null
+                || !event.isRightClick()
+        ) {
+            return;
+        }
+
         if (
                 !cursorItem.getType().isAir()
                 && CustomItem.fromItemStack(currentItem).orElse(null) instanceof CardsBicycle

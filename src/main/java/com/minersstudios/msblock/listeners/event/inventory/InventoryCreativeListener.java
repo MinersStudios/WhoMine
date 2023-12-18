@@ -4,7 +4,7 @@ import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.util.PlayerUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,12 +15,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class InventoryCreativeListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryCreative(final @NotNull InventoryCreativeEvent event) {
-        if (!event.getClick().isCreativeAction()) return;
+        if (!event.getClick().isCreativeAction()) {
+            return;
+        }
 
         final Player player = (Player) event.getWhoClicked();
         final Block targetBlock = PlayerUtils.getTargetBlock(player);
@@ -29,12 +31,19 @@ public final class InventoryCreativeListener extends AbstractMSListener<MSBlock>
                 targetBlock == null
                 || event.getCursor().getType() != Material.NOTE_BLOCK
                 || !(targetBlock.getBlockData() instanceof final NoteBlock noteBlock)
-        ) return;
+        ) {
+            return;
+        }
 
         event.setCancelled(true);
-        this.getPlugin().runTask(() -> player.getInventory().setItem(
-                event.getSlot(),
-                CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault()).craftItemStack()
-        ));
+        this.getPlugin().runTask(() ->
+                player.getInventory().setItem(
+                        event.getSlot(),
+                        CustomBlockRegistry
+                        .fromNoteBlock(noteBlock)
+                        .orElse(CustomBlockData.getDefault())
+                        .craftItemStack()
+                )
+        );
     }
 }

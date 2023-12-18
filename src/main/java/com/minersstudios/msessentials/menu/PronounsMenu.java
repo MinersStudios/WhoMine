@@ -25,6 +25,8 @@ public final class PronounsMenu {
     private static final CustomInventory INVENTORY;
 
     static {
+        final MSEssentials plugin = MSEssentials.singleton();
+
         final ItemStack heItem = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
         final ItemMeta heMeta = heItem.getItemMeta();
         final var loreHe = new ArrayList<Component>();
@@ -54,7 +56,7 @@ public final class PronounsMenu {
 
         final InventoryButton heButton = new InventoryButton(heItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.HE);
@@ -65,7 +67,7 @@ public final class PronounsMenu {
 
         final InventoryButton sheButton = new InventoryButton(sheItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.SHE);
@@ -76,7 +78,7 @@ public final class PronounsMenu {
 
         final InventoryButton theyButton = new InventoryButton(theyItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.THEY);
@@ -97,12 +99,12 @@ public final class PronounsMenu {
                 .buttonAt(8, theyButton)
                 .closeAction((event, inventory) -> {
                     final Player player = (Player) event.getPlayer();
-                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
 
                     if (playerInfo.getPlayerFile().getConfig().getString("pronouns") == null) {
-                        MSEssentials.singleton().runTask(() -> player.openInventory(inventory));
+                        plugin.runTask(() -> player.openInventory(inventory));
                     } else {
-                        new RegistrationProcess().setPronouns(player, playerInfo);
+                        new RegistrationProcess(plugin).setPronouns(player, playerInfo);
                     }
                 });
     }

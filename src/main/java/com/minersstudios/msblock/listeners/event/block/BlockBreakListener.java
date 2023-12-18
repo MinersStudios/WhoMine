@@ -3,10 +3,10 @@ package com.minersstudios.msblock.listeners.event.block;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
-import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.msblock.api.file.ToolType;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
+import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.util.BlockUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -39,9 +39,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-@MSListener
+@MSEventListener
 public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler
@@ -70,7 +69,7 @@ public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
 
             if (
                     gameMode == GameMode.CREATIVE
-                    && destroyBlock(serverPlayer, blockPosition)
+                    && this.destroyBlock(serverPlayer, blockPosition)
             ) {
                 customBlockMaterial.getSoundGroup().playBreakSound(blockLocation.toCenterLocation());
             }
@@ -81,8 +80,9 @@ public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
             ) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));
                 block.getWorld().dropItemNaturally(blockLocation, customBlockMaterial.craftItemStack());
-                destroyBlock(serverPlayer, blockPosition);
+                this.destroyBlock(serverPlayer, blockPosition);
             }
+
             return;
         }
 
@@ -91,12 +91,12 @@ public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
                 || bottomBlock.getType() == Material.NOTE_BLOCK
         ) {
             event.setCancelled(true);
-            destroyBlock(serverPlayer, blockPosition);
+            this.destroyBlock(serverPlayer, blockPosition);
         }
     }
 
     @SuppressWarnings("DataFlowIssue")
-    private static boolean destroyBlock(
+    private boolean destroyBlock(
             final @NotNull ServerPlayer serverPlayer,
             final @NotNull BlockPos pos
     ) {
@@ -106,8 +106,13 @@ public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
         final BlockBreakEvent event = new BlockBreakEvent(bblock, serverPlayer.getBukkitEntity());
         final boolean isSwordNoBreak = !serverPlayer.getMainHandItem().getItem().canAttackBlock(iBlockData, gameMode.level, pos, serverPlayer);
 
-        if (gameMode.level.getBlockEntity(pos) == null && !isSwordNoBreak) {
-            serverPlayer.connection.send(new ClientboundBlockUpdatePacket(pos, Blocks.AIR.defaultBlockState()));
+        if (
+                gameMode.level.getBlockEntity(pos) == null
+                && !isSwordNoBreak
+        ) {
+            serverPlayer.connection.send(
+                    new ClientboundBlockUpdatePacket(pos, Blocks.AIR.defaultBlockState())
+            );
         }
 
         event.setCancelled(isSwordNoBreak);
@@ -127,22 +132,45 @@ public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
                 && !gameMode.isCreative()
                 && serverPlayer.hasCorrectToolForDrops(nmsBlock.defaultBlockState())
         ) {
-            event.setExpToDrop(nmsBlock.getExpDrop(nmsData, gameMode.level, pos, serverPlayer.getItemBySlot(EquipmentSlot.MAINHAND), true));
+            event.setExpToDrop(
+                    nmsBlock.getExpDrop(
+                            nmsData,
+                            gameMode.level,
+                            pos,
+                            serverPlayer.getItemBySlot(EquipmentSlot.MAINHAND),
+                            true
+                    )
+            );
         }
 
         if (event.isCancelled()) {
-            if (isSwordNoBreak) return false;
+            if (isSwordNoBreak) {
+                return false;
+            }
 
-            serverPlayer.connection.send(new ClientboundBlockUpdatePacket(gameMode.level, pos));
+            serverPlayer.connection.send(
+                    new ClientboundBlockUpdatePacket(gameMode.level, pos)
+            );
 
             for (final var dir : Direction.values()) {
-                serverPlayer.connection.send(new ClientboundBlockUpdatePacket(gameMode.level, pos.relative(dir)));
+                serverPlayer.connection.send(
+                        new ClientboundBlockUpdatePacket(gameMode.level, pos.relative(dir))
+                );
             }
 
             if (!gameMode.captureSentBlockEntities) {
-                BlockEntity tileEntity = gameMode.level.getBlockEntity(pos);
+                final BlockEntity tileEntity = gameMode.level.getBlockEntity(pos);
+
                 if (tileEntity != null) {
-                    serverPlayer.connection.send(Objects.requireNonNull(tileEntity.getUpdatePacket()));
+                    final var packet = tileEntity.getUpdatePacket();
+
+                    if (packet != null) {
+                        serverPlayer.connection.send(packet);
+                    } else {
+                        this.getPlugin().getLogger().warning(
+                                "TileEntity " + tileEntity + " failed to get an update packet!"
+                        );
+                    }
                 }
             } else {
                 gameMode.capturedBlockEntity = true;
@@ -153,7 +181,9 @@ public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
 
         iBlockData = gameMode.level.getBlockState(pos);
 
-        if (iBlockData.isAir()) return false;
+        if (iBlockData.isAir()) {
+            return false;
+        }
 
         final BlockEntity tileEntity = gameMode.level.getBlockEntity(pos);
         final net.minecraft.world.level.block.Block block = iBlockData.getBlock();
@@ -164,7 +194,15 @@ public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
                 || block instanceof CommandBlock && serverPlayer.isCreative()
                 && serverPlayer.getBukkitEntity().hasPermission("minecraft.commandblock")
         ) {
-            if (serverPlayer.blockActionRestricted(gameMode.level, pos, gameMode.getGameModeForPlayer())) return false;
+            if (
+                    serverPlayer.blockActionRestricted(
+                            gameMode.level,
+                            pos,
+                            gameMode.getGameModeForPlayer()
+                    )
+            ) {
+                return false;
+            }
 
             final org.bukkit.block.BlockState state = bblock.getState();
             gameMode.level.captureDrops = new ArrayList<>();
@@ -180,15 +218,19 @@ public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
             boolean isCorrectTool = false;
 
             if (!gameMode.isCreative()) {
-                net.minecraft.world.item.ItemStack itemStack = serverPlayer.getMainHandItem();
-                net.minecraft.world.item.ItemStack itemStack1 = itemStack.copy();
-                boolean flag1 = serverPlayer.hasCorrectToolForDrops(iBlockData);
+                final net.minecraft.world.item.ItemStack itemStack = serverPlayer.getMainHandItem();
+                final net.minecraft.world.item.ItemStack itemStack1 = itemStack.copy();
+                final boolean flag1 = serverPlayer.hasCorrectToolForDrops(iBlockData);
                 mainHandStack = itemStack1;
                 isCorrectTool = flag1;
 
                 itemStack.mineBlock(gameMode.level, iBlockData, pos, serverPlayer);
 
-                if (flag && flag1 && event.isDropItems()) {
+                if (
+                        flag
+                        && flag1
+                        && event.isDropItems()
+                ) {
                     block.playerDestroy(gameMode.level, serverPlayer, pos, iBlockData, tileEntity, itemStack1);
                 }
             }
@@ -210,14 +252,20 @@ public final class BlockBreakListener extends AbstractMSListener<MSBlock> {
                     && isCorrectTool
                     && event.isDropItems()
                     && block instanceof BeehiveBlock
-                    && tileEntity instanceof BeehiveBlockEntity beehiveBlockEntity
+                    && tileEntity instanceof final BeehiveBlockEntity beehiveBlockEntity
             ) {
-                CriteriaTriggers.BEE_NEST_DESTROYED.trigger(serverPlayer, iBlockData, mainHandStack, beehiveBlockEntity.getOccupantCount());
+                CriteriaTriggers.BEE_NEST_DESTROYED.trigger(
+                        serverPlayer,
+                        iBlockData,
+                        mainHandStack,
+                        beehiveBlockEntity.getOccupantCount()
+                );
             }
 
             return true;
         } else {
             gameMode.level.sendBlockUpdated(pos, iBlockData, iBlockData, 3);
+
             return false;
         }
     }

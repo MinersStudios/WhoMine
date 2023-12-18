@@ -3,7 +3,6 @@ package com.minersstudios.mscore.inventory;
 import com.minersstudios.mscore.inventory.action.InventoryAction;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.Container;
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventoryCustom;
 import org.bukkit.entity.Player;
@@ -39,7 +38,6 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     protected final int size;
 
     protected static final int LAST_SLOT = 53;
-    protected static final ItemStack EMPTY_ITEM = new ItemStack(Material.AIR);
 
     protected CustomInventoryImpl(
             final @NotNull Component title,
@@ -90,7 +88,13 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
     ) throws IllegalArgumentException {
         this.validateSlot(slot);
         this.buttons.put(slot, button);
-        this.setItem(slot, button == null ? EMPTY_ITEM : button.item());
+        this.setItem(
+                slot,
+                button == null
+                ? ItemStack.empty()
+                : button.item()
+        );
+
         return (S) this;
     }
 

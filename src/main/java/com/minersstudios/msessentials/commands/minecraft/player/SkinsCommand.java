@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.commands.minecraft.player;
 
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.menu.SkinsMenu;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
         description = "Открывает меню с крафтами кастомных предметов/декора/блоков",
         playerOnly = true
 )
-public final class SkinsCommand implements MSCommandExecutor {
+public final class SkinsCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE = LiteralArgumentBuilder.literal("skins").build();
 
     @Override
@@ -28,7 +29,7 @@ public final class SkinsCommand implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        SkinsMenu.open((Player) sender);
+        SkinsMenu.open(this.getPlugin(), (Player) sender);
         return true;
     }
 

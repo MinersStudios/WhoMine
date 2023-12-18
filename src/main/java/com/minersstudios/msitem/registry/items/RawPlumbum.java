@@ -1,9 +1,9 @@
 package com.minersstudios.msitem.registry.items;
 
 import com.google.common.collect.ImmutableList;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.mscore.util.MSBlockUtils;
-import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.CustomItemImpl;
 import com.minersstudios.msitem.api.CustomItemType;
 import org.bukkit.Material;
@@ -53,7 +53,7 @@ public final class RawPlumbum extends CustomItemImpl {
         final var rawPlumbumBlock = MSBlockUtils.getItemStack("raw_plumbum_block");
 
         if (rawPlumbumBlock.isEmpty()) {
-            MSItem.logger().warning("Can't find custom block with key: raw_plumbum_block! Shaped recipe for RawPlumbum will not be registered!");
+            MSLogger.warning("Can't find custom block with key: raw_plumbum_block! Shaped recipe for RawPlumbum will not be registered!");
             return Collections.singletonList(Map.entry(shapedRecipe, true));
         }
 

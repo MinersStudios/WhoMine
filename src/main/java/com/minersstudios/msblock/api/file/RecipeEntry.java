@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * a Bukkit Recipe and a flag indicating whether the
  * recipe should be shown in the {@link CraftsMenu}
  */
+@SuppressWarnings("ClassCanBeRecord")
 public class RecipeEntry {
     private final @NotNull Recipe recipe;
     private final boolean showInCraftsMenu;

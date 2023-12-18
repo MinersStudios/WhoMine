@@ -1,6 +1,7 @@
 package com.minersstudios.msessentials.anomalies.actions;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomalies.AnomalyAction;
 import com.minersstudios.msessentials.anomalies.AnomalyIgnorableItems;
 import org.bukkit.Location;
@@ -20,18 +21,20 @@ public class SpawnParticlesAction extends AnomalyAction {
      * Spawns particles when a player is in anomaly zone.
      * Particles are spawned only for receiving players.
      *
+     * @param plugin     MSEssentials plugin
      * @param time       Time in ticks to perform action (1 second = 20 ticks)
      * @param percentage Percentage chance of completing action
      * @param first      First particle builder to spawn when player is in anomaly zone
      * @param rest       Rest of particle builders to spawn when player is in anomaly zone
      */
     public SpawnParticlesAction(
+            final @NotNull MSEssentials plugin,
             final long time,
             final int percentage,
             final @NotNull ParticleBuilder first,
             final ParticleBuilder @NotNull ... rest
     ) {
-        super(time, percentage);
+        super(plugin, time, percentage);
 
         final int restLength = rest.length;
         this.particleBuilders = new ParticleBuilder[restLength + 1];
@@ -44,16 +47,18 @@ public class SpawnParticlesAction extends AnomalyAction {
      * Spawns particles when a player is in anomaly zone.
      * Particles are spawned only for receiving players.
      *
+     * @param plugin            MSEssentials plugin
      * @param time              Time in ticks to perform action (1 second = 20 ticks)
      * @param percentage        Percentage chance of completing action
      * @param particleBuilders  Array of particle builders to spawn when player is in anomaly zone
      */
     public SpawnParticlesAction(
+            final @NotNull MSEssentials plugin,
             final long time,
             final int percentage,
             final ParticleBuilder @NotNull [] particleBuilders
     ) {
-        super(time, percentage);
+        super(plugin, time, percentage);
 
         this.particleBuilders = particleBuilders;
     }

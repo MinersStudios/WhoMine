@@ -19,7 +19,10 @@ import static net.kyori.adventure.text.Component.translatable;
 public final class ReloadCommand {
     private static final TranslatableComponent RELOAD_SUCCESS = translatable("ms.command.msitem.reload.success");
 
-    public static boolean runCommand(final @NotNull CommandSender sender) {
+    public static boolean runCommand(
+            final @NotNull MSItem plugin,
+            final @NotNull CommandSender sender
+    ) {
         final long time = System.currentTimeMillis();
         final Server server = sender.getServer();
         final var crafts = server.recipeIterator();
@@ -36,10 +39,11 @@ public final class ReloadCommand {
         }
 
         MSPlugin.globalCache().customItemRecipes.clear();
-        MSItem.cache().getRenameableMenuItems().clear();
+        plugin.getCache().getRenameableMenuItems().clear();
         RenameableItemRegistry.unregisterAll();
-        MSItem.config().reload();
+        plugin.getConfiguration().reload();
         MSLogger.fine(sender, RELOAD_SUCCESS.args(text(System.currentTimeMillis() - time)));
+
         return true;
     }
 }

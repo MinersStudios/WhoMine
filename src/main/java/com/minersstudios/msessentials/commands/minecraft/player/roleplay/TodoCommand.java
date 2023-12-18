@@ -4,6 +4,7 @@ import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -27,7 +28,7 @@ import static net.kyori.adventure.text.Component.translatable;
         description = "Описывает действие и речь в чате",
         playerOnly = true
 )
-public final class TodoCommand implements MSCommandExecutor {
+public final class TodoCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("todo")
             .then(
@@ -52,10 +53,12 @@ public final class TodoCommand implements MSCommandExecutor {
         if (
                 args.length < 3
                 || !message.contains("*")
-        ) return false;
+        ) {
+            return false;
+        }
 
         final Player player = (Player) sender;
-        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
 
         if (playerInfo.isMuted()) {
             MSLogger.warning(player, MUTED);
@@ -68,7 +71,9 @@ public final class TodoCommand implements MSCommandExecutor {
         if (
                 action.isEmpty()
                 || speech.isEmpty()
-        ) return false;
+        ) {
+            return false;
+        }
 
         sendRPEventMessage(player, text(speech), text(action), TODO);
         return true;

@@ -237,7 +237,9 @@ public final class Commodore {
                 final @NotNull CommandSender sender,
                 final @NotNull RootCommandNode<S> root
         ) {
-            if (!this.permissionTest.test(sender)) return;
+            if (!this.permissionTest.test(sender)) {
+                return;
+            }
 
             removeChild(root, this.node.getName());
             root.addChild((CommandNode<S>) this.node);

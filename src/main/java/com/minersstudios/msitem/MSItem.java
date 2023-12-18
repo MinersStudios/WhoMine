@@ -24,7 +24,7 @@ public final class MSItem extends MSPlugin<MSItem> {
 
     @Override
     public void load() {
-        this.cache = new Cache();
+        this.cache = new Cache(this);
         this.config = new Config(this, this.getConfigFile());
 
         initClass(CustomItemType.class);

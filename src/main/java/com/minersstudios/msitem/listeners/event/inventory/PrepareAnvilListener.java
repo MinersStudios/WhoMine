@@ -2,7 +2,7 @@ package com.minersstudios.msitem.listeners.event.inventory;
 
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.util.MSCustomUtils;
 import com.minersstudios.msdecor.api.CustomDecorData;
 import com.minersstudios.msitem.MSItem;
@@ -18,7 +18,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class PrepareAnvilListener extends AbstractMSListener<MSItem> {
 
     @EventHandler
@@ -30,7 +30,9 @@ public final class PrepareAnvilListener extends AbstractMSListener<MSItem> {
         if (
                 resultItem == null
                 || firstItem == null
-        ) return;
+        ) {
+            return;
+        }
 
         final RenameableItem renameableItem = RenameableItemRegistry.fromRename(renameText, resultItem).orElse(null);
 

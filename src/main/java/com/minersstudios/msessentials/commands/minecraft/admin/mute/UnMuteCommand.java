@@ -7,6 +7,7 @@ import com.minersstudios.mscore.util.DateUtils;
 import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
+import com.minersstudios.msessentials.player.collection.IDMap;
 import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -33,7 +34,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permission = "msessentials.mute",
         permissionDefault = PermissionDefault.OP
 )
-public final class UnMuteCommand implements MSCommandExecutor {
+public final class UnMuteCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("unmute")
             .then(argument("id/никнейм", StringArgumentType.word()))
@@ -47,9 +48,11 @@ public final class UnMuteCommand implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        if (args.length == 0) return false;
+        if (args.length == 0) {
+            return false;
+        }
 
-        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -70,16 +73,17 @@ public final class UnMuteCommand implements MSCommandExecutor {
         switch (args.length) {
             case 1 -> {
                 final var completions = new ArrayList<String>();
-                final Cache cache = MSEssentials.cache();
+                final Cache cache = this.getPlugin().getCache();
                 final MuteMap muteMap = cache.getMuteMap();
+                final IDMap idMap = cache.getIdMap();
                 final Server server = sender.getServer();
 
                 for (final var uuid : muteMap.uuidSet()) {
                     final OfflinePlayer offlinePlayer = server.getOfflinePlayer(uuid);
 
                     if (muteMap.isMuted(offlinePlayer)) {
+                        final int id = idMap.getID(uuid, false, false);
                         final String name = offlinePlayer.getName();
-                        final int id = cache.getIdMap().getID(uuid, false, false);
 
                         if (id != -1) {
                             completions.add(String.valueOf(id));

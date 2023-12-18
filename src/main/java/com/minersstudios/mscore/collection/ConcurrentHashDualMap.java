@@ -60,7 +60,11 @@ public class ConcurrentHashDualMap<P, S, V> implements DualMap<P, S, V> {
     @Override
     public @Nullable V removeByPrimaryKey(final @NotNull P primary) {
         final var entry = this.map.remove(primary);
-        if (entry == null) return null;
+
+        if (entry == null) {
+            return null;
+        }
+
         this.keyMap.remove(entry.getKey());
         return entry.getValue();
     }

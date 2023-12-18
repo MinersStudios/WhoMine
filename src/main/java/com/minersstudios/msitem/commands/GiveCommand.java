@@ -1,6 +1,7 @@
 package com.minersstudios.msitem.commands;
 
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msitem.api.CustomItem;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -23,12 +24,14 @@ public final class GiveCommand {
             final @NotNull CommandSender sender,
             final String @NotNull ... args
     ) {
-        if (args.length < 3) return false;
+        if (args.length < 3) {
+            return false;
+        }
 
         final String playerArg = args[1];
         final String itemArg = args[2];
         final String amountArg = args.length == 4 ? args[3] : "1";
-        final PlayerInfo playerInfo = PlayerInfo.fromString(playerArg);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(MSEssentials.singleton(), playerArg);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -68,6 +71,7 @@ public final class GiveCommand {
                 },
                 () -> MSLogger.severe(sender, WRONG_ITEM)
         );
+
         return true;
     }
 }

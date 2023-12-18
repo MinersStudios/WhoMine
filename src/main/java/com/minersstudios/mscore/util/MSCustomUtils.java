@@ -45,7 +45,9 @@ public final class MSCustomUtils {
      * @see #getItemStack(String, String)
      */
     public static @NotNull Optional<ItemStack> getItemStack(final @Nullable String namespacedKeyStr) {
-        if (StringUtils.isBlank(namespacedKeyStr)) return Optional.empty();
+        if (StringUtils.isBlank(namespacedKeyStr)) {
+            return Optional.empty();
+        }
 
         final int index = namespacedKeyStr.indexOf(":");
 
@@ -109,9 +111,16 @@ public final class MSCustomUtils {
      * @see #getCustom(NamespacedKey)
      */
     public static @NotNull Optional<?> getCustom(final @Nullable ItemStack itemStack) {
-        if (itemStack == null) return Optional.empty();
+        if (itemStack == null) {
+            return Optional.empty();
+        }
+
         final ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta == null) return Optional.empty();
+
+        if (itemMeta == null) {
+            return Optional.empty();
+        }
+
         final PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
         for (final var namespacedKey : container.getKeys()) {
@@ -134,7 +143,9 @@ public final class MSCustomUtils {
      * @see #getCustom(String, String)
      */
     public static @NotNull Optional<?> getCustom(final @Nullable String namespacedKeyStr) {
-        if (StringUtils.isBlank(namespacedKeyStr)) return Optional.empty();
+        if (StringUtils.isBlank(namespacedKeyStr)) {
+            return Optional.empty();
+        }
 
         final int index = namespacedKeyStr.indexOf(":");
 

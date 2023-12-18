@@ -27,6 +27,7 @@ public final class AdminMuteInfoCommand {
     private static final TranslatableComponent MUTE_INFO_SET_TIME_TO_FORMAT = translatable("ms.command.player.mute_info.set.time_to");
 
     public static boolean runCommand(
+            final @NotNull MSEssentials plugin,
             final @NotNull CommandSender sender,
             final String @NotNull [] args,
             final @NotNull PlayerInfo playerInfo
@@ -67,7 +68,7 @@ public final class AdminMuteInfoCommand {
             return true;
         }
 
-        final MuteMap muteMap = MSEssentials.cache().getMuteMap();
+        final MuteMap muteMap = plugin.getCache().getMuteMap();
 
         switch (paramString) {
             case "reason" -> {
@@ -125,9 +126,11 @@ public final class AdminMuteInfoCommand {
                                 text(DateUtils.getSenderDate(instant, sender))
                         )
                 );
+
                 return true;
             }
         }
+
         return false;
     }
 }

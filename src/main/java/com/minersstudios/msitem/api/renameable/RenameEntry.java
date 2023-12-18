@@ -108,19 +108,25 @@ public final class RenameEntry {
      *         entry's ItemStack
      */
     public boolean isSimilarItem(final @Nullable ItemStack item) {
-        if (item == null) return false;
+        if (item == null) {
+            return false;
+        }
 
         final Material type = item.getType();
         final PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
         final PersistentDataContainer thisContainer = this.item.getItemMeta().getPersistentDataContainer();
 
         for (final var namespacedKey : container.getKeys()) {
-            if (namespacedKey.equals(RenameableItemRegistry.RENAMEABLE_NAMESPACED_KEY)) continue;
+            if (namespacedKey.equals(RenameableItemRegistry.RENAMEABLE_NAMESPACED_KEY)) {
+                continue;
+            }
 
             final String typeString = container.get(namespacedKey, PersistentDataType.STRING);
             final String thisTypeString = thisContainer.get(namespacedKey, PersistentDataType.STRING);
 
-            if (!Objects.equals(thisTypeString, typeString)) return false;
+            if (!Objects.equals(thisTypeString, typeString)) {
+                return false;
+            }
         }
 
         return type == this.item.getType();

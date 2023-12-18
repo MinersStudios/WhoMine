@@ -29,8 +29,8 @@ import org.jetbrains.annotations.Nullable;
  * Represents a custom block which is a block with a custom block data
  *
  * @see CustomBlockData
- * @see #place(Player, EquipmentSlot, BlockFace, Axis)
- * @see #destroy(Player)
+ * @see #place(MSBlock, Player, EquipmentSlot, BlockFace, Axis)
+ * @see #destroy(MSBlock, Player)
  */
 public final class CustomBlock {
     private final Block block;
@@ -72,16 +72,18 @@ public final class CustomBlock {
      * block will be placed with the specified parameters. Also, logs block
      * place in the CoreProtect and plays the place sound.
      *
+     * @param plugin The plugin that owns this custom block
      * @param player The player who broke the block
      * @param hand   The hand the player used to break the block
      * @see CustomBlockPlaceEvent
-     * @see #place(Player, EquipmentSlot, BlockFace, Axis)
+     * @see #place(MSBlock, Player, EquipmentSlot, BlockFace, Axis)
      */
     public void place(
+            final @NotNull MSBlock plugin,
             final @NotNull Player player,
             final @NotNull EquipmentSlot hand
     ) {
-        this.place(player, hand, null, null);
+        this.place(plugin, player, hand, null, null);
     }
 
     /**
@@ -90,6 +92,7 @@ public final class CustomBlock {
      * block will be placed with the specified parameters. Also, logs the
      * block place in the CoreProtect and plays the place sound.
      *
+     * @param plugin    The plugin that owns this custom block
      * @param player    The player who placed the block
      * @param hand      The hand the player used to place the block
      * @param blockFace The block face the player placed the block on,
@@ -102,6 +105,7 @@ public final class CustomBlock {
      * @see BlockUtils#removeBlocksAround(Block)
      */
     public void place(
+            final @NotNull MSBlock plugin,
             final @NotNull Player player,
             final @NotNull EquipmentSlot hand,
             final @Nullable BlockFace blockFace,
@@ -110,9 +114,11 @@ public final class CustomBlock {
         final CustomBlockPlaceEvent event = new CustomBlockPlaceEvent(this, this.block.getState(), player, hand);
         player.getServer().getPluginManager().callEvent(event);
 
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
 
-        MSBlock.singleton().runTask(() -> {
+        plugin.runTask(() -> {
             this.block.setType(Material.NOTE_BLOCK);
 
             final String key = this.customBlockData.getKey();
@@ -159,20 +165,26 @@ public final class CustomBlock {
      * if the custom block has exp to drop set to a value greater than 0.
      * Also plays the break sound and logs the break to CoreProtect.
      *
+     * @param plugin The plugin that owns this custom block
      * @param player The player who broke the block
      */
-    public void destroy(final @NotNull Player player) {
+    public void destroy(
+            final @NotNull MSBlock plugin,
+            final @NotNull Player player
+    ) {
         final CustomBlockBreakEvent event = new CustomBlockBreakEvent(this, player);
         player.getServer().getPluginManager().callEvent(event);
 
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
 
         final Location blockLocation = this.block.getLocation();
         final World world = this.block.getWorld();
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         final Material mainHandMaterial = itemInMainHand.getType();
 
-        MSBlock.cache().getDiggingMap().removeAll(this.block);
+        plugin.getCache().getDiggingMap().removeAll(this.block);
 
         final CraftBlock craftBlock = (CraftBlock) this.block;
         final LevelAccessor levelAccessor = craftBlock.getHandle();
@@ -190,7 +202,10 @@ public final class CustomBlock {
         final BlockSettings.Tool tool = this.customBlockData.getBlockSettings().getTool();
         final int experience = this.customBlockData.getDropSettings().getExperience();
 
-        if (!tool.force() || tool.type() == ToolType.fromMaterial(mainHandMaterial)) {
+        if (
+                !tool.force()
+                || tool.type() == ToolType.fromMaterial(mainHandMaterial)
+        ) {
             world.dropItemNaturally(blockLocation, this.customBlockData.craftItemStack());
 
             if (experience != 0) {

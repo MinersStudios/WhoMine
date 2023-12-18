@@ -137,10 +137,10 @@ public final class RenamesMenu {
                 .build();
     }
 
-    public static void update() {
+    public static void update(final @NotNull MSItem plugin) {
         final var elements = new ArrayList<InventoryButton>();
 
-        for (final var renameableItem : MSItem.cache().getRenameableMenuItems()) {
+        for (final var renameableItem : plugin.getCache().getRenameableMenuItems()) {
             final RenameCollection renameCollection = renameableItem.getRenames();
             final ItemStack resultItem = renameCollection.getMainItem();
             final var renameableItemStacks = new ArrayList<>(renameCollection.items());
@@ -155,9 +155,10 @@ public final class RenamesMenu {
             elements.add(new InventoryButton()
             .item(resultItem)
             .clickAction((buttonEvent, inventory) -> {
-                if (buttonEvent.getClick().isCreativeAction()) return;
+                if (buttonEvent.getClick().isCreativeAction()) {
+                    return;
+                }
 
-                final MSItem plugin = MSItem.singleton();
                 final Player player = (Player) buttonEvent.getWhoClicked();
                 final SingleInventory renameInventory = CustomInventory.single(RENAME_TITLE, 5);
 
@@ -274,7 +275,9 @@ public final class RenamesMenu {
                             || clickedInventory == null
                             || clickedInventory.equals(customInventory)
                             || renameInventory.getItem(CURRENT_RENAMEABLE_ITEM_SLOT) != null
-                    ) return;
+                    ) {
+                        return;
+                    }
 
                     renameInventory.setItem(CURRENT_RENAMEABLE_ITEM_SLOT, event.getCurrentItem());
                     clickedInventory.setItem(event.getSlot(), null);

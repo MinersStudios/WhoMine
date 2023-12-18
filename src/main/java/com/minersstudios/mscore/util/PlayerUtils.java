@@ -3,6 +3,7 @@ package com.minersstudios.mscore.util;
 import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.mscore.inventory.ShulkerBoxMenu;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -59,30 +60,37 @@ public final class PlayerUtils {
     /**
      * Sets player to a seated position underneath him
      *
+     * @param plugin MSEssentials plugin
      * @param player Player that will sit
-     * @see #setSitting(Player, Location, Component)
+     * @see #setSitting(MSEssentials, Player, Location, Component)
      */
-    public static void setSitting(final @NotNull Player player) {
-        setSitting(player, player.getLocation(), null);
+    public static void setSitting(
+            final @NotNull MSEssentials plugin,
+            final @NotNull Player player
+    ) {
+        setSitting(plugin, player, player.getLocation(), null);
     }
 
     /**
      * Sets player to a seated position in specified location
      *
+     * @param plugin   MSEssentials plugin
      * @param player   Player that will sit
      * @param location Location where the player will sit
-     * @see #setSitting(Player, Location, Component)
+     * @see #setSitting(MSEssentials, Player, Location, Component)
      */
     public static void setSitting(
+            final @NotNull MSEssentials plugin,
             final @NotNull Player player,
             final @NotNull Location location
     ) {
-        setSitting(player, location, null);
+        setSitting(plugin, player, location, null);
     }
 
     /**
      * Sets player to a seated position in specified location with message
      *
+     * @param plugin   MSEssentials plugin
      * @param player   Player that will sit
      * @param location Location where the player will sit
      * @param message  Message that will be sent to the players around the
@@ -90,36 +98,47 @@ public final class PlayerUtils {
      * @see PlayerInfo#setSitting(Location, Component)
      */
     public static void setSitting(
+            final @NotNull MSEssentials plugin,
             final @NotNull Player player,
             final @NotNull Location location,
             final @Nullable Component message
     ) {
-        PlayerInfo.fromOnlinePlayer(player).setSitting(location, message);
+        PlayerInfo
+        .fromOnlinePlayer(plugin, player)
+        .setSitting(location, message);
     }
 
     /**
      * Unsets the sitting position of the player
      *
+     * @param plugin MSEssentials plugin
      * @param player Player who is currently sitting and will be unset
-     * @see #unsetSitting(Player, Component)
+     * @see #unsetSitting(MSEssentials, Player, Component)
      */
-    public static void unsetSitting(final @NotNull Player player) {
-        unsetSitting(player, null);
+    public static void unsetSitting(
+            final @NotNull MSEssentials plugin,
+            final @NotNull Player player
+    ) {
+        unsetSitting(plugin, player, null);
     }
 
     /**
      * Unsets the sitting position of the player with message
      *
+     * @param plugin  MSEssentials plugin
      * @param player  Player who is currently sitting and will be unset
      * @param message Message that will be sent to the players  around the
      *                player who is sitting
      * @see PlayerInfo#unsetSitting(Component)
      */
     public static void unsetSitting(
+            final @NotNull MSEssentials plugin,
             final @NotNull Player player,
             final @Nullable Component message
     ) {
-        PlayerInfo.fromOnlinePlayer(player).unsetSitting(message);
+        PlayerInfo
+        .fromOnlinePlayer(plugin, player)
+        .unsetSitting(message);
     }
 
     /**
@@ -133,7 +152,9 @@ public final class PlayerUtils {
      * @return Online player from offline player
      */
     public static @Nullable Player loadPlayer(final @NotNull OfflinePlayer offlinePlayer) {
-        if (!offlinePlayer.hasPlayedBefore()) return null;
+        if (!offlinePlayer.hasPlayedBefore()) {
+            return null;
+        }
 
         final MinecraftServer server = MinecraftServer.getServer();
         final CraftPlayer online = new ServerPlayer(
@@ -149,6 +170,7 @@ public final class PlayerUtils {
         ).getBukkitEntity();
 
         online.loadData();
+
         return online;
     }
 
@@ -361,16 +383,24 @@ public final class PlayerUtils {
             final @NotNull Player player,
             final @Nullable Block targetBlock
     ) {
+        if (targetBlock == null) {
+            return null;
+        }
+
         final Location eyeLocation = player.getEyeLocation();
-        final Predicate<Entity> filter = entity -> entity != player && !isIgnorableEntity(entity.getType());
+        final Predicate<Entity> filter =
+                entity ->
+                        entity != player
+                        && !isIgnorableEntity(entity.getType());
         final RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
 
-        if (rayTraceResult == null) return null;
+        if (rayTraceResult == null) {
+            return null;
+        }
 
         final Entity targetEntity = rayTraceResult.getHitEntity();
 
-        return targetBlock != null
-                && targetEntity != null
+        return targetEntity != null
                 && eyeLocation.distance(targetBlock.getLocation()) <= eyeLocation.distance(targetEntity.getLocation())
                 ? null
                 : targetEntity;

@@ -24,6 +24,7 @@ public final class AdminUpdateCommand {
                         text(playerInfo.getNickname())
                 )
         );
+
         return true;
     }
 }

@@ -3,6 +3,7 @@ package com.minersstudios.msessentials.commands.minecraft.admin;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -30,7 +31,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permissionDefault = PermissionDefault.OP,
         playerOnly = true
 )
-public final class GetMapLocationCommand implements MSCommandExecutor {
+public final class GetMapLocationCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE = LiteralArgumentBuilder.literal("getmaplocation").build();
 
     private static final TranslatableComponent NO_MAP_IN_RIGHT_HAND = translatable("ms.command.get_map_location.no_map_in_right_hand");

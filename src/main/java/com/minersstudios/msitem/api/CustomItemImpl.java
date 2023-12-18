@@ -1,8 +1,6 @@
 package com.minersstudios.msitem.api;
 
 import com.minersstudios.mscore.util.ChatUtils;
-import com.minersstudios.msitem.MSItem;
-import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
@@ -96,8 +94,11 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
     }
 
     @Override
-    public final void setRecipes(final @Nullable List<Map.Entry<Recipe, Boolean>> recipes) {
-        this.unregisterRecipes();
+    public final void setRecipes(
+            final @NotNull Server server,
+            final @Nullable List<Map.Entry<Recipe, Boolean>> recipes
+    ) {
+        this.unregisterRecipes(server);
         this.recipes.clear();
 
         if (
@@ -117,7 +118,9 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
                 || !itemStack.hasItemMeta()
                 || !itemStack.getItemMeta().hasCustomModelData()
                 || !this.itemStack.getItemMeta().hasCustomModelData()
-        ) return false;
+        ) {
+            return false;
+        }
 
         return itemStack.getItemMeta().getCustomModelData() == this.itemStack.getItemMeta().getCustomModelData();
     }
@@ -138,36 +141,37 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
     }
 
     @Override
-    public final void registerRecipes() {
-        final MSItem plugin = MSItem.singleton();
-        final Server server = plugin.getServer();
-
+    public final void registerRecipes(final @NotNull Server server) {
         if (this.recipes.isEmpty()) {
-            this.setRecipes(this.initRecipes());
+            this.setRecipes(server, this.initRecipes());
         }
 
         for (final var entry : this.recipes) {
             final Recipe recipe = entry.getKey();
+            final boolean registerInMenu = entry.getValue();
 
-            plugin.runTask(() -> server.addRecipe(recipe));
+            server.addRecipe(recipe);
 
-            if (entry.getValue()) {
+            if (registerInMenu) {
                 globalCache().customItemRecipes.add(recipe);
             }
         }
     }
 
     @Override
-    public final void unregisterRecipes() {
+    public final void unregisterRecipes(final @NotNull Server server) {
+        if (this.recipes.isEmpty()) {
+            return;
+        }
+
         for (final var entry : this.recipes) {
-            final Recipe recipe = entry.getKey();
+            final Keyed recipe = (Keyed) entry.getKey();
+            final boolean isRegisteredInMenu = entry.getValue();
 
-            if (recipe instanceof final Keyed keyed) {
-                Bukkit.removeRecipe(keyed.getKey());
+            server.removeRecipe(recipe.getKey());
 
-                if (entry.getValue()) {
-                    globalCache().customItemRecipes.remove(recipe);
-                }
+            if (isRegisteredInMenu) {
+                globalCache().customItemRecipes.remove(recipe);
             }
         }
     }

@@ -7,7 +7,7 @@ import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.msblock.event.CustomBlockDamageEvent;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.util.BlockUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,7 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class BlockDamageListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler

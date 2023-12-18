@@ -52,7 +52,9 @@ public enum RecipeType {
      */
     public static @NotNull RecipeType valueOf(final @NotNull Class<? extends Recipe> clazz) throws IllegalArgumentException {
         for (final var recipeType : values()) {
-            if (recipeType.getClazz() == clazz) return recipeType;
+            if (recipeType.getClazz() == clazz) {
+                return recipeType;
+            }
         }
 
         throw new IllegalArgumentException("Unknown recipe type: " + clazz);
@@ -95,7 +97,9 @@ public enum RecipeType {
      */
     public static boolean isSupported(final @NotNull Class<? extends Recipe> clazz) {
         for (final var recipeType : values()) {
-            if (recipeType.getClazz() == clazz) return true;
+            if (recipeType.getClazz() == clazz) {
+                return true;
+            }
         }
 
         return false;

@@ -1,11 +1,10 @@
 package com.minersstudios.msessentials.listeners.event.chat;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
-import com.minersstudios.msessentials.chat.ChatBuffer;
 import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.util.MessageUtils;
@@ -21,7 +20,7 @@ import java.time.Instant;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-@MSListener
+@MSEventListener
 public final class AsyncChatListener extends AbstractMSListener<MSEssentials> {
     private static final TranslatableComponent MUTED = translatable("ms.command.mute.already.receiver");
     private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = translatable("ms.warning.you_cant_do_this_now");
@@ -30,8 +29,9 @@ public final class AsyncChatListener extends AbstractMSListener<MSEssentials> {
     public void onAsyncChat(final @NotNull AsyncChatEvent event) {
         event.setCancelled(true);
 
+        final MSEssentials plugin = this.getPlugin();
         final Player player = event.getPlayer();
-        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
 
         if (
                 playerInfo.isInWorldDark()
@@ -87,7 +87,7 @@ public final class AsyncChatListener extends AbstractMSListener<MSEssentials> {
             }
         } else {
             MessageUtils.sendMessageToChat(playerInfo, player.getLocation(), ChatType.LOCAL, text(message));
-            ChatBuffer.receiveMessage(player, message + " ");
+            plugin.getCache().getChatBuffer().receiveMessage(player, message + " ");
         }
     }
 }

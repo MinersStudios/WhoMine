@@ -27,6 +27,10 @@ public final class UseBucketsAndSpawnableItems {
     private final BlockFace blockFace;
     private final SecureRandom random = new SecureRandom();
 
+    private static final Axolotl.Variant[] VARIANTS = Axolotl.Variant.values();
+    private static final TropicalFish.Pattern[] PATTERNS = TropicalFish.Pattern.values();
+    private static final DyeColor[] DYE_COLORS = DyeColor.values();
+
     /**
      * Uses a bucket vanillish
      *
@@ -50,17 +54,18 @@ public final class UseBucketsAndSpawnableItems {
         final Material itemMaterial = this.itemInHand.getType();
 
         switch (itemMaterial) {
-            case ITEM_FRAME, GLOW_ITEM_FRAME -> this.setItemFrame();
-            case PAINTING -> this.setPainting();
-            case TADPOLE_BUCKET -> this.summonPrimitiveEntities(EntityType.TADPOLE);
-            case PUFFERFISH_BUCKET -> this.summonPrimitiveEntities(EntityType.PUFFERFISH);
-            case SALMON_BUCKET -> this.summonPrimitiveEntities(EntityType.SALMON);
-            case COD_BUCKET -> this.summonPrimitiveEntities(EntityType.COD);
+            case ITEM_FRAME,
+                 GLOW_ITEM_FRAME ->      this.setItemFrame();
+            case PAINTING ->             this.setPainting();
+            case TADPOLE_BUCKET ->       this.summonPrimitiveEntities(EntityType.TADPOLE);
+            case PUFFERFISH_BUCKET ->    this.summonPrimitiveEntities(EntityType.PUFFERFISH);
+            case SALMON_BUCKET ->        this.summonPrimitiveEntities(EntityType.SALMON);
+            case COD_BUCKET ->           this.summonPrimitiveEntities(EntityType.COD);
             case TROPICAL_FISH_BUCKET -> this.setTropicalFish();
-            case AXOLOTL_BUCKET -> this.setAxolotl();
-            case BUCKET -> this.useEmptyBucket();
-            case LAVA_BUCKET -> this.setLava();
-            case WATER_BUCKET -> this.setWater();
+            case AXOLOTL_BUCKET ->       this.setAxolotl();
+            case BUCKET ->               this.useEmptyBucket();
+            case LAVA_BUCKET ->          this.setLava();
+            case WATER_BUCKET ->         this.setWater();
             default -> {
                 if (Tag.ITEMS_BOATS.isTagged(itemMaterial)) {
                     this.setBoat();
@@ -73,24 +78,21 @@ public final class UseBucketsAndSpawnableItems {
      * @return random axolotl color variant
      */
     private @NotNull Axolotl.Variant randomVariant() {
-        final Axolotl.Variant[] variants = Axolotl.Variant.values();
-        return variants[this.random.nextInt(variants.length)];
+        return VARIANTS[this.random.nextInt(VARIANTS.length)];
     }
 
     /**
      * @return random tropical fish body pattern variant
      */
     private @NotNull TropicalFish.Pattern randomPattern() {
-        final TropicalFish.Pattern[] patterns = TropicalFish.Pattern.values();
-        return patterns[this.random.nextInt(patterns.length)];
+        return PATTERNS[this.random.nextInt(PATTERNS.length)];
     }
 
     /**
      * @return random tropical fish body color variant
      */
     private @NotNull DyeColor randomBodyColor() {
-        final DyeColor[] dyeColors = DyeColor.values();
-        return dyeColors[this.random.nextInt(dyeColors.length)];
+        return DYE_COLORS[this.random.nextInt(DYE_COLORS.length)];
     }
 
     /**
@@ -107,24 +109,37 @@ public final class UseBucketsAndSpawnableItems {
      */
     private void setBoat() {
         final Location eyeLocation = this.player.getEyeLocation();
-        final Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
+        final Predicate<Entity> filter =
+                entity ->
+                        entity != this.player
+                        && entity.getType() != EntityType.DROPPED_ITEM;
         final RayTraceResult rayTraceEntities = this.world.rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
         final RayTraceResult rayTraceBlocks = this.world.rayTraceBlocks(eyeLocation, eyeLocation.getDirection(), 4.5d);
 
-        if (rayTraceBlocks == null) return;
+        if (rayTraceBlocks == null) {
+            return;
+        }
 
         final Location summonLocation = rayTraceBlocks.getHitPosition().toLocation(this.world);
 
         for (final var nearbyEntity : this.world.getNearbyEntities(summonLocation, 0.5d, 0.5d, 0.5d)) {
-            if (nearbyEntity.getType() != EntityType.DROPPED_ITEM) return;
+            if (nearbyEntity.getType() != EntityType.DROPPED_ITEM) {
+                return;
+            }
         }
 
         if (
                 !BlockUtils.isReplaceable(summonLocation.getBlock().getType())
-                || (rayTraceEntities != null && rayTraceEntities.getHitEntity() != null)
-        ) return;
+                || (
+                        rayTraceEntities != null
+                        && rayTraceEntities.getHitEntity() != null
+                )
+        ) {
+            return;
+        }
 
         final Boat.Type boatType = Boat.Type.valueOf(this.itemInHand.getType().name().split("_")[0]);
+
         summonLocation.setYaw(eyeLocation.getYaw());
 
         if (Tag.ITEMS_CHEST_BOATS.isTagged(this.itemInHand.getType())) {
@@ -142,7 +157,9 @@ public final class UseBucketsAndSpawnableItems {
      * Uses item frame
      */
     private void setItemFrame() {
-        if (this.checkForEntities()) return;
+        if (this.checkForEntities()) {
+            return;
+        }
 
         if (this.itemInHand.getType() == Material.ITEM_FRAME) {
             this.world.spawn(this.blockLocation, ItemFrame.class, itemFrame -> itemFrame.setFacingDirection(this.blockFace, true));
@@ -159,9 +176,15 @@ public final class UseBucketsAndSpawnableItems {
      * Uses painting
      */
     private void setPainting() {
-        if (this.checkForEntities()) return;
+        if (this.checkForEntities()) {
+            return;
+        }
 
-        this.world.spawn(this.blockLocation, Painting.class, painting -> painting.setFacingDirection(this.blockFace, true));
+        this.world.spawn(
+                this.blockLocation,
+                Painting.class,
+                painting -> painting.setFacingDirection(this.blockFace, true)
+        );
 
         if (this.player.getGameMode() != GameMode.CREATIVE) {
             this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
@@ -170,13 +193,23 @@ public final class UseBucketsAndSpawnableItems {
 
     private boolean checkForEntities() {
         final Location eyeLocation = this.player.getEyeLocation();
-        final Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
+        final Predicate<Entity> filter =
+                entity ->
+                        entity != this.player
+                        && entity.getType() != EntityType.DROPPED_ITEM;
         final RayTraceResult rayTraceResult = this.world.rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
 
-        return rayTraceResult != null
-                && rayTraceResult.getHitEntity() != null
-                && (rayTraceResult.getHitEntity().getType() == EntityType.ITEM_FRAME
-                || rayTraceResult.getHitEntity().getType() == EntityType.PAINTING);
+        if (rayTraceResult == null) {
+            return false;
+        }
+
+        final Entity hitEntity = rayTraceResult.getHitEntity();
+
+        return hitEntity != null
+                && (
+                        hitEntity.getType() == EntityType.ITEM_FRAME
+                        || hitEntity.getType() == EntityType.PAINTING
+                );
     }
 
     /**
@@ -184,12 +217,16 @@ public final class UseBucketsAndSpawnableItems {
      */
     private void setTropicalFish() {
         this.world.spawn(this.blockLocation, TropicalFish.class, tropicalFish -> {
-            if (this.itemInHand.getItemMeta() instanceof final TropicalFishBucketMeta tropicalFishBucketMeta) {
-                final boolean hasVariant = tropicalFishBucketMeta.hasVariant();
-
-                tropicalFish.setBodyColor(hasVariant ? tropicalFishBucketMeta.getBodyColor() : this.randomBodyColor());
-                tropicalFish.setPattern(hasVariant ? tropicalFishBucketMeta.getPattern() : this.randomPattern());
-                tropicalFish.setPatternColor(hasVariant ? tropicalFishBucketMeta.getPatternColor() : this.randomBodyColor());
+            if (this.itemInHand.getItemMeta() instanceof final TropicalFishBucketMeta meta) {
+                if (meta.hasVariant()) {
+                    tropicalFish.setBodyColor(meta.getBodyColor());
+                    tropicalFish.setPattern(meta.getPattern());
+                    tropicalFish.setPatternColor(meta.getPatternColor());
+                } else {
+                    tropicalFish.setBodyColor(this.randomBodyColor());
+                    tropicalFish.setPattern(this.randomPattern());
+                    tropicalFish.setPatternColor(this.randomBodyColor());
+                }
             }
         });
         this.setWater();
@@ -200,8 +237,12 @@ public final class UseBucketsAndSpawnableItems {
      */
     private void setAxolotl() {
         this.world.spawn(this.blockLocation, Axolotl.class, axolotl -> {
-            if (this.itemInHand.getItemMeta() instanceof final AxolotlBucketMeta axolotlBucketMeta) {
-                axolotl.setVariant(axolotlBucketMeta.hasVariant() ? axolotlBucketMeta.getVariant() : this.randomVariant());
+            if (this.itemInHand.getItemMeta() instanceof final AxolotlBucketMeta meta) {
+                axolotl.setVariant(
+                        meta.hasVariant()
+                        ? meta.getVariant()
+                        : this.randomVariant()
+                );
             }
         });
         this.setWater();
@@ -211,7 +252,10 @@ public final class UseBucketsAndSpawnableItems {
      * Uses bucket with Puffer fish / Salmon / Cod
      */
     private void summonPrimitiveEntities(EntityType entityType) {
-        this.world.spawnEntity(this.block.getLocation().add(0.5d, 0.5d, 0.5d), entityType);
+        this.world.spawnEntity(
+                this.block.getLocation().add(0.5d, 0.5d, 0.5d),
+                entityType
+        );
         this.setWater();
     }
 
@@ -262,7 +306,9 @@ public final class UseBucketsAndSpawnableItems {
     }
 
     private void setLava() {
-        if (this.block.getType().isSolid()) return;
+        if (this.block.getType().isSolid()) {
+            return;
+        }
 
         final Location blockLocation = this.block.getLocation();
 

@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.listeners.event.player;
 
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
@@ -16,17 +16,22 @@ import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.*;
 
-@MSListener
+@MSEventListener
 public final class PlayerAdvancementDoneListener extends AbstractMSListener<MSEssentials> {
 
     @EventHandler
     public void onPlayerAdvancementDone(final @NotNull PlayerAdvancementDoneEvent event) {
         final AdvancementDisplay advancementDisplay = event.getAdvancement().getDisplay();
 
-        if (advancementDisplay == null || event.message() == null) return;
+        if (
+                advancementDisplay == null
+                || event.message() == null
+        ) {
+            return;
+        }
 
         final AdvancementDisplay.Frame frame = advancementDisplay.frame();
-        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(event.getPlayer());
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), event.getPlayer());
         final Component title = advancementDisplay.title();
         final Component description = advancementDisplay.description();
 

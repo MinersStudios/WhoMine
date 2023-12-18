@@ -70,7 +70,9 @@ public final class ChannelHandler extends ChannelDuplexHandler {
             final @NotNull ChannelHandlerContext ctx,
             final @NotNull Object msg
     ) throws Exception {
-        if (!(msg instanceof final Packet<?> packet)) return;
+        if (!(msg instanceof final Packet<?> packet)) {
+            return;
+        }
 
         final PacketType packetType = PacketType.fromClass(packet.getClass());
 
@@ -112,7 +114,9 @@ public final class ChannelHandler extends ChannelDuplexHandler {
             final @NotNull Object msg,
             final @NotNull ChannelPromise promise
     ) throws Exception {
-        if (!(msg instanceof final Packet<?> packet)) return;
+        if (!(msg instanceof final Packet<?> packet)) {
+            return;
+        }
 
         final PacketType packetType = PacketType.fromClass(packet.getClass());
 

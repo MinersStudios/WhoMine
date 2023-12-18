@@ -12,11 +12,15 @@ import static net.kyori.adventure.text.Component.translatable;
 public final class UpdateMutesCommand {
     private static final TranslatableComponent UPDATE_MUTES_SUCCESS = translatable("ms.command.msessentials.update_mutes.success");
 
-    public static boolean runCommand(@NotNull CommandSender sender) {
+    public static boolean runCommand(
+            final @NotNull MSEssentials plugin,
+            final @NotNull CommandSender sender
+    ) {
         final long time = System.currentTimeMillis();
 
-        MSEssentials.cache().getMuteMap().reloadMutes();
+        plugin.getCache().getMuteMap().reloadMutes();
         MSLogger.fine(sender, UPDATE_MUTES_SUCCESS.args(text(System.currentTimeMillis() - time)));
+
         return true;
     }
 }

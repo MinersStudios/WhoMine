@@ -16,7 +16,6 @@ import com.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.util.DiscordUtil;
 import com.minersstudios.msessentials.util.IDUtils;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
 import com.minersstudios.msessentials.world.WorldDark;
@@ -27,6 +26,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minecraft.server.players.UserWhiteList;
 import net.minecraft.server.players.UserWhiteListEntry;
 import org.bukkit.*;
@@ -49,7 +49,6 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 
 import static com.minersstudios.msessentials.util.MessageUtils.RolePlayActionType.ME;
 import static com.minersstudios.msessentials.util.MessageUtils.RolePlayActionType.TODO;
@@ -58,41 +57,40 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 /**
- * Player info with player file, settings, etc.
- * All player info stored in {@link PlayerInfoMap}.
- * Use {@link #fromOnlinePlayer(Player)} or {@link #fromProfile(UUID, String)} to get player info.
- * It will create new player info if it doesn't exist,
- * or get existing player info if it exists and save it to the map if it's not cached.
+ * Player info with player file, settings, etc. All player info stored in
+ * {@link PlayerInfoMap}. Use {@link #fromOnlinePlayer(MSEssentials, Player)} or
+ * {@link #fromProfile(MSEssentials, UUID, String)} to get player info. It will
+ * create new player info if it doesn't exist, or get existing player info if it
+ * exists and save it to the map if it's not cached.
  *
  * @see PlayerFile
  * @see PlayerInfoMap
  */
 public final class PlayerInfo {
-    private final @NotNull UUID uuid;
-    private final @NotNull String nickname;
-    private final @NotNull PlayerProfile profile;
-    private final @NotNull OfflinePlayer offlinePlayer;
-    private @NotNull PlayerFile playerFile;
-    private final @NotNull CraftServer server;
+    private final MSEssentials plugin;
+    private final UUID uuid;
+    private final String nickname;
+    private final PlayerProfile profile;
+    private final OfflinePlayer offlinePlayer;
+    private final CraftServer server;
+    private PlayerFile playerFile;
     private CompletableFuture<PlayerResourcePackStatusEvent.Status> resourcePackStatus;
-
     private Component defaultName;
     private Component goldenName;
     private Component grayIDGoldName;
     private Component grayIDGreenName;
-
     private BukkitTask joinTask;
 
-    private static final TranslatableComponent RP_SUCCESSFULLY_LOADED = translatable("ms.resource_pack.successfully_loaded");
-    private static final TranslatableComponent RP_FAILED_DOWNLOAD_CONSOLE = translatable("ms.resource_pack.failed_download.console");
-    private static final TranslatableComponent RP_FAILED_DOWNLOAD_TITLE = translatable("ms.resource_pack.failed_download.receiver.title");
-    private static final TranslatableComponent RP_FAILED_DOWNLOAD_SUBTITLE = translatable("ms.resource_pack.failed_download.receiver.subtitle");
-    private static final TranslatableComponent RP_DECLINED_CONSOLE = translatable("ms.resource_pack.declined.console");
-    private static final TranslatableComponent RP_DECLINED_TITLE = translatable("ms.resource_pack.declined.receiver.title");
-    private static final TranslatableComponent RP_DECLINED_SUBTITLE = translatable("ms.resource_pack.declined.receiver.subtitle");
-    private static final TranslatableComponent SERVER_NOT_LOADED_TITLE = translatable("ms.server_not_fully_loaded.title");
-    private static final TranslatableComponent SERVER_NOT_LOADED_SUBTITLE = translatable("ms.server_not_fully_loaded.subtitle");
-    private static final TranslatableComponent SOMETHING_WENT_WRONG_TITLE = translatable("ms.something_went_wrong.title");
+    private static final TranslatableComponent RP_SUCCESSFULLY_LOADED =        translatable("ms.resource_pack.successfully_loaded");
+    private static final TranslatableComponent RP_FAILED_DOWNLOAD_CONSOLE =    translatable("ms.resource_pack.failed_download.console");
+    private static final TranslatableComponent RP_FAILED_DOWNLOAD_TITLE =      translatable("ms.resource_pack.failed_download.receiver.title");
+    private static final TranslatableComponent RP_FAILED_DOWNLOAD_SUBTITLE =   translatable("ms.resource_pack.failed_download.receiver.subtitle");
+    private static final TranslatableComponent RP_DECLINED_CONSOLE =           translatable("ms.resource_pack.declined.console");
+    private static final TranslatableComponent RP_DECLINED_TITLE =             translatable("ms.resource_pack.declined.receiver.title");
+    private static final TranslatableComponent RP_DECLINED_SUBTITLE =          translatable("ms.resource_pack.declined.receiver.subtitle");
+    private static final TranslatableComponent SERVER_NOT_LOADED_TITLE =       translatable("ms.server_not_fully_loaded.title");
+    private static final TranslatableComponent SERVER_NOT_LOADED_SUBTITLE =    translatable("ms.server_not_fully_loaded.subtitle");
+    private static final TranslatableComponent SOMETHING_WENT_WRONG_TITLE =    translatable("ms.something_went_wrong.title");
     private static final TranslatableComponent SOMETHING_WENT_WRONG_SUBTITLE = translatable("ms.something_went_wrong.subtitle");
 
 
@@ -103,13 +101,15 @@ public final class PlayerInfo {
      * @param nickname Player nickname
      */
     public PlayerInfo(
+            final @NotNull MSEssentials plugin,
             final @NotNull UUID uuid,
             final @NotNull String nickname
     ) {
+        this.plugin = plugin;
         this.uuid = uuid;
         this.nickname = nickname;
         this.profile = PlayerUtils.craftProfile(uuid, nickname);
-        this.playerFile = PlayerFile.loadConfig(uuid, nickname);
+        this.playerFile = PlayerFile.loadConfig(plugin, uuid, nickname);
         this.offlinePlayer = PlayerUtils.getOfflinePlayer(uuid, nickname);
         this.server = (CraftServer) Bukkit.getServer();
 
@@ -130,10 +130,11 @@ public final class PlayerInfo {
      * @return Player info from {@link Cache#getPlayerInfoMap()}
      */
     public static @NotNull PlayerInfo fromProfile(
+            final @NotNull MSEssentials plugin,
             final @NotNull UUID uuid,
             final @NotNull String nickname
     ) {
-        return MSEssentials.cache().getPlayerInfoMap().get(uuid, nickname);
+        return plugin.getCache().getPlayerInfoMap().get(uuid, nickname);
     }
 
     /**
@@ -148,8 +149,11 @@ public final class PlayerInfo {
      * @param player The player
      * @return Player info from {@link Cache#getPlayerInfoMap()}
      */
-    public static @NotNull PlayerInfo fromOnlinePlayer(final @NotNull Player player) {
-        return MSEssentials.cache().getPlayerInfoMap().get(player);
+    public static @NotNull PlayerInfo fromOnlinePlayer(
+            final @NotNull MSEssentials plugin,
+            final @NotNull Player player
+    ) {
+        return plugin.getCache().getPlayerInfoMap().get(player);
     }
 
     /**
@@ -165,9 +169,12 @@ public final class PlayerInfo {
      * @return Player info from {@link Cache#getPlayerInfoMap()},
      *         or null if player nickname is blank
      */
-    @Contract("null -> null")
-    public static @Nullable PlayerInfo fromOfflinePlayer(final @Nullable OfflinePlayer offlinePlayer) {
-        return MSEssentials.cache().getPlayerInfoMap().get(offlinePlayer);
+    @Contract("_, null -> null")
+    public static @Nullable PlayerInfo fromOfflinePlayer(
+            final @NotNull MSEssentials plugin,
+            final @Nullable OfflinePlayer offlinePlayer
+    ) {
+        return plugin.getCache().getPlayerInfoMap().get(offlinePlayer);
     }
 
     /**
@@ -183,10 +190,13 @@ public final class PlayerInfo {
      * @param id The player ID
      * @return Player info from its ID,
      *         or null if the player ID doesn't exist
-     * @see #fromOfflinePlayer(OfflinePlayer)
+     * @see #fromOfflinePlayer(MSEssentials, OfflinePlayer)
      */
-    public static @Nullable PlayerInfo fromID(final int id) {
-        return fromOfflinePlayer(MSEssentials.cache().getIdMap().getPlayerByID(id));
+    public static @Nullable PlayerInfo fromID(
+            final @NotNull MSEssentials plugin,
+            final int id
+    ) {
+        return fromOfflinePlayer(plugin, plugin.getCache().getIdMap().getPlayerByID(id));
     }
 
     /**
@@ -203,10 +213,18 @@ public final class PlayerInfo {
      * @param nickname The player nickname
      * @return Player info from its nickname,
      *         or null if the nickname is blank
-     * @see #fromOfflinePlayer(OfflinePlayer)
+     * @see #fromOfflinePlayer(MSEssentials, OfflinePlayer)
      */
-    public static @Nullable PlayerInfo fromNickname(final @NotNull String nickname) {
-        return nickname.isBlank() ? null : fromOfflinePlayer(Bukkit.getOfflinePlayer(nickname));
+    public static @Nullable PlayerInfo fromNickname(
+            final @NotNull MSEssentials plugin,
+            final @NotNull String nickname
+    ) {
+        return nickname.isBlank()
+                ? null
+                : fromOfflinePlayer(
+                        plugin,
+                        plugin.getServer().getOfflinePlayer(nickname)
+                );
     }
 
     /**
@@ -223,10 +241,16 @@ public final class PlayerInfo {
      * @param uuid The player UUID
      * @return Player info from its {@link UUID},
      *         or null if the player nickname is blank
-     * @see #fromOfflinePlayer(OfflinePlayer)
+     * @see #fromOfflinePlayer(MSEssentials, OfflinePlayer)
      */
-    public static @Nullable PlayerInfo fromUUID(final @NotNull UUID uuid) {
-        return fromOfflinePlayer(Bukkit.getOfflinePlayer(uuid));
+    public static @Nullable PlayerInfo fromUUID(
+            final @NotNull MSEssentials plugin,
+            final @NotNull UUID uuid
+    ) {
+        return fromOfflinePlayer(
+                plugin,
+                plugin.getServer().getOfflinePlayer(uuid)
+        );
     }
 
     /**
@@ -236,9 +260,9 @@ public final class PlayerInfo {
      * It first checks if the string matches the ID regex
      * with {@link IDUtils#matchesIDRegex(String)},
      * and if it does, it gets the player info from its ID,
-     * with {@link #fromID(int)}, otherwise it gets
+     * with {@link #fromID(MSEssentials, int)}, otherwise it gets
      * the player info from its nickname, with
-     * {@link #fromNickname(String)}.
+     * {@link #fromNickname(MSEssentials, String)}.
      * If the player info is not cached, a new player info
      * is created with the player file and settings
      * if the file exists, or a new player information
@@ -249,22 +273,25 @@ public final class PlayerInfo {
      * @return Player info from its ID or nickname,
      *         or null if the specified string is blank,
      *         or the ID doesn't exist
-     * @see #fromID(int)
-     * @see #fromNickname(String)
+     * @see #fromID(MSEssentials, int)
+     * @see #fromNickname(MSEssentials, String)
      */
-    public static @Nullable PlayerInfo fromString(@NotNull String string) {
+    public static @Nullable PlayerInfo fromString(
+            final @NotNull MSEssentials plugin,
+            final @NotNull String string
+    ) {
         return string.isBlank()
                 ? null
                 : IDUtils.matchesIDRegex(string)
-                ? fromID(IDUtils.parseID(string))
-                : fromNickname(string);
+                ? fromID(plugin, IDUtils.parseID(string))
+                : fromNickname(plugin, string);
     }
 
     /**
      * Gets player info from {@link Cache#getPlayerInfoMap()}
      * by discord ID with {@link Cache#getDiscordMap()},
      * then gets the player info from its uuid and nickname
-     * with {@link #fromProfile(UUID, String)}.
+     * with {@link #fromProfile(MSEssentials, UUID, String)}.
      * If the player info is not cached, a new player info
      * is created with the player file and settings
      * if the file exists, or a new player information
@@ -275,13 +302,27 @@ public final class PlayerInfo {
      *           (the ID of the discord user who is linked to the player)
      * @return Player info from its discord ID,
      *         or null if the discord ID doesn't exist
-     * @see #fromProfile(UUID, String)
+     * @see #fromProfile(MSEssentials, UUID, String)
      */
-    public static @Nullable PlayerInfo fromDiscord(final long id) {
-        final DiscordMap.Params params = MSEssentials.cache().getDiscordMap().getParams(id);
+    public static @Nullable PlayerInfo fromDiscord(
+            final @NotNull MSEssentials plugin,
+            final long id
+    ) {
+        final DiscordMap.Params params = plugin.getCache().getDiscordMap().getParams(id);
         return params == null
                 ? null
-                : fromProfile(params.getUuid(), params.getNickname());
+                : fromProfile(
+                        plugin,
+                        params.getUuid(),
+                        params.getNickname()
+                );
+    }
+
+    /**
+     * @return Plugin instance
+     */
+    public @NotNull MSEssentials getPlugin() {
+        return this.plugin;
     }
 
     /**
@@ -388,9 +429,14 @@ public final class PlayerInfo {
             final boolean addPlayer,
             final boolean zeroIfNull
     ) {
-        return this == MSEssentials.consolePlayerInfo()
+        final Cache cache = this.plugin.getCache();
+        return this == cache.getConsolePlayerInfo()
                 ? -1
-                : MSEssentials.cache().getIdMap().getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
+                : cache.getIdMap().getID(
+                        this.offlinePlayer.getUniqueId(),
+                        addPlayer,
+                        zeroIfNull
+                );
     }
 
     /**
@@ -442,13 +488,17 @@ public final class PlayerInfo {
             final @Nullable Component message
     ) {
         final Player player = this.getOnlinePlayer();
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
 
         if (
                 (player.getVehicle() != null
                 && player.getVehicle().getType() != EntityType.ARMOR_STAND)
                 || this.isSitting()
-        ) return;
+        ) {
+            return;
+        }
 
         player.getWorld().spawn(
             sitLocation,
@@ -463,7 +513,7 @@ public final class PlayerInfo {
                 armorStand.setSmall(true);
                 armorStand.addPassenger(player);
                 armorStand.addScoreboardTag("customDecor");
-                MSEssentials.cache().getSeats().put(player, armorStand);
+                this.plugin.getCache().getSeats().put(player, armorStand);
             }
         );
 
@@ -489,15 +539,20 @@ public final class PlayerInfo {
      */
     public void unsetSitting(final @Nullable Component message) {
         final Player player = this.getOnlinePlayer();
-        if (player == null) return;
+
+        if (player == null) {
+            return;
+        }
 
         if (
                 (player.getVehicle() != null
                 && player.getVehicle().getType() != EntityType.ARMOR_STAND)
                 || !isSitting()
-        ) return;
+        ) {
+            return;
+        }
 
-        final ArmorStand armorStand = MSEssentials.cache().getSeats().remove(player);
+        final ArmorStand armorStand = this.plugin.getCache().getSeats().remove(player);
         final Location playerLoc = player.getLocation();
         final Location getUpLocation = armorStand.getLocation().add(0.0d, 0.25d, 0.0d);
 
@@ -531,11 +586,15 @@ public final class PlayerInfo {
         final boolean contains = craftServer.getWhitelistedPlayers().contains(this.offlinePlayer);
 
         if (value) {
-            if (contains) return false;
+            if (contains) {
+                return false;
+            }
 
             userWhiteList.add(new UserWhiteListEntry(gameProfile));
         } else {
-            if (!contains) return false;
+            if (!contains) {
+                return false;
+            }
 
             userWhiteList.remove(gameProfile);
             this.kickPlayer(
@@ -582,8 +641,8 @@ public final class PlayerInfo {
      * @return Player's discord id or -1 if not linked
      * @see DiscordMap#getId(DiscordMap.Params)
      */
-    public long getDiscordID() {
-        return MSEssentials.cache().getDiscordMap().getId(DiscordMap.Params.create(this.uuid, this.nickname));
+    public long getDiscordId() {
+        return this.plugin.getCache().getDiscordMap().getId(DiscordMap.Params.create(this.uuid, this.nickname));
     }
 
     /**
@@ -593,7 +652,7 @@ public final class PlayerInfo {
      * @see DiscordMap#put(long, UUID, String)
      */
     public void linkDiscord(final long id) {
-        MSEssentials.cache().getDiscordMap().put(id, this.uuid, this.nickname);
+        this.plugin.getCache().getDiscordMap().put(id, this.uuid, this.nickname);
     }
 
     /**
@@ -603,10 +662,10 @@ public final class PlayerInfo {
      * @see DiscordMap#remove(long)
      */
     public long unlinkDiscord() {
-        final DiscordMap discordMap = MSEssentials.cache().getDiscordMap();
+        final Cache cache = this.plugin.getCache();
+        final DiscordMap discordMap = cache.getDiscordMap();
         final long id = discordMap.getId(DiscordMap.Params.create(this.uuid, this.nickname));
-        final var botHandlers = MSEssentials.cache().getBotHandlers();
-        final BotHandler botHandler = botHandlers.get(id);
+        final BotHandler botHandler = cache.getBotHandlers().get(id);
 
         if (botHandler != null) {
             botHandler.setPlayerInfo(null);
@@ -614,6 +673,7 @@ public final class PlayerInfo {
         }
 
         discordMap.remove(id);
+
         return id;
     }
 
@@ -636,14 +696,17 @@ public final class PlayerInfo {
             final @Nullable Component message
     ) {
         final Player player = this.getOnlinePlayer();
-        if (player == null) return CompletableFuture.completedFuture(null);
+
+        if (player == null) {
+            return CompletableFuture.completedFuture(null);
+        }
 
         final var resourcePackStatus = new CompletableFuture<PlayerResourcePackStatusEvent.Status>();
         this.resourcePackStatus = resourcePackStatus;
 
         player.setResourcePack(url, hash, force, message);
 
-        MSEssentials.singleton().runTaskLater(() -> {
+        this.plugin.runTaskLater(() -> {
             if (
                     resourcePackStatus.equals(this.resourcePackStatus)
                     && !this.resourcePackStatus.isDone()
@@ -667,8 +730,12 @@ public final class PlayerInfo {
      * @see #setResourcePackAsync(String, String, boolean, Component)
      */
     public void completeResourcePackFuture(final @NotNull PlayerResourcePackStatusEvent.Status status) {
-        if (this.resourcePackStatus == null || this.resourcePackStatus.isDone()) return;
-        this.resourcePackStatus.complete(status);
+        if (
+                this.resourcePackStatus != null
+                && !this.resourcePackStatus.isDone()
+        ) {
+            this.resourcePackStatus.complete(status);
+        }
     }
 
     /**
@@ -676,7 +743,7 @@ public final class PlayerInfo {
      * @see MuteMap#getMuteEntry(OfflinePlayer)
      */
     public @Nullable MuteMap.Entry getMuteEntry() {
-        return MSEssentials.cache().getMuteMap().getMuteEntry(this.offlinePlayer);
+        return this.plugin.getCache().getMuteMap().getMuteEntry(this.offlinePlayer);
     }
 
     /**
@@ -816,7 +883,7 @@ public final class PlayerInfo {
             @Nullable CommandSender sender
     ) {
         final Player player = this.getOnlinePlayer();
-        final MuteMap muteMap = MSEssentials.cache().getMuteMap();
+        final MuteMap muteMap = this.plugin.getCache().getMuteMap();
 
         if (sender == null) {
             sender = this.server.getConsoleSender();
@@ -1260,10 +1327,14 @@ public final class PlayerInfo {
     public boolean isVanished() {
         final Player player = this.getOnlinePlayer();
 
-        if (player == null) return false;
+        if (player == null) {
+            return false;
+        }
 
         for (final var metadataValue : player.getMetadata("vanished")) {
-            if (metadataValue.asBoolean()) return true;
+            if (metadataValue.asBoolean()) {
+                return true;
+            }
         }
 
         return false;
@@ -1274,7 +1345,8 @@ public final class PlayerInfo {
      */
     public boolean isSitting() {
         final Player player = this.getOnlinePlayer();
-        return player != null && MSEssentials.cache().getSeats().containsKey(player);
+        return player != null
+                && this.plugin.getCache().getSeats().containsKey(player);
     }
 
     /**
@@ -1282,7 +1354,9 @@ public final class PlayerInfo {
      * @see DiscordMap#containsPlayer(DiscordMap.Params)
      */
     public boolean isLinked() {
-        return MSEssentials.cache().getDiscordMap().containsPlayer(DiscordMap.Params.create(this.uuid, this.nickname));
+        return this.plugin.getCache().getDiscordMap().containsPlayer(
+                DiscordMap.Params.create(this.uuid, this.nickname)
+        );
     }
 
     /**
@@ -1298,7 +1372,7 @@ public final class PlayerInfo {
      * @see MuteMap#isMuted(OfflinePlayer)
      */
     public boolean isMuted() {
-        return MSEssentials.cache().getMuteMap().isMuted(this.offlinePlayer);
+        return this.plugin.getCache().getMuteMap().isMuted(this.offlinePlayer);
     }
 
     /**
@@ -1362,12 +1436,16 @@ public final class PlayerInfo {
                         this.joinTask != null
                         && !this.joinTask.isCancelled()
                 )
-        ) return;
+        ) {
+            return;
+        }
 
-        MSEssentials.singleton().runTaskTimer(task -> {
+        this.plugin.runTaskTimer(task -> {
             this.joinTask = task;
 
-            if (!player.isOnline()) task.cancel();
+            if (!player.isOnline()) {
+                task.cancel();
+            }
 
             this.handleJoinTask();
         }, 0L, 1L);
@@ -1394,7 +1472,9 @@ public final class PlayerInfo {
      * @param player The player, who quit
      */
     public void handleQuit(final @Nullable Player player) {
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
 
         this.unsetSitting();
 
@@ -1407,7 +1487,7 @@ public final class PlayerInfo {
             this.joinTask.cancel();
         }
 
-        MSEssentials.cache().getPlayerAnomalyActionMap().remove(player);
+        this.plugin.getCache().getPlayerAnomalyActionMap().remove(player);
         this.savePlayerDataParams();
 
         if (!this.isInWorldDark()) {
@@ -1421,7 +1501,10 @@ public final class PlayerInfo {
      */
     public @NotNull CompletableFuture<Boolean> handleResourcePack() {
         final Player player = this.getOnlinePlayer();
-        if (player == null) return CompletableFuture.completedFuture(false);
+
+        if (player == null) {
+            return CompletableFuture.completedFuture(false);
+        }
 
         final PlayerSettings playerSettings = this.playerFile.getPlayerSettings();
         final ResourcePack.Type type = playerSettings.getResourcePackType();
@@ -1431,12 +1514,14 @@ public final class PlayerInfo {
             return CompletableFuture.completedFuture(false);
         }
 
+        final ComponentLogger componentLogger = this.plugin.getComponentLogger();
+
         switch (type) {
             case NONE -> {
                 return CompletableFuture.completedFuture(true);
             }
             case NULL -> {
-                MSEssentials.singleton().runTaskTimer(task -> {
+                this.plugin.runTaskTimer(task -> {
                     if (player.getOpenInventory().getTopInventory() instanceof CustomInventory) {
                         task.cancel();
                         return;
@@ -1451,27 +1536,43 @@ public final class PlayerInfo {
                         .thenApply(status -> {
                             switch (status) {
                                 case SUCCESSFULLY_LOADED -> {
-                                    MSEssentials.componentLogger().info(RP_SUCCESSFULLY_LOADED.args(text(this.nickname, NamedTextColor.GREEN)));
+                                    componentLogger.info(
+                                            RP_SUCCESSFULLY_LOADED.args(text(this.nickname, NamedTextColor.GREEN))
+                                    );
                                     return true;
                                 }
                                 case FAILED_DOWNLOAD -> {
                                     playerSettings.setResourcePackType(ResourcePack.Type.NONE);
                                     playerSettings.save();
 
-                                    MSEssentials.componentLogger().warn(RP_FAILED_DOWNLOAD_CONSOLE.args(text(this.nickname, NamedTextColor.GOLD)));
-                                    this.kickPlayer(RP_FAILED_DOWNLOAD_TITLE, RP_FAILED_DOWNLOAD_SUBTITLE);
+                                    componentLogger.warn(
+                                            RP_FAILED_DOWNLOAD_CONSOLE.args(text(this.nickname, NamedTextColor.GOLD))
+                                    );
+                                    this.kickPlayer(
+                                            RP_FAILED_DOWNLOAD_TITLE,
+                                            RP_FAILED_DOWNLOAD_SUBTITLE
+                                    );
                                 }
                                 case DECLINED -> {
-                                    MSEssentials.componentLogger().warn(RP_DECLINED_CONSOLE.args(text(this.nickname, NamedTextColor.GOLD)));
-                                    this.kickPlayer(RP_DECLINED_TITLE, RP_DECLINED_SUBTITLE);
+                                    componentLogger.warn(
+                                            RP_DECLINED_CONSOLE.args(text(this.nickname, NamedTextColor.GOLD))
+                                    );
+                                    this.kickPlayer(
+                                            RP_DECLINED_TITLE,
+                                            RP_DECLINED_SUBTITLE
+                                    );
                                 }
                             }
                             return false;
                         })
                         .exceptionally(
                                 throwable -> {
-                                    MSEssentials.logger().log(Level.SEVERE, "An error occurred while sending the resource pack to " + this.nickname, throwable);
+                                    componentLogger.error(
+                                            "An error occurred while sending the resource pack to " + this.nickname,
+                                            throwable
+                                    );
                                     this.kickPlayer(SOMETHING_WENT_WRONG_TITLE, SOMETHING_WENT_WRONG_SUBTITLE);
+
                                     return false;
                                 }
                         );
@@ -1488,10 +1589,13 @@ public final class PlayerInfo {
      */
     public @NotNull CompletableFuture<Boolean> teleportToLastLeaveLocation() {
         final Player player = this.getOnlinePlayer();
-        if (player == null) return CompletableFuture.completedFuture(false);
+
+        if (player == null) {
+            return CompletableFuture.completedFuture(false);
+        }
 
         if (player.getGameMode() == GameMode.SPECTATOR) {
-            MSEssentials.singleton().runTask(() -> player.setSpectatorTarget(null));
+            this.plugin.runTask(() -> player.setSpectatorTarget(null));
         }
 
         Location location = this.playerFile.getLastLeaveLocation();
@@ -1500,7 +1604,7 @@ public final class PlayerInfo {
             location = player.getBedSpawnLocation();
 
             if (location == null) {
-                location = MSEssentials.config().spawnLocation;
+                location = this.plugin.getConfiguration().spawnLocation;
             }
         }
 
@@ -1516,10 +1620,13 @@ public final class PlayerInfo {
      */
     public @NotNull CompletableFuture<Boolean> teleportToLastDeathLocation() {
         final Player player = this.getOnlinePlayer();
-        if (player == null) return CompletableFuture.completedFuture(false);
+
+        if (player == null) {
+            return CompletableFuture.completedFuture(false);
+        }
 
         if (player.getGameMode() == GameMode.SPECTATOR) {
-            MSEssentials.singleton().runTask(() -> player.setSpectatorTarget(null));
+            this.plugin.runTask(() -> player.setSpectatorTarget(null));
         }
 
         Location location = this.playerFile.getLastDeathLocation();
@@ -1528,7 +1635,7 @@ public final class PlayerInfo {
             location = player.getBedSpawnLocation();
 
             if (location == null) {
-                location = MSEssentials.config().spawnLocation;
+                location = this.plugin.getConfiguration().spawnLocation;
             }
         }
 
@@ -1543,7 +1650,9 @@ public final class PlayerInfo {
      * was created successfully.
      */
     public void createPlayerFile() {
-        if (this.playerFile.exists()) return;
+        if (this.playerFile.exists()) {
+            return;
+        }
 
         this.playerFile.getConfig().set("name.nickname", this.nickname);
 
@@ -1557,7 +1666,7 @@ public final class PlayerInfo {
         }
 
         this.playerFile.save();
-        MSEssentials.componentLogger().info(
+        this.plugin.getComponentLogger().info(
                 translatable(
                         "ms.info.player_file_created",
                         text(this.nickname),
@@ -1591,7 +1700,9 @@ public final class PlayerInfo {
             final @NotNull Component title,
             final @NotNull Component reason
     ) {
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
 
         this.handleQuit(player);
         player.kick(
@@ -1610,7 +1721,7 @@ public final class PlayerInfo {
      * @see DiscordMap#generateCode(PlayerInfo)
      */
     public short generateCode() {
-        return MSEssentials.cache().getDiscordMap().generateCode(this);
+        return this.plugin.getCache().getDiscordMap().generateCode(this);
     }
 
     /**
@@ -1624,11 +1735,14 @@ public final class PlayerInfo {
             final @NotNull MessageEmbed messageEmbed,
             final MessageEmbed @NotNull ... other
     ) {
-        final long id = this.getDiscordID();
+        final long id = this.getDiscordId();
 
-        if (id == -1) return false;
+        if (id == -1) {
+            return false;
+        }
 
-        DiscordUtil.sendEmbeds(id, messageEmbed, other);
+        this.plugin.getCache().getDiscordHandler().sendEmbeds(id, messageEmbed, other);
+
         return true;
     }
 
@@ -1639,11 +1753,14 @@ public final class PlayerInfo {
      * @return True if the player has linked their Discord account
      */
     public boolean sendPrivateDiscordMessage(final @NotNull CharSequence message) {
-        final long id = this.getDiscordID();
+        final long id = this.getDiscordId();
 
-        if (id == -1) return false;
+        if (id == -1) {
+            return false;
+        }
 
-        DiscordUtil.sendMessage(id, message);
+        this.plugin.getCache().getDiscordHandler().sendMessage(id, message);
+
         return true;
     }
 
@@ -1659,7 +1776,9 @@ public final class PlayerInfo {
         if (
                 player == null
                 || this.isInWorldDark()
-        ) return;
+        ) {
+            return;
+        }
 
         final double health = player.getHealth();
         final int air = player.getRemainingAir();
@@ -1668,7 +1787,7 @@ public final class PlayerInfo {
                 player.isDead()
                 ? player.getBedSpawnLocation() != null
                 ? player.getBedSpawnLocation()
-                : MSEssentials.config().spawnLocation
+                : this.plugin.getConfiguration().spawnLocation
                 : player.getLocation()
         );
         this.playerFile.setGameMode(player.getGameMode());
@@ -1679,19 +1798,19 @@ public final class PlayerInfo {
 
     /**
      * Hides the player's name tag from other players
-     * @see MSPlayerUtils#hideNameTag(Player)
+     * @see MSPlayerUtils#hideNameTag(MSEssentials, Player)
      */
     public void hideNameTag() {
-        MSPlayerUtils.hideNameTag(this.getOnlinePlayer());
+        MSPlayerUtils.hideNameTag(this.plugin, this.getOnlinePlayer());
     }
 
     /**
      * Updates the player's file and initializes the player's names
-     * @see PlayerFile#loadConfig(UUID, String)
+     * @see PlayerFile#loadConfig(MSEssentials, UUID, String)
      * @see PlayerInfo#initNames()
      */
     public void update() {
-        this.playerFile = PlayerFile.loadConfig(this.uuid, this.nickname);
+        this.playerFile = PlayerFile.loadConfig(this.plugin, this.uuid, this.nickname);
         this.initNames();
     }
 
@@ -1717,9 +1836,12 @@ public final class PlayerInfo {
 
         this.joinTask.cancel();
 
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
+
         if (!this.isRegistered()) {
-            new RegistrationProcess().registerPlayer(this);
+            new RegistrationProcess(this.plugin).registerPlayer(this);
         } else {
             if (this.playerFile.getConfig().getString("pronouns") == null) {
                 PronounsMenu.open(player);
@@ -1739,7 +1861,7 @@ public final class PlayerInfo {
                         sendJoinMessage(this);
                     } else {
                         player.kick();
-                        MSEssentials.logger().warning(
+                        this.plugin.getLogger().warning(
                                 "Something went wrong while teleporting " + this.nickname + " to their last leave location"
                         );
                     }

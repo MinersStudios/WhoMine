@@ -2,6 +2,7 @@ package com.minersstudios.mscore.inventory;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -128,14 +129,21 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
 
     @Override
     public void updateStaticButtons() {
-        if (!this.hasStaticButtons()) return;
+        if (!this.hasStaticButtons()) {
+            return;
+        }
 
         for (final var entry : this.staticButtons.entrySet()) {
             final int slot = entry.getKey();
             final StaticInventoryButton button = entry.getValue();
 
             for (final var pagedInventory : this.pages.values()) {
-                pagedInventory.setItem(slot, button == null ? EMPTY_ITEM : button.getButton(pagedInventory).item());
+                pagedInventory.setItem(
+                        slot,
+                        button == null
+                        ? ItemStack.empty()
+                        : button.getButton(pagedInventory).item()
+                );
             }
         }
     }

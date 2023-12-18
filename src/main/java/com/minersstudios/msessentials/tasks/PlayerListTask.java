@@ -1,29 +1,34 @@
 package com.minersstudios.msessentials.tasks;
 
-import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
-import com.minersstudios.msessentials.player.PlayerInfo;
+import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.world.WorldDark;
-import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.jetbrains.annotations.NotNull;
 
 public final class PlayerListTask implements Runnable {
+    private final Server server;
+    private final PlayerInfoMap playerInfoMap;
+
+    public PlayerListTask(final @NotNull MSEssentials plugin) {
+        this.server = plugin.getServer();
+        this.playerInfoMap = plugin.getCache().getPlayerInfoMap();
+    }
 
     @Override
     public void run() {
-        final Cache cache = MSEssentials.cache();
-        final var onlinePlayers = Bukkit.getOnlinePlayers();
+        final var onlinePlayers = this.server.getOnlinePlayers();
 
-        if (
-                cache.getPlayerInfoMap().isEmpty()
-                || onlinePlayers.isEmpty()
-        ) return;
+        if (onlinePlayers.isEmpty()) {
+            return;
+        }
 
         onlinePlayers.stream().parallel()
         .filter(player -> !WorldDark.isInWorldDark(player))
-        .forEach(player -> {
-            PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
-
-            playerInfo.savePlayerDataParams();
-        });
+        .forEach(player ->
+                this.playerInfoMap
+                .get(player)
+                .savePlayerDataParams()
+        );
     }
 }

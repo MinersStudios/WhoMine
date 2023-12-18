@@ -115,10 +115,14 @@ public final class RenameableItemRegistry {
      * @see #RENAME_ENTRY_MAP
      */
     public static @NotNull Optional<RenameableItem> fromRenameEntry(final @Nullable RenameEntry renameEntry) {
-        if (renameEntry == null) return Optional.empty();
+        if (renameEntry == null) {
+            return Optional.empty();
+        }
 
         for (final var entry : RENAME_ENTRY_MAP.entrySet()) {
-            if (entry.getKey().equals(renameEntry)) return fromKey(entry.getValue());
+            if (entry.getKey().equals(renameEntry)) {
+                return fromKey(entry.getValue());
+            }
         }
 
         return Optional.empty();
@@ -160,12 +164,17 @@ public final class RenameableItemRegistry {
      * @see #fromKey(String)
      */
     public static @NotNull Optional<RenameableItem> fromItemStack(final @Nullable ItemStack itemStack) {
-        if (itemStack == null) return Optional.empty();
+        if (itemStack == null) {
+            return Optional.empty();
+        }
+
         final ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta == null) return Optional.empty();
-        return fromKey(
-                itemMeta.getPersistentDataContainer().get(RENAMEABLE_NAMESPACED_KEY, PersistentDataType.STRING)
-        );
+
+        return itemMeta == null
+                ? Optional.empty()
+                : fromKey(
+                        itemMeta.getPersistentDataContainer().get(RENAMEABLE_NAMESPACED_KEY, PersistentDataType.STRING)
+                );
     }
 
     /**
@@ -215,10 +224,14 @@ public final class RenameableItemRegistry {
      */
     @Contract("null -> false")
     public static boolean containsAnyFromSet(final @Nullable RenameCollection renameCollection) {
-        if (renameCollection == null) return false;
+        if (renameCollection == null) {
+            return false;
+        }
 
         for (final var rename : renameCollection.entrySet()) {
-            if (containsRenameEntry(rename)) return true;
+            if (containsRenameEntry(rename)) {
+                return true;
+            }
         }
 
         return false;

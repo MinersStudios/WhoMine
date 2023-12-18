@@ -14,6 +14,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -68,6 +69,7 @@ public enum CustomItemType {
         final long startTime = System.currentTimeMillis();
         final CustomItemType[] values = values();
         final var recipesToRegister = new ArrayList<CustomItem>();
+        final MSItem plugin = MSItem.singleton();
 
         for (final var registry : values) {
             final CustomItem customItem;
@@ -75,7 +77,7 @@ public enum CustomItemType {
             try {
                 customItem = registry.getClazz().getDeclaredConstructor().newInstance();
             } catch (final Exception e) {
-                MSItem.logger().log(
+                plugin.getLogger().log(
                         Level.SEVERE,
                         "An error occurred while loading custom item " + registry.name(),
                         e
@@ -93,7 +95,7 @@ public enum CustomItemType {
             recipesToRegister.add(customItem);
         }
 
-        MSItem.componentLogger().info(
+        plugin.getComponentLogger().info(
                 Component.text(
                         "Loaded " + values.length + " custom items in " + (System.currentTimeMillis() - startTime) + "ms",
                         NamedTextColor.GREEN
@@ -102,16 +104,21 @@ public enum CustomItemType {
 
         if (!recipesToRegister.isEmpty()) {
             final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            final Server server = plugin.getServer();
 
             executor.scheduleAtFixedRate(() -> {
                 if (MSPluginUtils.isLoadedCustoms()) {
                     executor.shutdown();
 
-                    for (final var customItem : recipesToRegister) {
-                        customItem.registerRecipes();
-                    }
+                    plugin.runTask(
+                            task -> {
+                                for (final var customItem : recipesToRegister) {
+                                    customItem.registerRecipes(server);
+                                }
 
-                    recipesToRegister.clear();
+                                recipesToRegister.clear();
+                            }
+                    );
                 }
             }, 0L, 10L, TimeUnit.MILLISECONDS);
         }
@@ -206,9 +213,12 @@ public enum CustomItemType {
      */
     @Contract("null -> null")
     public static @Nullable CustomItemType fromItemStack(final @Nullable ItemStack itemStack) {
-        if (itemStack == null) return null;
+        if (itemStack == null) {
+            return null;
+        }
 
         final ItemMeta itemMeta = itemStack.getItemMeta();
+
         return itemMeta == null
                 ? null
                 : fromKey(

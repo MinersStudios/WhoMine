@@ -44,8 +44,12 @@ public final class MSDecor extends MSPlugin<MSDecor> {
 
             material.setAccessible(true);
             material.setInt(Material.LEATHER_HORSE_ARMOR, 8);
-        } catch (final Exception e) {
-            logger().log(Level.SEVERE, "Failed to set max stack size for leather horse armor", e);
+        } catch (final Throwable e) {
+            this.getLogger().log(
+                    Level.SEVERE,
+                    "Failed to set max stack size for leather horse armor",
+                    e
+            );
         }
     }
 

@@ -4,6 +4,7 @@ import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
@@ -32,7 +33,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permission = "msessentials.kick",
         permissionDefault = PermissionDefault.OP
 )
-public final class KickCommand implements MSCommandExecutor {
+public final class KickCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("kick")
             .then(
@@ -53,13 +54,15 @@ public final class KickCommand implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        if (args.length == 0) return false;
+        if (args.length == 0) {
+            return false;
+        }
 
         final Component reason = args.length > 1
                 ? text(ChatUtils.extractMessage(args, 1))
                 : LanguageFile.renderTranslationComponent("ms.command.kick.default_reason");
 
-        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -82,6 +85,7 @@ public final class KickCommand implements MSCommandExecutor {
                         reason
                 )
         );
+
         return true;
     }
 
@@ -93,7 +97,7 @@ public final class KickCommand implements MSCommandExecutor {
             final String @NotNull ... args
     ) {
         return args.length == 1
-                ? MSPlayerUtils.getLocalPlayerNames()
+                ? MSPlayerUtils.getLocalPlayerNames(this.getPlugin())
                 : EMPTY_TAB;
     }
 

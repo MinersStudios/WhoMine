@@ -90,7 +90,9 @@ public enum Facing {
             final @Nullable MSPosition positionAtFace,
             final float yaw
     ) {
-        if (positionAtFace == null) return false;
+        if (positionAtFace == null) {
+            return false;
+        }
 
         if (positionAtFace.world() == null) {
             throw new IllegalArgumentException("World cannot be null");

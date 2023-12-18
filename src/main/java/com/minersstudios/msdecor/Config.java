@@ -1,19 +1,18 @@
 package com.minersstudios.msdecor;
 
-import com.minersstudios.mscore.plugin.config.MSConfig;
+import com.minersstudios.mscore.plugin.config.PluginConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public final class Config extends MSConfig {
-    private final MSDecor plugin;
-
+public final class Config extends PluginConfig<MSDecor> {
     public boolean isChristmas;
     public boolean isHalloween;
 
     /**
      * Configuration constructor
      *
+     * @param plugin The plugin that owns this config
      * @param file The config file, where the configuration is stored
      * @throws IllegalArgumentException If the given file does not exist
      */
@@ -21,8 +20,7 @@ public final class Config extends MSConfig {
             final @NotNull MSDecor plugin,
             final @NotNull File file
     ) throws IllegalArgumentException {
-        super(file);
-        this.plugin = plugin;
+        super(plugin, file);
     }
 
     @Override
@@ -30,7 +28,7 @@ public final class Config extends MSConfig {
         this.isChristmas = this.yaml.getBoolean("is-christmas");
         this.isHalloween = this.yaml.getBoolean("is-halloween");
 
-        this.plugin.setLoadedCustoms(true);
+        this.getPlugin().setLoadedCustoms(true);
     }
 
     @Override

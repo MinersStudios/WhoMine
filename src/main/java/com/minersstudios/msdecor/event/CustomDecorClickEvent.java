@@ -45,10 +45,6 @@ public class CustomDecorClickEvent extends CustomDecorEvent implements Cancellab
         this.clickedPosition = clickedPosition;
         this.clickedInteraction = clickedInteraction;
         this.clickType = clickType;
-
-        if (!this.isCancelled()) {
-            customDecor.getData().doClickAction(this);
-        }
     }
 
     /**

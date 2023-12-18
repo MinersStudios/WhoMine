@@ -37,7 +37,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permission = "msessentials.setserverspawn",
         permissionDefault = PermissionDefault.OP
 )
-public final class SetServerSpawn implements MSCommandExecutor {
+public final class SetServerSpawn extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("setserverspawn")
             .then(
@@ -64,6 +64,7 @@ public final class SetServerSpawn implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
+        final Config config = this.getPlugin().getConfiguration();
         final Server server = sender.getServer();
 
         switch (args.length) {
@@ -73,7 +74,7 @@ public final class SetServerSpawn implements MSCommandExecutor {
                     return true;
                 }
 
-                setNewLocation(sender, player.getLocation());
+                setNewLocation(config, sender, player.getLocation());
             }
             case 1 -> {
                 final World world = server.getWorld(args[0]);
@@ -83,7 +84,7 @@ public final class SetServerSpawn implements MSCommandExecutor {
                     return true;
                 }
 
-                setNewLocation(sender, world.getSpawnLocation());
+                setNewLocation(config, sender, world.getSpawnLocation());
             }
             case 4 -> {
                 final World world = server.getWorld(args[0]);
@@ -108,7 +109,7 @@ public final class SetServerSpawn implements MSCommandExecutor {
                     return true;
                 }
 
-                setNewLocation(sender, new Location(world, x, y, z));
+                setNewLocation(config, sender, new Location(world, x, y, z));
             }
             case 6 -> {
                 final World world = server.getWorld(args[0]);
@@ -142,12 +143,13 @@ public final class SetServerSpawn implements MSCommandExecutor {
                     return false;
                 }
 
-                setNewLocation(sender, new Location(world, x, y, z, yaw, pitch));
+                setNewLocation(config, sender, new Location(world, x, y, z, yaw, pitch));
             }
             default -> {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -165,10 +167,9 @@ public final class SetServerSpawn implements MSCommandExecutor {
     ) {
         return switch (args.length) {
             case 1 -> {
-                final Server server = sender.getServer();
                 final var names = new ArrayList<String>();
 
-                for (final var world : server.getWorlds()) {
+                for (final var world : sender.getServer().getWorlds()) {
                     if (!WorldDark.isWorldDark(world)) {
                         names.add(world.getName());
                     }
@@ -223,10 +224,10 @@ public final class SetServerSpawn implements MSCommandExecutor {
     }
 
     private static void setNewLocation(
+            final @NotNull Config config,
             final @NotNull CommandSender sender,
             final @NotNull Location location
     ) {
-        final Config config = MSEssentials.config();
         config.spawnLocation = location;
 
         config.save();

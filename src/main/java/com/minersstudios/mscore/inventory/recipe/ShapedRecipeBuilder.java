@@ -119,24 +119,31 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
         int lastLength = -1;
 
         for (final var row : rows) {
-            if (row.isEmpty() || row.length() > 3) {
+            if (
+                    row.isEmpty()
+                    || row.length() > 3
+            ) {
                 throw new IllegalArgumentException("Crafting rows should be 1, 2, or 3 characters, not " + row.length());
             }
 
-            if (lastLength != -1 && lastLength != row.length()) {
+            if (
+                    lastLength != -1
+                    && lastLength != row.length()
+            ) {
                 throw new IllegalArgumentException("Crafting recipes must be rectangular");
             }
 
             lastLength = row.length();
 
             for (final char c : row.toCharArray()) {
-                if (Character.isWhitespace(c)) continue;
-
-                this.ingredients.put(c, null);
+                if (!Character.isWhitespace(c)) {
+                    this.ingredients.put(c, null);
+                }
             }
         }
 
         this.rows = rows;
+
         return this;
     }
 

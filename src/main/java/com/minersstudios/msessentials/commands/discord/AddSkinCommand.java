@@ -1,6 +1,7 @@
 package com.minersstudios.msessentials.commands.discord;
 
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.command.InteractionHandler;
 import com.minersstudios.msessentials.discord.command.SlashCommand;
 import com.minersstudios.msessentials.discord.command.SlashCommandExecutor;
@@ -19,7 +20,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 @SlashCommand
-public final class AddSkinCommand extends SlashCommandExecutor {
+public final class AddSkinCommand extends SlashCommandExecutor<MSEssentials> {
     private static final String SERVICE_UNAVAILABLE = renderTranslation("ms.discord.skin.service_unavailable");
     private static final String INVALID_IMG = renderTranslation("ms.discord.skin.invalid_img");
     private static final String INVALID_NAME = renderTranslation("ms.discord.skin.invalid_name_regex");
@@ -58,7 +59,9 @@ public final class AddSkinCommand extends SlashCommandExecutor {
     public void onInteract(@NotNull InteractionHandler handler) {
         final PlayerInfo playerInfo = handler.retrievePlayerInfo();
 
-        if (playerInfo == null) return;
+        if (playerInfo == null) {
+            return;
+        }
 
         handler.deferReply();
 
@@ -99,7 +102,7 @@ public final class AddSkinCommand extends SlashCommandExecutor {
                 && signatureOption == null
         ) {
             try {
-                final Skin skin = Skin.create(name, urlOption.getAsString());
+                final Skin skin = Skin.create(this.getPlugin(), name, urlOption.getAsString());
 
                 if (skin == null) {
                     handler.send(SERVICE_UNAVAILABLE);

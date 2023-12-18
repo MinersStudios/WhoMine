@@ -60,7 +60,9 @@ public final class IronTrashcan extends CustomDecorDataImpl<IronTrashcan> {
                 )
                 .clickAction(
                         event -> {
-                            if (event.getClickType().isLeftClick()) return;
+                            if (event.getClickType().isLeftClick()) {
+                                return;
+                            }
 
                             final Player player = event.getPlayer();
 

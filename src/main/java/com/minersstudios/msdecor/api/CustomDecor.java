@@ -2,8 +2,8 @@ package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.MSDecorUtils;
-import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.level.block.Blocks;
@@ -56,7 +56,9 @@ public final class CustomDecor {
     }
 
     public static @NotNull Optional<CustomDecor> fromInteraction(final @Nullable Interaction interaction) {
-        if (interaction == null) return Optional.empty();
+        if (interaction == null) {
+            return Optional.empty();
+        }
 
         final PersistentDataContainer container = interaction.getPersistentDataContainer();
         return container.isEmpty()
@@ -91,7 +93,9 @@ public final class CustomDecor {
         final CustomDecorBreakEvent event = new CustomDecorBreakEvent(this, destroyer);
         destroyer.getServer().getPluginManager().callEvent(event);
 
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
 
         final CraftWorld world = (CraftWorld) destroyer.getWorld();
         final MSPosition center = this.msbb.getCenter(world);
@@ -102,7 +106,7 @@ public final class CustomDecor {
             if (displayItem == null) {
                 displayItem = this.data.getItem();
 
-                MSDecor.logger().warning("Trying to drop a null item from a custom decor at " + this.display.getLocation());
+                MSLogger.warning("Trying to drop a null item from a custom decor at " + this.display.getLocation());
             }
 
             final ItemStack itemStack =
@@ -127,7 +131,6 @@ public final class CustomDecor {
                     center.toLocation(),
                     itemStack
             );
-
         }
 
         if (!this.data.getHitBox().getType().isNone()) {
@@ -158,6 +161,7 @@ public final class CustomDecor {
 
         this.display.remove();
         this.data.getSoundGroup().playBreakSound(center);
+        this.getData().doBreakAction(event);
     }
 
     public static void place(
@@ -232,7 +236,9 @@ public final class CustomDecor {
     private static @Nullable CustomDecor fromParent(final @NotNull Interaction interaction) {
         final PersistentDataContainer container = interaction.getPersistentDataContainer();
 
-        if (container.isEmpty()) return null;
+        if (container.isEmpty()) {
+            return null;
+        }
 
         CustomDecorData<?> data = null;
         ItemDisplay display = null;
@@ -244,7 +250,9 @@ public final class CustomDecor {
         for (final var key : container.getKeys()) {
             final String value = container.get(key, PersistentDataType.STRING);
 
-            if (StringUtils.isBlank(value)) continue;
+            if (StringUtils.isBlank(value)) {
+                continue;
+            }
 
             switch (key.getKey()) {
                 case CustomDecorType.TYPE_TAG_NAME -> data = CustomDecorData.fromKey(value).orElse(null);
@@ -271,7 +279,9 @@ public final class CustomDecor {
                 case DecorHitBox.HITBOX_BOUNDING_BOX_KEY -> {
                     final String[] coordinates = value.split(",");
 
-                    if (coordinates.length != 6) return null;
+                    if (coordinates.length != 6) {
+                        return null;
+                    }
 
                     try {
                         msbb = MSBoundingBox.of(

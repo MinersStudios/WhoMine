@@ -6,21 +6,16 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This class used for extending listeners with the
- * {@link MSListener} annotation
+ * {@link MSEventListener} annotation
  *
  * @param <P> The plugin, that this listener is registered to
- * @see MSListener
+ * @see MSEventListener
  * @see MSPlugin#registerListeners()
  */
-public abstract class AbstractMSListener<P extends MSPlugin<P>> implements Listener {
+public abstract class AbstractMSListener<P extends MSPlugin<P>> implements MSListener<P>, Listener {
     private P plugin;
 
-    /**
-     * @return The plugin for this listener or null if not set
-     * @throws IllegalStateException If this listener is not registered
-     * @see #register(MSPlugin)
-     * @see MSPlugin#registerListeners()
-     */
+    @Override
     public final @NotNull P getPlugin() throws IllegalStateException {
         if (!this.isRegistered()) {
             throw new IllegalStateException("Listener " + this + " not registered!");
@@ -29,19 +24,13 @@ public abstract class AbstractMSListener<P extends MSPlugin<P>> implements Liste
         return this.plugin;
     }
 
-    /**
-     * @return True if this listener is registered to a plugin
-     */
+    @Override
     public final boolean isRegistered() {
         return this.plugin != null && this.plugin.getListeners().contains(this);
     }
 
-    /**
-     * Registers this listener to the plugin
-     *
-     * @param plugin The plugin to register this listener to
-     */
-    public final void register(@NotNull P plugin) {
+    @Override
+    public final void register(final @NotNull P plugin) throws IllegalStateException {
         if (this.isRegistered()) {
             throw new IllegalStateException("Listener " + this + " already registered!");
         }
@@ -51,9 +40,6 @@ public abstract class AbstractMSListener<P extends MSPlugin<P>> implements Liste
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    /**
-     * @return A string representation of this listener
-     */
     @Override
     public @NotNull String toString() {
         return this.getClass().getSimpleName() + "{plugin=" + this.plugin + '}';

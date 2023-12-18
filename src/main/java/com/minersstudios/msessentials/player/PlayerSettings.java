@@ -1,6 +1,5 @@
 package com.minersstudios.msessentials.player;
 
-import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.skin.Skin;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +29,9 @@ public final class PlayerSettings {
                     case "NONE" -> ResourcePack.Type.NONE;
                     case "NULL" -> ResourcePack.Type.NULL;
                     default -> {
-                        MSEssentials.logger().severe("Incorrect resource-pack type in : " + playerFile.getFile().getName());
+                        playerFile.getPlugin().getLogger().severe(
+                                "Incorrect resource-pack type in : " + playerFile.getFile().getName()
+                        );
                         yield ResourcePack.Type.NULL;
                     }
                 }

@@ -62,7 +62,9 @@ public final class Dosimeter extends CustomItemImpl {
     public void setEnabled(final boolean enabled) {
         final ItemMeta itemMeta = this.itemStack.getItemMeta();
 
-        if (itemMeta == null) return;
+        if (itemMeta == null) {
+            return;
+        }
 
         itemMeta.getPersistentDataContainer().set(this.namespacedKey, PersistentDataType.BYTE, (byte) (enabled ? 1 : 0));
 
@@ -125,7 +127,9 @@ public final class Dosimeter extends CustomItemImpl {
 
         public static @Nullable ScreenType getScreenType(final int customModelData) {
             for (final var screenType : VALUES) {
-                if (screenType.customModelData == customModelData) return screenType;
+                if (screenType.customModelData == customModelData) {
+                    return screenType;
+                }
             }
 
             return null;

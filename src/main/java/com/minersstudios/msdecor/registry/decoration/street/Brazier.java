@@ -86,7 +86,9 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                 .dropsType(true)
                 .clickAction(
                         event -> {
-                            if (event.getClickType().isLeftClick()) return;
+                            if (event.getClickType().isLeftClick()) {
+                                return;
+                            }
 
                             final Player player = event.getPlayer();
                             final ItemStack itemInUse = player.getInventory().getItem(event.getHand());
@@ -97,13 +99,17 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                             if (
                                     !isShovel
                                     && !isFlintAndSteel
-                            ) return;
+                            ) {
+                                return;
+                            }
 
                             final var customDecor = event.getCustomDecor();
                             final var data = customDecor.getData();
                             final var type = data.getLightTypeOf(event.getClickedInteraction());
 
-                            if (type == null) return;
+                            if (type == null) {
+                                return;
+                            }
 
                             final World world = player.getWorld();
                             final int nextLevel;
@@ -144,7 +150,9 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
 
                             final var nextType = data.getLightTypeOf(nextLevel);
 
-                            if (nextType == null) return;
+                            if (nextType == null) {
+                                return;
+                            }
 
                             final ItemDisplay itemDisplay = customDecor.getDisplay();
                             final ItemStack displayItem = itemDisplay.getItemStack();

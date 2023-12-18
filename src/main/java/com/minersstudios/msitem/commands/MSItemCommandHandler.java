@@ -2,7 +2,9 @@ package com.minersstudios.msitem.commands;
 
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
+import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.CustomItemType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -27,7 +29,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msitem.*",
         permissionDefault = PermissionDefault.OP
 )
-public final class MSItemCommandHandler implements MSCommandExecutor {
+public final class MSItemCommandHandler extends MSCommandExecutor<MSItem> {
     private static final List<String> TAB = Arrays.asList("reload", "give");
     private static final CommandNode<?> COMMAND_NODE = literal("msitem")
             .then(literal("reload"))
@@ -52,7 +54,7 @@ public final class MSItemCommandHandler implements MSCommandExecutor {
     ) {
         return args.length != 0
                 && switch (args[0]) {
-                    case "reload" -> ReloadCommand.runCommand(sender);
+                    case "reload" -> ReloadCommand.runCommand(this.getPlugin(), sender);
                     case "give" -> GiveCommand.runCommand(sender, args);
                     default -> false;
                 };
@@ -67,7 +69,7 @@ public final class MSItemCommandHandler implements MSCommandExecutor {
     ) {
         return switch (args.length) {
             case 1 -> TAB;
-            case 2 -> MSPlayerUtils.getLocalPlayerNames();
+            case 2 -> MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton());
             case 3 -> new ArrayList<>(CustomItemType.keySet());
             default -> EMPTY_TAB;
         };

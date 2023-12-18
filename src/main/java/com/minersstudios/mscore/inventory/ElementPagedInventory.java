@@ -128,7 +128,9 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      * @return Page of the inventory
      */
     public @Nullable ElementPagedInventory createPage(final @Range(from = 0, to = Integer.MAX_VALUE) int page) {
-        if (page >= this.pagesSize) return null;
+        if (page >= this.pagesSize) {
+            return null;
+        }
 
         final ElementPagedInventory pagedInventory = this.clone();
 

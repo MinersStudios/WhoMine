@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.listeners.event.player;
 
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
@@ -13,15 +13,17 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-@MSListener
+@MSEventListener
 public final class PlayerEditBookListener extends AbstractMSListener<MSEssentials> {
     private static final Component ANONYMOUS_AUTHOR = translatable("ms.book.anonymous");
 
     @EventHandler
     public void onPlayerEditBook(final @NotNull PlayerEditBookEvent event) {
-        if (!event.isSigning()) return;
+        if (!event.isSigning()) {
+            return;
+        }
 
-        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(event.getPlayer());
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), event.getPlayer());
         final BookMeta bookMeta = event.getNewBookMeta();
         final String title = bookMeta.getTitle();
         final boolean isAnon = title != null && title.startsWith("*");

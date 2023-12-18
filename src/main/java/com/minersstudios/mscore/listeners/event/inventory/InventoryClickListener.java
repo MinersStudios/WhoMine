@@ -4,7 +4,7 @@ import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.ClickType;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class InventoryClickListener extends AbstractMSListener<MSCore> {
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -25,7 +25,9 @@ public final class InventoryClickListener extends AbstractMSListener<MSCore> {
         if (
                 clickedInventory == null
                 || !(event.getView().getTopInventory() instanceof final CustomInventory customInventory)
-        ) return;
+        ) {
+            return;
+        }
 
         if (
                 clickedInventory.getType() == InventoryType.PLAYER

@@ -42,7 +42,9 @@ public final class ItemUtils {
                 first == null
                 || second == null
                 || first.getType() != second.getType()
-        ) return false;
+        ) {
+            return false;
+        }
 
         final ItemMeta firstMeta = first.getItemMeta();
         final ItemMeta secondMeta = second.getItemMeta();
@@ -62,10 +64,14 @@ public final class ItemUtils {
             final @NotNull Collection<ItemStack> items,
             final @Nullable ItemStack item
     ) {
-        if (items.isEmpty()) return false;
+        if (items.isEmpty()) {
+            return false;
+        }
 
         for (final var listItem : items) {
-            if (isSimilarItemStacks(listItem, item)) return true;
+            if (isSimilarItemStacks(listItem, item)) {
+                return true;
+            }
         }
 
         return false;
@@ -125,7 +131,12 @@ public final class ItemUtils {
             final @Nullable ItemStack item,
             final int originalDamage
     ) {
-        if (item == null || !(item.getItemMeta() instanceof final Damageable damageable)) return false;
+        if (
+                item == null
+                || !(item.getItemMeta() instanceof final Damageable damageable)
+        ) {
+            return false;
+        }
 
         int damage = 0;
         final DamageableItem damageableItem = DamageableItem.fromItemStack(item);
@@ -156,7 +167,9 @@ public final class ItemUtils {
 
             holder.getServer().getPluginManager().callEvent(event);
 
-            if (event.isCancelled()) return false;
+            if (event.isCancelled()) {
+                return false;
+            }
         }
 
         if (

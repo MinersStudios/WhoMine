@@ -23,6 +23,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Resource pack file loader with hash and url.
@@ -50,14 +51,15 @@ public final class ResourcePack {
      *
      * @see ResourcePack
      */
-    public static void init() {
-        final Config config = MSEssentials.config();
+    public static void init(final @NotNull MSEssentials plugin) {
+        final Config config = plugin.getConfiguration();
+        final Logger logger = plugin.getLogger();
         final String user = config.user;
         final String repo = config.repo;
-        final String tagName = getLatestTagName(config.user, config.repo).orElse(config.version);
+        final String tagName = getLatestTagName(logger, config.user, config.repo).orElse(config.version);
 
         if (StringUtils.isBlank(tagName)) {
-            MSEssentials.logger().severe("""
+            logger.severe("""
                     Apparently the API rate limit has been exceeded and the tag name could not be obtained.
                     The players will not be able to connect to the server.
                     Please try again later or generate resource pack parameters manually."""
@@ -69,7 +71,11 @@ public final class ResourcePack {
             return;
         }
 
-        boolean upToDate = config.version != null && config.version.equals(tagName) && config.fullHash != null && config.liteHash != null;
+        final boolean upToDate =
+                config.version != null
+                && config.version.equals(tagName)
+                && config.fullHash != null
+                && config.liteHash != null;
 
         final String fullFileName = String.format(config.fullFileName, tagName);
         final String liteFileName = String.format(config.liteFileName, tagName);
@@ -79,16 +85,16 @@ public final class ResourcePack {
 
         final String fullHash = upToDate
                 ? config.fullHash
-                : generateHash(fullUrl, fullFileName);
+                : generateHash(plugin, fullUrl, fullFileName);
         final String liteHash = upToDate
                 ? config.liteHash
-                : generateHash(liteUrl, liteFileName);
+                : generateHash(plugin, liteUrl, liteFileName);
 
         Type.FULL.resourcePack = new ResourcePack(fullUrl, fullHash);
         Type.LITE.resourcePack = new ResourcePack(liteUrl, liteHash);
 
         if (!upToDate) {
-            YamlConfiguration configYaml = config.getYaml();
+            final YamlConfiguration configYaml = config.getYaml();
 
             configYaml.set("resource-pack.version", tagName);
             configYaml.set("resource-pack.full.hash", fullHash);
@@ -123,11 +129,12 @@ public final class ResourcePack {
      * @see #bytesToHexString(byte[])
      */
     private static @NotNull String generateHash(
+            final @NotNull MSEssentials plugin,
             final @NotNull String url,
             final @NotNull String fileName
     ) throws IllegalStateException {
         final URI uri = URI.create(url);
-        final Path path = MSEssentials.singleton().getPluginFolder().toPath().resolve(fileName);
+        final Path path = plugin.getPluginFolder().toPath().resolve(fileName);
 
         final HttpClient client = HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.ALWAYS)
@@ -152,9 +159,9 @@ public final class ResourcePack {
         final String hash = bytesToHexString(bytes);
 
         if (path.toFile().delete()) {
-            MSEssentials.logger().info("File deleted: " + path);
+            plugin.getLogger().info("File deleted: " + path);
         } else {
-            MSEssentials.logger().warning("Failed to delete file: " + path);
+            plugin.getLogger().warning("Failed to delete file: " + path);
         }
 
         return hash;
@@ -210,6 +217,7 @@ public final class ResourcePack {
      * @return The latest tag name
      */
     private static @NotNull Optional<String> getLatestTagName(
+            final @NotNull Logger logger,
             final @NotNull String user,
             final @NotNull String repo
     ) {
@@ -222,14 +230,14 @@ public final class ResourcePack {
             final var response = client.send(request, bodyHandler);
 
             if (response.statusCode() != HttpURLConnection.HTTP_OK) {
-                MSEssentials.logger().severe("Failed to get latest tag. Response code : " + response.statusCode() + ". Trying to get the latest tag from the config...");
+                logger.severe("Failed to get latest tag. Response code : " + response.statusCode() + ". Trying to get the latest tag from the config...");
                 return Optional.empty();
             }
 
             final JsonArray tags = JsonParser.parseString(response.body()).getAsJsonArray();
 
             if (tags.isEmpty()) {
-                MSEssentials.logger().severe("No tags found in the repository. Trying to get the latest tag from the config...");
+                logger.severe("No tags found in the repository. Trying to get the latest tag from the config...");
                 return Optional.empty();
             }
 
@@ -237,7 +245,12 @@ public final class ResourcePack {
 
             return Optional.of(latestTag.get("name").getAsString());
         } catch (final InterruptedException | IOException e) {
-            MSEssentials.logger().log(Level.WARNING, "Failed to get latest tag. Trying to get the latest tag from the config...", e);
+            logger.log(
+                    Level.WARNING,
+                    "Failed to get latest tag. Trying to get the latest tag from the config...",
+                    e
+            );
+
             return Optional.empty();
         }
     }

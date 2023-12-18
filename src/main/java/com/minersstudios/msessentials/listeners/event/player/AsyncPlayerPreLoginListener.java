@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-@MSListener
+@MSEventListener
 public final class AsyncPlayerPreLoginListener extends AbstractMSListener<MSEssentials> {
     private static final TranslatableComponent LEAVE_MESSAGE_FORMAT = translatable("ms.format.leave.message").color(NamedTextColor.DARK_GRAY);
     private static final TranslatableComponent WHITELIST_TITLE = translatable("ms.pre_login.whitelisted.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
@@ -35,7 +35,7 @@ public final class AsyncPlayerPreLoginListener extends AbstractMSListener<MSEsse
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAsyncPlayerPreLogin(final @NotNull AsyncPlayerPreLoginEvent event) {
         final String nickname = event.getName();
-        final PlayerInfo playerInfo = PlayerInfo.fromProfile(event.getUniqueId(), nickname);
+        final PlayerInfo playerInfo = PlayerInfo.fromProfile(this.getPlugin(), event.getUniqueId(), nickname);
 
         if (!playerInfo.isWhiteListed()) {
             event.disallow(
@@ -71,7 +71,7 @@ public final class AsyncPlayerPreLoginListener extends AbstractMSListener<MSEsse
         }
 
         if (
-                MSEssentials.config().developerMode
+                this.getPlugin().getConfiguration().developerMode
                 && !playerInfo.getOfflinePlayer().isOp()
         ) {
             event.disallow(

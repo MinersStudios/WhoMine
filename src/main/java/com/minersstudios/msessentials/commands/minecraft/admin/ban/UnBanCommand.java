@@ -4,7 +4,9 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
+import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -35,7 +37,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permission = "msessentials.ban",
         permissionDefault = PermissionDefault.OP
 )
-public final class UnBanCommand implements MSCommandExecutor {
+public final class UnBanCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("unban")
             .then(argument("id/никнейм", StringArgumentType.word()))
@@ -50,9 +52,11 @@ public final class UnBanCommand implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        if (args.length == 0) return false;
+        if (args.length == 0) {
+            return false;
+        }
 
-        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -72,19 +76,23 @@ public final class UnBanCommand implements MSCommandExecutor {
     ) {
         if (args.length == 1) {
             final var completions = new ArrayList<String>();
+            final PlayerInfoMap playerInfoMap = this.getPlugin().getCache().getPlayerInfoMap();
             final ProfileBanList banList = Bukkit.getServer().getBanList(BanList.Type.PROFILE);
             final Set<BanEntry<PlayerProfile>> entries = banList.getEntries();
 
             for (final var entry : entries) {
                 final PlayerProfile playerProfile = entry.getBanTarget();
+                final UUID uuid = playerProfile.getId();
+                final String name = playerProfile.getName();
 
                 if (
-                        playerProfile.getName() != null
-                        && playerProfile.getId() != null
+                        name != null
+                        && uuid != null
                 ) {
-                    final UUID uuid = playerProfile.getId();
-                    final String name = playerProfile.getName();
-                    final int id = PlayerInfo.fromProfile(uuid, name).getID(false, false);
+                    final int id =
+                            playerInfoMap
+                            .get(uuid, name)
+                            .getID(false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

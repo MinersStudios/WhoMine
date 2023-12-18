@@ -3,6 +3,7 @@ package com.minersstudios.msessentials.commands.minecraft.admin.msessentials;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
+import com.minersstudios.msessentials.MSEssentials;
 import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -43,7 +44,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
                 true
         }
 )
-public final class MSEssentialsCommandHandler implements MSCommandExecutor {
+public final class MSEssentialsCommandHandler extends MSCommandExecutor<MSEssentials> {
     private static final List<String> TAB = ImmutableList.of("reload", "updateids", "updatemutes");
     private static final CommandNode<?> COMMAND_NODE =
             literal("msessentials")
@@ -61,9 +62,9 @@ public final class MSEssentialsCommandHandler implements MSCommandExecutor {
     ) {
         return args.length != 0
                 && switch (args[0]) {
-                    case "reload" -> ReloadCommand.runCommand(sender);
-                    case "updateids" -> UpdateIdsCommand.runCommand(sender);
-                    case "updatemutes" -> UpdateMutesCommand.runCommand(sender);
+                    case "reload" -> ReloadCommand.runCommand(this.getPlugin(), sender);
+                    case "updateids" -> UpdateIdsCommand.runCommand(this.getPlugin(), sender);
+                    case "updatemutes" -> UpdateMutesCommand.runCommand(this.getPlugin(), sender);
                     default -> false;
                 };
     }

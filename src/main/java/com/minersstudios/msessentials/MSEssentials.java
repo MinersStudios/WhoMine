@@ -1,26 +1,23 @@
 package com.minersstudios.msessentials;
 
-import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
 import com.minersstudios.msessentials.chat.ChatType;
-import com.minersstudios.msessentials.discord.command.SlashCommand;
-import com.minersstudios.msessentials.discord.command.SlashCommandExecutor;
+import com.minersstudios.msessentials.discord.DiscordHandler;
 import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;
 import com.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.minersstudios.msessentials.menu.SkinsMenu;
-import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.tasks.BanListTask;
 import com.minersstudios.msessentials.tasks.MuteMapTask;
 import com.minersstudios.msessentials.tasks.PlayerListTask;
 import com.minersstudios.msessentials.tasks.SeatsTask;
-import com.minersstudios.msessentials.util.DiscordUtil;
 import com.minersstudios.msessentials.world.WorldDark;
 import fr.xephi.authme.AuthMe;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.UnknownNullability;
@@ -47,6 +44,8 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     private static final TranslatableComponent DISABLE_SUBTITLE = translatable("ms.on_disable.message.subtitle");
     private static final String SERVER_DISABLED = LanguageFile.renderTranslation("ms.discord.server.disabled");
 
+    public static final String NAMESPACE = "msessentials";
+
     static {
         initClass(DiscordLinkCodeMenu.class);
         initClass(ResourcePackMenu.class);
@@ -59,7 +58,7 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
 
     @Override
     public void load() {
-        this.cache = new Cache();
+        this.cache = new Cache(this);
         this.config = new Config(this, this.getConfigFile());
     }
 
@@ -76,10 +75,10 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
         this.cache.load();
         this.config.reload();
 
-        this.runTaskTimer(new SeatsTask(), 0L, 1L);
-        this.runTaskTimer(new PlayerListTask(), 6000L, 6000L);
-        this.runTaskTimer(new MuteMapTask(), 0L, 50L);
-        this.runTaskTimer(new BanListTask(), 0L, 6000L);
+        this.runTaskTimer(new SeatsTask(this), 0L, 1L);
+        this.runTaskTimer(new PlayerListTask(this), 6000L, 6000L);
+        this.runTaskTimer(new MuteMapTask(this), 0L, 50L);
+        this.runTaskTimer(new BanListTask(this), 0L, 6000L);
 
         this.setupAuthMe();
     }
@@ -88,10 +87,6 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     public void disable() {
         final PlayerInfoMap playerInfoMap = this.cache.getPlayerInfoMap();
         final var onlinePlayers = this.getServer().getOnlinePlayers();
-
-        if (this.cache.jda != null) {
-            this.cache.jda.shutdown();
-        }
 
         if (
                 !playerInfoMap.isEmpty()
@@ -108,8 +103,10 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
             task.cancel();
         }
 
-        DiscordUtil.sendMessage(ChatType.GLOBAL, SERVER_DISABLED);
-        DiscordUtil.sendMessage(ChatType.LOCAL, SERVER_DISABLED);
+        final DiscordHandler discordHandler = this.cache.getDiscordHandler();
+
+        discordHandler.sendMessage(ChatType.GLOBAL, SERVER_DISABLED);
+        discordHandler.sendMessage(ChatType.LOCAL, SERVER_DISABLED);
 
         this.cache.unload();
 
@@ -188,81 +185,26 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
         return singleton == null ? null : singleton.config;
     }
 
-    /**
-     * @return The player info of the console
-     *         or null if the plugin is disabled
-     */
-    public static @UnknownNullability PlayerInfo consolePlayerInfo() {
-        if (singleton == null) return null;
-
-        final Cache cache = singleton.cache;
-        return cache == null ? null : cache.consolePlayerInfo;
-    }
-
-    /**
-     * @return The player info of the console
-     *         or null if the plugin is disabled
-     */
-    public static @UnknownNullability Scoreboard scoreboardHideTags() {
-        return singleton == null ? null : singleton.scoreboardHideTags;
-    }
-
-    /**
-     * @return The player info of the console
-     *         or null if the plugin is disabled
-     */
-    public static @UnknownNullability Team scoreboardHideTagsTeam() {
-        return singleton == null ? null : singleton.scoreboardHideTagsTeam;
-    }
-
-    void loadSlashCommands() {
-        final Logger logger = this.getLogger();
-        final ClassLoader classLoader = this.getClassLoader();
-        final var builder = new ImmutableList.Builder<SlashCommandExecutor>();
-
-        this.getClassNames().parallelStream()
-        .forEach(className -> {
-            try {
-                final var clazz = classLoader.loadClass(className);
-
-                if (clazz.isAnnotationPresent(SlashCommand.class)) {
-                    if (clazz.getDeclaredConstructor().newInstance() instanceof final SlashCommandExecutor executor) {
-                        builder.add(executor);
-                    } else {
-                        logger.warning(
-                                "Annotated class with SlashCommand is not instance of SlashCommandExecutor (" + className + ")"
-                        );
-                    }
-                }
-            } catch (final Exception e) {
-                logger.log(
-                        Level.SEVERE,
-                        "Failed to load slash command",
-                        e
-                );
-            }
-        });
-
-        this.cache.slashCommands = builder.build();
-    }
-
     private void setupAuthMe() {
+        final Logger logger = this.getLogger();
+        final PluginManager pluginManager = this.getServer().getPluginManager();
+
         try {
             final AuthMe authMe = AuthMeApi.getInstance().getPlugin();
 
             if (!authMe.isEnabled()) {
-                this.getLogger().log(
+                logger.log(
                         Level.SEVERE,
                         "AuthMe is not enabled, MSEssentials will not work properly"
                 );
-                this.getServer().getPluginManager().disablePlugin(this);
+                pluginManager.disablePlugin(this);
             }
         } catch (final Throwable e) {
-            this.getLogger().log(
+            logger.log(
                     Level.SEVERE,
                     "AuthMe is not installed, MSEssentials will not work properly"
             );
-            this.getServer().getPluginManager().disablePlugin(this);
+            pluginManager.disablePlugin(this);
         }
     }
 }

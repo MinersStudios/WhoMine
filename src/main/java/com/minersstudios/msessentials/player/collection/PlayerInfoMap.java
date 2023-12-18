@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.player.collection;
 
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see PlayerFile
  */
 public final class PlayerInfoMap {
-    private final Map<UUID, PlayerInfo> map = new ConcurrentHashMap<>();
+    private final MSEssentials plugin;
+    private final Map<UUID, PlayerInfo> map;
+
+    public PlayerInfoMap(final @NotNull MSEssentials plugin) {
+        this.plugin = plugin;
+        this.map = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * @return The plugin instance
+     */
+    public @NotNull MSEssentials getPlugin() {
+        return this.plugin;
+    }
 
     /**
      * Gets {@link PlayerInfo} of the player from the map
@@ -39,7 +53,7 @@ public final class PlayerInfoMap {
     ) {
         return this.map.computeIfAbsent(
                 uniqueId,
-                uuid -> new PlayerInfo(uuid, nickname)
+                uuid -> new PlayerInfo(this.plugin, uuid, nickname)
         );
     }
 
@@ -61,7 +75,9 @@ public final class PlayerInfoMap {
      */
     @Contract("null -> null")
     public @Nullable PlayerInfo get(final @Nullable OfflinePlayer offlinePlayer) {
-        if (offlinePlayer == null) return null;
+        if (offlinePlayer == null) {
+            return null;
+        }
 
         final UUID uuid = offlinePlayer.getUniqueId();
         final String nickname = offlinePlayer.getName();

@@ -6,7 +6,6 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
-import com.minersstudios.msessentials.util.DiscordUtil;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -21,11 +20,11 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslation;
-import static com.minersstudios.msessentials.MSEssentials.singleton;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
 public final class BotHandler {
+    private final MSEssentials plugin;
     private final User user;
     private final long userId;
     private Message message;
@@ -78,10 +77,18 @@ public final class BotHandler {
     private static final String LIST_OF_SKIN_ACTIONS = renderTranslation("ms.discord.skin.list_of_skin_actions");
     private static final TranslatableComponent LIST_OF_SKINS = translatable("ms.discord.skin.list_of_skins");
 
-    public BotHandler(final @NotNull MessageReceivedEvent event) {
+    public BotHandler(
+            final @NotNull MSEssentials plugin,
+            final @NotNull MessageReceivedEvent event
+    ) {
+        this.plugin = plugin;
         this.user = event.getAuthor();
         this.userId = this.user.getIdLong();
-        this.playerInfo = PlayerInfo.fromDiscord(this.userId);
+        this.playerInfo = PlayerInfo.fromDiscord(plugin, this.userId);
+    }
+
+    public @NotNull MSEssentials getPlugin() {
+        return this.plugin;
     }
 
     public @NotNull User getUser() {
@@ -116,7 +123,7 @@ public final class BotHandler {
         final int attachmentSize = attachments.size();
         short code = 0;
 
-        if (!DiscordUtil.isVerified(this.user)) {
+        if (!this.plugin.getCache().getDiscordHandler().isVerified(this.user)) {
             this.reply(NOT_A_USER);
             return;
         }
@@ -247,7 +254,7 @@ public final class BotHandler {
     }
 
     private void handleCode(final short code) {
-        final DiscordMap discordMap = MSEssentials.cache().getDiscordMap();
+        final DiscordMap discordMap = this.plugin.getCache().getDiscordMap();
         final PlayerInfo fromCode = discordMap.validateCode(code);
 
         if (fromCode == null) {
@@ -274,7 +281,7 @@ public final class BotHandler {
                         onlinePlayer.getOpenInventory().getTopInventory() instanceof CustomInventory customInventory
                         && customInventory.getTitle().startsWith(MENU_TITLE)
                 ) {
-                    singleton().runTask(() -> onlinePlayer.closeInventory());
+                    this.plugin.runTask(() -> onlinePlayer.closeInventory());
                 }
 
                 MSLogger.fine(onlinePlayer, SUCCESSFULLY_LINKED_MINE.args(text(this.user.getName())));
@@ -287,7 +294,7 @@ public final class BotHandler {
         final String skinName = this.messageString;
 
         if (playerFile.containsSkin(skinName)) {
-            singleton().runTask(() -> this.handleEditTask(link, skinName));
+            this.plugin.runTask(() -> this.handleEditTask(link, skinName));
 
             this.replyEmbed(
                     renderTranslation(
@@ -301,7 +308,7 @@ public final class BotHandler {
         }
 
         if (playerFile.hasAvailableSkinSlot()) {
-            final Skin skin = Skin.create(skinName, link);
+            final Skin skin = Skin.create(this.plugin, skinName, link);
 
             if (skin == null) {
                 this.reply(SERVICE_UNAVAILABLE);
@@ -325,7 +332,7 @@ public final class BotHandler {
                 MSLogger.fine(player, SKIN_SUCCESSFULLY_ADDED_MINE.args(text(skinName)));
             }
         } else {
-            singleton().runTask(this::handleShowSkinListTask);
+            this.plugin.runTask(this::handleShowSkinListTask);
 
             this.replyEmbed(
                     renderTranslation(
@@ -349,7 +356,9 @@ public final class BotHandler {
             final String reply = this.messageString.toLowerCase(Locale.ROOT);
 
             if (reply.equals(VARIANT_YES)) {
-                if (this.editSkin(link, skinName, playerFile, playerFile.getSkinIndex(skinName))) return true;
+                if (this.editSkin(link, skinName, playerFile, playerFile.getSkinIndex(skinName))) {
+                    return true;
+                }
 
                 if (player != null) {
                     MSLogger.fine(player, SUCCESSFULLY_EDITED_MINE.args(text(skinName)));
@@ -385,7 +394,7 @@ public final class BotHandler {
                 }
 
                 this.replyEmbed(renderTranslation(LIST_OF_SKINS.args(text(skinList.toString()))));
-                singleton().runTask(this::handleSkinListTask);
+                this.plugin.runTask(this::handleSkinListTask);
             } else if (reply.equals(VARIANT_NO)) {
                 this.reply(VARIANT_NO_REPLY);
             } else {
@@ -419,7 +428,7 @@ public final class BotHandler {
                 return false;
             }
 
-            singleton().runTask(() -> this.handleSkinTask(skin));
+            this.plugin.runTask(() -> this.handleSkinTask(skin));
             return true;
         };
     }
@@ -442,9 +451,9 @@ public final class BotHandler {
             }
 
             switch (actionIndex) {
-                case 1 -> singleton().runTask(() -> this.handleEditImageTask(skin));
-                case 2 -> singleton().runTask(() -> this.handleEditNameTask(skin));
-                case 3 -> singleton().runTask(() -> this.handleDeleteTask(skin));
+                case 1 -> this.plugin.runTask(() -> this.handleEditImageTask(skin));
+                case 2 -> this.plugin.runTask(() -> this.handleEditNameTask(skin));
+                case 3 -> this.plugin.runTask(() -> this.handleDeleteTask(skin));
                 default -> {
                     this.reply(INVALID_INDEX);
                     return false;
@@ -474,7 +483,9 @@ public final class BotHandler {
                     final String link = attachment.getUrl();
 
                     try {
-                        if (editSkin(link, skinName, playerFile, playerFile.getSkinIndex(editableSkin))) return true;
+                        if (editSkin(link, skinName, playerFile, playerFile.getSkinIndex(editableSkin))) {
+                            return true;
+                        }
 
                         final Player player = this.playerInfo.getOnlinePlayer();
 
@@ -577,7 +588,7 @@ public final class BotHandler {
             @NotNull PlayerFile playerFile,
             int skinIndex
     ) {
-        final Skin skin = Skin.create(skinName, link);
+        final Skin skin = Skin.create(this.plugin, skinName, link);
 
         if (skin == null) {
             this.reply(SERVICE_UNAVAILABLE);

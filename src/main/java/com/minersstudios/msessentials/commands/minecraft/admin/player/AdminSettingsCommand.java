@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.commands.minecraft.admin.player;
 
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -24,6 +25,7 @@ public final class AdminSettingsCommand {
     private static final TranslatableComponent USE_ONE_OF_RESOURCEPACK_TYPE = translatable("ms.command.player.settings.resourcepack_type_use_one_of");
 
     public static boolean runCommand(
+            final @NotNull MSEssentials plugin,
             final @NotNull CommandSender sender,
             final String @NotNull [] args,
             final @NotNull PlayerInfo playerInfo
@@ -95,6 +97,7 @@ public final class AdminSettingsCommand {
                                 text(paramArgString)
                         )
                 );
+
                 return true;
             }
             case "skin" -> {
@@ -121,12 +124,15 @@ public final class AdminSettingsCommand {
                                 )
                         );
                     }
+
                     return true;
                 }
 
                 switch (paramArgString) {
                     case "set", "remove" -> {
-                        if (args.length < 5) return false;
+                        if (args.length < 5) {
+                            return false;
+                        }
 
                         final String skinName = args[4];
                         final Skin skin = playerFile.getSkin(skinName);
@@ -185,10 +191,13 @@ public final class AdminSettingsCommand {
                                 ));
                             }
                         }
+
                         return true;
                     }
                     case "add" -> {
-                        if (args.length < 6) return false;
+                        if (args.length < 6) {
+                            return false;
+                        }
 
                         final String skinName = args[4];
                         final String skinLink = args[5];
@@ -198,7 +207,7 @@ public final class AdminSettingsCommand {
                                 && !playerFile.containsSkin(skinName)
                         ) {
                             try {
-                                final Skin skin = Skin.create(skinName, skinLink);
+                                final Skin skin = Skin.create(plugin, skinName, skinLink);
 
                                 if (skin != null) {
                                     playerFile.addSkin(skin);
@@ -232,6 +241,7 @@ public final class AdminSettingsCommand {
                                                     )
                                             )
                                     ));
+
                                     return true;
                                 }
                             } catch (final IllegalArgumentException ignored) {}
@@ -246,6 +256,7 @@ public final class AdminSettingsCommand {
                                         text(playerInfo.getNickname())
                                 )
                         );
+
                         return true;
                     }
                     default -> {

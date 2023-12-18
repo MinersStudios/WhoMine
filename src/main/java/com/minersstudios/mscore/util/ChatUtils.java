@@ -111,7 +111,9 @@ public final class ChatUtils {
     public static @NotNull String normalize(final @NotNull String text) {
         final int length = text.length();
 
-        if (length == 0) return text;
+        if (length == 0) {
+            return text;
+        }
 
         final char[] chars = new char[length];
         chars[0] = Character.toUpperCase(text.charAt(0));

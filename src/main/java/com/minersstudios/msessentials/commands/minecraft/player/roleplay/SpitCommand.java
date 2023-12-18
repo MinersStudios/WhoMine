@@ -4,6 +4,7 @@ import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.ChatUtils;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -33,7 +34,7 @@ import static net.kyori.adventure.text.Component.translatable;
         description = "Покажи свою дерзость и плюнь кому-то в лицо",
         playerOnly = true
 )
-public final class SpitCommand implements MSCommandExecutor {
+public final class SpitCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("spit")
             .then(argument("speech", StringArgumentType.greedyString()))
@@ -51,7 +52,7 @@ public final class SpitCommand implements MSCommandExecutor {
         final Player player = (Player) sender;
         final World world = player.getWorld();
         final Location location = player.getLocation();
-        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
 
         if (playerInfo.isMuted()) {
             MSLogger.warning(player, MUTED);

@@ -1,8 +1,8 @@
 package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.location.MSPosition;
-import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.api.action.DecorBreakAction;
 import com.minersstudios.msdecor.api.action.DecorClickAction;
 import com.minersstudios.msdecor.api.action.DecorPlaceAction;
@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Interaction;
@@ -198,20 +199,20 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     void doPlaceAction(final @NotNull CustomDecorPlaceEvent event);
 
     /**
-     * Register the associated recipes of this custom decor
-     * with the server
+     * Register the associated recipes of this custom decor with the server
      *
-     * @see #unregisterRecipes()
+     * @param server The server to register the recipes with
+     * @see #unregisterRecipes(Server)
      */
-    void registerRecipes();
+    void registerRecipes(final @NotNull Server server);
 
     /**
-     * Unregister the associated recipes of this custom decor
-     * from the server
+     * Unregister the associated recipes of this custom decor from the server
      *
-     * @see #registerRecipes()
+     * @param server The server to unregister the recipes from
+     * @see #registerRecipes(Server)
      */
-    void unregisterRecipes();
+    void unregisterRecipes(final @NotNull Server server);
 
     void place(
             final @NotNull MSPosition blockLocation,
@@ -222,7 +223,9 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     ) throws IllegalArgumentException;
 
     static @NotNull Optional<CustomDecorData<?>> fromKey(final @Nullable String key) {
-        if (key == null) return Optional.empty();
+        if (key == null) {
+            return Optional.empty();
+        }
 
         final CustomDecorType type = CustomDecorType.fromKey(key);
         return type == null
@@ -237,7 +240,9 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
         if (
                 key == null
                 || clazz == null
-        ) return Optional.empty();
+        ) {
+            return Optional.empty();
+        }
 
         final CustomDecorType type = CustomDecorType.fromKey(key);
         return type != null
@@ -253,7 +258,9 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     }
 
     static @NotNull Optional<CustomDecorData<?>> fromItemStack(final @Nullable ItemStack itemStack) {
-        if (itemStack == null) return Optional.empty();
+        if (itemStack == null) {
+            return Optional.empty();
+        }
 
         final ItemMeta itemMeta = itemStack.getItemMeta();
         return itemMeta == null
@@ -268,7 +275,9 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
         if (
                 itemStack == null
                         || clazz == null
-        ) return Optional.empty();
+        ) {
+            return Optional.empty();
+        }
 
         final ItemMeta itemMeta = itemStack.getItemMeta();
         return itemMeta == null
@@ -280,11 +289,15 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     }
 
     static @NotNull Optional<CustomDecorData<?>> fromInteraction(final @Nullable Interaction interaction) {
-        if (interaction == null) return Optional.empty();
+        if (interaction == null) {
+            return Optional.empty();
+        }
 
         final PersistentDataContainer container = interaction.getPersistentDataContainer();
 
-        if (container.isEmpty()) return Optional.empty();
+        if (container.isEmpty()) {
+            return Optional.empty();
+        }
 
         if (DecorHitBox.isChild(interaction)) {
             final String uuid = container.get(DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY, PersistentDataType.STRING);
@@ -311,11 +324,15 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
         if (
                 interaction == null
                 || clazz == null
-        ) return Optional.empty();
+        ) {
+            return Optional.empty();
+        }
 
         final PersistentDataContainer container = interaction.getPersistentDataContainer();
 
-        if (container.isEmpty()) return Optional.empty();
+        if (container.isEmpty()) {
+            return Optional.empty();
+        }
 
         if (DecorHitBox.isParent(interaction)) {
             return fromKey(

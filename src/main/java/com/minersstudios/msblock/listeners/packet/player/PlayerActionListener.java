@@ -1,16 +1,16 @@
 package com.minersstudios.msblock.listeners.packet.player;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.collection.DiggingMap;
 import com.minersstudios.msblock.api.CustomBlock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
-import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.msblock.collection.DiggingMap;
 import com.minersstudios.mscore.listener.packet.AbstractMSPacketListener;
 import com.minersstudios.mscore.listener.packet.MSPacketListener;
 import com.minersstudios.mscore.packet.PacketContainer;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
+import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.PlayerUtils;
 import net.minecraft.core.BlockPos;
@@ -44,7 +44,9 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
         if (
             serverPlayer.gameMode.getGameModeForPlayer() != GameType.SURVIVAL
             || !(container.getPacket() instanceof final ServerboundPlayerActionPacket packet)
-        ) return;
+        ) {
+            return;
+        }
 
         final ServerboundPlayerActionPacket.Action action = packet.getAction();
 
@@ -52,15 +54,21 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
                 action != START_DESTROY_BLOCK
                 && action != ABORT_DESTROY_BLOCK
                 && action != STOP_DESTROY_BLOCK
-        ) return;
+        ) {
+            return;
+        }
 
-        final DiggingMap diggingMap = MSBlock.cache().getDiggingMap();
+        final MSBlock plugin = this.getPlugin();
+        final DiggingMap diggingMap = plugin.getCache().getDiggingMap();
         final Player player = serverPlayer.getBukkitEntity();
         final ServerLevel serverLevel = serverPlayer.serverLevel();
         final BlockPos blockPos = packet.getPos();
         final Location blockLocation = new Location(serverLevel.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
         final Block block = blockLocation.getBlock();
-        final boolean hasSlowDigging = player.hasPotionEffect(PotionEffectType.SLOW_DIGGING);
+        final PotionEffect slowDigging = player.getPotionEffect(PotionEffectType.SLOW_DIGGING);
+        final boolean hasSlowDigging =
+                slowDigging != null
+                && slowDigging.getDuration() == PotionEffect.INFINITE_DURATION;
 
         switch (action) {
             case START_DESTROY_BLOCK -> {
@@ -68,7 +76,18 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
                     diggingMap.removeAll(player);
 
                     if (!hasSlowDigging) {
-                        this.getPlugin().runTask(() -> player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false)));
+                        plugin.runTask(() ->
+                                player.addPotionEffect(
+                                        new PotionEffect(
+                                                PotionEffectType.SLOW_DIGGING,
+                                                PotionEffect.INFINITE_DURATION,
+                                                -1,
+                                                true,
+                                                false,
+                                                false
+                                        )
+                                )
+                        );
                     }
 
                     final CustomBlockData customBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault());
@@ -76,7 +95,7 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
                     final DiggingMap.Entry entry = DiggingMap.Entry.create(player);
 
                     diggingMap.put(block, entry.taskId(
-                            this.getPlugin().runTaskTimer(new Runnable() {
+                            plugin.runTaskTimer(new Runnable() {
                                 float ticks = 0.0f;
                                 float progress = 0.0f;
 
@@ -97,12 +116,15 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
                                         wasFarAway = true;
                                     }
 
-                                    if (!targetBlock.equals(block)) return;
+                                    if (!targetBlock.equals(block)) {
+                                        return;
+                                    }
+
                                     if (
                                             !(!entry.farAway()
                                             && (serverPlayer.swinging || wasFarAway))
                                     ) {
-                                        if (entry.isStageTheBiggest(block)) {
+                                        if (entry.isStageTheBiggest(plugin, block)) {
                                             serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, -1);
                                         }
 
@@ -124,7 +146,7 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
 
                                         if (
                                                 entry.stage() <= 9
-                                                && entry.isStageTheBiggest(block)
+                                                && entry.isStageTheBiggest(plugin, block)
                                         ) {
                                             serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, entry.stage());
                                         }
@@ -133,7 +155,7 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
                                     if (this.progress > 1.0f) {
                                         serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, -1);
                                         new CustomBlock(block, customBlockData)
-                                                .destroy(player);
+                                                .destroy(plugin, player);
                                     }
                                 }
                             }, 0L, 1L).getTaskId())
@@ -149,7 +171,9 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
                     }
 
                     if (hasSlowDigging) {
-                        this.getPlugin().runTask(() -> player.removePotionEffect(PotionEffectType.SLOW_DIGGING));
+                        plugin.runTask(() ->
+                                player.removePotionEffect(PotionEffectType.SLOW_DIGGING)
+                        );
                     }
                 }
 
@@ -162,7 +186,7 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
                     final DiggingMap.Entry entry = DiggingMap.Entry.create(player);
 
                     diggingMap.put(block, entry.taskId(
-                            this.getPlugin().runTaskTimer(new Runnable() {
+                            plugin.runTaskTimer(new Runnable() {
                                 float ticks = 0.0f;
 
                                 @Override
@@ -185,7 +209,10 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
                                         wasFarAway = true;
                                     }
 
-                                    if (!targetBlock.equals(block)) return;
+                                    if (!targetBlock.equals(block)) {
+                                        return;
+                                    }
+
                                     if (
                                             !(!entry.farAway()
                                             && (serverPlayer.swinging || wasFarAway))
@@ -212,7 +239,7 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
                 ) {
                     final Block targetBlock = PlayerUtils.getTargetBlock(player);
 
-                    this.getPlugin().runTask(() -> {
+                    plugin.runTask(() -> {
                         if (
                                 PlayerUtils.getTargetEntity(player, targetBlock) == null
                                 && targetBlock != null
@@ -225,7 +252,9 @@ public final class PlayerActionListener extends AbstractMSPacketListener<MSBlock
             }
             case STOP_DESTROY_BLOCK -> {
                 if (diggingMap.containsBlock(block)) {
-                    this.getPlugin().runTask(() -> serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, -1));
+                    plugin.runTask(() ->
+                            serverLevel.destroyBlockProgress(blockPos.hashCode(), blockPos, -1)
+                    );
                     diggingMap.removeAll(block);
                 }
             }

@@ -34,7 +34,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permission = "msessentials.ban",
         permissionDefault = PermissionDefault.OP
 )
-public final class BanCommand implements MSCommandExecutor {
+public final class BanCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("ban")
             .then(
@@ -55,7 +55,9 @@ public final class BanCommand implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        if (args.length < 2) return false;
+        if (args.length < 2) {
+            return false;
+        }
 
         final Instant date = DateUtils.getDateFromString(args[1], false);
 
@@ -68,7 +70,7 @@ public final class BanCommand implements MSCommandExecutor {
                 ? ChatUtils.extractMessage(args, 2)
                 : LanguageFile.renderTranslation("ms.command.ban.default_reason");
 
-        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -97,9 +99,11 @@ public final class BanCommand implements MSCommandExecutor {
                     if (
                             StringUtils.isBlank(nickname)
                             || offlinePlayer.isBanned()
-                    ) continue;
+                    ) {
+                        continue;
+                    }
 
-                    final int id = MSEssentials.cache().getIdMap().getID(uuid, false, false);
+                    final int id = this.getPlugin().getCache().getIdMap().getID(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

@@ -9,10 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +18,6 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslation;
-import static com.minersstudios.msessentials.MSEssentials.singleton;
 
 /**
  * Player file with player data, settings, etc.
@@ -32,6 +28,7 @@ import static com.minersstudios.msessentials.MSEssentials.singleton;
  */
 @SuppressWarnings("UnusedReturnValue")
 public final class PlayerFile {
+    private final @NotNull MSEssentials plugin;
     private final @NotNull File file;
     private final @NotNull YamlConfiguration config;
 
@@ -54,9 +51,11 @@ public final class PlayerFile {
     private static final String DEFAULT_PATRONYMIC = renderTranslation("ms.player.name.patronymic");
 
     private PlayerFile(
+            final @NotNull MSEssentials plugin,
             final @NotNull File file,
             final @NotNull YamlConfiguration config
     ) {
+        this.plugin = plugin;
         this.file = file;
         this.config = config;
 
@@ -76,7 +75,7 @@ public final class PlayerFile {
         final ConfigurationSection lastLeaveSection = this.config.getConfigurationSection("locations.last-leave-location");
         final String lastLeaveWorldName = this.config.getString("locations.last-leave-location.world", "");
         final World lastLeaveWorld = Bukkit.getWorld(lastLeaveWorldName);
-        final Location spawnLocation = MSEssentials.config().spawnLocation;
+        final Location spawnLocation = plugin.getConfiguration().spawnLocation;
         final World spawnWorld = spawnLocation.getWorld();
 
         this.lastLeaveLocation = lastLeaveSection == null
@@ -111,14 +110,23 @@ public final class PlayerFile {
     }
 
     public static @NotNull PlayerFile loadConfig(
+            final @NotNull MSEssentials plugin,
             final @NotNull UUID uniqueId,
             final @Nullable String nickname
     ) {
         final File dataFile = new File(
-                singleton().getPluginFolder(),
+                plugin.getPluginFolder(),
                 "players/" + ("$Console".equals(nickname) ? "console" : uniqueId) + ".yml"
         );
-        return new PlayerFile(dataFile, YamlConfiguration.loadConfiguration(dataFile));
+        return new PlayerFile(
+                plugin,
+                dataFile,
+                YamlConfiguration.loadConfiguration(dataFile)
+        );
+    }
+
+    public @NotNull MSEssentials getPlugin() {
+        return this.plugin;
     }
 
     public @NotNull File getFile() {
@@ -175,7 +183,7 @@ public final class PlayerFile {
         this.config.set("ip-list", this.ipList);
     }
 
-    public @NotNull List<Skin> getSkins() {
+    public @NotNull @UnmodifiableView List<Skin> getSkins() {
         return Collections.unmodifiableList(this.skins);
     }
 
@@ -185,10 +193,14 @@ public final class PlayerFile {
 
     @Contract("null -> null")
     public @Nullable Skin getSkin(final @Nullable String name) {
-        if (StringUtils.isBlank(name)) return null;
+        if (StringUtils.isBlank(name)) {
+            return null;
+        }
 
         for (final var skin : this.skins) {
-            if (skin.getName().equalsIgnoreCase(name)) return skin;
+            if (skin.getName().equalsIgnoreCase(name)) {
+                return skin;
+            }
         }
 
         return null;
@@ -209,7 +221,9 @@ public final class PlayerFile {
         if (
                 index >= this.skins.size()
                 || this.containsSkin(skin)
-        ) return false;
+        ) {
+            return false;
+        }
 
         this.skins.set(index, skin);
         this.serializeSkinsSection();
@@ -219,7 +233,9 @@ public final class PlayerFile {
     }
 
     public boolean addSkin(final @NotNull Skin skin) {
-        if (!this.hasAvailableSkinSlot()) return false;
+        if (!this.hasAvailableSkinSlot()) {
+            return false;
+        }
 
         this.skins.add(skin);
         this.serializeSkinsSection();
@@ -234,12 +250,14 @@ public final class PlayerFile {
     }
 
     public boolean removeSkin(final @Nullable Skin skin) {
-        if (!this.containsSkin(skin)) return false;
+        if (!this.containsSkin(skin)) {
+            return false;
+        }
 
         final Skin currentSkin = this.playerSettings.getSkin();
 
         if (skin.equals(currentSkin)) {
-            final PlayerInfo playerInfo = PlayerInfo.fromNickname(this.playerName.getNickname());
+            final PlayerInfo playerInfo = PlayerInfo.fromNickname(this.plugin, this.playerName.getNickname());
 
             if (playerInfo != null) {
                 playerInfo.setSkin(null);
@@ -264,10 +282,14 @@ public final class PlayerFile {
 
     @Contract("null -> false")
     public boolean containsSkin(final @Nullable String name) {
-        if (StringUtils.isBlank(name)) return false;
+        if (StringUtils.isBlank(name)) {
+            return false;
+        }
 
         for (final var skin : this.skins) {
-            if (skin.getName().equalsIgnoreCase(name)) return true;
+            if (skin.getName().equalsIgnoreCase(name)) {
+                return true;
+            }
         }
 
         return false;
@@ -359,7 +381,11 @@ public final class PlayerFile {
         try {
             this.config.save(this.file);
         } catch (final IOException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to save player file : " + this.file.getName(), e);
+            this.plugin.getLogger().log(
+                    Level.SEVERE,
+                    "Failed to save player file : " + this.file.getName(),
+                    e
+            );
         }
     }
 
@@ -377,12 +403,16 @@ public final class PlayerFile {
         final var names = this.config.getList("skins", Collections.emptyList());
         final int size = names.size();
 
-        if (size == 0) return Collections.emptyList();
+        if (size == 0) {
+            return Collections.emptyList();
+        }
 
         final var skins = new ArrayList<Skin>(size);
 
         for (final var skin : names) {
-            if (!(skin instanceof Map)) continue;
+            if (!(skin instanceof Map)) {
+                continue;
+            }
 
             final Skin deserialized = Skin.deserialize(skin.toString());
 

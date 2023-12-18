@@ -1,7 +1,8 @@
 package com.minersstudios.msessentials.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
+import com.minersstudios.mscore.util.SharedConstants;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.util.MessageUtils;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.security.SecureRandom;
 
-@MSListener
+@MSEventListener
 public final class PlayerInteractEntityListener extends AbstractMSListener<MSEssentials> {
     private final SecureRandom random = new SecureRandom();
 
@@ -27,7 +28,7 @@ public final class PlayerInteractEntityListener extends AbstractMSListener<MSEss
         final Player whoClicked = event.getPlayer();
 
         if (event.getRightClicked() instanceof final Player clickedPlayer) {
-            final PlayerInfo clickedInfo = PlayerInfo.fromOnlinePlayer(clickedPlayer);
+            final PlayerInfo clickedInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), clickedPlayer);
             final ItemStack helmet = clickedPlayer.getInventory().getHelmet();
             final float pitch = whoClicked.getEyeLocation().getPitch();
 
@@ -63,23 +64,29 @@ public final class PlayerInteractEntityListener extends AbstractMSListener<MSEss
                 }
             }
         } else if (event.getRightClicked() instanceof final ItemFrame itemFrame) {
-            final boolean hasScoreboardTag = itemFrame.getScoreboardTags().contains("invisibleItemFrame");
+            final boolean hasTag = itemFrame.getScoreboardTags().contains(SharedConstants.INVISIBLE_ITEM_FRAME_TAG);
             final Material frameMaterial = itemFrame.getItem().getType();
             final Material handMaterial = whoClicked.getInventory().getItemInMainHand().getType();
 
             if (
                     frameMaterial.isAir()
                     && !handMaterial.isAir()
-                    && hasScoreboardTag
+                    && hasTag
             ) {
                 itemFrame.setVisible(false);
             } else if (
                     (!frameMaterial.isAir() || whoClicked.isSneaking())
                     && handMaterial == Material.SHEARS
-                    && !hasScoreboardTag
+                    && !hasTag
             ) {
-                whoClicked.getWorld().playSound(itemFrame.getLocation(), Sound.ENTITY_SHEEP_SHEAR, SoundCategory.PLAYERS, 1.0f, this.random.nextFloat() * 0.1f + 0.5f);
-                itemFrame.addScoreboardTag("invisibleItemFrame");
+                whoClicked.getWorld().playSound(
+                        itemFrame.getLocation(),
+                        Sound.ENTITY_SHEEP_SHEAR,
+                        SoundCategory.PLAYERS,
+                        1.0f,
+                        this.random.nextFloat() * 0.1f + 0.5f
+                );
+                itemFrame.addScoreboardTag(SharedConstants.INVISIBLE_ITEM_FRAME_TAG);
                 itemFrame.setVisible(frameMaterial.isAir());
                 event.setCancelled(true);
             }

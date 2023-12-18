@@ -6,7 +6,6 @@ import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.location.MSVector;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.util.*;
-import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.action.DecorBreakAction;
 import com.minersstudios.msdecor.api.action.DecorClickAction;
 import com.minersstudios.msdecor.api.action.DecorPlaceAction;
@@ -17,6 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -41,6 +41,7 @@ import org.jetbrains.annotations.*;
 import javax.annotation.concurrent.Immutable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -175,7 +176,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         ).orElse(null)
                 );
     }
-    
+
     @Override
     @Contract("null -> null")
     public @Nullable CustomDecorData.Type<D> getTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
@@ -186,15 +187,22 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new UnsupportedOperationException("This custom decor is not wrenchable or typed!");
         }
 
-        if (itemStack == null) return null;
+        if (itemStack == null) {
+            return null;
+        }
 
         final String key = itemStack.getItemMeta().getPersistentDataContainer().get(
                 CustomDecorType.TYPE_NAMESPACED_KEY,
                 PersistentDataType.STRING
         );
 
-        if (key == null) return null;
-        if (!CustomDecorType.matchesTypedKey(key)) return this.types[0];
+        if (key == null) {
+            return null;
+        }
+
+        if (!CustomDecorType.matchesTypedKey(key)) {
+            return this.types[0];
+        }
         
         for (final var type : this.types) {
             if (key.equals(type.getKey().getKey())) {
@@ -227,13 +235,15 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new UnsupportedOperationException("This custom decor is not wrenchable or typed!");
         }
 
-        if (type == null) return null;
+        if (type == null) {
+            return null;
+        }
 
-        final int length = this.types.length;
+        final int typesSize = this.types.length;
 
-        for (int i = 0; i < length; ++i) {
+        for (int i = 0; i < typesSize; ++i) {
             if (this.types[i].equals(type)) {
-                return this.types[Math.floorMod(i + 1, length)];
+                return this.types[Math.floorMod(i + 1, typesSize)];
             }
         }
 
@@ -272,14 +282,19 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new UnsupportedOperationException("This custom decor is not face typed!");
         }
 
-        if (itemStack == null) return null;
+        if (itemStack == null) {
+            return null;
+        }
 
         final String key = itemStack.getItemMeta().getPersistentDataContainer().get(
                 CustomDecorType.TYPE_NAMESPACED_KEY,
                 PersistentDataType.STRING
         );
 
-        if (key == null) return null;
+        if (key == null) {
+            return null;
+        }
+
         if (!CustomDecorType.matchesTypedKey(key)) {
             return this.faceTypeMap.getOrDefault(Facing.FLOOR, null);
         }
@@ -339,9 +354,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         return interaction == null
                 ? null
                 : this.getLightTypeOf(
-                        CustomDecor.fromInteraction(interaction).map(
-                                customDecor -> customDecor.getDisplay().getItemStack()
-                        ).orElse(null)
+                        CustomDecor.fromInteraction(interaction)
+                        .map(decor -> decor.getDisplay().getItemStack())
+                        .orElse(null)
                 );
     }
 
@@ -352,14 +367,19 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new UnsupportedOperationException("This custom decor is not light typed!");
         }
 
-        if (itemStack == null) return null;
+        if (itemStack == null) {
+            return null;
+        }
 
         final String key = itemStack.getItemMeta().getPersistentDataContainer().get(
                 CustomDecorType.TYPE_NAMESPACED_KEY,
                 PersistentDataType.STRING
         );
 
-        if (key == null) return null;
+        if (key == null) {
+            return null;
+        }
+
         if (!CustomDecorType.matchesTypedKey(key)) {
             return this.lightLevelTypeMap.getOrDefault(this.lightLevels[0], null);
         }
@@ -410,14 +430,18 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new UnsupportedOperationException("This custom decor is not light typed!");
         }
 
-        if (itemStack == null) return this.lightLevels[0];
+        if (itemStack == null) {
+            return this.lightLevels[0];
+        }
 
         final String key = itemStack.getItemMeta().getPersistentDataContainer().get(
                 CustomDecorType.TYPE_NAMESPACED_KEY,
                 PersistentDataType.STRING
         );
 
-        if (!CustomDecorType.matchesTypedKey(key)) return this.lightLevels[0];
+        if (!CustomDecorType.matchesTypedKey(key)) {
+            return this.lightLevels[0];
+        }
 
         for (final var entry : this.lightLevelTypeMap.entrySet()) {
             if (key.equals(entry.getValue().getKey().getKey())) {
@@ -447,11 +471,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new UnsupportedOperationException("This custom decor is not lightable!");
         }
 
-        final int length = this.lightLevels.length;
+        final int levelsSize = this.lightLevels.length;
 
-        for (int currentIndex = 0; currentIndex < length; ++currentIndex) {
-            if (this.lightLevels[currentIndex] == lightLevel) {
-                return this.lightLevels[Math.floorMod(currentIndex + 1, length)];
+        for (int i = 0; i < levelsSize; ++i) {
+            if (this.lightLevels[i] == lightLevel) {
+                return this.lightLevels[Math.floorMod(i + 1, levelsSize)];
             }
         }
 
@@ -485,7 +509,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     @Override
     public boolean hasParameters(
             final @NotNull DecorParameter first,
-            final @NotNull DecorParameter... rest
+            final DecorParameter @NotNull ... rest
     ) {
         return this.parameterSet.contains(first)
                 && (
@@ -500,11 +524,16 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 itemStack == null
                 || itemStack.getType() != this.itemStack.getType()
                 || !itemStack.hasItemMeta()
-                || !itemStack.getItemMeta().hasCustomModelData()
-                || !this.itemStack.getItemMeta().hasCustomModelData()
-        ) return false;
+        ) {
+            return false;
+        }
 
-        return itemStack.getItemMeta().getCustomModelData() == this.itemStack.getItemMeta().getCustomModelData();
+        final ItemMeta thisMeta = this.itemStack.getItemMeta();
+        final ItemMeta thatMeta = itemStack.getItemMeta();
+
+        return thisMeta.hasCustomModelData()
+                && thatMeta.hasCustomModelData()
+                && thatMeta.getCustomModelData() == thatMeta.getCustomModelData();
     }
 
     @Override
@@ -586,37 +615,37 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public void registerRecipes() {
-        if (this.recipes.isEmpty()) return;
+    public void registerRecipes(final @NotNull Server server) {
+        if (this.recipes.isEmpty()) {
+            return;
+        }
 
-        final MSDecor plugin = MSDecor.singleton();
-        final Server server = plugin.getServer();
+        for (final var entry : this.recipes) {
+            final Recipe recipe = entry.getKey();
+            final boolean registerInMenu = entry.getValue();
 
-        plugin.runTask(() -> {
-            for (final var entry : this.recipes) {
-                final Recipe recipe = entry.getKey();
+            server.addRecipe(recipe);
 
-                server.addRecipe(recipe);
-
-                if (entry.getValue()) {
-                    globalCache().customDecorRecipes.add(recipe);
-                }
+            if (registerInMenu) {
+                globalCache().customDecorRecipes.add(recipe);
             }
-        });
+        }
     }
 
     @Override
-    public final void unregisterRecipes() {
-        if (this.recipes.isEmpty()) return;
+    public final void unregisterRecipes(final @NotNull Server server) {
+        if (this.recipes.isEmpty()) {
+            return;
+        }
+
         for (final var entry : this.recipes) {
-            final Recipe recipe = entry.getKey();
+            final Keyed recipe = (Keyed) entry.getKey();
+            final boolean isRegisteredInMenu = entry.getValue();
 
-            if (recipe instanceof final Keyed keyed) {
-                Bukkit.removeRecipe(keyed.getKey());
+            server.removeRecipe(recipe.getKey());
 
-                if (entry.getValue()) {
-                    globalCache().customDecorRecipes.remove(recipe);
-                }
+            if (isRegisteredInMenu) {
+                globalCache().customDecorRecipes.remove(recipe);
             }
         }
     }
@@ -636,25 +665,23 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         final Material blockType = blockLocation.getBlock().getType();
-        final boolean inReplaceableBlock =
-                BlockUtils.isReplaceable(blockType)
-                && !blockType.isAir();
         final float rotation = player.getYaw();
         BlockFace finalFace = null;
 
-        for (final var facing : this.facingSet) {
-            if (facing.hasFace(blockFace)) {
-                if (
-                        this.hitBox.getType().isNone()
-                        && inReplaceableBlock
-                ) continue;
-
-                finalFace = blockFace;
-                break;
+        if (
+                !this.hitBox.getType().isNone()
+                && !BlockUtils.isReplaceable(blockType)
+                && !blockType.isAir()
+        ) {
+            for (final var facing : this.facingSet) {
+                if (facing.hasFace(blockFace)) {
+                    finalFace = blockFace;
+                    break;
+                }
             }
-        }
+        } else {
+            final BlockFace rotationFace = LocationUtils.degreesToBlockFace90(rotation);
 
-        if (finalFace == null) {
             for (final var facing : this.facingSet) {
                 if (
                         facing.hasFace(
@@ -663,15 +690,17 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         )
                 ) {
                     finalFace = switch (facing) {
-                        case WALL -> LocationUtils.degreesToBlockFace90(rotation);
+                        case WALL -> rotationFace;
                         case FLOOR -> BlockFace.UP;
                         case CEILING -> BlockFace.DOWN;
                     };
                     break;
                 }
             }
+        }
 
-            if (finalFace == null) return;
+        if (finalFace == null) {
+            return;
         }
 
         final ServerLevel serverLevel = world.getHandle();
@@ -682,9 +711,17 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         for (final var blockPos : blocksToReplace) {
             final BlockState blockState = serverLevel.getBlockState(blockPos);
 
-            if (!BlockUtils.isReplaceable(blockState.getBlock())) return;
+            if (!BlockUtils.isReplaceable(blockState.getBlock())) {
+                return;
+            }
 
-            blockStates.add(CraftBlockStates.getUnplacedBlockState(serverLevel, blockPos, blockState));
+            blockStates.add(
+                    CraftBlockStates.getUnplacedBlockState(
+                            serverLevel,
+                            blockPos,
+                            blockState
+                    )
+            );
         }
 
         if (
@@ -692,7 +729,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         serverLevel,
                         msbb.max(msbb.max().offset(1.0d))
                 )
-        ) return;
+        ) {
+            return;
+        }
 
         final ItemStack itemInHand = hand != null
                 ? player.getInventory().getItem(hand)
@@ -715,9 +754,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         rotation
                 ),
                 player,
-                hand == null ? EquipmentSlot.HAND : hand,
+                hand == null
+                        ? EquipmentSlot.HAND
+                        : hand,
                 blockStates
         );
+
         player.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
@@ -731,16 +773,19 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return;
         }
 
-        this.getSoundGroup().playPlaceSound(blockLocation.center());
-
         if (hand != null) {
+            final int currentAmount = itemInHand.getAmount();
+
             itemInHand.setAmount(
                     player.getGameMode() == GameMode.SURVIVAL
-                            ? itemInHand.getAmount() - 1
-                            : itemInHand.getAmount()
+                            ? currentAmount - 1
+                            : currentAmount
             );
             player.swingHand(hand);
         }
+
+        this.getSoundGroup().playPlaceSound(blockLocation.center());
+        this.doPlaceAction(event);
     }
 
     private @NotNull CustomDecor placeInWorld(
@@ -760,10 +805,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final DecorHitBox.Type type = this.hitBox.getType();
 
         if (!type.isNone()) {
-            final CraftWorld world = ((CraftWorld) itemDisplay.getWorld());
             final var blocks = fillBlocks(
                     placerName,
-                    world.getHandle(),
+                    ((CraftWorld) itemDisplay.getWorld()).getHandle(),
                     replacePositions,
                     type.getNMSMaterial().defaultBlockState(),
                     null
@@ -842,8 +886,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                         final ItemMeta itemMeta = itemStack.getItemMeta();
 
                         if (
-                                itemMeta instanceof LeatherArmorMeta colorable
-                                && typeMeta instanceof LeatherArmorMeta typeColorable
+                                itemMeta instanceof final LeatherArmorMeta colorable
+                                && typeMeta instanceof final LeatherArmorMeta typeColorable
                         ) {
                             typeColorable.setColor(colorable.getColor());
                         }
@@ -867,17 +911,24 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     ) {
         final World world = itemDisplay.getWorld();
         final BlockPos[] spawnPositions = this.getSpawnPositions(boundingBox, blockFace);
-        final int length = spawnPositions.length;
-        final Interaction[] interactions = new Interaction[length];
-
-        final float width = this.hitBox.getInteractionWidth();
-        final float height = this.hitBox.getInteractionHeight(blockFace);
+        final int positionsSize = spawnPositions.length;
+        final Interaction[] interactions = new Interaction[positionsSize];
 
         final double offsetX = offset.x();
         final double offsetY = offset.y();
         final double offsetZ = offset.z();
 
-        for (int i = 0; i < length; ++i) {
+        final float width = this.hitBox.getInteractionWidth();
+        final float height = this.hitBox.getInteractionHeight(blockFace);
+
+        final Consumer<Interaction> interactionConsumer =
+                interaction -> {
+                    interaction.setInteractionHeight(height);
+                    interaction.setInteractionWidth(width);
+                    interaction.setResponsive(false);
+                };
+
+        for (int i = 0; i < positionsSize; ++i) {
             final BlockPos blockPos = spawnPositions[i];
             interactions[i] = world.spawn(
                     new Location(
@@ -887,11 +938,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                             blockPos.getZ() + offsetZ
                     ),
                     Interaction.class,
-                    interaction -> {
-                        interaction.setInteractionHeight(height);
-                        interaction.setInteractionWidth(width);
-                        interaction.setResponsive(false);
-                    }
+                    interactionConsumer
             );
         }
 
@@ -907,6 +954,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final boolean isCeiling =
                 this.facingSet.contains(Facing.CEILING)
                 && blockFace == BlockFace.DOWN;
+
         return boundingBox.getBlockPositions(
                 0,
                 isCeiling
@@ -936,7 +984,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                                         entity instanceof net.minecraft.world.entity.Interaction
                                         && decorCounter.incrementAndGet() >= MAX_DECORATIONS_IN_BLOCK
                         )
-                ) return true;
+                ) {
+                    return true;
+                }
             }
             case SOLID ->{
                 return searchBox.hasNMSEntity(
@@ -962,19 +1012,22 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     ) {
         final Interaction firstInteraction = interactions[0];
         final String firstUUID = firstInteraction.getUniqueId().toString();
-        final PersistentDataContainer firstContainer = firstInteraction.getPersistentDataContainer();
-        final var uuids = new ArrayList<String>();
+        final StringBuilder uuidsBuilder = new StringBuilder();
 
         for (int i = 1; i < interactions.length; ++i) {
             final Interaction interaction = interactions[i];
 
-            uuids.add(interaction.getUniqueId().toString());
+            uuidsBuilder
+                    .append(interaction.getUniqueId())
+                    .append(',');
             interaction.getPersistentDataContainer().set(
                     DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY,
                     PersistentDataType.STRING,
                     firstUUID
             );
         }
+
+        final PersistentDataContainer firstContainer = firstInteraction.getPersistentDataContainer();
 
         firstContainer.set(
                 CustomDecorType.TYPE_NAMESPACED_KEY,
@@ -988,11 +1041,15 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 display.getUniqueId().toString()
         );
 
-        firstContainer.set(
-                DecorHitBox.HITBOX_INTERACTIONS_NAMESPACED_KEY,
-                PersistentDataType.STRING,
-                String.join(",", uuids)
-        );
+        if (!uuidsBuilder.isEmpty()) {
+            firstContainer.set(
+                    DecorHitBox.HITBOX_INTERACTIONS_NAMESPACED_KEY,
+                    PersistentDataType.STRING,
+                    uuidsBuilder
+                    .deleteCharAt(uuidsBuilder.length() - 1)
+                    .toString()
+            );
+        }
 
         firstContainer.set(
                 DecorHitBox.HITBOX_BOUNDING_BOX_NAMESPACED_KEY,
@@ -1025,7 +1082,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             if (
                     predicate != null
                     && !predicate.test(blockPos)
-            ) continue;
+            ) {
+                continue;
+            }
 
             final Location location = LocationUtils.nmsToBukkit(blockPos, serverLevel);
             final BlockData replacedData = location.getBlock().getBlockData();
@@ -1421,8 +1480,13 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     "Set sittable parameter before setting sit height!"
             );
 
-            if (sitHeight < -9 || sitHeight > 9) {
-                throw new IllegalArgumentException("Sit height '" + sitHeight + "' is not in range [-9, 9]!");
+            if (
+                    sitHeight < -SharedConstants.SIT_RANGE
+                    || sitHeight > SharedConstants.SIT_RANGE
+            ) {
+                throw new IllegalArgumentException(
+                        "Sit height '" + sitHeight + "' is not in range [-" + SharedConstants.SIT_RANGE + ", " + SharedConstants.SIT_RANGE + "]!"
+                );
             }
 
             this.sitHeight = sitHeight;
@@ -1561,11 +1625,16 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             for (int i = 0; i < length; i++) {
                 final int level = this.lightLevels[i];
 
-                if (level < 0 || level > 15) {
-                    throw new IllegalArgumentException("Light level '" + level + "' is not in range [0, 15]!");
+                if (
+                        level < BlockStateProperties.MIN_LEVEL
+                        || level > BlockStateProperties.MAX_LEVEL_15
+                ) {
+                    throw new IllegalArgumentException(
+                            "Light level '" + level + "' is not in range [" + BlockStateProperties.MIN_LEVEL + ", " + BlockStateProperties.MAX_LEVEL_15 + "]!"
+                    );
                 }
 
-                for (int j = i + 1; j < length; j++) {
+                for (int j = i + 1; j < length; ++j) {
                     if (level == this.lightLevels[j]) {
                         throw new IllegalArgumentException("Light level '" + level + "' is duplicated! Light levels must be unique!");
                     }
@@ -1797,10 +1866,14 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 throw new IllegalStateException("Parameters are not set! First set parameters!");
             }
 
-            if (this.parameterSet.contains(first)) return;
+            if (this.parameterSet.contains(first)) {
+                return;
+            }
 
             for (final var param : rest) {
-                if (this.parameterSet.contains(param)) return;
+                if (this.parameterSet.contains(param)) {
+                    return;
+                }
             }
 
             final StringBuilder builder = new StringBuilder();

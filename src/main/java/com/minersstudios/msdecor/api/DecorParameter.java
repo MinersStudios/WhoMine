@@ -5,6 +5,7 @@ import com.minersstudios.mscore.util.ItemUtils;
 import com.minersstudios.mscore.util.PlayerUtils;
 import com.minersstudios.msdecor.api.action.DecorClickAction;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msitem.api.CustomItemType;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
@@ -32,7 +33,9 @@ public enum DecorParameter {
     ),
     WRENCHABLE(
             event -> {
-                if (event.getClickType().isLeftClick()) return;
+                if (event.getClickType().isLeftClick()) {
+                    return;
+                }
 
                 final ItemStack itemInUse = event.getPlayer().getInventory().getItem(event.getHand());
 
@@ -43,7 +46,9 @@ public enum DecorParameter {
     ),
     LIGHTABLE(
             event -> {
-                if (event.getClickType().isLeftClick()) return;
+                if (event.getClickType().isLeftClick()) {
+                    return;
+                }
 
                 final Interaction interaction = event.getClickedInteraction();
 
@@ -60,7 +65,9 @@ public enum DecorParameter {
     TYPED,
     LIGHT_TYPED(
             event -> {
-                if (event.getClickType().isLeftClick()) return;
+                if (event.getClickType().isLeftClick()) {
+                    return;
+                }
 
                 final CustomDecor customDecor = event.getCustomDecor();
                 final var data = customDecor.getData();
@@ -74,7 +81,9 @@ public enum DecorParameter {
 
                 doLight(event, nextLevel);
 
-                if (nextType == null) return;
+                if (nextType == null) {
+                    return;
+                }
 
                 final ItemStack typeItem = nextType.getItem();
                 final ItemMeta itemMeta = typeItem.getItemMeta();
@@ -97,7 +106,9 @@ public enum DecorParameter {
     //<editor-fold desc="Actions" defaultstate="collapsed">
     private static final DecorClickAction WRENCHABLE_SITTABLE_CLICK_ACTION =
             event -> {
-                if (event.getClickType().isLeftClick()) return;
+                if (event.getClickType().isLeftClick()) {
+                    return;
+                }
 
                 final ItemStack itemInUse = event.getPlayer().getInventory().getItem(event.getHand());
 
@@ -110,7 +121,9 @@ public enum DecorParameter {
 
     private static final DecorClickAction WRENCHABLE_LIGHTABLE_CLICK_ACTION =
             event -> {
-                if (event.getClickType().isLeftClick()) return;
+                if (event.getClickType().isLeftClick()) {
+                    return;
+                }
 
                 final ItemStack itemInUse = event.getPlayer().getInventory().getItem(event.getHand());
 
@@ -172,7 +185,9 @@ public enum DecorParameter {
     public static void doSit(final @NotNull CustomDecorClickEvent event) {
         final Player player = event.getPlayer();
 
-        if (player.getVehicle() != null) return;
+        if (player.getVehicle() != null) {
+            return;
+        }
 
         final Location sitLocation =
                 event.getClickedInteraction().getLocation()
@@ -184,7 +199,7 @@ public enum DecorParameter {
             }
         }
 
-        PlayerUtils.setSitting(player, sitLocation);
+        PlayerUtils.setSitting(MSEssentials.singleton(), player, sitLocation);
         player.getWorld().playSound(
                 sitLocation,
                 Sound.ENTITY_HORSE_SADDLE,
@@ -205,7 +220,9 @@ public enum DecorParameter {
         final ItemStack displayItem = itemDisplay.getItemStack();
         final var nextType = customDecor.getData().getNextType(displayItem);
 
-        if (nextType == null) return;
+        if (nextType == null) {
+            return;
+        }
 
         final Player player = event.getPlayer();
         final ItemStack typeItem = nextType.getItem();

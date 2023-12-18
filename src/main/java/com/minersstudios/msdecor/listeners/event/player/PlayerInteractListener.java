@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.listeners.event.player;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.MSDecorUtils;
@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@MSListener
+@MSEventListener
 public final class PlayerInteractListener extends AbstractMSListener<MSDecor> {
     private static final Set<UUID> HAND_HANDLER = new HashSet<>();
 
@@ -41,7 +41,9 @@ public final class PlayerInteractListener extends AbstractMSListener<MSDecor> {
         if (
                 block == null
                 || hand == null
-        ) return;
+        ) {
+            return;
+        }
 
         final Player player = event.getPlayer();
         final Material blockType = block.getType();
@@ -89,7 +91,9 @@ public final class PlayerInteractListener extends AbstractMSListener<MSDecor> {
                 if (
                         gameMode == GameMode.ADVENTURE
                         || gameMode == GameMode.SPECTATOR
-                ) return;
+                ) {
+                    return;
+                }
 
                 if (
                         hand == EquipmentSlot.OFF_HAND
@@ -173,7 +177,7 @@ public final class PlayerInteractListener extends AbstractMSListener<MSDecor> {
             CustomDecor.fromInteraction(interaction)
             .ifPresent(
                     customDecor -> {
-                        final CustomDecorClickEvent rightClickEvent = new CustomDecorClickEvent(
+                        final CustomDecorClickEvent clickEvent = new CustomDecorClickEvent(
                                 customDecor,
                                 player,
                                 hand,
@@ -182,9 +186,10 @@ public final class PlayerInteractListener extends AbstractMSListener<MSDecor> {
                                 clickType
                         );
 
-                        pluginManager.callEvent(rightClickEvent);
+                        pluginManager.callEvent(clickEvent);
 
-                        if (!rightClickEvent.isCancelled()) {
+                        if (!clickEvent.isCancelled()) {
+                            customDecor.getData().doClickAction(clickEvent);
                             doneForMainHand(player);
                         }
                     }

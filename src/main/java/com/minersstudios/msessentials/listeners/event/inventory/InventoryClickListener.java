@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.listeners.event.inventory;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.world.WorldDark;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 
-@MSListener
+@MSEventListener
 public final class InventoryClickListener extends AbstractMSListener<MSEssentials> {
     private static final TranslatableComponent REMOVED_ITEM = translatable("ms.info.player_item_removed");
 
@@ -31,7 +31,9 @@ public final class InventoryClickListener extends AbstractMSListener<MSEssential
         final ItemStack cursorItem = event.getCursor();
         final ItemStack currentItem = event.getCurrentItem();
 
-        if (clickedInventory == null) return;
+        if (clickedInventory == null) {
+            return;
+        }
 
         if (WorldDark.isInWorldDark(player)) {
             event.setCancelled(true);
@@ -45,7 +47,7 @@ public final class InventoryClickListener extends AbstractMSListener<MSEssential
                 && cursorItem.getType() != Material.AIR
         ) {
             player.setItemOnCursor(null);
-            MSEssentials.singleton().runTask(() -> player.getInventory().setHelmet(cursorItem));
+            this.getPlugin().runTask(() -> player.getInventory().setHelmet(cursorItem));
         }
 
         if (currentItem != null && currentItem.getType() != Material.AIR) {

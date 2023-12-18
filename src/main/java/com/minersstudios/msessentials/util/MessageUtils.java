@@ -7,6 +7,7 @@ import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.chat.ChatType;
+import com.minersstudios.msessentials.discord.DiscordHandler;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.world.WorldDark;
 import net.kyori.adventure.text.Component;
@@ -75,7 +76,9 @@ public final class MessageUtils {
             final @NotNull ChatType chatType,
             final @NotNull Component message
     ) {
-        final Config config = MSEssentials.config();
+        final MSEssentials plugin = MSEssentials.singleton();
+        final Config config = plugin.getConfiguration();
+        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
 
         if (chatType == ChatType.LOCAL && location != null) {
             final Component localMessage = space()
@@ -90,7 +93,7 @@ public final class MessageUtils {
 
             sendLocalMessage(localMessage, location, config.localChatRadius);
             MSEssentials.singleton().runTaskAsync(
-                    () -> DiscordUtil.sendMessage(ChatType.LOCAL, stringLocalMessage)
+                    () -> discordHandler.sendMessage(ChatType.LOCAL, stringLocalMessage)
             );
             MSLogger.info(null, localMessage);
             return;
@@ -109,8 +112,8 @@ public final class MessageUtils {
 
         sendGlobalMessage(globalMessage);
         MSCore.singleton().runTaskAsync(() -> {
-            DiscordUtil.sendMessage(ChatType.GLOBAL, stringGlobalMessage.replaceFirst("\\[WM]", ""));
-            DiscordUtil.sendMessage(ChatType.LOCAL, stringGlobalMessage);
+            discordHandler.sendMessage(ChatType.GLOBAL, stringGlobalMessage.replaceFirst("\\[WM]", ""));
+            discordHandler.sendMessage(ChatType.LOCAL, stringGlobalMessage);
         });
         MSLogger.info(null, globalMessage);
     }
@@ -128,8 +131,10 @@ public final class MessageUtils {
             final @NotNull PlayerInfo receiver,
             final @NotNull Component message
     ) {
-        final CommandSender commandSender = sender == MSEssentials.consolePlayerInfo()
-                ? Bukkit.getConsoleSender()
+        final MSEssentials plugin = MSEssentials.singleton();
+        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
+        final CommandSender commandSender = sender == plugin.getCache().getConsolePlayerInfo()
+                ? plugin.getServer().getConsoleSender()
                 : sender.getOnlinePlayer();
         final Player receiverPlayer = receiver.getOnlinePlayer();
 
@@ -161,7 +166,7 @@ public final class MessageUtils {
                     .append(message.color(CHAT_COLOR_SECONDARY))
             );
             MSCore.singleton().runTaskAsync(
-                    () -> DiscordUtil.sendMessage(ChatType.LOCAL, privateMessageString)
+                    () -> discordHandler.sendMessage(ChatType.LOCAL, privateMessageString)
             );
             MSLogger.info(null, privateMessage);
             return true;
@@ -183,8 +188,10 @@ public final class MessageUtils {
             final @NotNull Component action,
             final @NotNull RolePlayActionType rolePlayActionType
     ) {
-        final Config config = MSEssentials.config();
-        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(sender);
+        final MSEssentials plugin = MSEssentials.singleton();
+        final Config config = plugin.getConfiguration();
+        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, sender);
         final Component fullMessage = switch (rolePlayActionType) {
             case DO ->
                     text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
@@ -223,7 +230,7 @@ public final class MessageUtils {
                 config.localChatRadius
         );
         MSCore.singleton().runTaskAsync(
-                () -> DiscordUtil.sendMessage(ChatType.LOCAL, ChatUtils.serializePlainComponent(fullMessage))
+                () -> discordHandler.sendMessage(ChatType.LOCAL, ChatUtils.serializePlainComponent(fullMessage))
         );
         MSLogger.info(null, fullMessage);
     }
@@ -246,10 +253,12 @@ public final class MessageUtils {
             final @NotNull Player killed,
             final @Nullable Player killer
     ) {
+        final MSEssentials plugin = MSEssentials.singleton();
+        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
         final Location deathLocation = killed.getLocation();
-        final PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(killed);
+        final PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(plugin, killed);
         final PlayerInfo killerInfo = killer != null
-                        ? PlayerInfo.fromOnlinePlayer(killer)
+                        ? PlayerInfo.fromOnlinePlayer(plugin, killer)
                         : null;
         final Component deathMessage = killerInfo != null
                 ? space()
@@ -269,8 +278,8 @@ public final class MessageUtils {
         killedInfo.setLastDeathLocation(deathLocation);
         sendGlobalMessage(deathMessage);
         MSCore.singleton().runTaskAsync(() -> {
-            DiscordUtil.sendActionMessage(ChatType.GLOBAL, killed.getName(), stringDeathMessage, 16757024);
-            DiscordUtil.sendActionMessage(ChatType.LOCAL, killed.getName(), stringDeathMessage, 16757024);
+            discordHandler.sendActionMessage(ChatType.GLOBAL, killed.getName(), stringDeathMessage, 16757024);
+            discordHandler.sendActionMessage(ChatType.LOCAL, killed.getName(), stringDeathMessage, 16757024);
         });
         MSLogger.info(null, deathMessage);
 
@@ -301,8 +310,12 @@ public final class MessageUtils {
         if (
                 !playerInfo.isOnline(true)
                 || player == null
-        ) return;
+        ) {
+            return;
+        }
 
+        final MSEssentials plugin = MSEssentials.singleton();
+        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
         final Component joinMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
@@ -312,8 +325,8 @@ public final class MessageUtils {
 
         sendGlobalMessage(joinMessage);
         MSCore.singleton().runTaskAsync(() -> {
-            DiscordUtil.sendActionMessage(ChatType.GLOBAL, player.getName(), stringJoinMessage, 65280);
-            DiscordUtil.sendActionMessage(ChatType.LOCAL, player.getName(), stringJoinMessage, 65280);
+            discordHandler.sendActionMessage(ChatType.GLOBAL, player.getName(), stringJoinMessage, 65280);
+            discordHandler.sendActionMessage(ChatType.LOCAL, player.getName(), stringJoinMessage, 65280);
         });
         MSLogger.info(null, joinMessage);
     }
@@ -328,8 +341,12 @@ public final class MessageUtils {
             final @NotNull PlayerInfo playerInfo,
             final @NotNull Player player
     ) {
-        if (!playerInfo.isOnline()) return;
+        if (!playerInfo.isOnline()) {
+            return;
+        }
 
+        final MSEssentials plugin = MSEssentials.singleton();
+        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
         final Component quitMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
@@ -339,8 +356,8 @@ public final class MessageUtils {
 
         sendGlobalMessage(quitMessage);
         MSCore.singleton().runTaskAsync(() -> {
-            DiscordUtil.sendActionMessage(ChatType.GLOBAL, player.getName(), stringQuitMessage, 16711680);
-            DiscordUtil.sendActionMessage(ChatType.LOCAL, player.getName(), stringQuitMessage, 16711680);
+            discordHandler.sendActionMessage(ChatType.GLOBAL, player.getName(), stringQuitMessage, 16711680);
+            discordHandler.sendActionMessage(ChatType.LOCAL, player.getName(), stringQuitMessage, 16711680);
         });
         MSLogger.info(null, quitMessage);
     }

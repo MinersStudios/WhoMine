@@ -3,7 +3,7 @@ package com.minersstudios.msessentials.player.collection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.mojang.util.InstantTypeAdapter;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Contract;
@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Mute map with {@link UUID} and its {@link Entry}.
@@ -35,7 +36,8 @@ import java.util.logging.Level;
  */
 public final class MuteMap {
     private final File file;
-    private final Map<UUID, Entry> map = new ConcurrentHashMap<>();
+    private final Map<UUID, Entry> map;
+    private final Logger logger;
 
     private static final Gson GSON =
             new GsonBuilder()
@@ -47,8 +49,10 @@ public final class MuteMap {
      * Mute map with {@link UUID} and its {@link Entry}.
      * Loads mutes from the file.
      */
-    public MuteMap() {
-        this.file = new File(MSEssentials.singleton().getPluginFolder(), "muted_players.json");
+    public MuteMap(final @NotNull MSPlugin<?> plugin) {
+        this.file = new File(plugin.getPluginFolder(), "muted_players.json");
+        this.map = new ConcurrentHashMap<>();
+        this.logger = plugin.getLogger();
         this.reloadMutes();
     }
 
@@ -98,7 +102,10 @@ public final class MuteMap {
      * @param player Muted player
      */
     public void remove(final @Nullable OfflinePlayer player) {
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
+
         this.map.remove(player.getUniqueId());
         this.saveFile();
     }
@@ -163,7 +170,7 @@ public final class MuteMap {
                     if (params != null && params.isValidate()) {
                         this.map.put(uuid, params);
                     } else {
-                        MSEssentials.logger().severe("Failed to read the player params : " + uuid.toString() + " in \"muted_players.json\"");
+                        this.logger.severe("Failed to read the player params : " + uuid.toString() + " in \"muted_players.json\"");
                     }
                 });
             } catch (final Exception ignored) {
@@ -185,7 +192,7 @@ public final class MuteMap {
                 this.saveFile();
             }
         } catch (final IOException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to create a new \"muted_players.json\" file", e);
+            this.logger.log(Level.SEVERE, "Failed to create a new \"muted_players.json\" file", e);
         }
     }
 
@@ -199,10 +206,10 @@ public final class MuteMap {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
         } catch (final IOException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to create \"muted_players.json.OLD\" backup file", e);
+            this.logger.log(Level.SEVERE, "Failed to create \"muted_players.json.OLD\" backup file", e);
         }
 
-        MSEssentials.logger().severe("Failed to read the \"muted_players.json\" file, creating a new file");
+        this.logger.severe("Failed to read the \"muted_players.json\" file, creating a new file");
     }
 
     /**
@@ -212,7 +219,7 @@ public final class MuteMap {
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
         } catch (final IOException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to save muted players", e);
+            this.logger.log(Level.SEVERE, "Failed to save muted players", e);
         }
     }
 

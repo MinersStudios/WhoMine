@@ -14,14 +14,17 @@ import static net.kyori.adventure.text.Component.translatable;
 public final class UpdateIdsCommand {
     private static final TranslatableComponent UPDATE_IDS_SUCCESS = translatable("ms.command.msessentials.update_ids.success");
 
-    public static boolean runCommand(@NotNull CommandSender sender) {
+    public static boolean runCommand(
+            final @NotNull MSEssentials plugin,
+            final @NotNull CommandSender sender
+    ) {
         final long time = System.currentTimeMillis();
-        final Cache cache = MSEssentials.cache();
+        final Cache cache = plugin.getCache();
 
         cache.getIdMap().reloadIds();
         cache.getPlayerInfoMap().playerInfos().forEach(PlayerInfo::initNames);
-
         MSLogger.fine(sender, UPDATE_IDS_SUCCESS.args(text(System.currentTimeMillis() - time)));
+
         return true;
     }
 }

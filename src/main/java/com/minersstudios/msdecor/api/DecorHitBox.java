@@ -10,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Interaction;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -209,11 +208,8 @@ public final class DecorHitBox {
     }
 
     public static boolean isParent(final @NotNull Interaction interaction) {
-        final PersistentDataContainer container = interaction.getPersistentDataContainer();
-        return container.has(CustomDecorType.TYPE_NAMESPACED_KEY)
-                && container.has(DecorHitBox.HITBOX_DISPLAY_NAMESPACED_KEY)
-                && container.has(DecorHitBox.HITBOX_INTERACTIONS_NAMESPACED_KEY)
-                && container.has(DecorHitBox.HITBOX_BOUNDING_BOX_NAMESPACED_KEY);
+        return interaction.getPersistentDataContainer()
+                .has(CustomDecorType.TYPE_NAMESPACED_KEY);
     }
 
     public static boolean isChild(final @NotNull Interaction interaction) {

@@ -2,7 +2,7 @@ package com.minersstudios.msblock;
 
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
-import com.minersstudios.mscore.plugin.config.MSConfig;
+import com.minersstudios.mscore.plugin.config.PluginConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.StringUtils;
@@ -18,13 +18,11 @@ import java.util.logging.Level;
 /**
  * Configuration loader class.
  * <br>
- * Use {@link MSBlock#config()} to get configuration instance.
+ * Use {@link MSBlock#getConfiguration()} to get configuration instance.
  * Use {@link #reload()} to reload configuration and {@link #save()} to
  * save configuration.
  */
-public final class Config extends MSConfig {
-    private final MSBlock plugin;
-
+public final class Config extends PluginConfig<MSBlock> {
     public String woodSoundPlace;
     public String woodSoundBreak;
     public String woodSoundStep;
@@ -35,6 +33,7 @@ public final class Config extends MSConfig {
     /**
      * Configuration constructor
      *
+     * @param plugin The plugin that owns this config
      * @param file The config file, where the configuration is stored
      * @throws IllegalArgumentException If the given file does not exist
      */
@@ -42,8 +41,7 @@ public final class Config extends MSConfig {
             final @NotNull MSBlock plugin,
             final @NotNull File file
     ) throws IllegalArgumentException {
-        super(file);
-        this.plugin = plugin;
+        super(plugin, file);
     }
 
     /**
@@ -72,8 +70,10 @@ public final class Config extends MSConfig {
             this.woodSoundHit = "block.wood.hit";
         }
 
-        this.plugin.saveResource("blocks/example.json", true);
-        this.plugin.runTaskAsync(this::loadBlocks);
+        final MSBlock plugin = this.getPlugin();
+
+        plugin.saveResource("blocks/example.json", true);
+        plugin.runTaskAsync(this::loadBlocks);
     }
 
     /**
@@ -89,6 +89,7 @@ public final class Config extends MSConfig {
 
     private void loadBlocks() {
         final long start = System.currentTimeMillis();
+        final MSBlock plugin = this.getPlugin();
 
         try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + '/' + BLOCKS_FOLDER))) {
             pathStream.parallel()
@@ -100,22 +101,22 @@ public final class Config extends MSConfig {
             })
             .map(Path::toFile)
             .forEach(file -> {
-                final CustomBlockData data = CustomBlockData.fromFile(file);
+                final CustomBlockData data = CustomBlockData.fromFile(plugin, file);
 
                 if (data != null) {
                     CustomBlockRegistry.register(data);
                 }
             });
 
-            this.plugin.setLoadedCustoms(true);
-            this.plugin.getComponentLogger().info(
+            plugin.setLoadedCustoms(true);
+            plugin.getComponentLogger().info(
                     Component.text(
                             "Loaded " + CustomBlockRegistry.size() + " custom blocks in " + (System.currentTimeMillis() - start) + "ms",
                             NamedTextColor.GREEN
                     )
             );
         } catch (final IOException e) {
-            this.plugin.getLogger().log(
+            plugin.getLogger().log(
                     Level.SEVERE,
                     "An error occurred while loading blocks",
                     e

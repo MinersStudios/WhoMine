@@ -245,7 +245,9 @@ public class NoteBlockData implements Cloneable {
      */
     @Override
     public boolean equals(final @Nullable Object obj) {
-        if (obj == this) return true;
+        if (obj == this) {
+            return true;
+        }
 
         if (obj instanceof final NoteBlockData noteBlockData) {
             return this.instrument == noteBlockData.instrument

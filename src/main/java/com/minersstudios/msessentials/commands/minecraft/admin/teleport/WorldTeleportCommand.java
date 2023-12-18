@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
 import com.minersstudios.msessentials.world.WorldDark;
@@ -13,7 +14,6 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -44,7 +44,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permission = "msessentials.worldteleport",
         permissionDefault = PermissionDefault.OP
 )
-public final class WorldTeleportCommand implements MSCommandExecutor {
+public final class WorldTeleportCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("worldteleport")
             .then(
@@ -67,9 +67,11 @@ public final class WorldTeleportCommand implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        if (args.length < 2) return false;
+        if (args.length < 2) {
+            return false;
+        }
 
-        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -126,6 +128,7 @@ public final class WorldTeleportCommand implements MSCommandExecutor {
                     )
             )
         );
+
         return true;
     }
 
@@ -137,12 +140,11 @@ public final class WorldTeleportCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         return switch (args.length) {
-            case 1 -> MSPlayerUtils.getLocalPlayerNames();
+            case 1 -> MSPlayerUtils.getLocalPlayerNames(this.getPlugin());
             case 2 -> {
-                Server server = sender.getServer();
-                var names = new ArrayList<String>();
+                final var names = new ArrayList<String>();
 
-                for (var world : server.getWorlds()) {
+                for (final var world : sender.getServer().getWorlds()) {
                     if (!WorldDark.isWorldDark(world)) {
                         names.add(world.getName());
                     }
@@ -154,19 +156,19 @@ public final class WorldTeleportCommand implements MSCommandExecutor {
                 Location playerLoc = null;
 
                 if (
-                        sender instanceof Player player
+                        sender instanceof final Player player
                         && args[1].equals(player.getWorld().getName())
                 ) {
                     playerLoc = player.getLocation();
                 }
 
                 if (playerLoc != null) {
-                    double coordinate = switch (args.length) {
+                    final double coordinate = switch (args.length) {
                         case 3 -> playerLoc.x();
                         case 4 -> playerLoc.y();
                         default -> playerLoc.z();
                     };
-                    double roundedCoordinate = Math.round(coordinate * 100.0d) / 100.0d;
+                    final double roundedCoordinate = Math.round(coordinate * 100.0d) / 100.0d;
 
                     yield ImmutableList.of(String.valueOf(roundedCoordinate));
                 }

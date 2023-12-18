@@ -202,7 +202,9 @@ public final class CraftsMenu {
                         new InventoryButton()
                         .item(resultItem)
                         .clickAction((buttonEvent, inventory) -> {
-                            if (buttonEvent.getClick().isCreativeAction()) return;
+                            if (buttonEvent.getClick().isCreativeAction()) {
+                                return;
+                            }
 
                             final Player player = (Player) buttonEvent.getWhoClicked();
 

@@ -4,6 +4,7 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomalies.AnomalyAction;
 import com.minersstudios.msessentials.anomalies.AnomalyIgnorableItems;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,18 +19,20 @@ public class AddPotionAction extends AnomalyAction {
     private final PotionEffect[] potionEffects;
 
     /**
+     * @param plugin     MSEssentials plugin
      * @param time       Time in ticks to perform action (1 second = 20 ticks)
      * @param percentage Percentage chance of completing action
      * @param first      First potion effect to add to player when action is performed
      * @param rest       Rest of potion effects to add to player when action is performed
      */
     public AddPotionAction(
+            final @NotNull MSEssentials plugin,
             final long time,
             final int percentage,
             final @NotNull PotionEffect first,
             final PotionEffect @NotNull ... rest
     ) {
-        super(time, percentage);
+        super(plugin, time, percentage);
 
         final int restLength = rest.length;
         this.potionEffects = new PotionEffect[restLength + 1];
@@ -39,16 +42,18 @@ public class AddPotionAction extends AnomalyAction {
     }
 
     /**
+     * @param plugin          MSEssentials plugin
      * @param time            Time in ticks to perform action (1 second = 20 ticks)
      * @param percentage      Percentage chance of completing action
      * @param potionEffects   Array of potion effects to add to player when action is performed
      */
     public AddPotionAction(
+            final @NotNull MSEssentials plugin,
             final long time,
             final int percentage,
             final PotionEffect @NotNull [] potionEffects
     ) {
-        super(time, percentage);
+        super(plugin, time, percentage);
 
         this.potionEffects = potionEffects;
     }
@@ -75,22 +80,24 @@ public class AddPotionAction extends AnomalyAction {
             final @NotNull Player player,
             final @Nullable AnomalyIgnorableItems ignorableItems
     ) {
-        final var actionMap = MSEssentials.cache().getPlayerAnomalyActionMap().get(player);
+        final var timedAction = this.actionMap.get(player);
 
         if (
-                actionMap.containsKey(this)
-                && System.currentTimeMillis() - actionMap.get(this) >= (this.getTime() * 50)
+                timedAction.containsKey(this)
+                && System.currentTimeMillis() - timedAction.get(this) >= (this.getTime() * 50)
         ) {
             this.removeAction(player);
 
             if (this.isPercentageReached()) {
+                final PlayerInventory inventory = player.getInventory();
+
                 if (
                         ignorableItems != null
-                        && ignorableItems.hasIgnorableItems(player.getInventory())
+                        && ignorableItems.hasIgnorableItems(inventory)
                 ) {
-                    ignorableItems.damageIgnorableItems(player.getInventory());
+                    ignorableItems.damageIgnorableItems(inventory);
                 } else {
-                    MSEssentials.singleton().runTask(() -> {
+                    this.plugin.runTask(() -> {
                         for (final var potionEffect : this.potionEffects) {
                             player.addPotionEffect(potionEffect);
                         }

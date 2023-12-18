@@ -3,14 +3,14 @@ package com.minersstudios.msblock.listeners.event.player;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class PlayerBucketEmptyListener extends AbstractMSListener<MSBlock> {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

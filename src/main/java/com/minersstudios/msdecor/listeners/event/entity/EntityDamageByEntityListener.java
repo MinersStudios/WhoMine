@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.listeners.event.entity;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecor;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
@@ -13,7 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class EntityDamageByEntityListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -21,14 +21,18 @@ public final class EntityDamageByEntityListener extends AbstractMSListener<MSDec
         if (
                 !(event.getDamager() instanceof final Player player)
                 || !(event.getEntity() instanceof final Interaction interaction)
-        ) return;
+        ) {
+            return;
+        }
 
         final GameMode gameMode = player.getGameMode();
 
         if (
                 gameMode == GameMode.ADVENTURE
                 || gameMode == GameMode.SPECTATOR
-        ) return;
+        ) {
+            return;
+        }
 
         if (
                 (
@@ -41,16 +45,23 @@ public final class EntityDamageByEntityListener extends AbstractMSListener<MSDec
         } else {
             CustomDecor.fromInteraction(interaction)
             .ifPresent(
-                    customDecor -> player.getServer().getPluginManager().callEvent(
-                            new CustomDecorClickEvent(
-                                    customDecor,
-                                    player,
-                                    player.getHandRaised(),
-                                    interaction.getLocation().toCenterLocation().toVector(),
-                                    interaction,
-                                    CustomDecorClickEvent.ClickType.LEFT_CLICK
-                            )
-                    )
+                    customDecor -> {
+                        final CustomDecorClickEvent clickEvent =
+                                new CustomDecorClickEvent(
+                                        customDecor,
+                                        player,
+                                        player.getHandRaised(),
+                                        interaction.getLocation().toCenterLocation().toVector(),
+                                        interaction,
+                                        CustomDecorClickEvent.ClickType.LEFT_CLICK
+                                );
+
+                        player.getServer().getPluginManager().callEvent(clickEvent);
+
+                        if (!clickEvent.isCancelled()) {
+                            customDecor.getData().doClickAction(clickEvent);
+                        }
+                    }
             );
         }
     }

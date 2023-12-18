@@ -27,6 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -194,6 +195,7 @@ public enum CustomDecorType {
         final long startTime = System.currentTimeMillis();
         final CustomDecorType[] values = values();
         final var recipesToRegister = new ArrayList<CustomDecorData<?>>();
+        final MSDecor plugin = MSDecor.singleton();
 
         for (final var registry : values) {
             final CustomDecorData<?> data;
@@ -201,11 +203,12 @@ public enum CustomDecorType {
             try {
                 data = registry.getDataClass().getDeclaredConstructor().newInstance();
             } catch (final Exception e) {
-                MSDecor.logger().log(
+                plugin.getLogger().log(
                         Level.SEVERE,
                         "An error occurred while loading custom decor " + registry.name() + "!",
                         e
                 );
+
                 continue;
             }
 
@@ -215,7 +218,7 @@ public enum CustomDecorType {
             recipesToRegister.add(data);
         }
 
-        MSDecor.componentLogger().info(
+        plugin.getComponentLogger().info(
                 Component.text(
                         "Loaded " + values.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",
                         NamedTextColor.GREEN
@@ -224,16 +227,21 @@ public enum CustomDecorType {
 
         if (!recipesToRegister.isEmpty()) {
             final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            final Server server = plugin.getServer();
 
             executor.scheduleAtFixedRate(() -> {
                 if (MSPluginUtils.isLoadedCustoms()) {
                     executor.shutdown();
 
-                    for (final var data : recipesToRegister) {
-                        data.registerRecipes();
-                    }
+                    plugin.runTask(
+                            task -> {
+                                for (final var data : recipesToRegister) {
+                                    data.registerRecipes(server);
+                                }
 
-                    recipesToRegister.clear();
+                                recipesToRegister.clear();
+                            }
+                    );
                 }
             }, 0L, 10L, TimeUnit.MILLISECONDS);
         }
@@ -261,7 +269,9 @@ public enum CustomDecorType {
 
     @Contract("null -> null")
     public static @Nullable CustomDecorType fromKey(final @Nullable String key) {
-        if (StringUtils.isBlank(key)) return null;
+        if (StringUtils.isBlank(key)) {
+            return null;
+        }
 
         if (matchesTypedKey(key)) {
             final Matcher matcher = TYPED_KEY_PATTERN.matcher(key);
@@ -283,7 +293,9 @@ public enum CustomDecorType {
 
     @Contract("null -> null")
     public static @Nullable CustomDecorType fromItemStack(final @Nullable ItemStack itemStack) {
-        if (itemStack == null) return null;
+        if (itemStack == null) {
+            return null;
+        }
 
         final ItemMeta itemMeta = itemStack.getItemMeta();
         return itemMeta == null

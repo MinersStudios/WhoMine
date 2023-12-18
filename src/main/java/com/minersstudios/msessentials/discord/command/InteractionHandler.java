@@ -1,8 +1,8 @@
 package com.minersstudios.msessentials.discord.command;
 
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.util.DiscordUtil;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
@@ -14,14 +14,23 @@ import org.jetbrains.annotations.Nullable;
 import static com.minersstudios.mscore.plugin.config.LanguageFile.renderTranslation;
 
 public final class InteractionHandler {
+    private final MSEssentials plugin;
     private final SlashCommandInteraction interaction;
     private PlayerInfo playerInfo;
 
     private static final String NOT_A_USER = renderTranslation("ms.discord.not_a_user");
     private static final String NOT_LINKED = renderTranslation("ms.discord.not_linked");
 
-    public InteractionHandler(final @NotNull SlashCommandInteraction interaction) {
+    public InteractionHandler(
+            final @NotNull MSEssentials plugin,
+            final @NotNull SlashCommandInteraction interaction
+    ) {
+        this.plugin = plugin;
         this.interaction = interaction;
+    }
+
+    public @NotNull MSEssentials getPlugin() {
+        return this.plugin;
     }
 
     public @NotNull SlashCommandInteraction getInteraction() {
@@ -29,28 +38,32 @@ public final class InteractionHandler {
     }
 
     public @Nullable PlayerInfo getPlayerInfo() {
-        if (this.playerInfo != null) return this.playerInfo;
+        if (this.playerInfo != null) {
+            return this.playerInfo;
+        }
 
         final User user = this.interaction.getUser();
 
-        return !DiscordUtil.isVerified(user)
+        return !this.plugin.getCache().getDiscordHandler().isVerified(user)
                 ? null
                 : this.playerInfo == null
-                ? this.playerInfo = PlayerInfo.fromDiscord(user.getIdLong())
+                ? this.playerInfo = PlayerInfo.fromDiscord(this.plugin, user.getIdLong())
                 : this.playerInfo;
     }
 
     public @Nullable PlayerInfo retrievePlayerInfo() {
-        if (this.playerInfo != null) return this.playerInfo;
+        if (this.playerInfo != null) {
+            return this.playerInfo;
+        }
 
         final User user = this.interaction.getUser();
 
-        if (!DiscordUtil.isVerified(user)) {
+        if (!this.plugin.getCache().getDiscordHandler().isVerified(user)) {
             this.send(NOT_A_USER);
             return null;
         }
 
-        final PlayerInfo playerInfo = PlayerInfo.fromDiscord(user.getIdLong());
+        final PlayerInfo playerInfo = PlayerInfo.fromDiscord(this.plugin, user.getIdLong());
 
         if (playerInfo == null) {
             this.send(NOT_LINKED);

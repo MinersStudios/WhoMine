@@ -3,7 +3,9 @@ package com.minersstudios.msdecor.commands;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
+import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecorType;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -27,7 +29,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msdecor.*",
         permissionDefault = PermissionDefault.OP
 )
-public final class MSDecorCommandHandler implements MSCommandExecutor {
+public final class MSDecorCommandHandler extends MSCommandExecutor<MSDecor> {
 
     private static final List<String> TAB = ImmutableList.of("reload", "give");
     private static final CommandNode<?> COMMAND_NODE =
@@ -54,7 +56,7 @@ public final class MSDecorCommandHandler implements MSCommandExecutor {
     ) {
         return args.length != 0
                 && switch (args[0]) {
-                    case "reload" -> ReloadCommand.runCommand(sender);
+                    case "reload" -> ReloadCommand.runCommand(this.getPlugin(), sender);
                     case "give" -> GiveCommand.runCommand(sender, args);
                     default -> false;
                 };
@@ -69,7 +71,7 @@ public final class MSDecorCommandHandler implements MSCommandExecutor {
     ) {
         return switch (args.length) {
             case 1 -> TAB;
-            case 2 -> MSPlayerUtils.getLocalPlayerNames();
+            case 2 -> MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton());
             case 3 -> new ArrayList<>(CustomDecorType.keySet());
             default -> EMPTY_TAB;
         };

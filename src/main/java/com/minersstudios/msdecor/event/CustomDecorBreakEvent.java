@@ -25,10 +25,6 @@ public class CustomDecorBreakEvent extends CustomDecorEvent implements Cancellab
         super(customDecor);
 
         this.breaker = breaker;
-
-        if (!this.isCancelled()) {
-            customDecor.getData().doBreakAction(this);
-        }
     }
 
     /**

@@ -3,6 +3,7 @@ package com.minersstudios.msitem.api;
 import com.minersstudios.msessentials.menu.CraftsMenu;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -71,10 +72,14 @@ public interface CustomItem extends Keyed {
      * Set the list of associated recipes for this
      * custom item
      *
+     * @param server  The server to register the recipes
      * @param recipes A list of {@link Recipe} entries
      *                representing the associated recipes
      */
-    void setRecipes(final @Nullable List<Map.Entry<Recipe, Boolean>> recipes);
+    void setRecipes(
+            final @NotNull Server server,
+            final @Nullable List<Map.Entry<Recipe, Boolean>> recipes
+    );
 
     /**
      * Check whether a given item stack is similar to
@@ -110,7 +115,7 @@ public interface CustomItem extends Keyed {
      * @return A list of {@link Recipe} entries representing
      *         the associated recipes, or null if there are
      *         no recipes
-     * @see #registerRecipes()
+     * @see #registerRecipes(Server)
      */
     @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes();
 
@@ -119,17 +124,17 @@ public interface CustomItem extends Keyed {
      * with the server
      *
      * @see #initRecipes()
-     * @see #unregisterRecipes()
+     * @see #unregisterRecipes(Server)
      */
-    void registerRecipes();
+    void registerRecipes(final @NotNull Server server);
 
     /**
      * Unregister the associated recipes of this custom item
      * from the server
      *
-     * @see #registerRecipes()
+     * @see #registerRecipes(Server)
      */
-    void unregisterRecipes();
+    void unregisterRecipes(final @NotNull Server server);
 
     /**
      * Create a copy of this custom item
@@ -230,10 +235,13 @@ public interface CustomItem extends Keyed {
     ) {
         if (
                 key == null
-                        || clazz == null
-        ) return Optional.empty();
+                || clazz == null
+        ) {
+            return Optional.empty();
+        }
 
         final CustomItemType type = CustomItemType.fromKey(key);
+
         return type != null
                 && clazz.isInstance(type.getCustomItem())
                 ? Optional.of(type.getCustomItem(clazz))
@@ -296,10 +304,13 @@ public interface CustomItem extends Keyed {
     ) {
         if (
                 itemStack == null
-                        || clazz == null
-        ) return Optional.empty();
+                 || clazz == null
+        ) {
+            return Optional.empty();
+        }
 
         final ItemMeta itemMeta = itemStack.getItemMeta();
+
         return itemMeta == null
                 ? Optional.empty()
                 : fromKey(

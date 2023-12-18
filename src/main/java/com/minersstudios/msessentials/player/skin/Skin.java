@@ -28,14 +28,16 @@ import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Skin class to create skins from values and signatures or image links.
- * Used in {@link PlayerFile} to store the skin of a player.
+ * Skin class to create skins from values and signatures or image links. Used in
+ * {@link PlayerFile} to store the skin of a player.
  *
- * @see <a href="https://wiki.vg/Mojang_API#UUID_-.3E_Profile_.2B_Skin.2FCape">Mojang API</a>
+ * @see <a href="https://wiki.vg/Mojang_API#UUID_to_Profile_and_Skin.2FCape">Mojang API</a>
+ * @see <a href="https://mineskin.org">MineSkin API</a>
  */
 public final class Skin implements ConfigurationSerializable {
     private final String name;
@@ -46,6 +48,21 @@ public final class Skin implements ConfigurationSerializable {
     private static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
     private static final Pattern DESERIALIZE_PATTERN = Pattern.compile("(name|value|signature)=([^,}]+)");
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor(Thread::new);
+    private static final Logger LOGGER = Logger.getLogger("SkinSystem");
+
+    //<editor-fold defaultstate="collapsed" desc="Error codes">
+    private static final String CODE_FAILED_TO_CREATE_ID =  "failed_to_create_id";
+    private static final String CODE_SKIN_CHANGE_FAILED =   "skin_change_failed";
+    private static final String CODE_NO_ACCOUNT_AVAILABLE = "no_account_available";
+    private static final String CODE_INVALID_API_KEY =      "invalid_api_key";
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Error messages">
+    private static final String ERROR_INVALID_API_KEY = "Invalid API Key";
+    private static final String ERROR_CLIENT_NOT_ALLOWED = "Client not allowed";
+    private static final String ERROR_ORIGIN_NOT_ALLOWED = "Origin not allowed";
+    private static final String ERROR_AGENT_NOT_ALLOWED = "Agent not allowed";
+    //</editor-fold>
 
     private Skin(
             final @NotNull String name,
@@ -64,8 +81,10 @@ public final class Skin implements ConfigurationSerializable {
      * @param value     The value of the skin (base64)
      * @param signature The signature of the skin (base64)
      * @return The skin
-     * @throws IllegalArgumentException If the name, value, or signature is invalid
-     * @see <a href="https://wiki.vg/Mojang_API#UUID_-.3E_Profile_.2B_Skin.2FCape">Mojang API</a>
+     * @throws IllegalArgumentException If the name, value, or signature is not
+     *                                  valid
+     * @see <a href="https://wiki.vg/Mojang_API#UUID_to_Profile_and_Skin.2FCape">Mojang API</a>
+     * @see <a href="https://mineskin.org">MineSkin API</a>
      */
     @Contract("_, _, _ -> new")
     public static @NotNull Skin create(
@@ -89,38 +108,54 @@ public final class Skin implements ConfigurationSerializable {
     }
 
     /**
-     * Creates a skin from an image link.
-     * It will attempt to retrieve the skin 3 times before giving up.
-     * The value and signature generates with the MineSkinAPI.
+     * Creates a skin from an image link. It will attempt to retrieve the skin
+     * 3 times before giving up. The value and signature generates with the
+     * MineSkinAPI.
      *
-     * @param name The name of the skin
-     * @param link The link to the skin, must start with https:// and end with .png
+     * @param plugin Plugin instance
+     * @param name   The name of the skin
+     * @param link   The link to the skin, must start with "https://" and end
+     *               with ".png"
      * @return The skin if it was successfully retrieved, otherwise null
-     * @throws IllegalArgumentException If the name or link is invalid or the image is not 64x64 pixels
-     * @see <a href="https://wiki.vg/Mojang_API#UUID_-.3E_Profile_.2B_Skin.2FCape">Mojang API</a>
+     * @throws IllegalArgumentException If the name or link is invalid or the
+     *                                  image is not 64x64 pixels
+     * @see <a href="https://wiki.vg/Mojang_API#UUID_to_Profile_and_Skin.2FCape">Mojang API</a>
+     * @see <a href="https://mineskin.org">MineSkin API</a>
      */
     public static @Nullable Skin create(
+            final @NotNull MSEssentials plugin,
             final @NotNull String name,
             final @NotNull String link
     ) throws IllegalArgumentException {
         if (!matchesNameRegex(name)) {
-            throw new IllegalArgumentException("The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores");
+            throw new IllegalArgumentException(
+                    "The name must be between 1 and 32 characters long and only contain letters, numbers, and underscores"
+            );
         }
 
         if (!isValidSkinImg(link)) {
-            throw new IllegalArgumentException("The link must start with https:// and end with .png and the image must be 64x64 pixels");
+            throw new IllegalArgumentException(
+                    "The link must start with https:// and end with .png and the image must be 64x64 pixels"
+            );
         }
 
         final AtomicInteger retryAttempts = new AtomicInteger(0);
 
         do {
-            final var future = CompletableFuture.supplyAsync(() -> handleLink(name, link), EXECUTOR_SERVICE);
+            final var future = CompletableFuture.supplyAsync(() -> handleLink(plugin, name, link), EXECUTOR_SERVICE);
 
             try {
                 final Skin skin = future.get();
-                if (skin != null) return skin;
+
+                if (skin != null) {
+                    return skin;
+                }
             } catch (final InterruptedException | ExecutionException e) {
-                MSEssentials.logger().log(Level.SEVERE, "An error occurred while attempting to retrieve a skin from a link", e);
+                LOGGER.log(
+                        Level.SEVERE,
+                        "An error occurred while attempting to retrieve a skin from a link",
+                        e
+                );
             }
 
             retryAttempts.incrementAndGet();
@@ -179,8 +214,9 @@ public final class Skin implements ConfigurationSerializable {
     }
 
     /**
-     * Serializes the skin into a map.
-     * The map contains the name, value, and signature of the skin.
+     * Serializes the skin into a map. The map contains the name, value, and
+     * signature of the skin.
+     * <br>
      * Used to save the skin to a yaml file.
      *
      * @return A map containing the name, value, and signature of the skin
@@ -198,19 +234,22 @@ public final class Skin implements ConfigurationSerializable {
     }
 
     /**
-     * Deserializes a skin from a map.
-     * The map must contain the name, value, and signature of the skin.
+     * Deserializes a skin from a map. The map must contain the name, value, and
+     * signature of the skin.
+     * <br>
      * Used to load the skin from a yaml file.
      *
-     * @param string Map string containing the name, value, and signature of the skin.
-     *               Example of string : "name=a, value=b, signature=c"
-     * @return The skin if the map contains the name, value, and signature of the skin
-     *         and the skin is valid, otherwise null
+     * @param string Map string containing the name, value, and signature of the
+     *               skin. Example of string : "name=a, value=b, signature=c"
+     * @return The skin if the map contains the name, value, and signature of
+     *         the skin and the skin is valid, otherwise null
      * @see #serialize()
      * @see #create(String, String, String)
      */
     public static @Nullable Skin deserialize(final @Nullable String string) {
-        if (StringUtils.isBlank(string)) return null;
+        if (StringUtils.isBlank(string)) {
+            return null;
+        }
 
         final var map = new HashMap<String, String>();
         final Matcher matcher = DESERIALIZE_PATTERN.matcher(string);
@@ -219,7 +258,9 @@ public final class Skin implements ConfigurationSerializable {
             map.put(matcher.group(1), matcher.group(2));
         }
 
-        if (map.size() != 3) return null;
+        if (map.size() != 3) {
+            return null;
+        }
 
         final String name = map.get("name");
         final String value = map.get("value");
@@ -229,25 +270,40 @@ public final class Skin implements ConfigurationSerializable {
                 name == null
                 || value == null
                 || signature == null
-        ) return null;
+        ) {
+            return null;
+        }
 
         try {
             return Skin.create(name, value, signature);
         } catch (final IllegalArgumentException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to deserialize skin: " + name, e);
+            LOGGER.log(
+                    Level.SEVERE,
+                    "Failed to deserialize skin: " + name,
+                    e
+            );
+
             return null;
         }
     }
 
     /**
      * @param link Link to be checked
-     * @return True if the link starts with https:// and ends with .png and the image is 64x64
+     * @return True if the link starts with https:// and ends with .png and the
+     *         image is 64x64
      */
     public static boolean isValidSkinImg(final @NotNull String link) {
-        if (!link.startsWith("https://") || !link.endsWith(".png")) return false;
+        if (
+                !link.startsWith("https://")
+                || !link.endsWith(".png")
+        ) {
+            return false;
+        }
+
         try {
             final BufferedImage image = ImageIO.read(new URL(link));
-            return image.getWidth() == 64 && image.getHeight() == 64;
+            return image.getWidth() == 64
+                    && image.getHeight() == 64;
         } catch (final IOException ignored) {
             return false;
         }
@@ -264,14 +320,16 @@ public final class Skin implements ConfigurationSerializable {
 
     /**
      * This method will attempt to retrieve the skin 3 times before giving up.
-     * The value and signature generates with the MineSkinAPI.
-     * If response status code is 200, the skin will be returned.
+     * The value and signature generates with the MineSkinAPI. If response
+     * status code is 200, the skin will be returned.
      *
-     * @param name Name of the skin
-     * @param link Link to the skin
+     * @param plugin Plugin instance
+     * @param name   Name of the skin
+     * @param link   Link to the skin
      * @return The skin if it was successfully retrieved, otherwise null
      */
     private static @Nullable Skin handleLink(
+            final @NotNull MSEssentials plugin,
             final @NotNull String name,
             final @NotNull String link
     ) {
@@ -279,10 +337,12 @@ public final class Skin implements ConfigurationSerializable {
 
         for (int i = 0; true; ++i) {
             try {
-                response = MineSkinResponse.fromLink(link);
+                response = MineSkinResponse.fromLink(plugin, link);
                 break;
             } catch (final IOException ignored) {
-                if (i >= 2) return null;
+                if (i >= 2) {
+                    return null;
+                }
             }
         }
 
@@ -295,7 +355,11 @@ public final class Skin implements ConfigurationSerializable {
                 try {
                     return Skin.create(name, value, signature);
                 } catch (final IllegalArgumentException e) {
-                    MSEssentials.logger().log(Level.SEVERE, "Failed to create skin : '" + name + "' with value : '" + value + "' and signature : '" + signature + "'", e);
+                    LOGGER.log(
+                            Level.SEVERE,
+                            "Failed to create skin : '" + name + "' with value : '" + value + "' and signature : '" + signature + "'",
+                            e
+                    );
                 }
             }
             case 500, 400 -> {
@@ -303,15 +367,19 @@ public final class Skin implements ConfigurationSerializable {
                 final String errorCode = errorJson.errorCode();
 
                 switch (errorCode) {
-                    case "failed_to_create_id", "skin_change_failed" -> {
+                    case CODE_FAILED_TO_CREATE_ID, CODE_SKIN_CHANGE_FAILED -> {
                         try {
                             TimeUnit.SECONDS.sleep(5);
                         } catch (final InterruptedException e) {
-                            MSEssentials.logger().log(Level.SEVERE, "Failed to sleep thread", e);
+                            LOGGER.log(
+                                    Level.SEVERE,
+                                    "Failed to sleep thread",
+                                    e
+                            );
                         }
                     }
-                    case "no_account_available" -> MSEssentials.logger().severe("No account available to create skin");
-                    default -> MSEssentials.logger().severe("Unknown MineSkin error: " + errorCode);
+                    case CODE_NO_ACCOUNT_AVAILABLE -> LOGGER.severe("No account available to create skin");
+                    default -> LOGGER.severe("Unknown MineSkin error: " + errorCode);
                 }
             }
             case 403 -> {
@@ -319,20 +387,17 @@ public final class Skin implements ConfigurationSerializable {
                 final String errorCode = errorJson.errorCode();
                 final String error = errorJson.error();
 
-                if (errorCode.equals("invalid_api_key")) {
-                    MSEssentials.logger().severe("Api key is not invalid! Reason: " + error);
-
-                    switch (error) {
-                        case "Invalid API Key" ->
-                                MSEssentials.logger().severe("This api key is not registered on MineSkin!");
-                        case "Client not allowed" ->
-                                MSEssentials.logger().severe("This server ip is not on the api key allowed ips list!");
-                        case "Origin not allowed" ->
-                                MSEssentials.logger().severe("This server origin is not on the api key allowed origin list!");
-                        case "Agent not allowed" ->
-                                MSEssentials.logger().severe("This server agent is not on the api key allowed agents list!");
-                        default -> MSEssentials.logger().severe("Unknown error :" + error);
-                    }
+                if (errorCode.equals(CODE_INVALID_API_KEY)) {
+                    LOGGER.severe(
+                            "Api key is not valid! Reason: " + error + " "
+                            + (switch (error) {
+                                case ERROR_INVALID_API_KEY ->    "This api key is not registered on MineSkin!";
+                                case ERROR_CLIENT_NOT_ALLOWED -> "This server ip is not on the api key allowed ips list!";
+                                case ERROR_ORIGIN_NOT_ALLOWED -> "This server origin is not on the api key allowed origin list!";
+                                case ERROR_AGENT_NOT_ALLOWED ->  "This server agent is not on the api key allowed agents list!";
+                                default ->                       "";
+                            })
+                    );
                 }
             }
             case 429 -> {
@@ -344,7 +409,10 @@ public final class Skin implements ConfigurationSerializable {
                 if (delay != null) {
                     sleepDuration = delay;
                 } else if (nextRequest != null) {
-                    final long duration = Duration.between(Instant.now(), Instant.ofEpochSecond(nextRequest)).getSeconds();
+                    final long duration = Duration.between(
+                            Instant.now(),
+                            Instant.ofEpochSecond(nextRequest)
+                    ).getSeconds();
 
                     if (duration > 0) {
                         sleepDuration = duration;
@@ -354,10 +422,14 @@ public final class Skin implements ConfigurationSerializable {
                 try {
                     TimeUnit.SECONDS.sleep(sleepDuration);
                 } catch (final InterruptedException e) {
-                    MSEssentials.logger().log(Level.SEVERE, "Failed to sleep thread", e);
+                    LOGGER.log(
+                            Level.SEVERE,
+                            "Failed to sleep thread",
+                            e
+                    );
                 }
             }
-            default -> MSEssentials.logger().log(Level.SEVERE, "Unknown MineSkin error: " + response.getStatusCode());
+            default -> LOGGER.severe("Unknown MineSkin error: " + response.getStatusCode());
         }
 
         return null;

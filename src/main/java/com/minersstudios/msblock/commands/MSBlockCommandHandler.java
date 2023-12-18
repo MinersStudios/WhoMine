@@ -1,9 +1,11 @@
 package com.minersstudios.msblock.commands;
 
 import com.google.common.collect.ImmutableList;
+import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.util.MSPlayerUtils;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -27,7 +29,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msblock.*",
         permissionDefault = PermissionDefault.OP
 )
-public final class MSBlockCommandHandler implements MSCommandExecutor {
+public final class MSBlockCommandHandler extends MSCommandExecutor<MSBlock> {
     private static final List<String> TAB = ImmutableList.of("reload", "give");
     private static final CommandNode<?> COMMAND_NODE =
             literal("msblock")
@@ -53,7 +55,7 @@ public final class MSBlockCommandHandler implements MSCommandExecutor {
     ) {
         return args.length != 0
                 && switch (args[0]) {
-                    case "reload" -> ReloadCommand.runCommand(sender);
+                    case "reload" -> ReloadCommand.runCommand(this.getPlugin(), sender);
                     case "give" -> GiveCommand.runCommand(sender, args);
                     default -> false;
                 };
@@ -68,7 +70,7 @@ public final class MSBlockCommandHandler implements MSCommandExecutor {
     ) {
         return switch (args.length) {
             case 1 -> TAB;
-            case 2 -> MSPlayerUtils.getLocalPlayerNames();
+            case 2 -> MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton());
             case 3 -> new ArrayList<>(CustomBlockRegistry.keySet());
             default -> EMPTY_TAB;
         };

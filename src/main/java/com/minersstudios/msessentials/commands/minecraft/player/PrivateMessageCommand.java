@@ -36,7 +36,7 @@ import static net.kyori.adventure.text.Component.translatable;
         usage = " ꀑ §cИспользуй: /<command> [id/никнейм] [сообщение]",
         description = "Отправь другому игроку приватное сообщение"
 )
-public final class PrivateMessageCommand implements MSCommandExecutor {
+public final class PrivateMessageCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("privatemessage")
             .then(
@@ -55,19 +55,22 @@ public final class PrivateMessageCommand implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        if (args.length < 2) return false;
+        if (args.length < 2) {
+            return false;
+        }
 
-        final PlayerInfo senderInfo = sender instanceof Player player
-                ? PlayerInfo.fromOnlinePlayer(player)
-                : MSEssentials.consolePlayerInfo();
+        final MSEssentials plugin = this.getPlugin();
+        final PlayerInfo senderInfo =
+                sender instanceof Player player
+                ? PlayerInfo.fromOnlinePlayer(plugin, player)
+                : plugin.getCache().getConsolePlayerInfo();
 
         if (senderInfo.isMuted()) {
             MSLogger.warning(sender, MUTED);
             return true;
         }
 
-        final String message = ChatUtils.extractMessage(args, 1);
-        final PlayerInfo receiverInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo receiverInfo = PlayerInfo.fromString(plugin, args[0]);
 
         if (receiverInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -82,7 +85,12 @@ public final class PrivateMessageCommand implements MSCommandExecutor {
             return true;
         }
 
-        sendPrivateMessage(senderInfo, receiverInfo, text(message));
+        sendPrivateMessage(
+                senderInfo,
+                receiverInfo,
+                text(ChatUtils.extractMessage(args, 1))
+        );
+
         return true;
     }
 
@@ -94,7 +102,7 @@ public final class PrivateMessageCommand implements MSCommandExecutor {
             final String @NotNull ... args
     ) {
         return args.length == 1
-                ? MSPlayerUtils.getLocalPlayerNames()
+                ? MSPlayerUtils.getLocalPlayerNames(this.getPlugin())
                 : EMPTY_TAB;
     }
 

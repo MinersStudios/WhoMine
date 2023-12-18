@@ -854,11 +854,13 @@ public final class MSVector {
 
     @Override
     public boolean equals(final @Nullable Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof MSVector other)) return false;
-        return Math.abs(this.x - other.x) < EPSILON
-                && Math.abs(this.y - other.y) < EPSILON
-                && Math.abs(this.z - other.z) < EPSILON;
+        return this == obj
+                || (
+                        obj instanceof MSVector other
+                        && Math.abs(this.x - other.x) < EPSILON
+                        && Math.abs(this.y - other.y) < EPSILON
+                        && Math.abs(this.z - other.z) < EPSILON
+                );
     }
 
     public @NotNull MSVector copy() {

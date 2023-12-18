@@ -1171,7 +1171,9 @@ public final class MSBoundingBox {
             for (int currRegionX = minRegionX; currRegionX <= maxRegionX; ++currRegionX) {
                 final EntityLookup.ChunkSlicesRegion region = entityLookup.getRegion(currRegionX, currRegionZ);
 
-                if (region == null) continue;
+                if (region == null) {
+                    continue;
+                }
 
                 final int minX = currRegionX == minRegionX ? minChunkX & REGION_MASK : 0;
                 final int maxX = currRegionX == maxRegionX ? maxChunkX & REGION_MASK : REGION_MASK;
@@ -1183,14 +1185,18 @@ public final class MSBoundingBox {
                         if (
                                 chunk == null
                                 || !chunk.status.isOrAfter(FullChunkStatus.FULL)
-                        ) continue;
+                        ) {
+                            continue;
+                        }
 
                         chunk.getEntities((net.minecraft.world.entity.Entity) null, aabb, list, predicate);
 
                         if (
                                 checkForEmpty
                                 && !list.isEmpty()
-                        ) return list;
+                        ) {
+                            return list;
+                        }
                     }
                 }
             }

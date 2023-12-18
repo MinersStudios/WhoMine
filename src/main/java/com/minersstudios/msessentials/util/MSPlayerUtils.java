@@ -2,8 +2,8 @@ package com.minersstudios.msessentials.util;
 
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
+import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -34,21 +34,25 @@ public final class MSPlayerUtils {
      *
      * @param player the player
      */
-    public static void hideNameTag(final @Nullable Player player) {
+    public static void hideNameTag(
+            final @NotNull MSEssentials plugin,
+            final @Nullable Player player
+    ) {
         if (player != null) {
-            MSEssentials.scoreboardHideTagsTeam().addEntry(player.getName());
-            player.setScoreboard(MSEssentials.scoreboardHideTags());
+            plugin.getScoreboardHideTagsTeam().addEntry(player.getName());
+            player.setScoreboard(plugin.getScoreboardHideTags());
         }
     }
 
     /**
      * @return A list of all online players' names and IDs
      */
-    public static @NotNull List<String> getLocalPlayerNames() {
+    public static @NotNull List<String> getLocalPlayerNames(final @NotNull MSEssentials plugin) {
         final var completions = new ArrayList<String>();
+        final PlayerInfoMap playerInfoMap = plugin.getCache().getPlayerInfoMap();
 
-        for (final var player : Bukkit.getOnlinePlayers()) {
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        for (final var player : plugin.getServer().getOnlinePlayers()) {
+            final PlayerInfo playerInfo = playerInfoMap.get(player);
 
             if (playerInfo.isOnline()) {
                 final int id = playerInfo.getID(false, false);

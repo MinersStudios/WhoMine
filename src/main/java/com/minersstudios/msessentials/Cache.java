@@ -1,33 +1,33 @@
 package com.minersstudios.msessentials;
 
-import com.minersstudios.mscore.plugin.PluginCache;
+import com.minersstudios.mscore.plugin.cache.PluginCache;
 import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msessentials.anomalies.AnomalyAction;
+import com.minersstudios.msessentials.chat.ChatBuffer;
 import com.minersstudios.msessentials.discord.BotHandler;
+import com.minersstudios.msessentials.discord.DiscordHandler;
 import com.minersstudios.msessentials.discord.DiscordMap;
-import com.minersstudios.msessentials.discord.command.SlashCommandExecutor;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.IDMap;
 import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
-import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Cache for all custom data
  */
-public final class Cache extends PluginCache {
+public final class Cache extends PluginCache<MSEssentials> {
     private PlayerInfoMap playerInfoMap;
     private MuteMap muteMap;
     private DiscordMap discordMap;
@@ -35,33 +35,42 @@ public final class Cache extends PluginCache {
     private Map<Player, ArmorStand> seats;
     private Map<NamespacedKey, Anomaly> anomalies;
     private Map<Player, Map<AnomalyAction, Long>> playerAnomalyActionMap;
-    private Map<UUID, Queue<String>> chatQueue;
+    private ChatBuffer chatBuffer;
     private List<BukkitTask> bukkitTasks;
     private Map<Long, BotHandler> botHandlers;
+    private DiscordHandler discordHandler;
     PlayerInfo consolePlayerInfo;
-    JDA jda;
-    Guild mainGuild;
-    TextChannel discordGlobalChannel;
-    TextChannel discordLocalChannel;
-    Role memberRole;
-    List<SlashCommandExecutor> slashCommands;
+
+    /**
+     * Cache constructor
+     *
+     * @param plugin The plugin that owns this cache
+     */
+    public Cache(final @NotNull MSEssentials plugin) {
+        super(plugin);
+    }
 
     @Override
     protected void onLoad() {
-        this.playerInfoMap = new PlayerInfoMap();
-        this.muteMap = new MuteMap();
-        this.discordMap = new DiscordMap();
-        this.idMap = new IDMap();
+        final MSEssentials plugin = this.getPlugin();
+
+        this.playerInfoMap = new PlayerInfoMap(plugin);
+        this.muteMap = new MuteMap(plugin);
+        this.discordMap = new DiscordMap(plugin);
+        this.idMap = new IDMap(plugin);
         this.seats = new ConcurrentHashMap<>();
         this.anomalies = new ConcurrentHashMap<>();
         this.playerAnomalyActionMap = new ConcurrentHashMap<>();
-        this.chatQueue = new HashMap<>();
+        this.chatBuffer = new ChatBuffer(plugin);
         this.bukkitTasks = new ArrayList<>();
         this.botHandlers = new HashMap<>();
+        this.discordHandler = new DiscordHandler(plugin);
     }
 
     @Override
     protected void onUnload() {
+        this.discordHandler.unload();
+
         this.playerInfoMap = null;
         this.muteMap = null;
         this.discordMap = null;
@@ -69,9 +78,10 @@ public final class Cache extends PluginCache {
         this.seats = null;
         this.anomalies = null;
         this.playerAnomalyActionMap = null;
-        this.chatQueue = null;
+        this.chatBuffer = null;
         this.bukkitTasks = null;
         this.botHandlers = null;
+        this.discordHandler = null;
     }
 
     public @UnknownNullability PlayerInfoMap getPlayerInfoMap() {
@@ -102,8 +112,8 @@ public final class Cache extends PluginCache {
         return this.playerAnomalyActionMap;
     }
 
-    public @UnknownNullability Map<UUID, Queue<String>> getChatQueue() {
-        return this.chatQueue;
+    public @UnknownNullability ChatBuffer getChatBuffer() {
+        return this.chatBuffer;
     }
 
     public @UnknownNullability List<BukkitTask> getBukkitTasks() {
@@ -114,31 +124,11 @@ public final class Cache extends PluginCache {
         return this.botHandlers;
     }
 
+    public @UnknownNullability DiscordHandler getDiscordHandler() {
+        return this.discordHandler;
+    }
+
     public @UnknownNullability PlayerInfo getConsolePlayerInfo() {
         return this.consolePlayerInfo;
-    }
-
-    public @UnknownNullability JDA getJda() {
-        return this.jda;
-    }
-
-    public @UnknownNullability Guild getMainGuild() {
-        return this.mainGuild;
-    }
-
-    public @UnknownNullability TextChannel getDiscordGlobalChannel() {
-        return this.discordGlobalChannel;
-    }
-
-    public @UnknownNullability TextChannel getDiscordLocalChannel() {
-        return this.discordLocalChannel;
-    }
-
-    public @UnknownNullability Role getMemberRole() {
-        return this.memberRole;
-    }
-
-    public @UnknownNullability @Unmodifiable List<SlashCommandExecutor> getSlashCommands() {
-        return Collections.unmodifiableList(this.slashCommands);
     }
 }

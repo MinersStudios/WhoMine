@@ -3,7 +3,7 @@ package com.minersstudios.msessentials.discord;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -34,9 +34,10 @@ import java.util.logging.Level;
  * @see Params
  */
 public final class DiscordMap {
+    private final MSPlugin<?> plugin;
     private final File file;
     private final Map<Long, Params> map;
-    public final Map<Short, PlayerInfo> codeMap;
+    private final Map<Short, PlayerInfo> codeMap;
 
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final Gson GSON =
@@ -48,10 +49,12 @@ public final class DiscordMap {
      * Discord linking map with discord user id and its player's {@link Params}.
      * Loads mutes from the file.
      */
-    public DiscordMap() {
-        this.file = new File(MSEssentials.singleton().getPluginFolder(), "discord_links.json");
+    public DiscordMap(final @NotNull MSPlugin<?> plugin) {
+        this.plugin = plugin;
+        this.file = new File(plugin.getPluginFolder(), "discord_links.json");
         this.map = new ConcurrentHashMap<>();
         this.codeMap = new ConcurrentHashMap<>();
+
         this.reloadLinks();
     }
 
@@ -152,7 +155,7 @@ public final class DiscordMap {
         }
 
         this.codeMap.put(code, playerInfo);
-        MSEssentials.singleton().runTaskLater(
+        this.plugin.runTaskLater(
                 () -> this.codeMap.remove(code, playerInfo), 6000L
         );
 
@@ -254,7 +257,7 @@ public final class DiscordMap {
                     if (params != null && params.isValidate()) {
                         this.map.put(id, params);
                     } else {
-                        MSEssentials.logger().severe("Failed to read the discord params : " + id.toString() + " in \"discord_links.json\"");
+                        this.plugin.getLogger().severe("Failed to read the discord params : " + id.toString() + " in \"discord_links.json\"");
                     }
                 });
             } catch (final Exception ignored) {
@@ -276,7 +279,7 @@ public final class DiscordMap {
                 this.saveFile();
             }
         } catch (final IOException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to create a new \"discord_links.json\" file", e);
+            this.plugin.getLogger().log(Level.SEVERE, "Failed to create a new \"discord_links.json\" file", e);
         }
     }
 
@@ -290,10 +293,14 @@ public final class DiscordMap {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
         } catch (final IOException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to create \"discord_links.json.OLD\" backup file", e);
+            this.plugin.getLogger().log(
+                    Level.SEVERE,
+                    "Failed to create \"discord_links.json.OLD\" backup file",
+                    e
+            );
         }
 
-        MSEssentials.logger().severe("Failed to read the \"discord_links.json\" file, creating a new file");
+        this.plugin.getLogger().severe("Failed to read the \"discord_links.json\" file, creating a new file");
     }
 
     /**
@@ -303,7 +310,11 @@ public final class DiscordMap {
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
         } catch (final IOException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to save \"discord_links.json\" file", e);
+            this.plugin.getLogger().log(
+                    Level.SEVERE,
+                    "Failed to save \"discord_links.json\" file",
+                    e
+            );
         }
     }
 

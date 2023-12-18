@@ -3,7 +3,7 @@ package com.minersstudios.msdecor.listeners.event.inventory;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.MSDecor;
 import org.bukkit.event.EventHandler;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class InventoryClickListener extends AbstractMSListener<MSDecor> {
     private static final ImmutableSet<InventoryType> IGNORABLE_INVENTORY_TYPES = Sets.immutableEnumSet(
             //<editor-fold desc="Ignorable inventory types" defaultstate="collapsed">

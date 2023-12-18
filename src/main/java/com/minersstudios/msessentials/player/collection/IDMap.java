@@ -3,7 +3,7 @@ package com.minersstudios.msessentials.player.collection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.util.IDUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -22,6 +22,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * ID map with {@link UUID} and its ID.
@@ -29,15 +30,18 @@ import java.util.logging.Level;
  */
 public final class IDMap {
     private final File file;
-    private final Map<UUID, Integer> map = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> map;
+    private final Logger logger;
 
     private static final Gson GSON =
             new GsonBuilder()
             .setPrettyPrinting()
             .create();
 
-    public IDMap() {
-        this.file = new File(MSEssentials.singleton().getPluginFolder(), "ids.json");
+    public IDMap(final @NotNull MSPlugin<?> plugin) {
+        this.file = new File(plugin.getPluginFolder(), "ids.json");
+        this.map = new ConcurrentHashMap<>();
+        this.logger = plugin.getLogger();
         this.reloadIds();
     }
 
@@ -74,7 +78,9 @@ public final class IDMap {
      */
     public @Nullable UUID getUUID(final int id) {
         for (final var entry : this.map.entrySet()) {
-            if (entry.getValue() == id) return entry.getKey();
+            if (entry.getValue() == id) {
+                return entry.getKey();
+            }
         }
 
         return null;
@@ -167,7 +173,7 @@ public final class IDMap {
     /**
      * @return An unmodifiable view of the ids contained in this map
      */
-    public @UnmodifiableView Collection<Integer> ids() {
+    public @NotNull @UnmodifiableView Collection<Integer> ids() {
         return Collections.unmodifiableCollection(this.map.values());
     }
 
@@ -198,7 +204,9 @@ public final class IDMap {
         final var usedIDs = new HashSet<>(this.map.values());
 
         for (int id = 0; id < Integer.MAX_VALUE; id++) {
-            if (!usedIDs.contains(id)) return id;
+            if (!usedIDs.contains(id)) {
+                return id;
+            }
         }
 
         throw new IllegalStateException("No available ID found.");
@@ -228,7 +236,7 @@ public final class IDMap {
                     if (id != null) {
                         this.map.put(uuid, id);
                     } else {
-                        MSEssentials.logger().severe("Failed to read the player id : " + uuid.toString() + " in \"ids.json\"");
+                        this.logger.severe("Failed to read the player id : " + uuid.toString() + " in \"ids.json\"");
                     }
                 });
             } catch (final Exception e) {
@@ -247,7 +255,7 @@ public final class IDMap {
                 this.saveFile();
             }
         } catch (final IOException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to create a new \"ids.json\" file", e);
+            this.logger.log(Level.SEVERE, "Failed to create a new \"ids.json\" file", e);
         }
     }
 
@@ -261,10 +269,10 @@ public final class IDMap {
             Files.move(this.file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.saveFile();
         } catch (final IOException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to create \"ids.json.OLD\" backup file", e);
+            this.logger.log(Level.SEVERE, "Failed to create \"ids.json.OLD\" backup file", e);
         }
 
-        MSEssentials.logger().severe("Failed to read the \"ids.json\" file, creating a new file");
+        this.logger.severe("Failed to read the \"ids.json\" file, creating a new file");
     }
 
     /**
@@ -274,7 +282,7 @@ public final class IDMap {
         try (final var writer = new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8)) {
             GSON.toJson(this.map, writer);
         } catch (final IOException e) {
-            MSEssentials.logger().log(Level.SEVERE, "Failed to save ids", e);
+            this.logger.log(Level.SEVERE, "Failed to save ids", e);
         }
     }
 }

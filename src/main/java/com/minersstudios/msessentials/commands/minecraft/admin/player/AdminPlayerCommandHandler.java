@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
@@ -37,7 +36,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permission = "msessentials.player.*",
         permissionDefault = PermissionDefault.OP
 )
-public final class AdminPlayerCommandHandler implements MSCommandExecutor {
+public final class AdminPlayerCommandHandler extends MSCommandExecutor<MSEssentials> {
     private static final List<String> TAB_2 = ImmutableList.of(
             "update",
             "info",
@@ -210,9 +209,12 @@ public final class AdminPlayerCommandHandler implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        if (args.length < 2) return false;
+        if (args.length < 2) {
+            return false;
+        }
 
-        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final MSEssentials plugin = this.getPlugin();
+        final PlayerInfo playerInfo = PlayerInfo.fromString(plugin, args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -220,15 +222,15 @@ public final class AdminPlayerCommandHandler implements MSCommandExecutor {
         }
 
         return switch (args[1]) {
-            case "update" -> AdminUpdateCommand.runCommand(sender, playerInfo);
-            case "info" -> AdminInfoCommand.runCommand(sender, playerInfo);
-            case "pronouns" -> AdminPronounsCommand.runCommand(sender, args, playerInfo);
+            case "update" ->      AdminUpdateCommand.runCommand(sender, playerInfo);
+            case "info" ->        AdminInfoCommand.runCommand(plugin, sender, playerInfo);
+            case "pronouns" ->    AdminPronounsCommand.runCommand(sender, args, playerInfo);
             case "game-params" -> AdminGameParamsCommand.runCommand(sender, args, playerInfo);
-            case "first-join" -> AdminFirstJoinCommand.runCommand(sender, playerInfo);
-            case "settings" -> AdminSettingsCommand.runCommand(sender, args, playerInfo);
-            case "ban-info" -> AdminBanInfoCommand.runCommand(sender, args, playerInfo);
-            case "mute-info" -> AdminMuteInfoCommand.runCommand(sender, args, playerInfo);
-            case "name" -> AdminNameCommand.runCommand(sender, args, playerInfo);
+            case "first-join" ->  AdminFirstJoinCommand.runCommand(sender, playerInfo);
+            case "settings" ->    AdminSettingsCommand.runCommand(plugin, sender, args, playerInfo);
+            case "ban-info" ->    AdminBanInfoCommand.runCommand(sender, args, playerInfo);
+            case "mute-info" ->   AdminMuteInfoCommand.runCommand(plugin, sender, args, playerInfo);
+            case "name" ->        AdminNameCommand.runCommand(sender, args, playerInfo);
             default -> false;
         };
     }
@@ -243,14 +245,16 @@ public final class AdminPlayerCommandHandler implements MSCommandExecutor {
         switch (args.length) {
             case 1 -> {
                 final var completions = new ArrayList<String>();
+                final IDMap idMap = this.getPlugin().getCache().getIdMap();
 
                 for (final var offlinePlayer : sender.getServer().getOfflinePlayers()) {
                     final String nickname = offlinePlayer.getName();
 
-                    if (nickname == null) continue;
+                    if (nickname == null) {
+                        continue;
+                    }
 
-                    final UUID uuid = offlinePlayer.getUniqueId();
-                    final int id = MSEssentials.cache().getIdMap().getID(uuid, false, false);
+                    final int id = idMap.getID(offlinePlayer.getUniqueId(), false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));
@@ -345,7 +349,7 @@ public final class AdminPlayerCommandHandler implements MSCommandExecutor {
                         final OfflinePlayer offlinePlayer;
 
                         if (IDUtils.matchesIDRegex(args[0])) {
-                            final IDMap idMap = MSEssentials.cache().getIdMap();
+                            final IDMap idMap = this.getPlugin().getCache().getIdMap();
                             offlinePlayer = idMap.getPlayerByID(args[0]);
                         } else if (args[0].length() > 2) {
                             offlinePlayer = sender.getServer().getOfflinePlayer(args[0]);
@@ -353,11 +357,13 @@ public final class AdminPlayerCommandHandler implements MSCommandExecutor {
                             return EMPTY_TAB;
                         }
 
-                        final PlayerInfo playerInfo = PlayerInfo.fromOfflinePlayer(offlinePlayer);
+                        final PlayerInfo playerInfo = PlayerInfo.fromOfflinePlayer(this.getPlugin(), offlinePlayer);
 
                         switch (args[3]) {
                             case "set", "remove" -> {
-                                if (playerInfo == null) return EMPTY_TAB;
+                                if (playerInfo == null) {
+                                    return EMPTY_TAB;
+                                }
 
                                 final var skins = playerInfo.getPlayerFile().getSkins();
                                 final var names = new ArrayList<String>(skins.size());

@@ -41,10 +41,6 @@ public class CustomDecorPlaceEvent extends CustomDecorEvent implements Cancellab
         this.player = player;
         this.hand = hand;
         this.replacedBlocks = replacedBlocks;
-
-        if (!this.isCancelled()) {
-            customDecor.getData().doPlaceAction(this);
-        }
     }
 
     /**

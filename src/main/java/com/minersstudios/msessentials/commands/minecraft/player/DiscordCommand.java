@@ -5,10 +5,11 @@ import com.minersstudios.mscore.command.MSCommand;
 import com.minersstudios.mscore.command.MSCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.config.LanguageFile;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
+import com.minersstudios.msessentials.discord.DiscordHandler;
 import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.util.DiscordUtil;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -34,7 +35,7 @@ import static net.kyori.adventure.text.event.HoverEvent.showText;
         permissionDefault = PermissionDefault.NOT_OP,
         playerOnly = true
 )
-public final class DiscordCommand implements MSCommandExecutor {
+public final class DiscordCommand extends MSCommandExecutor<MSEssentials> {
     private static final List<String> TAB = ImmutableList.of("link", "unlink");
     private static final CommandNode<?> COMMAND_NODE =
             literal("discord")
@@ -68,9 +69,9 @@ public final class DiscordCommand implements MSCommandExecutor {
 
         if (args.length > 0) {
             switch (args[0]) {
-                case "link" -> DiscordLinkCodeMenu.open(player);
+                case "link" -> DiscordLinkCodeMenu.open(this.getPlugin(), player);
                 case "unlink" -> {
-                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
                     final long id = playerInfo.unlinkDiscord();
 
                     if (id == -1L) {
@@ -78,20 +79,25 @@ public final class DiscordCommand implements MSCommandExecutor {
                         return true;
                     }
 
-                    DiscordUtil.getUser(id)
+                    final DiscordHandler discordHandler = this.getPlugin().getCache().getDiscordHandler();
+
+                    discordHandler.getUser(id)
                     .ifPresent(user -> {
-                                DiscordUtil.sendEmbeds(
-                                        user,
-                                        BotHandler.craftEmbed(
-                                                LanguageFile.renderTranslation(
-                                                        UNLINK_SUCCESS_DISCORD.args(
-                                                                playerInfo.getDefaultName(),
-                                                                text(player.getName())
-                                                        )
+                        discordHandler.sendEmbeds(
+                                user,
+                                BotHandler.craftEmbed(
+                                        LanguageFile.renderTranslation(
+                                                UNLINK_SUCCESS_DISCORD.args(
+                                                        playerInfo.getDefaultName(),
+                                                        text(player.getName())
                                                 )
                                         )
-                                );
-                                MSLogger.fine(player, UNLINK_SUCCESS_MINECRAFT.args(text(user.getName())));
+                                )
+                        );
+                        MSLogger.fine(
+                                player,
+                                UNLINK_SUCCESS_MINECRAFT.args(text(user.getName()))
+                        );
                     });
                 }
                 default -> {

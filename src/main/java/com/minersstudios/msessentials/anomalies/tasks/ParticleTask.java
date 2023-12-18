@@ -2,8 +2,15 @@ package com.minersstudios.msessentials.anomalies.tasks;
 
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.msessentials.anomalies.Anomaly;
+import com.minersstudios.msessentials.anomalies.AnomalyAction;
 import com.minersstudios.msessentials.anomalies.AnomalyBoundingBox;
 import com.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Particle anomaly task.
@@ -19,30 +26,50 @@ import com.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
  * @see AnomalyBoundingBox
  */
 public final class ParticleTask implements Runnable {
+    private final MSEssentials plugin;
+    private final Map<Player, Map<AnomalyAction, Long>> anomalyActionMap;
+    private final Collection<Anomaly> anomalies;
+
+    public ParticleTask(final @NotNull MSEssentials plugin) {
+        this.plugin = plugin;
+        this.anomalyActionMap = plugin.getCache().getPlayerAnomalyActionMap();
+        this.anomalies = plugin.getCache().getAnomalies().values();
+    }
 
     @Override
     public void run() {
-        final var map = MSEssentials.cache().getPlayerAnomalyActionMap();
-        final var anomalies = MSEssentials.cache().getAnomalies().values();
+        if (
+                this.anomalies.isEmpty()
+                || this.anomalyActionMap.isEmpty()
+        ) {
+            return;
+        }
 
-        if (anomalies.isEmpty() || map.isEmpty()) return;
+        this.plugin.runTaskAsync(() -> {
+            for (final var entry : this.anomalyActionMap.entrySet()) {
+                final Player player = entry.getKey();
+                final var actionMap = entry.getValue();
 
-        MSEssentials.singleton().runTaskAsync(() -> map.forEach(
-                (player, actionMap) -> actionMap.keySet()
-                .forEach(action -> {
-                    if (!(action instanceof SpawnParticlesAction)) return;
+                for (final var action : actionMap.keySet()) {
+                    if (!(action instanceof SpawnParticlesAction)) {
+                        continue;
+                    }
 
-                    for (final var anomaly : anomalies) {
+                    for (final var anomaly : this.anomalies) {
                         final double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
 
-                        if (radiusInside == -1.0d) continue;
+                        if (radiusInside == -1.0d) {
+                            continue;
+                        }
+
                         if (anomaly.getAnomalyActionMap().get(radiusInside).contains(action)) {
                             action.doAction(player, null);
                         } else {
                             action.removeAction(player);
                         }
                     }
-                })
-        ));
+                }
+            }
+        });
     }
 }

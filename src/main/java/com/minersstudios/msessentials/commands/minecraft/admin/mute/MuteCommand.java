@@ -9,6 +9,8 @@ import com.minersstudios.mscore.util.DateUtils;
 import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
+import com.minersstudios.msessentials.player.collection.IDMap;
+import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -35,7 +37,7 @@ import static net.kyori.adventure.text.Component.translatable;
         permission = "msessentials.mute",
         permissionDefault = PermissionDefault.OP
 )
-public final class MuteCommand implements MSCommandExecutor {
+public final class MuteCommand extends MSCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("mute")
             .then(
@@ -56,7 +58,9 @@ public final class MuteCommand implements MSCommandExecutor {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        if (args.length < 2) return false;
+        if (args.length < 2) {
+            return false;
+        }
 
         final Instant date = DateUtils.getDateFromString(args[1], false);
 
@@ -69,7 +73,7 @@ public final class MuteCommand implements MSCommandExecutor {
                 ? ChatUtils.extractMessage(args, 2)
                 : LanguageFile.renderTranslation("ms.command.mute.default_reason");
 
-        final PlayerInfo playerInfo = PlayerInfo.fromString(args[0]);
+        final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(sender, PLAYER_NOT_FOUND);
@@ -90,7 +94,9 @@ public final class MuteCommand implements MSCommandExecutor {
         switch (args.length) {
             case 1 -> {
                 final var completions = new ArrayList<String>();
-                final Cache cache = MSEssentials.cache();
+                final Cache cache = this.getPlugin().getCache();
+                final MuteMap muteMap = cache.getMuteMap();
+                final IDMap idMap = cache.getIdMap();
 
                 for (final var offlinePlayer : sender.getServer().getOfflinePlayers()) {
                     final String nickname = offlinePlayer.getName();
@@ -98,10 +104,12 @@ public final class MuteCommand implements MSCommandExecutor {
 
                     if (
                             StringUtils.isBlank(nickname)
-                            || cache.getMuteMap().isMuted(offlinePlayer)
-                    ) continue;
+                            || muteMap.isMuted(offlinePlayer)
+                    ) {
+                        continue;
+                    }
 
-                    final int id = cache.getIdMap().getID(uuid, false, false);
+                    final int id = idMap.getID(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

@@ -4,13 +4,13 @@ import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
-import com.minersstudios.msessentials.util.DiscordUtil;
+import com.minersstudios.msessentials.discord.listener.AbstractMSDiscordListener;
+import com.minersstudios.msessentials.discord.listener.MSDiscordListener;
 import com.minersstudios.msessentials.util.MessageUtils;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -18,17 +18,24 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
 
-public final class MessageReceivedListener extends ListenerAdapter {
+@MSDiscordListener
+public final class MessageReceivedListener extends AbstractMSDiscordListener<MSEssentials> {
 
     @Override
     public void onMessageReceived(final @NotNull MessageReceivedEvent event) {
         final User user = event.getAuthor();
         final Message message = event.getMessage();
 
-        if (user.isBot() || user.isSystem()) return;
+        if (
+                user.isBot()
+                || user.isSystem()
+        ) {
+            return;
+        }
+
         if (
                 event.isFromGuild()
-                && event.getChannel() == DiscordUtil.getGlobalChannel().orElse(null)
+                && event.getChannel() == this.getPlugin().getCache().getDiscordHandler().getGlobalChannel().orElse(null)
         ) {
             final Message referencedMessage = message.getReferencedMessage();
             final String reply =
@@ -40,12 +47,13 @@ public final class MessageReceivedListener extends ListenerAdapter {
             MessageUtils.sendGlobalMessage(messageComponent);
             MSLogger.info(null, messageComponent);
         } else if (event.isFromType(ChannelType.PRIVATE)) {
+            final MSEssentials plugin = this.getPlugin();
             final long userID = user.getIdLong();
-            final var handlerMap = MSEssentials.cache().getBotHandlers();
+            final var handlerMap = plugin.getCache().getBotHandlers();
             BotHandler handler = handlerMap.get(userID);
 
             if (handler == null) {
-                handler = new BotHandler(event);
+                handler = new BotHandler(plugin, event);
 
                 handlerMap.put(userID, handler);
             }

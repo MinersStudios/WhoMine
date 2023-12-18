@@ -94,7 +94,13 @@ public class InventoryButton implements Cloneable {
      * @param player Player to whom the sound will be played
      */
     public static void playClickSound(final @NotNull Player player) {
-        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.MASTER, 0.5f, 1.0f);
+        player.playSound(
+                player.getLocation(),
+                Sound.UI_BUTTON_CLICK,
+                SoundCategory.MASTER,
+                0.5f,
+                1.0f
+        );
     }
 
     /**

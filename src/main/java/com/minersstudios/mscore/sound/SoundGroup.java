@@ -589,8 +589,8 @@ public final class SoundGroup implements Cloneable {
                     switch (this.key) {
                         case WOOD_PLACE_SOUND_KEY -> MSBlock.config().woodSoundPlace;
                         case WOOD_BREAK_SOUND_KEY -> MSBlock.config().woodSoundBreak;
-                        case WOOD_HIT_SOUND_KEY -> MSBlock.config().woodSoundHit;
-                        case WOOD_STEP_SOUND_KEY -> MSBlock.config().woodSoundStep;
+                        case WOOD_HIT_SOUND_KEY ->   MSBlock.config().woodSoundHit;
+                        case WOOD_STEP_SOUND_KEY ->  MSBlock.config().woodSoundStep;
                         default -> this.key;
                     },
                     this.category,

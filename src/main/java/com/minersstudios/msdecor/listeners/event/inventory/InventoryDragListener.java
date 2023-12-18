@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.listeners.event.inventory;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.util.MSDecorUtils;
 import com.minersstudios.msdecor.MSDecor;
 import org.bukkit.event.EventHandler;
@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.HorseInventory;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class InventoryDragListener extends AbstractMSListener<MSDecor> {
 
     @EventHandler

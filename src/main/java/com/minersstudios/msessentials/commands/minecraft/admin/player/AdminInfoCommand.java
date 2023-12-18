@@ -1,6 +1,7 @@
 package com.minersstudios.msessentials.commands.minecraft.admin.player;
 
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -13,9 +14,11 @@ import org.jetbrains.annotations.NotNull;
 public final class AdminInfoCommand {
 
     public static boolean runCommand(
+            final @NotNull MSEssentials plugin,
             final @NotNull CommandSender sender,
             final @NotNull PlayerInfo playerInfo
     ) {
+        final Config config = plugin.getConfiguration();
         final PlayerFile playerFile = playerInfo.getPlayerFile();
         final PlayerName playerName = playerFile.getPlayerName();
         final PlayerSettings playerSettings = playerFile.getPlayerSettings();
@@ -23,11 +26,11 @@ public final class AdminInfoCommand {
         Location lastDeathLocation = playerFile.getLastDeathLocation();
 
         if (lastLeaveLocation == null) {
-            lastLeaveLocation = MSEssentials.config().spawnLocation;
+            lastLeaveLocation = config.spawnLocation;
         }
 
         if (lastDeathLocation == null) {
-            lastDeathLocation = MSEssentials.config().spawnLocation;
+            lastDeathLocation = config.spawnLocation;
         }
 
         MSLogger.info(sender,
@@ -58,6 +61,7 @@ public final class AdminInfoCommand {
                 + "\n Last leave Yaw : " + lastLeaveLocation.getYaw()
                 + "\n Last leave Pitch : " + lastLeaveLocation.getPitch()
         );
+
         return true;
     }
 }

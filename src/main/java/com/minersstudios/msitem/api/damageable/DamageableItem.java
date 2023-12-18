@@ -81,13 +81,18 @@ public class DamageableItem {
      */
     @Contract("null -> null")
     public static @Nullable DamageableItem fromItemStack(final @Nullable ItemStack itemStack) {
-        if (itemStack == null) return null;
+        if (itemStack == null) {
+            return null;
+        }
+
         final PersistentDataContainer dataContainer = itemStack.getItemMeta().getPersistentDataContainer();
 
         if (
                 !dataContainer.has(MAX_DAMAGE_NAMESPACED_KEY)
                 || !dataContainer.has(REAL_DAMAGE_NAMESPACED_KEY)
-        ) return null;
+        ) {
+            return null;
+        }
 
         return new DamageableItem(
                 itemStack.getType().getMaxDurability(),
@@ -148,7 +153,9 @@ public class DamageableItem {
         if (
                 itemStack.getType().getMaxDurability() != this.defaultDamage
                 || !(itemStack.getItemMeta() instanceof final Damageable damageable)
-        ) return false;
+        ) {
+            return false;
+        }
 
         damageable.getPersistentDataContainer().set(MAX_DAMAGE_NAMESPACED_KEY, PersistentDataType.INTEGER, this.maxDamage);
         damageable.getPersistentDataContainer().set(REAL_DAMAGE_NAMESPACED_KEY, PersistentDataType.INTEGER, this.realDamage);

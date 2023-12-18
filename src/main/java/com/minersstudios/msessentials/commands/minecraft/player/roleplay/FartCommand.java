@@ -7,6 +7,7 @@ import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.util.BlockUtils;
 import com.minersstudios.mscore.util.ChatUtils;
 import com.minersstudios.msdecor.api.CustomDecorType;
+import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -36,7 +37,7 @@ import static net.kyori.adventure.text.Component.translatable;
         description = "Пукни вкусно на публику",
         playerOnly = true
 )
-public final class FartCommand implements MSCommandExecutor {
+public final class FartCommand extends MSCommandExecutor<MSEssentials> {
     private final SecureRandom random = new SecureRandom();
     private static final CommandNode<?> COMMAND_NODE =
             literal("fart")
@@ -53,7 +54,7 @@ public final class FartCommand implements MSCommandExecutor {
             final String @NotNull ... args
     ) {
         final Player player = (Player) sender;
-        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(player);
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
 
         if (playerInfo.isMuted()) {
             MSLogger.warning(player, MUTED);
@@ -61,20 +62,21 @@ public final class FartCommand implements MSCommandExecutor {
         }
 
         final Location location = player.getLocation();
+        final World world = player.getWorld();
         boolean withPoop =
                 this.random.nextInt(10) == 0
                 && location.clone().subtract(0.0d, 0.5d, 0.0d).getBlock().getType().isSolid()
                 && BlockUtils.isReplaceable(location.clone().getBlock().getType());
 
-        for (final var nearbyEntity : player.getWorld().getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
+        for (final var nearbyEntity : world.getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
             if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && nearbyEntity.getType() != EntityType.PLAYER) {
                 withPoop = false;
                 break;
             }
         }
 
-        player.getWorld().playSound(location.add(0, 0.4, 0), Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 1, 1);
-        player.getWorld().spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
+        world.playSound(location.add(0, 0.4, 0), Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 1, 1);
+        world.spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
 
         if (withPoop) {
             CustomDecorType.POOP.getCustomDecorData()
@@ -88,11 +90,23 @@ public final class FartCommand implements MSCommandExecutor {
         }
 
         if (args.length > 0) {
-            sendRPEventMessage(player, text(ChatUtils.extractMessage(args, 0)), text(withPoop ? "пукнув с подливой" : "пукнув"), TODO);
+            sendRPEventMessage(
+                    player,
+                    text(ChatUtils.extractMessage(args, 0)),
+                    text(withPoop ? "пукнув с подливой" : "пукнув"),
+                    TODO
+            );
             return true;
         }
 
-        sendRPEventMessage(player, playerInfo.getPlayerFile().getPronouns().getFartMessage().append(text(withPoop ? " с подливой" : "")), ME);
+        sendRPEventMessage(
+                player,
+                playerInfo.getPlayerFile().getPronouns()
+                        .getFartMessage()
+                        .append(text(withPoop ? " с подливой" : "")),
+                ME
+        );
+
         return true;
     }
 

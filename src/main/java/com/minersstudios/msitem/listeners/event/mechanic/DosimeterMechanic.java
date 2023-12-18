@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.listeners.event.mechanic;
 
 import com.minersstudios.mscore.listener.event.AbstractMSListener;
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msitem.MSItem;
@@ -24,13 +24,13 @@ import java.util.*;
 
 import static net.kyori.adventure.text.Component.text;
 
-@MSListener
+@MSEventListener
 public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
 
     @EventHandler
     public void onPlayerSwapHandItems(final @NotNull PlayerSwapHandItemsEvent event) {
         final Player player = event.getPlayer();
-        final var players = MSItem.cache().getDosimeterPlayers();
+        final var players = this.getPlugin().getCache().getDosimeterPlayers();
         final EquipmentSlot equipmentSlot = players.get(player);
 
         if (equipmentSlot != null) {
@@ -41,7 +41,7 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
     @EventHandler
     public void onPlayerItemHeld(final @NotNull PlayerItemHeldEvent event) {
         final Player player = event.getPlayer();
-        final var players = MSItem.cache().getDosimeterPlayers();
+        final var players = this.getPlugin().getCache().getDosimeterPlayers();
         final EquipmentSlot equipmentSlot = players.get(player);
 
         if (equipmentSlot == EquipmentSlot.HAND) {
@@ -66,12 +66,16 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
         final Inventory inventory = event.getClickedInventory();
         final ClickType clickType = event.getClick();
 
-        if (!(inventory instanceof final PlayerInventory playerInventory)) return;
+        if (!(inventory instanceof final PlayerInventory playerInventory)) {
+            return;
+        }
 
-        final var players = MSItem.cache().getDosimeterPlayers();
+        final var players = this.getPlugin().getCache().getDosimeterPlayers();
         final EquipmentSlot equipmentSlot = players.get(player);
 
-        if (equipmentSlot == null) return;
+        if (equipmentSlot == null) {
+            return;
+        }
 
         final ItemStack dosimeterItem = playerInventory.getItem(equipmentSlot);
 
@@ -89,6 +93,7 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
                 copy.setItem(clickType.isShiftClick() ? Objects.requireNonNull(event.getCurrentItem()) : dosimeterItem);
                 copy.setEnabled(false);
                 players.remove(player);
+
                 return;
             }
 
@@ -111,7 +116,7 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
     @EventHandler
     public void onPlayerDropItem(final @NotNull PlayerDropItemEvent event) {
         final Player player = event.getPlayer();
-        final var players = MSItem.cache().getDosimeterPlayers();
+        final var players = this.getPlugin().getCache().getDosimeterPlayers();
         final EquipmentSlot equipmentSlot = players.get(player);
 
         if (equipmentSlot != null) {
@@ -120,7 +125,9 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
 
             CustomItem.fromItemStack(itemStack, Dosimeter.class)
             .ifPresent(dosimeter -> {
-                if (CustomItem.fromItemStack(drop, Dosimeter.class).isEmpty()) return;
+                if (CustomItem.fromItemStack(drop, Dosimeter.class).isEmpty()) {
+                    return;
+                }
 
                 final Dosimeter copy = dosimeter.copy();
 
@@ -134,7 +141,7 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
     @EventHandler
     public void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        final EquipmentSlot equipmentSlot = MSItem.cache().getDosimeterPlayers().remove(player);
+        final EquipmentSlot equipmentSlot = this.getPlugin().getCache().getDosimeterPlayers().remove(player);
 
         if (equipmentSlot != null) {
             final ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
@@ -151,7 +158,9 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
 
     @EventHandler
     public void onPlayerInteract(final @NotNull PlayerInteractEvent event) {
-        if (!event.getAction().isRightClick()) return;
+        if (!event.getAction().isRightClick()) {
+            return;
+        }
 
         final Player player = event.getPlayer();
         final EquipmentSlot hand = event.getHand();
@@ -159,7 +168,9 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
         if (
                 hand == null
                 || !hand.isHand()
-        ) return;
+        ) {
+            return;
+        }
 
         final ItemStack itemInHand = player.getInventory().getItem(hand);
 
@@ -172,21 +183,30 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
             copy.setEnabled(!copy.isEnabled());
 
             if (copy.isEnabled()) {
-                MSItem.cache().getDosimeterPlayers().put(player, hand);
+                this.getPlugin().getCache().getDosimeterPlayers().put(player, hand);
             } else {
-                MSItem.cache().getDosimeterPlayers().remove(player, hand);
+                this.getPlugin().getCache().getDosimeterPlayers().remove(player, hand);
             }
         });
     }
 
     public static class DosimeterTask {
-        private static final Map<Player, EquipmentSlot> PLAYERS = MSItem.cache().getDosimeterPlayers();
+        private final Map<Player, EquipmentSlot> players;
 
-        public static void run() {
-            if (PLAYERS.isEmpty()) return;
-            PLAYERS
+        public DosimeterTask(final @NotNull MSItem plugin) {
+            this.players = plugin.getCache().getDosimeterPlayers();
+        }
+
+        public void run() {
+            if (this.players.isEmpty()) {
+                return;
+            }
+
+            this.players
             .forEach((player, equipmentSlot) -> {
-                if (!player.isOnline()) return;
+                if (!player.isOnline()) {
+                    return;
+                }
 
                 final ItemStack itemStack = player.getInventory().getItem(equipmentSlot);
 
@@ -199,7 +219,7 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
                         final var radiiPlayerInside = new HashMap<Anomaly, Double>();
 
                         for (final var anomaly : MSEssentials.cache().getAnomalies().values()) {
-                            double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
+                            final double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
 
                             if (radiusInside != -1.0d) {
                                 radiiPlayerInside.put(anomaly, radiusInside);
@@ -223,11 +243,12 @@ public final class DosimeterMechanic extends AbstractMSListener<MSItem> {
                                 .append(text(radiusToLevel(radii, radius, player.getLocation())))
                                 .append(text(" мк3в/ч"))
                         );
+
                         return;
                     }
                 }
 
-                PLAYERS.remove(player);
+                this.players.remove(player);
             });
         }
 

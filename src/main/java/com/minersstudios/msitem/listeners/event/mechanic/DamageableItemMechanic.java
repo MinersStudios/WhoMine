@@ -1,6 +1,6 @@
 package com.minersstudios.msitem.listeners.event.mechanic;
 
-import com.minersstudios.mscore.listener.event.MSListener;
+import com.minersstudios.mscore.listener.event.MSEventListener;
 import com.minersstudios.mscore.util.ItemUtils;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.damageable.DamageableItem;
@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-@MSListener
+@MSEventListener
 public final class DamageableItemMechanic extends AbstractMSListener<MSItem> {
 
     @EventHandler

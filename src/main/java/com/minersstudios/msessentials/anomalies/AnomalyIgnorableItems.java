@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.anomalies;
 
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.util.ItemUtils;
-import com.minersstudios.msessentials.MSEssentials;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -21,22 +21,31 @@ import java.util.Map;
  * with the specified amount of damage when the anomaly action is performed.
  */
 public final class AnomalyIgnorableItems {
+    private final MSPlugin<?> plugin;
     private final Map<EquipmentSlot, ItemStack> includedItems;
     private final int breakingPerAction;
 
-    private static final ItemStack EMPTY_ITEM = ItemStack.empty();
-
     /**
+     * @param plugin            The plugin
      * @param includedItems     Ignorable items that will protect the player
      * @param breakingPerAction The amount of damage that will be dealt to the item
      *                          when the action is performed
      */
     public AnomalyIgnorableItems(
+            final @NotNull MSPlugin<?> plugin,
             final @NotNull Map<EquipmentSlot, ItemStack> includedItems,
             final int breakingPerAction
     ) {
+        this.plugin = plugin;
         this.includedItems = includedItems;
         this.breakingPerAction = breakingPerAction;
+    }
+
+    /**
+     * @return The plugin
+     */
+    public @NotNull MSPlugin<?> getPlugin() {
+        return this.plugin;
     }
 
     /**
@@ -68,9 +77,12 @@ public final class AnomalyIgnorableItems {
         if (
                 equipmentSlot == null
                 || item == null
-        ) return false;
+        ) {
+            return false;
+        }
 
         final ItemStack ignorableItem = this.includedItems.get(equipmentSlot);
+
         return ignorableItem == null
                 || item.getType() == ignorableItem.getType()
                 && item.getItemMeta().getCustomModelData() == ignorableItem.getItemMeta().getCustomModelData();
@@ -82,8 +94,13 @@ public final class AnomalyIgnorableItems {
      */
     public boolean hasIgnorableItems(final @NotNull PlayerInventory inventory) {
         for (final var entry : getEquippedItems(inventory).entrySet()) {
-            if (!this.includedItems.containsKey(entry.getKey())) continue;
-            if (!this.isIgnorableItem(entry.getKey(), entry.getValue())) return false;
+            if (!this.includedItems.containsKey(entry.getKey())) {
+                continue;
+            }
+
+            if (!this.isIgnorableItem(entry.getKey(), entry.getValue())) {
+                return false;
+            }
         }
 
         return true;
@@ -97,7 +114,9 @@ public final class AnomalyIgnorableItems {
     public void damageIgnorableItems(final @NotNull PlayerInventory inventory) {
         final Player player = (Player) inventory.getHolder();
 
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
 
         for (final var entry : getEquippedItems(inventory).entrySet()) {
             final EquipmentSlot equipmentSlot = entry.getKey();
@@ -107,7 +126,7 @@ public final class AnomalyIgnorableItems {
                     this.includedItems.containsKey(equipmentSlot)
                     && this.isIgnorableItem(equipmentSlot, item)
             ) {
-                MSEssentials.singleton().runTask(() ->
+                this.plugin.runTask(() ->
                         ItemUtils.damageItem(
                                 player,
                                 equipmentSlot,
@@ -130,11 +149,12 @@ public final class AnomalyIgnorableItems {
         final ItemStack chestplate = inventory.getChestplate();
         final ItemStack leggings = inventory.getLeggings();
         final ItemStack boots = inventory.getBoots();
+
         return Map.of(
-                EquipmentSlot.HEAD, helmet == null ? EMPTY_ITEM : helmet,
-                EquipmentSlot.CHEST, chestplate == null ? EMPTY_ITEM : chestplate,
-                EquipmentSlot.LEGS, leggings == null ? EMPTY_ITEM : leggings,
-                EquipmentSlot.FEET, boots == null ? EMPTY_ITEM : boots
+                EquipmentSlot.HEAD, helmet == null      ? ItemStack.empty() : helmet,
+                EquipmentSlot.CHEST, chestplate == null ? ItemStack.empty() : chestplate,
+                EquipmentSlot.LEGS, leggings == null    ? ItemStack.empty() : leggings,
+                EquipmentSlot.FEET, boots == null       ? ItemStack.empty() : boots
         );
     }
 }

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -32,79 +33,73 @@ public class RenameableItem {
     private final boolean isShowInRenameMenu;
 
     /**
-     * Constructs a RenameableItem instance with the given
-     * unique key and rename collection
+     * Constructs a RenameableItem instance with the given unique key and rename
+     * collection
      *
-     * @param key              The unique key associated with
-     *                         the item
-     * @param renameCollection The collection of renames
-     *                         associated with the item
+     * @param plugin           The plugin instance
+     * @param key              The unique key associated with the item
+     * @param renameCollection The collection of renames associated with the item
      */
     public RenameableItem(
+            final @NotNull MSItem plugin,
             final @NotNull String key,
             final @NotNull RenameCollection renameCollection
     ) {
-        this(key, renameCollection, true);
+        this(plugin, key, renameCollection, true);
     }
 
     /**
-     * Constructs a RenameableItem instance with the given
-     * unique key, rename collection, and visibility in the
-     * rename menu
+     * Constructs a RenameableItem instance with the given unique key, rename
+     * collection, and visibility in the rename menu
      *
-     * @param key              The unique key associated with
-     *                         the item
-     * @param renameCollection The collection of renames
-     *                         associated with the item
-     * @param isShowInRenameMenu Whether the item should appear
-     *                         in the rename menu
+     * @param plugin           The plugin instance
+     * @param key              The unique key associated with the item
+     * @param renameCollection The collection of renames associated with the item
+     * @param isShowInRenameMenu Whether the item should appear in the rename
+     *                           menu
      */
     public RenameableItem(
+            final @NotNull MSItem plugin,
             final @NotNull String key,
             final @NotNull RenameCollection renameCollection,
             final boolean isShowInRenameMenu
     ) {
-        this(key, renameCollection, null, isShowInRenameMenu);
+        this(plugin, key, renameCollection, null, isShowInRenameMenu);
     }
 
     /**
-     * Constructs a RenameableItem instance with the given
-     * unique key, rename collection, and white-list
+     * Constructs a RenameableItem instance with the given unique key, rename
+     * collection, and white-list
      *
-     * @param key              The unique key associated with
-     *                         the item
-     * @param renameCollection The collection of renames
-     *                         associated with the item
-     * @param whiteList        The set of players that are
-     *                         allowed to rename the item
-     *                         (empty set means all players
-     *                         are allowed)
+     * @param plugin           The plugin instance
+     * @param key              The unique key associated with the item
+     * @param renameCollection The collection of renames associated with the item
+     * @param whiteList        The set of players that are allowed to rename the
+     *                         item (empty set means all players are allowed)
      */
     public RenameableItem(
+            final @NotNull MSItem plugin,
             final @NotNull String key,
             final @NotNull RenameCollection renameCollection,
             final @NotNull Collection<UUID> whiteList
     ) {
-        this(key, renameCollection, whiteList, true);
+        this(plugin, key, renameCollection, whiteList, true);
     }
 
     /**
-     * Constructs a RenameableItem instance with the given
-     * unique key, rename collection, white-list, and
-     * visibility in the rename menu
+     * Constructs a RenameableItem instance with the given unique key, rename
+     * collection, white-list, and visibility in the rename menu
      *
-     * @param key              The unique key associated with
-     *                         the item
-     * @param isShowInRenameMenu Whether the item should appear
-     *                         in the rename menu
-     * @param renameCollection The collection of renames
-     *                         associated with the item
-     * @param whiteList        The set of players that are
-     *                         allowed to rename the item
-     *                         (empty set means all players
-     *                         are allowed)
+     * @param key                The unique key associated with the item
+     * @param isShowInRenameMenu Whether the item should appear in the rename menu
+     * @param renameCollection   The collection of renames associated with the
+     *                           item
+     * @param whiteList          The set of players that are allowed to rename
+     *                           the item (empty set means all players are
+     *                           allowed)
      */
     public RenameableItem(
+            final @NotNull MSItem plugin,
             final @NotNull String key,
             final @NotNull RenameCollection renameCollection,
             final @Nullable Collection<UUID> whiteList,
@@ -119,7 +114,7 @@ public class RenameableItem {
                 : new HashSet<>(whiteList);
 
         if (isShowInRenameMenu) {
-            MSItem.cache().getRenameableMenuItems().add(this);
+            plugin.getCache().getRenameableMenuItems().add(this);
         }
     }
 
@@ -131,13 +126,17 @@ public class RenameableItem {
      * @return A RenameableItem instance loaded from the file,
      *         or null if loading fails
      */
-    public static @Nullable RenameableItem fromFile(final @NotNull File file) {
+    public static @Nullable RenameableItem fromFile(
+            final @NotNull MSItem plugin,
+            final @NotNull File file
+    ) {
+        final Logger logger = plugin.getLogger();
         final YamlConfiguration renameableItemConfig;
 
         try {
             renameableItemConfig = YamlConfiguration.loadConfiguration(file);
         } catch (final Exception e) {
-            MSItem.logger().log(Level.SEVERE, "Failed to load " + file.getName() + "!", e);
+            logger.log(Level.SEVERE, "Failed to load " + file.getName() + "!", e);
             return null;
         }
 
@@ -145,7 +144,7 @@ public class RenameableItem {
         final String key = renameableItemConfig.getString("key");
 
         if (key == null) {
-            MSItem.logger().severe("Key is not defined in " + fileName + "!");
+            logger.severe("Key is not defined in " + fileName + "!");
             return null;
         }
 
@@ -162,7 +161,7 @@ public class RenameableItem {
             final String item = renameableItemConfig.getString("items");
 
             if (item == null) {
-                MSItem.logger().severe("Items are not defined in " + fileName + "!");
+                logger.severe("Items are not defined in " + fileName + "!");
                 return null;
             }
 
@@ -173,7 +172,7 @@ public class RenameableItem {
             final String rename = renameableItemConfig.getString("renames");
 
             if (rename == null) {
-                MSItem.logger().severe("Renames are not defined in " + fileName + "!");
+                logger.severe("Renames are not defined in " + fileName + "!");
                 return null;
             }
 
@@ -185,13 +184,13 @@ public class RenameableItem {
         }
 
         if (!loreString.isEmpty()) {
-            for (var text : loreString) {
+            for (final var text : loreString) {
                 lore.add(text(text));
             }
         }
 
         if (customModelData < 0) {
-            MSItem.logger().severe("Custom model data is not valid! (in " + fileName + ")");
+            logger.severe("Custom model data is not valid! (in " + fileName + ")");
             return null;
         }
 
@@ -213,7 +212,7 @@ public class RenameableItem {
                     itemStack == null
                     || itemStack.isEmpty()
             ) {
-                MSItem.logger().severe("Item " + item + " is not valid! (in " + fileName + ")");
+                logger.severe("Item " + item + " is not valid! (in " + fileName + ")");
                 return null;
             }
 
@@ -237,11 +236,12 @@ public class RenameableItem {
             try {
                 whiteList.add(UUID.fromString(uuid));
             } catch (final IllegalArgumentException ignored) {
-                MSItem.logger().severe("Invalid UUID " + uuid + " in white-list! (in " + fileName + ")");
+                logger.severe("Invalid UUID " + uuid + " in white-list! (in " + fileName + ")");
             }
         }
 
         return new RenameableItem(
+                plugin,
                 key,
                 renameCollection,
                 whiteList,

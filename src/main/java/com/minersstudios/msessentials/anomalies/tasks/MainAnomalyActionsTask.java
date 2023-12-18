@@ -1,12 +1,16 @@
 package com.minersstudios.msessentials.anomalies.tasks;
 
-import com.minersstudios.msessentials.Cache;
+import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.msessentials.anomalies.Anomaly;
 import com.minersstudios.msessentials.anomalies.AnomalyAction;
 import com.minersstudios.msessentials.anomalies.AnomalyBoundingBox;
 import com.minersstudios.msessentials.anomalies.actions.SpawnParticlesAction;
-import com.minersstudios.msessentials.Config;
-import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 /**
  * Main anomaly action task.
@@ -21,61 +25,74 @@ import org.bukkit.Bukkit;
  * @see AnomalyBoundingBox
  */
 public final class MainAnomalyActionsTask implements Runnable {
+    private final MSEssentials plugin;
+    private final Map<Player, Map<AnomalyAction, Long>> actionMap;
+    private final Map<NamespacedKey, Anomaly> anomalyMap;
+
+    public MainAnomalyActionsTask(final @NotNull MSEssentials plugin) {
+        this.plugin = plugin;
+        this.actionMap = plugin.getCache().getPlayerAnomalyActionMap();
+        this.anomalyMap = plugin.getCache().getAnomalies();
+    }
 
     @Override
     public void run() {
-        final var onlinePlayers = Bukkit.getOnlinePlayers();
+        final var onlinePlayers = this.plugin.getServer().getOnlinePlayers();
 
-        if (onlinePlayers.isEmpty()) return;
+        if (onlinePlayers.isEmpty()) {
+            return;
+        }
 
-        final Cache cache = MSEssentials.cache();
-        final var playerActionMap = cache.getPlayerAnomalyActionMap();
+        for (final var player : onlinePlayers) {
+            for (final var anomaly : this.anomalyMap.values()) {
+                final double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
 
-        MSEssentials.singleton().runTaskAsync(() ->
-                onlinePlayers
-                .forEach(player -> {
-                    for (final var anomaly : cache.getAnomalies().values()) {
-                        final double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
-                        final boolean isIgnorable = anomaly.getIgnorablePlayers().contains(player);
+                if (radiusInside == -1.0d) {
+                    continue;
+                }
 
-                        if (radiusInside == -1.0d) continue;
+                var timedAction = this.actionMap.get(player);
+                final var ignorablePlayers = anomaly.getIgnorablePlayers();
 
-                        var actionMap = playerActionMap.get(player);
+                for (final var action : anomaly.getAnomalyActionMap().get(radiusInside)) {
+                    if (
+                            timedAction == null
+                            || !timedAction.containsKey(action)
+                    ) {
+                        final boolean isIgnorable = ignorablePlayers.contains(player);
 
-                        for (final var action : anomaly.getAnomalyActionMap().get(radiusInside)) {
-                            if (
-                                    actionMap == null
-                                    || !actionMap.containsKey(action)
-                            ) {
-                                if (
-                                        isIgnorable
-                                        && action instanceof SpawnParticlesAction
-                                ) {
-                                    action.putAction(player);
-                                    return;
-                                } else if (!isIgnorable) {
-                                    actionMap = action.putAction(player);
-                                }
-                            }
+                        if (
+                                isIgnorable
+                                && action instanceof SpawnParticlesAction
+                        ) {
+                            action.putAction(player);
+                            return;
+                        } else if (!isIgnorable) {
+                            timedAction = action.putAction(player);
                         }
-
-                        if (actionMap == null) return;
-
-                        for (final var action : actionMap.keySet()) {
-                            if (anomaly.isAnomalyActionRadius(action, radiusInside)) {
-                                if (!(action instanceof SpawnParticlesAction)) {
-                                    action.doAction(player, anomaly.getIgnorableItems());
-                                }
-                            } else {
-                                action.removeAction(player);
-                            }
-                        }
-
-                        return;
                     }
+                }
 
-                    playerActionMap.remove(player);
-                })
-        );
+                if (timedAction == null) {
+                    return;
+                }
+
+                final var ignorableItems = anomaly.getIgnorableItems();
+
+                for (final var action : timedAction.keySet()) {
+                    if (anomaly.isAnomalyActionRadius(action, radiusInside)) {
+                        if (!(action instanceof SpawnParticlesAction)) {
+                            action.doAction(player, ignorableItems);
+                        }
+                    } else {
+                        action.removeAction(player);
+                    }
+                }
+
+                return;
+            }
+
+            this.actionMap.remove(player);
+        }
     }
 }

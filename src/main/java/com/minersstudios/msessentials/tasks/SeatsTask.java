@@ -1,14 +1,32 @@
 package com.minersstudios.msessentials.tasks;
 
 import com.minersstudios.msessentials.MSEssentials;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public final class SeatsTask implements Runnable {
+    private final Map<Player, ArmorStand> seats;
+
+    public SeatsTask(final @NotNull MSEssentials plugin) {
+        this.seats = plugin.getCache().getSeats();
+    }
 
     @Override
     public void run() {
-        MSEssentials.cache().getSeats().entrySet().stream().parallel()
+        this.seats.entrySet().parallelStream()
         .forEach(
-                entry -> entry.getValue().setRotation(entry.getKey().getLocation().getYaw(), 0.0f)
+                entry -> {
+                    final Player player = entry.getKey();
+                    final ArmorStand armorStand = entry.getValue();
+
+                    armorStand.setRotation(
+                            player.getLocation().getYaw(),
+                            0.0f
+                    );
+                }
         );
     }
 }

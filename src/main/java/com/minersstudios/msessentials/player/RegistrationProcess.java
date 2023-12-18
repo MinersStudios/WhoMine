@@ -24,6 +24,7 @@ import static net.kyori.adventure.text.Component.translatable;
  * All messages stored in the {@link LanguageFile}.
  */
 public final class RegistrationProcess {
+    private final MSEssentials plugin;
     private Player player;
     private PlayerInfo playerInfo;
     private Location playerLocation;
@@ -50,11 +51,17 @@ public final class RegistrationProcess {
     private static final TranslatableComponent LOCAL_FORMAT = translatable("ms.chat.local.format");
     private static final TranslatableComponent ANONYMOUS_NAME = translatable("ms.registration.anonymous.name");
 
+    public RegistrationProcess(final @NotNull MSEssentials plugin) {
+        this.plugin = plugin;
+    }
+
     public void registerPlayer(final @NotNull PlayerInfo playerInfo) {
         this.playerInfo = playerInfo;
         this.player = playerInfo.getOnlinePlayer();
 
-        if (this.player == null) return;
+        if (this.player == null) {
+            return;
+        }
 
         this.playerLocation = this.player.getLocation();
         this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, SoundCategory.MUSIC, 0.15f, 1.25f);
@@ -68,7 +75,7 @@ public final class RegistrationProcess {
         this.sendDialogueMessage(M_5, 400L);
         this.sendDialogueMessage(M_6, 450L);
 
-        MSEssentials.singleton().runTaskLater(this::setFirstname, 550L);
+        this.plugin.runTaskLater(this::setFirstname, 550L);
     }
 
     private void setFirstname() {
@@ -92,7 +99,8 @@ public final class RegistrationProcess {
                     this.sendDialogueMessage(M_9, 225L);
                     this.sendDialogueMessage(M_10, 300L);
 
-                    MSEssentials.singleton().runTaskLater(this::setLastname, 375L);
+                    this.plugin.runTaskLater(this::setLastname, 375L);
+
                     return true;
                 }
         ).open(this.player);
@@ -113,7 +121,8 @@ public final class RegistrationProcess {
                     }
 
                     this.playerInfo.getPlayerFile().getPlayerName().setLastName(lastname);
-                    MSEssentials.singleton().runTaskLater(this::setPatronymic, 10L);
+                    this.plugin.runTaskLater(this::setPatronymic, 10L);
+
                     return true;
                 }
         ).open(this.player);
@@ -153,7 +162,8 @@ public final class RegistrationProcess {
                     this.sendDialogueMessage(M_12, 100L);
                     this.sendDialogueMessage(M_13, 150L);
 
-                    MSEssentials.singleton().runTaskLater(() -> PronounsMenu.open(this.player), 225L);
+                    this.plugin.runTaskLater(() -> PronounsMenu.open(this.player), 225L);
+
                     return true;
                 }
         ).open(this.player);
@@ -179,7 +189,7 @@ public final class RegistrationProcess {
                 175L
         );
 
-        MSEssentials.singleton().runTaskLater(this::setOther, 225L);
+        this.plugin.runTaskLater(this::setOther, 225L);
     }
 
     private void setOther() {
@@ -197,14 +207,20 @@ public final class RegistrationProcess {
             final @NotNull Component message,
             final long delay
     ) {
-        MSEssentials.singleton().runTaskLater(() -> {
+        this.plugin.runTaskLater(() -> {
             this.player.sendMessage(
                     LOCAL_FORMAT.args(
                             ANONYMOUS_NAME,
                             message.color(MessageUtils.Colors.CHAT_COLOR_SECONDARY)
                     ).color(MessageUtils.Colors.CHAT_COLOR_PRIMARY)
             );
-            this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, SoundCategory.PLAYERS, 0.5f, 1.5f);
+            this.player.playSound(
+                    this.playerLocation,
+                    Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF,
+                    SoundCategory.PLAYERS,
+                    0.5f,
+                    1.5f
+            );
         }, delay);
     }
 }
