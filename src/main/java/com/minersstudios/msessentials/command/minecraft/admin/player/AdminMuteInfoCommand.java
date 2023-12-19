@@ -6,25 +6,16 @@ import com.minersstudios.mscore.utility.DateUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.MuteMap;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.Locale;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 public final class AdminMuteInfoCommand {
-    private static final TranslatableComponent WRONG_FORMAT = translatable("ms.error.wrong_format");
-    private static final TranslatableComponent MUTE_INFO_FORMAT = translatable("ms.command.player.mute_info.info");
-    private static final TranslatableComponent MUTE_INFO_NOT_MUTED_FORMAT = translatable("ms.command.player.mute_info.not_muted");
-    private static final TranslatableComponent MUTE_INFO_INFO_NOT_MUTED_FORMAT = translatable("ms.command.player.mute_info.info_not_muted");
-    private static final TranslatableComponent MUTE_INFO_GET_REASON_FORMAT = translatable("ms.command.player.mute_info.get.reason");
-    private static final TranslatableComponent MUTE_INFO_SET_REASON_FORMAT = translatable("ms.command.player.mute_info.set.reason");
-    private static final TranslatableComponent MUTE_INFO_GET_TIME_TO_FORMAT = translatable("ms.command.player.mute_info.get.time_to");
-    private static final TranslatableComponent MUTE_INFO_SET_TIME_TO_FORMAT = translatable("ms.command.player.mute_info.set.time_to");
 
     public static boolean runCommand(
             final @NotNull MSEssentials plugin,
@@ -41,7 +32,7 @@ public final class AdminMuteInfoCommand {
             MSLogger.fine(
                     sender,
                     muted
-                    ? MUTE_INFO_FORMAT.args(
+                    ? COMMAND_PLAYER_MUTE_INFO_INFO.args(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(playerInfo.getMutedBy()),
@@ -49,7 +40,7 @@ public final class AdminMuteInfoCommand {
                             playerInfo.getMutedFrom(sender),
                             playerInfo.getMutedTo(sender)
                     )
-                    : MUTE_INFO_INFO_NOT_MUTED_FORMAT.args(
+                    : COMMAND_PLAYER_MUTE_INFO_INFO_NOT_MUTED.args(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname())
                     )
@@ -60,7 +51,8 @@ public final class AdminMuteInfoCommand {
         if (!muted) {
             MSLogger.severe(
                     sender,
-                    MUTE_INFO_NOT_MUTED_FORMAT.args(
+                    COMMAND_PLAYER_MUTE_INFO_NOT_MUTED
+                    .args(
                             playerInfo.getDefaultName(),
                             text(playerInfo.getNickname())
                     )
@@ -75,7 +67,8 @@ public final class AdminMuteInfoCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            MUTE_INFO_GET_REASON_FORMAT.args(
+                            COMMAND_PLAYER_MUTE_INFO_GET_REASON
+                            .args(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerInfo.getMuteReason())
@@ -89,7 +82,8 @@ public final class AdminMuteInfoCommand {
                 muteMap.put(playerInfo.getOfflinePlayer(), playerInfo.getMutedTo(), reason, sender.getName());
                 MSLogger.fine(
                         sender,
-                        MUTE_INFO_SET_REASON_FORMAT.args(
+                        COMMAND_PLAYER_MUTE_INFO_SET_REASON
+                        .args(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(reason)
@@ -101,7 +95,8 @@ public final class AdminMuteInfoCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            MUTE_INFO_GET_TIME_TO_FORMAT.args(
+                            COMMAND_PLAYER_MUTE_INFO_GET_TIME_TO
+                            .args(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     playerInfo.getMutedTo(sender)
@@ -113,14 +108,18 @@ public final class AdminMuteInfoCommand {
                 final Instant instant = DateUtils.getDateFromString(paramArgString, false);
 
                 if (instant == null) {
-                    MSLogger.severe(sender, WRONG_FORMAT);
+                    MSLogger.severe(
+                            sender,
+                            ERROR_WRONG_FORMAT
+                    );
                     return true;
                 }
 
                 muteMap.put(playerInfo.getOfflinePlayer(), instant, playerInfo.getMuteReason(), sender.getName());
                 MSLogger.fine(
                         sender,
-                        MUTE_INFO_SET_TIME_TO_FORMAT.args(
+                        COMMAND_PLAYER_MUTE_INFO_SET_TIME_TO
+                        .args(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(DateUtils.getSenderDate(instant, sender))

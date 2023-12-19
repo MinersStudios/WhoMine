@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.discord.command;
 
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -11,15 +12,10 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.minersstudios.mscore.language.LanguageFile.renderTranslation;
-
 public final class InteractionHandler {
     private final MSEssentials plugin;
     private final SlashCommandInteraction interaction;
     private PlayerInfo playerInfo;
-
-    private static final String NOT_A_USER = renderTranslation("ms.discord.not_a_user");
-    private static final String NOT_LINKED = renderTranslation("ms.discord.not_linked");
 
     public InteractionHandler(
             final @NotNull MSEssentials plugin,
@@ -59,14 +55,14 @@ public final class InteractionHandler {
         final User user = this.interaction.getUser();
 
         if (!this.plugin.getCache().getDiscordHandler().isVerified(user)) {
-            this.send(NOT_A_USER);
+            this.send(LanguageRegistry.Strings.DISCORD_NOT_A_USER);
             return null;
         }
 
         final PlayerInfo playerInfo = PlayerInfo.fromDiscord(this.plugin, user.getIdLong());
 
         if (playerInfo == null) {
-            this.send(NOT_LINKED);
+            this.send(LanguageRegistry.Strings.DISCORD_NOT_LINKED);
             return null;
         }
 

@@ -77,7 +77,7 @@ public final class ChatUtils {
      * <br>
      * Example:
      * <pre>{@code
-     * extractMessage(new String[]{"Hello", "Sir.", "PackmanDude"}, 1);
+     * extractMessage(new String[] { "Hello", "Sir.", "PackmanDude" }, 1);
      * }</pre>
      * - will return "Sir. PackmanDude"
      *

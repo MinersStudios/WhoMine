@@ -3,6 +3,7 @@ package com.minersstudios.msessentials.command.minecraft.admin.ban;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
@@ -10,7 +11,6 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -27,7 +27,6 @@ import java.util.UUID;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "unban",
@@ -43,8 +42,6 @@ public final class UnBanCommand extends CommandExecutor<MSEssentials> {
             .then(argument("id/никнейм", StringArgumentType.word()))
             .build();
 
-    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
-
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
@@ -59,11 +56,15 @@ public final class UnBanCommand extends CommandExecutor<MSEssentials> {
         final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
-            MSLogger.severe(sender, PLAYER_NOT_FOUND);
+            MSLogger.severe(
+                    sender,
+                    LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND
+            );
             return true;
         }
 
         playerInfo.pardon(sender);
+
         return true;
     }
 

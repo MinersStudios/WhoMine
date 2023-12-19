@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.command.minecraft.player.roleplay;
 
 import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -9,7 +10,6 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -26,7 +26,6 @@ import static com.minersstudios.msessentials.utility.MessageUtils.sendRPEventMes
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "spit",
@@ -39,8 +38,6 @@ public final class SpitCommand extends CommandExecutor<MSEssentials> {
             literal("spit")
             .then(argument("speech", StringArgumentType.greedyString()))
             .build();
-
-    private static final TranslatableComponent MUTED = translatable("ms.command.mute.already.receiver");
 
     @Override
     public boolean onCommand(
@@ -55,7 +52,10 @@ public final class SpitCommand extends CommandExecutor<MSEssentials> {
         final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
 
         if (playerInfo.isMuted()) {
-            MSLogger.warning(player, MUTED);
+            MSLogger.warning(
+                    player,
+                    LanguageRegistry.Components.COMMAND_MUTE_ALREADY_RECEIVER
+            );
             return true;
         }
 

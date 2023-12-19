@@ -9,7 +9,6 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
@@ -20,10 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "whitelist",
@@ -47,13 +46,6 @@ public final class WhitelistCommand extends CommandExecutor<MSEssentials> {
             .then(literal("reload"))
             .build();
 
-    private static final TranslatableComponent RELOAD = translatable("ms.command.white_list.reload");
-    private static final TranslatableComponent ADDED_FORMAT = translatable("ms.command.white_list.add.sender.message");
-    private static final TranslatableComponent REMOVED_FORMAT = translatable("ms.command.white_list.remove.sender.message");
-    private static final TranslatableComponent REMOVE_NOT_FOUND_FORMAT = translatable("ms.command.white_list.remove.not_found");
-    private static final TranslatableComponent ALREADY_FORMAT = translatable("ms.command.white_list.add.already");
-    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
-
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
@@ -72,7 +64,10 @@ public final class WhitelistCommand extends CommandExecutor<MSEssentials> {
         switch (actionArg) {
             case "reload" -> {
                 server.reloadWhitelist();
-                MSLogger.fine(sender, RELOAD);
+                MSLogger.fine(
+                        sender,
+                        COMMAND_WHITE_LIST_RELOAD
+                );
 
                 return true;
             }
@@ -84,14 +79,18 @@ public final class WhitelistCommand extends CommandExecutor<MSEssentials> {
                 final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), playerArg);
 
                 if (playerInfo == null) {
-                    MSLogger.severe(sender, PLAYER_NOT_FOUND);
+                    MSLogger.severe(
+                            sender,
+                            ERROR_PLAYER_NOT_FOUND
+                    );
                     return true;
                 }
 
                 if (playerInfo.setWhiteListed(true)) {
                     MSLogger.fine(
                             sender,
-                            ADDED_FORMAT.args(
+                            COMMAND_WHITE_LIST_ADD_SENDER_MESSAGE
+                            .args(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname())
                             )
@@ -101,7 +100,8 @@ public final class WhitelistCommand extends CommandExecutor<MSEssentials> {
 
                 MSLogger.warning(
                         sender,
-                        ALREADY_FORMAT.args(
+                        COMMAND_WHITE_LIST_ADD_ALREADY
+                        .args(
                                 playerInfo.getGrayIDGoldName(),
                                 text(playerInfo.getNickname())
                         )
@@ -117,14 +117,18 @@ public final class WhitelistCommand extends CommandExecutor<MSEssentials> {
                 final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), playerArg);
 
                 if (playerInfo == null) {
-                    MSLogger.severe(sender, PLAYER_NOT_FOUND);
+                    MSLogger.severe(
+                            sender,
+                            ERROR_PLAYER_NOT_FOUND
+                    );
                     return true;
                 }
 
                 if (playerInfo.setWhiteListed(false)) {
                     MSLogger.fine(
                             sender,
-                            REMOVED_FORMAT.args(
+                            COMMAND_WHITE_LIST_REMOVE_SENDER_MESSAGE
+                            .args(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname())
                             )
@@ -134,7 +138,8 @@ public final class WhitelistCommand extends CommandExecutor<MSEssentials> {
 
                 MSLogger.warning(
                         sender,
-                        REMOVE_NOT_FOUND_FORMAT.args(
+                        COMMAND_WHITE_LIST_REMOVE_NOT_FOUND
+                        .args(
                                 playerInfo.getGrayIDGoldName(),
                                 text(playerArg)
                         )

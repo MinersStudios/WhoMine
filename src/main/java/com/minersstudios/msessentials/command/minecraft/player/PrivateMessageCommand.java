@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.command.minecraft.player;
 
 import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -10,7 +11,6 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.utility.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,6 @@ import static com.minersstudios.msessentials.utility.MessageUtils.sendPrivateMes
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "privatemessage",
@@ -44,10 +43,6 @@ public final class PrivateMessageCommand extends CommandExecutor<MSEssentials> {
                     .then(argument("сообщение", StringArgumentType.greedyString()))
             ).build();
 
-    private static final TranslatableComponent MUTED = translatable("ms.command.mute.already.receiver");
-    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
-    private static final TranslatableComponent PLAYER_NOT_ONLINE = translatable("ms.error.player_not_online");
-
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
@@ -66,14 +61,20 @@ public final class PrivateMessageCommand extends CommandExecutor<MSEssentials> {
                 : plugin.getCache().getConsolePlayerInfo();
 
         if (senderInfo.isMuted()) {
-            MSLogger.warning(sender, MUTED);
+            MSLogger.warning(
+                    sender,
+                    LanguageRegistry.Components.COMMAND_MUTE_ALREADY_RECEIVER
+            );
             return true;
         }
 
         final PlayerInfo receiverInfo = PlayerInfo.fromString(plugin, args[0]);
 
         if (receiverInfo == null) {
-            MSLogger.severe(sender, PLAYER_NOT_FOUND);
+            MSLogger.warning(
+                    sender,
+                    LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND
+            );
             return true;
         }
 
@@ -81,7 +82,10 @@ public final class PrivateMessageCommand extends CommandExecutor<MSEssentials> {
                 !receiverInfo.isOnline()
                 && !sender.hasPermission("msessentials.*")
         ) {
-            MSLogger.warning(sender, PLAYER_NOT_ONLINE);
+            MSLogger.warning(
+                    sender,
+                    LanguageRegistry.Components.ERROR_PLAYER_NOT_ONLINE
+            );
             return true;
         }
 

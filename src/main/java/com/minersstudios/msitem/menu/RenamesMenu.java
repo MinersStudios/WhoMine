@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.menu;
 
 import com.minersstudios.mscore.inventory.*;
-import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.renameable.RenameCollection;
@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.stream.IntStream;
 
 import static com.minersstudios.mscore.inventory.InventoryButton.playClickSound;
-import static net.kyori.adventure.text.Component.translatable;
 
 public final class RenamesMenu {
     private static final int RENAMEABLE_ITEM_SLOT = 2;
@@ -39,17 +38,14 @@ public final class RenamesMenu {
     private static final int CURRENT_RENAMED_ITEM_SLOT = 24;
     private static final int RED_CROSS_SLOT = 22;
 
-    private static final Component RENAMES_TITLE = translatable("ms.menu.renames.title", ChatUtils.DEFAULT_STYLE);
-    private static final Component RENAME_TITLE = translatable("ms.menu.rename.title", ChatUtils.DEFAULT_STYLE);
-
     private static final ItemStack RED_CROSS_ITEM;
 
     private static final ElementPagedInventory INVENTORY;
 
     static {
-        final Component previousButtonComponent = LanguageFile.renderTranslationComponent("ms.menu.renames.button.previous_page").style(ChatUtils.DEFAULT_STYLE);
-        final Component nextButtonComponent = LanguageFile.renderTranslationComponent("ms.menu.renames.button.next_page").style(ChatUtils.DEFAULT_STYLE);
-        final Component redCrossComponent = LanguageFile.renderTranslationComponent("ms.menu.rename.no_exp").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY);
+        final Component previousButtonComponent = LanguageRegistry.Components.MENU_RENAMES_BUTTON_PREVIOUS_PAGE.style(ChatUtils.DEFAULT_STYLE);
+        final Component nextButtonComponent = LanguageRegistry.Components.MENU_RENAMES_BUTTON_NEXT_PAGE.style(ChatUtils.DEFAULT_STYLE);
+        final Component redCrossComponent = LanguageRegistry.Components.MENU_RENAME_NO_EXP.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY);
 
         final ItemStack previousPageItem = new ItemStack(Material.PAPER);
         final ItemMeta previousPageMeta = previousPageItem.getItemMeta();
@@ -119,7 +115,11 @@ public final class RenamesMenu {
                 });
 
         INVENTORY = CustomInventory
-                .elementPaged(RENAMES_TITLE, 5, IntStream.range(0, 36).toArray())
+                .elementPaged(
+                        LanguageRegistry.Components.MENU_RENAMES_TITLE.style(ChatUtils.DEFAULT_STYLE),
+                        5,
+                        IntStream.range(0, 36).toArray()
+                )
                 .staticButtonAt(
                         36,
                         inventory -> inventory.getPreviousPageIndex() == -1 ? previousPageButtonEmpty : previousPageButton
@@ -161,7 +161,11 @@ public final class RenamesMenu {
                 }
 
                 final Player player = (Player) buttonEvent.getWhoClicked();
-                final SingleInventory renameInventory = CustomInventory.single(RENAME_TITLE, 5);
+                final SingleInventory renameInventory =
+                        CustomInventory.single(
+                                LanguageRegistry.Components.MENU_RENAME_TITLE.style(ChatUtils.DEFAULT_STYLE),
+                                5
+                        );
 
                 renameInventory.setItem(RENAMEABLE_ITEM_SLOT, renameableItemStacks.get(0));
                 renameInventory.setItem(RENAMED_ITEM_SLOT, resultItem);

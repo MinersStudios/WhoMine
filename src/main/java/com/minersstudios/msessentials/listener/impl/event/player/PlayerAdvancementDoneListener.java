@@ -35,6 +35,7 @@ public final class PlayerAdvancementDoneListener extends AbstractEventListener<M
         final Component title = advancementDisplay.title();
         final Component description = advancementDisplay.description();
 
+        // BOO
         event.message(
                 space()
                 .append(translatable(

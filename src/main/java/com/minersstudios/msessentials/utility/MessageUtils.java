@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.INFO_PLAYER_DEATH_INFO;
 import static com.minersstudios.msessentials.utility.MessageUtils.Colors.*;
 import static net.kyori.adventure.text.Component.*;
 
@@ -285,8 +286,8 @@ public final class MessageUtils {
 
         MSLogger.info(
                 null,
-                translatable(
-                        "ms.info.player_death_info",
+                INFO_PLAYER_DEATH_INFO
+                .args(
                         killedInfo.getDefaultName(),
                         text(killed.getName()),
                         text(deathLocation.getBlock().getWorld().getName()),

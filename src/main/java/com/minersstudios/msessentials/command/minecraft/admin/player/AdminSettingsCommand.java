@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.minecraft.admin.player;
 
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerFile;
@@ -9,7 +9,6 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerSettings;
 import com.minersstudios.msessentials.player.ResourcePack;
 import com.minersstudios.msessentials.player.skin.Skin;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,12 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Locale;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 public final class AdminSettingsCommand {
-    private static final TranslatableComponent USE_ONE_OF = translatable("ms.command.player.settings.use_one_of");
-    private static final TranslatableComponent USE_ONE_OF_RESOURCEPACK_TYPE = translatable("ms.command.player.settings.resourcepack_type_use_one_of");
 
     public static boolean runCommand(
             final @NotNull MSEssentials plugin,
@@ -31,7 +28,10 @@ public final class AdminSettingsCommand {
             final @NotNull PlayerInfo playerInfo
     ) {
         if (args.length < 3) {
-            MSLogger.severe(sender, USE_ONE_OF);
+            MSLogger.severe(
+                    sender,
+                    COMMAND_PLAYER_SETTINGS_USE_ONE_OF
+            );
             return true;
         }
 
@@ -45,14 +45,13 @@ public final class AdminSettingsCommand {
         switch (paramString) {
             case "resourcepack-type" -> {
                 if (!haveArg) {
-                    final ResourcePack.Type type = playerSettings.getResourcePackType();
                     MSLogger.fine(
                             sender,
-                            translatable(
-                                    "ms.command.player.settings.get.resourcepack_type",
+                            COMMAND_PLAYER_SETTINGS_GET_RESOURCEPACK_TYPE
+                            .args(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
-                                    text(type.name().toLowerCase(Locale.ROOT))
+                                    text(playerSettings.getResourcePackType().name().toLowerCase(Locale.ROOT))
                             )
                     );
                     return true;
@@ -69,11 +68,14 @@ public final class AdminSettingsCommand {
                 if (type == null) {
                     MSLogger.severe(
                             sender,
-                            USE_ONE_OF_RESOURCEPACK_TYPE.args(text(
-                                    Arrays.toString(ResourcePack.Type.values())
-                                    .toLowerCase()
-                                    .replaceAll("[\\[\\]]", "")
-                            ))
+                            COMMAND_PLAYER_SETTINGS_RESOURCEPACK_TYPE_USE_ONE_OF
+                            .args(
+                                    text(
+                                            Arrays.toString(ResourcePack.Type.values())
+                                            .toLowerCase()
+                                            .replaceAll("[\\[\\]]", "")
+                                    )
+                            )
                     );
                     return true;
                 }
@@ -83,15 +85,15 @@ public final class AdminSettingsCommand {
 
                 if (type == ResourcePack.Type.NONE || type == ResourcePack.Type.NULL) {
                     playerInfo.kickPlayer(
-                            translatable("ms.menu.resource_pack.button.none.kick.title"),
-                            translatable("ms.menu.resource_pack.button.none.kick.subtitle")
+                            MENU_RESOURCE_PACK_BUTTON_NONE_KICK_TITLE,
+                            MENU_RESOURCE_PACK_BUTTON_NONE_KICK_SUBTITLE
                     );
                 }
 
                 MSLogger.fine(
                         sender,
-                        translatable(
-                                "ms.command.player.settings.set.resourcepack_type",
+                        COMMAND_PLAYER_SETTINGS_SET_RESOURCEPACK_TYPE
+                        .args(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(paramArgString)
@@ -107,8 +109,8 @@ public final class AdminSettingsCommand {
                     if (skin == null) {
                         MSLogger.warning(
                                 sender,
-                                translatable(
-                                        "ms.command.player.settings.get.no_skin",
+                                COMMAND_PLAYER_SETTINGS_GET_NO_SKIN
+                                .args(
                                         playerInfo.getGrayIDGreenName(),
                                         text(playerInfo.getNickname())
                                 )
@@ -116,8 +118,8 @@ public final class AdminSettingsCommand {
                     } else {
                         MSLogger.fine(
                                 sender,
-                                translatable(
-                                        "ms.command.player.settings.get.skin",
+                                COMMAND_PLAYER_SETTINGS_GET_SKIN
+                                .args(
                                         playerInfo.getGrayIDGreenName(),
                                         text(playerInfo.getNickname()),
                                         text(skin.getName())
@@ -140,18 +142,16 @@ public final class AdminSettingsCommand {
                         if (skin == null) {
                             MSLogger.severe(
                                     sender,
-                                    translatable(
-                                            "ms.command.player.settings.skin_not_found",
-                                            text(skinName)
-                                    )
+                                    COMMAND_PLAYER_SETTINGS_SKIN_NOT_FOUND
+                                    .args(text(skinName))
                             );
                         } else {
                             if (paramArgString.equals("set")) {
                                 playerInfo.setSkin(skin);
                                 MSLogger.fine(
                                         sender,
-                                        translatable(
-                                                "ms.command.player.settings.set.skin",
+                                        COMMAND_PLAYER_SETTINGS_SET_SKIN
+                                        .args(
                                                 playerInfo.getDefaultName(),
                                                 text(playerInfo.getNickname()),
                                                 text(skinName)
@@ -161,8 +161,8 @@ public final class AdminSettingsCommand {
                                 playerFile.removeSkin(skin);
                                 MSLogger.fine(
                                         sender,
-                                        translatable(
-                                                "ms.command.player.settings.remove.skin",
+                                        COMMAND_PLAYER_SETTINGS_REMOVE_SKIN
+                                        .args(
                                                 text(skinName),
                                                 playerInfo.getDefaultName(),
                                                 text(playerInfo.getNickname())
@@ -172,17 +172,15 @@ public final class AdminSettingsCommand {
                                 if (player != null) {
                                     MSLogger.fine(
                                             player,
-                                            translatable(
-                                                    "ms.discord.skin.successfully_removed.minecraft",
-                                                    text(skinName)
-                                            )
+                                            DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT
+                                            .args(text(skinName))
                                     );
                                 }
 
                                 playerInfo.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                                         LanguageFile.renderTranslation(
-                                                translatable(
-                                                        "ms.discord.skin.successfully_removed",
+                                                DISCORD_SKIN_SUCCESSFULLY_REMOVED
+                                                .args(
                                                         text(skinName),
                                                         playerInfo.getDefaultName(),
                                                         text(playerInfo.getNickname())
@@ -213,8 +211,8 @@ public final class AdminSettingsCommand {
                                     playerFile.addSkin(skin);
                                     MSLogger.fine(
                                             sender,
-                                            translatable(
-                                                    "ms.command.player.settings.add.skin",
+                                            COMMAND_PLAYER_SETTINGS_ADD_SKIN
+                                            .args(
                                                     text(skinName),
                                                     playerInfo.getDefaultName(),
                                                     text(playerInfo.getNickname())
@@ -224,17 +222,15 @@ public final class AdminSettingsCommand {
                                     if (player != null) {
                                         MSLogger.fine(
                                                 player,
-                                                translatable(
-                                                        "ms.discord.skin.successfully_added.minecraft",
-                                                        text(skinName)
-                                                )
+                                                DISCORD_SKIN_SUCCESSFULLY_ADDED_MINECRAFT
+                                                .args(text(skinName))
                                         );
                                     }
 
                                     playerInfo.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                                             LanguageFile.renderTranslation(
-                                                    translatable(
-                                                            "ms.discord.skin.successfully_added",
+                                                    DISCORD_SKIN_SUCCESSFULLY_ADDED
+                                                    .args(
                                                             text(skinName),
                                                             playerInfo.getDefaultName(),
                                                             text(playerInfo.getNickname())
@@ -249,8 +245,8 @@ public final class AdminSettingsCommand {
 
                         MSLogger.severe(
                                 sender,
-                                translatable(
-                                        "ms.command.player.settings.add.skin.error",
+                                COMMAND_PLAYER_SETTINGS_ADD_SKIN_ERROR
+                                .args(
                                         text(skinName),
                                         playerInfo.getDefaultName(),
                                         text(playerInfo.getNickname())
@@ -260,13 +256,19 @@ public final class AdminSettingsCommand {
                         return true;
                     }
                     default -> {
-                        MSLogger.severe(sender, translatable("ms.command.player.settings.skin.use_one_of"));
+                        MSLogger.severe(
+                                sender,
+                                COMMAND_PLAYER_SETTINGS_SKIN_USE_ONE_OF
+                        );
                         return true;
                     }
                 }
             }
             default -> {
-                MSLogger.severe(sender, translatable("ms.command.player.settings.use_one_of"));
+                MSLogger.severe(
+                        sender,
+                        COMMAND_PLAYER_SETTINGS_USE_ONE_OF
+                );
                 return true;
             }
         }

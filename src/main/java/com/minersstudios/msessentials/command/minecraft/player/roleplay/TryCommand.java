@@ -18,12 +18,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.security.SecureRandom;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static com.minersstudios.msessentials.utility.MessageUtils.RolePlayActionType.ME;
 import static com.minersstudios.msessentials.utility.MessageUtils.sendRPEventMessage;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "try",
@@ -37,10 +37,9 @@ public final class TryCommand extends CommandExecutor<MSEssentials> {
             .then(argument("action", StringArgumentType.greedyString()))
             .build();
 
-    private static final TranslatableComponent MUTED = translatable("ms.command.mute.already.receiver");
-    private static final TranslatableComponent[] VARIANTS = new TranslatableComponent[]{
-            translatable("ms.command.try.variant.success", NamedTextColor.GREEN),
-            translatable("ms.command.try.variant.fail", NamedTextColor.RED)
+    private static final TranslatableComponent[] VARIANTS = new TranslatableComponent[] {
+            COMMAND_TRY_VARIANT_SUCCESS.color(NamedTextColor.GREEN),
+            COMMAND_TRY_VARIANT_FAIL.color(NamedTextColor.RED)
     };
 
     private final SecureRandom random = new SecureRandom();
@@ -60,7 +59,10 @@ public final class TryCommand extends CommandExecutor<MSEssentials> {
         final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
 
         if (playerInfo.isMuted()) {
-            MSLogger.warning(player, MUTED);
+            MSLogger.warning(
+                    player,
+                    COMMAND_MUTE_ALREADY_RECEIVER
+            );
             return true;
         }
 

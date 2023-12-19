@@ -1,24 +1,18 @@
 package com.minersstudios.msitem.command;
 
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msitem.api.CustomItem;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 public final class GiveCommand {
-    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
-    private static final TranslatableComponent PLAYER_NOT_ONLINE = translatable("ms.error.player_not_online");
-    private static final TranslatableComponent WRONG_ITEM = translatable("ms.command.msitem.give.wrong_item");
-    private static final TranslatableComponent WRONG_FORMAT = translatable("ms.error.wrong_format");
-    private static final TranslatableComponent GIVE_SUCCESS = translatable("ms.command.msitem.give.success");
 
     public static boolean runCommand(
             final @NotNull CommandSender sender,
@@ -34,14 +28,20 @@ public final class GiveCommand {
         final PlayerInfo playerInfo = PlayerInfo.fromString(MSEssentials.singleton(), playerArg);
 
         if (playerInfo == null) {
-            MSLogger.severe(sender, PLAYER_NOT_FOUND);
+            MSLogger.severe(
+                    sender,
+                    LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND
+            );
             return true;
         }
 
         final Player player = playerInfo.getOnlinePlayer();
 
         if (player == null) {
-            MSLogger.warning(sender, PLAYER_NOT_ONLINE);
+            MSLogger.warning(
+                    sender,
+                    LanguageRegistry.Components.ERROR_PLAYER_NOT_ONLINE
+            );
             return true;
         }
 
@@ -52,7 +52,10 @@ public final class GiveCommand {
                     try {
                         amount = Integer.parseInt(amountArg);
                     } catch (final NumberFormatException ignored) {
-                        MSLogger.severe(sender, WRONG_FORMAT);
+                        MSLogger.severe(
+                                sender,
+                                LanguageRegistry.Components.ERROR_WRONG_FORMAT
+                        );
                         return;
                     }
 
@@ -62,14 +65,18 @@ public final class GiveCommand {
                     player.getInventory().addItem(itemStack);
                     MSLogger.fine(
                             sender,
-                            GIVE_SUCCESS.args(
+                            LanguageRegistry.Components.COMMAND_MSITEM_GIVE_SUCCESS
+                            .args(
                                     text(amount),
                                     itemStack.displayName(),
                                     playerInfo.getDefaultName()
                             )
                     );
                 },
-                () -> MSLogger.severe(sender, WRONG_ITEM)
+                () -> MSLogger.severe(
+                        sender,
+                        LanguageRegistry.Components.COMMAND_MSITEM_GIVE_WRONG_ITEM
+                )
         );
 
         return true;

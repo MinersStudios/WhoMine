@@ -2,8 +2,9 @@ package com.minersstudios.msessentials.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.mscore.inventory.CustomInventory;
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.BlockUtils;
 import com.minersstudios.mscore.utility.DateUtils;
 import com.minersstudios.mscore.utility.PlayerUtils;
@@ -23,7 +24,6 @@ import com.mojang.authlib.GameProfile;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -50,11 +50,11 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static com.minersstudios.msessentials.utility.MessageUtils.RolePlayActionType.ME;
 import static com.minersstudios.msessentials.utility.MessageUtils.RolePlayActionType.TODO;
 import static com.minersstudios.msessentials.utility.MessageUtils.*;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 /**
  * Player info with player file, settings, etc. All player info stored in
@@ -80,19 +80,6 @@ public final class PlayerInfo {
     private Component grayIDGoldName;
     private Component grayIDGreenName;
     private BukkitTask joinTask;
-
-    private static final TranslatableComponent RP_SUCCESSFULLY_LOADED =        translatable("ms.resource_pack.successfully_loaded");
-    private static final TranslatableComponent RP_FAILED_DOWNLOAD_CONSOLE =    translatable("ms.resource_pack.failed_download.console");
-    private static final TranslatableComponent RP_FAILED_DOWNLOAD_TITLE =      translatable("ms.resource_pack.failed_download.receiver.title");
-    private static final TranslatableComponent RP_FAILED_DOWNLOAD_SUBTITLE =   translatable("ms.resource_pack.failed_download.receiver.subtitle");
-    private static final TranslatableComponent RP_DECLINED_CONSOLE =           translatable("ms.resource_pack.declined.console");
-    private static final TranslatableComponent RP_DECLINED_TITLE =             translatable("ms.resource_pack.declined.receiver.title");
-    private static final TranslatableComponent RP_DECLINED_SUBTITLE =          translatable("ms.resource_pack.declined.receiver.subtitle");
-    private static final TranslatableComponent SERVER_NOT_LOADED_TITLE =       translatable("ms.server_not_fully_loaded.title");
-    private static final TranslatableComponent SERVER_NOT_LOADED_SUBTITLE =    translatable("ms.server_not_fully_loaded.subtitle");
-    private static final TranslatableComponent SOMETHING_WENT_WRONG_TITLE =    translatable("ms.something_went_wrong.title");
-    private static final TranslatableComponent SOMETHING_WENT_WRONG_SUBTITLE = translatable("ms.something_went_wrong.subtitle");
-
 
     /**
      * Player info constructor
@@ -488,13 +475,16 @@ public final class PlayerInfo {
             final @Nullable Component message
     ) {
         final Player player = this.getOnlinePlayer();
+
         if (player == null) {
             return;
         }
 
         if (
-                (player.getVehicle() != null
-                && player.getVehicle().getType() != EntityType.ARMOR_STAND)
+                (
+                        player.getVehicle() != null
+                        && player.getVehicle().getType() != EntityType.ARMOR_STAND
+                )
                 || this.isSitting()
         ) {
             return;
@@ -512,7 +502,6 @@ public final class PlayerInfo {
                 armorStand.setCollidable(false);
                 armorStand.setSmall(true);
                 armorStand.addPassenger(player);
-                armorStand.addScoreboardTag("customDecor");
                 this.plugin.getCache().getSeats().put(player, armorStand);
             }
         );
@@ -598,8 +587,8 @@ public final class PlayerInfo {
 
             userWhiteList.remove(gameProfile);
             this.kickPlayer(
-                    translatable("ms.command.white_list.remove.receiver.message.title"),
-                    translatable("ms.command.white_list.remove.receiver.message.subtitle")
+                    COMMAND_WHITE_LIST_REMOVE_RECEIVER_MESSAGE_TITLE,
+                    COMMAND_WHITE_LIST_REMOVE_RECEIVER_MESSAGE_SUBTITLE
             );
         }
 
@@ -893,8 +882,8 @@ public final class PlayerInfo {
             if (this.isMuted()) {
                 MSLogger.warning(
                         sender,
-                        translatable(
-                                "ms.command.mute.already.sender",
+                        COMMAND_MUTE_ALREADY_SENDER
+                        .args(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
                         )
@@ -905,8 +894,8 @@ public final class PlayerInfo {
             muteMap.put(this.offlinePlayer, date, reason, sender.getName());
             MSLogger.fine(
                     sender,
-                    translatable(
-                            "ms.command.mute.message.sender",
+                    COMMAND_MUTE_MESSAGE_SENDER
+                    .args(
                             this.getGrayIDGreenName(),
                             text(this.nickname),
                             text(reason),
@@ -917,8 +906,8 @@ public final class PlayerInfo {
             if (player != null) {
                 MSLogger.warning(
                         player,
-                        translatable(
-                                "ms.command.mute.message.receiver",
+                        COMMAND_MUTE_MESSAGE_RECEIVER
+                        .args(
                                 text(reason),
                                 text(DateUtils.getSenderDate(date, sender))
                         )
@@ -928,8 +917,8 @@ public final class PlayerInfo {
             if (!this.isMuted()) {
                 MSLogger.warning(
                         sender,
-                        translatable(
-                                "ms.command.unmute.not_muted",
+                        COMMAND_UNMUTE_NOT_MUTED
+                        .args(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
                         )
@@ -940,15 +929,18 @@ public final class PlayerInfo {
             muteMap.remove(this.offlinePlayer);
             MSLogger.fine(
                     sender,
-                    translatable(
-                            "ms.command.unmute.sender.message",
+                    COMMAND_UNMUTE_SENDER_MESSAGE
+                    .args(
                             this.getGrayIDGreenName(),
                             text(this.nickname)
                     )
             );
 
             if (player != null) {
-                MSLogger.warning(player, translatable("ms.command.unmute.receiver.message"));
+                MSLogger.warning(
+                        player,
+                        COMMAND_UNMUTE_RECEIVER_MESSAGE
+                );
             }
         }
 
@@ -956,15 +948,13 @@ public final class PlayerInfo {
             this.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                     LanguageFile.renderTranslation(
                             value
-                            ? translatable(
-                                    "ms.discord.muted",
+                            ? DISCORD_MUTED.args(
                                     this.defaultName,
                                     text(this.nickname),
                                     text(reason),
                                     text(DateUtils.getSenderDate(date, player))
                             )
-                            : translatable(
-                                    "ms.discord.unmuted",
+                            : DISCORD_UNMUTED.args(
                                     this.defaultName,
                                     text(this.nickname)
                             )
@@ -996,7 +986,8 @@ public final class PlayerInfo {
 
     /**
      * @return The ban reason of the player from {@link BanList.Type#PROFILE}
-     *         or "ms.command.ban.default_reason" if the reason is null
+     *         or {@link LanguageRegistry.Components#COMMAND_BAN_DEFAULT_REASON}
+     *         if the reason is null
      * @throws IllegalStateException If the player is not banned,
      *                               check {@link #isBanned()} first
      * @see BanEntry#getReason()
@@ -1009,7 +1000,9 @@ public final class PlayerInfo {
         }
 
         final String reason = banEntry.getReason();
-        return reason == null ? LanguageFile.renderTranslationComponent("ms.command.ban.default_reason") : text(reason);
+        return reason == null
+                ? COMMAND_BAN_DEFAULT_REASON
+                : text(reason);
     }
 
     /**
@@ -1122,7 +1115,7 @@ public final class PlayerInfo {
 
         final Date expiration = banEntry.getExpiration();
         return expiration == null
-                ? translatable("ms.command.ban.time.forever")
+                ? COMMAND_BAN_TIME_FOREVER
                 : text(DateUtils.getSenderDate(expiration.toInstant(), sender));
     }
 
@@ -1144,7 +1137,7 @@ public final class PlayerInfo {
 
         final Date expiration = banEntry.getExpiration();
         return expiration == null
-                ? translatable("ms.command.ban.time.forever")
+                ? COMMAND_BAN_TIME_FOREVER
                 : text(DateUtils.getDate(expiration.toInstant(), address));
     }
 
@@ -1210,8 +1203,8 @@ public final class PlayerInfo {
             if (this.isBanned()) {
                 MSLogger.warning(
                         sender,
-                        translatable(
-                                "ms.command.ban.already.sender",
+                        COMMAND_BAN_ALREADY_SENDER
+                        .args(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
                         )
@@ -1221,17 +1214,17 @@ public final class PlayerInfo {
 
             banList.addBan(this.profile, reason, Date.from(date), commandSender.getName());
             this.kickPlayer(
-                    translatable("ms.command.ban.message.receiver.title"),
-                    translatable(
-                            "ms.command.ban.message.receiver.subtitle",
+                    COMMAND_BAN_MESSAGE_RECEIVER_TITLE,
+                    COMMAND_BAN_MESSAGE_RECEIVER_SUBTITLE
+                    .args(
                             text(reason),
                             text(DateUtils.getSenderDate(date, player))
                     )
             );
             MSLogger.fine(
                     sender,
-                    translatable(
-                            "ms.command.ban.message.sender",
+                    COMMAND_BAN_MESSAGE_SENDER
+                    .args(
                             this.getGrayIDGreenName(),
                             text(this.nickname),
                             text(reason),
@@ -1242,8 +1235,8 @@ public final class PlayerInfo {
             if (!this.isBanned()) {
                 MSLogger.warning(
                         sender,
-                        translatable(
-                                "ms.command.unban.not_banned",
+                        COMMAND_UNBAN_NOT_BANNED
+                        .args(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
                         )
@@ -1254,8 +1247,8 @@ public final class PlayerInfo {
             banList.pardon(this.profile);
             MSLogger.fine(
                     sender,
-                    translatable(
-                            "ms.command.unban.message.sender",
+                    COMMAND_UNBAN_MESSAGE_SENDER
+                    .args(
                             this.getGrayIDGreenName(),
                             text(this.nickname)
                     )
@@ -1266,15 +1259,13 @@ public final class PlayerInfo {
             this.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                     LanguageFile.renderTranslation(
                             value
-                            ? translatable(
-                                    "ms.discord.banned",
+                            ? DISCORD_BANNED.args(
                                     this.defaultName,
                                     text(this.nickname),
                                     text(reason),
                                     text(DateUtils.getSenderDate(date, player))
                             )
-                            : translatable(
-                                    "ms.discord.unbanned",
+                            : DISCORD_UNBANNED.args(
                                     this.defaultName,
                                     text(this.nickname)
                             )
@@ -1510,7 +1501,10 @@ public final class PlayerInfo {
         final ResourcePack.Type type = playerSettings.getResourcePackType();
 
         if (!ResourcePack.isResourcePackLoaded()) {
-            this.kickPlayer(SERVER_NOT_LOADED_TITLE, SERVER_NOT_LOADED_SUBTITLE);
+            this.kickPlayer(
+                    SERVER_NOT_FULLY_LOADED_TITLE,
+                    SERVER_NOT_FULLY_LOADED_SUBTITLE
+            );
             return CompletableFuture.completedFuture(false);
         }
 
@@ -1537,7 +1531,8 @@ public final class PlayerInfo {
                             switch (status) {
                                 case SUCCESSFULLY_LOADED -> {
                                     componentLogger.info(
-                                            RP_SUCCESSFULLY_LOADED.args(text(this.nickname, NamedTextColor.GREEN))
+                                            RESOURCE_PACK_SUCCESSFULLY_LOADED
+                                            .args(text(this.nickname, NamedTextColor.GREEN))
                                     );
                                     return true;
                                 }
@@ -1546,20 +1541,22 @@ public final class PlayerInfo {
                                     playerSettings.save();
 
                                     componentLogger.warn(
-                                            RP_FAILED_DOWNLOAD_CONSOLE.args(text(this.nickname, NamedTextColor.GOLD))
+                                            RESOURCE_PACK_FAILED_DOWNLOAD_CONSOLE
+                                            .args(text(this.nickname, NamedTextColor.GOLD))
                                     );
                                     this.kickPlayer(
-                                            RP_FAILED_DOWNLOAD_TITLE,
-                                            RP_FAILED_DOWNLOAD_SUBTITLE
+                                            RESOURCE_PACK_FAILED_DOWNLOAD_RECEIVER_TITLE,
+                                            RESOURCE_PACK_FAILED_DOWNLOAD_RECEIVER_SUBTITLE
                                     );
                                 }
                                 case DECLINED -> {
                                     componentLogger.warn(
-                                            RP_DECLINED_CONSOLE.args(text(this.nickname, NamedTextColor.GOLD))
+                                            RESOURCE_PACK_DECLINED_CONSOLE
+                                            .args(text(this.nickname, NamedTextColor.GOLD))
                                     );
                                     this.kickPlayer(
-                                            RP_DECLINED_TITLE,
-                                            RP_DECLINED_SUBTITLE
+                                            RESOURCE_PACK_DECLINED_RECEIVER_TITLE,
+                                            RESOURCE_PACK_DECLINED_RECEIVER_SUBTITLE
                                     );
                                 }
                             }
@@ -1571,7 +1568,10 @@ public final class PlayerInfo {
                                             "An error occurred while sending the resource pack to " + this.nickname,
                                             throwable
                                     );
-                                    this.kickPlayer(SOMETHING_WENT_WRONG_TITLE, SOMETHING_WENT_WRONG_SUBTITLE);
+                                    this.kickPlayer(
+                                            SOMETHING_WENT_WRONG_TITLE,
+                                            SOMETHING_WENT_WRONG_SUBTITLE
+                                    );
 
                                     return false;
                                 }
@@ -1667,11 +1667,12 @@ public final class PlayerInfo {
 
         this.playerFile.save();
         this.plugin.getComponentLogger().info(
-                translatable(
-                        "ms.info.player_file_created",
+                INFO_PLAYER_FILE_CREATED
+                .args(
                         text(this.nickname),
                         text(this.offlinePlayer.getUniqueId().toString())
-                ).color(NamedTextColor.GREEN)
+                )
+                .color(NamedTextColor.GREEN)
         );
     }
 
@@ -1706,11 +1707,12 @@ public final class PlayerInfo {
 
         this.handleQuit(player);
         player.kick(
-                translatable(
-                        "ms.format.leave.message",
+                FORMAT_LEAVE_MESSAGE
+                .args(
                         title.color(NamedTextColor.RED).decorate(TextDecoration.BOLD),
                         reason.color(NamedTextColor.GRAY)
-                ).color(NamedTextColor.DARK_GRAY)
+                )
+                .color(NamedTextColor.DARK_GRAY)
         );
     }
 

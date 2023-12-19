@@ -19,7 +19,7 @@ public abstract class AbstractDiscordListener<P extends MSPlugin<P>> extends Lis
     @Override
     public final @NotNull P getPlugin() throws IllegalStateException {
         if (!this.isRegistered()) {
-            throw new IllegalStateException("Listener " + this + " not registered!");
+            throw new IllegalStateException("Discord listener " + this + " not registered!");
         }
 
         return this.plugin;
@@ -36,7 +36,7 @@ public abstract class AbstractDiscordListener<P extends MSPlugin<P>> extends Lis
     @Override
     public final void register(final @NotNull P plugin) throws IllegalStateException {
         if (this.isRegistered()) {
-            throw new IllegalStateException("Listener " + this + " already registered!");
+            throw new IllegalStateException("Discord listener " + this + " already registered!");
         }
 
         this.plugin = plugin;

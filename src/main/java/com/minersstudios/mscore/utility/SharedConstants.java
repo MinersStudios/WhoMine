@@ -17,6 +17,7 @@ public final class SharedConstants {
     public static final String DATE_FORMAT =                           "EEE, yyyy-MM-dd HH:mm z";
     public static final String LANGUAGE_CODE =                         "ru_ru";
     public static final String LANGUAGE_FOLDER_LINK =                  "https://github.com/MinersStudios/WMTranslations/raw/release/lang/";
+    public static final String DISCORD_LINK =                         "https://discord.whomine.net";
     public static final String INVISIBLE_ITEM_FRAME_TAG =              "invisibleItemFrame";
     public static final int SIT_RANGE =                                9;
 

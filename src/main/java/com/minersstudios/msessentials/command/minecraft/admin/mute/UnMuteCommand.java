@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.command.minecraft.admin.mute;
 
 import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.DateUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -12,7 +13,6 @@ import com.minersstudios.msessentials.player.collection.IDMap;
 import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -25,7 +25,6 @@ import java.util.List;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "unmute",
@@ -39,7 +38,6 @@ public final class UnMuteCommand extends CommandExecutor<MSEssentials> {
             literal("unmute")
             .then(argument("id/никнейм", StringArgumentType.word()))
             .build();
-    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
 
     @Override
     public boolean onCommand(
@@ -55,11 +53,15 @@ public final class UnMuteCommand extends CommandExecutor<MSEssentials> {
         final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
-            MSLogger.severe(sender, PLAYER_NOT_FOUND);
+            MSLogger.severe(
+                    sender,
+                    LanguageRegistry.Strings.ERROR_PLAYER_NOT_FOUND
+            );
             return true;
         }
 
         playerInfo.unmute(sender);
+
         return true;
     }
 

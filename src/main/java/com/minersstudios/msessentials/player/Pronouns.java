@@ -5,7 +5,7 @@ import com.minersstudios.mscore.language.LanguageFile;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
-import static net.kyori.adventure.text.Component.translatable;
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 
 /**
  * Pronouns enum with custom messages.
@@ -15,43 +15,43 @@ import static net.kyori.adventure.text.Component.translatable;
  */
 public enum Pronouns {
     HE(
-            translatable("ms.player.pronouns.he.join"),
-            translatable("ms.player.pronouns.he.quit"),
-            translatable("ms.player.pronouns.he.spit"),
-            translatable("ms.player.pronouns.he.fart"),
-            translatable("ms.player.pronouns.he.pronouns"),
-            translatable("ms.player.pronouns.he.traveler"),
-            translatable("ms.player.pronouns.he.sit"),
-            translatable("ms.player.pronouns.he.get_up"),
-            translatable("ms.player.pronouns.he.death"),
-            translatable("ms.player.pronouns.he.kill"),
-            translatable("ms.player.pronouns.he.said")
+            PLAYER_PRONOUNS_HE_JOIN,
+            PLAYER_PRONOUNS_HE_QUIT,
+            PLAYER_PRONOUNS_HE_SPIT,
+            PLAYER_PRONOUNS_HE_FART,
+            PLAYER_PRONOUNS_HE_PRONOUNS,
+            PLAYER_PRONOUNS_HE_TRAVELER,
+            PLAYER_PRONOUNS_HE_SIT,
+            PLAYER_PRONOUNS_HE_GET_UP,
+            PLAYER_PRONOUNS_HE_DEATH,
+            PLAYER_PRONOUNS_HE_KILL,
+            PLAYER_PRONOUNS_HE_SAID
     ),
     SHE(
-            translatable("ms.player.pronouns.she.join"),
-            translatable("ms.player.pronouns.she.quit"),
-            translatable("ms.player.pronouns.she.spit"),
-            translatable("ms.player.pronouns.she.fart"),
-            translatable("ms.player.pronouns.she.pronouns"),
-            translatable("ms.player.pronouns.she.traveler"),
-            translatable("ms.player.pronouns.she.sit"),
-            translatable("ms.player.pronouns.she.get_up"),
-            translatable("ms.player.pronouns.she.death"),
-            translatable("ms.player.pronouns.she.kill"),
-            translatable("ms.player.pronouns.she.said")
+            PLAYER_PRONOUNS_SHE_JOIN,
+            PLAYER_PRONOUNS_SHE_QUIT,
+            PLAYER_PRONOUNS_SHE_SPIT,
+            PLAYER_PRONOUNS_SHE_FART,
+            PLAYER_PRONOUNS_SHE_PRONOUNS,
+            PLAYER_PRONOUNS_SHE_TRAVELER,
+            PLAYER_PRONOUNS_SHE_SIT,
+            PLAYER_PRONOUNS_SHE_GET_UP,
+            PLAYER_PRONOUNS_SHE_DEATH,
+            PLAYER_PRONOUNS_SHE_KILL,
+            PLAYER_PRONOUNS_SHE_SAID
     ),
     THEY(
-            translatable("ms.player.pronouns.they.join"),
-            translatable("ms.player.pronouns.they.quit"),
-            translatable("ms.player.pronouns.they.spit"),
-            translatable("ms.player.pronouns.they.fart"),
-            translatable("ms.player.pronouns.they.pronouns"),
-            translatable("ms.player.pronouns.they.traveler"),
-            translatable("ms.player.pronouns.they.sit"),
-            translatable("ms.player.pronouns.they.get_up"),
-            translatable("ms.player.pronouns.they.death"),
-            translatable("ms.player.pronouns.they.kill"),
-            translatable("ms.player.pronouns.they.said")
+            PLAYER_PRONOUNS_THEY_JOIN,
+            PLAYER_PRONOUNS_THEY_QUIT,
+            PLAYER_PRONOUNS_THEY_SPIT,
+            PLAYER_PRONOUNS_THEY_FART,
+            PLAYER_PRONOUNS_THEY_PRONOUNS,
+            PLAYER_PRONOUNS_THEY_TRAVELER,
+            PLAYER_PRONOUNS_THEY_SIT,
+            PLAYER_PRONOUNS_THEY_GET_UP,
+            PLAYER_PRONOUNS_THEY_DEATH,
+            PLAYER_PRONOUNS_THEY_KILL,
+            PLAYER_PRONOUNS_THEY_SAID
     );
 
     private final Component joinMessage;

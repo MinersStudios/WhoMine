@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.discord;
 
-import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
@@ -19,7 +19,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.Presence;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,9 +45,6 @@ public final class DiscordHandler {
     private TextChannel globalChannel;
     private TextChannel localChannel;
     private Role memberRole;
-
-    private static final String SERVER_ENABLED = LanguageFile.renderTranslation("ms.discord.server.enabled");
-    private static final TranslatableComponent DISCORD_BOT_STATUS = Component.translatable("ms.discord.bot.status");
 
     /**
      * Constructor for the DiscordHandler class
@@ -512,15 +508,18 @@ public final class DiscordHandler {
 
             presence.setActivity(
                     Activity.playing(ChatUtils.serializePlainComponent(
-                            DISCORD_BOT_STATUS.args(Component.text(this.plugin.getServer().getMinecraftVersion())))
+                            LanguageRegistry.Components.DISCORD_BOT_STATUS
+                            .args(
+                                    Component.text(this.plugin.getServer().getMinecraftVersion())
+                            ))
                     )
             );
 
             this.reloadDiscordListeners();
             this.reloadSlashCommands();
 
-            this.sendMessage(ChatType.GLOBAL, SERVER_ENABLED);
-            this.sendMessage(ChatType.LOCAL, SERVER_ENABLED);
+            this.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_ENABLED);
+            this.sendMessage(ChatType.LOCAL, LanguageRegistry.Strings.DISCORD_SERVER_ENABLED);
 
             this.plugin.setLoadedCustoms(true);
         });

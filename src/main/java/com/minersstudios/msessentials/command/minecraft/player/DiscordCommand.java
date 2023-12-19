@@ -23,9 +23,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.utility.SharedConstants.DISCORD_LINK;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
 
 @Command(
@@ -43,20 +44,16 @@ public final class DiscordCommand extends CommandExecutor<MSEssentials> {
             .then(literal("unlink"))
             .build();
 
-    private static final String DISCORD_LINK = "https://discord.whomine.net";
     private static final TranslatableComponent DISCORD_MESSAGE =
-            translatable(
-                    "ms.command.discord",
+            COMMAND_DISCORD
+            .args(
                     text(DISCORD_LINK)
-                    .hoverEvent(showText(translatable("ms.link.hover", NamedTextColor.GRAY)))
+                    .hoverEvent(showText(LINK_HOVER.color(NamedTextColor.GRAY)))
                     .clickEvent(ClickEvent.openUrl(DISCORD_LINK)),
                     text("/discord link")
-                    .hoverEvent(showText(translatable("ms.command.hover.run", NamedTextColor.GRAY)))
+                    .hoverEvent(showText(COMMAND_HOVER_RUN.color(NamedTextColor.GRAY)))
                     .clickEvent(ClickEvent.runCommand("/discord link"))
             );
-    private static final TranslatableComponent NO_LINKS = translatable("ms.command.discord.unlink.no_links");
-    private static final TranslatableComponent UNLINK_SUCCESS_DISCORD = translatable("ms.command.discord.unlink.discord.success");
-    private static final TranslatableComponent UNLINK_SUCCESS_MINECRAFT = translatable("ms.command.discord.unlink.minecraft.success");
 
     @Override
     public boolean onCommand(
@@ -75,7 +72,10 @@ public final class DiscordCommand extends CommandExecutor<MSEssentials> {
                     final long id = playerInfo.unlinkDiscord();
 
                     if (id == -1L) {
-                        MSLogger.warning(sender, NO_LINKS);
+                        MSLogger.warning(
+                                sender,
+                                COMMAND_DISCORD_UNLINK_NO_LINKS
+                        );
                         return true;
                     }
 
@@ -87,7 +87,8 @@ public final class DiscordCommand extends CommandExecutor<MSEssentials> {
                                 user,
                                 BotHandler.craftEmbed(
                                         LanguageFile.renderTranslation(
-                                                UNLINK_SUCCESS_DISCORD.args(
+                                                COMMAND_DISCORD_UNLINK_DISCORD_SUCCESS
+                                                .args(
                                                         playerInfo.getDefaultName(),
                                                         text(player.getName())
                                                 )
@@ -96,7 +97,8 @@ public final class DiscordCommand extends CommandExecutor<MSEssentials> {
                         );
                         MSLogger.fine(
                                 player,
-                                UNLINK_SUCCESS_MINECRAFT.args(text(user.getName()))
+                                COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS
+                                .args(text(user.getName()))
                         );
                     });
                 }

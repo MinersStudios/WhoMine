@@ -1,11 +1,11 @@
 package com.minersstudios.msessentials.listener.impl.event.inventory;
 
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.world.WorldDark;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,11 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @EventListener
 public final class InventoryClickListener extends AbstractEventListener<MSEssentials> {
-    private static final TranslatableComponent REMOVED_ITEM = translatable("ms.info.player_item_removed");
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryClick(final @NotNull InventoryClickEvent event) {
@@ -62,7 +60,8 @@ public final class InventoryClickListener extends AbstractEventListener<MSEssent
             if (remove) {
                 clickedInventory.setItem(slot, new ItemStack(Material.AIR));
                 MSLogger.warning(
-                        REMOVED_ITEM.args(
+                        LanguageRegistry.Components.INFO_PLAYER_ITEM_REMOVED
+                        .args(
                                 player.name(),
                                 text(currentItem.toString())
                         )

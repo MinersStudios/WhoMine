@@ -7,7 +7,6 @@ import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -19,8 +18,8 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "getmaplocation",
@@ -34,11 +33,6 @@ import static net.kyori.adventure.text.Component.translatable;
 public final class GetMapLocationCommand extends CommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE = LiteralArgumentBuilder.literal("getmaplocation").build();
 
-    private static final TranslatableComponent NO_MAP_IN_RIGHT_HAND = translatable("ms.command.get_map_location.no_map_in_right_hand");
-    private static final TranslatableComponent SOMETHING_WENT_WRONG = translatable("ms.error.something_went_wrong");
-    private static final TranslatableComponent GET_MAP_LOCATION_FORMAT = translatable("ms.command.get_map_location.format");
-    private static final TranslatableComponent COMMAND_BUTTON_TEXT = translatable("ms.command.get_map_location.command_button_text");
-
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
@@ -49,14 +43,23 @@ public final class GetMapLocationCommand extends CommandExecutor<MSEssentials> {
         final Player player = (Player) sender;
 
         if (!(player.getInventory().getItemInMainHand().getItemMeta() instanceof final MapMeta mapMeta)) {
-            MSLogger.warning(player, NO_MAP_IN_RIGHT_HAND);
+            MSLogger.warning(
+                    player,
+                    COMMAND_GET_MAP_LOCATION_NO_MAP_IN_RIGHT_HAND
+            );
             return true;
         }
 
         final MapView mapView = mapMeta.getMapView();
 
-        if (mapView == null || mapView.getWorld() == null) {
-            MSLogger.severe(sender, SOMETHING_WENT_WRONG);
+        if (
+                mapView == null
+                || mapView.getWorld() == null
+        ) {
+            MSLogger.severe(
+                    sender,
+                    ERROR_SOMETHING_WENT_WRONG
+            );
             return true;
         }
 
@@ -66,14 +69,15 @@ public final class GetMapLocationCommand extends CommandExecutor<MSEssentials> {
 
         MSLogger.warning(
                 player,
-                GET_MAP_LOCATION_FORMAT.args(
+                COMMAND_GET_MAP_LOCATION_FORMAT
+                .args(
                         text(mapView.getWorld().getName(), NamedTextColor.WHITE),
                         text(x, NamedTextColor.WHITE),
                         text(y, NamedTextColor.WHITE),
                         text(z, NamedTextColor.WHITE),
-                        COMMAND_BUTTON_TEXT
-                        .decorate(TextDecoration.BOLD)
-                        .clickEvent(ClickEvent.runCommand("/tp " + x + " " + y + " " + z))
+                        COMMAND_GET_MAP_LOCATION_COMMAND_BUTTON_TEXT
+                                .decorate(TextDecoration.BOLD)
+                                .clickEvent(ClickEvent.runCommand("/tp " + x + " " + y + " " + z))
                 )
         );
         return true;

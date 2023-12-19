@@ -21,11 +21,9 @@ public interface MSListener<P extends MSPlugin<P>> {
      * Registers this listener to the plugin
      *
      * @param plugin The plugin to register this listener to
-     * @throws IllegalStateException    If this listener is already registered
-     * @throws IllegalArgumentException If the plugin is not assignable from
-     *                                  this class
+     * @throws IllegalStateException If this listener is already registered
      */
-    void register(final @NotNull P plugin) throws IllegalStateException, IllegalArgumentException;
+    void register(final @NotNull P plugin) throws IllegalStateException;
 
     /**
      * @return A string representation of this listener

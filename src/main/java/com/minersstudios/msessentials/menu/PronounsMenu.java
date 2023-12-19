@@ -2,7 +2,6 @@ package com.minersstudios.msessentials.menu;
 
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
-import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
@@ -19,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import static net.kyori.adventure.text.Component.translatable;
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 
 public final class PronounsMenu {
     private static final CustomInventory INVENTORY;
@@ -29,8 +28,8 @@ public final class PronounsMenu {
         final ItemMeta heMeta = heItem.getItemMeta();
         final var loreHe = new ArrayList<Component>();
 
-        heMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.pronouns.button.he.title").style(ChatUtils.DEFAULT_STYLE));
-        loreHe.add(LanguageFile.renderTranslationComponent("ms.menu.pronouns.button.he.lore").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
+        heMeta.displayName(MENU_PRONOUNS_BUTTON_HE_TITLE.style(ChatUtils.DEFAULT_STYLE));
+        loreHe.add(MENU_PRONOUNS_BUTTON_HE_LORE.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
         heMeta.lore(loreHe);
         heItem.setItemMeta(heMeta);
 
@@ -38,8 +37,8 @@ public final class PronounsMenu {
         final ItemMeta sheMeta = sheItem.getItemMeta();
         final var loreShe = new ArrayList<Component>();
 
-        sheMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.pronouns.button.she.title").style(ChatUtils.DEFAULT_STYLE));
-        loreShe.add(LanguageFile.renderTranslationComponent("ms.menu.pronouns.button.she.lore").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
+        sheMeta.displayName(MENU_PRONOUNS_BUTTON_SHE_TITLE.style(ChatUtils.DEFAULT_STYLE));
+        loreShe.add(MENU_PRONOUNS_BUTTON_SHE_LORE.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
         sheMeta.lore(loreShe);
         sheItem.setItemMeta(sheMeta);
 
@@ -47,8 +46,8 @@ public final class PronounsMenu {
         final ItemMeta theyMeta = theyItem.getItemMeta();
         final var loreThey = new ArrayList<Component>();
 
-        theyMeta.displayName(LanguageFile.renderTranslationComponent("ms.menu.pronouns.button.they.title").style(ChatUtils.DEFAULT_STYLE));
-        loreThey.add(LanguageFile.renderTranslationComponent("ms.menu.pronouns.button.they.lore").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
+        theyMeta.displayName(MENU_PRONOUNS_BUTTON_THEY_TITLE.style(ChatUtils.DEFAULT_STYLE));
+        loreThey.add(MENU_PRONOUNS_BUTTON_THEY_LORE.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
         theyMeta.lore(loreThey);
         theyItem.setItemMeta(theyMeta);
 
@@ -85,7 +84,11 @@ public final class PronounsMenu {
             player.closeInventory();
         });
 
-        INVENTORY = CustomInventory.single(translatable("ms.menu.pronouns.title", ChatUtils.DEFAULT_STYLE), 1)
+        INVENTORY =
+                CustomInventory.single(
+                        MENU_PRONOUNS_TITLE.style(ChatUtils.DEFAULT_STYLE),
+                        1
+                )
                 .buttonAt(0, heButton)
                 .buttonAt(1, heButton)
                 .buttonAt(2, heButton)

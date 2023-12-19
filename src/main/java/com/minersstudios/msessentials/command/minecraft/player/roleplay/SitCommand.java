@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.command.minecraft.player.roleplay;
 
 import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -10,7 +11,6 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "sit",
@@ -34,9 +33,6 @@ public final class SitCommand extends CommandExecutor<MSEssentials> {
             .then(argument("speech", StringArgumentType.greedyString()))
             .build();
 
-    private static final TranslatableComponent MUTED = translatable("ms.command.mute.already.receiver");
-    private static final TranslatableComponent IN_AIR = translatable("ms.command.sit.in_air");
-
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
@@ -48,7 +44,10 @@ public final class SitCommand extends CommandExecutor<MSEssentials> {
         final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
 
         if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
-            MSLogger.warning(player, IN_AIR);
+            MSLogger.warning(
+                    player,
+                    LanguageRegistry.Components.COMMAND_SIT_IN_AIR
+            );
             return true;
         }
 
@@ -59,7 +58,10 @@ public final class SitCommand extends CommandExecutor<MSEssentials> {
                 message != null
                 && playerInfo.isMuted()
         ) {
-            MSLogger.warning(player, MUTED);
+            MSLogger.warning(
+                    player,
+                    LanguageRegistry.Components.COMMAND_MUTE_ALREADY_RECEIVER
+            );
             return true;
         }
 

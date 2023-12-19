@@ -11,7 +11,6 @@ import com.minersstudios.msessentials.utility.MSPlayerUtils;
 import com.minersstudios.msessentials.world.WorldDark;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import org.bukkit.Location;
@@ -25,10 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "worldteleport",
@@ -55,11 +54,6 @@ public final class WorldTeleportCommand extends CommandExecutor<MSEssentials> {
                     )
             ).build();
 
-    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
-    private static final TranslatableComponent WORLD_NOT_FOUND = translatable("ms.command.world_teleport.world_not_found");
-    private static final TranslatableComponent TOO_BIG_COORDINATES = translatable("ms.command.world_teleport.too_big_coordinates");
-    private static final TranslatableComponent TELEPORT_SUCCESS = translatable("ms.command.world_teleport.sender.message");
-
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
@@ -74,21 +68,30 @@ public final class WorldTeleportCommand extends CommandExecutor<MSEssentials> {
         final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
-            MSLogger.severe(sender, PLAYER_NOT_FOUND);
+            MSLogger.severe(
+                    sender,
+                    ERROR_PLAYER_NOT_FOUND
+            );
             return true;
         }
 
         final Player player = playerInfo.getOnlinePlayer();
 
         if (player == null) {
-            MSLogger.warning(sender, PLAYER_NOT_FOUND);
+            MSLogger.severe(
+                    sender,
+                    ERROR_PLAYER_NOT_FOUND
+            );
             return true;
         }
 
         final World world = sender.getServer().getWorld(args[1]);
 
         if (world == null) {
-            MSLogger.warning(sender, WORLD_NOT_FOUND);
+            MSLogger.severe(
+                    sender,
+                    COMMAND_WORLD_TELEPORT_WORLD_NOT_FOUND
+            );
             return true;
         }
 
@@ -104,7 +107,10 @@ public final class WorldTeleportCommand extends CommandExecutor<MSEssentials> {
             }
 
             if (x > 29999984 || z > 29999984) {
-                MSLogger.warning(sender, TOO_BIG_COORDINATES);
+                MSLogger.severe(
+                        sender,
+                        COMMAND_WORLD_TELEPORT_TOO_BIG_COORDINATES
+                );
                 return true;
             }
         } else {
@@ -118,7 +124,8 @@ public final class WorldTeleportCommand extends CommandExecutor<MSEssentials> {
         .thenRun(
             () -> MSLogger.fine(
                     sender,
-                    TELEPORT_SUCCESS.args(
+                    COMMAND_WORLD_TELEPORT_SENDER_MESSAGE
+                    .args(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(world.getName()),

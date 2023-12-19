@@ -18,7 +18,7 @@ import static com.minersstudios.mscore.language.LanguageFile.renderTranslationCo
  * @see LanguageFile
  * @see <a href="https://whomine.net/lang">Translations repository</a>
  */
-public class LanguageRegistry {
+public final class LanguageRegistry {
 
     @Contract(" -> fail")
     private LanguageRegistry() {

@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.command.discord;
 
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.command.InteractionHandler;
@@ -11,22 +12,15 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import static com.minersstudios.mscore.language.LanguageFile.renderTranslation;
+import static com.minersstudios.mscore.language.LanguageRegistry.Strings.*;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @SlashCommand
 public final class AddSkinCommand extends SlashCommandExecutor<MSEssentials> {
-    private static final String SERVICE_UNAVAILABLE = renderTranslation("ms.discord.skin.service_unavailable");
-    private static final String INVALID_IMG = renderTranslation("ms.discord.skin.invalid_img");
-    private static final String INVALID_NAME = renderTranslation("ms.discord.skin.invalid_name_regex");
-    private static final TranslatableComponent ALREADY_SET = translatable("ms.discord.skin.already_set");
-    private static final TranslatableComponent SKIN_SUCCESSFULLY_ADDED = translatable("ms.discord.skin.successfully_added");
-    private static final TranslatableComponent SKIN_SUCCESSFULLY_ADDED_MINE = translatable("ms.discord.skin.successfully_added.minecraft");
 
     public AddSkinCommand() {
         super(
@@ -69,21 +63,22 @@ public final class AddSkinCommand extends SlashCommandExecutor<MSEssentials> {
         final OptionMapping nameOption = interaction.getOption("name");
 
         if (nameOption == null) {
-            handler.send(INVALID_NAME);
+            handler.send(DISCORD_SKIN_INVALID_NAME_REGEX);
             return;
         }
 
         final String name = nameOption.getAsString();
 
         if (!Skin.matchesNameRegex(name)) {
-            handler.send(INVALID_NAME);
+            handler.send(DISCORD_SKIN_INVALID_NAME_REGEX);
             return;
         }
 
         if (playerInfo.getPlayerFile().containsSkin(name)) {
             handler.send(
                     renderTranslation(
-                            ALREADY_SET.args(
+                            LanguageRegistry.Components.DISCORD_SKIN_ALREADY_SET
+                            .args(
                                     playerInfo.getDefaultName(),
                                     text(playerInfo.getNickname())
                             )
@@ -105,12 +100,12 @@ public final class AddSkinCommand extends SlashCommandExecutor<MSEssentials> {
                 final Skin skin = Skin.create(this.getPlugin(), name, urlOption.getAsString());
 
                 if (skin == null) {
-                    handler.send(SERVICE_UNAVAILABLE);
+                    handler.send(DISCORD_SKIN_SERVICE_UNAVAILABLE);
                 } else {
                     addSkin(handler, playerInfo, skin);
                 }
             } catch (final IllegalArgumentException ignored) {
-                handler.send(INVALID_IMG);
+                handler.send(DISCORD_SKIN_INVALID_IMG);
             }
         } else if (
                 urlOption == null
@@ -128,7 +123,7 @@ public final class AddSkinCommand extends SlashCommandExecutor<MSEssentials> {
                         )
                 );
             } catch (final IllegalArgumentException ignored) {
-                handler.send(INVALID_IMG);
+                handler.send(DISCORD_SKIN_INVALID_IMG);
             }
         } else {
             handler.send("Invalid arguments!");
@@ -146,7 +141,8 @@ public final class AddSkinCommand extends SlashCommandExecutor<MSEssentials> {
         playerInfo.getPlayerFile().addSkin(skin);
         handler.sendEmbed(
                 renderTranslation(
-                        SKIN_SUCCESSFULLY_ADDED.args(
+                        LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_ADDED
+                        .args(
                                 text(skinName),
                                 playerInfo.getDefaultName(),
                                 text(playerInfo.getNickname())
@@ -155,7 +151,10 @@ public final class AddSkinCommand extends SlashCommandExecutor<MSEssentials> {
         );
 
         if (onlinePlayer != null) {
-            MSLogger.fine(onlinePlayer, SKIN_SUCCESSFULLY_ADDED_MINE.args(text(skinName)));
+            MSLogger.fine(
+                    onlinePlayer,
+                    LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_ADDED_MINECRAFT.args(text(skinName))
+            );
         }
     }
 }

@@ -29,8 +29,10 @@ public class DamageableItem {
     protected int maxDamage;
     protected int realDamage;
 
-    public static final NamespacedKey MAX_DAMAGE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, "max_damage");
-    public static final NamespacedKey REAL_DAMAGE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, "real_damage");
+    public static final String MAX_DAMAGE_KEY = "max_damage";
+    public static final String REAL_DAMAGE_KEY = "real_damage";
+    public static final NamespacedKey MAX_DAMAGE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, MAX_DAMAGE_KEY);
+    public static final NamespacedKey REAL_DAMAGE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, REAL_DAMAGE_KEY);
 
     private static final TranslatableComponent DURABILITY = translatable("item.durability");
 

@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.listener.impl.event.chat;
 
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
@@ -9,7 +10,6 @@ import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.utility.MessageUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,12 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Instant;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @EventListener
 public final class AsyncChatListener extends AbstractEventListener<MSEssentials> {
-    private static final TranslatableComponent MUTED = translatable("ms.command.mute.already.receiver");
-    private static final TranslatableComponent YOU_CANT_DO_THIS_NOW = translatable("ms.warning.you_cant_do_this_now");
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onAsyncChat(final @NotNull AsyncChatEvent event) {
@@ -37,7 +34,10 @@ public final class AsyncChatListener extends AbstractEventListener<MSEssentials>
                 playerInfo.isInWorldDark()
                 || !playerInfo.isAuthenticated()
         ) {
-            MSLogger.warning(event.getPlayer(), YOU_CANT_DO_THIS_NOW);
+            MSLogger.warning(
+                    player,
+                    LanguageRegistry.Components.WARNING_YOU_CANT_DO_THIS_NOW
+            );
             return;
         }
 
@@ -46,7 +46,10 @@ public final class AsyncChatListener extends AbstractEventListener<MSEssentials>
         }
 
         if (playerInfo.isMuted()) {
-            MSLogger.warning(player, MUTED);
+            MSLogger.warning(
+                    player,
+                    LanguageRegistry.Components.COMMAND_MUTE_ALREADY_RECEIVER
+            );
             return;
         }
 

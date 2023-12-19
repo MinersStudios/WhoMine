@@ -10,7 +10,6 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.world.WorldDark;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import org.bukkit.Location;
@@ -25,10 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "setserverspawn",
@@ -52,11 +51,6 @@ public final class SetServerSpawn extends CommandExecutor<MSEssentials> {
             )
             .build();
 
-    private static final TranslatableComponent ONLY_PLAYER_COMMAND = translatable("ms.error.only_player_command");
-    private static final TranslatableComponent WORLD_NOT_FOUND = translatable("ms.command.set_server_spawn.world_not_found");
-    private static final TranslatableComponent TOO_BIG_COORDINATES = translatable("ms.command.set_server_spawn.too_big_coordinates");
-    private static final TranslatableComponent SPAWN_SET = translatable("ms.command.set_server_spawn.successfully_set");
-
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
@@ -70,7 +64,10 @@ public final class SetServerSpawn extends CommandExecutor<MSEssentials> {
         switch (args.length) {
             case 0 -> {
                 if (!(sender instanceof final Player player)) {
-                    MSLogger.warning(sender, ONLY_PLAYER_COMMAND);
+                    MSLogger.warning(
+                            sender,
+                            ERROR_ONLY_PLAYER_COMMAND
+                    );
                     return true;
                 }
 
@@ -80,7 +77,10 @@ public final class SetServerSpawn extends CommandExecutor<MSEssentials> {
                 final World world = server.getWorld(args[0]);
 
                 if (world == null) {
-                    MSLogger.warning(sender, WORLD_NOT_FOUND);
+                    MSLogger.warning(
+                            sender,
+                            COMMAND_SET_SERVER_SPAWN_WORLD_NOT_FOUND
+                    );
                     return true;
                 }
 
@@ -90,7 +90,10 @@ public final class SetServerSpawn extends CommandExecutor<MSEssentials> {
                 final World world = server.getWorld(args[0]);
 
                 if (world == null) {
-                    MSLogger.warning(sender, WORLD_NOT_FOUND);
+                    MSLogger.warning(
+                            sender,
+                            COMMAND_SET_SERVER_SPAWN_WORLD_NOT_FOUND
+                    );
                     return true;
                 }
 
@@ -105,7 +108,10 @@ public final class SetServerSpawn extends CommandExecutor<MSEssentials> {
                 }
 
                 if (x > 29999984 || z > 29999984) {
-                    MSLogger.warning(sender, TOO_BIG_COORDINATES);
+                    MSLogger.warning(
+                            sender,
+                            COMMAND_SET_SERVER_SPAWN_TOO_BIG_COORDINATES
+                    );
                     return true;
                 }
 
@@ -115,7 +121,10 @@ public final class SetServerSpawn extends CommandExecutor<MSEssentials> {
                 final World world = server.getWorld(args[0]);
 
                 if (world == null) {
-                    MSLogger.warning(sender, WORLD_NOT_FOUND);
+                    MSLogger.warning(
+                            sender,
+                            COMMAND_SET_SERVER_SPAWN_WORLD_NOT_FOUND
+                    );
                     return true;
                 }
 
@@ -130,7 +139,10 @@ public final class SetServerSpawn extends CommandExecutor<MSEssentials> {
                 }
 
                 if (x > 29999984 || z > 29999984) {
-                    MSLogger.warning(sender, TOO_BIG_COORDINATES);
+                    MSLogger.warning(
+                            sender,
+                            COMMAND_SET_SERVER_SPAWN_TOO_BIG_COORDINATES
+                    );
                     return true;
                 }
 
@@ -231,7 +243,8 @@ public final class SetServerSpawn extends CommandExecutor<MSEssentials> {
         config.setSpawnLocation(location);
         MSLogger.fine(
                 sender,
-                SPAWN_SET.args(
+                COMMAND_SET_SERVER_SPAWN_SUCCESSFULLY_SET
+                .args(
                         text(location.getWorld().getName()),
                         text(String.valueOf(location.x())),
                         text(String.valueOf(location.y())),

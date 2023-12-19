@@ -3,7 +3,6 @@ package com.minersstudios.msessentials.menu;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
-import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerSettings;
@@ -16,9 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import static com.minersstudios.mscore.language.LanguageFile.renderTranslationComponent;
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static com.minersstudios.mscore.utility.ChatUtils.COLORLESS_DEFAULT_STYLE;
-import static net.kyori.adventure.text.Component.translatable;
+import static com.minersstudios.mscore.utility.ChatUtils.DEFAULT_STYLE;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
 public final class ResourcePackMenu {
@@ -28,58 +27,58 @@ public final class ResourcePackMenu {
         final ItemStack infoItem = new ItemStack(Material.KNOWLEDGE_BOOK);
         final ItemMeta infoMeta = infoItem.getItemMeta();
 
-        infoMeta.displayName(renderTranslationComponent("ms.menu.resource_pack.button.info.title").style(ChatUtils.DEFAULT_STYLE));
+        infoMeta.displayName(MENU_RESOURCE_PACK_BUTTON_INFO_TITLE.style(DEFAULT_STYLE));
         infoMeta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
         infoMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
         infoMeta.lore(ImmutableList.of(
-                renderTranslationComponent("ms.menu.resource_pack.button.info.lore.0").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.info.lore.1").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.info.lore.2").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.info.lore.3").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.info.lore.4").style(COLORLESS_DEFAULT_STYLE).color(GRAY)
+                MENU_RESOURCE_PACK_BUTTON_INFO_LORE_0.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_INFO_LORE_1.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_INFO_LORE_2.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_INFO_LORE_3.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_INFO_LORE_4.style(COLORLESS_DEFAULT_STYLE).color(GRAY)
         ));
         infoItem.setItemMeta(infoMeta);
 
         final ItemStack noneItem = new ItemStack(Material.COAL_BLOCK);
         final ItemMeta noneMeta = noneItem.getItemMeta();
 
-        noneMeta.displayName(renderTranslationComponent("ms.menu.resource_pack.button.none.title").style(ChatUtils.DEFAULT_STYLE));
+        noneMeta.displayName(MENU_RESOURCE_PACK_BUTTON_NONE_TITLE.style(DEFAULT_STYLE));
         noneMeta.lore(ImmutableList.of(
-                renderTranslationComponent("ms.menu.resource_pack.button.none.lore.0").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.none.lore.1").style(COLORLESS_DEFAULT_STYLE).color(GRAY)
+                MENU_RESOURCE_PACK_BUTTON_NONE_LORE_0.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_NONE_LORE_1.style(COLORLESS_DEFAULT_STYLE).color(GRAY)
         ));
         noneItem.setItemMeta(noneMeta);
 
         final ItemStack liteItem = new ItemStack(Material.IRON_BLOCK);
         final ItemMeta liteMeta = liteItem.getItemMeta();
 
-        liteMeta.displayName(renderTranslationComponent("ms.menu.resource_pack.button.lite.title").style(ChatUtils.DEFAULT_STYLE));
+        liteMeta.displayName(MENU_RESOURCE_PACK_BUTTON_LITE_TITLE.style(DEFAULT_STYLE));
         liteMeta.lore(ImmutableList.of(
-                renderTranslationComponent("ms.menu.resource_pack.button.lite.lore.0").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.lite.lore.1").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.lite.lore.2").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.lite.lore.3").style(COLORLESS_DEFAULT_STYLE).color(GRAY)
+                MENU_RESOURCE_PACK_BUTTON_LITE_LORE_0.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_LITE_LORE_1.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_LITE_LORE_2.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_LITE_LORE_3.style(COLORLESS_DEFAULT_STYLE).color(GRAY)
         ));
         liteItem.setItemMeta(liteMeta);
 
         final ItemStack fullItem = new ItemStack(Material.NETHERITE_BLOCK);
         final ItemMeta fullMeta = fullItem.getItemMeta();
 
-        fullMeta.displayName(renderTranslationComponent("ms.menu.resource_pack.button.full.title").style(ChatUtils.DEFAULT_STYLE));
+        fullMeta.displayName(MENU_RESOURCE_PACK_BUTTON_FULL_TITLE.style(DEFAULT_STYLE));
         fullMeta.lore(ImmutableList.of(
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.0").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.1").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.2").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.3").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.4").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.5").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.6").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.7").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.8").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.9").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.10").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.11").style(COLORLESS_DEFAULT_STYLE).color(GRAY),
-                renderTranslationComponent("ms.menu.resource_pack.button.full.lore.12").style(COLORLESS_DEFAULT_STYLE).color(GRAY)
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_0.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_1.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_2.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_3.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_4.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_5.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_6.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_7.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_8.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_9.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_10.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_11.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
+                MENU_RESOURCE_PACK_BUTTON_FULL_LORE_12.style(COLORLESS_DEFAULT_STYLE).color(GRAY)
         ));
         fullItem.setItemMeta(fullMeta);
 
@@ -94,8 +93,8 @@ public final class ResourcePackMenu {
                     && packType != ResourcePack.Type.NONE
             ) {
                 playerInfo.kickPlayer(
-                        translatable("ms.menu.resource_pack.button.none.kick.title"),
-                        translatable("ms.menu.resource_pack.button.none.kick.subtitle")
+                        MENU_RESOURCE_PACK_BUTTON_NONE_KICK_TITLE,
+                        MENU_RESOURCE_PACK_BUTTON_NONE_KICK_SUBTITLE
                 );
             }
 
@@ -118,8 +117,11 @@ public final class ResourcePackMenu {
             playerSettings.save();
             InventoryButton.playClickSound(player);
             player.closeInventory();
-            playerInfo.handleResourcePack().thenAccept(bool -> {
-                if (bool && playerInfo.isInWorldDark()) {
+            playerInfo.handleResourcePack().thenAccept(loadedResourcePack -> {
+                if (
+                        loadedResourcePack
+                        && playerInfo.isInWorldDark()
+                ) {
                     playerInfo.handleJoin();
                 }
             });
@@ -134,14 +136,21 @@ public final class ResourcePackMenu {
             playerSettings.save();
             InventoryButton.playClickSound(player);
             player.closeInventory();
-            playerInfo.handleResourcePack().thenAccept(bool -> {
-                if (bool && playerInfo.isInWorldDark()) {
+            playerInfo.handleResourcePack().thenAccept(loadedResourcePack -> {
+                if (
+                        loadedResourcePack
+                        && playerInfo.isInWorldDark()
+                ) {
                     playerInfo.handleJoin();
                 }
             });
         });
 
-        INVENTORY = CustomInventory.single(translatable("ms.menu.resource_pack.title", ChatUtils.DEFAULT_STYLE), 1)
+        INVENTORY =
+                CustomInventory.single(
+                        MENU_RESOURCE_PACK_TITLE.style(DEFAULT_STYLE),
+                        1
+                )
                 .buttonAt(0, noneButton)
                 .buttonAt(1, noneButton)
                 .buttonAt(2, fullButton)
@@ -152,12 +161,13 @@ public final class ResourcePackMenu {
                 .buttonAt(7, liteButton)
                 .buttonAt(8, liteButton)
                 .closeAction((event, inventory) -> {
+                    final MSEssentials plugin = MSEssentials.singleton();
                     final Player player = (Player) event.getPlayer();
-                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
+                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
                     final ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
                     if (type == ResourcePack.Type.NULL) {
-                        MSEssentials.singleton().runTask(() -> player.openInventory(inventory));
+                        plugin.runTask(() -> player.openInventory(inventory));
                     }
                 });
     }

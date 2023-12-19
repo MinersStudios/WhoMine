@@ -3,7 +3,7 @@ package com.minersstudios.msessentials.command.minecraft.admin.player;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.CommandExecutor;
-import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.DateUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -15,7 +15,6 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
@@ -23,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "player",
@@ -96,9 +95,9 @@ public final class AdminPlayerCommandHandler extends CommandExecutor<MSEssential
             "remove",
             "add"
     );
-    private final List<String> TAB_4_BAN_INFO_REASON = ImmutableList.of(LanguageFile.renderTranslation("ms.command.ban.default_reason"));
-    private final List<String> TAB_4_MUTE_INFO_REASON = ImmutableList.of(LanguageFile.renderTranslation("ms.command.mute.default_reason"));
-    private static final List<String> TAB_4_NAME_EMPTY = ImmutableList.of("empty");
+    private final List<String> TAB_4_BAN_INFO_REASON = Collections.singletonList(LanguageRegistry.Strings.COMMAND_BAN_DEFAULT_REASON);
+    private final List<String> TAB_4_MUTE_INFO_REASON = Collections.singletonList(LanguageRegistry.Strings.COMMAND_MUTE_DEFAULT_REASON);
+    private static final List<String> TAB_4_NAME_EMPTY = Collections.singletonList("empty");
     private static final CommandNode<?> COMMAND_NODE =
             literal("player")
             .then(
@@ -200,8 +199,6 @@ public final class AdminPlayerCommandHandler extends CommandExecutor<MSEssential
                     )
             ).build();
 
-    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
-
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
@@ -217,7 +214,10 @@ public final class AdminPlayerCommandHandler extends CommandExecutor<MSEssential
         final PlayerInfo playerInfo = PlayerInfo.fromString(plugin, args[0]);
 
         if (playerInfo == null) {
-            MSLogger.severe(sender, PLAYER_NOT_FOUND);
+            MSLogger.severe(
+                    sender,
+                    LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND
+            );
             return true;
         }
 

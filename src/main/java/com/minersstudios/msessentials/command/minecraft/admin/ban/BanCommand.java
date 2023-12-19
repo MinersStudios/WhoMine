@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.minecraft.admin.ban;
 
 import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.CommandExecutor;
-import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.DateUtils;
@@ -11,7 +11,6 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
@@ -23,9 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND;
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.ERROR_WRONG_FORMAT;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
-import static net.kyori.adventure.text.Component.translatable;
 
 @Command(
         command = "ban",
@@ -45,9 +45,6 @@ public final class BanCommand extends CommandExecutor<MSEssentials> {
                     )
             ).build();
 
-    private static final TranslatableComponent WRONG_FORMAT = translatable("ms.error.wrong_format");
-    private static final TranslatableComponent PLAYER_NOT_FOUND = translatable("ms.error.player_not_found");
-
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
@@ -62,18 +59,24 @@ public final class BanCommand extends CommandExecutor<MSEssentials> {
         final Instant date = DateUtils.getDateFromString(args[1], false);
 
         if (date == null) {
-            MSLogger.severe(sender, WRONG_FORMAT);
+            MSLogger.severe(
+                    sender,
+                    ERROR_WRONG_FORMAT
+            );
             return true;
         }
 
         final String reason = args.length > 2
                 ? ChatUtils.extractMessage(args, 2)
-                : LanguageFile.renderTranslation("ms.command.ban.default_reason");
+                : LanguageRegistry.Strings.COMMAND_BAN_DEFAULT_REASON;
 
         final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
-            MSLogger.severe(sender, PLAYER_NOT_FOUND);
+            MSLogger.severe(
+                    sender,
+                    ERROR_PLAYER_NOT_FOUND
+            );
             return true;
         }
 

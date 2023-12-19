@@ -16,21 +16,28 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.jetbrains.annotations.NotNull;
 
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.Component.translatable;
 
 @EventListener
 public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSEssentials> {
-    private static final TranslatableComponent LEAVE_MESSAGE_FORMAT = translatable("ms.format.leave.message").color(NamedTextColor.DARK_GRAY);
-    private static final TranslatableComponent WHITELIST_TITLE = translatable("ms.pre_login.whitelisted.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
-    private static final TranslatableComponent WHITELIST_SUBTITLE = translatable("ms.pre_login.whitelisted.subtitle").color(NamedTextColor.GRAY);
-    private static final TranslatableComponent BAN_TITLE = translatable("ms.pre_login.banned.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
-    private static final TranslatableComponent BAN_SUBTITLE = translatable("ms.pre_login.banned.subtitle").color(NamedTextColor.GRAY);
-    private static final TranslatableComponent SERVER_NOT_LOADED_TITLE = translatable("ms.server_not_fully_loaded.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
-    private static final TranslatableComponent SERVER_NOT_LOADED_SUBTITLE = translatable("ms.server_not_fully_loaded.subtitle").color(NamedTextColor.GRAY);
-    private static final TranslatableComponent TECH_WORKS_TITLE = translatable("ms.pre_login.tech_works.title").style(Style.style(NamedTextColor.RED, TextDecoration.BOLD));
-    private static final TranslatableComponent TECH_WORKS_SUBTITLE = translatable("ms.pre_login.tech_works.subtitle").color(NamedTextColor.GRAY);
-    private static final TranslatableComponent IP_ADDED = translatable("ms.info.player_added_ip");
+    private static final TranslatableComponent LEAVE_MESSAGE_FORMAT =
+            FORMAT_LEAVE_MESSAGE.color(NamedTextColor.DARK_GRAY);
+    private static final TranslatableComponent WHITELIST =
+            LEAVE_MESSAGE_FORMAT.args(
+                    PRE_LOGIN_WHITELISTED_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
+                    PRE_LOGIN_WHITELISTED_SUBTITLE.color(NamedTextColor.GRAY)
+            );
+    private static final TranslatableComponent SERVER_NOT_FULLY_LOADED =
+            LEAVE_MESSAGE_FORMAT.args(
+                    SERVER_NOT_FULLY_LOADED_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
+                    SERVER_NOT_FULLY_LOADED_SUBTITLE.color(NamedTextColor.GRAY)
+            );
+    private static final TranslatableComponent TECH_WORKS =
+            LEAVE_MESSAGE_FORMAT.args(
+                    PRE_LOGIN_TECH_WORKS_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
+                    PRE_LOGIN_TECH_WORKS_SUBTITLE.color(NamedTextColor.GRAY)
+            );
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAsyncPlayerPreLogin(final @NotNull AsyncPlayerPreLoginEvent event) {
@@ -41,7 +48,7 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
         if (!playerInfo.isWhiteListed()) {
             event.disallow(
                     AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST,
-                    LEAVE_MESSAGE_FORMAT.args(WHITELIST_TITLE, WHITELIST_SUBTITLE)
+                    WHITELIST
             );
             return;
         }
@@ -50,8 +57,8 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
             event.disallow(
                     AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
                     LEAVE_MESSAGE_FORMAT.args(
-                            BAN_TITLE,
-                            BAN_SUBTITLE.args(
+                            PRE_LOGIN_BANNED_TITLE,
+                            PRE_LOGIN_BANNED_SUBTITLE.args(
                                     playerInfo.getBanReason(),
                                     playerInfo.getBannedTo(event.getAddress())
                             )
@@ -66,7 +73,7 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
         ) {
             event.disallow(
                     AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-                    LEAVE_MESSAGE_FORMAT.args(SERVER_NOT_LOADED_TITLE, SERVER_NOT_LOADED_SUBTITLE)
+                    SERVER_NOT_FULLY_LOADED
             );
             return;
         }
@@ -77,7 +84,7 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
         ) {
             event.disallow(
                     AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-                    LEAVE_MESSAGE_FORMAT.args(TECH_WORKS_TITLE, TECH_WORKS_SUBTITLE)
+                    TECH_WORKS
             );
             return;
         }
@@ -93,7 +100,8 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
             playerFile.save();
 
             MSLogger.warning(
-                    IP_ADDED.args(
+                    INFO_PLAYER_ADDED_IP
+                    .args(
                             playerInfo.getGrayIDGoldName(),
                             text(nickname),
                             text(hostAddress)

@@ -2,8 +2,6 @@ package com.minersstudios.msessentials.menu;
 
 import com.minersstudios.mscore.inventory.*;
 import com.minersstudios.mscore.inventory.action.ButtonClickAction;
-import com.minersstudios.mscore.language.LanguageFile;
-import com.minersstudios.mscore.utility.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,14 +17,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static net.kyori.adventure.text.Component.translatable;
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.utility.ChatUtils.DEFAULT_STYLE;
 
 public final class CraftsMenu {
     public static final int RESULT_SLOT = 15;
-
-    private static final Component CATEGORIES_TITLE = translatable("ms.menu.crafts.categories.title", ChatUtils.DEFAULT_STYLE);
-    private static final Component CRAFTS_TITLE = translatable("ms.menu.crafts.category.title", ChatUtils.DEFAULT_STYLE);
-    private static final Component CRAFT_TITLE = translatable("ms.menu.crafts.craft.title", ChatUtils.DEFAULT_STYLE);
 
     private static final InventoryButton CRAFTS_QUIT_BUTTON;
     private static final InventoryButton CRAFTS_PREVIOUS_BUTTON;
@@ -64,7 +59,11 @@ public final class CraftsMenu {
                     InventoryButton.playClickSound(player);
                 });
 
-        CATEGORIES_INVENTORY = CustomInventory.single(CATEGORIES_TITLE, 4)
+        CATEGORIES_INVENTORY =
+                CustomInventory.single(
+                        MENU_CRAFTS_CATEGORIES_TITLE.style(DEFAULT_STYLE),
+                        4
+                )
                 .buttons(
                         IntStream.of(0, 1, 2, 9, 10, 11, 18, 19, 20, 27, 28, 29)
                         .boxed()
@@ -81,8 +80,8 @@ public final class CraftsMenu {
                         .collect(Collectors.toMap(Function.identity(), slot -> itemsButton))
                 );
 
-        final Component previousButton = LanguageFile.renderTranslationComponent("ms.menu.crafts.button.previous_page").style(ChatUtils.DEFAULT_STYLE);
-        final Component nextButton = LanguageFile.renderTranslationComponent("ms.menu.crafts.button.next_page").style(ChatUtils.DEFAULT_STYLE);
+        final Component previousButton = MENU_CRAFTS_BUTTON_PREVIOUS_PAGE.style(DEFAULT_STYLE);
+        final Component nextButton = MENU_CRAFTS_BUTTON_NEXT_PAGE.style(DEFAULT_STYLE);
 
         final ItemStack previousPageItem = new ItemStack(Material.PAPER);
         final ItemMeta previousPageMeta = previousPageItem.getItemMeta();
@@ -165,14 +164,32 @@ public final class CraftsMenu {
 
         for (final var recipe : recipes) {
             final ItemStack resultItem = recipe.getResult();
-            final SingleInventory craftInventory = CustomInventory.single(CRAFT_TITLE, 4);
+            final SingleInventory craftInventory =
+                    CustomInventory.single(
+                            MENU_CRAFTS_CRAFT_TITLE.style(DEFAULT_STYLE),
+                            4
+                    );
 
             if (recipe instanceof final ShapedRecipe shapedRecipe) {
                 final String[] shapes = shapedRecipe.getShape();
                 int i = 0;
 
-                for (final var shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
-                    for (final var character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
+                for (
+                        final var shape
+                        : (
+                                shapes.length == 1
+                                ? new String[] { "   ", shapes[0], "   " }
+                                : shapes
+                        )
+                ) {
+                    for (
+                            final var character
+                            : (
+                                    shape.length() == 1 ? " " + shape + " "
+                                    : shape.length() == 2 ? shape + " "
+                                    : shape
+                            ).toCharArray()
+                    ) {
                         final ItemStack ingredient = shapedRecipe.getIngredientMap().get(character);
 
                         if (ingredient == null) {
@@ -242,10 +259,17 @@ public final class CraftsMenu {
 
     private static @NotNull ElementPagedInventory buildCraftsInventory() {
         return CustomInventory
-                .elementPaged(CRAFTS_TITLE, 5, IntStream.range(0, 36).toArray())
+                .elementPaged(
+                        MENU_CRAFTS_CATEGORY_TITLE.style(DEFAULT_STYLE),
+                        5,
+                        IntStream.range(0, 36).toArray()
+                )
                 .staticButtonAt(
                         36,
-                        inventory -> inventory.getPreviousPageIndex() == -1 ? CRAFTS_PREVIOUS_BUTTON_EMPTY : CRAFTS_PREVIOUS_BUTTON
+                        inventory ->
+                                inventory.getPreviousPageIndex() == -1
+                                ? CRAFTS_PREVIOUS_BUTTON_EMPTY
+                                : CRAFTS_PREVIOUS_BUTTON
                 )
                 .staticButtonAt(37, i -> CRAFTS_PREVIOUS_BUTTON_EMPTY)
                 .staticButtonAt(38, i -> CRAFTS_PREVIOUS_BUTTON_EMPTY)
@@ -253,7 +277,10 @@ public final class CraftsMenu {
                 .staticButtonAt(40, i -> CRAFTS_QUIT_BUTTON)
                 .staticButtonAt(
                         41,
-                        inventory -> inventory.getNextPageIndex() == -1 ? CRAFTS_NEXT_BUTTON_EMPTY : CRAFTS_NEXT_BUTTON
+                        inventory ->
+                                inventory.getNextPageIndex() == -1
+                                ? CRAFTS_NEXT_BUTTON_EMPTY
+                                : CRAFTS_NEXT_BUTTON
                 )
                 .staticButtonAt(42, i -> CRAFTS_NEXT_BUTTON_EMPTY)
                 .staticButtonAt(43, i -> CRAFTS_NEXT_BUTTON_EMPTY)

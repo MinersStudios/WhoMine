@@ -17,7 +17,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.minersstudios.mscore.language.LanguageFile.renderTranslation;
+import static com.minersstudios.mscore.language.LanguageRegistry.Strings.*;
 
 /**
  * Player file with player data, settings, etc.
@@ -45,10 +45,6 @@ public final class PlayerFile {
     private @Nullable Location lastDeathLocation;
 
     private static final int MAX_SKINS = 18;
-    private static final String DEFAULT_NICKNAME = renderTranslation("ms.player.name.nickname");
-    private static final String DEFAULT_FIRST_NAME = renderTranslation("ms.player.name.first_name");
-    private static final String DEFAULT_LAST_NAME = renderTranslation("ms.player.name.last_name");
-    private static final String DEFAULT_PATRONYMIC = renderTranslation("ms.player.name.patronymic");
 
     private PlayerFile(
             final @NotNull MSEssentials plugin,
@@ -60,10 +56,10 @@ public final class PlayerFile {
         this.config = config;
 
         this.playerName = PlayerName.create(
-                config.getString("name.nickname", DEFAULT_NICKNAME),
-                config.getString("name.first-name", DEFAULT_FIRST_NAME),
-                config.getString("name.last-name", DEFAULT_LAST_NAME),
-                config.getString("name.patronymic", DEFAULT_PATRONYMIC)
+                config.getString("name.nickname", PLAYER_NAME_NICKNAME),
+                config.getString("name.first-name", PLAYER_NAME_FIRST_NAME),
+                config.getString("name.last-name", PLAYER_NAME_LAST_NAME),
+                config.getString("name.patronymic", PLAYER_NAME_PATRONYMIC)
         );
         this.pronouns = Pronouns.valueOf(config.getString("pronouns", "HE"));
         this.ipList = config.getStringList("ip-list");
