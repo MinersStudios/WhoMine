@@ -34,10 +34,10 @@
     <img alt="WhoMine documentation" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMDocs&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363F1E&cache_seconds=86400" width="49%">
   </a>
   <a href="https://github.com/MinersStudios/MSTextures">
-    <img alt="MSTextures repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=msTextures&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363F1E&cache_seconds=86400" width="49%">
+    <img alt="WMTextures repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMTextures&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363F1E&cache_seconds=86400" width="49%">
   </a>
-  <a href="https://github.com/MinersStudios/WMTranslations">
-    <img alt="MSTranslations repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=msTranslations&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363F1E&cache_seconds=86400" width="49%">
+  <a href="https://github.com/MinersStudios/WMConfig">
+    <img alt="WMConfig repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMConfig&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363F1E&cache_seconds=86400" width="49%">
   </a>
   <a href="https://github.com/MinersStudios/WMSite">
     <img alt="WMSite repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMSite&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363F1E&cache_seconds=86400" width="49%">
