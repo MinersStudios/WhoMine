@@ -48,6 +48,15 @@ import java.util.function.Predicate;
 
 import static com.minersstudios.mscore.plugin.MSPlugin.globalCache;
 
+/**
+ * The CustomDecorDataImpl class serves as a base implementation of the
+ * {@link CustomDecorData} interface. It provides methods to get and manipulate
+ * the properties of the decor, etc. It is recommended to extend this class when
+ * creating custom decor data classes.
+ *
+ * @see CustomDecorData
+ * @see Builder
+ */
 @Immutable
 public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implements CustomDecorData<D> {
     protected final NamespacedKey namespacedKey;
@@ -62,13 +71,19 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     protected final CustomDecorData.Type<D>[] types;
     protected final EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
     protected final Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
-    protected final boolean dropsType;
+    protected final boolean isDropType;
     protected final DecorClickAction clickAction;
     protected final DecorPlaceAction placeAction;
     protected final DecorBreakAction breakAction;
 
     private static final int MAX_DECORATIONS_IN_BLOCK = 6;
 
+    /**
+     * Protected constructor to initialize custom decor data with the given
+     * builder
+     *
+     * @throws IllegalArgumentException If the pre-build validation fails
+     */
     protected CustomDecorDataImpl() throws IllegalArgumentException {
         final Builder builder = this.builder();
 
@@ -88,7 +103,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.clickAction = builder.clickAction;
         this.placeAction = builder.placeAction;
         this.breakAction = builder.breakAction;
-        this.dropsType = builder.dropsType;
+        this.isDropType = builder.dropsType;
 
         if (builder.recipeBuilderList != null) {
             this.recipes = new ArrayList<>(builder.recipeBuilderList.size());
@@ -117,6 +132,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
     }
 
+    /**
+     * Override this method to provide a builder for the custom decor data
+     *
+     * @return The builder of the custom decor data
+     */
     protected abstract @NotNull Builder builder();
 
     @Override
@@ -150,7 +170,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public @NotNull @Unmodifiable Set<DecorParameter> parameterSet() {
+    public @NotNull @Unmodifiable EnumSet<DecorParameter> parameterSet() {
         return this.parameterSet.clone();
     }
 
@@ -166,8 +186,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         return this.types.clone();
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
         return interaction == null
                 ? null
@@ -178,8 +198,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 );
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
         if (
                 !this.isWrenchable()
@@ -214,20 +234,20 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         return null;
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getNextType(final @Nullable Interaction interaction) throws UnsupportedOperationException {
         return this.getNextType(this.getTypeOf(interaction));
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getNextType(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
         return this.getNextType(this.getTypeOf(itemStack));
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getNextType(final @Nullable CustomDecorData.Type<? extends CustomDecorData<?>> type) throws UnsupportedOperationException {
         if (
                 !this.isWrenchable()
@@ -260,8 +280,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         return Collections.unmodifiableMap(this.faceTypeMap);
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getFaceTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
         if (!this.isFaceTyped()) {
             throw new UnsupportedOperationException("This custom decor is not face typed!");
@@ -276,8 +296,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 );
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getFaceTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
         if (!this.isFaceTyped()) {
             throw new UnsupportedOperationException("This custom decor is not face typed!");
@@ -309,8 +329,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         return null;
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getFaceTypeOf(final @Nullable BlockFace blockFace) throws UnsupportedOperationException {
         if (!this.isFaceTyped()) {
             throw new UnsupportedOperationException("This custom decor is not face typed!");
@@ -324,8 +344,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 : this.faceTypeMap.get(facing);
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getFaceTypeOf(final @Nullable Facing facing) throws UnsupportedOperationException {
         if (!this.isFaceTyped()) {
             throw new UnsupportedOperationException("This custom decor is not face typed!");
@@ -345,8 +365,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         return this.lightLevelTypeMap;
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getLightTypeOf(final @Nullable Interaction interaction) throws UnsupportedOperationException {
         if (!this.isLightTyped()) {
             throw new UnsupportedOperationException("This custom decor is not light typed!");
@@ -361,8 +381,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 );
     }
 
-    @Override
     @Contract("null -> null")
+    @Override
     public @Nullable CustomDecorData.Type<D> getLightTypeOf(final @Nullable ItemStack itemStack) throws UnsupportedOperationException {
         if (!this.isLightTyped()) {
             throw new UnsupportedOperationException("This custom decor is not light typed!");
@@ -590,8 +610,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public boolean isDropsType() {
-        return this.dropsType;
+    public boolean isDropType() {
+        return this.isDropType;
     }
 
     @Override
@@ -1146,6 +1166,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         return itemStack;
     }
 
+    /**
+     * Builder for {@link CustomDecorDataImpl}
+     */
     public final class Builder {
         private NamespacedKey namespacedKey;
         private DecorHitBox hitBox;
@@ -1498,8 +1521,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.types;
         }
 
-        @SafeVarargs
         @SuppressWarnings("unchecked")
+        @SafeVarargs
         public final @NotNull Builder types(
                 final @NotNull Function<Builder, CustomDecorData.Type<D>> first,
                 final Function<Builder, CustomDecorData.Type<D>> @NotNull ... rest
@@ -1519,8 +1542,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.types(firstType,  restTypes);
         }
 
-        @SafeVarargs
         @SuppressWarnings("unchecked")
+        @SafeVarargs
         public final @NotNull Builder types(
                 final @NotNull CustomDecorData.Type<D> first,
                 final CustomDecorData.Type<D> @NotNull ... rest
@@ -1934,8 +1957,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     '}';
         }
 
-        @Override
         @SuppressWarnings("unchecked")
+        @Override
         public @NotNull D buildData() {
             return (D) CustomDecorDataImpl.this.builder()
                     .key(this.namespacedKey.getKey())

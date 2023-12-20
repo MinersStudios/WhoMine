@@ -365,7 +365,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     }
 
     /**
-     * Sets new resource pack version
+     * Sets a new resource pack version
      *
      * @param version The new resource pack version
      */
@@ -418,7 +418,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     }
 
     /**
-     * Sets new resource pack version, user and repo
+     * Sets a new resource pack version, user and repo
      *
      * @param version The new resource pack version
      * @param user    The new resource pack user

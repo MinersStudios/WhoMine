@@ -11,18 +11,16 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 /**
- * The RenameCollection class represents a collection of
- * renameable items and their associated renames. It allows
- * managing and manipulating the collection of items and
- * renames, as well as creating and applying the renaming
- * process.
+ * The RenameCollection class represents a collection of renameable items and
+ * their associated renames. It allows managing and manipulating the collection
+ * of items and renames, as well as creating and applying the renaming process.
  */
 public final class RenameCollection {
     private final String key;
-    private String mainName;
-    private ItemStack mainItem;
     private final List<String> renames;
     private final List<ItemStack> items;
+    private String mainName;
+    private ItemStack mainItem;
 
     /**
      * Constructs a RenameCollection with the given key
@@ -36,8 +34,7 @@ public final class RenameCollection {
     }
 
     /**
-     * Constructs a RenameCollection with the given key,
-     * renames, and items
+     * Constructs a RenameCollection with the given key, renames, and items
      *
      * @param key     The key associated with the collection
      * @param renames The initial collection of renames
@@ -57,14 +54,14 @@ public final class RenameCollection {
     }
 
     /**
-     * @return An unmodifiable view of the collection of renames
+     * @return An unmodifiable view of the rename collection
      */
     public @NotNull @UnmodifiableView Collection<String> renames() {
         return Collections.unmodifiableCollection(this.renames);
     }
 
     /**
-     * @return An unmodifiable view of the collection of items
+     * @return An unmodifiable view of the item collection
      */
     public @NotNull @UnmodifiableView Collection<ItemStack> items() {
         return Collections.unmodifiableCollection(this.items);
@@ -94,33 +91,29 @@ public final class RenameCollection {
 
     /**
      * @return The main name of the collection
-     * @throws NullPointerException If the main name is null,
-     *                              it will happen if the collection
-     *                              is empty
+     * @throws NullPointerException If the main name is null, it will happen if
+     *                              the collection is empty
      */
     public String getMainName() throws NullPointerException {
         return this.mainName;
     }
 
     /**
-     * @return The copy of the main item of the collection,
-     *         main item is the item that will be used to show
-     *         the result of the renaming process
-     * @throws NullPointerException If the main item is null,
-     *                              it will happen if the collection
-     *                              is empty or if the main item was
-     *                              set to null
+     * @return The copy of the main item of the collection, main item is the
+     *         item that will be used to show the result of the renaming process
+     * @throws NullPointerException If the main item is null, it will happen if
+     *                              the collection is empty or if the main item
+     *                              was set to null
      */
-    public ItemStack getMainItem() throws NullPointerException {
+    public @Nullable ItemStack getMainItem() throws NullPointerException {
         return this.mainItem == null
                 ? null
                 : this.mainItem.clone();
     }
 
     /**
-     * Sets the main item of the collection, that means
-     * the item that will be used to show the result of
-     * the renaming process
+     * Sets the main item of the collection, that means the item that will be
+     * used to show the result of the renaming process
      *
      * @param item New main item of the collection
      * @throws IllegalArgumentException If the item type is air
@@ -151,14 +144,12 @@ public final class RenameCollection {
     }
 
     /**
-     * Adds a rename to the collection, if the collection
-     * is empty, the rename will be set as the main name
-     * of the collection and the main item display name
-     * will be updated to match the new main name
+     * Adds a rename to the collection, if the collection is empty, the rename
+     * will be set as the main name of the collection and the main item display
+     * name will be updated to match the new main name
      *
      * @param rename The rename to add
-     * @return True if this collection changed as a result of
-     *         the call
+     * @return True if this collection changed as a result of the call
      */
     public boolean addRename(final @NotNull String rename) {
         if (this.renames.isEmpty()) {
@@ -169,13 +160,11 @@ public final class RenameCollection {
     }
 
     /**
-     * Adds a renames to the collection, if the collection
-     * is empty, the first rename will be set as the main
-     * name of the collection
+     * Adds a renaming to the collection, if the collection is empty, the first
+     * rename will be set as the main name of the collection
      *
      * @param renames The renames to add
-     * @return True if this collection changed as a result of
-     *         the call
+     * @return True if this collection changed as a result of the call
      * @see #addRename(String)
      */
     public boolean addAllRenames(final @NotNull Collection<String> renames) {
@@ -189,12 +178,11 @@ public final class RenameCollection {
     }
 
     /**
-     * Removes a rename from the collection, the Main name
-     * will not be changed
+     * Removes a rename from the collection, the Main name will not be changed
      *
      * @param rename The rename to remove
-     * @return True if this list contained the specified element
-     *         and the rename is not null or blank
+     * @return True if this list contained the specified element and the rename
+     *         is not null or blank
      */
     public boolean removeRename(final @Nullable String rename) {
        return StringUtils.isNotBlank(rename)
@@ -202,13 +190,11 @@ public final class RenameCollection {
     }
 
     /**
-     * Adds an item to the collection, if the collection
-     * is empty and the main item is null, the item will
-     * be set as the main item of the collection
+     * Adds an item to the collection, if the collection is empty and the main
+     * item is null, the item will be set as the main item of the collection
      *
      * @param item The item to add
-     * @return True if this collection changed as a result of
-     *         the call
+     * @return True if this collection changed as a result of the call
      * @throws IllegalArgumentException If the item type is air
      */
     public boolean addItem(final @NotNull ItemStack item) throws IllegalArgumentException {
@@ -227,13 +213,12 @@ public final class RenameCollection {
     }
 
     /**
-     * Adds items to the collection, if the collection
-     * is empty and the main item is null, the first item
-     * will be set as the main item of the collection
+     * Adds items to the collection, if the collection is empty and the main
+     * item is null, the first item will be set as the main item of the
+     * collection
      *
      * @param items The items to add
-     * @return True if this collection changed as a result of
-     *         the call
+     * @return True if this collection changed as a result of the call
      * @see #addItem(ItemStack)
      */
     public boolean addAllItems(final @NotNull Collection<ItemStack> items) {
@@ -247,12 +232,11 @@ public final class RenameCollection {
     }
 
     /**
-     * Removes an item from the collection, the Main item
-     * will not be changed
+     * Removes an item from the collection, the Main item will not be changed
      *
      * @param item The item to remove
-     * @return True if this list contained the specified element
-     *         and the item is not null
+     * @return True if this list contained the specified element and the item is
+     *         not null
      */
     @Contract("null -> false")
     public boolean removeItem(final @Nullable ItemStack item) {
@@ -261,12 +245,11 @@ public final class RenameCollection {
     }
 
     /**
-     * Adds all the renames and items from the other
-     * rename collection to this one
+     * Adds all the renames and items from the other rename collection to this
+     * one
      *
      * @param that The other rename collection to add
-     * @return True if this collection changed as a result of
-     *         the call
+     * @return True if this collection changed as a result of the call
      * @see #addAllRenames(Collection)
      * @see #addAllItems(Collection)
      */
@@ -277,8 +260,8 @@ public final class RenameCollection {
 
     /**
      * @param rename The rename to check
-     * @return True if the collection contains the rename
-     *         and the rename is not null or blank
+     * @return True if the collection contains the rename and the rename is not
+     *         null or blank
      */
     @Contract("null -> false")
     public boolean containsRename(final @Nullable String rename) {
@@ -296,8 +279,8 @@ public final class RenameCollection {
 
     /**
      * @param item The item to check
-     * @return True if the collection contains the item
-     *         and the item stack is not null
+     * @return True if the collection contains the item and the item stack is
+     *         not null
      */
     @Contract("null -> false")
     public boolean containsItem(final @Nullable ItemStack item) {
@@ -334,8 +317,7 @@ public final class RenameCollection {
     }
 
     /**
-     * @return A string representation of the rename
-     *         collection
+     * @return A string representation of the rename collection
      */
     @Override
     public @NotNull String toString() {
@@ -361,25 +343,24 @@ public final class RenameCollection {
     }
 
     /**
-     * Removes all the renames from the collection.
-     * The Main name will not be changed.
+     * Removes all the renames from the collection. The Main name will not be
+     * changed.
      */
     public void clearRenames() {
         this.renames.clear();
     }
 
     /**
-     * Removes all the items from the collection.
-     * The Main item will not be changed.
+     * Removes all the items from the collection. The Main item will not be
+     * changed.
      */
     public void clearItems() {
         this.items.clear();
     }
 
     /**
-     * Removes all the renames and items from the
-     * collection. The Main item and name will not be
-     * changed.
+     * Removes all the renames and items from the collection. The Main item and
+     * name will not be changed.
      *
      * @see #clearRenames()
      * @see #clearItems()
@@ -390,17 +371,14 @@ public final class RenameCollection {
     }
 
     /**
-     * Creates a copy of the given item with the
-     * rename metadata applied to it. The main item
-     * will be used as a base for the metadata.
+     * Creates a copy of the given item with the rename metadata applied to it.
+     * The main item will be used as a base for the metadata.
      *
      * @param item   The item to get the rename for
      * @param rename The rename to get the item for
-     * @return The item with the rename metadata
-     *         applied to it, or null if the item
-     *         is null, the rename is null or blank,
-     *         the collection is not initialized, or
-     *         the item is air
+     * @return The item with the rename metadata applied to it, or null if the
+     *         item is null, the rename is null or blank, the collection is not
+     *         initialized, or the item is air
      */
     @Contract("null, null -> null")
     public @Nullable ItemStack craftRenamed(

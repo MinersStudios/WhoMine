@@ -84,9 +84,8 @@ public class CustomDecorClickEvent extends CustomDecorEvent implements Cancellab
     }
 
     /**
-     * Sets the cancellation state of this event. A cancelled
-     * event will not be executed in the server, but will still
-     * pass to other plugins.
+     * Sets the cancellation state of this event. A cancelled event will not be
+     * executed in the server, but will still pass to other plugins.
      *
      * @param cancel True if you wish to cancel this event
      */
@@ -126,14 +125,14 @@ public class CustomDecorClickEvent extends CustomDecorEvent implements Cancellab
         LEFT_CLICK, RIGHT_CLICK;
 
         /**
-         * @return True if the click type is left click
+         * @return True, if the click type is left-click
          */
         public boolean isLeftClick() {
             return this == LEFT_CLICK;
         }
 
         /**
-         * @return True if the click type is right click
+         * @return True, if the click type is right-click
          */
         public boolean isRightClick() {
             return this == RIGHT_CLICK;

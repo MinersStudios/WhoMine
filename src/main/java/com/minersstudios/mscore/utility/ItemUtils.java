@@ -80,7 +80,7 @@ public final class ItemUtils {
     /**
      * Deals one point of damage to the specified item
      *
-     * @param holder Player who is holding the item
+     * @param holder Player, who is holding the item
      * @param item   The item to damage
      * @return False if the {@link ItemMeta} of the item is not an instance of
      *         {@link Damageable} or if the damage event is cancelled
@@ -97,7 +97,7 @@ public final class ItemUtils {
     /**
      * Damages the specified item with specified damage
      *
-     * @param holder         Player who is holding the item
+     * @param holder         Player, who is holding the item
      * @param item           The item to damage
      * @param originalDamage Damage you want to inflict on the item
      * @return False if the {@link ItemMeta} of the item is not an instance of
@@ -116,7 +116,7 @@ public final class ItemUtils {
     /**
      * Damages the specified item with specified damage
      *
-     * @param holder         Player who is holding the item
+     * @param holder         Player, who is holding the item
      * @param slot           Slot where the player is holding the item
      *                       (used for item break effect)
      * @param item           The item to damage

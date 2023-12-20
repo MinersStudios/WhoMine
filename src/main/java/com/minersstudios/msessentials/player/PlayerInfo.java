@@ -104,13 +104,13 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#getPlayerInfoMap()}
-     * by nickname and {@link UUID}.
-     * If the player info is not cached, a new player info
-     * is created with the player file and settings
-     * if the file exists, or a new player information
-     * is created with the unsaved player file
-     * and default settings, and then saved to the map.
+     * Gets player info from {@link Cache#getPlayerInfoMap()} by nickname and
+     * {@link UUID}.
+     * <br>
+     * If the player info is not cached, new player info is created with the
+     * player file and settings if the file exists, or new player information is
+     * created with the unsaved player file and default settings, and then saved
+     * to the map.
      *
      * @param uuid     The player UUID
      * @param nickname The player nickname
@@ -125,13 +125,13 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#getPlayerInfoMap()}
-     * by {@link Player} object.
-     * If the player info is not cached, a new player info
-     * is created with the player file and settings
-     * if the file exists, or a new player information
-     * is created with the unsaved player file
-     * and default settings, and then saved to the map.
+     * Gets player info from {@link Cache#getPlayerInfoMap()} by {@link Player}
+     * object.
+     * <br>
+     * If the player info is not cached, new player info is created with the
+     * player file and settings if the file exists, or new player information is
+     * created with the unsaved player file and default settings, and then saved
+     * to the map.
      *
      * @param player The player
      * @return Player info from {@link Cache#getPlayerInfoMap()}
@@ -144,17 +144,17 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#getPlayerInfoMap()}
-     * by {@link OfflinePlayer} object.
-     * If the player info is not cached, a new player info
-     * is created with the player file and settings
-     * if the file exists, or a new player information
-     * is created with the unsaved player file
-     * and default settings, and then saved to the map.
+     * Gets player info from {@link Cache#getPlayerInfoMap()} by
+     * {@link OfflinePlayer} object.
+     * <br>
+     * If the player info is not cached, new player info is created with the
+     * player file and settings if the file exists, or new player information is
+     * created with the unsaved player file and default settings, and then saved
+     * to the map.
      *
      * @param offlinePlayer The offline player
-     * @return Player info from {@link Cache#getPlayerInfoMap()},
-     *         or null if player nickname is blank
+     * @return Player info from {@link Cache#getPlayerInfoMap()}, or null if
+     *         player nickname is blank
      */
     @Contract("_, null -> null")
     public static @Nullable PlayerInfo fromOfflinePlayer(
@@ -165,14 +165,14 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#getPlayerInfoMap()}
-     * by {@link OfflinePlayer} object, which was retrieved
-     * by the specified player ID from {@link Cache#getIdMap()}.
-     * If the player info is not cached, a new player info
-     * is created with the player file and settings
-     * if the file exists, or a new player information
-     * is created with the unsaved player file
-     * and default settings, and then saved to the map.
+     * Gets player info from {@link Cache#getPlayerInfoMap()} by
+     * {@link OfflinePlayer} object, which was retrieved by the specified player
+     * ID from {@link Cache#getIdMap()}.
+     * <br>
+     * If the player info is not cached, new player info is created with the
+     * player file and settings if the file exists, or new player information is
+     * created with the unsaved player file and default settings, and then saved
+     * to the map.
      *
      * @param id The player ID
      * @return Player info from its ID,
@@ -187,19 +187,17 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#getPlayerInfoMap()}
-     * by {@link OfflinePlayer} object, which was retrieved
-     * by the specified player nickname with
-     * {@link Server#getOfflinePlayer(String)}.
-     * If the player info is not cached, a new player info
-     * is created with the player file and settings
-     * if the file exists, or a new player information
-     * is created with the unsaved player file
-     * and default settings, and then saved to the map.
+     * Gets player info from {@link Cache#getPlayerInfoMap()} by
+     * {@link OfflinePlayer} object, which was retrieved by the specified player
+     * nickname with {@link Server#getOfflinePlayer(String)}.
+     * <br>
+     * If the player info is not cached, new player info is created with the
+     * player file and settings if the file exists, or new player information is
+     * created with the unsaved player file and default settings, and then saved
+     * to the map.
      *
      * @param nickname The player nickname
-     * @return Player info from its nickname,
-     *         or null if the nickname is blank
+     * @return Player info from its nickname, or null if the nickname is blank
      * @see #fromOfflinePlayer(MSEssentials, OfflinePlayer)
      */
     public static @Nullable PlayerInfo fromNickname(
@@ -215,19 +213,18 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#getPlayerInfoMap()}
-     * by {@link OfflinePlayer} object, which was retrieved
-     * by the specified player {@link UUID} with
-     * {@link Server#getOfflinePlayer(UUID)}.
-     * If the player info is not cached, a new player info
-     * is created with the player file and settings
-     * if the file exists, or a new player information
-     * is created with the unsaved player file
-     * and default settings, and then saved to the map.
+     * Gets player info from {@link Cache#getPlayerInfoMap()} by
+     * {@link OfflinePlayer} object, which was retrieved by the specified player
+     * {@link UUID} with {@link Server#getOfflinePlayer(UUID)}.
+     * <br>
+     * If the player info is not cached, new player info is created with the
+     * player file and settings if the file exists, or new player information is
+     * created with the unsaved player file and default settings, and then saved
+     * to the map.
      *
      * @param uuid The player UUID
-     * @return Player info from its {@link UUID},
-     *         or null if the player nickname is blank
+     * @return Player info from its {@link UUID}, or null if the player nickname
+     *         is blank
      * @see #fromOfflinePlayer(MSEssentials, OfflinePlayer)
      */
     public static @Nullable PlayerInfo fromUUID(
@@ -241,25 +238,24 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#getPlayerInfoMap()}
-     * by {@link OfflinePlayer} object, which was retrieved
-     * by the specified player ID or nickname.
-     * It first checks if the string matches the ID regex
-     * with {@link IDUtils#matchesIDRegex(String)},
-     * and if it does, it gets the player info from its ID,
-     * with {@link #fromID(MSEssentials, int)}, otherwise it gets
-     * the player info from its nickname, with
+     * Gets player info from {@link Cache#getPlayerInfoMap()} by
+     * {@link OfflinePlayer} object, which was retrieved by the specified player
+     * ID or nickname.
+     * <br>
+     * It first checks if the string matches the ID regex with
+     * {@link IDUtils#matchesIDRegex(String)}, and if it does, it gets the
+     * player info from its ID, with {@link #fromID(MSEssentials, int)},
+     * otherwise it gets the player info from its nickname, with
      * {@link #fromNickname(MSEssentials, String)}.
-     * If the player info is not cached, a new player info
-     * is created with the player file and settings
-     * if the file exists, or a new player information
-     * is created with the unsaved player file
-     * and default settings, and then saved to the map.
+     * <br>
+     * If the player info is not cached, new player info is created with the
+     * player file and settings if the file exists, or new player information is
+     * created with the unsaved player file and default settings, and then saved
+     * to the map.
      *
      * @param string The player ID or nickname
-     * @return Player info from its ID or nickname,
-     *         or null if the specified string is blank,
-     *         or the ID doesn't exist
+     * @return Player info from its ID or nickname, or null if the specified
+     *         string is blank, or the ID doesn't exist
      * @see #fromID(MSEssentials, int)
      * @see #fromNickname(MSEssentials, String)
      */
@@ -275,20 +271,19 @@ public final class PlayerInfo {
     }
 
     /**
-     * Gets player info from {@link Cache#getPlayerInfoMap()}
-     * by discord ID with {@link Cache#getDiscordMap()},
-     * then gets the player info from its uuid and nickname
-     * with {@link #fromProfile(MSEssentials, UUID, String)}.
-     * If the player info is not cached, a new player info
-     * is created with the player file and settings
-     * if the file exists, or a new player information
-     * is created with the unsaved player file
-     * and default settings, and then saved to the map.
+     * Gets player info from {@link Cache#getPlayerInfoMap()} by discord ID with
+     * {@link Cache#getDiscordMap()}, then gets the player info from its uuid
+     * and nickname with {@link #fromProfile(MSEssentials, UUID, String)}.
+     * <br>
+     * If the player info is not cached, new player info is created with the
+     * player file and settings if the file exists, or new player information is
+     * created with the unsaved player file and default settings, and then saved
+     * to the map.
      *
      * @param id The player discord ID
      *           (the ID of the discord user who is linked to the player)
-     * @return Player info from its discord ID,
-     *         or null if the discord ID doesn't exist
+     * @return Player info from its discord ID, or null if the discord ID
+     *         doesn't exist
      * @see #fromProfile(MSEssentials, UUID, String)
      */
     public static @Nullable PlayerInfo fromDiscord(
@@ -348,8 +343,8 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return Online player object if the player is online,
-     *         or null if the player is offline
+     * @return Online player object if the player is online, or null if the
+     *         player is offline
      * @see Server#getPlayer(UUID)
      */
     public @Nullable Player getOnlinePlayer() {
@@ -364,8 +359,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return Player's id, firstname and lastname
-     *         with default style
+     * @return Player's id, firstname and lastname with default style
      * @see PlayerName#createDefaultName(int)
      */
     public @NotNull Component getDefaultName() {
@@ -373,8 +367,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return Player's id, firstname and lastname
-     *         with golden style
+     * @return Player's id, firstname and lastname with golden style
      * @see PlayerName#createGoldenName(int)
      */
     public @NotNull Component getGoldenName() {
@@ -382,8 +375,8 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return Player's id, firstname and lastname
-     *         with gray id and golden name style
+     * @return Player's id, firstname and lastname with gray id and golden name
+     *         style
      * @see PlayerName#createGrayIDGoldName(int)
      */
     public @NotNull Component getGrayIDGoldName() {
@@ -391,8 +384,8 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return Player's id, firstname and lastname
-     *         with gray id and green name style
+     * @return Player's id, firstname and lastname with gray id and green name
+     *         style
      * @see PlayerName#createGrayIDGreenName(int)
      */
     public @NotNull Component getGrayIDGreenName() {
@@ -427,9 +420,8 @@ public final class PlayerInfo {
     }
 
     /**
-     * Sets last leave location to the specified location,
-     * only works if the player is online and not in
-     * {@link WorldDark}
+     * Sets last leave location to the specified location, only works if the
+     * player is online and not in {@link WorldDark}
      *
      * @param location The location to set as the last leave location
      */
@@ -441,9 +433,8 @@ public final class PlayerInfo {
     }
 
     /**
-     * Sets last death location to the specified location,
-     * only works if the world specified in the location
-     * is not {@link WorldDark}
+     * Sets last death location to the specified location, only works if the
+     * world specified in the location is not {@link WorldDark}
      *
      * @param location The location to set as the last death location
      */
@@ -464,8 +455,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * Sets the player to sit position
-     * with the given message
+     * Sets the player to sit position with the given message
      *
      * @param sitLocation Location of the seat
      * @param message     Message to send on sit
@@ -521,8 +511,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * Unsets the player from sit position
-     * with the given message
+     * Unsets the player from sit position with the given message
      *
      * @param message Message to send on player get up
      */
@@ -563,7 +552,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * Sets player white list status
+     * Sets player whitelist status
      *
      * @param value True to add the player to the whitelist, false to remove
      * @return True if the player was added/removed successfully
@@ -669,12 +658,14 @@ public final class PlayerInfo {
     /**
      * Sets player's resource pack
      *
-     * @param url     The URL from which the client will download the resource pack
-     * @param hash    A 40 character hexadecimal and lowercase SHA-1 digest of the resource pack file
-     * @param force   Marks if the resource pack should be required by the client
+     * @param url     The URL from which the client will download the resource
+     *                pack
+     * @param hash    A 40-character hexadecimal and lowercase SHA-1 digest of
+     *                the resource pack file
+     * @param force   Marks if the client should require the resource pack
      * @param message A Prompt to be displayed in the client request
-     * @return Player's resource pack status future,
-     *         the future completes in {@link PlayerResourcePackStatusEvent}
+     * @return Player's resource pack status future, the future completes in
+     *         {@link PlayerResourcePackStatusEvent}
      * @see Player#setResourcePack(String, String, boolean, Component)
      * @see #completeResourcePackFuture(PlayerResourcePackStatusEvent.Status)
      */
@@ -710,10 +701,9 @@ public final class PlayerInfo {
     }
 
     /**
-     * Sets player's resource pack status future
-     * to the specified status and completes it.
-     * If the future is not set or already completed,
-     * nothing will happen
+     * Sets player's resource pack status future to the specified status and
+     * completes it. If the future is not set or already completed, nothing will
+     * happen
      *
      * @param status Player's resource pack status
      * @see #setResourcePackAsync(String, String, boolean, Component)
@@ -737,8 +727,8 @@ public final class PlayerInfo {
 
     /**
      * @return Player's mute reason from {@link Cache#getMuteMap()} params
-     * @throws IllegalStateException If the player is not muted,
-     *                               check {@link #isMuted()} first
+     * @throws IllegalStateException If the player is not muted, check
+     *                               {@link #isMuted()} first
      * @see MuteMap.Entry#getReason()
      */
     public @NotNull String getMuteReason() throws IllegalStateException {
@@ -753,8 +743,8 @@ public final class PlayerInfo {
 
     /**
      * @return Player's mute source from {@link Cache#getMuteMap()} params
-     * @throws IllegalStateException If the player is not muted,
-     *                               check {@link #isMuted()} first
+     * @throws IllegalStateException If the player is not muted, check
+     *                               {@link #isMuted()} first
      * @see MuteMap.Entry#getSource()
      */
     public @NotNull String getMutedBy() throws IllegalStateException {
@@ -770,10 +760,10 @@ public final class PlayerInfo {
     /**
      * @param sender The command sender, used to get the time zone
      * @return Date when the player was muted from {@link Cache#getMuteMap()}
-     *         with the sender's time zone or default time zone
-     *         if the sender's time zone cannot be obtained
-     * @throws IllegalStateException If the player is not muted,
-     *                               check {@link #isMuted()} first
+     *         with the sender's time zone or default time zone if the sender's
+     *         time zone cannot be obtained
+     * @throws IllegalStateException If the player is not muted, check
+     *                               {@link #isMuted()} first
      * @see MuteMap.Entry#getCreated()
      */
     public @NotNull Component getMutedFrom(final @NotNull CommandSender sender) throws IllegalStateException {
@@ -783,10 +773,10 @@ public final class PlayerInfo {
     /**
      * @param address The IP address, used to get the time zone
      * @return Date when the player was muted from {@link Cache#getMuteMap()}
-     *         with the time zone of the IP address or default time zone
-     *         if the time zone cannot be obtained
-     * @throws IllegalStateException If the player is not muted,
-     *                               check {@link #isMuted()} first
+     *         with the time zone of the IP address or default time zone if the
+     *         time zone cannot be obtained
+     * @throws IllegalStateException If the player is not muted, check
+     *                               {@link #isMuted()} first
      * @see MuteMap.Entry#getCreated()
      */
     public @NotNull Component getMutedFrom(final @NotNull InetAddress address) throws IllegalStateException {
@@ -795,8 +785,8 @@ public final class PlayerInfo {
 
     /**
      * @return Date when the player was muted from {@link Cache#getMuteMap()}
-     * @throws IllegalStateException If the player is not muted,
-     *                               check {@link #isMuted()} first
+     * @throws IllegalStateException If the player is not muted, check
+     *                               {@link #isMuted()} first
      * @see MuteMap.Entry#getCreated()
      */
     public @NotNull Instant getMutedFrom() throws IllegalStateException {
@@ -812,10 +802,10 @@ public final class PlayerInfo {
     /**
      * @param sender The command sender, used to get the time zone
      * @return Date when the player will be unmuted from {@link Cache#getMuteMap()}
-     *         with the sender's time zone or default time zone
-     *         if the sender's time zone cannot be obtained
-     * @throws IllegalStateException If the player is not muted,
-     *                               check {@link #isMuted()} first
+     *         with the sender's time zone or default time zone if the sender's
+     *         time zone cannot be obtained
+     * @throws IllegalStateException If the player is not muted, check
+     *                               {@link #isMuted()} first
      * @see MuteMap.Entry#getExpiration()
      */
     public @NotNull Component getMutedTo(final @NotNull CommandSender sender) throws IllegalStateException {
@@ -825,10 +815,10 @@ public final class PlayerInfo {
     /**
      * @param address The IP address, used to get the time zone
      * @return Date when the player will be unmuted from {@link Cache#getMuteMap()}
-     *         with the time zone of the IP address or default time zone
-     *         if the time zone cannot be obtained
-     * @throws IllegalStateException If the player is not muted,
-     *                               check {@link #isMuted()} first
+     *         with the time zone of the IP address or default time zone if the
+     *         time zone cannot be obtained
+     * @throws IllegalStateException If the player is not muted, check
+     *                               {@link #isMuted()} first
      * @see MuteMap.Entry#getExpiration()
      */
     public @NotNull Component getMutedTo(final @NotNull InetAddress address) throws IllegalStateException {
@@ -837,8 +827,8 @@ public final class PlayerInfo {
 
     /**
      * @return Date when the player will be unmuted from {@link Cache#getMuteMap()}
-     * @throws IllegalStateException If the player is not muted,
-     *                               check {@link #isMuted()} first
+     * @throws IllegalStateException If the player is not muted, check
+     *                               {@link #isMuted()} first
      * @see MuteMap.Entry#getExpiration()
      */
     public @NotNull Instant getMutedTo() throws IllegalStateException {
@@ -852,16 +842,15 @@ public final class PlayerInfo {
     }
 
     /**
-     * Mutes or unmutes the player in {@link Cache#getMuteMap()}.
-     * Also sends a message to the muted player if they are
-     * online, and to the sender, who muted the player.
+     * Mutes or unmutes the player in {@link Cache#getMuteMap()}.Also sends a
+     * message to the muted player if they are online, and to the sender, who
+     * muted the player.
      *
      * @param value  True to mute the player, false to unmute
      * @param date   The date when the player will be unmuted
      * @param reason The reason of the mute
-     * @param sender The command sender, who muted the player,
-     *               can be null, in this case the console
-     *               sender will be used
+     * @param sender The command sender, who muted the player, can be null, in
+     *               this case the console sender will be used
      * @see MuteMap#put(OfflinePlayer, Instant, String, String)
      * @see MuteMap#remove(OfflinePlayer)
      */
@@ -964,13 +953,12 @@ public final class PlayerInfo {
     }
 
     /**
-     * Unmutes the player in {@link Cache#getMuteMap()}.
-     * Also sends a message to the muted player if they are
-     * online, and to the sender, who unmuted the player.
+     * Unmutes the player in {@link Cache#getMuteMap()}. Also sends a message to
+     * the muted player if they are online, and to the sender, who unmuted the
+     * player.
      *
-     * @param commandSender The command sender, who unmuted the player,
-     *                      can be null, in this case the console
-     *                      sender will be used
+     * @param commandSender The command sender, who unmuted the player, can be
+     *                      null, in this case the console sender will be used
      */
     public void unmute(final @Nullable CommandSender commandSender) {
         this.setMuted(false, Instant.EPOCH, "", commandSender);
@@ -988,8 +976,8 @@ public final class PlayerInfo {
      * @return The ban reason of the player from {@link BanList.Type#PROFILE}
      *         or {@link LanguageRegistry.Components#COMMAND_BAN_DEFAULT_REASON}
      *         if the reason is null
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#getReason()
      */
     public @NotNull Component getBanReason() throws IllegalStateException {
@@ -1007,8 +995,8 @@ public final class PlayerInfo {
 
     /**
      * @param reason The ban reason of the player
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#setReason(String)
      */
     public void setBanReason(final @NotNull String reason) throws IllegalStateException {
@@ -1024,8 +1012,8 @@ public final class PlayerInfo {
 
     /**
      * @return The ban source of the player from {@link BanList.Type#PROFILE}
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#getSource()
      */
     public @NotNull String getBannedBy() throws IllegalStateException {
@@ -1040,8 +1028,8 @@ public final class PlayerInfo {
 
     /**
      * @param source The ban source of the player
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#setSource(String)
      */
     public void setBannedBy(final @NotNull String source) throws IllegalStateException {
@@ -1058,10 +1046,10 @@ public final class PlayerInfo {
     /**
      * @param sender The command sender, used to get the time zone
      * @return Date when the player was banned from {@link BanList.Type#PROFILE}
-     *         with the sender's time zone or default time zone
-     *         if the sender's time zone cannot be obtained
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     *         with the sender's time zone or default time zone if the sender's
+     *         time zone cannot be obtained
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#getCreated()
      */
     public @NotNull Component getBannedFrom(final @NotNull CommandSender sender) throws IllegalStateException {
@@ -1071,10 +1059,10 @@ public final class PlayerInfo {
     /**
      * @param address The IP address, used to get the time zone
      * @return Date when the player was banned from {@link BanList.Type#PROFILE}
-     *         with the time zone of the IP address or default time zone
-     *         if the time zone cannot be obtained
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     *         with the time zone of the IP address or default time zone if the
+     *         time zone cannot be obtained
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#getCreated()
      */
     public @NotNull Component getBannedFrom(final @NotNull InetAddress address) throws IllegalStateException {
@@ -1083,8 +1071,8 @@ public final class PlayerInfo {
 
     /**
      * @return Date when the player was banned from {@link BanList.Type#PROFILE}
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#getCreated()
      */
     public @NotNull Instant getBannedFrom() throws IllegalStateException {
@@ -1100,10 +1088,10 @@ public final class PlayerInfo {
     /**
      * @param sender The command sender, used to get the time zone
      * @return Date when the player will be unbanned from {@link BanList.Type#PROFILE}
-     *         with the sender's time zone or default time zone
-     *         if the sender's time zone cannot be obtained
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     *         with the sender's time zone or default time zone if the sender's
+     *         time zone cannot be obtained
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#getExpiration()
      */
     public @NotNull Component getBannedTo(final @NotNull CommandSender sender) throws IllegalStateException {
@@ -1122,10 +1110,10 @@ public final class PlayerInfo {
     /**
      * @param address The IP address, used to get the time zone
      * @return Date when the player will be unbanned from {@link BanList.Type#PROFILE}
-     *         with the time zone of the IP address or default time zone
-     *         if the time zone cannot be obtained
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     *         with the time zone of the IP address or default time zone if the
+     *         time zone cannot be obtained
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#getExpiration()
      */
     public @NotNull Component getBannedTo(final @NotNull InetAddress address) throws IllegalStateException {
@@ -1144,8 +1132,8 @@ public final class PlayerInfo {
     /**
      * @return Date when the player will be unbanned from {@link BanList.Type#PROFILE},
      *         or null if the player is banned forever
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#getExpiration()
      */
     public @Nullable Instant getBannedTo() throws IllegalStateException {
@@ -1160,10 +1148,11 @@ public final class PlayerInfo {
     }
 
     /**
-     * @param expiration Date when the player will be unbanned from {@link BanList.Type#PROFILE},
-     *                   or null if the player is banned forever
-     * @throws IllegalStateException If the player is not banned,
-     *                               check {@link #isBanned()} first
+     * @param expiration Date when the player will be unbanned from
+     *                   {@link BanList.Type#PROFILE}, or null if the player is
+     *                   banned forever
+     * @throws IllegalStateException If the player is not banned, check
+     *                               {@link #isBanned()} first
      * @see BanEntry#setExpiration(Date)
      */
     public void setBannedTo(final @Nullable Date expiration) throws IllegalStateException {
@@ -1178,16 +1167,16 @@ public final class PlayerInfo {
     }
 
     /**
-     * Bans or unbans the player in {@link BanList.Type#PROFILE}.
-     * Also kicks the player with the specified reason and expiration date
-     * if they are online, and to the player's private discord channel,
-     * if it is linked. Also sends a message to the sender.
+     * Bans or unbans the player in {@link BanList.Type#PROFILE}. Also kick the
+     * player with the specified reason and expiration date if they are online,
+     * and to the player's private discord channel, if it is linked. Also sends
+     * a message to the sender.
      *
      * @param value  Whether the player should be banned
      * @param date   Date when the player was banned
      * @param reason Reason why the player was banned
-     * @param sender The command sender, who banned the player
-     *               or null if the player was banned by the console
+     * @param sender The command sender, who banned the player or null if the
+     *               player was banned by the console
      */
     public void setBanned(
             final boolean value,
@@ -1277,15 +1266,15 @@ public final class PlayerInfo {
     /**
      * Unbans the player in {@link BanList.Type#PROFILE}
      *
-     * @param commandSender The command sender, who unbanned the player,
-     *                      or null if the player was unbanned by the console
+     * @param commandSender The command sender, who unbanned the player, or null
+     *                      if the player was unbanned by the console
      */
     public void pardon(final @Nullable CommandSender commandSender) {
         this.setBanned(false, Instant.EPOCH, "", commandSender);
     }
 
     /**
-     * @return True if the player isn't in dark_world and hasn't vanished
+     * @return True, if the player isn't in dark_world and hasn't vanished
      */
     public boolean isOnline() {
         return this.isOnline(false);
@@ -1293,7 +1282,7 @@ public final class PlayerInfo {
 
     /**
      * @param ignoreWorld Ignore world_dark check
-     * @return True if the player isn't in dark_world and hasn't vanished
+     * @return True, if the player isn't in dark_world and hasn't vanished
      */
     public boolean isOnline(boolean ignoreWorld) {
         final Player player = this.getOnlinePlayer();
@@ -1303,7 +1292,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return True if the player is registered,
+     * @return True, if the player is registered,
      *         i.e. the player file exists and has a name
      * @see PlayerFile#exists()
      * @see PlayerFile#isNoName()
@@ -1313,7 +1302,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return True if the player is vanished
+     * @return True, if the player is vanished
      */
     public boolean isVanished() {
         final Player player = this.getOnlinePlayer();
@@ -1332,7 +1321,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return True if the player is sitting
+     * @return True, if the player is sitting
      */
     public boolean isSitting() {
         final Player player = this.getOnlinePlayer();
@@ -1341,7 +1330,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return True if the player is linked to the Discord account
+     * @return True, if the player is linked to the Discord account
      * @see DiscordMap#containsPlayer(DiscordMap.Params)
      */
     public boolean isLinked() {
@@ -1351,7 +1340,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return True if the player is whitelisted
+     * @return True, if the player is whitelisted
      * @see OfflinePlayer#isWhitelisted()
      */
     public boolean isWhiteListed() {
@@ -1359,7 +1348,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return True if the player is muted in {@link Cache#getMuteMap()}
+     * @return True, if the player is muted in {@link Cache#getMuteMap()}
      * @see MuteMap#isMuted(OfflinePlayer)
      */
     public boolean isMuted() {
@@ -1367,14 +1356,14 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return True if the player is banned in {@link BanList.Type#PROFILE}
+     * @return True, if the player is banned in {@link BanList.Type#PROFILE}
      */
     public boolean isBanned() {
         return this.getBanEntry() != null;
     }
 
     /**
-     * @return True if the player is online and authenticated
+     * @return True, if the player is online and authenticated
      */
     public boolean isAuthenticated() {
         final Player player = this.getOnlinePlayer();
@@ -1383,8 +1372,7 @@ public final class PlayerInfo {
     }
 
     /**
-     * @return True if the player is online
-     *         and in the {@link WorldDark}
+     * @return True, if the player is online and in the {@link WorldDark}
      */
     public boolean isInWorldDark() {
         return WorldDark.isInWorldDark(this.getOnlinePlayer());
@@ -1410,11 +1398,10 @@ public final class PlayerInfo {
     }
 
     /**
-     * Handles the player's join.
-     * Starts the join task, which checks if the player
-     * is online, authenticated, and not dead. If the player
-     * is not online, the task is cancelled. If the player
-     * is not authenticated or dead, the task will be repeated.
+     * Handles the player's join. Starts the join task, which checks if the
+     * player is online, authenticated, and not dead. If the player is not
+     * online, the task is cancelled. If the player is not authenticated or
+     * dead, the task will be repeated.
      *
      * @see #handleJoinTask()
      */
@@ -1443,22 +1430,20 @@ public final class PlayerInfo {
     }
 
     /**
-     * Handles the player's quit.
-     * Unsets the player's sitting, ejects the player from
-     * the vehicle, removes the player from the anomaly action map,
-     * and saves the player's data. After that, sends the quit message
-     * to all players, if the player is not located in the dark world.
+     * Handles the player's quit. Unsets the player's sitting, ejects the player
+     * from the vehicle, removes the player from the anomaly action map, and
+     * saves the player's data. After that, send the quit message to all players
+     * if the player is not located in the dark world.
      */
     public void handleQuit() {
         this.handleQuit(this.getOnlinePlayer());
     }
 
     /**
-     * Handles the player's quit.
-     * Unsets the player's sitting, ejects the player from
-     * the vehicle, removes the player from the anomaly action map,
-     * and saves the player's data. After that, sends the quit message
-     * to all players, if the player is not located in the dark world.
+     * Handles the player's quit. Unsets the player's sitting, ejects the player
+     * from the vehicle, removes the player from the anomaly action map, and
+     * saves the player's data. After that, send the quit message to all players
+     * if the player is not located in the dark world.
      *
      * @param player The player, who quit
      */
@@ -1581,9 +1566,9 @@ public final class PlayerInfo {
     }
 
     /**
-     * Teleports the player to the last leave location
-     * or to the bed spawn location if the last leave location is null
-     * or to the world spawn location if the bed spawn location is null
+     * Teleports the player to the last leave location or to the bed spawn
+     * location if the last leave location is null or to the world spawn
+     * location if the bed spawn location is null
      *
      * @return A future that will be completed with the result of the teleport
      */
@@ -1612,9 +1597,9 @@ public final class PlayerInfo {
     }
 
     /**
-     * Teleports the player to the last death location
-     * or to the bed spawn location if the last leave location is null
-     * or to the world spawn location if the bed spawn location is null
+     * Teleports the player to the last death location or to the bed spawn
+     * location if the last leave location is null or to the world spawn
+     * location if the bed spawn location is null
      *
      * @return A future that will be completed with the result of the teleport
      */
@@ -1643,11 +1628,9 @@ public final class PlayerInfo {
     }
 
     /**
-     * Creates the player's file, if it doesn't exist.
-     * Also sets the player's nickname, IP and first join date,
-     * if the player is online.
-     * And sends the message to the console, if the player's file
-     * was created successfully.
+     * Creates the player's file if it doesn't exist. Also sets the player's
+     * nickname, IP and first join date if the player is online. And sends the
+     * message to the console if the player's file was created successfully.
      */
     public void createPlayerFile() {
         if (this.playerFile.exists()) {
@@ -1767,10 +1750,8 @@ public final class PlayerInfo {
     }
 
     /**
-     * Saves the player's health, air, game mode
-     * and last leave location to the player's file,
-     * if the player is online and not in the
-     * {@link WorldDark}
+     * Saves the player's health, air, game mode and last leave location to the
+     * player's file if the player is online and not in the {@link WorldDark}
      */
     public void savePlayerDataParams() {
         final Player player = this.getOnlinePlayer();
@@ -1825,11 +1806,10 @@ public final class PlayerInfo {
     }
 
     /**
-     * Sets the player's skin, game mode, health and air.
-     * Also teleports the player to the last leave location,
-     * and sends the join message to all players. If the player
-     * is not registered, then the registration process will be
-     * started.
+     * Sets the player's skin, game mode, health and air. Also teleports the
+     * player to the last leave location, and sends the join message to all
+     * players. If the player is not registered, then the registration process
+     * will be started.
      *
      * @see #handleJoin()
      */

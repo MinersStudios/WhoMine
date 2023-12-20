@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * {@link MSCustomUtils#getItemStack(String)}.
  * <br>
  * Use {@link #toExactChoice()} to convert this choice to an {@link ExactChoice}.
- * It is important, because bukkit does not support custom choices.
+ * It is important because bukkit does not support custom choices.
  */
 public final class CustomChoice implements RecipeChoice {
     private List<ItemStack> choices;
@@ -43,9 +43,8 @@ public final class CustomChoice implements RecipeChoice {
      * Constructs a new custom choice with the specified namespaced keys
      *
      * @param namespacedKeys The namespaced keys to use for the choice
-     * @throws IllegalArgumentException If the namespaced keys are empty
-     *                                  or if any of the namespaced keys
-     *                                  are invalid
+     * @throws IllegalArgumentException If the namespaced keys are empty, or if
+     *                                  any of the namespaced keys are invalid
      */
     public CustomChoice(final String @NotNull ... namespacedKeys) throws IllegalArgumentException {
         this(List.of(namespacedKeys));
@@ -55,9 +54,9 @@ public final class CustomChoice implements RecipeChoice {
      * Constructs a new custom choice with the specified namespaced keys
      *
      * @param namespacedKeys The namespaced keys to use for the choice
-     * @throws IllegalArgumentException If the namespaced keys are empty
-     *                                  or if any of the namespaced keys
-     *                                  are null or invalid
+     * @throws IllegalArgumentException If the namespaced keys are empty, or if
+     *                                  any of the namespaced keys are null or
+     *                                  invalid
      */
     public CustomChoice(final @NotNull List<String> namespacedKeys) throws IllegalArgumentException {
         if (namespacedKeys.isEmpty()) {
@@ -113,9 +112,8 @@ public final class CustomChoice implements RecipeChoice {
     }
 
     /**
-     * Converts this CustomChoice to an ExactChoice. It is important
-     * to use this method, because bukkit does not support custom
-     * choices.
+     * Converts this CustomChoice to an ExactChoice. It is important to use this
+     * method because bukkit does not support custom choices.
      *
      * @return A new ExactChoice with the same choices
      *         as this CustomChoice

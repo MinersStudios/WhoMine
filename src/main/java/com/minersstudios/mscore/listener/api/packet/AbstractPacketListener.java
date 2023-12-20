@@ -12,8 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This class used for extending packet
- * listeners with the {@link PacketListener} annotation.
+ * This class used for extending packet listeners with the {@link PacketListener}
+ * annotation
  *
  * @param <P> The plugin, that this packet listener is registered to
  * @see PacketListener

@@ -155,32 +155,32 @@ public final class SoundGroup implements Cloneable {
     }
 
     /**
-     * @return The place sound of this SoundGroup,
-     *         or null if the place sound is not set
+     * @return The place sound of this SoundGroup, or null if the place sound is
+     *         not set
      */
     public @Nullable Sound getPlaceSound() {
         return this.placeSound;
     }
 
     /**
-     * @return The break sound of this SoundGroup,
-     *         or null if the break sound is not set
+     * @return The break sound of this SoundGroup, or null if the break sound is
+     *         not set
      */
     public @Nullable Sound getBreakSound() {
         return this.breakSound;
     }
 
     /**
-     * @return The hit sound of this SoundGroup,
-     *         or null if the hit sound is not set
+     * @return The hit sound of this SoundGroup, or null if the hit sound is not
+     *         set
      */
     public @Nullable Sound getHitSound() {
         return this.hitSound;
     }
 
     /**
-     * @return The step sound of this SoundGroup,
-     *         or null if the step sound is not set
+     * @return The step sound of this SoundGroup, or null if the step sound is
+     *         not set
      */
     public @Nullable Sound getStepSound() {
         return this.stepSound;
@@ -363,7 +363,7 @@ public final class SoundGroup implements Cloneable {
      *     <li>A pitch float</li>
      * </ul>
      *
-     * Sound can be created with builder, example :
+     * Sound can be created with builder, for example :
      * <pre>
      *     Sound sound = Sound.builder()
      *             .key("block.wood.place")
@@ -372,7 +372,7 @@ public final class SoundGroup implements Cloneable {
      *             .pitch(1.0f)
      *             .build();
      * </pre>
-     * Or with the :
+     * Or with static methods :
      * <ul>
      *     <li>{@link #create(String)}</li>
      *     <li>{@link #create(String, SoundCategory)}</li>

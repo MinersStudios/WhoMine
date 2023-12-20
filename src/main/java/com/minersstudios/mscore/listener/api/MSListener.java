@@ -3,6 +3,11 @@ package com.minersstudios.mscore.listener.api;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * This interface is used for implementing listeners
+ *
+ * @param <P> The plugin, that this listener is registered to
+ */
 public interface MSListener<P extends MSPlugin<P>> {
 
     /**

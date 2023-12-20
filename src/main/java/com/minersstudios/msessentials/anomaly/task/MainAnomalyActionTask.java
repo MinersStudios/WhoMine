@@ -13,13 +13,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * Main anomaly action task.
- * This task is used to check if the player is in anomaly zone.
- * When player is in anomaly zone, the action will be performed.
- * Otherwise, the action will be removed.
+ * Main anomaly action task. This task is used to check if the player is in the
+ * anomaly zone. When a player is in the anomaly zone, the action will be
+ * performed. Otherwise, the action will be removed.
  * <br>
- * The task is registered in {@link Config#reload()}
- * with {@link Config#getAnomalyCheckRate()}.
+ * The task is registered in {@link Config#reload()} with
+ * {@link Config#getAnomalyCheckRate()}.
  *
  * @see AnomalyAction
  * @see AnomalyBoundingBox

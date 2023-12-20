@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Button builder class.
- * Button can use {@link ButtonClickAction} to perform action when clicked
+ * Button builder class. Button can use {@link ButtonClickAction} to perform
+ * action when clicked.
  */
 public class InventoryButton implements Cloneable {
     private ItemStack item;
@@ -21,8 +21,7 @@ public class InventoryButton implements Cloneable {
     private static final ItemStack DEFAULT_ITEM = new ItemStack(Material.AIR);
 
     /**
-     * Creates new button with {@link #DEFAULT_ITEM}
-     * and no click action
+     * Creates new button with {@link #DEFAULT_ITEM} and no click action
      */
     public InventoryButton() {
         this.item = DEFAULT_ITEM.clone();
@@ -33,8 +32,8 @@ public class InventoryButton implements Cloneable {
      * Creates new button with specified item and click action
      *
      * @param item        Item to be displayed on button
-     * @param clickAction Click action to be performed when button
-     *                    is clicked
+     * @param clickAction Click action to be performed when the button is
+     *                    clicked
      */
     public InventoryButton(
             final @Nullable ItemStack item,
@@ -67,9 +66,9 @@ public class InventoryButton implements Cloneable {
     }
 
     /**
-     * Gets click action to be performed when button is clicked
+     * Gets click action to be performed when the button is clicked
      *
-     * @return Click action to be performed when button is clicked
+     * @return Click action to be performed when the button is clicked
      * @see ButtonClickAction
      */
     public @Nullable ButtonClickAction clickAction() {
@@ -77,7 +76,7 @@ public class InventoryButton implements Cloneable {
     }
 
     /**
-     * Sets click action to be performed when button is clicked
+     * Sets click action to be performed when the button is clicked
      *
      * @param clickAction New click action
      * @return This instance
@@ -91,7 +90,7 @@ public class InventoryButton implements Cloneable {
     /**
      * Plays click sound to player
      *
-     * @param player Player to whom the sound will be played
+     * @param player Player, to whom the sound will be played
      */
     public static void playClickSound(final @NotNull Player player) {
         player.playSound(
@@ -104,11 +103,10 @@ public class InventoryButton implements Cloneable {
     }
 
     /**
-     * Performs click action when button is clicked
+     * Performs click action when the button is clicked
      *
      * @param event           Event that triggered the action
-     * @param customInventory Custom inventory that is involved
-     *                        in this event
+     * @param customInventory Custom inventory that is involved in this event
      */
     public void doClickAction(
             final @NotNull InventoryClickEvent event,

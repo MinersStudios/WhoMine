@@ -45,9 +45,6 @@ public abstract class AbstractDiscordListener<P extends MSPlugin<P>> extends Lis
         .ifPresent(jda -> jda.addEventListener(this));
     }
 
-    /**
-     * @return A string representation of this listener
-     */
     @Override
     public @NotNull String toString() {
         return this.getClass().getSimpleName() + "{plugin=" + this.plugin + '}';

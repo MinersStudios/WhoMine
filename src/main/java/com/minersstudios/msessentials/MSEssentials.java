@@ -112,71 +112,63 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     }
 
     /**
-     * @return The cache of the plugin,
-     *         or null if the plugin is disabled
+     * @return The cache of the plugin or null if the plugin is disabled
      */
     public @UnknownNullability Cache getCache() {
         return this.cache;
     }
 
     /**
-     * @return The configuration of the plugin
-     *         or null if the plugin is disabled
+     * @return The configuration of the plugin or null if the plugin is disabled
      */
     public @UnknownNullability Config getConfiguration() {
         return this.config;
     }
 
     /**
-     * @return The player info of the console
-     *         or null if the plugin is disabled
+     * @return The player info of the console or null if the plugin is disabled
      */
     public @UnknownNullability Scoreboard getScoreboardHideTags() {
         return this.scoreboardHideTags;
     }
 
     /**
-     * @return The player info of the console
-     *         or null if the plugin is disabled
+     * @return The player info of the console or null if the plugin is disabled
      */
     public @UnknownNullability Team getScoreboardHideTagsTeam() {
         return this.scoreboardHideTagsTeam;
     }
 
     /**
-     * @return Singleton instance of the plugin
+     * @return Singleton instance of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability MSEssentials singleton() {
         return singleton;
     }
 
     /**
-     * @return The player info of the console
-     *         or null if the plugin is disabled
+     * @return The player info of the console or null if the plugin is disabled
      */
     public static @UnknownNullability Logger logger() {
         return singleton == null ? null : singleton.getLogger();
     }
 
     /**
-     * @return The player info of the console
-     *         or null if the plugin is disabled
+     * @return The player info of the console or null if the plugin is disabled
      */
     public static @UnknownNullability ComponentLogger componentLogger() {
         return singleton == null ? null : singleton.getComponentLogger();
     }
 
     /**
-     * @return The player info of the console
-     *         or null if the plugin is disabled
+     * @return The player info of the console or null if the plugin is disabled
      */
     public static @UnknownNullability Cache cache() {
         return singleton == null ? null : singleton.cache;
     }
 
     /**
-     * @return The player info of the console
-     *         or null if the plugin is disabled
+     * @return The player info of the console or null if the plugin is disabled
      */
     public static @UnknownNullability Config config() {
         return singleton == null ? null : singleton.config;

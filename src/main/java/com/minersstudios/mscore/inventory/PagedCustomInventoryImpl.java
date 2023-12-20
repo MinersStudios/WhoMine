@@ -11,15 +11,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * PagedCustomInventoryImpl is an abstract class that provides a base implementation for paged custom inventories.
- * It extends CustomInventoryImpl and implements the PagedCustomInventory interface.
+ * PagedCustomInventoryImpl is an abstract class that provides a base
+ * implementation for paged custom inventories. It extends CustomInventoryImpl
+ * and implements the PagedCustomInventory interface.
  *
- * @param <S> Self type, the specific implementation of the paged custom inventory.
+ * @param <S> Self-type, the specific implementation of the paged custom
+ *            inventory
  */
 @SuppressWarnings("unchecked")
 abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> extends CustomInventoryImpl<S> implements PagedCustomInventory {
     protected int page;
-    protected int pagesSize;
+    protected int pagesCount;
     protected final @NotNull Map<Integer, StaticInventoryButton> staticButtons;
     protected final @NotNull Map<Integer, S> pages;
 
@@ -95,7 +97,7 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
     @Override
     public int getNextPageIndex() {
         final int next = this.page + 1;
-        return next >= this.pagesSize ? -1 : next;
+        return next >= this.pagesCount ? -1 : next;
     }
 
     @Override
@@ -105,25 +107,25 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
     }
 
     @Override
-    public int getPagesSize() {
-        return this.pagesSize;
+    public int getPagesCount() {
+        return this.pagesCount;
     }
 
-    protected void setPagesSize(final @Range(from = 0, to = Integer.MAX_VALUE) int pagesSize) {
+    protected void setPagesCount(final @Range(from = 0, to = Integer.MAX_VALUE) int pagesCount) {
         for (final var pagedInventory : this.pages.values()) {
-            pagedInventory.pagesSize = pagesSize;
+            pagedInventory.pagesCount = pagesCount;
         }
     }
 
     @Override
     public @NotNull S addPage() {
-        int page = this.pagesSize;
+        int page = this.pagesCount;
         var pagedInventory = this.clone();
 
         pagedInventory.setPageIndex(page);
         this.pages.put(page, pagedInventory);
         this.updateStaticButtons(page);
-        this.setPagesSize(this.pages.size());
+        this.setPagesCount(this.pages.size());
         return pagedInventory;
     }
 

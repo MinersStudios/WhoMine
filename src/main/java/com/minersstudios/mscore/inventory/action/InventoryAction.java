@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public interface InventoryAction<E extends Event> {
 
     /**
-     * Performs action when event is triggered
+     * Performs action when an event is triggered
      *
      * @param event           Event that triggered the action
      * @param customInventory Custom inventory that is involved in this event

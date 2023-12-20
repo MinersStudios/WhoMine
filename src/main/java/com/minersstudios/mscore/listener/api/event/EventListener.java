@@ -6,9 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * All event listeners annotated using {@link EventListener}
- * will be registered automatically. Also, must be extended
- * by {@link AbstractEventListener}
+ * All event listeners annotated using {@link EventListener} will be registered
+ * automatically. Also, it must be extended by {@link AbstractEventListener}.
  *
  * @see AbstractEventListener
  */

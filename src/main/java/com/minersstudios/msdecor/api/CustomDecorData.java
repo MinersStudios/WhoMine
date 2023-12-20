@@ -11,7 +11,10 @@ import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import com.minersstudios.msdecor.event.CustomDecorPlaceEvent;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.*;
+import org.bukkit.Keyed;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Interaction;
@@ -29,6 +32,18 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 
+/**
+ * This interface represents the data of a custom decor in the game. It provides
+ * methods to get and manipulate the properties of the decor, etc.
+ * <br>
+ * It is recommended to extend the {@link CustomDecorDataImpl} class when
+ * creating custom decor data classes. This class provides a base implementation
+ * of the {@link CustomDecorData} interface. It also provides a builder to
+ * create custom decor data instances.
+ *
+ * @param <D> The type of the custom decor data
+ * @see CustomDecorDataImpl
+ */
 public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
 
     /**
@@ -67,10 +82,10 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
      * @return The unmodifiable set of {@link DecorParameter}
      * @see DecorParameter
      */
-    @NotNull @Unmodifiable Set<DecorParameter> parameterSet();
+    @NotNull @Unmodifiable EnumSet<DecorParameter> parameterSet();
 
     /**
-     * @return Clone of the different types of custom decor for wrenchable and
+     * @return Clone of the different custom decor types for wrenchable and
      *         typed custom decor
      * @throws UnsupportedOperationException If the custom decor is not
      *                                       {@link DecorParameter#WRENCHABLE}
@@ -203,14 +218,14 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
 
     /**
      * @param lightLevel Light level to get a light type from
-     * @return Custom decor light type obtained from given light level
+     * @return Custom decor light type obtained from a given light level
      * @throws UnsupportedOperationException If the custom decor is not
      *                                       {@link DecorParameter#LIGHT_TYPED}
      */
     @Nullable Type<D> getLightTypeOf(final int lightLevel) throws UnsupportedOperationException;
 
     /**
-     * @return Clone of the different light levels of custom decor for lightable
+     * @return Clone of the different custom decor light levels for lightable
      *         and light typed custom decor
      * @throws UnsupportedOperationException If the custom decor is not
      *                                       {@link DecorParameter#LIGHT_TYPED}
@@ -310,7 +325,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     boolean isSimilar(final @Nullable ItemStack itemStack);
 
     /**
-     * Check whether a given custom decor data is similar to this custom decor
+     * Check whether given custom decor data is similar to this custom decor
      * data
      *
      * @param data The dara to compare with this custom decor data
@@ -381,11 +396,11 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     boolean isAnyTyped();
 
     /**
-     * @return True if this custom decor drops its type when destroyed,
+     * @return True, if this custom decor drops its type when destroyed,
      *         otherwise it drops the main item stack
      * @see #isAnyTyped()
      */
-    boolean isDropsType();
+    boolean isDropType();
 
     /**
      * Performs the click action of this custom decor
@@ -743,6 +758,11 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
                 );
     }
 
+    /**
+     * This interface represents the type of custom decor data
+     *
+     * @param <D> The custom decor data type that owns this type
+     */
     interface Type<D extends CustomDecorData<D>> extends Keyed {
 
         /**

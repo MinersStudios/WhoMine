@@ -131,7 +131,7 @@ public final class MSLogger {
      *
      * @param level     One of the message level identifiers
      * @param message   The component message
-     * @param throwable Throwable associated with log message
+     * @param throwable Throwable associated with a log message
      * @see #log(Level, String, Throwable)
      */
     public static void log(
@@ -149,7 +149,7 @@ public final class MSLogger {
      *
      * @param level     One of the message level identifiers
      * @param message   The string message
-     * @param throwable Throwable associated with log message
+     * @param throwable Throwable associated with a log message
      * @see Logger#log(Level, String, Throwable)
      */
     public static void log(
@@ -185,7 +185,7 @@ public final class MSLogger {
     }
 
     /**
-     * Logs a message with the specified severity level  to the specified target.
+     * Logs a message with the specified severity level to the specified target.
      * If the target is null, the message will be logged to the console.
      * <br>
      * All messages will be colored according to their severity level.
@@ -289,7 +289,7 @@ public final class MSLogger {
      * associated throwable
      *
      * @param message   The string message
-     * @param throwable Throwable associated with log message
+     * @param throwable Throwable associated with a log message
      * @see #log(Level, String, Throwable)
      */
     public static void severe(
@@ -304,7 +304,7 @@ public final class MSLogger {
      * associated throwable
      *
      * @param message   The component message
-     * @param throwable Throwable associated with log message
+     * @param throwable Throwable associated with a log message
      * @see #log(Level, Component, Throwable)
      */
     public static void severe(
@@ -401,7 +401,7 @@ public final class MSLogger {
      * associated throwable
      *
      * @param message   The string message
-     * @param throwable Throwable associated with log message
+     * @param throwable Throwable associated with a log message
      * @see #log(Level, String, Throwable)
      */
     public static void warning(
@@ -416,7 +416,7 @@ public final class MSLogger {
      * associated throwable
      *
      * @param message   The component message
-     * @param throwable Throwable associated with log message
+     * @param throwable Throwable associated with a log message
      * @see #log(Level, Component, Throwable)
      */
     public static void warning(
@@ -513,7 +513,7 @@ public final class MSLogger {
      * throwable
      *
      * @param message   The string message
-     * @param throwable Throwable associated with log message
+     * @param throwable Throwable associated with a log message
      * @see #log(Level, String, Throwable)
      */
     public static void info(
@@ -528,7 +528,7 @@ public final class MSLogger {
      * throwable
      *
      * @param message   The component message
-     * @param throwable Throwable associated with log message
+     * @param throwable Throwable associated with a log message
      * @see #log(Level, Component, Throwable)
      */
     public static void info(
@@ -625,7 +625,7 @@ public final class MSLogger {
      * throwable
      *
      * @param message   The string message
-     * @param throwable Throwable associated with log message
+     * @param throwable Throwable associated with a log message
      * @see #log(Level, String, Throwable)
      */
     public static void fine(
@@ -640,7 +640,7 @@ public final class MSLogger {
      * throwable
      *
      * @param message   The component message
-     * @param throwable Throwable associated with log message
+     * @param throwable Throwable associated with a log message
      * @see #log(Level, Component, Throwable)
      */
     public static void fine(

@@ -6,12 +6,12 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * This class used for extending listeners with the
- * {@link EventListener} annotation
+ * This class used for extending event listeners with the {@link EventListener}
+ * annotation
  *
- * @param <P> The plugin, that this listener is registered to
+ * @param <P> The plugin, that this event listener is registered to
  * @see EventListener
- * @see MSPlugin#registerListeners()
+ * @see MSPlugin#registerEventListeners()
  */
 public abstract class AbstractEventListener<P extends MSPlugin<P>> implements MSListener<P>, Listener {
     private P plugin;

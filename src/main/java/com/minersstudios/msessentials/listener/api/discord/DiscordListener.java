@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * All event listeners annotated using {@link DiscordListener}
- * will be registered automatically. Also, must be extended
- * by {@link AbstractDiscordListener}
+ * All event listeners annotated using {@link DiscordListener} will be
+ * registered automatically. Also, must be extended by
+ * {@link AbstractDiscordListener}
  *
  * @see AbstractDiscordListener
  */

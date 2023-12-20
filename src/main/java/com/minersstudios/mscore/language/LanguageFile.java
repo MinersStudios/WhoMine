@@ -154,8 +154,8 @@ public final class LanguageFile {
      * {@link TranslatableComponent}.
      * <br>
      * <b>NOTE:</b> Use only for custom translations loaded from the language
-     * file. Usually used for item names and lore, because they are renders it's
-     * without fallback
+     * file. Usually used for item names and lore, because they are rendered it
+     * without a fallback
      *
      * @param key Translation key
      * @return TranslatableComponent with translation from {@link #registry} or

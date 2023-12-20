@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a custom block which is a block with a custom block data
+ * Represents a custom block, which is a block with custom block data
  *
  * @see CustomBlockData
  * @see #place(MSBlock, Player, EquipmentSlot, BlockFace, Axis)
@@ -158,12 +158,13 @@ public final class CustomBlock {
     }
 
     /**
-     * Breaks the custom block and calls the {@link CustomBlockBreakEvent},
-     * if the event is cancelled, the block will not be broken. Otherwise,
-     * drops the item if the player is holding the correct tool, or if
-     * the custom block has force tool set to false. Also drops experience
-     * if the custom block has exp to drop set to a value greater than 0.
-     * Also plays the break sound and logs the break to CoreProtect.
+     * Breaks the custom block and calls the {@link CustomBlockBreakEvent}, if
+     * the event is cancelled, the block will not be broken.
+     * Otherwise, drop the item if the player is holding the correct tool, or if
+     * the custom block has force tool set to false.
+     * Also drops experience if the custom block has exp to drop a set to a
+     * value greater than 0. Also plays the break sound and logs the break to
+     * CoreProtect.
      *
      * @param plugin The plugin that owns this custom block
      * @param player The player who broke the block

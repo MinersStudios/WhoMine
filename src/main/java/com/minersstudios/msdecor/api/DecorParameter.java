@@ -18,6 +18,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * DecorParameter enum represents different parameters for custom decor
+ * functionalities
+ */
 public enum DecorParameter {
     //<editor-fold desc="Parameters" defaultstate="collapsed">
     PAINTABLE,
@@ -146,14 +150,25 @@ public enum DecorParameter {
             };
     //</editor-fold>
 
+    /**
+     * Constructor for DecorParameter with no DecorClickAction
+     */
     DecorParameter() {
         this(DecorClickAction.NONE);
     }
 
+    /**
+     * Constructor for DecorParameter with a specified DecorClickAction
+     *
+     * @param clickAction The DecorClickAction associated with this parameter
+     */
     DecorParameter(final @NotNull DecorClickAction clickAction) {
         this.clickAction = clickAction;
     }
 
+    /**
+     * @return The DecorClickAction of this parameter
+     */
     public @NotNull DecorClickAction getClickAction() {
         return this.clickAction;
     }
@@ -162,26 +177,47 @@ public enum DecorParameter {
         return SITTABLE.getClickAction();
     }
 
+    /**
+     * @return The DecorClickAction of the wrenchable parameter
+     */
     public static @NotNull DecorClickAction wrenchableAction() {
         return WRENCHABLE.getClickAction();
     }
 
+    /**
+     * @return The DecorClickAction of the lightable parameter
+     */
     public static @NotNull DecorClickAction lightableAction() {
         return LIGHTABLE.getClickAction();
     }
 
+    /**
+     * @return The DecorClickAction of the typed parameter
+     */
     public static @NotNull DecorClickAction lightTypedAction() {
         return LIGHT_TYPED.getClickAction();
     }
 
+    /**
+     * @return The DecorClickAction of the face typed parameter
+     */
     public static @NotNull DecorClickAction wrenchableSittableAction() {
         return WRENCHABLE_SITTABLE_CLICK_ACTION;
     }
 
+    /**
+     * @return The DecorClickAction of the face typed parameter
+     */
     public static @NotNull DecorClickAction wrenchableLightableAction() {
         return WRENCHABLE_LIGHTABLE_CLICK_ACTION;
     }
 
+    /**
+     * Performs the action of sitting on the decor
+     *
+     * @param event The CustomDecorClickEvent called when the player
+     *              right-clicked the decor
+     */
     public static void doSit(final @NotNull CustomDecorClickEvent event) {
         final Player player = event.getPlayer();
 
@@ -211,6 +247,13 @@ public enum DecorParameter {
         player.swingHand(event.getHand());
     }
 
+    /**
+     * Performs the action of wrenching the decor
+     *
+     * @param event      The CustomDecorClickEvent called when the player
+     *                   right-clicked the decor
+     * @param itemInUse  The item in the player's hand
+     */
     public static void doWrench(
             final @NotNull CustomDecorClickEvent event,
             final @NotNull ItemStack itemInUse
@@ -230,8 +273,8 @@ public enum DecorParameter {
         final ItemMeta displayMeta = displayItem.getItemMeta();
 
         if (
-                displayMeta instanceof LeatherArmorMeta displayColorable
-                && typeMeta instanceof LeatherArmorMeta typeColorable
+                displayMeta instanceof final LeatherArmorMeta displayColorable
+                && typeMeta instanceof final LeatherArmorMeta typeColorable
         ) {
             typeColorable.setColor(displayColorable.getColor());
         }
@@ -255,6 +298,13 @@ public enum DecorParameter {
         player.swingHand(event.getHand());
     }
 
+    /**
+     * Performs the action of lighting the decor
+     *
+     * @param event     The CustomDecorClickEvent called when the player
+     *                  right-clicked the decor
+     * @param nextLevel The next light level of the decor to be set
+     */
     public static void doLight(
             final @NotNull CustomDecorClickEvent event,
             final int nextLevel

@@ -79,24 +79,21 @@ public final class MSCore extends MSPlugin<MSCore> {
     }
 
     /**
-     * @return The singleton of the plugin
-     *         or null if the plugin is not enabled
+     * @return The singleton of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability MSCore singleton() {
         return singleton;
     }
 
     /**
-     * @return The logger of the plugin
-     *         or null if the plugin is not enabled
+     * @return The logger of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability Logger logger() {
         return singleton == null ? null : singleton.getLogger();
     }
 
     /**
-     * @return The component logger of the plugin
-     *         or null if the plugin is not enabled
+     * @return The component logger of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability ComponentLogger componentLogger() {
         return singleton == null ? null : singleton.getComponentLogger();

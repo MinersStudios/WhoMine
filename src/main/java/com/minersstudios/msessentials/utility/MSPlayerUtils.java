@@ -25,6 +25,7 @@ public final class MSPlayerUtils {
     public static final String NAME_REGEX = "[-Ѐ-ӿ]+";
     public static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
 
+    @Contract(" -> fail")
     private MSPlayerUtils() {
         throw new AssertionError("Utility class");
     }

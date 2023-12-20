@@ -28,8 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
- * Discord linking map with discord user id and its player's {@link Params}.
- * All mutes stored in the "config/minersstudios/MSEssentials/discord_links.json" file.
+ * Discord linking a map with discord user id and its player's {@link Params}.
+ * All mutes stored in the "config/minersstudios/MSEssentials/discord_links.json"
+ * file.
  *
  * @see Params
  */
@@ -46,8 +47,8 @@ public final class DiscordMap {
             .create();
 
     /**
-     * Discord linking map with discord user id and its player's {@link Params}.
-     * Loads mutes from the file.
+     * Discord linking a map with discord user id and its player's
+     * {@link Params}. Loads mutes from the file.
      */
     public DiscordMap(final @NotNull MSPlugin<?> plugin) {
         this.plugin = plugin;
@@ -132,9 +133,9 @@ public final class DiscordMap {
     }
 
     /**
-     * Generates a new code for the link request.
-     * If the code is already in use, it will generate a new one.
-     * The code will be removed after 5 minutes if it is not used.
+     * Generates a new code for the link request. If the code is already in use,
+     * it will generate a new one. The code will be removed after 5 minutes if
+     * it is not used.
      *
      * @param playerInfo The player info to generate code for
      * @return The generated code

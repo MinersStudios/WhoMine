@@ -33,8 +33,8 @@ public final class SignMenu implements Cloneable {
     private static final Map<Player, SignMenu> SIGN_MENU_MAP = new ConcurrentHashMap<>();
 
     /**
-     * Creates a new {@link SignMenu} instance with the given text.
-     * The response handler is called when the player clicks the done button.
+     * Creates a new {@link SignMenu} instance with the given text. The response
+     * handler is called when the player clicks the done button.
      * <br>
      * Returning true will close the sign editor.
      * <br>
@@ -59,8 +59,8 @@ public final class SignMenu implements Cloneable {
 
     /**
      * @param player The player who has the sign menu open
-     * @return SignMenu opened by the player,
-     *         or null if the player does not have a SignMenu open
+     * @return SignMenu opened by the player, or null if the player does not
+     *         have a SignMenu open
      */
     public static @Nullable SignMenu getSignMenu(final @NotNull Player player) {
         return SIGN_MENU_MAP.get(player);
@@ -91,9 +91,8 @@ public final class SignMenu implements Cloneable {
     }
 
     /**
-     * Opens the sign for the player. It creates
-     * a fake sign, sends it to the player, and
-     * then opens the sign editor.
+     * Opens the sign for the player. It creates a fake sign, sends it to the
+     * player, and then opens the sign editor.
      *
      * @param player The player
      */
@@ -124,9 +123,8 @@ public final class SignMenu implements Cloneable {
     }
 
     /**
-     * Closes the sign for the player. It sends
-     * a block change packet to the player to
-     * reset the sign.
+     * Closes the sign for the player. It sends a block change packet to the
+     * player to reset the sign.
      *
      * @param player The player to close the sign for
      */

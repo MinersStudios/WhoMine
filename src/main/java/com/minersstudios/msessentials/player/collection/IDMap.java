@@ -59,7 +59,8 @@ public final class IDMap {
      *
      * @param uuid       Player {@link UUID}
      * @param addPlayer  If true, the new player will be added with the next ID
-     * @param zeroIfNull If true and the player is not found, the return value will be 0, not -1
+     * @param zeroIfNull If true and the player is not found, the return value
+     *                   will be 0, not -1
      * @return -1 if the player is not found
      */
     public int getID(
@@ -195,8 +196,8 @@ public final class IDMap {
     }
 
     /**
-     * Gets next ID, by the size of the ID map.
-     * If the ID with that size already exists, returns the next ID.
+     * Gets next ID, by the size of the ID map. If the ID with that size already
+     * exists, returns the next ID.
      *
      * @return next player ID
      */

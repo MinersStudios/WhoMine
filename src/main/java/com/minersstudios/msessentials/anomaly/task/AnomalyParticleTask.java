@@ -13,14 +13,13 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Particle anomaly task.
- * This task is used to check if the player is in anomaly zone.
- * When player is in anomaly zone, the action will be performed
- * and particles will be spawned.
- * Otherwise, the action will be removed.
+ * Particle anomaly task. This task is used to check if the player is in the
+ * anomaly zone. When player is in the anomaly zone, the action will be
+ * performed and particles will be spawned. Otherwise, the action will be
+ * removed.
  * <br>
- * The task is registered in {@link Config#reload()}
- * with {@link Config#getAnomalyParticlesCheckRate()}.
+ * The task is registered in {@link Config#reload()} with
+ * {@link Config#getAnomalyParticlesCheckRate()}.
  *
  * @see SpawnParticlesAction
  * @see AnomalyBoundingBox

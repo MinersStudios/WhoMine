@@ -24,7 +24,10 @@ public final class GiveCommand {
 
         final String playerArg = args[1];
         final String blockArg = args[2];
-        final String amountArg = args.length == 4 ? args[3] : "1";
+        final String amountArg =
+                args.length == 4
+                ? args[3]
+                : "1";
         final PlayerInfo playerInfo = PlayerInfo.fromString(MSEssentials.singleton(), playerArg);
 
         if (playerInfo == null) {

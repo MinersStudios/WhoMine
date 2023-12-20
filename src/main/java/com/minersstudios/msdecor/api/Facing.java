@@ -13,6 +13,9 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
+/**
+ * Represents a facing of a custom decor
+ */
 public enum Facing {
     //<editor-fold desc="Facings" defaultstate="collapsed">
     CEILING(
@@ -68,7 +71,7 @@ public enum Facing {
     }
 
     /**
-     * @return The block faces of a given facing
+     * @return An unmodifiable set of block faces
      */
     public @NotNull @Unmodifiable Set<BlockFace> blockFaceSet() {
         return Collections.unmodifiableSet(this.blockFaceSet);
@@ -76,8 +79,8 @@ public enum Facing {
 
     /**
      * @param blockFace Block face to be checked
-     * @return True if a given block face can be used
-     *         for placing the custom decor
+     * @return True if a given block face can be used for placing the custom
+     *         decor
      */
     @Contract("null -> false")
     public boolean hasFace(final @Nullable BlockFace blockFace) {
@@ -85,6 +88,12 @@ public enum Facing {
                 && this.blockFaceSet.contains(blockFace);
     }
 
+    /**
+     * @param positionAtFace Custom decor position
+     * @param yaw            Yaw of a player, who places the custom decor
+     * @return True if a given position at a given block face can be used for
+     *         placing the custom decor
+     */
     @Contract("null, _ -> false")
     public boolean hasFace(
             final @Nullable MSPosition positionAtFace,

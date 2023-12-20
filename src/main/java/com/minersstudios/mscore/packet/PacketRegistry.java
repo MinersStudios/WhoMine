@@ -16,9 +16,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Represents a packet registry for Minecraft packets.
- * This class maps packet classes to their corresponding
- * {@link PacketType} and vice versa.
+ * Represents a packet registry for Minecraft packets. This class maps packet
+ * classes to their corresponding {@link PacketType} and vice versa.
  *
  * @see PacketType
  * @see PacketProtocol
@@ -133,39 +132,34 @@ public final class PacketRegistry {
     }
 
     /**
-     * Get an unmodifiable view of the map that maps
-     * packet classes to their corresponding {@link PacketType}
+     * Get an unmodifiable view of the map that maps packet classes to their
+     * corresponding {@link PacketType}
      *
-     * @return An unmodifiable view of the map containing
-     *         packet classes as keys and their corresponding
-     *         {@link PacketType} as values
+     * @return An unmodifiable view of the map containing packet classes as keys
+     *         and their corresponding {@link PacketType} as values
      */
     public static @NotNull @UnmodifiableView Map<Class<?>, PacketType> getClassToType() {
         return Collections.unmodifiableMap(CLASS_TO_TYPE);
     }
 
     /**
-     * Get an unmodifiable view of the map that maps
-     * {@link PacketType} to their corresponding packet
-     * classes
+     * Get an unmodifiable view of the map that maps {@link PacketType} to their
+     * corresponding packet classes
      *
-     * @return An unmodifiable view of the map containing
-     *         {@link PacketType} as keys and their corresponding
-     *         packet classes as values
+     * @return An unmodifiable view of the map containing {@link PacketType} as
+     *         keys and their corresponding packet classes as values
      */
     public static @NotNull @UnmodifiableView Map<PacketType, Class<?>> getTypeToClass() {
         return Collections.unmodifiableMap(TYPE_TO_CLASS);
     }
 
     /**
-     * Get the {@link PacketType} associated with the given
-     * packet class
+     * Get the {@link PacketType} associated with the given packet class
      *
-     * @param packet The packet class for which to
-     *               retrieve the corresponding {@link PacketType}
-     * @return The {@link PacketType} associated with the given
-     *         packet class, or null if the packet class
-     *         is not registered
+     * @param packet The packet class for which to retrieve the corresponding
+     *               {@link PacketType}
+     * @return The {@link PacketType} associated with the given packet class, or
+     *         null if the packet class is not registered
      */
     public static @Nullable PacketType getTypeFromClass(final @NotNull Class<?> packet) {
         return packet == ClientboundBundlePacket.class
@@ -177,11 +171,9 @@ public final class PacketRegistry {
      * Get the packet class associated with the given
      * {@link PacketType}
      *
-     * @param type The {@link PacketType} for which to
-     *             retrieve the corresponding packet class
-     * @return The packet class associated with the given
-     *         {@link PacketType}, or null if the PacketType
-     *         is not registered
+     * @param type The {@link PacketType} for which to retrieve the
+     *             corresponding packet class
+     * @return The packet class associated with the given {@link PacketType}
      */
     public static @NotNull Class<?> getClassFromType(final @NotNull PacketType type) {
         return TYPE_TO_CLASS.get(type);

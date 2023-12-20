@@ -8,8 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * All packet listeners annotated using {@link PacketListener}
- * will be registered automatically. Also, must be extended by
+ * All packet listeners annotated using {@link PacketListener} will be
+ * registered automatically. Also, it must be extended by
  * {@link AbstractEventListener}
  *
  * @see AbstractEventListener

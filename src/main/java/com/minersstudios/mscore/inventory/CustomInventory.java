@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implementation of {@link Inventory} that allows to create
- * custom inventories with custom buttons and actions
+ * Implementation of {@link Inventory} that allows creating custom inventories
+ * with custom buttons and actions
  * <br>
  * Actions:
  * <ul>
@@ -98,14 +98,14 @@ public interface CustomInventory extends Inventory, Cloneable {
     @NotNull String getTitle();
 
     /**
-     * @return Title of this inventory as component
+     * @return Title of this inventory as a component
      */
     @NotNull Component title();
 
     /**
      * Last slot in the inventory (5th row, 9th column)
      * <br>
-     * 0 is first slot
+     * 0 is the first slot
      */
     @NotNull Map<Integer, InventoryButton> buttons();
 
@@ -114,7 +114,8 @@ public interface CustomInventory extends Inventory, Cloneable {
      *
      * @param buttons Buttons to set
      * @return This instance
-     * @throws IllegalArgumentException If any of the buttons is out of inventory size
+     * @throws IllegalArgumentException If any of the buttons is out of
+     *                                  inventory size
      */
     @NotNull CustomInventory buttons(final @NotNull Map<Integer, InventoryButton> buttons) throws IllegalArgumentException;
 
@@ -137,7 +138,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * @param slot   Slot to set button at
      * @param button Button to set
      * @return This inventory
-     * @throws IllegalArgumentException If slot is out of inventory size
+     * @throws IllegalArgumentException If the slot is out of inventory size
      */
     @NotNull CustomInventory buttonAt(
             final @Range(from = 0, to = CustomInventoryImpl.LAST_SLOT) int slot,
@@ -166,7 +167,7 @@ public interface CustomInventory extends Inventory, Cloneable {
     @Nullable InventoryAction<InventoryOpenEvent> openAction();
 
     /**
-     * Sets inventory action that is performed when this inventory is opened
+     * Sets inventory action performed when this inventory is opened
      *
      * @param openAction New open action
      * @return This inventory
@@ -183,7 +184,7 @@ public interface CustomInventory extends Inventory, Cloneable {
     @Nullable InventoryAction<InventoryCloseEvent> closeAction();
 
     /**
-     * Sets inventory action that is performed when this inventory is closed
+     * Sets inventory action performed when this inventory is closed
      *
      * @param closeAction New close action
      * @return This inventory
@@ -211,13 +212,15 @@ public interface CustomInventory extends Inventory, Cloneable {
     /**
      * Gets bottom inventory click action
      *
-     * @return Inventory action that is performed when player is clicked bottom inventory
+     * @return Inventory action that is performed when player is clicked bottom
+     *         inventory
      * @see #bottomClickAction(InventoryAction)
      */
     @Nullable InventoryAction<InventoryClickEvent> bottomClickAction();
 
     /**
-     * Sets inventory action that is performed when player is clicked bottom inventory
+     * Sets inventory action that is performed when player is clicked bottom
+     * inventory
      *
      * @param bottomClickAction New bottom inventory click action
      * @return This inventory
@@ -233,7 +236,7 @@ public interface CustomInventory extends Inventory, Cloneable {
     @NotNull CustomInventory clone();
 
     /**
-     * Performs the opening action when the inventory is opened, if it is set
+     * Performs the opening action when the inventory is opened if it is set
      *
      * @param event Event that triggered the action
      * @see #openAction(InventoryAction)
@@ -241,7 +244,7 @@ public interface CustomInventory extends Inventory, Cloneable {
     void doOpenAction(final @NotNull InventoryOpenEvent event);
 
     /**
-     * Performs the closing action when the inventory is closed, if it is set
+     * Performs the closing action when the inventory is closed if it is set
      *
      * @param event Event that triggered the action
      * @see #closeAction(InventoryAction)
@@ -249,9 +252,9 @@ public interface CustomInventory extends Inventory, Cloneable {
     void doCloseAction(final @NotNull InventoryCloseEvent event);
 
     /**
-     * Performs the clicking action when the inventory is clicked, if it is set
+     * Performs the clicking action when the inventory is clicked if it is set
      * <br>
-     * If click action is not set, it will cancel the click event
+     * If the click action is not set, it will cancel the click event
      *
      * @param event Event that triggered the action
      * @see #clickAction(InventoryAction)
@@ -259,7 +262,8 @@ public interface CustomInventory extends Inventory, Cloneable {
     void doClickAction(final @NotNull InventoryClickEvent event);
 
     /**
-     * Performs the clicking action when player is clicked bottom inventory, if it is set
+     * Performs the clicking action when player is clicked bottom inventory if
+     * it is set
      *
      * @param event Event that triggered the action
      * @see #bottomClickAction(InventoryAction)
@@ -277,7 +281,7 @@ public interface CustomInventory extends Inventory, Cloneable {
      * Checks if slot is in inventory bounds
      *
      * @param slot Slot to validate
-     * @throws IllegalArgumentException If slot is out of inventory size
+     * @throws IllegalArgumentException If the slot is out of inventory size
      */
     void validateSlot(final int slot) throws IllegalArgumentException;
 }

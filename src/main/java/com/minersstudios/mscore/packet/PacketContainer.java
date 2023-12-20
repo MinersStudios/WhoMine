@@ -4,10 +4,9 @@ import net.minecraft.network.protocol.Packet;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a packet container. It contains the packet
- * and the packet type. The packet type contains the
- * id, flow, name and class of the packet. The packet can
- * be modified, but the packet type cannot be changed.
+ * Represents a packet container. It contains the packet and the packet type.
+ * The packet type contains the id, flow, name and class of the packet. The
+ * packet can be modified, but the packet type cannot be changed.
  *
  * @see PacketType
  */
@@ -38,9 +37,9 @@ public final class PacketContainer {
 
     /**
      * @param packet The packet to set
-     * @throws IllegalArgumentException If the packet type of the packet
-     *                                  is not the same as the packet type
-     *                                  of this container
+     * @throws IllegalArgumentException If the packet type of the packet is not
+     *                                  the same as the packet type of this
+     *                                  container
      *                                  (Checks by comparing the classes)
      */
     public void setPacket(final @NotNull Packet<?> packet) throws IllegalArgumentException {

@@ -88,7 +88,7 @@ public final class PlayerUtils {
     }
 
     /**
-     * Sets player to a seated position in specified location with message
+     * Sets player to a seated position in specified location with a message
      *
      * @param plugin   MSEssentials plugin
      * @param player   Player that will sit
@@ -112,7 +112,7 @@ public final class PlayerUtils {
      * Unsets the sitting position of the player
      *
      * @param plugin MSEssentials plugin
-     * @param player Player who is currently sitting and will be unset
+     * @param player Player, who is currently sitting and will be unset
      * @see #unsetSitting(MSEssentials, Player, Component)
      */
     public static void unsetSitting(
@@ -123,12 +123,12 @@ public final class PlayerUtils {
     }
 
     /**
-     * Unsets the sitting position of the player with message
+     * Unsets the sitting position of the player with a message
      *
      * @param plugin  MSEssentials plugin
-     * @param player  Player who is currently sitting and will be unset
-     * @param message Message that will be sent to the players  around the
-     *                player who is sitting
+     * @param player  Player, who is currently sitting and will be unset
+     * @param message Message that will be sent to the players around the player
+     *                who is sitting
      * @see PlayerInfo#unsetSitting(Component)
      */
     public static void unsetSitting(
@@ -145,8 +145,8 @@ public final class PlayerUtils {
      * Loads the players current location, health, inventory, motion, and other
      * information from the [uuid].dat file, in [level-name]/playerdata folder.
      * <br>
-     * <b>NOTE:</b> This will overwrite the players current inventory, health,
-     * motion, etc., with the state from the saved dat file.
+     * <b>NOTE:</b> This will overwrite the players' current inventory, health,
+     * motion, etc., with the state of the saved dat file.
      *
      * @param offlinePlayer Offline player whose data will be loaded
      * @return Online player from offline player
@@ -179,7 +179,7 @@ public final class PlayerUtils {
      * skin for all players on the server. If wanted to reset the skin, set both
      * value and signature to null.
      *
-     * @param player    Player whose skin will be set
+     * @param player    Player, whose skin will be set
      * @param value     Value of the skin
      * @param signature Signature of the skin
      */
@@ -200,6 +200,7 @@ public final class PlayerUtils {
 
         if (propertyMap.containsKey("textures")) {
             final Property oldProperty = propertyMap.get("textures").iterator().next();
+
             propertyMap.remove("textures", oldProperty);
         }
 

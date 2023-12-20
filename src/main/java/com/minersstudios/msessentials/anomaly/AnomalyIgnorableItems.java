@@ -15,9 +15,8 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * This class is used to store the items
- * that are ignored by the anomaly and protect the player.
- * All items that are ignored by the anomaly will be damaged
+ * This class is used to store the items that are ignored by the anomaly and
+ * protect the player. All items that are ignored by the anomaly will be damaged
  * with the specified amount of damage when the anomaly action is performed.
  */
 public final class AnomalyIgnorableItems {
@@ -28,8 +27,8 @@ public final class AnomalyIgnorableItems {
     /**
      * @param plugin            The plugin
      * @param includedItems     Ignorable items that will protect the player
-     * @param breakingPerAction The amount of damage that will be dealt to the item
-     *                          when the action is performed
+     * @param breakingPerAction The amount of damage that will be dealt to the
+     *                          item when the action is performed
      */
     public AnomalyIgnorableItems(
             final @NotNull MSPlugin<?> plugin,
@@ -49,16 +48,16 @@ public final class AnomalyIgnorableItems {
     }
 
     /**
-     * @return A map of ignorable items and their equipment slots,
-     *         that will protect the player
+     * @return A map of ignorable items and their equipment slots, that will
+     *         protect the player
      */
     public @NotNull @Unmodifiable Map<EquipmentSlot, ItemStack> getIncludedItems() {
         return Collections.unmodifiableMap(this.includedItems);
     }
 
     /**
-     * @return The amount of damage that will be dealt to the item,
-     *         when the action is performed
+     * @return The amount of damage that will be dealt to the item, when the
+     *         action is performed
      */
     public int getBreakingValue() {
         return this.breakingPerAction;

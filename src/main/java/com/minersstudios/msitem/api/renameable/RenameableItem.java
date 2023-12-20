@@ -21,10 +21,9 @@ import java.util.logging.Logger;
 import static net.kyori.adventure.text.Component.text;
 
 /**
- * The RenameableItem class represents a renameable item with
- * associated renames, white-listed players, and menu visibility.
- * It facilitates the creation, configuration, and management of
- * renameable items.
+ * The RenameableItem class represents a renameable item with associated renames,
+ * whitelisted players, and menu visibility. It facilitates the creation,
+ * configuration, and management of renameable items.
  */
 public class RenameableItem {
     private final String key;
@@ -38,7 +37,7 @@ public class RenameableItem {
      *
      * @param plugin           The plugin instance
      * @param key              The unique key associated with the item
-     * @param renameCollection The collection of renames associated with the item
+     * @param renameCollection The collection of renames associated with item
      */
     public RenameableItem(
             final @NotNull MSItem plugin,
@@ -52,9 +51,9 @@ public class RenameableItem {
      * Constructs a RenameableItem instance with the given unique key, rename
      * collection, and visibility in the rename menu
      *
-     * @param plugin           The plugin instance
-     * @param key              The unique key associated with the item
-     * @param renameCollection The collection of renames associated with the item
+     * @param plugin             The plugin instance
+     * @param key                The unique key associated with the item
+     * @param renameCollection   The collection of renames associated with item
      * @param isShowInRenameMenu Whether the item should appear in the rename
      *                           menu
      */
@@ -69,13 +68,13 @@ public class RenameableItem {
 
     /**
      * Constructs a RenameableItem instance with the given unique key, rename
-     * collection, and white-list
+     * collection, and whitelist
      *
      * @param plugin           The plugin instance
      * @param key              The unique key associated with the item
      * @param renameCollection The collection of renames associated with the item
      * @param whiteList        The set of players that are allowed to rename the
-     *                         item (empty set means all players are allowed)
+     *                         item (an empty set means all players are allowed)
      */
     public RenameableItem(
             final @NotNull MSItem plugin,
@@ -88,14 +87,15 @@ public class RenameableItem {
 
     /**
      * Constructs a RenameableItem instance with the given unique key, rename
-     * collection, white-list, and visibility in the rename menu
+     * collection, whitelist, and visibility in the rename menu
      *
      * @param key                The unique key associated with the item
-     * @param isShowInRenameMenu Whether the item should appear in the rename menu
+     * @param isShowInRenameMenu Whether the item should appear in the rename
+     *                           menu
      * @param renameCollection   The collection of renames associated with the
      *                           item
      * @param whiteList          The set of players that are allowed to rename
-     *                           the item (empty set means all players are
+     *                           the item (an empty set means all players are
      *                           allowed)
      */
     public RenameableItem(
@@ -119,12 +119,12 @@ public class RenameableItem {
     }
 
     /**
-     * Creates a RenameableItem instance by loading its
-     * configuration from a file
+     * Creates a renameable item instance by loading its configuration from a
+     * file
      *
      * @param file The configuration file to load
-     * @return A RenameableItem instance loaded from the file,
-     *         or null if loading fails
+     * @return A RenameableItem instance loaded from the file, or null if
+     *         loading fails
      */
     public static @Nullable RenameableItem fromFile(
             final @NotNull MSItem plugin,
@@ -264,8 +264,8 @@ public class RenameableItem {
     }
 
     /**
-     * @return The set of uuids of players that are allowed to rename
-     *         the item (empty set means all players are allowed)
+     * @return The set of uuids of players that are allowed to rename the item
+     *         (an empty set means all players are allowed)
      */
     public @NotNull @Unmodifiable Set<UUID> getWhiteList() {
         return Collections.unmodifiableSet(this.whiteList);
@@ -281,7 +281,7 @@ public class RenameableItem {
     /**
      * @param player The player to check
      * @return Whether the player is allowed to rename the item
-     *         (true if the white-list is empty)
+     *         (true if the whitelist is empty)
      */
     public boolean isWhiteListed(final @Nullable OfflinePlayer player) {
         return this.whiteList.isEmpty()
@@ -292,8 +292,7 @@ public class RenameableItem {
     }
 
     /**
-     * Creates a copy of the given item with the rename metadata
-     * applied to it
+     * Creates a copy of the given item with the rename metadata applied to it
      *
      * @param item   The item to get the rename for
      * @param rename The rename to get the item for

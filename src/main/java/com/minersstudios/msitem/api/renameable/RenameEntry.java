@@ -13,11 +13,10 @@ import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
 
 /**
- * The RenameEntry class represents a pair of a renaming
- * string and an ItemStack, used in the context of renaming
- * items. It encapsulates a renaming operation along with
- * the associated item, providing methods to manage and
- * compare rename entries.
+ * The RenameEntry class represents a pair of a renaming string and an ItemStack,
+ * used in the context of renaming items. It encapsulates a renaming operation
+ * along with the associated item, providing methods to manage and compare
+ * rename entries.
  */
 @Immutable
 public final class RenameEntry {
@@ -25,14 +24,12 @@ public final class RenameEntry {
     private final ItemStack item;
 
     /**
-     * Constructs a RenameEntry with the given renaming string
-     * and ItemStack
+     * Constructs a RenameEntry with the given renaming string and ItemStack
      *
      * @param rename The renaming string for the entry
      * @param item   The ItemStack associated with the entry
-     * @throws IllegalArgumentException If the renaming string is null
-     *                                  or blank, or if the ItemStack's
-     *                                  material is air
+     * @throws IllegalArgumentException If the renaming string is null or blank,
+     *                                  or if the ItemStack's material is air
      */
     public RenameEntry(
             final @NotNull String rename,
@@ -51,13 +48,13 @@ public final class RenameEntry {
     }
 
     /**
-     * Creates a RenameEntry instance if both the renaming string
-     * and the ItemStack are valid
+     * Creates a RenameEntry instance if both the renaming string and the
+     * ItemStack are valid
      *
      * @param rename The renaming string for the entry
      * @param item   The ItemStack associated with the entry
-     * @return A RenameEntry instance if valid, or null if either
-     *         parameter is invalid
+     * @return A RenameEntry instance if valid, or null if either parameter is
+     *         invalid
      */
     public static @Nullable RenameEntry create(
             final @Nullable String rename,
@@ -85,27 +82,25 @@ public final class RenameEntry {
     }
 
     /**
-     * Checks if the given renaming string is similar to the
-     * renaming string of this entry (case-insensitive). Renaming
-     * strings are considered similar if the given renaming string
-     * starts with this entry's renaming string.
+     * Checks if the given renaming string is similar to the renaming string of
+     * this entry (case-insensitive). Renaming strings are considered similar if
+     * the given renaming string starts with this entry's renaming string.
      *
      * @param rename The renaming string to compare
-     * @return True if the given renaming string is similar
-     *         to this entry's renaming
+     * @return True if the given renaming string is similar to this entry's
+     *         renaming
      */
     public boolean isSimilarRename(final @Nullable String rename) {
         return StringUtils.startsWithIgnoreCase(rename, this.getRename());
     }
 
     /**
-     * Checks if the given ItemStack is similar to the ItemStack
-     * of this entry. Items are considered similar if they have
-     * the same material and matching persistent data.
+     * Checks if the given ItemStack is similar to the ItemStack of this entry.
+     * Items are considered similar if they have the same material and matching
+     * persistent data.
      *
      * @param item The ItemStack to compare
-     * @return True if the given ItemStack is similar to this
-     *         entry's ItemStack
+     * @return True if the given ItemStack is similar to this entry's ItemStack
      */
     public boolean isSimilarItem(final @Nullable ItemStack item) {
         if (item == null) {
@@ -136,8 +131,8 @@ public final class RenameEntry {
      * Compares this RenameEntry to another object for equality
      *
      * @param obj The object to compare to
-     * @return True if the object is a RenameEntry with similar
-     *         renaming and ItemStack
+     * @return True if the object is a RenameEntry with similar renaming and
+     *         ItemStack
      * @see #isSimilarRename(String)
      * @see #isSimilarItem(ItemStack)
      */

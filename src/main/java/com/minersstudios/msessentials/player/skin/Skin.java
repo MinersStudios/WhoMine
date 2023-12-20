@@ -114,7 +114,7 @@ public final class Skin implements ConfigurationSerializable {
      *
      * @param plugin Plugin instance
      * @param name   The name of the skin
-     * @param link   The link to the skin, must start with "https://" and end
+     * @param link   The link to the skin must start with "https://" and end
      *               with ".png"
      * @return The skin if it was successfully retrieved, otherwise null
      * @throws IllegalArgumentException If the name or link is invalid or the
@@ -320,7 +320,7 @@ public final class Skin implements ConfigurationSerializable {
 
     /**
      * This method will attempt to retrieve the skin 3 times before giving up.
-     * The value and signature generates with the MineSkinAPI. If response
+     * The value and signature generates with the MineSkinAPI. If the response
      * status code is 200, the skin will be returned.
      *
      * @param plugin Plugin instance
@@ -437,7 +437,7 @@ public final class Skin implements ConfigurationSerializable {
 
     /**
      * @param src String to be checked
-     * @return True if string is in valid Base64 scheme
+     * @return True if string is in a valid Base64 scheme
      */
     private static boolean isValidBase64(final @NotNull String src) {
         try {

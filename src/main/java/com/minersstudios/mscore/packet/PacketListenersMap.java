@@ -14,21 +14,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A utility class representing a mapping of packet types to
- * packet listeners in the MSPlugins. This class provides methods
- * to manage and access packet listeners based on their associated
- * packet types.
+ * A utility class representing a mapping of packet types to packet listeners in
+ * the MSPlugins. This class provides methods to manage and access packet
+ * listeners based on their associated packet types.
  */
 public final class PacketListenersMap {
     private final Multimap<PacketType, AbstractPacketListener<? extends MSPlugin<?>>> receiveWhiteList = HashMultimap.create();
     private final Multimap<PacketType, AbstractPacketListener<? extends MSPlugin<?>>> sendWhiteList = HashMultimap.create();
 
     /**
-     * Gets an unmodifiable view of the receive packet type
-     * to packet listener mappings
+     * Gets an unmodifiable view of the receive-packet type to packet listener
+     * mappings
      *
-     * @return The unmodifiable multimap containing receive
-     *         packet type to packet listener mappings
+     * @return The unmodifiable multimap containing a receive-packet type to
+     *         packet listener mappings
      * @see PacketType
      * @see AbstractPacketListener
      */
@@ -37,11 +36,11 @@ public final class PacketListenersMap {
     }
 
     /**
-     * Gets an unmodifiable view of the send packet type
-     * to packet listener mappings
+     * Gets an unmodifiable view of the send-packet type to packet listener
+     * mappings
      *
-     * @return The unmodifiable multimap containing send
-     *         packet type to packet listener mappings
+     * @return The unmodifiable multimap containing send-packet type to packet
+     *         listener mappings
      * @see PacketType
      * @see AbstractPacketListener
      */
@@ -50,13 +49,13 @@ public final class PacketListenersMap {
     }
 
     /**
-     * Gets an unmodifiable collection of packet listeners
-     * associated with the specified packet type
+     * Gets an unmodifiable collection of packet listeners associated with the
+     * specified packet type
      *
-     * @param packetType The packet type for which to retrieve
-     *                   the associated packet listeners
-     * @return The unmodifiable collection of packet listeners
-     *         associated with the given packet type
+     * @param packetType The packet type for which to retrieve the associated
+     *                   packet listeners
+     * @return The unmodifiable collection of packet listeners associated with
+     *         the given packet type
      * @see AbstractPacketListener
      * @see PacketType
      */
@@ -67,15 +66,15 @@ public final class PacketListenersMap {
     }
 
     /**
-     * Gets an unmodifiable collection of all packet listeners
-     * associated with any packet type
+     * Gets an unmodifiable collection of all packet listeners associated with
+     * any packet type
      *
-     * @return The unmodifiable collection of all packet listeners
-     *         associated with any packet type
+     * @return The unmodifiable collection of all packet listeners associated
+     *         with any packet type
      * @see AbstractPacketListener
      */
     public @NotNull @UnmodifiableView Collection<AbstractPacketListener<? extends MSPlugin<?>>> listeners() {
-        final var listeners = new HashSet<AbstractPacketListener<? extends MSPlugin<?>>>(this.listenersSize());
+        final var listeners = new HashSet<AbstractPacketListener<? extends MSPlugin<?>>>(this.listenerCount());
 
         listeners.addAll(this.sendWhiteList.values());
         listeners.addAll(this.receiveWhiteList.values());
@@ -86,7 +85,7 @@ public final class PacketListenersMap {
     /**
      * Gets an unmodifiable collection of all receive packet listeners
      *
-     * @return The unmodifiable collection of all receive packet listeners
+     * @return The unmodifiable collection of all receive-packet listeners
      * @see AbstractPacketListener
      */
     public @NotNull @UnmodifiableView Collection<AbstractPacketListener<? extends MSPlugin<?>>> receiveListeners() {
@@ -96,7 +95,7 @@ public final class PacketListenersMap {
     /**
      * Gets an unmodifiable collection of all send packet listeners
      *
-     * @return The unmodifiable collection of all send packet listeners
+     * @return The unmodifiable collection of all send-packet listeners
      * @see AbstractPacketListener
      */
     public @NotNull @UnmodifiableView Collection<AbstractPacketListener<? extends MSPlugin<?>>> sendListeners() {
@@ -104,15 +103,15 @@ public final class PacketListenersMap {
     }
 
     /**
-     * Gets an unmodifiable set of all distinct packet types associated
-     * with any packet listener
+     * Gets an unmodifiable set of all distinct packet types associated with any
+     * packet listener
      *
-     * @return The unmodifiable set of all distinct packet types associated
-     *         with any packet listener
+     * @return The unmodifiable set of all distinct packet types associated with
+     *         any packet listener
      * @see PacketType
      */
     public @NotNull @UnmodifiableView Set<PacketType> packetTypeSet() {
-        var packetTypes = new HashSet<PacketType>(this.packetTypesSize());
+        var packetTypes = new HashSet<PacketType>(this.packetTypeCount());
 
         packetTypes.addAll(this.receiveWhiteList.keySet());
         packetTypes.addAll(this.sendWhiteList.keySet());
@@ -141,7 +140,7 @@ public final class PacketListenersMap {
     }
 
     /**
-     * Adds a packet listener to the map based on its white lists
+     * Adds a packet listener to the map based on its whitelists
      *
      * @param listener The packet listener to add
      * @see AbstractPacketListener
@@ -166,7 +165,7 @@ public final class PacketListenersMap {
     }
 
     /**
-     * Removes a packet listener from the map based on its white lists
+     * Removes a packet listener from the map based on its whitelists
      *
      * @param listener The packet listener to remove
      * @see AbstractPacketListener
@@ -191,11 +190,10 @@ public final class PacketListenersMap {
     }
 
     /**
-     * Removes all packet listeners associated with the specified
-     * packet type
+     * Removes all packet listeners associated with the specified packet type
      *
-     * @param packetType The packet type for which to remove
-     *                   the associated packet listeners
+     * @param packetType The packet type for which to remove the associated
+     *                   packet listeners
      * @see PacketType
      */
     public void removePacketType(final @NotNull PacketType packetType) {
@@ -218,8 +216,8 @@ public final class PacketListenersMap {
     }
 
     /**
-     * Checks if the map contains packet listeners associated
-     * with the specified packet type
+     * Checks if the map contains packet listeners associated with the specified
+     * packet type
      *
      * @param packetType The packet type to check for
      * @return True if the packet type is present in the map
@@ -248,28 +246,28 @@ public final class PacketListenersMap {
     }
 
     /**
-     * Gets the total number of distinct packet types associated
-     * with all packet listeners
+     * Gets the total number of distinct packet types associated with all packet
+     * listeners
      *
-     * @return The total number of distinct packet types associated
-     *         with all packet listeners
+     * @return The total number of distinct packet types associated with all
+     *         packet listeners
      * @see PacketType
      * @see AbstractPacketListener
      */
-    public int packetTypesSize() {
+    public int packetTypeCount() {
         return this.receiveWhiteList.size() + this.sendWhiteList.size();
     }
 
     /**
-     * Gets the total number of packet listeners associated
-     * with all packet types
+     * Gets the total number of packet listeners associated with all packet
+     * types
      *
-     * @return The total number of packet listeners associated
-     *         with all packet types
+     * @return The total number of packet listeners associated with all packet
+     *         types
      * @see AbstractPacketListener
      * @see PacketType
      */
-    public int listenersSize() {
+    public int listenerCount() {
         return this.sendWhiteList.values().size() + this.receiveWhiteList.values().size();
     }
 }

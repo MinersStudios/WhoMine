@@ -367,7 +367,7 @@ public final class BlockUtils {
 
     /**
      * @param entityType Entity type that will be checked
-     * @return True if entity type is ignorable
+     * @return True if an entity type is ignorable
      */
     public static boolean isIgnorableEntity(final @NotNull EntityType entityType) {
         return switch (entityType) {
@@ -402,7 +402,7 @@ public final class BlockUtils {
 
     /**
      * @param entityType Entity type that will be checked
-     * @return True if entity type is ignorable
+     * @return True if an entity type is ignorable
      */
     public static boolean isIgnorableEntity(final @NotNull net.minecraft.world.entity.EntityType<?> entityType) {
         return isIgnorableEntity(CraftEntityType.minecraftToBukkit(entityType));

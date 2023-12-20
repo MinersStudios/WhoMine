@@ -52,15 +52,17 @@ public final class MineSkinResponse {
     }
 
     /**
-     * Creates a new MineSkinResponse from a link to a skin image.
-     * It uses the MineSkin API to generate a skin from the image, and returns the response.
+     * Creates a new MineSkinResponse from a link to a skin image. It uses the
+     * MineSkin API to generate a skin from the image, and returns the response.
      * If a MineSkin API key is set in the configuration, it will be used.
      *
      * @param plugin The plugin instance
-     * @param link   The link to the skin, must start with https:// and end with .png
+     * @param link   The link to the skin must start with https:// and end with
+     *               .png
      * @return The response from the MineSkin API
      * @throws IOException if the connection could not be established
-     * @throws IllegalArgumentException if the link does not start with https:// and end with .png
+     * @throws IllegalArgumentException if the link does not start with https://
+     *                                  and end with .png
      * @see #MINE_SKIN_API_URL
      */
     @Contract("_, _ -> new")
@@ -121,10 +123,11 @@ public final class MineSkinResponse {
 
     /**
      * @param clazz The class to deserialize the body to
-     * @param <T>   The type of the class,
-     *              use {@link MineSkinJson} if you want to get the generated skin data,
-     *              or {@link MineSkinErrorJson} if you want to get the error data,
-     *              or {@link MineSkinDelayErrorJson} if you want to get the delay error data
+     * @param <T>   The type of the class, use {@link MineSkinJson} if you want
+     *              to get the generated skin data, or {@link MineSkinErrorJson}
+     *              if you want to get the error data, or
+     *              {@link MineSkinDelayErrorJson} if you want to get the delay
+     *              error data
      * @return The body of the response deserialized to the given class
      */
     public <T> @NotNull T getBodyResponse(final @NotNull Class<T> clazz) {

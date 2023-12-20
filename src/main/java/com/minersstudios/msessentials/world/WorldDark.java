@@ -23,12 +23,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * World dark singleton.
- * This world is used for safe registration and login.
- * Moving, interacting and other actions are not allowed in this world.
- * All players teleported to this world must spectate {@link #darkEntity}.
- * {@link #darkEntity} is invisible {@link ItemFrame} and has no collision.
- * Use {@link #teleportToDarkWorld(Player)} to teleport player to world dark.
+ * World dark singleton. This world is used for safe registration and login.
+ * Moving, interacting and other actions are not allowed in this world. All
+ * players teleported to this world must spectate {@link #darkEntity}.
+ * {@link #darkEntity} is invisible {@link ItemFrame} and has no collision. Use
+ * {@link #teleportToDarkWorld(Player)} to teleport player to world dark.
  *
  * @see #init()
  */
@@ -64,7 +63,8 @@ public final class WorldDark extends CraftWorld {
 
     /**
      * @return World dark singleton
-     * @throws UnsupportedOperationException If world dark singleton is not initialized
+     * @throws UnsupportedOperationException If world dark singleton is not
+     *                                       initialized
      */
     public static @NotNull WorldDark getInstance() throws UnsupportedOperationException {
         if (singleton == null) {
@@ -150,7 +150,8 @@ public final class WorldDark extends CraftWorld {
      * Loads or creates world dark instance.
      *
      * @return Newly created or loaded world dark instance
-     * @throws UnsupportedOperationException If world dark is not successfully created
+     * @throws UnsupportedOperationException If the world dark is not
+     *                                       successfully created
      */
     private static @NotNull ServerLevel create() throws UnsupportedOperationException {
         final World world = new WorldCreator(WORLD_NAME)

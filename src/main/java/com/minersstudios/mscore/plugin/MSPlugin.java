@@ -248,7 +248,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * enable the plugin.
      *
      * @see #registerCommands()
-     * @see #registerListeners()
+     * @see #registerEventListeners()
      * @see #registerPacketListeners()
      * @see #enable()
      */
@@ -258,7 +258,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         this.commodore = new Commodore(this);
 
         this.registerCommands();
-        this.registerListeners();
+        this.registerEventListeners();
         this.registerPacketListeners();
         this.enable();
 
@@ -482,7 +482,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     /**
-     * Registers all command in the project that is annotated with
+     * Registers all commands in the project that is annotated with
      * {@link Command}. All commands must be implemented using
      * {@link CommandExecutor}.
      *
@@ -496,13 +496,15 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     /**
-     * Loads all event listeners annotated with {@link EventListener} in the
-     * project. All listeners must be extended using {@link AbstractEventListener}.
+     * Loads all events listeners annotated with {@link EventListener} in the
+     * project.
+     * <br>
+     * All listeners must be extended using {@link AbstractEventListener}.
      *
      * @return The list of listeners
      * @see EventListener
      * @see AbstractEventListener
-     * @see #registerListeners()
+     * @see #registerEventListeners()
      */
     @SuppressWarnings("unchecked")
     private @NotNull List<AbstractEventListener<T>> loadEventListeners() {
@@ -542,14 +544,14 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @see #loadEventListeners()
      */
     @SuppressWarnings("unchecked")
-    public void registerListeners() {
+    public void registerEventListeners() {
         for (final var listener : this.eventListeners) {
             listener.register((T) this);
         }
     }
 
     /**
-     * Loads all packet listeners annotated with {@link PacketListener} in the
+     * Loads all packets listeners annotated with {@link PacketListener} in the
      * project. All listeners must be extended using
      * {@link AbstractPacketListener}.
      *
@@ -743,13 +745,13 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.
+     * should be taken to ensure the thread-safety of asynchronous tasks.
      * <br>
      * Returns a task that will run asynchronously.
      *
      * @param task The task to be run
      * @return A BukkitTask that contains the id number
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public @NotNull BukkitTask runTaskAsync(final @NotNull Runnable task) {
         return this.getServer().getScheduler().runTaskAsynchronously(this, task);
@@ -757,7 +759,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.
+     * should be taken to ensure the thread-safety of asynchronous tasks.
      * <br>
      * Returns a task that will repeatedly run asynchronously until cancelled,
      * starting after the specified number of server ticks.
@@ -766,7 +768,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @param delay  The ticks to wait before running task for the first time
      * @param period The ticks to wait between runs
      * @return A BukkitTask that contains the id number
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public @NotNull BukkitTask runTaskTimerAsync(
             final @NotNull Runnable task,
@@ -781,7 +783,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      *
      * @param task The task to be run
      * @return A BukkitTask that contains the id number
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public @NotNull BukkitTask runTask(final @NotNull Runnable task) {
         return this.getServer().getScheduler().runTask(this, task);
@@ -789,7 +791,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.
+     * should be taken to ensure the thread-safety of asynchronous tasks.
      * <br>
      * Returns a task that will run asynchronously after the specified number
      * of server ticks.
@@ -797,7 +799,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @param task  The task to be run
      * @param delay The ticks to wait before running the task
      * @return A BukkitTask that contains the id number
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public @NotNull BukkitTask runTaskLaterAsync(
             final @NotNull Runnable task,
@@ -812,7 +814,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @param task  The task to be run
      * @param delay The ticks to wait before running the task
      * @return A BukkitTask that contains the id number
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public @NotNull BukkitTask runTaskLater(
             final @NotNull Runnable task,
@@ -829,7 +831,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @param delay  The ticks to wait before running the task
      * @param period The ticks to wait between runs
      * @return A BukkitTask that contains the id number
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public @NotNull BukkitTask runTaskTimer(
             final @NotNull Runnable task,
@@ -841,12 +843,12 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.
+     * should be taken to ensure the thread-safety of asynchronous tasks.
      * <br>
      * Returns a task that will run asynchronously.
      *
      * @param task The task to be run
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public void runTaskAsync(final @NotNull Consumer<BukkitTask> task) {
         this.getServer().getScheduler().runTaskAsynchronously(this, task);
@@ -854,7 +856,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.
+     * should be taken to ensure the thread-safety of asynchronous tasks.
      * <br>
      * Returns a task that will repeatedly run asynchronously until cancelled,
      * starting after the specified number of server ticks.
@@ -862,7 +864,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @param task   The task to be run
      * @param delay  The ticks to wait before running task for the first time
      * @param period The ticks to wait between runs
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public void runTaskTimerAsync(
             final @NotNull Consumer<BukkitTask> task,
@@ -876,7 +878,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * Returns a task that will run on the next server tick
      *
      * @param task The task to be run
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public void runTask(final @NotNull Consumer<BukkitTask> task) {
         this.getServer().getScheduler().runTask(this, task);
@@ -884,14 +886,14 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.
+     * should be taken to ensure the thread-safety of asynchronous tasks.
      * <br>
      * Returns a task that will run asynchronously after the specified number
      * of server ticks.
      *
      * @param task  The task to be run
      * @param delay The ticks to wait before running the task
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public void runTaskLaterAsync(
             final @NotNull Consumer<BukkitTask> task,
@@ -905,7 +907,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      *
      * @param task  The task to be run
      * @param delay The ticks to wait before running the task
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public void runTaskLater(
             final @NotNull Consumer<BukkitTask> task,
@@ -921,7 +923,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @param task   The task to be run
      * @param delay  The ticks to wait before running the task
      * @param period The ticks to wait between runs
-     * @throws IllegalArgumentException If current plugin is not enabled
+     * @throws IllegalArgumentException If the current plugin is not enabled
      */
     public void runTaskTimer(
             final @NotNull Consumer<BukkitTask> task,

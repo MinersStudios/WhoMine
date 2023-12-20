@@ -50,7 +50,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * }</pre>
  */
 public final class RenameableItemRegistry {
-    public static final NamespacedKey RENAMEABLE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, "renameable");
+    public static final String RENAMEABLE_KEY = "renameable";
+    public static final NamespacedKey RENAMEABLE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, RENAMEABLE_KEY);
 
     private static final Map<String, RenameableItem> KEY_MAP = new ConcurrentHashMap<>();
     private static final Map<RenameEntry, String> RENAME_ENTRY_MAP = new ConcurrentHashMap<>();
@@ -61,8 +62,7 @@ public final class RenameableItemRegistry {
     }
 
     /**
-     * @return An unmodifiable view of the keys of all registered
-     *         renameable items
+     * @return An unmodifiable view of all registered renameable item keys
      * @see #KEY_MAP
      */
     public static @NotNull @UnmodifiableView Set<String> keySet() {
@@ -70,8 +70,7 @@ public final class RenameableItemRegistry {
     }
 
     /**
-     * @return An unmodifiable view of the rename entries of all
-     *         registered renameable items
+     * @return An unmodifiable view of all registered rename entries
      * @see #RENAME_ENTRY_MAP
      */
     public static @NotNull @UnmodifiableView Set<RenameEntry> renameEntrySet() {
@@ -79,8 +78,7 @@ public final class RenameableItemRegistry {
     }
 
     /**
-     * @return An unmodifiable view of all registered renameable
-     *         items
+     * @return An unmodifiable view of all registered renameable items
      * @see #KEY_MAP
      */
     public static @NotNull @UnmodifiableView Collection<RenameableItem> renameableItems() {
@@ -88,13 +86,13 @@ public final class RenameableItemRegistry {
     }
 
     /**
-     * Gets the {@link RenameableItem} from the given key. It will
-     * get the item from the {@link #KEY_MAP}.
+     * Gets the {@link RenameableItem} from the given key. It will get the item
+     * from the {@link #KEY_MAP}.
      *
      * @param key The key to get the {@link RenameableItem} from
-     * @return An {@link Optional} containing the {@link RenameableItem}
-     *         or an {@link Optional#empty()} if the given key is not
-     *         associated with any renameable item
+     * @return An {@link Optional} containing the {@link RenameableItem} or an
+     *         {@link Optional#empty()} if the given key is not associated with
+     *         any renameable item
      * @see #KEY_MAP
      */
     public static @NotNull Optional<RenameableItem> fromKey(final @Nullable String key) {
@@ -104,14 +102,13 @@ public final class RenameableItemRegistry {
     }
 
     /**
-     * Gets the {@link RenameableItem} from the given rename entry. It
-     * will get the item from the {@link #RENAME_ENTRY_MAP}
+     * Gets the {@link RenameableItem} from the given rename entry. It will get
+     * the item from the {@link #RENAME_ENTRY_MAP}
      *
-     * @param renameEntry The rename entry to get the {@link RenameableItem}
-     *                    from
-     * @return An {@link Optional} containing the {@link RenameableItem}
-     *         or an {@link Optional#empty()} if the given rename entry is
-     *         not associated with any renameable item
+     * @param renameEntry The rename entry to get the RenameableItem from
+     * @return An {@link Optional} containing the {@link RenameableItem} or an
+     *         {@link Optional#empty()} if the given rename entry is not
+     *         associated with any renameable item
      * @see #RENAME_ENTRY_MAP
      */
     public static @NotNull Optional<RenameableItem> fromRenameEntry(final @Nullable RenameEntry renameEntry) {
@@ -129,16 +126,15 @@ public final class RenameableItemRegistry {
     }
 
     /**
-     * Gets the {@link RenameableItem} from the given rename value and
-     * item stack. It will create a {@link RenameEntry} from the given
-     * rename value and item stack and get the item from the
-     * {@link #RENAME_ENTRY_MAP}.
+     * Gets the {@link RenameableItem} from the given rename value and item
+     * stack. It will create a {@link RenameEntry} from the given rename value
+     * and item stack and get the item from the {@link #RENAME_ENTRY_MAP}.
      *
      * @param rename    The rename value to get the {@link RenameableItem}
      * @param itemStack The item stack to get the {@link RenameableItem}
-     * @return An {@link Optional} containing the {@link RenameableItem}
-     *         or an {@link Optional#empty()} if the given rename value and
-     *         item stack are not associated with any renameable item
+     * @return An {@link Optional} containing the {@link RenameableItem} or an
+     *         {@link Optional#empty()} if the given rename value and item stack
+     *         are not associated with any renameable item
      * @see #fromRenameEntry(RenameEntry)
      */
     public static @NotNull Optional<RenameableItem> fromRename(
@@ -149,15 +145,15 @@ public final class RenameableItemRegistry {
     }
 
     /**
-     * Gets the {@link RenameableItem} from the given item stack. It will
-     * check the item stack's persistent data container for the
-     * {@link #RENAMEABLE_NAMESPACED_KEY}  key, and if it has it, it will
-     * get the custom block data from the key by calling
-     * {@link #fromKey(String)} method.
+     * Gets the {@link RenameableItem} from the given item stack. It will check
+     * the item stack's persistent data container for the
+     * {@link #RENAMEABLE_NAMESPACED_KEY}  key, and if it has it, it will get
+     * the custom block data from the key by calling {@link #fromKey(String)}
+     * method.
      *
      * @param itemStack The item stack to get the {@link RenameableItem} from
-     * @return An {@link Optional} containing the {@link RenameableItem},
-     *         or an {@link Optional#empty()} if the key from the item stack's
+     * @return An {@link Optional} containing the {@link RenameableItem}, or an
+     *         {@link Optional#empty()} if the key from the item stack's
      *         persistent data container is not associated with any renameable
      *         item
      * @see #RENAMEABLE_NAMESPACED_KEY
@@ -179,8 +175,8 @@ public final class RenameableItemRegistry {
 
     /**
      * @param key The key to check
-     * @return True if the {@link #KEY_MAP} contains the given key
-     *         and key is not blank or null (case-insensitive)
+     * @return True if the {@link #KEY_MAP} contains the given key and key is
+     *         not blank or null (case-insensitive)
      */
     @Contract("null -> false")
     public static boolean containsKey(final @Nullable String key) {
@@ -190,8 +186,8 @@ public final class RenameableItemRegistry {
 
     /**
      * @param renameEntry The rename entry to check
-     * @return True if the {@link #RENAME_ENTRY_MAP} contains the given
-     *         rename entry and rename entry is not null
+     * @return True if the {@link #RENAME_ENTRY_MAP} contains the given rename
+     *         entry and rename entry is not null
      */
     @Contract("null -> false")
     public static boolean containsRenameEntry(final @Nullable RenameEntry renameEntry) {
@@ -202,9 +198,8 @@ public final class RenameableItemRegistry {
     /**
      * @param rename    The rename value to check
      * @param itemStack The item stack to check
-     * @return True if the {@link #RENAME_ENTRY_MAP} contains the given
-     *         rename value and item stack and rename value and item stack
-     *         are not null
+     * @return True if the {@link #RENAME_ENTRY_MAP} contains the given rename
+     *         value and item stack and rename value and item stack are not null
      * @see #containsRenameEntry(RenameEntry)
      */
     @Contract("null, null -> false")
@@ -217,9 +212,8 @@ public final class RenameableItemRegistry {
 
     /**
      * @param renameCollection The rename collection to check
-     * @return True if the {@link #RENAME_ENTRY_MAP} contains any of the
-     *         given rename collection's entries and rename collection is
-     *         not null
+     * @return True if the {@link #RENAME_ENTRY_MAP} contains any of the given
+     *         rename collection's entries and rename collection is not null
      * @see #containsRename(String, ItemStack)
      */
     @Contract("null -> false")
@@ -239,8 +233,8 @@ public final class RenameableItemRegistry {
 
     /**
      * @param renameableItem The renameable item to check
-     * @return True if the {@link #KEY_MAP} contains the given renameable
-     *         item and renameable item is not null
+     * @return True if the {@link #KEY_MAP} contains the given renameable item
+     *         and renameable item is not null
      */
     @Contract("null -> false")
     public static boolean containsRenameableItem(final @Nullable RenameableItem renameableItem) {
@@ -249,8 +243,8 @@ public final class RenameableItemRegistry {
     }
 
     /**
-     * Checks if the item stack is a renameable item by verifying
-     * if it has a valid key associated with it
+     * Checks if the item stack is a renameable item by verifying if it has a
+     * valid key associated with it
      *
      * @param itemStack The item stack to check
      * @return True if the item stack is a renameable item
@@ -287,8 +281,8 @@ public final class RenameableItemRegistry {
      * {@link #RENAME_ENTRY_MAP}
      *
      * @param renameableItem The renameable item to register
-     * @throws IllegalArgumentException If the key or any of the rename
-     *                                  entries are already registered
+     * @throws IllegalArgumentException If the key or any of the rename entries
+     *                                  are already registered
      */
     public static void register(final @NotNull RenameableItem renameableItem) throws IllegalArgumentException {
         final String key = renameableItem.getKey();
@@ -313,8 +307,8 @@ public final class RenameableItemRegistry {
      * {@link #RENAME_ENTRY_MAP}
      *
      * @param renameableItem The renameable item to unregister
-     * @throws IllegalArgumentException If the key or any of the rename
-     *                                  entries are not registered
+     * @throws IllegalArgumentException If the key or any of the rename entries
+     *                                  are not registered
      */
     public static void unregister(final @NotNull RenameableItem renameableItem) throws IllegalArgumentException {
         final String key = renameableItem.getKey();

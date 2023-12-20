@@ -138,11 +138,11 @@ public final class DateUtils {
 
     /**
      * Gets time suggestions from a string number. Can be used for time
-     * arguments in tab completer.
+     * arguments in tab complete.
      * <br>
      * Includes : s, m, h, d, M, y
      *
-     * @param input Number of time in string
+     * @param input Amount of time in string
      * @return Time suggestions or empty list if the input is not a number
      */
     public static @NotNull @Unmodifiable List<String> getTimeSuggestions(final @NotNull String input) {
@@ -165,7 +165,8 @@ public final class DateUtils {
      *
      * @param string Time string
      * @return Date with time added
-     * @throws NumberFormatException If the string does not contain a parsable long
+     * @throws NumberFormatException If the string does not contain a parsable
+     *                               long
      * @throws DateTimeException     If the chrono unit value is too big and the
      *                               addition cannot be made
      * @throws ArithmeticException   If numeric overflow occurs
@@ -183,7 +184,8 @@ public final class DateUtils {
      * @param string         Time string
      * @param throwException If true, an exception will be thrown
      * @return Date with time added
-     * @throws NumberFormatException If the string does not contain a parsable long
+     * @throws NumberFormatException If the string does not contain a parsable
+     *                               long
      * @throws DateTimeException     If the chrono unit value is too big and the
      *                               addition cannot be made
      * @throws ArithmeticException   If numeric overflow occurs
@@ -197,18 +199,19 @@ public final class DateUtils {
         }
 
         final Instant now = Instant.now();
-        final String numberString = string.replaceAll("[smhdMy]", "");
+        final String amountString = string.replaceAll("[smhdMy]", "");
         final String chronoUnit = string.replaceAll("\\d+", "");
 
         try {
-            final long number = Long.parseLong(numberString);
+            final long amount = Long.parseLong(amountString);
+
             return switch (chronoUnit) {
-                        case "s" -> now.plus(number, ChronoUnit.SECONDS);
-                        case "m" -> now.plus(number, ChronoUnit.MINUTES);
-                        case "h" -> now.plus(number, ChronoUnit.HOURS);
-                        case "M" -> now.plus(Math.multiplyExact(number, 30), ChronoUnit.DAYS);
-                        case "y" -> now.plus(Math.multiplyExact(number, 365), ChronoUnit.DAYS);
-                        default -> now.plus(number, ChronoUnit.DAYS);
+                        case "s" -> now.plus(amount, ChronoUnit.SECONDS);
+                        case "m" -> now.plus(amount, ChronoUnit.MINUTES);
+                        case "h" -> now.plus(amount, ChronoUnit.HOURS);
+                        case "M" -> now.plus(Math.multiplyExact(amount, 30), ChronoUnit.DAYS);
+                        case "y" -> now.plus(Math.multiplyExact(amount, 365), ChronoUnit.DAYS);
+                        default ->  now.plus(amount, ChronoUnit.DAYS);
                     };
         } catch (final DateTimeException | NumberFormatException | ArithmeticException e) {
             if (throwException) throw e;

@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 
 /**
- * Pronouns enum with custom messages.
- * All messages stored in the {@link LanguageFile}.
+ * Pronouns enum with custom messages. All messages stored in the
+ * {@link LanguageFile}.
  *
  * @see PlayerFile
  */

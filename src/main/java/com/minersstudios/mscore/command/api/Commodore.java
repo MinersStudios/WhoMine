@@ -166,8 +166,8 @@ public final class Commodore {
     }
 
     /**
-     * Sets the command fields for a command node and its children.
-     * Also sets the suggestion provider for {@link ArgumentCommandNode}
+     * Sets the command fields for a command node and its children. Also sets
+     * the suggestion provider for {@link ArgumentCommandNode}
      *
      * @param node               Command node
      * @param suggestionProvider Suggestion provider
@@ -232,7 +232,7 @@ public final class Commodore {
          * @param sender Sender to apply the command to
          * @param root   Root node to apply the command to
          */
-        @SuppressWarnings({"unchecked"})
+        @SuppressWarnings("unchecked")
         public <S> void apply(
                 final @NotNull CommandSender sender,
                 final @NotNull RootCommandNode<S> root

@@ -10,9 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Anomaly potion action class.
- * Used to add potion effects to player when a player is in anomaly zone
- * and the time is up and the percentage is reached,
+ * Anomaly potion action class. Used to add potion effects to player when a
+ * player is in anomaly zone and the time is up and the percentage is reached,
  * and if the player has no ignorable items.
  */
 public class AddPotionAction extends AnomalyAction {
@@ -22,8 +21,10 @@ public class AddPotionAction extends AnomalyAction {
      * @param plugin     MSEssentials plugin
      * @param time       Time in ticks to perform action (1 second = 20 ticks)
      * @param percentage Percentage chance of completing action
-     * @param first      First potion effect to add to player when action is performed
-     * @param rest       Rest of potion effects to add to player when action is performed
+     * @param first      First potion effect to add to player when action is
+     *                   performed
+     * @param rest       Rest of potion effects to add to player when action is
+     *                   performed
      */
     public AddPotionAction(
             final @NotNull MSEssentials plugin,
@@ -43,9 +44,11 @@ public class AddPotionAction extends AnomalyAction {
 
     /**
      * @param plugin          MSEssentials plugin
-     * @param time            Time in ticks to perform action (1 second = 20 ticks)
+     * @param time            Time in ticks to perform action
+     *                        (1 second = 20 ticks)
      * @param percentage      Percentage chance of completing action
-     * @param potionEffects   Array of potion effects to add to player when action is performed
+     * @param potionEffects   Array of potion effects to add to player when
+     *                        action is performed
      */
     public AddPotionAction(
             final @NotNull MSEssentials plugin,
@@ -66,13 +69,13 @@ public class AddPotionAction extends AnomalyAction {
     }
 
     /**
-     * Adds potion effects to player if the time is up and the percentage is reached.
-     * If the player has ignorable items, they will be damaged
-     * instead of adding potion effects.
+     * Adds potion effects to player if the time is up and the percentage is
+     * reached. If the player has ignorable items, they will be damaged instead
+     * of adding potion effects.
      *
      * @param player         The player to be influenced
-     * @param ignorableItems Ignorable items that will be damaged
-     *                       if player has them and the action will be performed
+     * @param ignorableItems Ignorable items that will be damaged if the player
+     *                       has them and the action will be performed
      * @see AnomalyAction#isPercentageReached()
      */
     @Override

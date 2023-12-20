@@ -375,6 +375,7 @@ public final class LanguageRegistry {
         public static final String PLAYER_PRONOUNS_THEY_SAID =                            "ms.player.pronouns.they.said";
         //</editor-fold>
 
+        @Contract(" -> fail")
         private Keys() {
             throw new AssertionError("Utility class");
         }
@@ -734,6 +735,7 @@ public final class LanguageRegistry {
         public static final TranslatableComponent PLAYER_PRONOUNS_THEY_SAID =                            renderTranslationComponent(Keys.PLAYER_PRONOUNS_THEY_SAID);
         //</editor-fold>
 
+        @Contract(" -> fail")
         private Components() {
             throw new AssertionError("Utility class");
         }
@@ -1093,6 +1095,7 @@ public final class LanguageRegistry {
         public static final String PLAYER_PRONOUNS_THEY_SAID =                            renderTranslation(Keys.PLAYER_PRONOUNS_THEY_SAID);
         //</editor-fold>
 
+        @Contract(" -> fail")
         private Strings() {
             throw new AssertionError("Utility class");
         }

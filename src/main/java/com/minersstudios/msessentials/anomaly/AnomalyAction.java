@@ -14,8 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Anomaly action class.
- * Used to do something when a player is in anomaly zone
+ * Anomaly action class. Used to do something when a player is in anomaly zone
  * and the time is up and the percentage is reached.
  *
  * @see AddPotionAction
@@ -31,7 +30,8 @@ public abstract class AnomalyAction {
 
     /**
      * @param plugin     MSEssentials plugin
-     * @param time       Time in ticks to perform action (1 second = 20 ticks)
+     * @param time       Time in ticks to perform action
+     *                   (1 second = 20 ticks)
      * @param percentage Percentage chance of completing action
      */
     protected AnomalyAction(
@@ -60,7 +60,8 @@ public abstract class AnomalyAction {
     }
 
     /**
-     * @return Time in ticks to perform action (1 second = 20 ticks)
+     * @return Time in ticks to perform action
+     *         (1 second = 20 ticks)
      */
     public final long getTime() {
         return this.time;
@@ -84,8 +85,8 @@ public abstract class AnomalyAction {
      * Puts this action to player's action map with current time
      *
      * @param player The player to be influenced
-     * @return The previous action map associated with player,
-     *         or null if there was no mapping for player
+     * @return The previous action map associated with player, or null if there
+     *         was no mapping for player
      */
     public final @Nullable Map<AnomalyAction, Long> putAction(final @NotNull Player player) {
         final var action = this.actionMap.getOrDefault(player, new ConcurrentHashMap<>());
@@ -95,10 +96,10 @@ public abstract class AnomalyAction {
     }
 
     /**
-     * Removes this action from player's action map
+     * Removes this action from the player's action map
      *
-     * @param player A player who has been influenced
-     *               and from which the action will be removed
+     * @param player A player who has been influenced and from which the action
+     *               will be removed
      */
     public final void removeAction(final @NotNull Player player) {
         final var action = this.actionMap.get(player);
@@ -113,8 +114,8 @@ public abstract class AnomalyAction {
      * Do action if the time is up and the percentage is reached
      *
      * @param player         The player to be influenced
-     * @param ignorableItems Ignorable items that will be damaged
-     *                       if player has them and the action will be performed
+     * @param ignorableItems Ignorable items that will be damaged if the player
+     *                       has them and the action will be performed
      */
     public abstract void doAction(
             final @NotNull Player player,

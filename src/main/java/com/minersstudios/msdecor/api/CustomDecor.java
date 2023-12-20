@@ -31,12 +31,26 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Represents CustomDecor, handling custom decor in the server world. This class
+ * facilitates the creation, manipulation, and destruction of custom decorations.
+ */
 public final class CustomDecor {
     private final CustomDecorData<?> data;
     private final ItemDisplay display;
     private final Interaction[] interactions;
     private final MSBoundingBox msbb;
 
+    /**
+     * Constructs a CustomDecor instance based on provided parameters
+     *
+     * @param data         The CustomDecorData associated with this decor
+     * @param display      The ItemDisplay representing the model display of
+     *                     this decor
+     * @param interactions Array of Interactions representing the hitbox of
+     *                     this decor
+     * @param msbb         The MSBoundingBox defining the hitbox of the decor
+     */
     public CustomDecor(
             final @NotNull CustomDecorData<?> data,
             final @NotNull ItemDisplay display,
@@ -49,6 +63,13 @@ public final class CustomDecor {
         this.msbb = msbb;
     }
 
+    /**
+     * Retrieves a CustomDecor instance based on a given block
+     *
+     * @param block The block from which to retrieve the CustomDecor
+     * @return An Optional containing the CustomDecor instance if found,
+     *         otherwise an empty Optional
+     */
     public static @NotNull Optional<CustomDecor> fromBlock(final @Nullable org.bukkit.block.Block block) {
         return block == null
                 ? Optional.empty()
@@ -59,6 +80,13 @@ public final class CustomDecor {
                 );
     }
 
+    /**
+     * Retrieves a CustomDecor instance based on a given interaction
+     *
+     * @param interaction The interaction from which to retrieve the CustomDecor
+     * @return An Optional containing the CustomDecor instance if found,
+     *         otherwise an empty Optional
+     */
     public static @NotNull Optional<CustomDecor> fromInteraction(final @Nullable Interaction interaction) {
         if (interaction == null) {
             return Optional.empty();
@@ -75,22 +103,40 @@ public final class CustomDecor {
                 : Optional.empty();
     }
 
+    /**
+     * @return The CustomDecorData associated with this decor
+     */
     public @NotNull CustomDecorData<?> getData() {
         return this.data;
     }
 
+    /**
+     * @return The ItemDisplay representing the model display of this decor
+     */
     public @NotNull ItemDisplay getDisplay() {
         return this.display;
     }
 
+    /**
+     * @return Array of Interactions representing the hitbox of this decor
+     */
     public Interaction @NotNull [] getInteractions() {
         return this.interactions.clone();
     }
 
+    /**
+     * @return The MSBoundingBox defining the hitbox of the decor
+     */
     public @NotNull MSBoundingBox getBoundingBox() {
         return this.msbb;
     }
 
+    /**
+     * Destroys this custom decor in the server world
+     *
+     * @param destroyer The entity who broke the custom decor
+     * @param dropItem  Whether to drop the item
+     */
     public void destroy(
             final @NotNull Entity destroyer,
             final boolean dropItem
@@ -116,7 +162,7 @@ public final class CustomDecor {
 
             final ItemStack itemStack =
                     !this.data.isAnyTyped()
-                    || this.data.isDropsType()
+                    || this.data.isDropType()
                             ? displayItem.clone()
                             : this.data.getItem();
             final ItemMeta itemMeta = itemStack.getItemMeta();
@@ -169,35 +215,68 @@ public final class CustomDecor {
         this.getData().doBreakAction(event);
     }
 
+    /**
+     * Places a CustomDecorType in the server world
+     *
+     * @param type      The CustomDecorType to place
+     * @param position  The location of the block to place the decor at
+     * @param player    The player who placed the decor
+     * @param blockFace The block face to place the decor on
+     * @throws IllegalArgumentException If the world is not specified in the
+     *                                  position
+     */
     public static void place(
             final @NotNull CustomDecorType type,
-            final @NotNull MSPosition blockLocation,
+            final @NotNull MSPosition position,
             final @NotNull Player player,
             final @NotNull BlockFace blockFace
-    ) {
-        place(type, blockLocation, player, blockFace, null, null);
+    ) throws IllegalArgumentException {
+        place(type, position, player, blockFace, null, null);
     }
 
+    /**
+     * Places a CustomDecorType in the server world
+     *
+     * @param type       The CustomDecorType to place
+     * @param position   The location of the block to place the decor at
+     * @param player     The player who placed the decor
+     * @param blockFace  The block face to place the decor on
+     * @param hand       The hand, which was used to place the decor, can be null
+     * @throws IllegalArgumentException If the world is not specified in the
+     *                                  position
+     */
     public static void place(
             final @NotNull CustomDecorType type,
-            final @NotNull MSPosition blockLocation,
+            final @NotNull MSPosition position,
             final @NotNull Player player,
             final @NotNull BlockFace blockFace,
             final @Nullable EquipmentSlot hand
-    ) {
-        place(type, blockLocation, player, blockFace, hand, null);
+    ) throws IllegalArgumentException {
+        place(type, position, player, blockFace, hand, null);
     }
 
+    /**
+     * Places a CustomDecorType in the server world
+     *
+     * @param type       The CustomDecorType to place
+     * @param position   The location of the block to place the decor at
+     * @param player     The player who placed the decor
+     * @param blockFace  The block face to place the decor on
+     * @param hand       The hand, which was used to place the decor, can be null
+     * @param customName The custom name of the decor, can be null
+     * @throws IllegalArgumentException If the world is not specified in the
+     *                                  position
+     */
     public static void place(
             final @NotNull CustomDecorType type,
-            final @NotNull MSPosition blockLocation,
+            final @NotNull MSPosition position,
             final @NotNull Player player,
             final @NotNull BlockFace blockFace,
             final @Nullable EquipmentSlot hand,
             final @Nullable Component customName
-    ) {
+    ) throws IllegalArgumentException {
         type.getCustomDecorData().place(
-                blockLocation,
+                position,
                 player,
                 blockFace,
                 hand,
@@ -205,6 +284,12 @@ public final class CustomDecor {
         );
     }
 
+    /**
+     * Destroys the decor in the block, which was destroyed by the player
+     *
+     * @param player The player, who destroyed the decor
+     * @param block  The block, which was destroyed
+     */
     public static void destroyInBlock(
             final @NotNull Player player,
             final @NotNull Block block
@@ -212,6 +297,13 @@ public final class CustomDecor {
         destroyInBlock(player, block, player.getGameMode() == GameMode.SURVIVAL);
     }
 
+    /**
+     * Destroys the decor in the block, which was destroyed by the entity
+     *
+     * @param destroyer The entity, who destroyed the decor
+     * @param block     The block, which was destroyed
+     * @param dropItem  Whether to drop the item
+     */
     public static void destroyInBlock(
             final @NotNull Entity destroyer,
             final @NotNull Block block,
@@ -227,6 +319,12 @@ public final class CustomDecor {
         }
     }
 
+    /**
+     * Destroys the decor, which was destroyed by the player
+     *
+     * @param player     The player who destroyed the decor
+     * @param interacted The interacted entity
+     */
     public static void destroy(
             final @NotNull Player player,
             final @NotNull Interaction interacted
@@ -234,6 +332,13 @@ public final class CustomDecor {
         destroy(player, interacted, player.getGameMode() == GameMode.SURVIVAL);
     }
 
+    /**
+     * Destroys the decor, which was destroyed by the entity
+     *
+     * @param destroyer  The entity who destroyed the decor
+     * @param interacted The interacted entity
+     * @param dropItem   Whether to drop the item
+     */
     public static void destroy(
             final @NotNull Entity destroyer,
             final @NotNull Interaction interacted,

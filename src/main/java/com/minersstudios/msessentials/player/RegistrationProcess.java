@@ -18,9 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 
 /**
- * Registration process class.
- * It is used to register a player on the server on the first join.
- * All messages stored in the {@link LanguageFile}.
+ * Registration process class. It is used to register a player on the server on
+ * the first join. All messages stored in the {@link LanguageFile}.
  */
 public final class RegistrationProcess {
     private final MSEssentials plugin;

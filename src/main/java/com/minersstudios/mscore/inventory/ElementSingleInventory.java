@@ -11,9 +11,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Builder for single inventory with elements.
- * Element slots are slots where elements are located.
- * Elements are buttons that located in the element slots.
+ * Builder for single inventory with elements. Element slots are slots where
+ * elements are located. Elements are buttons that are located in the element
+ * slots.
  *
  * @see CustomInventory
  * @see SingleInventory

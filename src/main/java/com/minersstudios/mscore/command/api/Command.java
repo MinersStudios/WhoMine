@@ -44,7 +44,8 @@ public @interface Command {
     @NotNull String permission() default "";
 
     /**
-     * @return Command permission default, default is {@link PermissionDefault#NOT_OP}
+     * @return Command permission default, default is
+     *         {@link PermissionDefault#NOT_OP}
      */
     @NotNull PermissionDefault permissionDefault() default PermissionDefault.NOT_OP;
 
@@ -63,8 +64,7 @@ public @interface Command {
     boolean[] permissionParentValues() default {};
 
     /**
-     * @return True if command can be executed only by player,
-     *         default is false
+     * @return True, if command can be executed only by player, default is false
      */
     boolean playerOnly() default false;
 }

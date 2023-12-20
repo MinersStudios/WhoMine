@@ -7,9 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * Represents the different packet protocols used in Minecraft.
- * Each protocol corresponds to a specific phase in the
- * network connection process.
+ * Represents the different packet protocols used in Minecraft. Each protocol
+ * corresponds to a specific phase in the network connection process.
  *
  * @see PacketType
  * @see PacketFlow
@@ -32,9 +31,8 @@ public enum PacketProtocol {
      * Constructor for the PacketProtocol enum
      *
      * @param stateId The state id of this protocol
-     * @param packets The map of packet types associated
-     *                with this protocol, organized by
-     *                packet flow and packet ID
+     * @param packets The map of packet types associated with this protocol,
+     *                organized by packet flow and packet ID
      */
     PacketProtocol(
             final @NotNull String stateId,
@@ -48,8 +46,8 @@ public enum PacketProtocol {
      * Get the PacketProtocol associated with a specific
      * {@link ConnectionProtocol}
      *
-     * @param protocol The ConnectionProtocol for which to
-     *                 retrieve the corresponding PacketProtocol
+     * @param protocol The ConnectionProtocol for which to retrieve the
+     *                 corresponding PacketProtocol
      * @return The PacketProtocol associated with the given ConnectionProtocol
      */
     public static @NotNull PacketProtocol fromMinecraft(final @NotNull ConnectionProtocol protocol) {
@@ -57,9 +55,8 @@ public enum PacketProtocol {
     }
 
     /**
-     * Get the state id of this protocol. The id is the
-     * same as the id of the {@link ConnectionProtocol}
-     * associated with this protocol.
+     * Get the state id of this protocol. The id is the same as the id of the
+     * {@link ConnectionProtocol} associated with this protocol.
      *
      * @return The state id of this protocol
      */
@@ -68,9 +65,8 @@ public enum PacketProtocol {
     }
 
     /**
-     * Get the packet map associated with this protocol.
-     * The packet map contains packet types organized by
-     * packet flow and packet ID.
+     * Get the packet map associated with this protocol. The packet map contains
+     * packet types organized by packet flow and packet ID.
      *
      * @return The packet map of this protocol.
      */

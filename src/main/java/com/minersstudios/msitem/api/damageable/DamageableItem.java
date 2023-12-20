@@ -19,10 +19,9 @@ import java.util.ArrayList;
 import static net.kyori.adventure.text.Component.*;
 
 /**
- * The {@code DamageableItem} class represents an abstraction
- * for managing damageable items with custom damage values.
- * It provides methods for setting, retrieving, and saving
- * damage-related data to and from {@link ItemStack}s.
+ * The {@code DamageableItem} class represents an abstraction for managing
+ * damageable items with custom damage values. It provides methods for setting,
+ * retrieving, and saving damage-related data to and from {@link ItemStack}s.
  */
 public class DamageableItem {
     protected final int defaultDamage;
@@ -53,15 +52,12 @@ public class DamageableItem {
     }
 
     /**
-     * Constructs a {@code DamageableItem} instance with
-     * specified default, max, and real damage values
+     * Constructs a {@code DamageableItem} instance with specified default, max,
+     * and real damage values
      *
-     * @param defaultDamage The default damage value of
-     *                      the item
-     * @param maxDamage     The maximum damage value the
-     *                      item can have
-     * @param realDamage    The current real damage value
-     *                      of the item
+     * @param defaultDamage The default damage value of the item
+     * @param maxDamage     The maximum damage value the item can have
+     * @param realDamage    The current real damage value of the item
      */
     public DamageableItem(
             final int defaultDamage,
@@ -74,12 +70,12 @@ public class DamageableItem {
     }
 
     /**
-     * Converts an {@link ItemStack} to a {@code DamageableItem}
-     * instance if the item contains necessary data
+     * Converts an {@link ItemStack} to a {@code DamageableItem} instance if the
+     * item contains necessary data
      *
      * @param itemStack The {@link ItemStack} to convert
-     * @return A {@code DamageableItem} instance if conversion
-     *         is successful, otherwise null
+     * @return A {@code DamageableItem} instance if conversion is successful,
+     *         otherwise null
      */
     @Contract("null -> null")
     public static @Nullable DamageableItem fromItemStack(final @Nullable ItemStack itemStack) {
@@ -120,8 +116,7 @@ public class DamageableItem {
     /**
      * Sets the maximum damage value the item can have
      *
-     * @param damage New maximum damage value the item
-     *               can have
+     * @param damage New maximum damage value the item can have
      */
     public void setMaxDamage(final int damage) {
         this.maxDamage = damage;
@@ -144,9 +139,8 @@ public class DamageableItem {
     }
 
     /**
-     * Saves the damage-related data to an {@link ItemStack}'s
-     * persistent data container and updates the lore and damage
-     * value of the item
+     * Saves the damage-related data to an {@link ItemStack}'s persistent data
+     * container and updates the lore and damage value of the item
      *
      * @param itemStack The {@link ItemStack} to save the data to
      * @return True if the data is successfully saved

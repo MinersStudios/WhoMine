@@ -7,8 +7,8 @@ import org.jetbrains.annotations.Range;
 import java.util.Map;
 
 /**
- * Implementation of {@link CustomInventory} that allows to create
- * custom inventories with pages and static buttons
+ * Implementation of {@link CustomInventory} that allows creating custom
+ * inventories with pages and static buttons
  * <br>
  * Can have:
  * <ul>
@@ -25,8 +25,8 @@ import java.util.Map;
 public interface PagedCustomInventory extends CustomInventory {
 
     /**
-     * Used to update static buttons in the inventory.
-     * If there are no static buttons, this method does not need to be called.
+     * Used to update static buttons in the inventory. If there are no static
+     * buttons, this method does not need to be called.
      *
      * @return Paged inventory
      */
@@ -45,7 +45,8 @@ public interface PagedCustomInventory extends CustomInventory {
      * Sets static buttons in this inventory
      *
      * @param buttons Static buttons to set
-     * @throws IllegalArgumentException If any of the static buttons is out of inventory size
+     * @throws IllegalArgumentException If any of the static buttons is out of
+     *                                  inventory size
      * @see #staticButtonAt(int, StaticInventoryButton)
      */
     PagedCustomInventory staticButtons(final @NotNull Map<Integer, StaticInventoryButton> buttons) throws IllegalArgumentException;
@@ -57,18 +58,19 @@ public interface PagedCustomInventory extends CustomInventory {
 
     /**
      * @param slot Slot to get button from
-     * @return {@link StaticInventoryButton} / {@link InventoryButton} at specified slot or null if there is no button
+     * @return {@link StaticInventoryButton} / {@link InventoryButton} at
+     *         specified slot or null if there is no button
      */
     @Override
     @Nullable InventoryButton buttonAt(final int slot);
 
     /**
-     * Sets static button at specified slot.
-     * Static buttons are buttons that do not change when the page index changes.
+     * Sets static button at specified slot. Static buttons are buttons that do
+     * not change when the page index changes.
      *
      * @param slot   Slot to set static button at
      * @param button Static button to set
-     * @throws IllegalArgumentException If slot is out of inventory size
+     * @throws IllegalArgumentException If the slot is out of inventory size
      */
     PagedCustomInventory staticButtonAt(
             final @Range(from = 0, to = CustomInventoryImpl.LAST_SLOT) int slot,
@@ -108,10 +110,11 @@ public interface PagedCustomInventory extends CustomInventory {
     /**
      * @return Pages size
      */
-    int getPagesSize();
+    int getPagesCount();
 
     /**
-     * Adds new page to the {@link PagedCustomInventoryImpl#pages} with next index and static buttons
+     * Adds new page to the {@link PagedCustomInventoryImpl#pages} with next
+     * index and static buttons
      *
      * @return New page
      */

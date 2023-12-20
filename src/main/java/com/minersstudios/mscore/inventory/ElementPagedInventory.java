@@ -13,10 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Builder for paged inventory with elements.
- * Element slots are slots where elements are located.
- * Elements are buttons that change when the page index changes,
- * all elements are located in the element slots.
+ * Builder for paged inventory with elements. Element slots are slots where
+ * elements are located. Elements are buttons that change when the page index
+ * changes, all elements are located in the element slots.
  *
  * @see CustomInventory
  * @see PagedCustomInventory
@@ -74,9 +73,9 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
         final int size = elements.size();
 
         this.elements.clear();
-        this.setPagesSize((int) Math.ceil((double) size / this.elementSlots.length));
+        this.setPagesCount((int) Math.ceil((double) size / this.elementSlots.length));
 
-        for (int page = 0; page < this.pagesSize; ++page) {
+        for (int page = 0; page < this.pagesCount; ++page) {
             for (int element = 0; element < this.elementSlots.length; ++element) {
                 final int index = element + (page * this.elementSlots.length);
 
@@ -128,7 +127,7 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      * @return Page of the inventory
      */
     public @Nullable ElementPagedInventory createPage(final @Range(from = 0, to = Integer.MAX_VALUE) int page) {
-        if (page >= this.pagesSize) {
+        if (page >= this.pagesCount) {
             return null;
         }
 
@@ -143,12 +142,13 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
     /**
      * Updates the pages of the inventory
      * <br>
-     * <b>Warning:</b> This method is expensive and should only be called when necessary
+     * <b>Warning:</b> This method is expensive and should only be called when
+     *                 necessary
      */
     public void updatePages() {
         this.pages.clear();
 
-        for (int page = 0; page < this.pagesSize; ++page) {
+        for (int page = 0; page < this.pagesCount; ++page) {
             this.pages.put(page, this.createPage(page));
         }
 
@@ -156,12 +156,12 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
     }
 
     /**
-     * Sets the pages size
+     * Sets the page count of the inventory
      *
-     * @param pagesSize New pages size
+     * @param pagesCount New page count
      */
     @Override
-    protected void setPagesSize(final @Range(from = 0, to = Integer.MAX_VALUE) int pagesSize) {
-        this.pagesSize = pagesSize;
+    protected void setPagesCount(final @Range(from = 0, to = Integer.MAX_VALUE) int pagesCount) {
+        this.pagesCount = pagesCount;
     }
 }

@@ -22,10 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * CustomInventoryImpl is an abstract class that provides a base implementation for custom inventories.
- * It extends CraftInventoryCustom and implements the CustomInventory interface.
+ * CustomInventoryImpl is an abstract class that provides a base implementation
+ * for custom inventories. It extends CraftInventoryCustom and implements the
+ * CustomInventory interface.
  *
- * @param <S> Self type, the specific implementation of the custom inventory.
+ * @param <S> Self-type, the specific implementation of the custom inventory.
  */
 @SuppressWarnings({"unused", "UnusedReturnValue", "unchecked"})
 abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInventoryCustom implements CustomInventory {

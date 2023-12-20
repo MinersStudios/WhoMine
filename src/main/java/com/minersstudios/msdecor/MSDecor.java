@@ -26,8 +26,8 @@ public final class MSDecor extends MSPlugin<MSDecor> {
         singleton = this;
     }
 
-    @Override
     @SuppressWarnings("JavaReflectionMemberAccess")
+    @Override
     public void load() {
         initClass(CustomDecorType.class);
 
@@ -51,24 +51,21 @@ public final class MSDecor extends MSPlugin<MSDecor> {
     }
 
     /**
-     * @return The instance of the plugin
-     *         or null if the plugin is not enabled
+     * @return The instance of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability MSDecor singleton() {
         return singleton;
     }
 
     /**
-     * @return The logger of the plugin
-     *         or null if the plugin is not enabled
+     * @return The logger of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability Logger logger() {
         return singleton == null ? null : singleton.getLogger();
     }
 
     /**
-     * @return The component logger of the plugin
-     *         or null if the plugin is not enabled
+     * @return The component logger of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability ComponentLogger componentLogger() {
         return singleton == null ? null : singleton.getComponentLogger();

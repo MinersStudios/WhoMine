@@ -45,6 +45,12 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The CustomDecorType enum represents various types of custom decor in the
+ * MSDecor plugin. Each enum value is associated with a specific class that
+ * implements the CustomDecorData interface. This class provides methods to
+ * manage and retrieve custom decor data instances, keys, and types.
+ */
 public enum CustomDecorType {
     //<editor-fold desc="Types" defaultstate="collapsed">
     CHRISTMAS_BALL(ChristmasBall.class),
@@ -247,26 +253,59 @@ public enum CustomDecorType {
         }
     }
 
+    /**
+     * Constructor for CustomDecorType enum values
+     *
+     * @param clazz The associated class that implements the CustomDecorData
+     *              interface
+     */
     CustomDecorType(final @NotNull Class<? extends CustomDecorData<?>> clazz) {
         this.clazz = clazz;
     }
 
+    /**
+     * @return The class associated with this custom decor type
+     */
     public @NotNull Class<? extends CustomDecorData<?>> getDataClass() {
         return this.clazz;
     }
 
+    /**
+     * @return The CustomDecorData instance associated with this custom decor
+     *         type
+     */
     public @NotNull CustomDecorData<?> getCustomDecorData() {
         return CLASS_TO_DATA_MAP.get(this.clazz);
     }
 
+    /**
+     * @param clazz The target class to cast the custom decor data instance to
+     * @param <D>   The type of the target class
+     * @return The custom decor data instance cast to the specified class
+     * @throws IllegalArgumentException If the custom decor data instance cannot
+     *                                  be cast to the specified class
+     */
     public <D extends CustomDecorData<D>> @NotNull D getCustomDecorData(final @NotNull Class<D> clazz) throws IllegalArgumentException {
         try {
             return clazz.cast(CLASS_TO_DATA_MAP.get(this.clazz));
         } catch (final ClassCastException e) {
-            throw new IllegalArgumentException("Custom decor " + this.name() + " is not an instance of " + clazz.getName() + "!", e);
+            throw new IllegalArgumentException(
+                    "Custom decor " + this.name() + " is not an instance of " + clazz.getName() + "!",
+                    e
+            );
         }
     }
 
+    /**
+     * Gets the {@link CustomDecorType} from the given key
+     *
+     * @param key The key to get the custom decor type from, must not be null
+     *            (case-insensitive)
+     * @return The {@link CustomDecorType} associated with the given key or null
+     *         if the given key is not associated with any custom decor type,
+     *         or if the given key is null or blank
+     * @see #KEY_TO_TYPE_MAP
+     */
     @Contract("null -> null")
     public static @Nullable CustomDecorType fromKey(final @Nullable String key) {
         if (StringUtils.isBlank(key)) {
@@ -284,6 +323,15 @@ public enum CustomDecorType {
         return KEY_TO_TYPE_MAP.get(key.toLowerCase(Locale.ENGLISH));
     }
 
+    /**
+     * Gets the {@link CustomDecorType} from the given class
+     *
+     * @param clazz The class to get the custom decor type from
+     * @return The {@link CustomDecorType} associated with the given class or
+     *         null if the given class is not associated with any custom decor
+     *         type, or if the given class is null
+     * @see #CLASS_TO_TYPE_MAP
+     */
     @Contract("null -> null")
     public static @Nullable CustomDecorType fromClass(final @Nullable Class<? extends CustomDecorData<?>> clazz) {
         return clazz == null
@@ -291,6 +339,18 @@ public enum CustomDecorType {
                 : CLASS_TO_TYPE_MAP.get(clazz);
     }
 
+    /**
+     * Gets the {@link CustomDecorType} from the given item stack.
+     * <br>
+     * It will get the namespaced key from the item stack's persistent data
+     * container and then get the custom decor type from {@link #KEY_TO_TYPE_MAP}
+     *
+     * @param itemStack The item stack to get the custom decor type from
+     * @return The {@link CustomDecorType} associated with the given item stack
+     *         or null if the given item stack is not associated with any custom
+     *         decor type, or if the given item stack is null, or an air item
+     * @see #fromKey(String)
+     */
     @Contract("null -> null")
     public static @Nullable CustomDecorType fromItemStack(final @Nullable ItemStack itemStack) {
         if (itemStack == null) {
@@ -298,31 +358,56 @@ public enum CustomDecorType {
         }
 
         final ItemMeta itemMeta = itemStack.getItemMeta();
+
         return itemMeta == null
                 ? null
                 : fromKey(
-                        itemMeta.getPersistentDataContainer().get(TYPE_NAMESPACED_KEY, PersistentDataType.STRING)
+                        itemMeta.getPersistentDataContainer().get(
+                                TYPE_NAMESPACED_KEY,
+                                PersistentDataType.STRING
+                        )
                 );
     }
 
+    /**
+     * @return An unmodifiable view of the custom decor key set
+     * @see #KEY_TO_TYPE_MAP
+     */
     public static @NotNull @UnmodifiableView Set<String> keySet() {
         return Collections.unmodifiableSet(KEY_TO_TYPE_MAP.keySet());
     }
 
+    /**
+     * @return An unmodifiable view of a set of custom decor classes that
+     *         implement the CustomDecorData interface
+     * @see #CLASS_TO_TYPE_MAP
+     */
     public static @NotNull @UnmodifiableView Set<Class<? extends CustomDecorData<?>>> classSet() {
         return Collections.unmodifiableSet(CLASS_TO_TYPE_MAP.keySet());
     }
 
+    /**
+     * @return An unmodifiable view of a custom decor data instance collection
+     * @see #CLASS_TO_DATA_MAP
+     */
     public static @NotNull @UnmodifiableView Collection<CustomDecorData<?>> customDecors() {
         return Collections.unmodifiableCollection(CLASS_TO_DATA_MAP.values());
     }
 
+    /**
+     * @param key The key to check
+     * @return True if the {@link #KEY_TO_TYPE_MAP} contains the given key
+     */
     @Contract("null -> false")
     public static boolean containsKey(final @Nullable String key) {
         return StringUtils.isNotBlank(key)
                 && KEY_TO_TYPE_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
 
+    /**
+     * @param clazz The class to check
+     * @return True if the {@link #CLASS_TO_TYPE_MAP} contains the given class
+     */
     @Contract("null -> false")
     public static boolean containsClass(final @Nullable Class<? extends CustomDecorData<?>> clazz) {
         return clazz != null

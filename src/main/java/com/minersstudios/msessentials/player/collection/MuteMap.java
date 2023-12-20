@@ -46,8 +46,8 @@ public final class MuteMap {
             .create();
 
     /**
-     * Mute map with {@link UUID} and its {@link Entry}.
-     * Loads mutes from the file.
+     * Mute map with {@link UUID} and its {@link Entry}. Loads mutes from the
+     * file.
      */
     public MuteMap(final @NotNull MSPlugin<?> plugin) {
         this.file = new File(plugin.getPluginFolder(), "muted_players.json");
@@ -78,10 +78,10 @@ public final class MuteMap {
     /**
      * Adds mute for the player
      *
-     * @param player     Player who will be muted
+     * @param player     Player, who will be muted
      * @param expiration Date when the player will be unmuted
      * @param reason     Mute reason
-     * @param source     Mute source, could be a player's nickname or CONSOLE
+     * @param source     Mute source could be a player's nickname or CONSOLE
      */
     public void put(
             final @NotNull OfflinePlayer player,
@@ -260,7 +260,7 @@ public final class MuteMap {
          * @param created    Date when the player was muted
          * @param expiration Date when the player will be unmuted
          * @param reason     Mute reason
-         * @param source     Mute source, could be a player's nickname or CONSOLE
+         * @param source     Mute source could be a player's nickname or CONSOLE
          * @return New {@link Entry}
          */
         @Contract("_, _, _, _ -> new")
@@ -295,7 +295,7 @@ public final class MuteMap {
         }
 
         /**
-         * @return Mute source, could be a player's nickname or CONSOLE
+         * @return Mute source could be a player's nickname or CONSOLE
          */
         public String getSource() {
             return this.source;

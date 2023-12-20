@@ -14,8 +14,9 @@ import java.util.Map;
 
 /**
  * Bounding box with a list of radii and a map of bounding boxes for each radius.
- * This class is used to store the bounding boxes of anomalies.
- * Use {@link #getRadiusInside(Player)} to get the radius of the anomaly the player is inside.
+ * This class is used to store the bounding boxes of anomalies. Use
+ * {@link #getRadiusInside(Player)} to get the radius of the anomaly the player
+ * is inside.
  */
 public final class AnomalyBoundingBox extends BoundingBox {
     private final World world;
@@ -23,12 +24,12 @@ public final class AnomalyBoundingBox extends BoundingBox {
     private final Map<Double, BoundingBox> radiusBoundingBoxes;
 
     /**
-     * Creates a new anomaly bounding box,
-     * with a list of radii and a map of bounding boxes for each radius.
-     * Bounding boxes are created by expanding the center bounding box by the radius.
+     * Creates a new anomaly bounding box, with a list of radii and a map of
+     * bounding boxes for each radius. Bounding boxes are created by expanding
+     * the center bounding box by the radius.
      *
      * @param world       The world the anomaly is in
-     * @param boundingBox The center bounding box of the anomaly
+     * @param boundingBox The center-bounding box of the anomaly
      * @param radii       The radii of the anomaly
      */
     public AnomalyBoundingBox(

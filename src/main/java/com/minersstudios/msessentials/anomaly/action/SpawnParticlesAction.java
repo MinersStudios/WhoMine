@@ -10,22 +10,24 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Anomaly particle action class.
- * Used to spawn particles when a player is in anomaly zone.
- * Particles are spawned only for receiving players.
+ * Anomaly particle action class. Used to spawn particles when a player is in
+ * anomaly zone. Particles are spawned only for receiving players.
  */
 public class SpawnParticlesAction extends AnomalyAction {
     private final ParticleBuilder[] particleBuilders;
 
     /**
-     * Spawns particles when a player is in anomaly zone.
-     * Particles are spawned only for receiving players.
+     * Spawns particles when a player is in anomaly zone. Particles are spawned
+     * only for receiving players.
      *
      * @param plugin     MSEssentials plugin
-     * @param time       Time in ticks to perform action (1 second = 20 ticks)
+     * @param time       Time in ticks to perform action
+     *                   (1 second = 20 ticks)
      * @param percentage Percentage chance of completing action
-     * @param first      First particle builder to spawn when player is in anomaly zone
-     * @param rest       Rest of particle builders to spawn when player is in anomaly zone
+     * @param first      First particle builder to spawn when player is in
+     *                   the anomaly zone
+     * @param rest       Rest of particle builders to spawn when player is in
+     *                   anomaly zone
      */
     public SpawnParticlesAction(
             final @NotNull MSEssentials plugin,
@@ -44,13 +46,15 @@ public class SpawnParticlesAction extends AnomalyAction {
     }
 
     /**
-     * Spawns particles when a player is in anomaly zone.
-     * Particles are spawned only for receiving players.
+     * Spawns particles when a player is in anomaly zone. Particles are spawned
+     * only for receiving players.
      *
      * @param plugin            MSEssentials plugin
-     * @param time              Time in ticks to perform action (1 second = 20 ticks)
+     * @param time              Time in ticks to perform action
+     *                          (1 second = 20 ticks)
      * @param percentage        Percentage chance of completing action
-     * @param particleBuilders  Array of particle builders to spawn when player is in anomaly zone
+     * @param particleBuilders  Array of particle builders to spawn when player
+     *                          is in the anomaly zone
      */
     public SpawnParticlesAction(
             final @NotNull MSEssentials plugin,
@@ -64,7 +68,8 @@ public class SpawnParticlesAction extends AnomalyAction {
     }
 
     /**
-     * @return Array of particle builders to spawn when player is in anomaly zone
+     * @return Array of particle builders to spawn when player is in the anomaly
+     *         zone
      */
     public ParticleBuilder @NotNull [] getParticles() {
         return this.particleBuilders.clone();

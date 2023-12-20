@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,12 +29,13 @@ import static net.kyori.adventure.text.Component.*;
 
 public final class MessageUtils {
 
+    @Contract(" -> fail")
     private MessageUtils() {
         throw new AssertionError("Utility class");
     }
 
     /**
-     * Sends message to all players except those in world_dark
+     * Sends a message to all players except those in world_dark
      *
      * @param message message
      */
@@ -46,7 +48,7 @@ public final class MessageUtils {
     }
 
     /**
-     * Sends message to all players within the specified radius
+     * Sends a message to all players within the specified radius
      *
      * @param message  message
      * @param location center location
@@ -64,7 +66,7 @@ public final class MessageUtils {
     }
 
     /**
-     * Sends message to chat
+     * Sends a message to chat
      *
      * @param playerInfo player info
      * @param location   sender location
@@ -120,7 +122,7 @@ public final class MessageUtils {
     }
 
     /**
-     * Sends private message
+     * Sends a private message
      *
      * @param sender   private message sender
      * @param receiver private message receiver
@@ -245,7 +247,7 @@ public final class MessageUtils {
     }
 
     /**
-     * Sends death message
+     * Sends a death message
      *
      * @param killed killed player
      * @param killer killer player
@@ -301,7 +303,7 @@ public final class MessageUtils {
     }
 
     /**
-     * Sends join message
+     * Sends a join message
      *
      * @param playerInfo playerInfo
      */
@@ -333,7 +335,7 @@ public final class MessageUtils {
     }
 
     /**
-     * Sends leave message
+     * Sends a leave message
      *
      * @param playerInfo playerInfo
      * @param player     player

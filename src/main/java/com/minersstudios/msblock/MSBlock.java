@@ -52,56 +52,49 @@ public final class MSBlock extends MSPlugin<MSBlock> {
     }
 
     /**
-     * @return The cache of the plugin
-     *         or null if the plugin is not enabled
+     * @return The cache of the plugin or null if the plugin is disabled
      */
     public @UnknownNullability Cache getCache() {
         return this.cache;
     }
 
     /**
-     * @return The configuration of the plugin
-     *         or null if the plugin is not enabled
+     * @return The configuration of the plugin or null if the plugin is disabled
      */
     public @UnknownNullability Config getConfiguration() {
         return this.config;
     }
 
     /**
-     * @return The instance of the plugin
-     *         or null if the plugin is not enabled
+     * @return The instance of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability MSBlock singleton() {
         return singleton;
     }
 
     /**
-     * @return The logger of the plugin
-     *         or null if the plugin is not enabled
+     * @return The logger of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability Logger logger() {
         return singleton == null ? null : singleton.getLogger();
     }
 
     /**
-     * @return The component logger of the plugin
-     *         or null if the plugin is not enabled
+     * @return The component logger of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability ComponentLogger componentLogger() {
         return singleton == null ? null : singleton.getComponentLogger();
     }
 
     /**
-     * @return The cache of the plugin
-     *         or null if the plugin is not enabled
+     * @return The cache of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability Cache cache()  {
         return singleton == null ? null : singleton.cache;
     }
 
     /**
-     * @return The configuration of the plugin
-     *         or null if the plugin is not enabled
+     * @return The configuration of the plugin or null if the plugin is disabled
      */
     public static @UnknownNullability Config config() {
         return singleton == null ? null : singleton.config;

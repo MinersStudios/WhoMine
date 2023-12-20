@@ -31,10 +31,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
- * The CustomItemType enum represents various types of custom items in
- * the MSItem plugin. Each enum value is associated with a specific
- * class that implements the CustomItem interface. This class provides
- * methods to manage and retrieve custom item instances, keys, and types.
+ * The CustomItemType enum represents various types of custom items in the
+ * MSItem plugin. Each enum value is associated with a specific class that
+ * implements the CustomItem interface. This class provides methods to manage
+ * and retrieve custom item instances, keys, and types.
  */
 public enum CustomItemType {
     //<editor-fold desc="Types" defaultstate="collapsed">
@@ -74,7 +74,7 @@ public enum CustomItemType {
             final CustomItem customItem;
 
             try {
-                customItem = registry.getClazz().getDeclaredConstructor().newInstance();
+                customItem = registry.getItemClass().getDeclaredConstructor().newInstance();
             } catch (final Exception e) {
                 plugin.getLogger().log(
                         Level.SEVERE,
@@ -126,8 +126,8 @@ public enum CustomItemType {
     /**
      * Constructor for CustomItemType enum values
      *
-     * @param clazz The associated class that implements
-     *              the CustomItem interface
+     * @param clazz The associated class that implements the CustomItem
+     *              interface
      */
     CustomItemType(final @NotNull Class<? extends CustomItem> clazz) {
         this.clazz = clazz;
@@ -136,13 +136,12 @@ public enum CustomItemType {
     /**
      * @return The class associated with this custom item type
      */
-    public @NotNull Class<? extends CustomItem> getClazz() {
+    public @NotNull Class<? extends CustomItem> getItemClass() {
         return this.clazz;
     }
 
     /**
-     * @return The CustomItem instance associated with this custom
-     *         item type
+     * @return The CustomItem instance associated with this custom item type
      */
     public @NotNull CustomItem getCustomItem() {
         return CLASS_TO_ITEM_MAP.get(this.clazz);
@@ -152,8 +151,8 @@ public enum CustomItemType {
      * @param clazz The target class to cast the custom item instance
      * @param <I>   The type of the target class
      * @return The custom item instance cast to the specified class
-     * @throws IllegalArgumentException If the custom item instance cannot
-     *                                  be cast to the specified class
+     * @throws IllegalArgumentException If the custom item instance cannot be
+     *                                  cast to the specified class
      */
     public <I extends CustomItem> @NotNull I getCustomItem(final @NotNull Class<I> clazz) throws IllegalArgumentException {
         final CustomItem customItem = CLASS_TO_ITEM_MAP.get(this.clazz);
@@ -166,13 +165,13 @@ public enum CustomItemType {
     }
 
     /**
-     * Gets the {@link CustomItem} from the given key
+     * Gets the {@link CustomItemType} from the given key
      *
-     * @param key The key to get the custom item type from,
-     *            must not be null (case-insensitive)
-     * @return The {@link CustomItemType} associated with the given key
-     *         or null if the given key is not associated with any custom
-     *         item type, or if the given key is null or blank
+     * @param key The key to get the custom item type from, must not be null
+     *            (case-insensitive)
+     * @return The {@link CustomItemType} associated with the given key or null
+     *         if the given key is not associated with any custom item type,
+     *         or if the given key is null or blank
      * @see #KEY_TO_TYPE_MAP
      */
     @Contract("null -> null")
@@ -183,12 +182,12 @@ public enum CustomItemType {
     }
 
     /**
-     * Gets the {@link CustomItem} from the given class
+     * Gets the {@link CustomItemType} from the given class
      *
      * @param clazz The class to get the custom item type from
      * @return The {@link CustomItemType} associated with the given class
-     *         or null if the given class is not associated with any custom
-     *         item type, or if the given class is null
+     *         or null if the given class is not associated with any custom item
+     *         type, or if the given class is null
      * @see #CLASS_TO_TYPE_MAP
      */
     @Contract("null -> null")
@@ -199,15 +198,15 @@ public enum CustomItemType {
     }
 
     /**
-     * Gets the {@link CustomItem} from the given item stack. It will get
-     * the namespaced key from the item stack's persistent data container
-     * and then get the custom item type from the {@link #KEY_TO_TYPE_MAP}
+     * Gets the {@link CustomItemType} from the given item stack.
+     * <br>
+     * It will get the namespaced key from the item stack's persistent data
+     * container and then get the custom item type from {@link #KEY_TO_TYPE_MAP}
      *
      * @param itemStack The item stack to get the custom item type from
-     * @return The {@link CustomItemType} associated with the given item
-     *         stack or null if the given item stack is not associated
-     *         with any custom item type, or if the given item stack is
-     *         null, or an air item stack
+     * @return The {@link CustomItemType} associated with the given item stack
+     *         or null if the given item stack is not associated with any custom
+     *         item type, or if the given item stack is null, or an air item
      * @see #fromKey(String)
      */
     @Contract("null -> null")
@@ -221,12 +220,15 @@ public enum CustomItemType {
         return itemMeta == null
                 ? null
                 : fromKey(
-                        itemMeta.getPersistentDataContainer().get(TYPE_NAMESPACED_KEY, PersistentDataType.STRING)
+                        itemMeta.getPersistentDataContainer().get(
+                                TYPE_NAMESPACED_KEY,
+                                PersistentDataType.STRING
+                        )
                 );
     }
 
     /**
-     * @return An unmodifiable view of the set of custom item keys
+     * @return An unmodifiable view of the custom item key set
      * @see #KEY_TO_TYPE_MAP
      */
     public static @NotNull @UnmodifiableView Set<String> keySet() {
@@ -234,8 +236,8 @@ public enum CustomItemType {
     }
 
     /**
-     * @return An unmodifiable view of the set of custom item classes
-     *         that implement the CustomItem interface
+     * @return An unmodifiable view of a set of custom item classes that
+     *         implement the CustomItem interface
      * @see #CLASS_TO_TYPE_MAP
      */
     public static @NotNull @UnmodifiableView Set<Class<? extends CustomItem>> classSet() {
@@ -243,8 +245,7 @@ public enum CustomItemType {
     }
 
     /**
-     * @return An unmodifiable view of the collection of custom item
-     *         instances
+     * @return An unmodifiable view of the custom item instances collection
      * @see #CLASS_TO_ITEM_MAP
      */
     public static @NotNull @UnmodifiableView Collection<CustomItem> customItems() {

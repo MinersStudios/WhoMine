@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.UUID;
 
 /**
- * This class is a record class for the MineSkin API response.
- * It is used to deserialize the JSON response from the MineSkin API.
+ * This class is a record class for the MineSkin API response. It is used to
+ * deserialize the JSON response from the MineSkin API.
  */
 public record MineSkinJson(
         String id,

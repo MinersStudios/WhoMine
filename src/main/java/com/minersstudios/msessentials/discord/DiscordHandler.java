@@ -122,8 +122,8 @@ public final class DiscordHandler {
 
     /**
      * @param userId The id of the user to get
-     * @return An Optional containing the user, or an
-     *         empty Optional if not available
+     * @return An Optional containing the user, or an empty Optional if not
+     *         available
      */
     public @NotNull Optional<User> getUser(final long userId) {
         return this.jda == null
@@ -133,8 +133,8 @@ public final class DiscordHandler {
 
     /**
      * @param userId The id of the user to retrieve
-     * @return An Optional containing the user, or an
-     *         empty Optional if not available
+     * @return An Optional containing the user, or an empty Optional if not
+     *         available
      */
     public @NotNull Optional<User> retrieveUser(final long userId) {
         return this.jda == null
@@ -144,8 +144,8 @@ public final class DiscordHandler {
 
     /**
      * @param user The user to get the member of
-     * @return An Optional containing the member, or an
-     *         empty Optional if not available
+     * @return An Optional containing the member, or an empty Optional if not
+     *         available
      */
     public @NotNull Optional<Member> getMember(final @Nullable User user) {
         return this.mainGuild == null
@@ -156,8 +156,8 @@ public final class DiscordHandler {
 
     /**
      * @param userId The id of the user to get the member of
-     * @return An Optional containing the member, or an
-     *         empty Optional if not available
+     * @return An Optional containing the member, or an empty Optional if not
+     *         available
      */
     public @NotNull Optional<Member> getMember(final long userId) {
         return this.mainGuild == null
@@ -167,8 +167,8 @@ public final class DiscordHandler {
 
     /**
      * @param user The user to retrieve the member of
-     * @return An Optional containing the member, or an
-     *         empty Optional if not available
+     * @return An Optional containing the member, or an empty Optional if not
+     *         available
      */
     public @NotNull Optional<Member> retrieveMember(final @Nullable User user) {
         return this.mainGuild == null
@@ -179,8 +179,8 @@ public final class DiscordHandler {
 
     /**
      * @param userId The id of the user to retrieve the member of
-     * @return An Optional containing the member, or an
-     *         empty Optional if not available
+     * @return An Optional containing the member, or an empty Optional if not
+     *         available
      */
     public @NotNull Optional<Member> retrieveMember(final long userId) {
         return this.mainGuild == null
@@ -190,8 +190,8 @@ public final class DiscordHandler {
 
     /**
      * @param channelId The id of the channel to get
-     * @return An Optional containing the channel, or an
-     *         empty Optional if not available
+     * @return An Optional containing the channel, or an empty Optional if not
+     *         available
      */
     public @NotNull Optional<TextChannel> getTextChannel(final long channelId) {
         return this.isLoaded()

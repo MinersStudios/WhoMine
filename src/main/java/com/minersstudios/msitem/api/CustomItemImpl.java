@@ -20,12 +20,10 @@ import java.util.Map;
 import static com.minersstudios.mscore.plugin.MSPlugin.globalCache;
 
 /**
- * The {@code CustomItemImpl} class serves as a base
- * implementation of the {@link CustomItem} interface.
- * It provides methods to manage the properties,
- * recipes, and similarity checks of custom items. It
- * is recommended to extend this class when creating
- * custom items.
+ * The CustomItemImpl class serves as a base implementation of the
+ * {@link CustomItem} interface. It provides methods to manage the properties,
+ * recipes, and similarity checks of custom items. It is recommended to extend
+ * this class when creating custom items.
  *
  * @see CustomItem
  */
@@ -35,16 +33,14 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
     protected List<Map.Entry<Recipe, Boolean>> recipes;
 
     /**
-     * Protected constructor to initialize a custom item
-     * with the given key and item stack. The constructor
-     * enforces key format validation and item stack type
-     * validation.
+     * Protected constructor to initialize a custom item with the given key and
+     * item stack. The constructor enforces key format validation and item stack
+     * type validation.
      *
      * @param key       The unique key identifying the custom item
-     * @param itemStack The {@link ItemStack} representing the
-     *                  custom item
-     * @throws IllegalArgumentException If the key format is invalid
-     *                                  or the item stack type is air
+     * @param itemStack The {@link ItemStack} representing the custom item
+     * @throws IllegalArgumentException If the key format is invalid or the item
+     *                                  stack type is air
      * @see ChatUtils#matchesKey(String)
      */
     protected CustomItemImpl(

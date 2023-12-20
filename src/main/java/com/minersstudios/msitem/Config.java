@@ -20,8 +20,8 @@ import java.util.logging.Level;
  * Configuration loader class.
  * <br>
  * Use {@link MSItem#getConfiguration()} to get configuration instance.
- * Use {@link #reload()} to reload configuration and {@link #save()} to
- * save configuration.
+ * Use {@link #reload()} to reload configuration and {@link #save()} to save
+ * configuration.
  */
 public final class Config extends PluginConfig<MSItem> {
     private long dosimeterCheckRate;

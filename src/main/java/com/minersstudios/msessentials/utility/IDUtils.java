@@ -14,6 +14,7 @@ public final class IDUtils {
     public static final String ID_REGEX = "-?\\d+";
     public static final Pattern ID_PATTERN = Pattern.compile(ID_REGEX);
 
+    @Contract(" -> fail")
     private IDUtils() {
         throw new AssertionError("Utility class");
     }

@@ -41,6 +41,16 @@ public final class MSBoundingBox {
     private static final int REGION_SHIFT = 5;
     private static final int REGION_MASK = (1 << REGION_SHIFT) - 1;
 
+    /**
+     * Creates a new bounding box with the given corner coordinates
+     *
+     * @param minX The minimum x value
+     * @param minY The minimum y value
+     * @param minZ The minimum z value
+     * @param maxX The maximum x value
+     * @param maxY The maximum y value
+     * @param maxZ The maximum z value
+     */
     private MSBoundingBox(
             final double minX,
             final double minY,
@@ -57,6 +67,17 @@ public final class MSBoundingBox {
         this.maxZ = maxZ;
     }
 
+    /**
+     * Creates a new bounding box with the given corner coordinates
+     *
+     * @param x1 The first corner's x value
+     * @param y1 The first corner's y value
+     * @param z1 The first corner's z value
+     * @param x2 The second corner's x value
+     * @param y2 The second corner's y value
+     * @param z2 The second corner's z value
+     * @return A new bounding box with the given corner coordinates
+     */
     @Contract("_, _, _, _, _, _ -> new")
     public static @NotNull MSBoundingBox of(
             final double x1,
@@ -72,6 +93,18 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box with the given corner coordinates
+     *
+     * @param minX The minimum x value
+     * @param minY The minimum y value
+     * @param minZ The minimum z value
+     * @param maxX The maximum x value
+     * @param maxY The maximum y value
+     * @param maxZ The maximum z value
+     * @return A new bounding box with the given corner coordinates, but without
+     *         any checks which corner has lower and higher coordinates
+     */
     @Contract("_, _, _, _, _, _ -> new")
     public static @NotNull MSBoundingBox ofDummy(
             final double minX,
@@ -87,6 +120,12 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box based on the given bounding box coordinates
+     *
+     * @param msbb The bounding box to copy
+     * @return A copy of the given bounding box
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull MSBoundingBox msbb) {
         return ofDummy(
@@ -95,6 +134,12 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box based on the given bounding box coordinates
+     *
+     * @param bb The bounding box
+     * @return New bounding box based on the given bounding box
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull BoundingBox bb) {
         return ofDummy(
@@ -103,6 +148,12 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box based on the given bounding box coordinates
+     *
+     * @param bb The bounding box
+     * @return New bounding box based on the given bounding box
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull org.bukkit.util.BoundingBox bb) {
         return ofDummy(
@@ -111,6 +162,13 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box based on the given axis aligned bounding box
+     * coordinates
+     *
+     * @param aabb The axis aligned bounding box
+     * @return New bounding box based on the given axis aligned bounding box
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull AABB aabb) {
         return ofDummy(
@@ -119,6 +177,12 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box based on the given vector coordinates
+     *
+     * @param vec The vector
+     * @return New bounding box based on the given vector
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull MSVector vec) {
         return ofDummy(
@@ -127,6 +191,12 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box based on the given vector coordinates
+     *
+     * @param vec The vector
+     * @return New bounding box based on the given vector
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull Vector vec) {
         return ofDummy(
@@ -135,6 +205,12 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box based on the given vector coordinates
+     *
+     * @param vec The vector
+     * @return New bounding box based on the given vector
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull Vec3i vec) {
         return ofDummy(
@@ -143,6 +219,12 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box based on the given position coordinates
+     *
+     * @param pos The position
+     * @return New bounding box based on the given position
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull MSPosition pos) {
         return ofDummy(
@@ -151,6 +233,12 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box based on the given position coordinates
+     *
+     * @param pos The position
+     * @return New bounding box based on the given position
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull Position pos) {
         return ofDummy(
@@ -159,6 +247,12 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box based on the given position coordinates
+     *
+     * @param pos The position
+     * @return New bounding box based on the given position
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull io.papermc.paper.math.Position pos) {
         return ofDummy(
@@ -167,6 +261,13 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box whose corners are the corners of the given
+     * block
+     *
+     * @param block The block
+     * @return New bounding box based on the given block
+     */
     @Contract("_ -> new")
     public static @NotNull MSBoundingBox of(final @NotNull Block block) {
         return ofDummy(
@@ -175,6 +276,13 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box with the given corners
+     *
+     * @param first  The first corner
+     * @param second The second corner
+     * @return New bounding box based on the given corners
+     */
     @Contract("_, _ -> new")
     public static @NotNull MSBoundingBox of(
             final @NotNull MSVector first,
@@ -186,6 +294,13 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box with the given corners
+     *
+     * @param first  The first corner
+     * @param second The second corner
+     * @return New bounding box based on the given corners
+     */
     @Contract("_, _ -> new")
     public static @NotNull MSBoundingBox of(
             final @NotNull Vector first,
@@ -197,6 +312,13 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box with the given corners
+     *
+     * @param first  The first corner
+     * @param second The second corner
+     * @return New bounding box based on the given corners
+     */
     @Contract("_, _ -> new")
     public static @NotNull MSBoundingBox of(
             final @NotNull Vec3i first,
@@ -208,6 +330,13 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box with the given corners
+     *
+     * @param first  The first corner
+     * @param second The second corner
+     * @return New bounding box based on the given corners
+     */
     @Contract("_, _ -> new")
     public static @NotNull MSBoundingBox of(
             final @NotNull MSPosition first,
@@ -219,6 +348,13 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box with the given corners
+     *
+     * @param first  The first corner
+     * @param second The second corner
+     * @return New bounding box based on the given corners
+     */
     @Contract("_, _ -> new")
     public static @NotNull MSBoundingBox of(
             final @NotNull Position first,
@@ -230,6 +366,13 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box with the given corners
+     *
+     * @param first  The first corner
+     * @param second The second corner
+     * @return New bounding box based on the given corners
+     */
     @Contract("_, _ -> new")
     public static @NotNull MSBoundingBox of(
             final @NotNull io.papermc.paper.math.Position first,
@@ -241,6 +384,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box of the given size centered around the given
+     * vector
+     *
+     * @param vec The center vector
+     * @param dx  The x size
+     * @param dy  The y size
+     * @param dz  The z size
+     * @return New bounding box based on the given size and center
+     */
     @Contract("_, _, _, _ -> new")
     public static @NotNull MSBoundingBox ofSize(
             final @NotNull MSVector vec,
@@ -254,6 +407,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box of the given size centered around the given
+     * vector
+     *
+     * @param vec The center vector
+     * @param dx  The x size
+     * @param dy  The y size
+     * @param dz  The z size
+     * @return New bounding box based on the given size and center
+     */
     @Contract("_, _, _, _ -> new")
     public static @NotNull MSBoundingBox ofSize(
             final @NotNull Vector vec,
@@ -267,6 +430,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box of the given size centered around the given
+     * vector
+     *
+     * @param vec The center vector
+     * @param dx  The x size
+     * @param dy  The y size
+     * @param dz  The z size
+     * @return New bounding box based on the given size and center
+     */
     @Contract("_, _, _, _ -> new")
     public static @NotNull MSBoundingBox ofSize(
             final @NotNull Vec3i vec,
@@ -280,6 +453,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box of the given size centered around the given
+     * position
+     *
+     * @param pos The center position
+     * @param dx  The x size
+     * @param dy  The y size
+     * @param dz  The z size
+     * @return New bounding box based on the given size and center
+     */
     @Contract("_, _, _, _ -> new")
     public static @NotNull MSBoundingBox ofSize(
             final @NotNull MSPosition pos,
@@ -293,6 +476,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box of the given size centered around the given
+     * position
+     *
+     * @param pos The center position
+     * @param dx  The x size
+     * @param dy  The y size
+     * @param dz  The z size
+     * @return New bounding box based on the given size and center
+     */
     @Contract("_, _, _, _ -> new")
     public static @NotNull MSBoundingBox ofSize(
             final @NotNull Position pos,
@@ -306,6 +499,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box of the given size centered around the given
+     * position
+     *
+     * @param pos The center position
+     * @param dx  The x size
+     * @param dy  The y size
+     * @param dz  The z size
+     * @return New bounding box based on the given size and center
+     */
     @Contract("_, _, _, _ -> new")
     public static @NotNull MSBoundingBox ofSize(
             final @NotNull io.papermc.paper.math.Position pos,
@@ -319,6 +522,18 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Creates a new bounding box of the given size centered around the given
+     * coordinates
+     *
+     * @param x   The center x coordinate
+     * @param y   The center y coordinate
+     * @param z   The center z coordinate
+     * @param dx  The x size
+     * @param dy  The y size
+     * @param dz  The z size
+     * @return New bounding box based on the given size and center
+     */
     @Contract("_, _, _, _, _, _ -> new")
     public static @NotNull MSBoundingBox ofSize(
             final double x,
@@ -338,10 +553,19 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return The minimum x value
+     */
     public double minX() {
         return this.minX;
     }
 
+    /**
+     * Sets the minimum x value of the bounding box
+     *
+     * @param minX The new minimum x value
+     * @return A new bounding box with the given minimum x value
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox minX(final double minX) {
         return ofDummy(
@@ -350,10 +574,19 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return The minimum y value
+     */
     public double minY() {
         return this.minY;
     }
 
+    /**
+     * Sets the minimum y value of the bounding box
+     *
+     * @param minY The new minimum y value
+     * @return A new bounding box with the given minimum y value
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox minY(final double minY) {
         return ofDummy(
@@ -362,10 +595,19 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return The minimum z value
+     */
     public double minZ() {
         return this.minZ;
     }
 
+    /**
+     * Sets the minimum z value of the bounding box
+     *
+     * @param minZ The new minimum z value
+     * @return A new bounding box with the given minimum z value
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox minZ(final double minZ) {
         return ofDummy(
@@ -374,15 +616,27 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return The minimum corner
+     */
     @Contract(" -> new")
     public @NotNull MSVector min() {
         return MSVector.of(this.minX, this.minY, this.minZ);
     }
 
+    /**
+     * @return The maximum x value
+     */
     public double maxX() {
         return this.maxX;
     }
 
+    /**
+     * Sets the maximum x value of the bounding box
+     *
+     * @param maxX The new maximum x value
+     * @return A new bounding box with the given maximum x value
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox maxX(final double maxX) {
         return ofDummy(
@@ -391,10 +645,19 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return The maximum y value
+     */
     public double maxY() {
         return this.maxY;
     }
 
+    /**
+     * Sets the maximum y value of the bounding box
+     *
+     * @param maxY The new maximum y value
+     * @return A new bounding box with the given maximum y value
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox maxY(final double maxY) {
         return ofDummy(
@@ -403,10 +666,19 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return The maximum z value
+     */
     public double maxZ() {
         return this.maxZ;
     }
 
+    /**
+     * Sets the maximum z value of the bounding box
+     *
+     * @param maxZ The new maximum z value
+     * @return A new bounding box with the given maximum z value
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox maxZ(final double maxZ) {
         return ofDummy(
@@ -415,41 +687,89 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return The maximum corner
+     */
     @Contract(" -> new")
     public @NotNull MSVector max() {
         return MSVector.of(this.maxX, this.maxY, this.maxZ);
     }
 
+
+    /**
+     * Sets the minimum corner of the bounding box
+     *
+     * @param vec The new minimum corner
+     * @return A new bounding box with the given minimum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox min(final @NotNull MSVector vec) {
         return this.min(vec.x(), vec.y(), vec.z());
     }
 
+    /**
+     * Sets the minimum corner of the bounding box
+     *
+     * @param vec The new minimum corner
+     * @return A new bounding box with the given minimum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox min(final @NotNull Vector vec) {
         return this.min(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    /**
+     * Sets the minimum corner of the bounding box
+     *
+     * @param vec The new minimum corner
+     * @return A new bounding box with the given minimum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox min(final @NotNull Vec3i vec) {
         return this.min(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    /**
+     * Sets the minimum corner of the bounding box
+     *
+     * @param pos The new minimum corner
+     * @return A new bounding box with the given minimum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox min(final @NotNull MSPosition pos) {
         return this.min(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * Sets the minimum corner of the bounding box
+     *
+     * @param pos The new minimum corner
+     * @return A new bounding box with the given minimum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox min(final @NotNull Position pos) {
         return this.min(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * Sets the minimum corner of the bounding box
+     *
+     * @param pos The new minimum corner
+     * @return A new bounding box with the given minimum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox min(final @NotNull io.papermc.paper.math.Position pos) {
         return this.min(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * Sets the minimum corner of the bounding box
+     *
+     * @param x The new minimum x value
+     * @param y The new minimum y value
+     * @param z The new minimum z value
+     * @return A new bounding box with the given minimum corner
+     */
     @Contract("_, _, _ -> new")
     public @NotNull MSBoundingBox min(
             final double x,
@@ -462,36 +782,80 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Sets the maximum corner of the bounding box
+     *
+     * @param vec The new maximum corner
+     * @return A new bounding box with the given maximum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox max(final @NotNull MSVector vec) {
         return this.max(vec.x(), vec.y(), vec.z());
     }
 
+    /**
+     * Sets the maximum corner of the bounding box
+     *
+     * @param vec The new maximum corner
+     * @return A new bounding box with the given maximum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox max(final @NotNull Vector vec) {
         return this.max(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    /**
+     * Sets the maximum corner of the bounding box
+     *
+     * @param vec The new maximum corner
+     * @return A new bounding box with the given maximum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox max(final @NotNull Vec3i vec) {
         return this.max(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    /**
+     * Sets the maximum corner of the bounding box
+     *
+     * @param pos The new maximum corner
+     * @return A new bounding box with the given maximum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox max(final @NotNull MSPosition pos) {
         return this.max(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * Sets the maximum corner of the bounding box
+     *
+     * @param pos The new maximum corner
+     * @return A new bounding box with the given maximum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox max(final @NotNull Position pos) {
         return this.max(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * Sets the maximum corner of the bounding box
+     *
+     * @param pos The new maximum corner
+     * @return A new bounding box with the given maximum corner
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox max(final @NotNull io.papermc.paper.math.Position pos) {
         return this.max(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * Sets the maximum corner of the bounding box
+     *
+     * @param x The new maximum x value
+     * @param y The new maximum y value
+     * @param z The new maximum z value
+     * @return A new bounding box with the given maximum corner
+     */
     @Contract("_, _, _ -> new")
     public @NotNull MSBoundingBox max(
             final double x,
@@ -504,39 +868,74 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return The x center coordinate of the bounding box
+     */
     public double centerX() {
         return this.minX + 0.5D * this.sizeX();
     }
 
+    /**
+     * @return The y center coordinate of the bounding box
+     */
     public double centerY() {
         return this.minY + 0.5D * this.sizeY();
     }
 
+    /**
+     * @return The z center coordinate of the bounding box
+     */
     public double centerZ() {
         return this.minZ + 0.5D * this.sizeZ();
     }
 
+    /**
+     * @return The x size of the bounding box
+     */
     public double sizeX() {
         return this.maxX - this.minX;
     }
 
+    /**
+     * @return The y size of the bounding box
+     */
     public double sizeY() {
         return this.maxY - this.minY;
     }
 
+    /**
+     * @return The z size of the bounding box
+     */
     public double sizeZ() {
         return this.maxZ - this.minZ;
     }
 
+    /**
+     * @return The volume of the bounding box
+     */
     public double volume() {
         return this.sizeX() * this.sizeY() * this.sizeZ();
     }
 
+    /**
+     * Contracts the bounding box with the given value
+     *
+     * @param value The value to contract the bounding box with
+     * @return A new bounding box with the new contracted values
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox contract(final double value) {
         return this.contract(value, value, value);
     }
 
+    /**
+     * Contracts the bounding box with the given values
+     *
+     * @param x The x value to contract
+     * @param y The y value to contract
+     * @param z The z value to contract
+     * @return A new bounding box with the new contracted values
+     */
     @Contract("_, _, _ -> new")
     public @NotNull MSBoundingBox contract(
             final double x,
@@ -574,11 +973,25 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Expands the bounding box with the given value
+     *
+     * @param value The value to expand the bounding box with
+     * @return A new bounding box with the new expanded values
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox expandTowards(final double value) {
         return this.expandTowards(value, value, value);
     }
 
+    /**
+     * Expands the bounding box with the given values
+     *
+     * @param x The x value to expand
+     * @param y The y value to expand
+     * @param z The z value to expand
+     * @return A new bounding box with the new expanded values
+     */
     @Contract("_, _, _ -> new")
     public @NotNull MSBoundingBox expandTowards(
             final double x,
@@ -616,11 +1029,25 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Inflates the bounding box with the given value
+     *
+     * @param value The value to inflate the bounding box with
+     * @return A new bounding box with the new inflated values
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox inflate(final double value) {
         return this.inflate(value, value, value);
     }
 
+    /**
+     * Inflates the bounding box with the given values
+     *
+     * @param x The x value to inflate
+     * @param y The y value to inflate
+     * @param z The z value to inflate
+     * @return A new bounding box with the new inflated values
+     */
     @Contract("_, _, _ -> new")
     public @NotNull MSBoundingBox inflate(
             final double x,
@@ -633,6 +1060,14 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Resizes this bounding box to represent the intersection of this bounding
+     * box and the given axis aligned bounding box
+     *
+     * @param aabb The axis aligned bounding box to intersect with
+     * @return A new bounding box with the intersection of the given axis aligned
+     *         bounding box and this bounding box
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox intersect(final @NotNull AABB aabb) {
         return this.intersect(
@@ -641,6 +1076,14 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Resizes this bounding box to represent the intersection of this bounding
+     * box and the given bounding box
+     *
+     * @param bb The bounding box to intersect with
+     * @return A new bounding box with the intersection of the given bounding box
+     *         and this bounding box
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox intersect(final @NotNull BoundingBox bb) {
         return this.intersect(
@@ -649,6 +1092,14 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Resizes this bounding box to represent the intersection of this bounding
+     * box and the given bounding box
+     *
+     * @param bb The bounding box to intersect with
+     * @return A new bounding box with the intersection of the given bounding box
+     *         and this bounding box
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox intersect(final @NotNull org.bukkit.util.BoundingBox bb) {
         return this.intersect(
@@ -657,6 +1108,14 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Resizes this bounding box to represent the intersection of this bounding
+     * box and the given bounding box
+     *
+     * @param msbb The bounding box to intersect with
+     * @return A new bounding box with the intersection of the given bounding box
+     *         and this bounding box
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox intersect(final @NotNull MSBoundingBox msbb) {
         return this.intersect(
@@ -665,6 +1124,19 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Resizes this bounding box to represent the intersection of this bounding
+     * box and the given coordinates
+     *
+     * @param minX The minimum x value to intersect with
+     * @param minY The minimum y value to intersect with
+     * @param minZ The minimum z value to intersect with
+     * @param maxX The maximum x value to intersect with
+     * @param maxY The maximum y value to intersect with
+     * @param maxZ The maximum z value to intersect with
+     * @return A new bounding box with the intersection of the given coordinates
+     *         and this bounding box
+     */
     @Contract("_, _, _, _, _, _ -> new")
     public @NotNull MSBoundingBox intersect(
             final double minX,
@@ -680,36 +1152,86 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * Moves the bounding box with the given values
+     *
+     * @param vec The vector, which values will be added to the current corner
+     *            values
+     * @return A new bounding box with the given values moved
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox move(final @NotNull MSVector vec) {
         return this.move(vec.x(), vec.y(), vec.z());
     }
 
+    /**
+     * Moves the bounding box with the given values
+     *
+     * @param vec The vector, which values will be added to the current corner
+     *            values
+     * @return A new bounding box with the given values moved
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox move(final @NotNull Vec3i vec) {
         return this.move(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    /**
+     * Moves the bounding box with the given values
+     *
+     * @param vec The vector, which values will be added to the current corner
+     *            values
+     * @return A new bounding box with the given values moved
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox move(final @NotNull Vector vec) {
         return this.move(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    /**
+     * Moves the bounding box with the given values
+     *
+     * @param pos The position, which values will be added to the current corner
+     *            values
+     * @return A new bounding box with the given values moved
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox move(final @NotNull MSPosition pos) {
         return this.move(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * Moves the bounding box with the given values
+     *
+     * @param pos The position, which values will be added to the current corner
+     *            values
+     * @return A new bounding box with the given values moved
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox move(final @NotNull Position pos) {
         return this.move(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * Moves the bounding box with the given values
+     *
+     * @param pos The position, which values will be added to the current corner
+     *            values
+     * @return A new bounding box with the given values moved
+     */
     @Contract("_ -> new")
     public @NotNull MSBoundingBox move(final @NotNull io.papermc.paper.math.Position pos) {
         return this.move(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * Moves the bounding box with the given values
+     *
+     * @param x The x value to move
+     * @param y The y value to move
+     * @param z The z value to move
+     * @return A new bounding box with the given values moved
+     */
     @Contract("_, _, _ -> new")
     public @NotNull MSBoundingBox move(
             final double x,
@@ -722,11 +1244,18 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return The center of the bounding box
+     */
     @Contract(" -> new")
     public @NotNull MSVector getCenter() {
         return MSVector.of(this.centerX(), this.centerY(), this.centerZ());
     }
 
+    /**
+     * @param world The world
+     * @return The center of the bounding box with the specified world
+     */
     @Contract("_ -> new")
     public @NotNull MSPosition getCenter(final @NotNull World world) {
         return MSPosition.of(
@@ -735,6 +1264,11 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param serverLevel The server level, which will be used to get block
+     *                    states from
+     * @return An array of block states, which are inside the bounding box
+     */
     public net.minecraft.world.level.block.state.BlockState @NotNull [] getNMSBlockStates(final @NotNull ServerLevel serverLevel) {
         return this.getBlockStates(
                 net.minecraft.world.level.block.state.BlockState.class,
@@ -742,10 +1276,17 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param world The world, which will be used to get block states from
+     * @return An array of block states, which are inside the bounding box
+     */
     public BlockState @NotNull [] getBlockStates(final @NotNull World world) {
         return this.getBlockStates(BlockState.class, world);
     }
 
+    /**
+     * @return An array of vectors, which are inside the bounding box
+     */
     public MSVector @NotNull [] getMSVectors() {
         return getPositions(
                 MSVector.class,
@@ -754,6 +1295,9 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return An array of vectors, which are inside the bounding box
+     */
     public Vector @NotNull [] getVectors() {
         return getPositions(
                 Vector.class,
@@ -762,6 +1306,9 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return An array of vectors, which are inside the bounding box
+     */
     public Vec3i @NotNull [] getVec3i() {
         return getPositions(
                 Vec3i.class,
@@ -770,6 +1317,9 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return An array of positions, which are inside the bounding box
+     */
     public MSPosition @NotNull [] getMSPositions() {
         return getPositions(
                 MSPosition.class,
@@ -778,6 +1328,9 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return An array of positions, which are inside the bounding box
+     */
     public Position @NotNull [] getPositions() {
         return getPositions(
                 Position.class,
@@ -786,6 +1339,9 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return An array of positions, which are inside the bounding box
+     */
     public BlockPos @NotNull [] getBlockPositions() {
         return getPositions(
                 BlockPos.class,
@@ -794,6 +1350,9 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return An array of positions, which are inside the bounding box
+     */
     public io.papermc.paper.math.Position @NotNull [] getPaperPositions() {
         return getPositions(
                 io.papermc.paper.math.Position.class,
@@ -802,6 +1361,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param minOffsetX The minimum x offset
+     * @param minOffsetY The minimum y offset
+     * @param minOffsetZ The minimum z offset
+     * @param maxOffsetX The maximum x offset
+     * @param maxOffsetY The maximum y offset
+     * @param maxOffsetZ The maximum z offset
+     * @return An array of vectors, which are inside the bounding box with the
+     *         given offsets
+     */
     public MSVector @NotNull [] getMSVectors(
             final int minOffsetX,
             final int minOffsetY,
@@ -817,6 +1386,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param minOffsetX The minimum x offset
+     * @param minOffsetY The minimum y offset
+     * @param minOffsetZ The minimum z offset
+     * @param maxOffsetX The maximum x offset
+     * @param maxOffsetY The maximum y offset
+     * @param maxOffsetZ The maximum z offset
+     * @return An array of vectors, which are inside the bounding box with the
+     *         given offsets
+     */
     public Vector @NotNull [] getVectors(
             final int minOffsetX,
             final int minOffsetY,
@@ -832,6 +1411,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param minOffsetX The minimum x offset
+     * @param minOffsetY The minimum y offset
+     * @param minOffsetZ The minimum z offset
+     * @param maxOffsetX The maximum x offset
+     * @param maxOffsetY The maximum y offset
+     * @param maxOffsetZ The maximum z offset
+     * @return An array of vectors, which are inside the bounding box with the
+     *         given offsets
+     */
     public Vec3i @NotNull [] getVec3i(
             final int minOffsetX,
             final int minOffsetY,
@@ -847,6 +1436,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param minOffsetX The minimum x offset
+     * @param minOffsetY The minimum y offset
+     * @param minOffsetZ The minimum z offset
+     * @param maxOffsetX The maximum x offset
+     * @param maxOffsetY The maximum y offset
+     * @param maxOffsetZ The maximum z offset
+     * @return An array of positions, which are inside the bounding box with the
+     *         given offsets
+     */
     public MSPosition @NotNull [] getMSPositions(
             final int minOffsetX,
             final int minOffsetY,
@@ -862,6 +1461,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param minOffsetX The minimum x offset
+     * @param minOffsetY The minimum y offset
+     * @param minOffsetZ The minimum z offset
+     * @param maxOffsetX The maximum x offset
+     * @param maxOffsetY The maximum y offset
+     * @param maxOffsetZ The maximum z offset
+     * @return An array of positions, which are inside the bounding box with the
+     *         given offsets
+     */
     public Position @NotNull [] getPositions(
             final int minOffsetX,
             final int minOffsetY,
@@ -877,6 +1486,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param minOffsetX The minimum x offset
+     * @param minOffsetY The minimum y offset
+     * @param minOffsetZ The minimum z offset
+     * @param maxOffsetX The maximum x offset
+     * @param maxOffsetY The maximum y offset
+     * @param maxOffsetZ The maximum z offset
+     * @return An array of positions, which are inside the bounding box with the
+     *         given offsets
+     */
     public BlockPos @NotNull [] getBlockPositions(
             final int minOffsetX,
             final int minOffsetY,
@@ -892,6 +1511,16 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param minOffsetX The minimum x offset
+     * @param minOffsetY The minimum y offset
+     * @param minOffsetZ The minimum z offset
+     * @param maxOffsetX The maximum x offset
+     * @param maxOffsetY The maximum y offset
+     * @param maxOffsetZ The maximum z offset
+     * @return An array of positions, which are inside the bounding box with the
+     *         given offsets
+     */
     public io.papermc.paper.math.Position @NotNull [] getPaperPositions(
             final int minOffsetX,
             final int minOffsetY,
@@ -907,10 +1536,20 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param world The world, which will be used to get entities from
+     * @return An array of entities, which are inside the bounding box
+     */
     public Entity @NotNull [] getEntities(final @NotNull World world) {
         return this.getEntities(world, null);
     }
 
+    /**
+     * @param world     The world, which will be used to get entities from
+     * @param predicate The predicate, which will be used to filter the entities
+     * @return An array of entities, which are inside the bounding box and match
+     *         the predicate
+     */
     public Entity @NotNull [] getEntities(
             final @NotNull World world,
             final @Nullable Predicate<Entity> predicate
@@ -932,10 +1571,19 @@ public final class MSBoundingBox {
         return bukkitEntities;
     }
 
+    /**
+     * @param level The server level, which will be used to get entities from
+     * @return An array of entities, which are inside the bounding box
+     */
     public @NotNull List<net.minecraft.world.entity.Entity> getNMSEntities(final @NotNull ServerLevel level) {
         return this.getNMSEntities(level, null);
     }
 
+    /**
+     * @param level     The server level, which will be used to get entities from
+     * @param predicate The predicate, which will be used to filter the entities
+     * @return An array of entities, which are inside the bounding box
+     */
     public @NotNull List<net.minecraft.world.entity.Entity> getNMSEntities(
             final @NotNull ServerLevel level,
             final @Nullable Predicate<? super net.minecraft.world.entity.Entity> predicate
@@ -943,10 +1591,20 @@ public final class MSBoundingBox {
         return this.getEntities(level, predicate, false);
     }
 
+    /**
+     * @param level The server level, which will be checked for entities
+     * @return Whether the bounding box has any entities inside it
+     */
     public boolean hasAnyEntity(final @NotNull ServerLevel level) {
         return this.hasNMSEntity(level, null);
     }
 
+    /**
+     * @param world     The world, which will be checked for entities
+     * @param predicate The predicate, which will be used to filter the entities
+     * @return Whether the bounding box has entities inside it, that match the
+     *         predicate
+     */
     public boolean hasEntity(
             final @NotNull World world,
             final @Nullable Predicate<Entity> predicate
@@ -959,6 +1617,12 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param level     The server level, which will be checked for entities
+     * @param predicate The predicate, which will be used to filter the entities
+     * @return Whether the bounding box has entities inside it, that match the
+     *         predicate
+     */
     public boolean hasNMSEntity(
             final @NotNull ServerLevel level,
             final @Nullable Predicate<? super net.minecraft.world.entity.Entity> predicate
@@ -966,6 +1630,79 @@ public final class MSBoundingBox {
         return !this.getEntities(level, predicate, true).isEmpty();
     }
 
+    /**
+     * @param aabb The bounding box to check
+     * @return Whether the bounding box overlaps with the given bounding box
+     */
+    public boolean overlaps(final @NotNull AABB aabb) {
+        return this.overlaps(
+                aabb.minX, aabb.minY, aabb.minZ,
+                aabb.maxX, aabb.maxY, aabb.maxZ
+        );
+    }
+
+    /**
+     * @param bb The bounding box to check
+     * @return Whether the bounding box overlaps with the given bounding box
+     */
+    public boolean overlaps(final @NotNull BoundingBox bb) {
+        return this.overlaps(
+                bb.minX(), bb.minY(), bb.minZ(),
+                bb.maxX(), bb.maxY(), bb.maxZ()
+        );
+    }
+
+    /**
+     * @param bb The bounding box to check
+     * @return Whether the bounding box overlaps with the given bounding box
+     */
+    public boolean overlaps(final @NotNull org.bukkit.util.BoundingBox bb) {
+        return this.overlaps(
+                bb.getMinX(), bb.getMinY(), bb.getMinZ(),
+                bb.getMaxX(), bb.getMaxY(), bb.getMaxZ()
+        );
+    }
+
+    /**
+     * @param msbb The bounding box to check
+     * @return Whether the bounding box overlaps with the given bounding box
+     */
+    public boolean overlaps(final @NotNull MSBoundingBox msbb) {
+        return this.overlaps(
+                msbb.minX, msbb.minY, msbb.minZ,
+                msbb.maxX, msbb.maxY, msbb.maxZ
+        );
+    }
+
+    /**
+     * @param minX The minimum x value to check
+     * @param minY The minimum y value to check
+     * @param minZ The minimum z value to check
+     * @param maxX The maximum x value to check
+     * @param maxY The maximum y value to check
+     * @param maxZ The maximum z value to check
+     * @return Whether the bounding box overlaps with the given coordinates
+     */
+    public boolean overlaps(
+            final double minX,
+            final double minY,
+            final double minZ,
+            final double maxX,
+            final double maxY,
+            final double maxZ
+    ) {
+        return this.maxX > minX
+                && this.maxY > minY
+                && this.maxZ > minZ
+                && this.minX < maxX
+                && this.minY < maxY
+                && this.minZ < maxZ;
+    }
+
+    /**
+     * @param aabb The bounding box to check
+     * @return Whether the bounding box intersects with the given bounding box
+     */
     public boolean intersects(final @NotNull AABB aabb) {
         return this.intersects(
                 aabb.minX, aabb.minY, aabb.minZ,
@@ -973,6 +1710,10 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param bb The bounding box to check
+     * @return Whether the bounding box intersects with the given bounding box
+     */
     public boolean intersects(final @NotNull BoundingBox bb) {
         return this.intersects(
                 bb.minX(), bb.minY(), bb.minZ(),
@@ -980,6 +1721,10 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param bb The bounding box to check
+     * @return Whether the bounding box intersects with the given bounding box
+     */
     public boolean intersects(final @NotNull org.bukkit.util.BoundingBox bb) {
         return this.intersects(
                 bb.getMinX(), bb.getMinY(), bb.getMinZ(),
@@ -987,6 +1732,10 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param msbb The bounding box to check
+     * @return Whether the bounding box intersects with the given bounding box
+     */
     public boolean intersects(final @NotNull MSBoundingBox msbb) {
         return this.intersects(
                 msbb.minX, msbb.minY, msbb.minZ,
@@ -994,6 +1743,15 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @param minX The minimum x value to check
+     * @param minY The minimum y value to check
+     * @param minZ The minimum z value to check
+     * @param maxX The maximum x value to check
+     * @param maxY The maximum y value to check
+     * @param maxZ The maximum z value to check
+     * @return Whether the bounding box intersects with the given coordinates
+     */
     public boolean intersects(
             final double minX,
             final double minY,
@@ -1010,30 +1768,60 @@ public final class MSBoundingBox {
                 && this.minZ <= maxZ;
     }
 
+    /**
+     * @param vec The vector to check
+     * @return Whether the bounding box contains the given vector
+     */
     public boolean contains(final @NotNull MSVector vec) {
         return this.contains(vec.x(), vec.y(), vec.z());
     }
 
+    /**
+     * @param vec The vector to check
+     * @return Whether the bounding box contains the given vector
+     */
     public boolean contains(final @NotNull Vector vec) {
         return this.contains(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    /**
+     * @param vec The vector to check
+     * @return Whether the bounding box contains the given vector
+     */
     public boolean contains(final @NotNull Vec3i vec) {
         return this.contains(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    /**
+     * @param pos The position to check
+     * @return Whether the bounding box contains the given position
+     */
     public boolean contains(final @NotNull MSPosition pos) {
         return this.contains(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * @param pos The position to check
+     * @return Whether the bounding box contains the given position
+     */
     public boolean contains(final @NotNull Position pos) {
         return this.contains(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * @param pos The position to check
+     * @return Whether the bounding box contains the given position
+     */
     public boolean contains(final @NotNull io.papermc.paper.math.Position pos) {
         return this.contains(pos.x(), pos.y(), pos.z());
     }
 
+    /**
+     * @param x The x value to check
+     * @param y The y value to check
+     * @param z The z value to check
+     * @return Whether the bounding box contains the given coordinates
+     */
     public boolean contains(
             final double x,
             final double y,
@@ -1044,6 +1832,9 @@ public final class MSBoundingBox {
                 && z >= this.minZ && z <= this.maxZ;
     }
 
+    /**
+     * @return Whether the bounding box has any NaN values
+     */
     public boolean hasNaN() {
         return Double.isNaN(this.minX)
                 || Double.isNaN(this.minY)
@@ -1053,6 +1844,9 @@ public final class MSBoundingBox {
                 || Double.isNaN(this.maxZ);
     }
 
+    /**
+     * @return Whether the bounding box has any infinite values
+     */
     public boolean hasInfinite() {
         return Double.isInfinite(this.minX)
                 || Double.isInfinite(this.minY)
@@ -1062,6 +1856,9 @@ public final class MSBoundingBox {
                 || Double.isInfinite(this.maxZ);
     }
 
+    /**
+     * @return True, if all values are finite
+     */
     public boolean isAllFinite() {
         return Double.isFinite(this.minX)
                 && Double.isFinite(this.minY)
@@ -1071,6 +1868,9 @@ public final class MSBoundingBox {
                 && Double.isFinite(this.maxZ);
     }
 
+    /**
+     * @return A hash code value for this bounding box
+     */
     @Override
     public int hashCode() {
         long l = Double.doubleToLongBits(this.minX);
@@ -1087,6 +1887,10 @@ public final class MSBoundingBox {
         return 31 * i + (int)(l ^ l >>> 32);
     }
 
+    /**
+     * @param object The object to compare this bounding box against
+     * @return Whether the given object is equal to this bounding box
+     */
     @Override
     public boolean equals(final Object object) {
         return this == object
@@ -1101,11 +1905,17 @@ public final class MSBoundingBox {
                 );
     }
 
+    /**
+     * @return A copy of this bounding box
+     */
     @Contract(" -> new")
     public @NotNull MSBoundingBox copy() {
         return of(this);
     }
 
+    /**
+     * @return A string representation of this bounding box
+     */
     @Override
     public @NotNull String toString() {
         return "MSBoundingBox["
@@ -1119,6 +1929,9 @@ public final class MSBoundingBox {
                 + "]";
     }
 
+    /**
+     * @return A new {@link AABB} with the same values as this bounding box
+     */
     @Contract(" -> new")
     public @NotNull AABB toAABB() {
         return new AABB(
@@ -1127,6 +1940,9 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return A new {@link BoundingBox} with the same values as this bounding
+     */
     @Contract(" -> new")
     public @NotNull BoundingBox toBB() {
         return new BoundingBox(
@@ -1135,6 +1951,9 @@ public final class MSBoundingBox {
         );
     }
 
+    /**
+     * @return A new {@link org.bukkit.util.BoundingBox} with the same values as
+     */
     @Contract(" -> new")
     public @NotNull org.bukkit.util.BoundingBox toBukkitBB() {
         return new org.bukkit.util.BoundingBox(

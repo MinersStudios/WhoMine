@@ -72,14 +72,14 @@ public final class ChatUtils {
     }
 
     /**
-     * Extracts message from array of arguments. Joins all arguments starting
+     * Extracts a message from array of arguments. Joins all arguments starting
      * from the given index with spaces between them.
      * <br>
      * Example:
      * <pre>{@code
      * extractMessage(new String[] { "Hello", "Sir.", "PackmanDude" }, 1);
      * }</pre>
-     * - will return "Sir. PackmanDude"
+     * - Will return "Sir. PackmanDude"
      *
      * @param args  Array of words
      * @param start Start index
@@ -102,7 +102,7 @@ public final class ChatUtils {
      * <pre>{@code
      * normalize("hELLO");
      * }</pre>
-     * - will return "Hello"
+     * - Will return "Hello"
      *
      * @param text Text to be normalized
      * @return Normalized text, or empty string if the given text is blank
@@ -134,7 +134,7 @@ public final class ChatUtils {
      * <pre>{@code
      * normalize(text("hELLO"));
      * }</pre>
-     * - will return "Hello"
+     * - Will return "Hello"
      *
      * @param component Component to be normalized
      * @return Normalized component
@@ -228,9 +228,10 @@ public final class ChatUtils {
      * <br>
      * Example:
      * <pre>{@code
-     * convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
+     * convertStringsToComponents(null, "Hello", "Sir", "PackmanDude");
      * }</pre>
-     * - will return list of components with text "Hello", "Sir." and "PackmanDude"
+     * - Will return a list of components with text "Hello", "Sir" and
+     * "PackmanDude"
      *
      * @param style   Style to be applied to all components
      * @param strings Strings to be converted to components
@@ -258,9 +259,10 @@ public final class ChatUtils {
      * <br>
      * Example:
      * <pre>{@code
-     *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
+     *     convertStringsToComponents(null, "Hello", "Sir", "PackmanDude");
      * }</pre>
-     * - will return list of components with text "Hello", "Sir." and "PackmanDude"
+     * - Will return a list of components with text "Hello", "Sir" and
+     * "PackmanDude"
      *
      * @param strings Strings to be converted to components
      * @return List of components
@@ -276,7 +278,8 @@ public final class ChatUtils {
      * <pre>{@code
      *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
      * }</pre>
-     * - will return list of components with text "Hello", "Sir." and "PackmanDude"
+     * - Will return a list of components with text "Hello", "Sir" and
+     * "PackmanDude"
      *
      * @param first First string
      * @param rest  Other strings
@@ -296,7 +299,8 @@ public final class ChatUtils {
      * <pre>{@code
      *     convertStringsToComponents(null, "Hello", "Sir.", "PackmanDude");
      * }</pre>
-     * - will return list of components with text "Hello", "Sir." and "PackmanDude"
+     * - Will return a list of components with text "Hello", "Sir" and
+     * "PackmanDude"
      *
      * @param style Style to be applied to all components
      * @param first First string

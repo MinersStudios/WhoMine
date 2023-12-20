@@ -30,7 +30,7 @@ public class ConfigurationException extends Exception {
     }
 
     /**
-     * Constructs a new ConfigurationException with the  specified detail
+     * Constructs a new ConfigurationException with the specified detail
      * message and cause
      *
      * @param message The detail message

@@ -25,12 +25,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Resource pack file loader with hash and url.
- * It is used to load resource packs from GitHub releases.
- * If the resource pack is not loaded or a new version is detected,
- * it will be loaded with the url and the hash will be generated,
- * then the new settings of the resource pack will be saved in config
- * and the file will be deleted.
+ * Resource pack file loader with hash and url. It is used to load resource
+ * packs from GitHub releases.
+ * <br>
+ * If the resource pack is not loaded or a new version is detected, it will be
+ * loaded with the url. The hash will be generated, then the new settings of the
+ * resource pack will be saved in config, and the file will be deleted.
+ * <br>
  * All settings stored in the "config/minersstudios/MSEssentials/config.yml" file.
  */
 public final class ResourcePack {
@@ -112,13 +113,12 @@ public final class ResourcePack {
     }
 
     /**
-     * Downloads the resource pack file
-     * and generates a hash with the SHA-1 algorithm
+     * Downloads the resource pack file and generates a hash with the SHA-1
+     * algorithm
      *
-     * @param url      The URL to the resource pack file,
-     *                 from which the resource pack will be downloaded
-     * @param fileName The name of the file,
-     *                 from which the hash will be generated
+     * @param url      The URL to the resource pack file, from which the
+     *                 resource pack will be downloaded
+     * @param fileName The name of the file, from which the hash will be generated
      * @return The hash of the file
      * @see #createSHA1(Path)
      * @see #bytesToHexString(byte[])
@@ -270,8 +270,8 @@ public final class ResourcePack {
 
         /**
          * @return The hash of the resource pack
-         * @throws NullPointerException If the resource pack is null
-         *                              use {@link #isResourcePackLoaded()} to check
+         * @throws NullPointerException If the resource pack is null use
+         *                              {@link #isResourcePackLoaded()} to check
          *                              if the resource pack is loaded
          * @throws UnsupportedOperationException If the resource pack type is
          *                                       {@link Type#NULL} or {@link Type#NONE}
@@ -285,8 +285,8 @@ public final class ResourcePack {
 
         /**
          * @return The URL of the resource pack
-         * @throws NullPointerException If the resource pack is null
-         *                              use {@link #isResourcePackLoaded()} to check
+         * @throws NullPointerException If the resource pack is null use
+         *                              {@link #isResourcePackLoaded()} to check
          *                              if the resource pack is loaded
          * @throws UnsupportedOperationException If the resource pack type is
          *                                       {@link Type#NULL} or {@link Type#NONE}

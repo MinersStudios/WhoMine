@@ -10,16 +10,20 @@ import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
- * The ChannelHandler class is responsible for handling
- * incoming and outgoing packets in the Minecraft server
- * networking pipeline. It extends `ChannelDuplexHandler`,
- * which allows handling of both inbound and outbound data.
+ * The ChannelHandler class is responsible for handling incoming and outgoing
+ * packets in the Minecraft server networking pipeline.
+ * <br>
+ * It extends {@link ChannelDuplexHandler}, which allows handling of both
+ * inbound and outbound data.
  *
  * @see PacketType
  * @see PacketContainer
  * @see PacketEvent
  */
+@Immutable
 public final class ChannelHandler extends ChannelDuplexHandler {
     private final MSPlugin<? extends MSPlugin<?>> plugin;
     private final Connection connection;
@@ -56,10 +60,10 @@ public final class ChannelHandler extends ChannelDuplexHandler {
     }
 
     /**
-     * This method is called when a packet is received from the client.
-     * It processes the packet, creates a {@link PacketContainer}, and
-     * fires a {@link PacketEvent}. If the event is not cancelled, the
-     * packet is passed to the next channel handler in the pipeline.
+     * This method is called when a packet is received from the client. It
+     * processes the packet, creates a {@link PacketContainer}, and fires a
+     * {@link PacketEvent}. If the event is not cancelled, the packet is passed
+     * to the next channel handler in the pipeline.
      *
      * @param ctx The ChannelHandlerContext
      * @param msg The received packet
@@ -99,9 +103,9 @@ public final class ChannelHandler extends ChannelDuplexHandler {
 
     /**
      * This method is called when a packet is about to be sent to the client.
-     * It processes the packet, creates a {@link PacketContainer}, and fires
-     * a {@link PacketEvent}. If the event is not cancelled, the packet is
-     * passed to the next channel handler in the pipeline.
+     * It processes the packet, creates a {@link PacketContainer}, and fires a
+     * {@link PacketEvent}. If the event is not cancelled, the packet is passed
+     * to the next channel handler in the pipeline.
      *
      * @param ctx     The ChannelHandlerContext
      * @param msg     The packet to be sent
@@ -142,12 +146,11 @@ public final class ChannelHandler extends ChannelDuplexHandler {
     }
 
     /**
-     * Injects the {@link ChannelHandler} for a specific player into
-     * the server networking pipeline
+     * Injects the {@link ChannelHandler} for a specific player into the server
+     * networking pipeline
      *
      * @param connection The connection to inject the ChannelHandler for
-     * @param plugin     The MSPlugin instance associated with the
-     *                   ChannelHandler
+     * @param plugin     The MSPlugin instance associated with the ChannelHandler
      */
     public static void injectConnection(
             final @NotNull Connection connection,
@@ -165,8 +168,8 @@ public final class ChannelHandler extends ChannelDuplexHandler {
     }
 
     /**
-     * Removes the {@link ChannelHandler} from a specific player
-     * in the server networking pipeline
+     * Removes the {@link ChannelHandler} from a specific player in the server
+     * networking pipeline
      *
      * @param connection The connection to remove the ChannelHandler for
      */

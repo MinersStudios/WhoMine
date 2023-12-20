@@ -19,8 +19,8 @@ public abstract class CommandExecutor<P extends MSPlugin<P>> implements org.bukk
     private P plugin;
 
     /**
-     * An empty tab completion list. Used when no tab completion is needed
-     * or when the tab completion is handled by the command executor itself.
+     * An empty tab completion list. Used when no tab completion is needed or
+     * when the tab completion is handled by the command executor itself.
      */
     public static final List<String> EMPTY_TAB = Collections.emptyList();
 
@@ -76,9 +76,9 @@ public abstract class CommandExecutor<P extends MSPlugin<P>> implements org.bukk
     }
 
     /**
-     * Executes the given command, returning its success. If false is
-     * returned, then the "usage" plugin.yml entry for this command
-     * (if defined) will be sent to the player
+     * Executes the given command, returning its success. If false is returned,
+     * then the "usage" plugin.yml entry for this command (if defined) will be
+     * sent to the player.
      *
      * @param sender  Source of the command
      * @param command Command which was executed
@@ -97,15 +97,15 @@ public abstract class CommandExecutor<P extends MSPlugin<P>> implements org.bukk
     /**
      * Requests a list of possible completions for a command argument
      *
-     * @param sender  Source of the command. For players tab-completing
-     *                a command inside a command block, this will be the
-     *                player, not the command block.
+     * @param sender  Source of the command. For player tab-completing a command
+     *                inside a command block, this will be the player, not the
+     *                command block.
      * @param command Command which was executed
      * @param label   Alias of the command which was used
      * @param args    The arguments passed to the command, including final
      *                partial argument to be completed
-     * @return A List of possible completions for the final argument,
-     *         or null to default to the command executor
+     * @return A List of possible completions for the final argument, or null to
+     *         default to the command executor
      */
     @Override
     public @NotNull List<String> onTabComplete(

@@ -15,11 +15,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Player info map with {@link UUID} and its {@link PlayerInfo}.
- * All player files stored in the "config/minersstudios/MSEssentials/players" folder.
- * Use {@link #get(UUID, String)} or {@link #get(Player)} to get player info.
- * It will create new player info if it doesn't exist,
- * or get existing player info if it exists and save it to the map if it's not cached.
+ * Player info map with {@link UUID} and its {@link PlayerInfo}. All player
+ * files stored in the "config/minersstudios/MSEssentials/players" folder. Use
+ * {@link #get(UUID, String)} or {@link #get(Player)} to get player info. It
+ * will create new player info if it doesn't exist, or get existing player info
+ * if it exists and save it to the map if it's not cached.
  *
  * @see PlayerInfo
  * @see PlayerFile
@@ -71,7 +71,8 @@ public final class PlayerInfoMap {
      * Gets {@link PlayerInfo} of the player from the map
      *
      * @param offlinePlayer The offline player
-     * @return {@link PlayerInfo} of player, or null if we have not seen a name for this player yet
+     * @return {@link PlayerInfo} of player, or null if we have not seen a name
+     *         for this player yet
      */
     @Contract("null -> null")
     public @Nullable PlayerInfo get(final @Nullable OfflinePlayer offlinePlayer) {
@@ -149,8 +150,8 @@ public final class PlayerInfoMap {
     }
 
     /**
-     * Removes all the player info from this map.
-     * The map will be empty after this call returns.
+     * Removes all the player info from this map. The map will be empty after
+     * this call returns.
      */
     public void clear() {
         this.map.clear();

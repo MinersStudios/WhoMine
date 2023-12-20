@@ -248,8 +248,8 @@ public class Anomaly {
     }
 
     /**
-     * @return Ignorable items of the anomaly,
-     *         null if the anomaly does not have ignorable items.
+     * @return Ignorable items of the anomaly, null if the anomaly does not have
+     *         ignorable items.
      * @see AnomalyIgnorableItems
      */
     public @Nullable AnomalyIgnorableItems getIgnorableItems() {
@@ -257,16 +257,17 @@ public class Anomaly {
     }
 
     /**
-     * @return Map of anomaly actions and their radius to be executed when a player enters the anomaly
+     * @return Map of anomaly actions and their radius to be executed when a
+     *         player enters the anomaly
      */
     public @NotNull @Unmodifiable Map<Double, List<AnomalyAction>> getAnomalyActionMap() {
         return Collections.unmodifiableMap(this.anomalyActionMap);
     }
 
     /**
-     * @return Set of ignorable players of the anomaly,
-     *         empty list if the anomaly does not have ignorable players.
-     *         These players will not be affected by the anomaly.
+     * @return Set of ignorable players of the anomaly, empty list if the
+     *         anomaly does not have ignorable players. The anomaly will not
+     *         affect these players.
      */
     public @NotNull @Unmodifiable Set<OfflinePlayer> getIgnorablePlayers() {
         return Collections.unmodifiableSet(this.ignorablePlayers);

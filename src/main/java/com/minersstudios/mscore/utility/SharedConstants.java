@@ -1,5 +1,7 @@
 package com.minersstudios.mscore.utility;
 
+import org.jetbrains.annotations.Contract;
+
 import static io.papermc.paper.configuration.PaperConfigurations.CONFIG_DIR;
 
 /**
@@ -21,6 +23,7 @@ public final class SharedConstants {
     public static final String INVISIBLE_ITEM_FRAME_TAG =              "invisibleItemFrame";
     public static final int SIT_RANGE =                                9;
 
+    @Contract(" -> fail")
     private SharedConstants() {
         throw new AssertionError("Utility class");
     }
