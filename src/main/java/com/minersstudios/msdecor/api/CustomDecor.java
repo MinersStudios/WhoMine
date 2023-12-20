@@ -52,7 +52,11 @@ public final class CustomDecor {
     public static @NotNull Optional<CustomDecor> fromBlock(final @Nullable org.bukkit.block.Block block) {
         return block == null
                 ? Optional.empty()
-                : fromInteraction(MSDecorUtils.getNearbyInteraction(block.getLocation().toCenterLocation()));
+                : fromInteraction(
+                        MSDecorUtils.getNearbyInteraction(
+                                MSPosition.of(block.getLocation().toCenterLocation())
+                        )
+                );
     }
 
     public static @NotNull Optional<CustomDecor> fromInteraction(final @Nullable Interaction interaction) {
@@ -61,11 +65,12 @@ public final class CustomDecor {
         }
 
         final PersistentDataContainer container = interaction.getPersistentDataContainer();
+
         return container.isEmpty()
                 ? Optional.empty()
-                : DecorHitBox.isParent(interaction)
+                : DecorHitBox.isParent(container)
                 ? Optional.ofNullable(fromParent(interaction))
-                : DecorHitBox.isChild(interaction)
+                : DecorHitBox.isChild(container)
                 ? Optional.ofNullable(fromChild(interaction))
                 : Optional.empty();
     }
@@ -212,7 +217,12 @@ public final class CustomDecor {
             final @NotNull Block block,
             final boolean dropItem
     ) {
-        for (final var interaction : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
+        for (
+                final var interaction :
+                MSDecorUtils.getNearbyInteractions(
+                        MSPosition.of(block.getLocation().toCenterLocation())
+                )
+        ) {
             destroy(destroyer, interaction, dropItem);
         }
     }

@@ -118,13 +118,23 @@ public class CustomDecorClickEvent extends CustomDecorEvent implements Cancellab
         return HANDLER_LIST;
     }
 
+    /**
+     * Represents which type of click was used to interact with the custom decor
+     * involved in this event
+     */
     public enum ClickType {
         LEFT_CLICK, RIGHT_CLICK;
 
+        /**
+         * @return True if the click type is left click
+         */
         public boolean isLeftClick() {
             return this == LEFT_CLICK;
         }
 
+        /**
+         * @return True if the click type is right click
+         */
         public boolean isRightClick() {
             return this == RIGHT_CLICK;
         }

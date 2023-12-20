@@ -163,7 +163,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             throw new UnsupportedOperationException("This custom decor is not wrenchable or typed!");
         }
 
-        return this.types;
+        return this.types.clone();
     }
 
     @Override
@@ -411,7 +411,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 !this.isLightable()
                 && !this.isLightTyped()
         ) {
-            throw new UnsupportedOperationException("This custom decor is not lightable!");
+            throw new UnsupportedOperationException("This custom decor is not lightable or light typed!");
         }
 
         return this.lightLevels.clone();
@@ -469,7 +469,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 !this.isLightable()
                 && !this.isLightTyped()
         ) {
-            throw new UnsupportedOperationException("This custom decor is not lightable!");
+            throw new UnsupportedOperationException("This custom decor is not lightable or light typed!");
         }
 
         final int levelsSize = this.lightLevels.length;
@@ -653,19 +653,19 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public void place(
-            final @NotNull MSPosition blockLocation,
+            final @NotNull MSPosition position,
             final @NotNull Player player,
             final @NotNull BlockFace blockFace,
             final @Nullable EquipmentSlot hand,
             final @Nullable Component customName
     ) throws IllegalArgumentException {
-        final CraftWorld world = (CraftWorld) blockLocation.world();
+        final CraftWorld world = (CraftWorld) position.world();
 
         if (world == null) {
             throw new IllegalArgumentException("The world of the position cannot be null!");
         }
 
-        final Material blockType = blockLocation.getBlock().getType();
+        final Material blockType = position.getBlock().getType();
         final float rotation = player.getYaw();
         BlockFace finalFace = null;
 
@@ -686,7 +686,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             for (final var facing : this.facingSet) {
                 if (
                         facing.hasFace(
-                                blockLocation,
+                                position,
                                 rotation
                         )
                 ) {
@@ -705,7 +705,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         final ServerLevel serverLevel = world.getHandle();
-        final MSBoundingBox msbb = this.hitBox.getBoundingBox(blockLocation, finalFace, rotation);
+        final MSBoundingBox msbb = this.hitBox.getBoundingBox(position, finalFace, rotation);
         final BlockPos[] blocksToReplace = msbb.getBlockPositions();
         final var blockStates = new ArrayList<org.bukkit.block.BlockState>();
 
@@ -748,7 +748,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final CustomDecorPlaceEvent event = new CustomDecorPlaceEvent(
                 this.placeInWorld(
                         player.getName(),
-                        this.summonItem(blockLocation.yaw(rotation), finalFace, itemInHand),
+                        this.summonItem(position.yaw(rotation), finalFace, itemInHand),
                         msbb,
                         blocksToReplace,
                         finalFace,
@@ -785,7 +785,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             player.swingHand(hand);
         }
 
-        this.getSoundGroup().playPlaceSound(blockLocation.center());
+        this.getSoundGroup().playPlaceSound(position.center());
         this.doPlaceAction(event);
     }
 

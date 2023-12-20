@@ -1,14 +1,13 @@
 package com.minersstudios.mscore.utility;
 
 import com.minersstudios.mscore.location.MSBoundingBox;
+import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecorData;
-import com.minersstudios.msdecor.api.CustomDecorType;
 import com.minersstudios.msdecor.api.DecorHitBox;
-import com.minersstudios.msitem.api.CustomItem;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.entity.Entity;
@@ -34,39 +33,46 @@ public final class MSDecorUtils {
     }
 
     /**
-     * Gets {@link CustomDecorData} item stack from key from
-     * {@link CustomDecorType} by using
-     * {@link CustomDecorData#fromKey(String)} method
-     *
-     * @param key {@link CustomDecorData} key string
-     * @return Optional of {@link ItemStack} object
-     *         or empty optional if not found
+     * @param key Key of custom decor data
+     * @return An optional of {@link ItemStack} object retrieved from custom
+     *         decor data key
      * @see CustomDecorData#fromKey(String)
      * @see CustomDecorData#getItem()
      */
     public static @NotNull Optional<ItemStack> getItemStack(final @Nullable String key) {
-        return CustomDecorData.fromKey(key).map(CustomDecorData::getItem);
+        return CustomDecorData
+                .fromKey(key)
+                .map(CustomDecorData::getItem);
     }
 
     /**
-     * Gets {@link CustomDecorData} item stack from class from
-     * {@link CustomDecorType} by using
-     * {@link CustomDecorData#fromClass(Class)} method
-     *
-     * @param clazz {@link CustomItem} class
-     * @return Optional of {@link ItemStack} object
-     *         or empty optional if not found
+     * @param clazz Class of custom decor data
+     * @return An optional of {@link ItemStack} object retrieved from custom
+     *         decor data class
      * @see CustomDecorData#fromClass(Class)
      * @see CustomDecorData#getItem()
      */
     public static @NotNull Optional<ItemStack> getItemStack(final @NotNull Class<? extends CustomDecorData<?>> clazz) {
-        return CustomDecorData.fromClass(clazz).map(CustomDecorData::getItem);
+        return CustomDecorData
+                .fromClass(clazz)
+                .map(CustomDecorData::getItem);
     }
 
-    public static Interaction @NotNull [] getNearbyInteractions(final @NotNull Location location) {
-        final var entities = MSBoundingBox.ofSize(location, 1.0d, 1.0d, 1.0d)
+    /**
+     * @param position Position to be checked
+     * @return Nearby {@link Interaction} array
+     * @throws IllegalArgumentException If position world is null
+     */
+    public static Interaction @NotNull [] getNearbyInteractions(final @NotNull MSPosition position) throws IllegalArgumentException {
+        final World world = position.world();
+
+        if (world == null) {
+            throw new IllegalArgumentException("Location world cannot be null");
+        }
+
+        final var entities = MSBoundingBox.ofSize(position, 1.0d, 1.0d, 1.0d)
                 .getNMSEntities(
-                        ((CraftWorld) location.getWorld()).getHandle(),
+                        ((CraftWorld) world).getHandle(),
                         entity -> entity instanceof net.minecraft.world.entity.Interaction
                 );
         final int size = entities.size();
@@ -79,10 +85,21 @@ public final class MSDecorUtils {
         return interactions;
     }
 
-    public static @Nullable Interaction getNearbyInteraction(final @NotNull Location location) {
-        final var entities = MSBoundingBox.ofSize(location, 1.0d, 1.0d, 1.0d)
+    /**
+     * @param position Position to be checked
+     * @return Nearby {@link Interaction} or null if not found
+     * @throws IllegalArgumentException If position world is null
+     */
+    public static @Nullable Interaction getNearbyInteraction(final @NotNull MSPosition position) throws IllegalArgumentException {
+        final World world = position.world();
+
+        if (world == null) {
+            throw new IllegalArgumentException("Location world cannot be null");
+        }
+
+        final var entities = MSBoundingBox.ofSize(position, 1.0d, 1.0d, 1.0d)
                 .getNMSEntities(
-                        ((CraftWorld) location.getWorld()).getHandle(),
+                        ((CraftWorld) world).getHandle(),
                         entity -> entity instanceof net.minecraft.world.entity.Interaction
                 );
         return entities.isEmpty()
@@ -101,17 +118,29 @@ public final class MSDecorUtils {
                 || material == Material.LIGHT;
     }
 
+    /**
+     * @param itemStack Item stack to be checked
+     * @return True if item stack is custom decor item stack
+     */
     @Contract("null -> false")
     public static boolean isCustomDecor(final @Nullable ItemStack itemStack) {
         return CustomDecorData.fromItemStack(itemStack).isPresent();
     }
 
+    /**
+     * @param entity Entity to be checked
+     * @return True if entity is custom decor entity
+     */
     @Contract("null -> false")
     public static boolean isCustomDecor(final @Nullable net.minecraft.world.entity.Entity entity) {
         return entity != null
                 && isCustomDecor(entity.getBukkitEntity());
     }
 
+    /**
+     * @param entity Entity to be checked
+     * @return True if entity is custom decor entity
+     */
     @Contract("null -> false")
     public static boolean isCustomDecor(final @Nullable Entity entity) {
         return entity instanceof final Interaction interaction
@@ -121,6 +150,10 @@ public final class MSDecorUtils {
                 );
     }
 
+    /**
+     * @param block Block to be checked
+     * @return True if block is custom decor block
+     */
     @Contract("null -> false")
     public static boolean isCustomDecor(final @Nullable Block block) {
         return block != null

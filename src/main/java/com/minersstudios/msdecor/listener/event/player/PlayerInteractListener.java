@@ -173,7 +173,12 @@ public final class PlayerInteractListener extends AbstractEventListener<MSDecor>
     ) {
         final PluginManager pluginManager = player.getServer().getPluginManager();
 
-        for (final var interaction : MSDecorUtils.getNearbyInteractions(block.getLocation().toCenterLocation())) {
+        for (
+                final var interaction :
+                MSDecorUtils.getNearbyInteractions(
+                        MSPosition.of(block.getLocation().toCenterLocation())
+                )
+        ) {
             CustomDecor.fromInteraction(interaction)
             .ifPresent(
                     customDecor -> {
