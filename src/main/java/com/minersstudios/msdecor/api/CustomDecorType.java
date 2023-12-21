@@ -25,7 +25,6 @@ import com.minersstudios.msdecor.registry.furniture.table.SmallTable;
 import com.minersstudios.msdecor.registry.other.Poop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +36,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -192,9 +190,9 @@ public enum CustomDecorType {
     public static final String TYPED_KEY_REGEX = "(" + ChatUtils.KEY_REGEX + ")\\.type\\.(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern TYPED_KEY_PATTERN = Pattern.compile(TYPED_KEY_REGEX);
 
-    static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new ConcurrentHashMap<>();
-    private static final Map<String, CustomDecorType> KEY_TO_TYPE_MAP = new ConcurrentHashMap<>();
-    private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorType> CLASS_TO_TYPE_MAP = new ConcurrentHashMap<>();
+    private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new HashMap<>();
+    private static final Map<String, CustomDecorType> KEY_TO_TYPE_MAP = new HashMap<>();
+    private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorType> CLASS_TO_TYPE_MAP = new HashMap<>();
 
     static {
         final long startTime = System.currentTimeMillis();
@@ -308,11 +306,11 @@ public enum CustomDecorType {
      */
     @Contract("null -> null")
     public static @Nullable CustomDecorType fromKey(final @Nullable String key) {
-        if (StringUtils.isBlank(key)) {
+        if (ChatUtils.isBlank(key)) {
             return null;
         }
 
-        if (matchesTypedKey(key)) {
+        if (TYPED_KEY_PATTERN.matcher(key).matches()) {
             final Matcher matcher = TYPED_KEY_PATTERN.matcher(key);
 
             if (matcher.find()) {
@@ -400,7 +398,7 @@ public enum CustomDecorType {
      */
     @Contract("null -> false")
     public static boolean containsKey(final @Nullable String key) {
-        return StringUtils.isNotBlank(key)
+        return ChatUtils.isNotBlank(key)
                 && KEY_TO_TYPE_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
 
@@ -430,7 +428,7 @@ public enum CustomDecorType {
      */
     @Contract("null -> false")
     public static boolean matchesTypedKey(final @Nullable String key) {
-        return StringUtils.isNotBlank(key)
+        return ChatUtils.isNotBlank(key)
                 && TYPED_KEY_PATTERN.matcher(key).matches();
     }
 }

@@ -6,9 +6,9 @@ import org.bukkit.Material;
 import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_20_R2.CraftSoundGroup;
-import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftEntityType;
+import org.bukkit.craftbukkit.v1_20_R3.CraftSoundGroup;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntityType;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -350,7 +350,7 @@ public final class BlockUtils {
                     TALL_SEAGRASS,
                     SNOW,
                     BUBBLE_COLUMN,
-                    GRASS,
+                    SHORT_GRASS,
                     GLOW_LICHEN,
                     STRUCTURE_VOID,
                     LAVA,

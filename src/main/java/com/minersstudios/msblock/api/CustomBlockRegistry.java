@@ -3,7 +3,7 @@ package com.minersstudios.msblock.api;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.file.NoteBlockData;
 import com.minersstudios.msblock.api.file.PlacingType;
-import org.apache.commons.lang3.StringUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -27,14 +27,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * <br>
  * The CustomBlockRegistry uses one concurrent map to store all the registered
  * custom block data associated with the corresponding hash code of the
- * {@link NoteBlockData} of the custom block. And other concurrent map to store 
- * the registered keys associated with the corresponding hash code of the 
+ * {@link NoteBlockData} of the custom block. And another concurrent map to
+ * store the registered keys associated with the corresponding hash code of the
  * {@link NoteBlockData} of the custom block. The {@link #HASH_CODE_MAP} is a
  * main map that stores all the registered custom block data. The 
  * {@link #KEY_MAP} is used to store the registered keys and associated hash
  * codes.
  * <br>
- * All recipes by default are registered after the all custom blocks, items, and
+ * All recipes by default are registered after all custom blocks, items, and
  * decorations are registered. This is to avoid problems related to dependencies 
  * between other plugins and custom items, decorations, and blocks.
  * <br>
@@ -142,7 +142,7 @@ public final class CustomBlockRegistry {
      * @see #fromHashCode(int)
      */
     public static @NotNull Optional<CustomBlockData> fromKey(final @Nullable String key) {
-        return StringUtils.isBlank(key)
+        return ChatUtils.isBlank(key)
                 ? Optional.empty()
                 : Optional.ofNullable(KEY_MAP.get(key.toLowerCase(Locale.ENGLISH)))
                 .flatMap(
@@ -250,7 +250,7 @@ public final class CustomBlockRegistry {
      */
     @Contract("null -> false")
     public static boolean containsKey(final @Nullable String key) {
-        return StringUtils.isNotBlank(key)
+        return ChatUtils.isNotBlank(key)
                 && KEY_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
 

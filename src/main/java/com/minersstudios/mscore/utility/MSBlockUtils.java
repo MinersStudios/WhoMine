@@ -3,7 +3,6 @@ package com.minersstudios.mscore.utility;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +44,7 @@ public final class MSBlockUtils {
      */
     @Contract("null -> false")
     public static boolean matchesNamespacedKey(final @Nullable String string) {
-        return StringUtils.isNotBlank(string)
+        return ChatUtils.isNotBlank(string)
                 && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }
 }

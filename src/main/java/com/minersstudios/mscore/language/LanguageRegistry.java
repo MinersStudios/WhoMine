@@ -37,8 +37,8 @@ public final class LanguageRegistry {
         public static final String COMMAND_HOVER_RUN =                                    "ms.command.hover.run";
         public static final String ON_DISABLE_MESSAGE_TITLE =                             "ms.on_disable.message.title";
         public static final String ON_DISABLE_MESSAGE_SUBTITLE =                          "ms.on_disable.message.subtitle";
-        public static final String SERVER_NOT_FULLY_LOADED_TITLE =                        "ms.server.not_fully_loaded.title";
-        public static final String SERVER_NOT_FULLY_LOADED_SUBTITLE =                     "ms.server.not_fully_loaded.subtitle";
+        public static final String SERVER_NOT_FULLY_LOADED_TITLE =                        "ms.server_not_fully_loaded.title";
+        public static final String SERVER_NOT_FULLY_LOADED_SUBTITLE =                     "ms.server_not_fully_loaded.subtitle";
         public static final String SOMETHING_WENT_WRONG_TITLE =                           "ms.something_went_wrong.title";
         public static final String SOMETHING_WENT_WRONG_SUBTITLE =                        "ms.something_went_wrong.subtitle";
         public static final String INFO_PLAYER_FILE_CREATED =                             "ms.info.player_file_created";

@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.utility;
 
-import org.apache.commons.lang3.StringUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +39,7 @@ public final class IDUtils {
      */
     @Contract("null -> false")
     public static boolean matchesIDRegex(final @Nullable String string) {
-        return StringUtils.isNotBlank(string)
+        return ChatUtils.isNotBlank(string)
                 && ID_PATTERN.matcher(string).matches();
     }
 }

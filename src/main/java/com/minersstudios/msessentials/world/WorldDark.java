@@ -6,9 +6,8 @@ import net.kyori.adventure.util.TriState;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.generator.BiomeProvider;
@@ -24,16 +23,13 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * World dark singleton. This world is used for safe registration and login.
- * Moving, interacting and other actions are not allowed in this world. All
- * players teleported to this world must spectate {@link #darkEntity}.
- * {@link #darkEntity} is invisible {@link ItemFrame} and has no collision. Use
- * {@link #teleportToDarkWorld(Player)} to teleport player to world dark.
+ * Moving, interacting and other actions are not allowed in this world.
+ * Use {@link #teleportToDarkWorld(Player)} to teleport player to world dark.
  *
  * @see #init()
  */
 public final class WorldDark extends CraftWorld {
     private static WorldDark singleton = null;
-    private static ItemFrame darkEntity = null;
 
     private static final String WORLD_NAME = "world_dark";
     private static final ChunkGenerator CHUNK_GENERATOR = new ChunkGenerator() {};
@@ -75,18 +71,6 @@ public final class WorldDark extends CraftWorld {
     }
 
     /**
-     * @return Dark entity instance
-     * @throws UnsupportedOperationException If dark entity is not initialized
-     */
-    public static @NotNull Entity getDarkEntity() throws UnsupportedOperationException {
-        if (darkEntity == null) {
-            throw new UnsupportedOperationException("Dark entity not initialized");
-        }
-
-        return darkEntity;
-    }
-
-    /**
      * @param world World to check
      * @return True if world is world dark, false otherwise
      */
@@ -119,11 +103,12 @@ public final class WorldDark extends CraftWorld {
      * @param player Player to teleport
      */
     public static @NotNull CompletableFuture<Boolean> teleportToDarkWorld(final @NotNull Player player) {
-        return player.teleportAsync(singleton.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN).thenApply(bool -> {
-            player.setGameMode(GameMode.SPECTATOR);
-            player.setSpectatorTarget(darkEntity);
-            return bool;
-        });
+        return player.teleportAsync(singleton.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN)
+                .thenApply(bool -> {
+                    player.setGameMode(GameMode.SPECTATOR);
+
+                    return bool;
+                });
     }
 
     /**
@@ -136,14 +121,6 @@ public final class WorldDark extends CraftWorld {
         }
 
         singleton = new WorldDark();
-        darkEntity = singleton.getEntitiesByClass(ItemFrame.class).stream().findFirst().orElseGet(() ->
-                singleton.spawn(singleton.getSpawnLocation(), ItemFrame.class, entity -> {
-                    entity.setGravity(false);
-                    entity.setFixed(true);
-                    entity.setVisible(false);
-                    entity.setInvulnerable(true);
-                })
-        );
     }
 
     /**

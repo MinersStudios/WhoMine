@@ -3,9 +3,9 @@ package com.minersstudios.msessentials.player;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +60,7 @@ public final class ResourcePack {
                 getLatestTagName(logger, user, repo)
                 .orElse(config.getResourcePackVersion());
 
-        if (StringUtils.isBlank(tagName)) {
+        if (ChatUtils.isBlank(tagName)) {
             logger.severe("""
                     Apparently the API rate limit has been exceeded and the tag name could not be obtained.
                     The players will not be able to connect to the server.

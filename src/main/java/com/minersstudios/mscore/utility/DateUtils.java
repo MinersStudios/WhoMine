@@ -225,7 +225,7 @@ public final class DateUtils {
      */
     @Contract("null -> false")
     public static boolean matchesChrono(final @Nullable String string) {
-        return StringUtils.isNotBlank(string) 
+        return ChatUtils.isNotBlank(string)
                 && CHRONO_PATTERN.matcher(string).matches();
     }
 }

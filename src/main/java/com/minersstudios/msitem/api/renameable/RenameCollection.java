@@ -2,7 +2,6 @@ package com.minersstudios.msitem.api.renameable;
 
 import com.google.common.collect.ImmutableSet;
 import com.minersstudios.mscore.utility.ChatUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -185,7 +184,7 @@ public final class RenameCollection {
      *         is not null or blank
      */
     public boolean removeRename(final @Nullable String rename) {
-       return StringUtils.isNotBlank(rename)
+       return ChatUtils.isNotBlank(rename)
                && this.renames.remove(rename.toLowerCase(Locale.ROOT));
     }
 
@@ -265,7 +264,7 @@ public final class RenameCollection {
      */
     @Contract("null -> false")
     public boolean containsRename(final @Nullable String rename) {
-        return StringUtils.isNotBlank(rename)
+        return ChatUtils.isNotBlank(rename)
                 && this.renames.contains(rename.toLowerCase(Locale.ROOT));
     }
 
@@ -389,7 +388,7 @@ public final class RenameCollection {
                 item == null
                 || !this.isInitialized()
                 || item.getType().isAir()
-                || StringUtils.isBlank(rename)
+                || ChatUtils.isBlank(rename)
         ) {
             return null;
         }
@@ -412,7 +411,7 @@ public final class RenameCollection {
     }
 
     private void setMainName(final @Nullable String name) {
-        if (StringUtils.isBlank(name)) {
+        if (ChatUtils.isBlank(name)) {
             this.mainName = null;
             return;
         }

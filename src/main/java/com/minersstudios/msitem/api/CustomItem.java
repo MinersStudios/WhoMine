@@ -173,7 +173,7 @@ public interface CustomItem extends Keyed {
 
     /**
      * Gets the {@link CustomItem} from the given custom item key. It will get
-     * the custom item type from the {@link CustomItemType#KEY_TO_TYPE_MAP} and
+     * the custom item type from the {@code CustomItemType#KEY_TO_TYPE_MAP} and
      * then get the custom item instance from the returned type using the
      * default {@link CustomItem} class
      *
@@ -182,7 +182,6 @@ public interface CustomItem extends Keyed {
      * @return An {@link Optional} containing the {@link CustomItem} or an
      *         {@link Optional#empty()} if the given key is not associated with
      *         any custom item
-     * @see CustomItemType#KEY_TO_TYPE_MAP
      * @see #fromKey(String, Class)
      */
     static @NotNull Optional<CustomItem> fromKey(final @Nullable String key) {
@@ -191,7 +190,7 @@ public interface CustomItem extends Keyed {
 
     /**
      * Gets the {@link CustomItem} from the given custom item key. It will get
-     * the custom item type from the {@link CustomItemType#KEY_TO_TYPE_MAP} and
+     * the custom item type from the {@code CustomItemType#KEY_TO_TYPE_MAP} and
      * then get the custom item instance from the returned type using the given
      * class to cast the custom item instance
      *
@@ -227,7 +226,7 @@ public interface CustomItem extends Keyed {
 
     /**
      * Gets the {@link CustomItem} from the given class. It will get the custom
-     * item instance from the {@link CustomItemType#CLASS_TO_ITEM_MAP} using the
+     * item instance from the {@code CustomItemType#CLASS_TO_ITEM_MAP} using the
      * given class to cast the custom item instance
      *
      * @param clazz The class to get the custom item type from
@@ -235,18 +234,24 @@ public interface CustomItem extends Keyed {
      * @return An {@link Optional} containing the {@link CustomItem} or an
      *         {@link Optional#empty()} if the given class is not associated
      *         with any custom item
-     * @see CustomItemType#CLASS_TO_ITEM_MAP
+     * @see CustomItemType#fromClass(Class)
      */
     static <I extends CustomItem> @NotNull Optional<I> fromClass(final @Nullable Class<I> clazz) {
-        return clazz == null
+        if (clazz == null) {
+            return Optional.empty();
+        }
+
+        final CustomItemType type = CustomItemType.fromClass(clazz);
+
+        return type == null
                 ? Optional.empty()
-                : Optional.ofNullable(clazz.cast(CustomItemType.CLASS_TO_ITEM_MAP.get(clazz)));
+                : Optional.of(clazz.cast(type));
     }
 
     /**
      * Gets the {@link CustomItem} from the given item stack. It will get the
      * namespaced key from the item stack's persistent data container and then
-     * get the custom item instance from the {@link CustomItemType#KEY_TO_TYPE_MAP}
+     * get the custom item instance from the {@code CustomItemType#KEY_TO_TYPE_MAP}
      * using the default {@link CustomItem} class
      *
      * @param itemStack The item stack to get the custom item type from
@@ -262,7 +267,7 @@ public interface CustomItem extends Keyed {
     /**
      * Gets the {@link CustomItem} from the given item stack. It will get the
      * namespaced key from the item stack's persistent data container and then
-     * get the custom item instance from the {@link CustomItemType#KEY_TO_TYPE_MAP}
+     * get the custom item instance from the {@code CustomItemType#KEY_TO_TYPE_MAP}
      * using the given class to cast the custom item instance
      *
      * @param itemStack The item stack to get the custom item type from

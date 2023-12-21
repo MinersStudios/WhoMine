@@ -1,7 +1,6 @@
 package com.minersstudios.msessentials.listener.api.discord;
 
 import com.minersstudios.mscore.listener.api.MSListener;
-import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.MSEssentials;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -10,14 +9,13 @@ import org.jetbrains.annotations.NotNull;
  * This class used for extending discord listeners with the
  * {@link DiscordListener} annotation
  *
- * @param <P> The plugin, that this listener is registered to
  * @see DiscordListener
  */
-public abstract class AbstractDiscordListener<P extends MSPlugin<P>> extends ListenerAdapter implements MSListener<P> {
-    private P plugin;
+public abstract class AbstractDiscordListener extends ListenerAdapter implements MSListener<MSEssentials> {
+    private MSEssentials plugin;
 
     @Override
-    public final @NotNull P getPlugin() throws IllegalStateException {
+    public final @NotNull MSEssentials getPlugin() throws IllegalStateException {
         if (!this.isRegistered()) {
             throw new IllegalStateException("Discord listener " + this + " not registered!");
         }
@@ -34,15 +32,17 @@ public abstract class AbstractDiscordListener<P extends MSPlugin<P>> extends Lis
     }
 
     @Override
-    public final void register(final @NotNull P plugin) throws IllegalStateException {
+    public final void register(final @NotNull MSEssentials plugin) throws IllegalStateException {
         if (this.isRegistered()) {
             throw new IllegalStateException("Discord listener " + this + " already registered!");
         }
 
         this.plugin = plugin;
 
-        MSEssentials.singleton().getCache().getDiscordHandler().getJda()
-        .ifPresent(jda -> jda.addEventListener(this));
+        plugin.getCache().getDiscordHandler().getJda()
+        .ifPresent(
+                jda -> jda.addEventListener(this)
+        );
     }
 
     @Override

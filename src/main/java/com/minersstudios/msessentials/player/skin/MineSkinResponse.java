@@ -20,8 +20,8 @@
 package com.minersstudios.msessentials.player.skin;
 
 import com.google.gson.Gson;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,7 +91,7 @@ public final class MineSkinResponse {
         connection.setRequestProperty("User-Agent", "WhoMine/MineSkinAPI");
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-        if (StringUtils.isNotBlank(apiKey)) {
+        if (ChatUtils.isNotBlank(apiKey)) {
             connection.setRequestProperty("Authorization", "Bearer " + apiKey);
         }
 

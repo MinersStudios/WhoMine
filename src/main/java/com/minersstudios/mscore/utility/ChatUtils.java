@@ -6,12 +6,14 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static net.kyori.adventure.text.Component.text;
@@ -106,7 +108,6 @@ public final class ChatUtils {
      *
      * @param text Text to be normalized
      * @return Normalized text, or empty string if the given text is blank
-     * @see StringUtils#isBlank(CharSequence)
      */
     public static @NotNull String normalize(final @NotNull String text) {
         final int length = text.length();
@@ -331,11 +332,29 @@ public final class ChatUtils {
 
     /**
      * @param string String to be checked
+     * @return True if the string is blank
+     */
+    @Contract(value = "null -> true")
+    public static boolean isBlank(final @Nullable String string) {
+        return string == null || string.isBlank();
+    }
+
+    /**
+     * @param string String to be checked
+     * @return True if the string is not blank
+     */
+    @Contract("null -> false")
+    public static boolean isNotBlank(final @Nullable String string) {
+        return !isBlank(string);
+    }
+
+    /**
+     * @param string String to be checked
      * @return True if string matches {@link #KEY_REGEX}
      */
     @Contract("null -> false")
     public static boolean matchesKey(final @Nullable String string) {
-        return StringUtils.isNotBlank(string)
+        return isNotBlank(string)
                 && KEY_PATTERN.matcher(string).matches();
     }
 

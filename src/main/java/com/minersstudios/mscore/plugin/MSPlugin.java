@@ -1,9 +1,10 @@
 package com.minersstudios.mscore.plugin;
 
 import com.google.common.base.Charsets;
-import com.minersstudios.mscore.command.api.Commodore;
 import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.Commodore;
+import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
@@ -13,12 +14,10 @@ import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketListenersMap;
 import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
-import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.utility.*;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -375,7 +374,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             final @NotNull String resourcePath,
             final boolean replace
     ) throws IllegalArgumentException {
-        if (StringUtils.isBlank(resourcePath)) {
+        if (ChatUtils.isBlank(resourcePath)) {
             throw new IllegalArgumentException("ResourcePath cannot be null or empty");
         }
 

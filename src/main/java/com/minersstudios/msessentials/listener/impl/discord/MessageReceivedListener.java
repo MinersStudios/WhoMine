@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.kyori.adventure.text.Component.text;
 
 @DiscordListener
-public final class MessageReceivedListener extends AbstractDiscordListener<MSEssentials> {
+public final class MessageReceivedListener extends AbstractDiscordListener {
 
     @Override
     public void onMessageReceived(final @NotNull MessageReceivedEvent event) {

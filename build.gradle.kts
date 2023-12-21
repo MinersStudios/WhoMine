@@ -1,6 +1,5 @@
 plugins {
     java
-    kotlin("jvm") version "2.0.0-Beta1"
     id("io.papermc.paperweight.userdev") version "1.5.11"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
@@ -29,11 +28,12 @@ allprojects {
     }
 
     dependencies {
-        paperweight.paperDevBundle("1.20.2-R0.1-SNAPSHOT")
-        compileOnly("org.jetbrains:annotations:24.0.1")
-        compileOnly("net.coreprotect:coreprotect:21.3")
+        paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+        compileOnly("org.jetbrains:annotations:24.1.0")
+        compileOnly("net.coreprotect:coreprotect:22.2")
         compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
-        implementation("net.dv8tion:JDA:5.0.0-beta.14")
+        implementation("net.dv8tion:JDA:5.0.0-beta.18")
+        implementation("com.fasterxml.jackson.core:jackson-annotations:2.16.0")
     }
 
     sourceSets {

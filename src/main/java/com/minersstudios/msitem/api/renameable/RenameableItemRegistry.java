@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.api.renameable;
 
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msitem.MSItem;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -96,7 +96,7 @@ public final class RenameableItemRegistry {
      * @see #KEY_MAP
      */
     public static @NotNull Optional<RenameableItem> fromKey(final @Nullable String key) {
-        return StringUtils.isBlank(key)
+        return ChatUtils.isBlank(key)
                 ? Optional.empty()
                 : Optional.ofNullable(KEY_MAP.get(key.toLowerCase(Locale.ENGLISH)));
     }
@@ -180,7 +180,7 @@ public final class RenameableItemRegistry {
      */
     @Contract("null -> false")
     public static boolean containsKey(final @Nullable String key) {
-        return StringUtils.isNotBlank(key)
+        return ChatUtils.isNotBlank(key)
                 && KEY_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
 

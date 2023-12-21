@@ -2,6 +2,7 @@ package com.minersstudios.msdecor.api;
 
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.MSDecorUtils;
 import com.minersstudios.msdecor.api.action.DecorBreakAction;
 import com.minersstudios.msdecor.api.action.DecorClickAction;
@@ -10,7 +11,6 @@ import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import com.minersstudios.msdecor.event.CustomDecorPlaceEvent;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -475,9 +475,10 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
         }
 
         final CustomDecorType type = CustomDecorType.fromKey(key);
+
         return type == null
                 ? Optional.empty()
-                : Optional.of(CustomDecorType.CLASS_TO_DATA_MAP.get(type.getDataClass()));
+                : Optional.of(type.getCustomDecorData());
     }
 
     /**
@@ -499,6 +500,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
         }
 
         final CustomDecorType type = CustomDecorType.fromKey(key);
+
         return type != null
                 && clazz.isInstance(type.getCustomDecorData())
                 ? Optional.of(type.getCustomDecorData(clazz))
@@ -512,9 +514,15 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
      *         if the class is an instance of the custom decor data
      */
     static <D extends CustomDecorData<?>> @NotNull Optional<D> fromClass(final @Nullable Class<D> clazz) {
-        return clazz == null
+        if (clazz == null) {
+            return Optional.empty();
+        }
+
+        final CustomDecorType type = CustomDecorType.fromClass(clazz);
+
+        return type == null
                 ? Optional.empty()
-                : Optional.ofNullable(clazz.cast(CustomDecorType.CLASS_TO_DATA_MAP.get(clazz)));
+                : Optional.of(clazz.cast(type));
     }
 
     /**
@@ -599,7 +607,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
             final String uuid = container.get(DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY, PersistentDataType.STRING);
 
             try {
-                return StringUtils.isBlank(uuid)
+                return ChatUtils.isBlank(uuid)
                         || !(interaction.getWorld().getEntity(UUID.fromString(uuid)) instanceof final Interaction parent)
                         ? Optional.empty()
                         : fromKey(
@@ -655,7 +663,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
             final String uuid = container.get(DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY, PersistentDataType.STRING);
 
             try {
-                return StringUtils.isBlank(uuid)
+                return ChatUtils.isBlank(uuid)
                         || !(interaction.getWorld().getEntity(UUID.fromString(uuid)) instanceof final Interaction parent)
                         ? Optional.empty()
                         : fromKey(

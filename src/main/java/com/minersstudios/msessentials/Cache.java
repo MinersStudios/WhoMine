@@ -5,7 +5,7 @@ import com.minersstudios.msessentials.anomaly.Anomaly;
 import com.minersstudios.msessentials.anomaly.AnomalyAction;
 import com.minersstudios.msessentials.chat.ChatBuffer;
 import com.minersstudios.msessentials.discord.BotHandler;
-import com.minersstudios.msessentials.discord.DiscordHandler;
+import com.minersstudios.msessentials.discord.DiscordManager;
 import com.minersstudios.msessentials.discord.DiscordMap;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.IDMap;
@@ -38,7 +38,7 @@ public final class Cache extends PluginCache<MSEssentials> {
     private ChatBuffer chatBuffer;
     private List<BukkitTask> bukkitTasks;
     private Map<Long, BotHandler> botHandlers;
-    private DiscordHandler discordHandler;
+    private DiscordManager discordManager;
     PlayerInfo consolePlayerInfo;
 
     /**
@@ -64,12 +64,12 @@ public final class Cache extends PluginCache<MSEssentials> {
         this.chatBuffer = new ChatBuffer(plugin);
         this.bukkitTasks = new ArrayList<>();
         this.botHandlers = new HashMap<>();
-        this.discordHandler = new DiscordHandler(plugin);
+        this.discordManager = new DiscordManager(plugin);
     }
 
     @Override
     protected void onUnload() {
-        this.discordHandler.unload();
+        this.discordManager.unload();
 
         this.playerInfoMap = null;
         this.muteMap = null;
@@ -81,7 +81,7 @@ public final class Cache extends PluginCache<MSEssentials> {
         this.chatBuffer = null;
         this.bukkitTasks = null;
         this.botHandlers = null;
-        this.discordHandler = null;
+        this.discordManager = null;
     }
 
     public @UnknownNullability PlayerInfoMap getPlayerInfoMap() {
@@ -124,8 +124,8 @@ public final class Cache extends PluginCache<MSEssentials> {
         return this.botHandlers;
     }
 
-    public @UnknownNullability DiscordHandler getDiscordHandler() {
-        return this.discordHandler;
+    public @UnknownNullability DiscordManager getDiscordHandler() {
+        return this.discordManager;
     }
 
     public @UnknownNullability PlayerInfo getConsolePlayerInfo() {

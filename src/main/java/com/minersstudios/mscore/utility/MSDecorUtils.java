@@ -5,11 +5,10 @@ import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecorData;
 import com.minersstudios.msdecor.api.DecorHitBox;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
 import org.bukkit.inventory.ItemStack;
@@ -170,7 +169,7 @@ public final class MSDecorUtils {
      */
     @Contract("null -> false")
     public static boolean matchesNamespacedKey(final @Nullable String string) {
-        return StringUtils.isNotBlank(string)
+        return ChatUtils.isNotBlank(string)
                 && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }
 }

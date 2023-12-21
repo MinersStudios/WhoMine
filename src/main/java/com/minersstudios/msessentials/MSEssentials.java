@@ -3,7 +3,7 @@ package com.minersstudios.msessentials;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.chat.ChatType;
-import com.minersstudios.msessentials.discord.DiscordHandler;
+import com.minersstudios.msessentials.discord.DiscordManager;
 import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;
 import com.minersstudios.msessentials.menu.ResourcePackMenu;
 import com.minersstudios.msessentials.menu.SkinsMenu;
@@ -100,10 +100,10 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
             task.cancel();
         }
 
-        final DiscordHandler discordHandler = this.cache.getDiscordHandler();
+        final DiscordManager discordManager = this.cache.getDiscordHandler();
 
-        discordHandler.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
-        discordHandler.sendMessage(ChatType.LOCAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
+        discordManager.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
+        discordManager.sendMessage(ChatType.LOCAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
 
         this.cache.unload();
 

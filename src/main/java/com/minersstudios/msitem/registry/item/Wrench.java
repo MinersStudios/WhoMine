@@ -1,6 +1,7 @@
 package com.minersstudios.msitem.registry.item;
 
 import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msitem.api.CustomItemImpl;
 import com.minersstudios.msitem.api.damageable.Damageable;
 import com.minersstudios.msitem.api.damageable.DamageableItem;
@@ -34,7 +35,7 @@ public final class Wrench extends CustomItemImpl implements Damageable {
                 "С его помощью вы можете",
                 "изменять вид декораций,",
                 "которые помечены как : ",
-                "§fꀳ"
+                "§f" + Font.Chars.WRENCHABLE
         ));
         ITEM_STACK.setItemMeta(meta);
     }

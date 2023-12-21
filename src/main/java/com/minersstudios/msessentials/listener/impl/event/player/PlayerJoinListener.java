@@ -35,11 +35,13 @@ public final class PlayerJoinListener extends AbstractEventListener<MSEssentials
 
         playerInfo.hideNameTag();
         player.displayName(playerInfo.getDefaultName());
-        WorldDark.teleportToDarkWorld(player).thenRun(() -> this.getPlugin().runTaskTimer(task -> {
+        WorldDark.teleportToDarkWorld(player)
+        .thenRun(() -> this.getPlugin().runTaskTimer(task -> {
             if (!player.isOnline()) {
                 task.cancel();
                 return;
             }
+
             if (playerInfo.isAuthenticated()) {
                 task.cancel();
                 playerInfo.handleResourcePack().thenAccept(bool -> {

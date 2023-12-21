@@ -1,5 +1,6 @@
 package com.minersstudios.msitem.api.renameable;
 
+import com.minersstudios.mscore.utility.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -35,8 +36,8 @@ public final class RenameEntry {
             final @NotNull String rename,
             final @NotNull ItemStack item
     ) throws IllegalArgumentException {
-        if (StringUtils.isBlank(rename)) {
-            throw new IllegalArgumentException("Rename cannot be null or blank");
+        if (rename.isBlank()) {
+            throw new IllegalArgumentException("Rename cannot be blank");
         }
 
         if (item.getType().isAir()) {
@@ -60,7 +61,7 @@ public final class RenameEntry {
             final @Nullable String rename,
             final @Nullable ItemStack item
     ) {
-        return StringUtils.isBlank(rename)
+        return ChatUtils.isBlank(rename)
                 || item == null
                 || item.getType().isAir()
                 ? null

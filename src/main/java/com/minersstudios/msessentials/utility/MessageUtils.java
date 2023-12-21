@@ -7,7 +7,7 @@ import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.chat.ChatType;
-import com.minersstudios.msessentials.discord.DiscordHandler;
+import com.minersstudios.msessentials.discord.DiscordManager;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.world.WorldDark;
 import net.kyori.adventure.text.Component;
@@ -81,7 +81,7 @@ public final class MessageUtils {
     ) {
         final MSEssentials plugin = MSEssentials.singleton();
         final Config config = plugin.getConfiguration();
-        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
 
         if (chatType == ChatType.LOCAL && location != null) {
             final Component localMessage = space()
@@ -96,7 +96,7 @@ public final class MessageUtils {
 
             sendLocalMessage(localMessage, location, config.getLocalChatRadius());
             MSEssentials.singleton().runTaskAsync(
-                    () -> discordHandler.sendMessage(ChatType.LOCAL, stringLocalMessage)
+                    () -> discordManager.sendMessage(ChatType.LOCAL, stringLocalMessage)
             );
             MSLogger.info(null, localMessage);
             return;
@@ -115,8 +115,8 @@ public final class MessageUtils {
 
         sendGlobalMessage(globalMessage);
         MSCore.singleton().runTaskAsync(() -> {
-            discordHandler.sendMessage(ChatType.GLOBAL, stringGlobalMessage.replaceFirst("\\[WM]", ""));
-            discordHandler.sendMessage(ChatType.LOCAL, stringGlobalMessage);
+            discordManager.sendMessage(ChatType.GLOBAL, stringGlobalMessage.replaceFirst("\\[WM]", ""));
+            discordManager.sendMessage(ChatType.LOCAL, stringGlobalMessage);
         });
         MSLogger.info(null, globalMessage);
     }
@@ -135,7 +135,7 @@ public final class MessageUtils {
             final @NotNull Component message
     ) {
         final MSEssentials plugin = MSEssentials.singleton();
-        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
         final CommandSender commandSender = sender == plugin.getCache().getConsolePlayerInfo()
                 ? plugin.getServer().getConsoleSender()
                 : sender.getOnlinePlayer();
@@ -169,7 +169,7 @@ public final class MessageUtils {
                     .append(message.color(CHAT_COLOR_SECONDARY))
             );
             MSCore.singleton().runTaskAsync(
-                    () -> discordHandler.sendMessage(ChatType.LOCAL, privateMessageString)
+                    () -> discordManager.sendMessage(ChatType.LOCAL, privateMessageString)
             );
             MSLogger.info(null, privateMessage);
             return true;
@@ -193,7 +193,7 @@ public final class MessageUtils {
     ) {
         final MSEssentials plugin = MSEssentials.singleton();
         final Config config = plugin.getConfiguration();
-        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
         final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, sender);
         final Component fullMessage = switch (rolePlayActionType) {
             case DO ->
@@ -233,7 +233,7 @@ public final class MessageUtils {
                 config.getLocalChatRadius()
         );
         MSCore.singleton().runTaskAsync(
-                () -> discordHandler.sendMessage(ChatType.LOCAL, ChatUtils.serializePlainComponent(fullMessage))
+                () -> discordManager.sendMessage(ChatType.LOCAL, ChatUtils.serializePlainComponent(fullMessage))
         );
         MSLogger.info(null, fullMessage);
     }
@@ -257,7 +257,7 @@ public final class MessageUtils {
             final @Nullable Player killer
     ) {
         final MSEssentials plugin = MSEssentials.singleton();
-        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
         final Location deathLocation = killed.getLocation();
         final PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(plugin, killed);
         final PlayerInfo killerInfo = killer != null
@@ -281,8 +281,8 @@ public final class MessageUtils {
         killedInfo.setLastDeathLocation(deathLocation);
         sendGlobalMessage(deathMessage);
         MSCore.singleton().runTaskAsync(() -> {
-            discordHandler.sendActionMessage(ChatType.GLOBAL, killed.getName(), stringDeathMessage, 16757024);
-            discordHandler.sendActionMessage(ChatType.LOCAL, killed.getName(), stringDeathMessage, 16757024);
+            discordManager.sendActionMessage(ChatType.GLOBAL, killed.getName(), stringDeathMessage, 16757024);
+            discordManager.sendActionMessage(ChatType.LOCAL, killed.getName(), stringDeathMessage, 16757024);
         });
         MSLogger.info(null, deathMessage);
 
@@ -318,7 +318,7 @@ public final class MessageUtils {
         }
 
         final MSEssentials plugin = MSEssentials.singleton();
-        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
         final Component joinMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
@@ -328,8 +328,8 @@ public final class MessageUtils {
 
         sendGlobalMessage(joinMessage);
         MSCore.singleton().runTaskAsync(() -> {
-            discordHandler.sendActionMessage(ChatType.GLOBAL, player.getName(), stringJoinMessage, 65280);
-            discordHandler.sendActionMessage(ChatType.LOCAL, player.getName(), stringJoinMessage, 65280);
+            discordManager.sendActionMessage(ChatType.GLOBAL, player.getName(), stringJoinMessage, 65280);
+            discordManager.sendActionMessage(ChatType.LOCAL, player.getName(), stringJoinMessage, 65280);
         });
         MSLogger.info(null, joinMessage);
     }
@@ -349,7 +349,7 @@ public final class MessageUtils {
         }
 
         final MSEssentials plugin = MSEssentials.singleton();
-        final DiscordHandler discordHandler = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
         final Component quitMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
@@ -359,8 +359,8 @@ public final class MessageUtils {
 
         sendGlobalMessage(quitMessage);
         MSCore.singleton().runTaskAsync(() -> {
-            discordHandler.sendActionMessage(ChatType.GLOBAL, player.getName(), stringQuitMessage, 16711680);
-            discordHandler.sendActionMessage(ChatType.LOCAL, player.getName(), stringQuitMessage, 16711680);
+            discordManager.sendActionMessage(ChatType.GLOBAL, player.getName(), stringQuitMessage, 16711680);
+            discordManager.sendActionMessage(ChatType.LOCAL, player.getName(), stringQuitMessage, 16711680);
         });
         MSLogger.info(null, quitMessage);
     }

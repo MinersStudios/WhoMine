@@ -1,8 +1,8 @@
 package com.minersstudios.msessentials.player;
 
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.skin.Skin;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -189,7 +189,7 @@ public final class PlayerFile {
 
     @Contract("null -> null")
     public @Nullable Skin getSkin(final @Nullable String name) {
-        if (StringUtils.isBlank(name)) {
+        if (ChatUtils.isBlank(name)) {
             return null;
         }
 
@@ -278,7 +278,7 @@ public final class PlayerFile {
 
     @Contract("null -> false")
     public boolean containsSkin(final @Nullable String name) {
-        if (StringUtils.isBlank(name)) {
+        if (ChatUtils.isBlank(name)) {
             return false;
         }
 

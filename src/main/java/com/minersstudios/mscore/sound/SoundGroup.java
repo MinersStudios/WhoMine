@@ -3,7 +3,7 @@ package com.minersstudios.mscore.sound;
 import com.minersstudios.msblock.Config;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.mscore.location.MSPosition;
-import org.apache.commons.lang3.StringUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
@@ -693,7 +693,7 @@ public final class SoundGroup implements Cloneable {
              * @throws IllegalStateException If the key is blank or null
              */
             public @NotNull Sound build() throws IllegalStateException {
-                if (StringUtils.isBlank(this.key)) {
+                if (ChatUtils.isBlank(this.key)) {
                     throw new IllegalArgumentException("Key cannot be blank or null!");
                 }
 

@@ -22,7 +22,7 @@ import static net.minecraft.network.protocol.PacketFlow.SERVERBOUND;
  * @see PacketProtocol
  * @see PacketFlow
  * @see PacketRegistry
- * @see <a href="wiki.vg/index.php?title=Protocol&oldid=18641">Protocol Wiki 1.20.2</a>
+ * @see <a href="https://wiki.vg/Protocol">Protocol Wiki 1.20.4</a>
  */
 @SuppressWarnings("unused")
 @Immutable
@@ -289,15 +289,16 @@ public final class PacketType {
 
         public static final class Client {
             //<editor-fold desc="Configuration client packets" defaultstate="collapsed">
-            public static final PacketType PLUGIN_MESSAGE =       new PacketType(CLIENTBOUND, 0x00, "Plugin Message (configuration)");
+            public static final PacketType PLUGIN_MESSAGE =       new PacketType(CLIENTBOUND, 0x00, "Clientbound Plugin Message (configuration)");
             public static final PacketType DISCONNECT =           new PacketType(CLIENTBOUND, 0x01, "Disconnect (configuration)");
             public static final PacketType FINISH_CONFIGURATION = new PacketType(CLIENTBOUND, 0x02, "Finish Configuration");
-            public static final PacketType KEEP_ALIVE =           new PacketType(CLIENTBOUND, 0x03, "Keep Alive (configuration)");
+            public static final PacketType KEEP_ALIVE =           new PacketType(CLIENTBOUND, 0x03, "Clientbound Keep Alive (configuration)");
             public static final PacketType PING =                 new PacketType(CLIENTBOUND, 0x04, "Ping (configuration)");
             public static final PacketType REGISTRY_DATA =        new PacketType(CLIENTBOUND, 0x05, "Registry Data");
-            public static final PacketType RESOURCE_PACK =        new PacketType(CLIENTBOUND, 0x06, "Resource Pack");
-            public static final PacketType FEATURE_FLAGS =        new PacketType(CLIENTBOUND, 0x07, "Feature Flags");
-            public static final PacketType UPDATE_TAGS =          new PacketType(CLIENTBOUND, 0x08, "Update Tags");
+            public static final PacketType REMOVE_RESOURCE_PACK = new PacketType(CLIENTBOUND, 0x06, "Remove Resource Pack (configuration)");
+            public static final PacketType ADD_RESOURCE_PACK =    new PacketType(CLIENTBOUND, 0x07, "Add Resource Pack (configuration)");
+            public static final PacketType FEATURE_FLAGS =        new PacketType(CLIENTBOUND, 0x08, "Feature Flags");
+            public static final PacketType UPDATE_TAGS =          new PacketType(CLIENTBOUND, 0x09, "Update Tags");
             //</editor-fold>
 
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
@@ -310,12 +311,12 @@ public final class PacketType {
 
         public static final class Server {
             //<editor-fold desc="Configuration server packets" defaultstate="collapsed">
-            public static final PacketType CLIENT_INFORMATION =   new PacketType(SERVERBOUND, 0x00, "Client Information (configuration)");
-            public static final PacketType PLUGIN_MESSAGE =       new PacketType(SERVERBOUND, 0x01, "Plugin Message (configuration)");
-            public static final PacketType FINISH_CONFIGURATION = new PacketType(SERVERBOUND, 0x02, "Finish Configuration");
-            public static final PacketType KEEP_ALIVE =           new PacketType(SERVERBOUND, 0x03, "Keep Alive (configuration)");
-            public static final PacketType PONG =                 new PacketType(SERVERBOUND, 0x04, "Pong (configuration)");
-            public static final PacketType RESOURCE_PACK =        new PacketType(SERVERBOUND, 0x05, "Resource Pack (configuration)");
+            public static final PacketType CLIENT_INFORMATION =     new PacketType(SERVERBOUND, 0x00, "Client Information (configuration)");
+            public static final PacketType PLUGIN_MESSAGE =         new PacketType(SERVERBOUND, 0x01, "Serverbound Plugin Message (configuration)");
+            public static final PacketType FINISH_CONFIGURATION =   new PacketType(SERVERBOUND, 0x02, "Finish Configuration");
+            public static final PacketType KEEP_ALIVE =             new PacketType(SERVERBOUND, 0x03, "Serverbound Keep Alive (configuration)");
+            public static final PacketType PONG =                   new PacketType(SERVERBOUND, 0x04, "Pong (configuration)");
+            public static final PacketType RESOURCE_PACK_RESPONSE = new PacketType(SERVERBOUND, 0x05, "Resource Pack Response (configuration)");
             //</editor-fold>
 
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
@@ -369,7 +370,7 @@ public final class PacketType {
             public static final PacketType SET_CONTAINER_SLOT =                  new PacketType(CLIENTBOUND, 0x15, "Set Container Slot");
             public static final PacketType SET_COOLDOWN =                        new PacketType(CLIENTBOUND, 0x16, "Set Cooldown");
             public static final PacketType CHAT_SUGGESTIONS =                    new PacketType(CLIENTBOUND, 0x17, "Chat Suggestions");
-            public static final PacketType PLUGIN_MESSAGE =                      new PacketType(CLIENTBOUND, 0x18, "Plugin Message");
+            public static final PacketType PLUGIN_MESSAGE =                      new PacketType(CLIENTBOUND, 0x18, "Clientbound Plugin Message (play)");
             public static final PacketType DAMAGE_EVENT =                        new PacketType(CLIENTBOUND, 0x19, "Damage Event");
             public static final PacketType DELETE_MESSAGE =                      new PacketType(CLIENTBOUND, 0x1A, "Delete Message");
             public static final PacketType DISCONNECT =                          new PacketType(CLIENTBOUND, 0x1B, "Disconnect (play)");
@@ -381,7 +382,7 @@ public final class PacketType {
             public static final PacketType OPEN_HORSE_SCREEN =                   new PacketType(CLIENTBOUND, 0x21, "Open Horse Screen");
             public static final PacketType HURT_ANIMATION =                      new PacketType(CLIENTBOUND, 0x22, "Hurt Animation");
             public static final PacketType INITIALIZE_WORLD_BORDER =             new PacketType(CLIENTBOUND, 0x23, "Initialize World Border");
-            public static final PacketType KEEP_ALIVE =                          new PacketType(CLIENTBOUND, 0x24, "Keep Alive");
+            public static final PacketType KEEP_ALIVE =                          new PacketType(CLIENTBOUND, 0x24, "Clientbound Keep Alive (play)");
             public static final PacketType CHUNK_DATA_AND_UPDATE_LIGHT =         new PacketType(CLIENTBOUND, 0x25, "Chunk Data and Update Light");
             public static final PacketType WORLD_EVENT =                         new PacketType(CLIENTBOUND, 0x26, "World Event");
             public static final PacketType PARTICLE =                            new PacketType(CLIENTBOUND, 0x27, "Particle");
@@ -411,53 +412,57 @@ public final class PacketType {
             public static final PacketType UPDATE_RECIPE_BOOK =                  new PacketType(CLIENTBOUND, 0x3F, "Update Recipe Book");
             public static final PacketType REMOVE_ENTITIES =                     new PacketType(CLIENTBOUND, 0x40, "Remove Entities");
             public static final PacketType REMOVE_ENTITY_EFFECT =                new PacketType(CLIENTBOUND, 0x41, "Remove Entity Effect");
-            public static final PacketType RESOURCE_PACK =                       new PacketType(CLIENTBOUND, 0x42, "Resource Pack");
-            public static final PacketType RESPAWN =                             new PacketType(CLIENTBOUND, 0x43, "Respawn");
-            public static final PacketType SET_HEAD_ROTATION =                   new PacketType(CLIENTBOUND, 0x44, "Set Head Rotation");
-            public static final PacketType UPDATE_SECTION_BLOCKS =               new PacketType(CLIENTBOUND, 0x45, "Update Section Blocks");
-            public static final PacketType SELECT_ADVANCEMENT_TAB =              new PacketType(CLIENTBOUND, 0x46, "Select Advancement Tab");
-            public static final PacketType SERVER_DATA =                         new PacketType(CLIENTBOUND, 0x47, "Server Data");
-            public static final PacketType SET_ACTION_BAR_TEXT =                 new PacketType(CLIENTBOUND, 0x48, "Set Action Bar Text");
-            public static final PacketType SET_BORDER_CENTER =                   new PacketType(CLIENTBOUND, 0x49, "Set Border Center");
-            public static final PacketType SET_BORDER_LERP_SIZE =                new PacketType(CLIENTBOUND, 0x4A, "Set Border Lerp Size");
-            public static final PacketType SET_BORDER_SIZE =                     new PacketType(CLIENTBOUND, 0x4B, "Set Border Size");
-            public static final PacketType SET_BORDER_WARNING_DELAY =            new PacketType(CLIENTBOUND, 0x4C, "Set Border Warning Delay");
-            public static final PacketType SET_BORDER_WARNING_DISTANCE =         new PacketType(CLIENTBOUND, 0x4D, "Set Border Warning Distance");
-            public static final PacketType SET_CAMERA =                          new PacketType(CLIENTBOUND, 0x4E, "Set Camera");
-            public static final PacketType SET_HELD_ITEM =                       new PacketType(CLIENTBOUND, 0x4F, "Set Held Item");
-            public static final PacketType SET_CENTER_CHUNK =                    new PacketType(CLIENTBOUND, 0x50, "Set Center Chunk");
-            public static final PacketType SET_RENDER_DISTANCE =                 new PacketType(CLIENTBOUND, 0x51, "Set Render Distance");
-            public static final PacketType SET_DEFAULT_SPAWN_POSITION =          new PacketType(CLIENTBOUND, 0x52, "Set Default Spawn Position");
-            public static final PacketType DISPLAY_OBJECTIVE =                   new PacketType(CLIENTBOUND, 0x53, "Display Objective");
-            public static final PacketType SET_ENTITY_METADATA =                 new PacketType(CLIENTBOUND, 0x54, "Set Entity Metadata");
-            public static final PacketType LINK_ENTITIES =                       new PacketType(CLIENTBOUND, 0x55, "Link Entities");
-            public static final PacketType SET_ENTITY_VELOCITY =                 new PacketType(CLIENTBOUND, 0x56, "Set Entity Velocity");
-            public static final PacketType SET_EQUIPMENT =                       new PacketType(CLIENTBOUND, 0x57, "Set Equipment");
-            public static final PacketType SET_EXPERIENCE =                      new PacketType(CLIENTBOUND, 0x58, "Set Experience");
-            public static final PacketType SET_HEALTH =                          new PacketType(CLIENTBOUND, 0x59, "Set Health");
-            public static final PacketType UPDATE_OBJECTIVES =                   new PacketType(CLIENTBOUND, 0x5A, "Update Objectives");
-            public static final PacketType SET_PASSENGERS =                      new PacketType(CLIENTBOUND, 0x5B, "Set Passengers");
-            public static final PacketType UPDATE_TEAMS =                        new PacketType(CLIENTBOUND, 0x5C, "Update Teams");
-            public static final PacketType UPDATE_SCORE =                        new PacketType(CLIENTBOUND, 0x5D, "Update Score");
-            public static final PacketType SET_SIMULATION_DISTANCE =             new PacketType(CLIENTBOUND, 0x5E, "Set Simulation Distance");
-            public static final PacketType SET_SUBTITLE_TEXT =                   new PacketType(CLIENTBOUND, 0x5F, "Set Subtitle Text");
-            public static final PacketType UPDATE_TIME =                         new PacketType(CLIENTBOUND, 0x60, "Update Time");
-            public static final PacketType SET_TITLE_TEXT =                      new PacketType(CLIENTBOUND, 0x61, "Set Title Text");
-            public static final PacketType SET_TITLE_ANIMATION_TIMES =           new PacketType(CLIENTBOUND, 0x62, "Set Title Animation Times");
-            public static final PacketType ENTITY_SOUND_EFFECT =                 new PacketType(CLIENTBOUND, 0x63, "Entity Sound Effect");
-            public static final PacketType SOUND_EFFECT =                        new PacketType(CLIENTBOUND, 0x64, "Sound Effect");
-            public static final PacketType START_CONFIGURATION =                 new PacketType(CLIENTBOUND, 0x65, "Start Configuration");
-            public static final PacketType STOP_SOUND =                          new PacketType(CLIENTBOUND, 0x66, "Stop Sound");
-            public static final PacketType SYSTEM_CHAT_MESSAGE =                 new PacketType(CLIENTBOUND, 0x67, "System Chat Message");
-            public static final PacketType SET_TAB_LIST_HEADER_AND_FOOTER =      new PacketType(CLIENTBOUND, 0x68, "Set Tab List Header And Footer");
-            public static final PacketType TAG_QUERY_RESPONSE =                  new PacketType(CLIENTBOUND, 0x69, "Tag Query Response");
-            public static final PacketType PICKUP_ITEM =                         new PacketType(CLIENTBOUND, 0x6A, "Pickup Item");
-            public static final PacketType TELEPORT_ENTITY =                     new PacketType(CLIENTBOUND, 0x6B, "Teleport Entity");
-            public static final PacketType UPDATE_ADVANCEMENTS =                 new PacketType(CLIENTBOUND, 0x6C, "Update Advancements");
-            public static final PacketType UPDATE_ATTRIBUTES =                   new PacketType(CLIENTBOUND, 0x6D, "Update Attributes");
-            public static final PacketType ENTITY_EFFECT =                       new PacketType(CLIENTBOUND, 0x6E, "Entity Effect");
-            public static final PacketType UPDATE_RECIPES =                      new PacketType(CLIENTBOUND, 0x6F, "Update Recipes");
-            public static final PacketType UPDATE_TAGS =                         new PacketType(CLIENTBOUND, 0x70, "Update Tags");
+            public static final PacketType RESET_SCORE =                         new PacketType(CLIENTBOUND, 0x42, "Reset Score");
+            public static final PacketType REMOVE_RESOURCE_PACK =                new PacketType(CLIENTBOUND, 0x43, "Remove Resource Pack (play)");
+            public static final PacketType ADD_RESOURCE_PACK =                   new PacketType(CLIENTBOUND, 0x44, "Add Resource Pack (play)");
+            public static final PacketType RESPAWN =                             new PacketType(CLIENTBOUND, 0x45, "Respawn");
+            public static final PacketType SET_HEAD_ROTATION =                   new PacketType(CLIENTBOUND, 0x46, "Set Head Rotation");
+            public static final PacketType UPDATE_SECTION_BLOCKS =               new PacketType(CLIENTBOUND, 0x47, "Update Section Blocks");
+            public static final PacketType SELECT_ADVANCEMENT_TAB =              new PacketType(CLIENTBOUND, 0x48, "Select Advancement Tab");
+            public static final PacketType SERVER_DATA =                         new PacketType(CLIENTBOUND, 0x49, "Server Data");
+            public static final PacketType SET_ACTION_BAR_TEXT =                 new PacketType(CLIENTBOUND, 0x4A, "Set Action Bar Text");
+            public static final PacketType SET_BORDER_CENTER =                   new PacketType(CLIENTBOUND, 0x4B, "Set Border Center");
+            public static final PacketType SET_BORDER_LERP_SIZE =                new PacketType(CLIENTBOUND, 0x4C, "Set Border Lerp Size");
+            public static final PacketType SET_BORDER_SIZE =                     new PacketType(CLIENTBOUND, 0x4D, "Set Border Size");
+            public static final PacketType SET_BORDER_WARNING_DELAY =            new PacketType(CLIENTBOUND, 0x4E, "Set Border Warning Delay");
+            public static final PacketType SET_BORDER_WARNING_DISTANCE =         new PacketType(CLIENTBOUND, 0x4F, "Set Border Warning Distance");
+            public static final PacketType SET_CAMERA =                          new PacketType(CLIENTBOUND, 0x50, "Set Camera");
+            public static final PacketType SET_HELD_ITEM =                       new PacketType(CLIENTBOUND, 0x51, "Set Held Item");
+            public static final PacketType SET_CENTER_CHUNK =                    new PacketType(CLIENTBOUND, 0x52, "Set Center Chunk");
+            public static final PacketType SET_RENDER_DISTANCE =                 new PacketType(CLIENTBOUND, 0x53, "Set Render Distance");
+            public static final PacketType SET_DEFAULT_SPAWN_POSITION =          new PacketType(CLIENTBOUND, 0x54, "Set Default Spawn Position");
+            public static final PacketType DISPLAY_OBJECTIVE =                   new PacketType(CLIENTBOUND, 0x55, "Display Objective");
+            public static final PacketType SET_ENTITY_METADATA =                 new PacketType(CLIENTBOUND, 0x56, "Set Entity Metadata");
+            public static final PacketType LINK_ENTITIES =                       new PacketType(CLIENTBOUND, 0x57, "Link Entities");
+            public static final PacketType SET_ENTITY_VELOCITY =                 new PacketType(CLIENTBOUND, 0x58, "Set Entity Velocity");
+            public static final PacketType SET_EQUIPMENT =                       new PacketType(CLIENTBOUND, 0x59, "Set Equipment");
+            public static final PacketType SET_EXPERIENCE =                      new PacketType(CLIENTBOUND, 0x5A, "Set Experience");
+            public static final PacketType SET_HEALTH =                          new PacketType(CLIENTBOUND, 0x5B, "Set Health");
+            public static final PacketType UPDATE_OBJECTIVES =                   new PacketType(CLIENTBOUND, 0x5C, "Update Objectives");
+            public static final PacketType SET_PASSENGERS =                      new PacketType(CLIENTBOUND, 0x5D, "Set Passengers");
+            public static final PacketType UPDATE_TEAMS =                        new PacketType(CLIENTBOUND, 0x5E, "Update Teams");
+            public static final PacketType UPDATE_SCORE =                        new PacketType(CLIENTBOUND, 0x5F, "Update Score");
+            public static final PacketType SET_SIMULATION_DISTANCE =             new PacketType(CLIENTBOUND, 0x60, "Set Simulation Distance");
+            public static final PacketType SET_SUBTITLE_TEXT =                   new PacketType(CLIENTBOUND, 0x61, "Set Subtitle Text");
+            public static final PacketType UPDATE_TIME =                         new PacketType(CLIENTBOUND, 0x62, "Update Time");
+            public static final PacketType SET_TITLE_TEXT =                      new PacketType(CLIENTBOUND, 0x63, "Set Title Text");
+            public static final PacketType SET_TITLE_ANIMATION_TIMES =           new PacketType(CLIENTBOUND, 0x64, "Set Title Animation Times");
+            public static final PacketType ENTITY_SOUND_EFFECT =                 new PacketType(CLIENTBOUND, 0x65, "Entity Sound Effect");
+            public static final PacketType SOUND_EFFECT =                        new PacketType(CLIENTBOUND, 0x66, "Sound Effect");
+            public static final PacketType START_CONFIGURATION =                 new PacketType(CLIENTBOUND, 0x67, "Start Configuration");
+            public static final PacketType STOP_SOUND =                          new PacketType(CLIENTBOUND, 0x68, "Stop Sound");
+            public static final PacketType SYSTEM_CHAT_MESSAGE =                 new PacketType(CLIENTBOUND, 0x69, "System Chat Message");
+            public static final PacketType SET_TAB_LIST_HEADER_AND_FOOTER =      new PacketType(CLIENTBOUND, 0x6A, "Set Tab List Header And Footer");
+            public static final PacketType TAG_QUERY_RESPONSE =                  new PacketType(CLIENTBOUND, 0x6B, "Tag Query Response");
+            public static final PacketType PICKUP_ITEM =                         new PacketType(CLIENTBOUND, 0x6C, "Pickup Item");
+            public static final PacketType TELEPORT_ENTITY =                     new PacketType(CLIENTBOUND, 0x6D, "Teleport Entity");
+            public static final PacketType SET_TICKING_STATE =                   new PacketType(CLIENTBOUND, 0x6E, "Set Ticking State");
+            public static final PacketType STEP_TICK =                           new PacketType(CLIENTBOUND, 0x6F, "Step Tick");
+            public static final PacketType UPDATE_ADVANCEMENTS =                 new PacketType(CLIENTBOUND, 0x70, "Update Advancements");
+            public static final PacketType UPDATE_ATTRIBUTES =                   new PacketType(CLIENTBOUND, 0x71, "Update Attributes");
+            public static final PacketType ENTITY_EFFECT =                       new PacketType(CLIENTBOUND, 0x72, "Entity Effect");
+            public static final PacketType UPDATE_RECIPES =                      new PacketType(CLIENTBOUND, 0x73, "Update Recipes");
+            public static final PacketType UPDATE_TAGS =                         new PacketType(CLIENTBOUND, 0x74, "Update Tags");
             //</editor-fold>
 
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
@@ -473,57 +478,58 @@ public final class PacketType {
             public static final PacketType CONFIRM_TELEPORTATION =            new PacketType(SERVERBOUND, 0x00, "Confirm Teleportation");
             public static final PacketType QUERY_BLOCK_ENTITY_TAG =           new PacketType(SERVERBOUND, 0x01, "Query Block Entity Tag");
             public static final PacketType CHANGE_DIFFICULTY =                new PacketType(SERVERBOUND, 0x02, "Change Difficulty");
-            public static final PacketType MESSAGE_ACKNOWLEDGMENT =           new PacketType(SERVERBOUND, 0x03, "Message Acknowledgment");
+            public static final PacketType ACKNOWLEDGE_MESSAGE =              new PacketType(SERVERBOUND, 0x03, "Acknowledge Message");
             public static final PacketType CHAT_COMMAND =                     new PacketType(SERVERBOUND, 0x04, "Chat Command");
             public static final PacketType CHAT_MESSAGE =                     new PacketType(SERVERBOUND, 0x05, "Chat Message");
             public static final PacketType PLAYER_SESSION =                   new PacketType(SERVERBOUND, 0x06, "Player Session");
             public static final PacketType CHUNK_BATCH_RECEIVED =             new PacketType(SERVERBOUND, 0x07, "Chunk Batch Received");
-            public static final PacketType CLIENT_COMMAND =                   new PacketType(SERVERBOUND, 0x08, "Client Command");
-            public static final PacketType CLIENT_INFORMATION =               new PacketType(SERVERBOUND, 0x09, "Client Information");
+            public static final PacketType CLIENT_STATUS =                    new PacketType(SERVERBOUND, 0x08, "Client Status");
+            public static final PacketType CLIENT_INFORMATION =               new PacketType(SERVERBOUND, 0x09, "Client Information (play)");
             public static final PacketType COMMAND_SUGGESTIONS_REQUEST =      new PacketType(SERVERBOUND, 0x0A, "Command Suggestions Request");
-            public static final PacketType CONFIGURATION_ACKNOWLEDGED =       new PacketType(SERVERBOUND, 0x0B, "Configuration Acknowledged");
+            public static final PacketType ACKNOWLEDGE_CONFIGURATION =        new PacketType(SERVERBOUND, 0x0B, "Acknowledge Configuration");
             public static final PacketType CLICK_CONTAINER_BUTTON =           new PacketType(SERVERBOUND, 0x0C, "Click Container Button");
             public static final PacketType CLICK_CONTAINER =                  new PacketType(SERVERBOUND, 0x0D, "Click Container");
             public static final PacketType CLOSE_CONTAINER =                  new PacketType(SERVERBOUND, 0x0E, "Close Container");
-            public static final PacketType PLUGIN_MESSAGE =                   new PacketType(SERVERBOUND, 0x0F, "Plugin Message");
-            public static final PacketType EDIT_BOOK =                        new PacketType(SERVERBOUND, 0x10, "Edit Book");
-            public static final PacketType QUERY_ENTITY_TAG =                 new PacketType(SERVERBOUND, 0x11, "Query Entity Tag");
-            public static final PacketType INTERACT =                         new PacketType(SERVERBOUND, 0x12, "Interact");
-            public static final PacketType JIGSAW_GENERATE =                  new PacketType(SERVERBOUND, 0x13, "Jigsaw Generate");
-            public static final PacketType KEEP_ALIVE =                       new PacketType(SERVERBOUND, 0x14, "Keep Alive");
-            public static final PacketType LOCK_DIFFICULTY =                  new PacketType(SERVERBOUND, 0x15, "Lock Difficulty");
-            public static final PacketType SET_PLAYER_POSITION =              new PacketType(SERVERBOUND, 0x16, "Set Player Position");
-            public static final PacketType SET_PLAYER_POSITION_AND_ROTATION = new PacketType(SERVERBOUND, 0x17, "Set Player Position and Rotation");
-            public static final PacketType SET_PLAYER_ROTATION =              new PacketType(SERVERBOUND, 0x18, "Set Player Rotation");
-            public static final PacketType SET_PLAYER_ON_GROUND =             new PacketType(SERVERBOUND, 0x19, "Set Player On Ground");
-            public static final PacketType MOVE_VEHICLE =                     new PacketType(SERVERBOUND, 0x1A, "Move Vehicle");
-            public static final PacketType PADDLE_BOAT =                      new PacketType(SERVERBOUND, 0x1B, "Paddle Boat");
-            public static final PacketType PICK_ITEM =                        new PacketType(SERVERBOUND, 0x1C, "Pick Item");
-            public static final PacketType PING_REQUEST =                     new PacketType(SERVERBOUND, 0x1D, "Ping Request (play)");
-            public static final PacketType PLACE_RECIPE =                     new PacketType(SERVERBOUND, 0x1E, "Place Recipe");
-            public static final PacketType PLAYER_ABILITIES =                 new PacketType(SERVERBOUND, 0x1F, "Player Abilities");
-            public static final PacketType PLAYER_ACTION =                    new PacketType(SERVERBOUND, 0x20, "Player Action");
-            public static final PacketType PLAYER_COMMAND =                   new PacketType(SERVERBOUND, 0x21, "Player Command");
-            public static final PacketType PLAYER_INPUT =                     new PacketType(SERVERBOUND, 0x22, "Player Input");
-            public static final PacketType PONG =                             new PacketType(SERVERBOUND, 0x23, "Pong (play)");
-            public static final PacketType CHANGE_RECIPE_BOOK_SETTINGS =      new PacketType(SERVERBOUND, 0x24, "Change Recipe Book Settings");
-            public static final PacketType SET_SEEN_RECIPE =                  new PacketType(SERVERBOUND, 0x25, "Set Seen Recipe");
-            public static final PacketType RENAME_ITEM =                      new PacketType(SERVERBOUND, 0x26, "Rename Item");
-            public static final PacketType RESOURCE_PACK =                    new PacketType(SERVERBOUND, 0x27, "Resource Pack");
-            public static final PacketType SEEN_ADVANCEMENTS =                new PacketType(SERVERBOUND, 0x28, "Seen Advancements");
-            public static final PacketType SELECT_TRADE =                     new PacketType(SERVERBOUND, 0x29, "Select Trade");
-            public static final PacketType SET_BEACON_EFFECT =                new PacketType(SERVERBOUND, 0x2A, "Set Beacon Effect");
-            public static final PacketType SET_HELD_ITEM =                    new PacketType(SERVERBOUND, 0x2B, "Set Held Item");
-            public static final PacketType PROGRAM_COMMAND_BLOCK =            new PacketType(SERVERBOUND, 0x2C, "Program Command Block");
-            public static final PacketType PROGRAM_COMMAND_BLOCK_MINECART =   new PacketType(SERVERBOUND, 0x2D, "Program Command Block Minecart");
-            public static final PacketType SET_CREATIVE_MODE_SLOT =           new PacketType(SERVERBOUND, 0x2E, "Set Creative Mode Slot");
-            public static final PacketType PROGRAM_JIGSAW_BLOCK =             new PacketType(SERVERBOUND, 0x2F, "Program Jigsaw Block");
-            public static final PacketType PROGRAM_STRUCTURE_BLOCK =          new PacketType(SERVERBOUND, 0x30, "Program Structure Block");
-            public static final PacketType UPDATE_SIGN =                      new PacketType(SERVERBOUND, 0x31, "Update Sign");
-            public static final PacketType SWING_ARM =                        new PacketType(SERVERBOUND, 0x32, "Swing Arm");
-            public static final PacketType TELEPORT_TO_ENTITY =               new PacketType(SERVERBOUND, 0x33, "Teleport To Entity");
-            public static final PacketType USE_ITEM_ON =                      new PacketType(SERVERBOUND, 0x34, "Use Item On");
-            public static final PacketType USE_ITEM =                         new PacketType(SERVERBOUND, 0x35, "Use Item");
+            public static final PacketType CHANGE_CONTAINER_SLOT_STATE =      new PacketType(SERVERBOUND, 0x0F, "Change Container Slot State");
+            public static final PacketType PLUGIN_MESSAGE =                   new PacketType(SERVERBOUND, 0x10, "Serverbound Plugin Message (play)");
+            public static final PacketType EDIT_BOOK =                        new PacketType(SERVERBOUND, 0x11, "Edit Book");
+            public static final PacketType QUERY_ENTITY_TAG =                 new PacketType(SERVERBOUND, 0x12, "Query Entity Tag");
+            public static final PacketType INTERACT =                         new PacketType(SERVERBOUND, 0x13, "Interact");
+            public static final PacketType JIGSAW_GENERATE =                  new PacketType(SERVERBOUND, 0x14, "Jigsaw Generate");
+            public static final PacketType KEEP_ALIVE =                       new PacketType(SERVERBOUND, 0x15, "Serverbound Keep Alive (play)");
+            public static final PacketType LOCK_DIFFICULTY =                  new PacketType(SERVERBOUND, 0x16, "Lock Difficulty");
+            public static final PacketType SET_PLAYER_POSITION =              new PacketType(SERVERBOUND, 0x17, "Set Player Position");
+            public static final PacketType SET_PLAYER_POSITION_AND_ROTATION = new PacketType(SERVERBOUND, 0x18, "Set Player Position and Rotation");
+            public static final PacketType SET_PLAYER_ROTATION =              new PacketType(SERVERBOUND, 0x19, "Set Player Rotation");
+            public static final PacketType SET_PLAYER_ON_GROUND =             new PacketType(SERVERBOUND, 0x1A, "Set Player On Ground");
+            public static final PacketType MOVE_VEHICLE =                     new PacketType(SERVERBOUND, 0x1B, "Move Vehicle");
+            public static final PacketType PADDLE_BOAT =                      new PacketType(SERVERBOUND, 0x1C, "Paddle Boat");
+            public static final PacketType PICK_ITEM =                        new PacketType(SERVERBOUND, 0x1D, "Pick Item");
+            public static final PacketType PING_REQUEST =                     new PacketType(SERVERBOUND, 0x1E, "Ping Request (play)");
+            public static final PacketType PLACE_RECIPE =                     new PacketType(SERVERBOUND, 0x1F, "Place Recipe");
+            public static final PacketType PLAYER_ABILITIES =                 new PacketType(SERVERBOUND, 0x20, "Player Abilities");
+            public static final PacketType PLAYER_ACTION =                    new PacketType(SERVERBOUND, 0x21, "Player Action");
+            public static final PacketType PLAYER_COMMAND =                   new PacketType(SERVERBOUND, 0x22, "Player Command");
+            public static final PacketType PLAYER_INPUT =                     new PacketType(SERVERBOUND, 0x23, "Player Input");
+            public static final PacketType PONG =                             new PacketType(SERVERBOUND, 0x24, "Pong (play)");
+            public static final PacketType CHANGE_RECIPE_BOOK_SETTINGS =      new PacketType(SERVERBOUND, 0x25, "Change Recipe Book Settings");
+            public static final PacketType SET_SEEN_RECIPE =                  new PacketType(SERVERBOUND, 0x26, "Set Seen Recipe");
+            public static final PacketType RENAME_ITEM =                      new PacketType(SERVERBOUND, 0x27, "Rename Item");
+            public static final PacketType RESOURCE_PACK_RESPONSE =           new PacketType(SERVERBOUND, 0x28, "Resource Pack Response (play)");
+            public static final PacketType SEEN_ADVANCEMENTS =                new PacketType(SERVERBOUND, 0x29, "Seen Advancements");
+            public static final PacketType SELECT_TRADE =                     new PacketType(SERVERBOUND, 0x2A, "Select Trade");
+            public static final PacketType SET_BEACON_EFFECT =                new PacketType(SERVERBOUND, 0x2B, "Set Beacon Effect");
+            public static final PacketType SET_HELD_ITEM =                    new PacketType(SERVERBOUND, 0x2C, "Set Held Item");
+            public static final PacketType PROGRAM_COMMAND_BLOCK =            new PacketType(SERVERBOUND, 0x2D, "Program Command Block");
+            public static final PacketType PROGRAM_COMMAND_BLOCK_MINECART =   new PacketType(SERVERBOUND, 0x2E, "Program Command Block Minecart");
+            public static final PacketType SET_CREATIVE_MODE_SLOT =           new PacketType(SERVERBOUND, 0x2F, "Set Creative Mode Slot");
+            public static final PacketType PROGRAM_JIGSAW_BLOCK =             new PacketType(SERVERBOUND, 0x30, "Program Jigsaw Block");
+            public static final PacketType PROGRAM_STRUCTURE_BLOCK =          new PacketType(SERVERBOUND, 0x31, "Program Structure Block");
+            public static final PacketType UPDATE_SIGN =                      new PacketType(SERVERBOUND, 0x32, "Update Sign");
+            public static final PacketType SWING_ARM =                        new PacketType(SERVERBOUND, 0x33, "Swing Arm");
+            public static final PacketType TELEPORT_TO_ENTITY =               new PacketType(SERVERBOUND, 0x34, "Teleport To Entity");
+            public static final PacketType USE_ITEM_ON =                      new PacketType(SERVERBOUND, 0x35, "Use Item On");
+            public static final PacketType USE_ITEM =                         new PacketType(SERVERBOUND, 0x36, "Use Item");
             //</editor-fold>
 
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);

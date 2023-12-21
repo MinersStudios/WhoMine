@@ -3,17 +3,17 @@ package com.minersstudios.msdecor.api;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.MSDecorUtils;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.level.block.Blocks;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Light;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
@@ -365,7 +365,7 @@ public final class CustomDecor {
         for (final var key : container.getKeys()) {
             final String value = container.get(key, PersistentDataType.STRING);
 
-            if (StringUtils.isBlank(value)) {
+            if (ChatUtils.isBlank(value)) {
                 continue;
             }
 
@@ -435,7 +435,7 @@ public final class CustomDecor {
                 );
 
         try {
-            return StringUtils.isBlank(uuid)
+            return ChatUtils.isBlank(uuid)
                     || !(interaction.getWorld().getEntity(UUID.fromString(uuid)) instanceof final Interaction parent)
                     ? null
                     : fromParent(parent);

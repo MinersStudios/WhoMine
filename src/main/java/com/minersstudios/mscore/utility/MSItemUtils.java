@@ -3,7 +3,6 @@ package com.minersstudios.mscore.utility;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.CustomItem;
 import com.minersstudios.msitem.api.CustomItemType;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -73,7 +72,7 @@ public final class MSItemUtils {
      */
     @Contract("null -> false")
     public static boolean matchesNamespacedKey(final @Nullable String string) {
-        return StringUtils.isNotBlank(string)
+        return ChatUtils.isNotBlank(string)
                 && NAMESPACED_KEY_PATTERN.matcher(string).matches();
     }
 }

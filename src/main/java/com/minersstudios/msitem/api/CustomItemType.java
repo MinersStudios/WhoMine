@@ -1,5 +1,6 @@
 package com.minersstudios.msitem.api;
 
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.MSPluginUtils;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.damageable.Damageable;
@@ -12,7 +13,6 @@ import com.minersstudios.msitem.registry.item.armor.hazmat.HazmatLeggings;
 import com.minersstudios.msitem.registry.item.cards.CardsBicycle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -60,9 +59,9 @@ public enum CustomItemType {
 
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, "type");
 
-    static final Map<String, CustomItemType> KEY_TO_TYPE_MAP = new ConcurrentHashMap<>();
-    static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new ConcurrentHashMap<>();
-    private static final Map<Class<? extends CustomItem>, CustomItemType> CLASS_TO_TYPE_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, CustomItemType> KEY_TO_TYPE_MAP = new HashMap<>();
+    private static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new HashMap<>();
+    private static final Map<Class<? extends CustomItem>, CustomItemType> CLASS_TO_TYPE_MAP = new HashMap<>();
 
     static {
         final long startTime = System.currentTimeMillis();
@@ -176,7 +175,7 @@ public enum CustomItemType {
      */
     @Contract("null -> null")
     public static @Nullable CustomItemType fromKey(final @Nullable String key) {
-        return StringUtils.isBlank(key)
+        return ChatUtils.isBlank(key)
                 ? null
                 : KEY_TO_TYPE_MAP.get(key.toLowerCase(Locale.ENGLISH));
     }
@@ -258,7 +257,7 @@ public enum CustomItemType {
      */
     @Contract("null -> false")
     public static boolean containsKey(final @Nullable String key) {
-        return StringUtils.isNotBlank(key)
+        return ChatUtils.isNotBlank(key)
                 && KEY_TO_TYPE_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
 

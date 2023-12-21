@@ -6,7 +6,6 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
@@ -247,7 +246,7 @@ public final class Skin implements ConfigurationSerializable {
      * @see #create(String, String, String)
      */
     public static @Nullable Skin deserialize(final @Nullable String string) {
-        if (StringUtils.isBlank(string)) {
+        if (ChatUtils.isBlank(string)) {
             return null;
         }
 

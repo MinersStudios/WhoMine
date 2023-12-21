@@ -3,9 +3,9 @@ package com.minersstudios.msblock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.plugin.config.PluginConfig;
+import com.minersstudios.mscore.utility.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -54,19 +54,19 @@ public final class Config extends PluginConfig<MSBlock> {
         this.woodSoundStep = this.yaml.getString("wood-sound.step");
         this.woodSoundHit = this.yaml.getString("wood-sound.hit");
 
-        if (StringUtils.isBlank(this.woodSoundPlace)) {
+        if (ChatUtils.isBlank(this.woodSoundPlace)) {
             this.woodSoundPlace = "block.wood.place";
         }
 
-        if (StringUtils.isBlank(this.woodSoundBreak)) {
+        if (ChatUtils.isBlank(this.woodSoundBreak)) {
             this.woodSoundBreak = "block.wood.break";
         }
 
-        if (StringUtils.isBlank(this.woodSoundStep)) {
+        if (ChatUtils.isBlank(this.woodSoundStep)) {
             this.woodSoundStep = "block.wood.step";
         }
 
-        if (StringUtils.isBlank(this.woodSoundHit)) {
+        if (ChatUtils.isBlank(this.woodSoundHit)) {
             this.woodSoundHit = "block.wood.hit";
         }
 

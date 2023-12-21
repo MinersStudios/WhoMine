@@ -1,9 +1,9 @@
 package com.minersstudios.msessentials.player.collection;
 
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -83,7 +83,9 @@ public final class PlayerInfoMap {
         final UUID uuid = offlinePlayer.getUniqueId();
         final String nickname = offlinePlayer.getName();
 
-        return StringUtils.isBlank(nickname) ? null : this.get(uuid, nickname);
+        return ChatUtils.isBlank(nickname)
+                ? null
+                : this.get(uuid, nickname);
     }
 
     /**

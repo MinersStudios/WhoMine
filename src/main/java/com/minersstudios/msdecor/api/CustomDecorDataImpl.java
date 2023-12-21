@@ -24,9 +24,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Light;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlockStates;
-import org.bukkit.craftbukkit.v1_20_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlockStates;
+import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
@@ -1160,7 +1160,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final ItemMeta meta = itemStack.getItemMeta();
         final PersistentDataContainer container = meta.getPersistentDataContainer();
 
-        container.set(CustomDecorType.TYPE_NAMESPACED_KEY, PersistentDataType.STRING, typeKey);
+        container.set(
+                CustomDecorType.TYPE_NAMESPACED_KEY,
+                PersistentDataType.STRING,
+                typeKey
+        );
         itemStack.setItemMeta(meta);
 
         return itemStack;

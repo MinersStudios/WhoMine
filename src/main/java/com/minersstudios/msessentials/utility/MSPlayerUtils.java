@@ -1,9 +1,9 @@
 package com.minersstudios.msessentials.utility;
 
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -75,7 +75,7 @@ public final class MSPlayerUtils {
      */
     @Contract("null -> false")
     public static boolean matchesNameRegex(final @Nullable String string) {
-        return StringUtils.isNotBlank(string)
+        return ChatUtils.isNotBlank(string)
                 && NAME_PATTERN.matcher(string).matches();
     }
 }

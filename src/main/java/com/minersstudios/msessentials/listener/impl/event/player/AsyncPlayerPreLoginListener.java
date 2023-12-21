@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.listener.impl.event.player;
 
+import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
@@ -7,6 +8,7 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.ResourcePack;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -23,21 +25,24 @@ import static net.kyori.adventure.text.Component.text;
 public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSEssentials> {
     private static final TranslatableComponent LEAVE_MESSAGE_FORMAT =
             FORMAT_LEAVE_MESSAGE.color(NamedTextColor.DARK_GRAY);
-    private static final TranslatableComponent WHITELIST =
+    private static final Component WHITELIST = LanguageFile.renderTranslationComponent(
             LEAVE_MESSAGE_FORMAT.args(
                     PRE_LOGIN_WHITELISTED_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
                     PRE_LOGIN_WHITELISTED_SUBTITLE.color(NamedTextColor.GRAY)
-            );
-    private static final TranslatableComponent SERVER_NOT_FULLY_LOADED =
+            )
+    );
+    private static final Component SERVER_NOT_FULLY_LOADED = LanguageFile.renderTranslationComponent(
             LEAVE_MESSAGE_FORMAT.args(
                     SERVER_NOT_FULLY_LOADED_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
                     SERVER_NOT_FULLY_LOADED_SUBTITLE.color(NamedTextColor.GRAY)
-            );
-    private static final TranslatableComponent TECH_WORKS =
+            )
+    );
+    private static final Component TECH_WORKS = LanguageFile.renderTranslationComponent(
             LEAVE_MESSAGE_FORMAT.args(
                     PRE_LOGIN_TECH_WORKS_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
                     PRE_LOGIN_TECH_WORKS_SUBTITLE.color(NamedTextColor.GRAY)
-            );
+            )
+    );
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAsyncPlayerPreLogin(final @NotNull AsyncPlayerPreLoginEvent event) {

@@ -10,7 +10,6 @@ import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.CustomItem;
 import com.minersstudios.msitem.api.CustomItemType;
 import com.minersstudios.msitem.api.renameable.RenameableItemRegistry;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -48,7 +47,10 @@ public final class MSCustomUtils {
      * @see #getItemStack(String, String)
      */
     public static @NotNull Optional<ItemStack> getItemStack(final @Nullable String namespacedKeyStr) {
-        if (StringUtils.isBlank(namespacedKeyStr)) {
+        if (
+                ChatUtils.isBlank(namespacedKeyStr)
+                || !namespacedKeyStr.contains(":")
+        ) {
             return Optional.empty();
         }
 
@@ -146,7 +148,7 @@ public final class MSCustomUtils {
      * @see #getCustom(String, String)
      */
     public static @NotNull Optional<?> getCustom(final @Nullable String namespacedKeyStr) {
-        if (StringUtils.isBlank(namespacedKeyStr)) {
+        if (ChatUtils.isBlank(namespacedKeyStr)) {
             return Optional.empty();
         }
 
@@ -192,7 +194,7 @@ public final class MSCustomUtils {
             final @Nullable String namespace,
             final @Nullable String key
     ) {
-        return StringUtils.isBlank(namespace) || StringUtils.isBlank(key)
+        return ChatUtils.isBlank(namespace) || ChatUtils.isBlank(key)
                 ? Optional.empty()
                 : switch (namespace) {
                     case MSBlock.NAMESPACE,
