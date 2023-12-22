@@ -34,7 +34,6 @@ public final class MSDecorCommandHandler extends CommandExecutor<MSDecor> {
     private static final List<String> TAB = ImmutableList.of("reload", "give");
     private static final CommandNode<?> COMMAND_NODE =
             literal("msdecor")
-            .then(literal("reload"))
             .then(
                     literal("give")
                     .then(
@@ -56,7 +55,6 @@ public final class MSDecorCommandHandler extends CommandExecutor<MSDecor> {
     ) {
         return args.length != 0
                 && switch (args[0]) {
-                    case "reload" -> ReloadCommand.runCommand(sender);
                     case "give" -> GiveCommand.runCommand(sender, args);
                     default -> false;
                 };
@@ -71,8 +69,12 @@ public final class MSDecorCommandHandler extends CommandExecutor<MSDecor> {
     ) {
         return switch (args.length) {
             case 1 -> TAB;
-            case 2 -> MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton());
-            case 3 -> new ArrayList<>(CustomDecorType.keySet());
+            case 2 -> args[0].equals("give")
+                    ? MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton())
+                    : EMPTY_TAB;
+            case 3 -> args[0].equals("give")
+                    ?  new ArrayList<>(CustomDecorType.keySet())
+                    : EMPTY_TAB;
             default -> EMPTY_TAB;
         };
     }

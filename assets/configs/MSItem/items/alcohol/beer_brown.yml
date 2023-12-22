@@ -1,7 +1,0 @@
-key: "beer_brown"
-renames: "Коричневая бутылка пива"
-items: 
-  - GLASS_BOTTLE
-  - POTION
-custom-model-data: 1
-show-in-rename-menu: true

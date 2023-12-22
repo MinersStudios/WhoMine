@@ -70,8 +70,12 @@ public final class MSBlockCommandHandler extends CommandExecutor<MSBlock> {
     ) {
         return switch (args.length) {
             case 1 -> TAB;
-            case 2 -> MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton());
-            case 3 -> new ArrayList<>(CustomBlockRegistry.keySet());
+            case 2 -> args[0].equals("give")
+                    ? MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton())
+                    : EMPTY_TAB;
+            case 3 -> args[0].equals("give")
+                    ? new ArrayList<>(CustomBlockRegistry.keySet())
+                    : EMPTY_TAB;
             default -> EMPTY_TAB;
         };
     }

@@ -1,7 +1,0 @@
-key: "salmon_can"
-renames: "Лосось в банке"
-items: 
- - SALMON
- - COOKED_SALMON
-custom-model-data: 1
-show-in-rename-menu: true

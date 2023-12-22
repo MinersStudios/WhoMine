@@ -1,4 +1,4 @@
-package com.minersstudios.msessentials.listener.impl.event.entity;
+package com.minersstudios.msessentials.listener.impl.event.hanging;
 
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;

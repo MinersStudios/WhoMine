@@ -38,36 +38,29 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     private Team scoreboardHideTagsTeam;
 
     public static final String NAMESPACE = "msessentials";
+    public static final String HIDE_TAGS_TEAM_NAME = "hide_tags";
 
-    static {
+    @Override
+    public void load() {
         initClass(DiscordLinkCodeMenu.class);
         initClass(ResourcePackMenu.class);
         initClass(SkinsMenu.class);
     }
 
-    public MSEssentials() {
-        singleton = this;
-    }
-
-    @Override
-    public void load() {
-        this.cache = new Cache(this);
-        this.config = new Config(this, this.getConfigFile());
-    }
-
     @Override
     public void enable() {
+        singleton = this;
+        this.cache = new Cache(this);
+        this.config = new Config(this);
         this.scoreboardHideTags = this.getServer().getScoreboardManager().getNewScoreboard();
-        this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam("hide_tags");
+        this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam(HIDE_TAGS_TEAM_NAME);
 
+        this.cache.load();
+        this.config.reload();
         this.scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
         this.scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 
         this.runTask(WorldDark::init);
-
-        this.cache.load();
-        this.config.reload();
-
         this.runTaskTimer(new SeatsTask(this), 0L, 1L);
         this.runTaskTimer(new PlayerListTask(this), 6000L, 6000L);
         this.runTaskTimer(new MuteMapTask(this), 0L, 50L);
@@ -105,8 +98,9 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
         discordManager.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
         discordManager.sendMessage(ChatType.LOCAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
 
-        this.cache.unload();
-
+        singleton = null;
+        this.cache = null;
+        this.config = null;
         this.scoreboardHideTags = null;
         this.scoreboardHideTagsTeam = null;
     }

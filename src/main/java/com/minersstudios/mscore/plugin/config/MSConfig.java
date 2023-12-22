@@ -28,9 +28,8 @@ public abstract class MSConfig {
      * {@link #reloadVariables()}.
      *
      * @param file The config file, where the configuration is stored
-     * @throws IllegalArgumentException If the given file does not exist
      */
-    public MSConfig(final @NotNull File file) throws IllegalArgumentException {
+    public MSConfig(final @NotNull File file) {
         this.file = file;
         this.yaml = new YamlConfiguration();
     }

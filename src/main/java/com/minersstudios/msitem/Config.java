@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,14 +29,9 @@ public final class Config extends PluginConfig<MSItem> {
      * Configuration constructor
      *
      * @param plugin The plugin that owns this config
-     * @param file The config file, where the configuration is stored
-     * @throws IllegalArgumentException If the given file does not exist
      */
-    public Config(
-            final @NotNull MSItem plugin,
-            final @NotNull File file
-    ) throws IllegalArgumentException {
-        super(plugin, file);
+    public Config(final @NotNull MSItem plugin) {
+        super(plugin, plugin.getConfigFile());
     }
 
     /**

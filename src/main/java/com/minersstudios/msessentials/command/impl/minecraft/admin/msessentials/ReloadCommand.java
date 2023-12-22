@@ -16,6 +16,8 @@ public final class ReloadCommand {
     ) {
         final long time = System.currentTimeMillis();
 
+        plugin.getCache().unload();
+        plugin.getCache().load();
         plugin.getConfiguration().reload();
         MSLogger.fine(
                 sender,

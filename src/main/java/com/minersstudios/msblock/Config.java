@@ -2,13 +2,14 @@ package com.minersstudios.msblock;
 
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.plugin.config.PluginConfig;
 import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.msessentials.menu.CraftsMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,14 +35,9 @@ public final class Config extends PluginConfig<MSBlock> {
      * Configuration constructor
      *
      * @param plugin The plugin that owns this config
-     * @param file The config file, where the configuration is stored
-     * @throws IllegalArgumentException If the given file does not exist
      */
-    public Config(
-            final @NotNull MSBlock plugin,
-            final @NotNull File file
-    ) throws IllegalArgumentException {
-        super(plugin, file);
+    public Config(final @NotNull MSBlock plugin) {
+        super(plugin, plugin.getConfigFile());
     }
 
     /**
@@ -135,6 +131,20 @@ public final class Config extends PluginConfig<MSBlock> {
                     CustomBlockRegistry.register(data);
                 }
             });
+
+            final var recipes = MSPlugin.globalCache().customBlockRecipes;
+
+            plugin.runTaskTimer(
+                    task -> {
+                        if (
+                                !recipes.isEmpty()
+                                && plugin.isLoadedCustoms()
+                        ) {
+                            CraftsMenu.putCrafts(CraftsMenu.Type.BLOCKS, recipes);
+                        }
+                    },
+                    0L, 10L
+            );
 
             plugin.setLoadedCustoms(true);
             plugin.getComponentLogger().info(

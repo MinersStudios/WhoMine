@@ -1,7 +1,0 @@
-key: "beer_green"
-renames: "Зелёная бутылка пива"
-items: 
-  - GLASS_BOTTLE
-  - POTION
-custom-model-data: 2
-show-in-rename-menu: true

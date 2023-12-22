@@ -1,4 +1,4 @@
-package com.minersstudios.msblock.listener.event.block;
+package com.minersstudios.msblock.listener.event.entity;
 
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockData;

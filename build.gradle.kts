@@ -29,7 +29,7 @@ allprojects {
 
     dependencies {
         paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
-        compileOnly("org.jetbrains:annotations:24.1.0")
+        compileOnly("org.jetbrains:annotations:24.0.1")
         compileOnly("net.coreprotect:coreprotect:22.2")
         compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
         implementation("net.dv8tion:JDA:5.0.0-beta.18")

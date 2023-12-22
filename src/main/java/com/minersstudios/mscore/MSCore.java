@@ -1,14 +1,12 @@
 package com.minersstudios.mscore;
 
-import com.minersstudios.mscore.packet.ChannelHandler;
+import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.utility.CoreProtectUtils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.logging.Logger;
@@ -23,12 +21,10 @@ public final class MSCore extends MSPlugin<MSCore> {
 
     public static final String NAMESPACE = "mscore";
 
-    public MSCore() {
-        singleton = this;
-    }
-
     @Override
     public void enable() {
+        singleton = this;
+
         this.setupCoreProtect();
 
         if (!LanguageFile.isLoaded()) {
@@ -37,19 +33,13 @@ public final class MSCore extends MSPlugin<MSCore> {
                     globalConfig().getLanguageCode()
             );
         }
-
-        for (final var connection : MinecraftServer.getServer().getConnection().getConnections()) {
-            ChannelHandler.injectConnection(connection, this);
-        }
     }
 
     @Override
     public void disable() {
-        LanguageFile.unloadLanguage();
+        singleton = null;
 
-        for (final var connection : MinecraftServer.getServer().getConnection().getConnections()) {
-            ChannelHandler.uninjectConnection(connection);
-        }
+        LanguageFile.unloadLanguage();
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.minersstudios.msblock;
 
-import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utility.SharedConstants;
@@ -27,28 +26,26 @@ public final class MSBlock extends MSPlugin<MSBlock> {
     public static final String NAMESPACE = "msblock";
     private static final String NOTE_BLOCK_UPDATES = "block-updates.disable-noteblock-updates";
 
-    public MSBlock() {
-        singleton = this;
-    }
-
     @Override
     public void load() {
-        this.cache = new Cache(this);
-        this.config = new Config(this, this.getConfigFile());
-
         disableNoteBlockUpdates();
-        initClass(CustomBlockData.class);
     }
 
     @Override
     public void enable() {
+        singleton = this;
+        this.cache = new Cache(this);
+        this.config = new Config(this);
+
         this.cache.load();
         this.config.reload();
     }
 
     @Override
     public void disable() {
-        this.cache.unload();
+        singleton = null;
+        this.cache = null;
+        this.config = null;
     }
 
     /**

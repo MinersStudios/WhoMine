@@ -1,5 +1,0 @@
-wood-sound:
-  place: custom.block.wood.place
-  break: custom.block.wood.break
-  step: custom.block.wood.step
-  hit: custom.block.wood.hit

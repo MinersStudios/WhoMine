@@ -1,5 +1,6 @@
 package com.minersstudios.msdecor.api;
 
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.MSPluginUtils;
 import com.minersstudios.msdecor.MSDecor;
@@ -23,6 +24,7 @@ import com.minersstudios.msdecor.registry.furniture.lamp.SmallLamp;
 import com.minersstudios.msdecor.registry.furniture.table.BigTable;
 import com.minersstudios.msdecor.registry.furniture.table.SmallTable;
 import com.minersstudios.msdecor.registry.other.Poop;
+import com.minersstudios.msessentials.menu.CraftsMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
@@ -30,10 +32,7 @@ import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -190,15 +189,36 @@ public enum CustomDecorType {
     public static final String TYPED_KEY_REGEX = "(" + ChatUtils.KEY_REGEX + ")\\.type\\.(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern TYPED_KEY_PATTERN = Pattern.compile(TYPED_KEY_REGEX);
 
-    private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new HashMap<>();
     private static final Map<String, CustomDecorType> KEY_TO_TYPE_MAP = new HashMap<>();
     private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorType> CLASS_TO_TYPE_MAP = new HashMap<>();
+    private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new HashMap<>();
 
-    static {
+    /**
+     * Constructor for CustomDecorType enum values
+     *
+     * @param clazz The associated class that implements the CustomDecorData
+     *              interface
+     */
+    CustomDecorType(final @NotNull Class<? extends CustomDecorData<?>> clazz) {
+        this.clazz = clazz;
+    }
+
+    /**
+     * Loads all custom decor types
+     *
+     * @param plugin The plugin instance
+     * @throws IllegalStateException If custom decor types have already been
+     *                               loaded
+     */
+    @ApiStatus.Internal
+    public static void load(final @NotNull MSDecor plugin) {
+        if (!KEY_TO_TYPE_MAP.isEmpty()) {
+            throw new IllegalStateException("Custom decor types have already been loaded!");
+        }
+
         final long startTime = System.currentTimeMillis();
         final CustomDecorType[] values = values();
         final var recipesToRegister = new ArrayList<CustomDecorData<?>>();
-        final MSDecor plugin = MSDecor.singleton();
 
         for (final var registry : values) {
             final CustomDecorData<?> data;
@@ -233,32 +253,28 @@ public enum CustomDecorType {
             final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
             final Server server = plugin.getServer();
 
-            executor.scheduleAtFixedRate(() -> {
-                if (MSPluginUtils.isLoadedCustoms()) {
-                    executor.shutdown();
+            executor.scheduleAtFixedRate(
+                    () -> {
+                        if (MSPluginUtils.isLoadedCustoms()) {
+                            executor.shutdown();
 
-                    plugin.runTask(
-                            task -> {
+                            plugin.runTask(() -> {
                                 for (final var data : recipesToRegister) {
                                     data.registerRecipes(server);
                                 }
 
                                 recipesToRegister.clear();
-                            }
-                    );
-                }
-            }, 0L, 10L, TimeUnit.MILLISECONDS);
+                                CraftsMenu.putCrafts(
+                                        CraftsMenu.Type.DECORS,
+                                        MSPlugin.globalCache().customDecorRecipes
+                                );
+                            });
+                        }
+                    },
+                    0L, 10L,
+                    TimeUnit.MILLISECONDS
+            );
         }
-    }
-
-    /**
-     * Constructor for CustomDecorType enum values
-     *
-     * @param clazz The associated class that implements the CustomDecorData
-     *              interface
-     */
-    CustomDecorType(final @NotNull Class<? extends CustomDecorData<?>> clazz) {
-        this.clazz = clazz;
     }
 
     /**
@@ -271,8 +287,11 @@ public enum CustomDecorType {
     /**
      * @return The CustomDecorData instance associated with this custom decor
      *         type
+     * @throws IllegalStateException If custom decor types have not been loaded
+     *                               yet
      */
-    public @NotNull CustomDecorData<?> getCustomDecorData() {
+    public @NotNull CustomDecorData<?> getCustomDecorData() throws IllegalStateException {
+        checkLoaded();
         return CLASS_TO_DATA_MAP.get(this.clazz);
     }
 
@@ -282,8 +301,11 @@ public enum CustomDecorType {
      * @return The custom decor data instance cast to the specified class
      * @throws IllegalArgumentException If the custom decor data instance cannot
      *                                  be cast to the specified class
+     * @throws IllegalStateException    If custom decor types have not been
+     *                                  loaded yet
      */
-    public <D extends CustomDecorData<D>> @NotNull D getCustomDecorData(final @NotNull Class<D> clazz) throws IllegalArgumentException {
+    public <D extends CustomDecorData<D>> @NotNull D getCustomDecorData(final @NotNull Class<D> clazz) throws IllegalArgumentException, IllegalStateException {
+        checkLoaded();
         try {
             return clazz.cast(CLASS_TO_DATA_MAP.get(this.clazz));
         } catch (final ClassCastException e) {
@@ -302,10 +324,14 @@ public enum CustomDecorType {
      * @return The {@link CustomDecorType} associated with the given key or null
      *         if the given key is not associated with any custom decor type,
      *         or if the given key is null or blank
+     * @throws IllegalStateException If custom decor types have not been loaded
+     *                               yet
      * @see #KEY_TO_TYPE_MAP
      */
     @Contract("null -> null")
-    public static @Nullable CustomDecorType fromKey(final @Nullable String key) {
+    public static @Nullable CustomDecorType fromKey(final @Nullable String key) throws IllegalStateException {
+        checkLoaded();
+
         if (ChatUtils.isBlank(key)) {
             return null;
         }
@@ -328,10 +354,13 @@ public enum CustomDecorType {
      * @return The {@link CustomDecorType} associated with the given class or
      *         null if the given class is not associated with any custom decor
      *         type, or if the given class is null
+     * @throws IllegalStateException If custom decor types have not been loaded
+     *                               yet
      * @see #CLASS_TO_TYPE_MAP
      */
     @Contract("null -> null")
-    public static @Nullable CustomDecorType fromClass(final @Nullable Class<? extends CustomDecorData<?>> clazz) {
+    public static @Nullable CustomDecorType fromClass(final @Nullable Class<? extends CustomDecorData<?>> clazz) throws IllegalStateException {
+        checkLoaded();
         return clazz == null
                 ? null
                 : CLASS_TO_TYPE_MAP.get(clazz);
@@ -347,10 +376,14 @@ public enum CustomDecorType {
      * @return The {@link CustomDecorType} associated with the given item stack
      *         or null if the given item stack is not associated with any custom
      *         decor type, or if the given item stack is null, or an air item
+     * @throws IllegalStateException If custom decor types have not been loaded
+     *                               yet
      * @see #fromKey(String)
      */
     @Contract("null -> null")
-    public static @Nullable CustomDecorType fromItemStack(final @Nullable ItemStack itemStack) {
+    public static @Nullable CustomDecorType fromItemStack(final @Nullable ItemStack itemStack) throws IllegalStateException {
+        checkLoaded();
+
         if (itemStack == null) {
             return null;
         }
@@ -371,33 +404,43 @@ public enum CustomDecorType {
      * @return An unmodifiable view of the custom decor key set
      * @see #KEY_TO_TYPE_MAP
      */
-    public static @NotNull @UnmodifiableView Set<String> keySet() {
+    public static @NotNull @UnmodifiableView Set<String> keySet() throws IllegalStateException {
+        checkLoaded();
         return Collections.unmodifiableSet(KEY_TO_TYPE_MAP.keySet());
     }
 
     /**
      * @return An unmodifiable view of a set of custom decor classes that
      *         implement the CustomDecorData interface
+     * @throws IllegalStateException If custom decor types have not been loaded
+     *                               yet
      * @see #CLASS_TO_TYPE_MAP
      */
-    public static @NotNull @UnmodifiableView Set<Class<? extends CustomDecorData<?>>> classSet() {
+    public static @NotNull @UnmodifiableView Set<Class<? extends CustomDecorData<?>>> classSet() throws IllegalStateException {
+        checkLoaded();
         return Collections.unmodifiableSet(CLASS_TO_TYPE_MAP.keySet());
     }
 
     /**
      * @return An unmodifiable view of a custom decor data instance collection
+     * @throws IllegalStateException If custom decor types have not been loaded
+     *                               yet
      * @see #CLASS_TO_DATA_MAP
      */
-    public static @NotNull @UnmodifiableView Collection<CustomDecorData<?>> customDecors() {
+    public static @NotNull @UnmodifiableView Collection<CustomDecorData<?>> customDecors() throws IllegalStateException {
+        checkLoaded();
         return Collections.unmodifiableCollection(CLASS_TO_DATA_MAP.values());
     }
 
     /**
      * @param key The key to check
      * @return True if the {@link #KEY_TO_TYPE_MAP} contains the given key
+     * @throws IllegalStateException If custom decor types have not been loaded
+     *                               yet
      */
     @Contract("null -> false")
-    public static boolean containsKey(final @Nullable String key) {
+    public static boolean containsKey(final @Nullable String key) throws IllegalStateException {
+        checkLoaded();
         return ChatUtils.isNotBlank(key)
                 && KEY_TO_TYPE_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
@@ -405,9 +448,12 @@ public enum CustomDecorType {
     /**
      * @param clazz The class to check
      * @return True if the {@link #CLASS_TO_TYPE_MAP} contains the given class
+     * @throws IllegalStateException If custom decor types have not been loaded
+     *                               yet
      */
     @Contract("null -> false")
-    public static boolean containsClass(final @Nullable Class<? extends CustomDecorData<?>> clazz) {
+    public static boolean containsClass(final @Nullable Class<? extends CustomDecorData<?>> clazz) throws IllegalStateException {
+        checkLoaded();
         return clazz != null
                 && CLASS_TO_TYPE_MAP.containsKey(clazz);
     }
@@ -430,5 +476,17 @@ public enum CustomDecorType {
     public static boolean matchesTypedKey(final @Nullable String key) {
         return ChatUtils.isNotBlank(key)
                 && TYPED_KEY_PATTERN.matcher(key).matches();
+    }
+
+    /**
+     * Checks if custom decor types have been loaded yet
+     *
+     * @throws IllegalStateException If custom decor types have not been loaded
+     *                               yet
+     */
+    private static void checkLoaded() throws IllegalStateException {
+        if (KEY_TO_TYPE_MAP.isEmpty()) {
+            throw new IllegalStateException("Custom decor types have not been loaded yet!");
+        }
     }
 }

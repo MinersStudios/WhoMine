@@ -5,7 +5,6 @@ import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.utility.ItemUtils;
-import com.minersstudios.mscore.utility.MSDecorUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
@@ -42,9 +41,7 @@ public final class PrepareItemCraftListener extends AbstractEventListener<MSBloc
                             )
                     )
             ) {
-                if (!MSDecorUtils.isCustomDecor(event.getInventory().getResult())) {
-                    event.getInventory().setResult(ItemStack.empty());
-                }
+                event.getInventory().setResult(ItemStack.empty());
             }
         }
     }

@@ -22,14 +22,10 @@ public final class MSDecor extends MSPlugin<MSDecor> {
 
     public static final String NAMESPACE = "msdecor";
 
-    public MSDecor() {
-        singleton = this;
-    }
-
     @SuppressWarnings("JavaReflectionMemberAccess")
     @Override
     public void load() {
-        initClass(CustomDecorType.class);
+        CustomDecorType.load(this);
 
         try {
             final Field item = Item.class.getDeclaredField("d"); // "maxStackSize" field : https://nms.screamingsandals.org/1.20.2/net/minecraft/world/item/Item.html
@@ -48,6 +44,16 @@ public final class MSDecor extends MSPlugin<MSDecor> {
                     e
             );
         }
+    }
+
+    @Override
+    public void enable() {
+        singleton = this;
+    }
+
+    @Override
+    public void disable() {
+        singleton = null;
     }
 
     /**

@@ -449,7 +449,11 @@ public final class DiscordManager {
             try {
                 this.jda = this.buildJda(botToken);
             } catch (final Throwable e) {
-                throw new RuntimeException("An error occurred while loading Discord bot!", e);
+                logger.log(
+                        Level.SEVERE,
+                        "An error occurred while loading Discord bot!",
+                        e
+                );
             }
 
             if (this.jda == null) {

@@ -1,7 +1,0 @@
-key: "wine"
-renames: "Бутылка вина"
-items: 
-  - GLASS_BOTTLE
-  - POTION
-custom-model-data: 9
-show-in-rename-menu: true

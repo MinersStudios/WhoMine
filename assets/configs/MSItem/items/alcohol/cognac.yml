@@ -1,7 +1,0 @@
-key: "cognac"
-renames: "Бутылка коньяка"
-items: 
-  - GLASS_BOTTLE
-  - POTION
-custom-model-data: 3
-show-in-rename-menu: true

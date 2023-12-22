@@ -21,21 +21,19 @@ public final class MSItem extends MSPlugin<MSItem> {
 
     public static final String NAMESPACE = "msitems";
 
-    public MSItem() {
-        singleton = this;
-    }
-
     @Override
     public void load() {
         this.cache = new Cache(this);
-        this.config = new Config(this, this.getConfigFile());
+        this.config = new Config(this);
 
-        this.cache.load();
-        initClass(CustomItemType.class);
+        CustomItemType.load(this);
     }
 
     @Override
     public void enable() {
+        singleton = this;
+
+        this.cache.load();
         this.config.reload();
 
         this.runTaskTimer(
@@ -46,7 +44,9 @@ public final class MSItem extends MSPlugin<MSItem> {
 
     @Override
     public void disable() {
-        this.cache.unload();
+        singleton = null;
+        this.cache = null;
+        this.config = null;
     }
 
     /**

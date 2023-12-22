@@ -47,7 +47,7 @@ public final class PacketRegistry {
         }
 
         if (flowsField == null) {
-            throw new RuntimeException("Could not find 'flows' field in ConnectionProtocol class");
+            throw new IllegalStateException("Could not find 'flows' field in ConnectionProtocol class");
         }
 
         for (final var protocol : protocols) {
@@ -56,7 +56,7 @@ public final class PacketRegistry {
             try {
                 flowsMap = (Map<?, ?>) flowsField.get(protocol);
             } catch (final IllegalAccessException e) {
-                throw new RuntimeException("Failed to access flows packet map", e);
+                throw new IllegalStateException("Failed to access flows packet map", e);
             }
 
             for (final var entry : flowsMap.entrySet()) {
@@ -77,13 +77,13 @@ public final class PacketRegistry {
                 }
 
                 if (packetSetField == null) {
-                    throw new RuntimeException("Could not find 'packetSet' field in codec data class");
+                    throw new IllegalStateException("Could not find 'packetSet' field in codec data class");
                 }
 
                 try {
                     packetSet = packetSetField.get(codecData);
                 } catch (final ReflectiveOperationException e) {
-                    throw new RuntimeException("Failed to access packet set", e);
+                    throw new IllegalStateException("Failed to access packet set", e);
                 }
 
                 final Object2IntMap<?> packetMap;
@@ -102,13 +102,13 @@ public final class PacketRegistry {
                 }
 
                 if (packetMapField == null) {
-                    throw new RuntimeException("Could not find 'packetMap' field in packet set class");
+                    throw new IllegalStateException("Could not find 'packetMap' field in packet set class");
                 }
 
                 try {
                     packetMap = (Object2IntMap<?>) packetMapField.get(packetSet);
                 } catch (final ReflectiveOperationException e) {
-                    throw new RuntimeException("Failed to access packet map", e);
+                    throw new IllegalStateException("Failed to access packet map", e);
                 }
 
                 switch (flow) {

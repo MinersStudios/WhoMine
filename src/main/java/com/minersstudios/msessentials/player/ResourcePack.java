@@ -3,8 +3,6 @@ package com.minersstudios.msessentials.player;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +50,7 @@ public final class ResourcePack {
      * @see ResourcePack
      */
     public static void init(final @NotNull MSEssentials plugin) {
+        /*
         final Config config = plugin.getConfiguration();
         final Logger logger = plugin.getLogger();
         final String user = config.getResourcePackUser();
@@ -92,12 +91,13 @@ public final class ResourcePack {
                 ? config.getResourcePackLiteHash()
                 : generateHash(plugin, liteUrl, liteFileName);
 
-        Type.FULL.resourcePack = new ResourcePack(fullUrl, fullHash);
-        Type.LITE.resourcePack = new ResourcePack(liteUrl, liteHash);
+        Type.FULL.resourcePack = new OldResourcePack(fullUrl, fullHash);
+        Type.LITE.resourcePack = new OldResourcePack(liteUrl, liteHash);
 
         if (!upToDate) {
             config.setResourcePack(tagName, fullHash, liteHash);
         }
+         */
     }
 
     /**

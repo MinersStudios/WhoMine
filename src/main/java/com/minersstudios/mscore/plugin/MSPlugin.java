@@ -93,9 +93,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             DATA_FOLDER_FIELD.setAccessible(true);
             COMMAND_CONSTRUCTOR.setAccessible(true);
         } catch (final NoSuchFieldException e) {
-            throw new RuntimeException("Could not find data folder field", e);
+            throw new IllegalStateException("Could not find data folder field", e);
         } catch (final NoSuchMethodException e) {
-            throw new RuntimeException("Could not find command constructor", e);
+            throw new IllegalStateException("Could not find command constructor", e);
         }
 
         initClass(LanguageRegistry.Keys.class);
@@ -113,10 +113,24 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     protected MSPlugin() {
         this.pluginFolder = new File(GLOBAL_FOLDER, this.getName() + '/');
         this.configFile = new File(this.pluginFolder, "config.yml");
-        this.classNames = loadClassNames(
-                this.getClassLoader(),
-                SharedConstants.GLOBAL_PACKAGE + '.' + this.getName().toLowerCase()
-        );
+
+        List<String> classNames = null;
+
+        try {
+            classNames = loadClassNames(
+                    this.getClassLoader(),
+                    SharedConstants.GLOBAL_PACKAGE + '.' + this.getName().toLowerCase()
+            );
+        } catch (final IOException e) {
+            this.getLogger().log(
+                    Level.SEVERE,
+                    "Failed to load classnames",
+                    e
+            );
+            this.getServer().getPluginManager().disablePlugin(this);
+        }
+
+        this.classNames = classNames;
         this.commands = this.loadCommands();
         this.eventListeners = this.loadEventListeners();
         this.packetListeners = this.loadPacketListeners();
@@ -959,13 +973,14 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @param classLoader The class loader to use
      * @param packageName The package name
      * @return The list of class names
-     * @throws Error If the class names could not be loaded
-     * @throws IllegalArgumentException If the package does not exist
+     * @throws IOException              If an I/O error occurs
+     * @throws IllegalArgumentException If the package does not exist or is not
+     *                                  a valid URI
      */
     protected static @NotNull List<String> loadClassNames(
             final @NotNull ClassLoader classLoader,
             final @NotNull String packageName
-    ) throws Error, IllegalArgumentException {
+    ) throws IOException, IllegalArgumentException {
         final var classNames = new ArrayList<String>();
         final var url = classLoader.getResource(packageName.replace(".", "/"));
 
@@ -998,12 +1013,16 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                         final String fileName = path.getFileName().toString();
 
                         if (Files.isDirectory(path)) {
-                            classNames.addAll(
-                                    loadClassNames(
-                                            classLoader,
-                                            packageName + '.' + fileName
-                                    )
-                            );
+                            try {
+                                classNames.addAll(
+                                        loadClassNames(
+                                                classLoader,
+                                                packageName + '.' + fileName
+                                        )
+                                );
+                            } catch (final IOException e) {
+                                throw new UncheckedIOException(e);
+                            }
                         } else if (fileName.endsWith(".class")) {
                             classNames.add(
                                     packageName + '.' + fileName.substring(0, fileName.length() - 6)
@@ -1012,8 +1031,8 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                     });
                 }
             }
-        } catch (final IOException | URISyntaxException e) {
-            throw new Error("Failed to load class names", e);
+        } catch (final URISyntaxException e) {
+            throw new IllegalArgumentException("URL " + url + " is not a valid URI", e);
         }
 
         return classNames;
@@ -1024,13 +1043,13 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      *
      * @param clazz The class to load
      * @see Class#forName(String)
-     * @throws RuntimeException If the class could not be initialized
+     * @throws ExceptionInInitializerError If the class could not be initialized
      */
-    protected static void initClass(final @NotNull Class<?> clazz) throws RuntimeException {
+    protected static void initClass(final @NotNull Class<?> clazz) throws ExceptionInInitializerError {
         try {
             Class.forName(clazz.getName());
         } catch (final Throwable e) {
-            throw new RuntimeException("Could not init class " + clazz.getName(), e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 }

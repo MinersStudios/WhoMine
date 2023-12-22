@@ -36,12 +36,14 @@ import static net.kyori.adventure.text.Component.translatable;
  * stored in the {@link SharedConstants#LANGUAGE_FOLDER_PATH} folder.
  */
 public final class LanguageFile {
+    private static TranslationRegistry registry = TranslationRegistry.create(Key.key("ms"));
+
     private final String folderLink;
     private final String code;
     private final JsonObject translations;
     private File file;
 
-    private static TranslationRegistry registry = TranslationRegistry.create(Key.key("ms"));
+    private static final String OLD_FILE_SUFFIX = ".OLD";
     private static final Field TRANSLATIONS_FIELD;
 
     static {
@@ -50,8 +52,8 @@ public final class LanguageFile {
             TRANSLATIONS_FIELD = registryImplClass.getDeclaredField("translations");
 
             TRANSLATIONS_FIELD.setAccessible(true);
-        } catch (final Exception e) {
-            throw new RuntimeException("Failed to initialize LanguageFile", e);
+        } catch (final Throwable e) {
+            throw new IllegalStateException("Failed to initialize LanguageFile", e);
         }
     }
 
@@ -223,8 +225,11 @@ public final class LanguageFile {
     private @NotNull File loadFile() {
         final File langFolder = new File(SharedConstants.LANGUAGE_FOLDER_PATH);
 
-        if (!langFolder.exists() && !langFolder.mkdirs()) {
-            throw new RuntimeException("Failed to create language folder");
+        if (
+                !langFolder.exists()
+                && !langFolder.mkdirs()
+        ) {
+            MSLogger.severe("Failed to create language folder");
         }
 
         final File langFile = new File(langFolder, this.code + ".json");
@@ -279,13 +284,11 @@ public final class LanguageFile {
 
     /**
      * Creates a backup file of the corrupted language file. The backup file
-     * will be named as the original file with ".OLD" appended to the end. If
-     * the backup file already exists, it will be replaced
-     *
-     * @throws RuntimeException If failed to create backup file
+     * will be named as the original file with {@link #OLD_FILE_SUFFIX} appended
+     * to the end. If the backup file already exists, it will be replaced
      */
-    private void createBackupFile() throws RuntimeException {
-        final String backupFileName = this.file.getName() + ".OLD";
+    private void createBackupFile() {
+        final String backupFileName = this.file.getName() + OLD_FILE_SUFFIX;
         final File backupFile = new File(this.file.getParent(), backupFileName);
         final Path filePath = Path.of(this.file.getAbsolutePath());
         final Path backupFilePath = Path.of(backupFile.getAbsolutePath());
@@ -293,7 +296,7 @@ public final class LanguageFile {
         try {
             Files.move(filePath, backupFilePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException e) {
-            throw new RuntimeException("Failed to create" + backupFileName + " backup file", e);
+            MSLogger.severe("Failed to create backup file: " + backupFileName, e);
         }
     }
 }

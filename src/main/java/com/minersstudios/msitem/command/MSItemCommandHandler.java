@@ -69,8 +69,12 @@ public final class MSItemCommandHandler extends CommandExecutor<MSItem> {
     ) {
         return switch (args.length) {
             case 1 -> TAB;
-            case 2 -> MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton());
-            case 3 -> new ArrayList<>(CustomItemType.keySet());
+            case 2 -> args[0].equals("give")
+                    ? MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton())
+                    : EMPTY_TAB;
+            case 3 -> args[0].equals("give")
+                    ? new ArrayList<>(CustomItemType.keySet())
+                    : EMPTY_TAB;
             default -> EMPTY_TAB;
         };
     }

@@ -1,7 +1,9 @@
 package com.minersstudios.msitem.api;
 
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.MSPluginUtils;
+import com.minersstudios.msessentials.menu.CraftsMenu;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.damageable.Damageable;
 import com.minersstudios.msitem.registry.cosmetics.LeatherHat;
@@ -18,10 +20,7 @@ import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -60,21 +59,42 @@ public enum CustomItemType {
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, "type");
 
     private static final Map<String, CustomItemType> KEY_TO_TYPE_MAP = new HashMap<>();
-    private static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new HashMap<>();
     private static final Map<Class<? extends CustomItem>, CustomItemType> CLASS_TO_TYPE_MAP = new HashMap<>();
+    private static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new HashMap<>();
 
-    static {
+    /**
+     * Constructor for CustomItemType enum values
+     *
+     * @param clazz The associated class that implements the CustomItem
+     *              interface
+     */
+    CustomItemType(final @NotNull Class<? extends CustomItem> clazz) {
+        this.clazz = clazz;
+    }
+
+    /**
+     * Loads all custom item types
+     *
+     * @param plugin The plugin instance
+     * @throws IllegalStateException If the custom item types have already been
+     *                               loaded
+     */
+    @ApiStatus.Internal
+    public static void load(final @NotNull MSItem plugin) {
+        if (!KEY_TO_TYPE_MAP.isEmpty()) {
+            throw new IllegalStateException("Custom item types have already been loaded!");
+        }
+
         final long startTime = System.currentTimeMillis();
         final CustomItemType[] values = values();
         final var recipesToRegister = new ArrayList<CustomItem>();
-        final MSItem plugin = MSItem.singleton();
 
         for (final var registry : values) {
             final CustomItem customItem;
 
             try {
                 customItem = registry.getItemClass().getDeclaredConstructor().newInstance();
-            } catch (final Exception e) {
+            } catch (final Throwable e) {
                 plugin.getLogger().log(
                         Level.SEVERE,
                         "An error occurred while loading custom item " + registry.name(),
@@ -104,32 +124,28 @@ public enum CustomItemType {
             final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
             final Server server = plugin.getServer();
 
-            executor.scheduleAtFixedRate(() -> {
-                if (MSPluginUtils.isLoadedCustoms()) {
-                    executor.shutdown();
+            executor.scheduleAtFixedRate(
+                    () -> {
+                        if (MSPluginUtils.isLoadedCustoms()) {
+                            executor.shutdown();
 
-                    plugin.runTask(
-                            task -> {
+                            plugin.runTask(() -> {
                                 for (final var customItem : recipesToRegister) {
                                     customItem.registerRecipes(server);
                                 }
 
                                 recipesToRegister.clear();
-                            }
-                    );
-                }
-            }, 0L, 10L, TimeUnit.MILLISECONDS);
+                                CraftsMenu.putCrafts(
+                                        CraftsMenu.Type.ITEMS,
+                                        MSPlugin.globalCache().customItemRecipes
+                                );
+                            });
+                        }
+                    },
+                    0L, 10L,
+                    TimeUnit.MILLISECONDS
+            );
         }
-    }
-
-    /**
-     * Constructor for CustomItemType enum values
-     *
-     * @param clazz The associated class that implements the CustomItem
-     *              interface
-     */
-    CustomItemType(final @NotNull Class<? extends CustomItem> clazz) {
-        this.clazz = clazz;
     }
 
     /**
@@ -141,8 +157,11 @@ public enum CustomItemType {
 
     /**
      * @return The CustomItem instance associated with this custom item type
+     * @throws IllegalStateException If custom item types have not been loaded
+     *                               yet
      */
-    public @NotNull CustomItem getCustomItem() {
+    public @NotNull CustomItem getCustomItem() throws IllegalStateException {
+        checkLoaded();
         return CLASS_TO_ITEM_MAP.get(this.clazz);
     }
 
@@ -152,8 +171,12 @@ public enum CustomItemType {
      * @return The custom item instance cast to the specified class
      * @throws IllegalArgumentException If the custom item instance cannot be
      *                                  cast to the specified class
+     * @throws IllegalStateException    If custom item types have not been
+     *                                  loaded yet
      */
-    public <I extends CustomItem> @NotNull I getCustomItem(final @NotNull Class<I> clazz) throws IllegalArgumentException {
+    public <I extends CustomItem> @NotNull I getCustomItem(final @NotNull Class<I> clazz) throws IllegalArgumentException, IllegalStateException {
+        checkLoaded();
+
         final CustomItem customItem = CLASS_TO_ITEM_MAP.get(this.clazz);
 
         try {
@@ -171,10 +194,13 @@ public enum CustomItemType {
      * @return The {@link CustomItemType} associated with the given key or null
      *         if the given key is not associated with any custom item type,
      *         or if the given key is null or blank
+     * @throws IllegalStateException If custom item types have not been loaded
+     *                               yet
      * @see #KEY_TO_TYPE_MAP
      */
     @Contract("null -> null")
-    public static @Nullable CustomItemType fromKey(final @Nullable String key) {
+    public static @Nullable CustomItemType fromKey(final @Nullable String key) throws IllegalStateException {
+        checkLoaded();
         return ChatUtils.isBlank(key)
                 ? null
                 : KEY_TO_TYPE_MAP.get(key.toLowerCase(Locale.ENGLISH));
@@ -187,10 +213,13 @@ public enum CustomItemType {
      * @return The {@link CustomItemType} associated with the given class
      *         or null if the given class is not associated with any custom item
      *         type, or if the given class is null
+     * @throws IllegalStateException If custom item types have not been loaded
+     *                               yet
      * @see #CLASS_TO_TYPE_MAP
      */
     @Contract("null -> null")
-    public static @Nullable CustomItemType fromClass(final @Nullable Class<? extends CustomItem> clazz) {
+    public static @Nullable CustomItemType fromClass(final @Nullable Class<? extends CustomItem> clazz) throws IllegalStateException {
+        checkLoaded();
         return clazz == null
                 ? null
                 : CLASS_TO_TYPE_MAP.get(clazz);
@@ -206,10 +235,14 @@ public enum CustomItemType {
      * @return The {@link CustomItemType} associated with the given item stack
      *         or null if the given item stack is not associated with any custom
      *         item type, or if the given item stack is null, or an air item
+     * @throws IllegalStateException If custom item types have not been loaded
+     *                               yet
      * @see #fromKey(String)
      */
     @Contract("null -> null")
-    public static @Nullable CustomItemType fromItemStack(final @Nullable ItemStack itemStack) {
+    public static @Nullable CustomItemType fromItemStack(final @Nullable ItemStack itemStack) throws IllegalStateException {
+        checkLoaded();
+
         if (itemStack == null) {
             return null;
         }
@@ -228,35 +261,47 @@ public enum CustomItemType {
 
     /**
      * @return An unmodifiable view of the custom item key set
+     * @throws IllegalStateException If custom item types have not been loaded
+     *                               yet
      * @see #KEY_TO_TYPE_MAP
      */
-    public static @NotNull @UnmodifiableView Set<String> keySet() {
+    public static @NotNull @UnmodifiableView Set<String> keySet() throws IllegalStateException {
+        checkLoaded();
         return Collections.unmodifiableSet(KEY_TO_TYPE_MAP.keySet());
     }
 
     /**
      * @return An unmodifiable view of a set of custom item classes that
      *         implement the CustomItem interface
+     * @throws IllegalStateException If custom item types have not been loaded
+     *                               yet
      * @see #CLASS_TO_TYPE_MAP
      */
-    public static @NotNull @UnmodifiableView Set<Class<? extends CustomItem>> classSet() {
+    public static @NotNull @UnmodifiableView Set<Class<? extends CustomItem>> classSet() throws IllegalStateException {
+        checkLoaded();
         return Collections.unmodifiableSet(CLASS_TO_TYPE_MAP.keySet());
     }
 
     /**
      * @return An unmodifiable view of the custom item instances collection
+     * @throws IllegalStateException If custom item types have not been loaded
+     *                               yet
      * @see #CLASS_TO_ITEM_MAP
      */
-    public static @NotNull @UnmodifiableView Collection<CustomItem> customItems() {
+    public static @NotNull @UnmodifiableView Collection<CustomItem> customItems() throws IllegalStateException {
+        checkLoaded();
         return Collections.unmodifiableCollection(CLASS_TO_ITEM_MAP.values());
     }
 
     /**
      * @param key The key to check
      * @return True if the {@link #KEY_TO_TYPE_MAP} contains the given key
+     * @throws IllegalStateException If custom item types have not been loaded
+     *                               yet
      */
     @Contract("null -> false")
-    public static boolean containsKey(final @Nullable String key) {
+    public static boolean containsKey(final @Nullable String key) throws IllegalStateException {
+        checkLoaded();
         return ChatUtils.isNotBlank(key)
                 && KEY_TO_TYPE_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
@@ -264,10 +309,25 @@ public enum CustomItemType {
     /**
      * @param clazz The class to check
      * @return True if the {@link #CLASS_TO_TYPE_MAP} contains the given class
+     * @throws IllegalStateException If custom item types have not been loaded
+     *                               yet
      */
     @Contract("null -> false")
-    public static boolean containsClass(final @Nullable Class<? extends CustomItem> clazz) {
+    public static boolean containsClass(final @Nullable Class<? extends CustomItem> clazz) throws IllegalStateException {
+        checkLoaded();
         return clazz != null
                 && CLASS_TO_TYPE_MAP.containsKey(clazz);
+    }
+
+    /**
+     * Checks if custom item types have been loaded yet
+     *
+     * @throws IllegalStateException If custom item types have not been loaded
+     *                               yet
+     */
+    private static void checkLoaded() throws IllegalStateException {
+        if (KEY_TO_TYPE_MAP.isEmpty()) {
+            throw new IllegalStateException("Custom item types have not been loaded yet!");
+        }
     }
 }

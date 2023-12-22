@@ -1,15 +1,11 @@
 package com.minersstudios.msessentials;
 
-import com.minersstudios.mscore.plugin.GlobalCache;
-import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.plugin.config.PluginConfig;
-import com.minersstudios.mscore.utility.MSPluginUtils;
 import com.minersstudios.msessentials.anomaly.Anomaly;
-import com.minersstudios.msessentials.anomaly.task.MainAnomalyActionTask;
 import com.minersstudios.msessentials.anomaly.task.AnomalyParticleTask;
-import com.minersstudios.msessentials.menu.CraftsMenu;
-import com.minersstudios.msessentials.player.PlayerInfo;
+import com.minersstudios.msessentials.anomaly.task.MainAnomalyActionTask;
 import com.minersstudios.msessentials.player.ResourcePack;
+import com.minersstudios.msessentials.player.PlayerInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -41,13 +37,6 @@ public final class Config extends PluginConfig<MSEssentials> {
     private long memberRoleId;
     private long discordGlobalChannelId;
     private long discordLocalChannelId;
-    private String version;
-    private String user;
-    private String repo;
-    private String fullFileName;
-    private String fullHash;
-    private String liteFileName;
-    private String liteHash;
     private double localChatRadius;
     private String mineSkinApiKey;
     private Location spawnLocation;
@@ -56,14 +45,9 @@ public final class Config extends PluginConfig<MSEssentials> {
      * Configuration constructor
      *
      * @param plugin The plugin that owns this config
-     * @param file The config file, where the configuration is stored
-     * @throws IllegalArgumentException If the given file does not exist
      */
-    public Config(
-            final @NotNull MSEssentials plugin,
-            final @NotNull File file
-    ) throws IllegalArgumentException {
-        super(plugin, file);
+    public Config(final @NotNull MSEssentials plugin) throws IllegalArgumentException {
+        super(plugin, plugin.getConfigFile());
     }
 
     /**
@@ -73,7 +57,6 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void reloadVariables() {
         final MSEssentials plugin = this.getPlugin();
         final Cache cache = plugin.getCache();
-        final File pluginFolder = plugin.getPluginFolder();
 
         this.developerMode = this.yaml.getBoolean("developer-mode");
         this.anomalyCheckRate = this.yaml.getLong("anomaly-check-rate");
@@ -83,13 +66,6 @@ public final class Config extends PluginConfig<MSEssentials> {
         this.memberRoleId = this.yaml.getLong("discord.member-role-id");
         this.discordGlobalChannelId = this.yaml.getLong("chat.global.discord-channel-id");
         this.discordLocalChannelId = this.yaml.getLong("chat.local.discord-channel-id");
-        this.version = this.yaml.getString("resource-pack.version");
-        this.user = this.yaml.getString("resource-pack.user");
-        this.repo = this.yaml.getString("resource-pack.repo");
-        this.fullFileName = this.yaml.getString("resource-pack.full.file-name");
-        this.fullHash = this.yaml.getString("resource-pack.full.hash");
-        this.liteFileName = this.yaml.getString("resource-pack.lite.file-name");
-        this.liteHash = this.yaml.getString("resource-pack.lite.hash");
         this.mineSkinApiKey = this.yaml.getString("skin.mine-skin-api-key");
 
         final Server server = plugin.getServer();
@@ -125,7 +101,7 @@ public final class Config extends PluginConfig<MSEssentials> {
 
         plugin.saveResource("anomalies/example.yml", true);
 
-        final File consoleDataFile = new File(pluginFolder, "players/console.yml");
+        final File consoleDataFile = new File(plugin.getPluginFolder(), "players/console.yml");
 
         if (!consoleDataFile.exists()) {
             plugin.saveResource("players/console.yml", false);
@@ -134,52 +110,10 @@ public final class Config extends PluginConfig<MSEssentials> {
         cache.consolePlayerInfo = new PlayerInfo(plugin, UUID.randomUUID(), "$Console");
 
         plugin.runTaskAsync(() -> ResourcePack.init(plugin));
-        plugin.runTaskAsync(() -> {
-            try (final var path = Files.walk(Paths.get(pluginFolder + "/anomalies"))) {
-                path.parallel()
-                .filter(file -> {
-                    final String fileName = file.getFileName().toString();
-
-                    return Files.isRegularFile(file)
-                            && !fileName.equalsIgnoreCase("example.yml")
-                            && fileName.endsWith(".yml");
-                })
-                .map(Path::toFile)
-                .forEach(file -> {
-                    final Anomaly anomaly = Anomaly.fromConfig(plugin, file);
-
-                    cache.getAnomalies().put(anomaly.getNamespacedKey(), anomaly);
-                });
-            } catch (final IOException e) {
-                plugin.getLogger().log(
-                        Level.SEVERE,
-                        "An error occurred while loading anomalies!",
-                        e
-                );
-            }
-        });
+        plugin.runTaskAsync(this::loadAnomalies);
 
         cache.getBukkitTasks().add(plugin.runTaskTimer(new MainAnomalyActionTask(plugin), 0L, this.anomalyCheckRate));
         cache.getBukkitTasks().add(plugin.runTaskTimer(new AnomalyParticleTask(plugin), 0L, this.anomalyParticlesCheckRate));
-
-        final GlobalCache globalCache = MSPlugin.globalCache();
-        final var customBlockRecipes = globalCache.customBlockRecipes;
-        final var customDecorRecipes = globalCache.customDecorRecipes;
-        final var customItemRecipes = globalCache.customItemRecipes;
-
-        plugin.runTaskTimer(task -> {
-            if (
-                    MSPluginUtils.isLoadedCustoms()
-                    && !customBlockRecipes.isEmpty()
-                    && !customDecorRecipes.isEmpty()
-                    && !customItemRecipes.isEmpty()
-            ) {
-                task.cancel();
-                CraftsMenu.putCrafts(CraftsMenu.Type.BLOCKS, customBlockRecipes);
-                CraftsMenu.putCrafts(CraftsMenu.Type.DECORS, customDecorRecipes);
-                CraftsMenu.putCrafts(CraftsMenu.Type.ITEMS, customItemRecipes);
-            }
-        }, 0L, 10L);
 
         cache.getDiscordHandler().load();
     }
@@ -198,13 +132,6 @@ public final class Config extends PluginConfig<MSEssentials> {
         this.setIfNotExists("discord.bot-token", "");
         this.setIfNotExists("discord.server-id", -1);
         this.setIfNotExists("discord.member-role-id", -1);
-        this.setIfNotExists("resource-pack.version", "");
-        this.setIfNotExists("resource-pack.user", "MinersStudios");
-        this.setIfNotExists("resource-pack.repo", "WMTextures");
-        this.setIfNotExists("resource-pack.full.file-name", "FULL-WMTextures-%s.zip");
-        this.setIfNotExists("resource-pack.full.hash", "");
-        this.setIfNotExists("resource-pack.lite.file-name", "LITE-WMTextures-%s.zip");
-        this.setIfNotExists("resource-pack.lite.hash", "");
         this.setIfNotExists("skin.mine-skin-api-key", "");
 
         final Location mainWorldSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
@@ -358,207 +285,6 @@ public final class Config extends PluginConfig<MSEssentials> {
     }
 
     /**
-     * @return Resource pack version
-     */
-    public @Nullable String getResourcePackVersion() {
-        return this.version;
-    }
-
-    /**
-     * Sets a new resource pack version
-     *
-     * @param version The new resource pack version
-     */
-    public void setResourcePackVersion(final @Nullable String version) {
-        this.version = version;
-
-        this.yaml.set("resource-pack.version", version);
-
-        this.save();
-    }
-
-    /**
-     * @return Resource pack user
-     */
-    public @Nullable String getResourcePackUser() {
-        return this.user;
-    }
-
-    /**
-     * Sets new resource pack user
-     *
-     * @param user The new resource pack user
-     */
-    public void setResourcePackUser(final @Nullable String user) {
-        this.user = user;
-
-        this.yaml.set("resource-pack.user", user);
-
-        this.save();
-    }
-
-    /**
-     * @return Resource pack repo
-     */
-    public @Nullable String getResourcePackRepo() {
-        return this.repo;
-    }
-
-    /**
-     * Sets new resource pack repo
-     *
-     * @param repo The new resource pack repo
-     */
-    public void setResourcePackRepo(final @Nullable String repo) {
-        this.repo = repo;
-
-        this.yaml.set("resource-pack.repo", repo);
-
-        this.save();
-    }
-
-    /**
-     * Sets a new resource pack version, user and repo
-     *
-     * @param version The new resource pack version
-     * @param user    The new resource pack user
-     * @param repo    The new resource pack repo
-     */
-    public void setResourcePack(
-            final @Nullable String version,
-            final @Nullable String user,
-            final @Nullable String repo
-    ) {
-        this.version = version;
-        this.user = user;
-        this.repo = repo;
-
-        this.yaml.set("resource-pack.version", version);
-        this.yaml.set("resource-pack.user", user);
-        this.yaml.set("resource-pack.repo", repo);
-
-        this.save();
-    }
-
-    /**
-     * @return Resource pack full file name
-     */
-    public @Nullable String getResourcePackFullFileName() {
-        return this.fullFileName;
-    }
-
-    /**
-     * Sets new resource pack full file name
-     *
-     * @param fileName The new resource pack full file name
-     */
-    public void setResourcePackFullFileName(final @Nullable String fileName) {
-        this.fullFileName = fileName;
-
-        this.yaml.set("resource-pack.full.file-name", fileName);
-
-        this.save();
-    }
-
-    /**
-     * @return Resource pack full hash
-     */
-    public @Nullable String getResourcePackFullHash() {
-        return this.fullHash;
-    }
-
-    /**
-     * Sets new resource pack full hash
-     *
-     * @param hash The new resource pack full hash
-     */
-    public void setResourcePackFullHash(final @Nullable String hash) {
-        this.fullHash = hash;
-
-        this.yaml.set("resource-pack.full.hash", hash);
-
-        this.save();
-    }
-
-    /**
-     * Sets new resource pack full file name and hash
-     *
-     * @param fileName The new resource pack full file name
-     * @param hash     The new resource pack full hash
-     */
-    public void setFullResourcePack(
-            final @Nullable String fileName,
-            final @Nullable String hash
-    ) {
-        this.fullFileName = fileName;
-        this.fullHash = hash;
-
-        this.yaml.set("resource-pack.full.file-name", fileName);
-        this.yaml.set("resource-pack.full.hash", hash);
-
-        this.save();
-    }
-
-    /**
-     * @return Resource pack lite file name
-     */
-    public @Nullable String getResourcePackLiteFileName() {
-        return this.liteFileName;
-    }
-
-    /**
-     * Sets new resource pack lite file name
-     *
-     * @param fileName The new resource pack lite file name
-     */
-    public void setResourcePackLiteFileName(final @Nullable String fileName) {
-        this.liteFileName = fileName;
-
-        this.yaml.set("resource-pack.lite.file-name", fileName);
-
-        this.save();
-    }
-
-    /**
-     * @return Resource pack lite hash
-     */
-    public @Nullable String getResourcePackLiteHash() {
-        return this.liteHash;
-    }
-
-    /**
-     * Sets new resource pack hash
-     *
-     * @param hash The new resource pack hash
-     */
-    public void setResourcePackLiteHash(final @Nullable String hash) {
-        this.liteHash = hash;
-
-        this.yaml.set("resource-pack.lite.hash", hash);
-
-        this.save();
-    }
-
-    /**
-     * Sets new resource pack lite file name and hash
-     *
-     * @param fileName The new resource pack lite file name
-     * @param hash     The new resource pack lite hash
-     */
-    public void setLiteResourcePack(
-            final @Nullable String fileName,
-            final @Nullable String hash
-    ) {
-        this.liteFileName = fileName;
-        this.liteHash = hash;
-
-        this.yaml.set("resource-pack.lite.file-name", fileName);
-        this.yaml.set("resource-pack.lite.hash", hash);
-
-        this.save();
-    }
-
-    /**
      * @return Local chat radius
      */
     public double getLocalChatRadius() {
@@ -621,5 +347,33 @@ public final class Config extends PluginConfig<MSEssentials> {
         this.yaml.set("spawn-location.pitch", location.getPitch());
 
         this.save();
+    }
+
+    private void loadAnomalies() {
+        final MSEssentials plugin = this.getPlugin();
+        final Cache cache = plugin.getCache();
+
+        try (final var path = Files.walk(Paths.get(plugin.getPluginFolder() + "/anomalies"))) {
+            path.parallel()
+            .filter(file -> {
+                final String fileName = file.getFileName().toString();
+
+                return Files.isRegularFile(file)
+                        && !fileName.equalsIgnoreCase("example.yml")
+                        && fileName.endsWith(".yml");
+            })
+            .map(Path::toFile)
+            .forEach(file -> {
+                final Anomaly anomaly = Anomaly.fromConfig(plugin, file);
+
+                cache.getAnomalies().put(anomaly.getNamespacedKey(), anomaly);
+            });
+        } catch (final IOException e) {
+            plugin.getLogger().log(
+                    Level.SEVERE,
+                    "An error occurred while loading anomalies!",
+                    e
+            );
+        }
     }
 }

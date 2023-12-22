@@ -1484,15 +1484,6 @@ public final class PlayerInfo {
 
         final PlayerSettings playerSettings = this.playerFile.getPlayerSettings();
         final ResourcePack.Type type = playerSettings.getResourcePackType();
-
-        if (!ResourcePack.isResourcePackLoaded()) {
-            this.kickPlayer(
-                    SERVER_NOT_FULLY_LOADED_TITLE,
-                    SERVER_NOT_FULLY_LOADED_SUBTITLE
-            );
-            return CompletableFuture.completedFuture(false);
-        }
-
         final ComponentLogger componentLogger = this.plugin.getComponentLogger();
 
         switch (type) {

@@ -1,7 +1,0 @@
-key: "vodka"
-renames: "Бутылка водки"
-items: 
-  - GLASS_BOTTLE
-  - POTION
-custom-model-data: 8
-show-in-rename-menu: true

@@ -6,7 +6,6 @@ import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.renameable.RenameableItemRegistry;
 import org.bukkit.Keyed;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.Recipe;
@@ -31,7 +30,7 @@ public final class ReloadCommand {
                     recipe instanceof final Keyed keyed
                     && MSItem.NAMESPACE.equals(keyed.getKey().getNamespace())
             ) {
-                server.removeRecipe(new NamespacedKey(MSItem.NAMESPACE, keyed.getKey().getKey()));
+                server.removeRecipe(keyed.getKey());
             }
         }
 

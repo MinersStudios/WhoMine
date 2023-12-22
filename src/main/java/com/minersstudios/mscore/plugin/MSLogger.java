@@ -77,7 +77,7 @@ public final class MSLogger {
             final @NotNull Level level,
             final @NotNull String message
     ) {
-        if (level == Level.FINE) {
+        if (level.intValue() == FINE) {
             LOGGER.log(Level.INFO, ANSI_LIME + message + ANSI_RESET);
         } else {
             LOGGER.log(level, message);
@@ -117,7 +117,7 @@ public final class MSLogger {
             final @NotNull String message,
             final @Nullable Object @NotNull ... params
     ) {
-        if (level == Level.FINE) {
+        if (level.intValue() == FINE) {
             LOGGER.log(Level.INFO, ANSI_LIME + message + ANSI_RESET, params);
         } else {
             LOGGER.log(level, message, params);
@@ -157,7 +157,7 @@ public final class MSLogger {
             final @NotNull String message,
             final @NotNull Throwable throwable
     ) {
-        if (level == Level.FINE) {
+        if (level.intValue() == FINE) {
             LOGGER.log(Level.INFO, ANSI_LIME + message + ANSI_RESET, throwable);
         } else {
             LOGGER.log(level, message, throwable);

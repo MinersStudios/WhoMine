@@ -7,7 +7,6 @@ import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.player.ResourcePack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -20,24 +19,25 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static net.kyori.adventure.text.Component.text;
+import static org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result.*;
 
 @EventListener
 public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSEssentials> {
     private static final TranslatableComponent LEAVE_MESSAGE_FORMAT =
             FORMAT_LEAVE_MESSAGE.color(NamedTextColor.DARK_GRAY);
-    private static final Component WHITELIST = LanguageFile.renderTranslationComponent(
+    private static final Component MESSAGE_WHITELIST = LanguageFile.renderTranslationComponent(
             LEAVE_MESSAGE_FORMAT.args(
                     PRE_LOGIN_WHITELISTED_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
                     PRE_LOGIN_WHITELISTED_SUBTITLE.color(NamedTextColor.GRAY)
             )
     );
-    private static final Component SERVER_NOT_FULLY_LOADED = LanguageFile.renderTranslationComponent(
+    private static final Component MESSAGE_SERVER_NOT_FULLY_LOADED = LanguageFile.renderTranslationComponent(
             LEAVE_MESSAGE_FORMAT.args(
                     SERVER_NOT_FULLY_LOADED_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
                     SERVER_NOT_FULLY_LOADED_SUBTITLE.color(NamedTextColor.GRAY)
             )
     );
-    private static final Component TECH_WORKS = LanguageFile.renderTranslationComponent(
+    private static final Component MESSAGE_TECH_WORKS = LanguageFile.renderTranslationComponent(
             LEAVE_MESSAGE_FORMAT.args(
                     PRE_LOGIN_TECH_WORKS_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
                     PRE_LOGIN_TECH_WORKS_SUBTITLE.color(NamedTextColor.GRAY)
@@ -52,15 +52,12 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
 
         if (!playerInfo.isWhiteListed()) {
             event.disallow(
-                    AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST,
-                    WHITELIST
+                    KICK_WHITELIST,
+                    MESSAGE_WHITELIST
             );
-            return;
-        }
-
-        if (playerInfo.isBanned()) {
+        } else if (playerInfo.isBanned()) {
             event.disallow(
-                    AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
+                    KICK_BANNED,
                     LEAVE_MESSAGE_FORMAT.args(
                             PRE_LOGIN_BANNED_TITLE,
                             PRE_LOGIN_BANNED_SUBTITLE.args(
@@ -69,49 +66,38 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
                             )
                     )
             );
-            return;
-        }
-
-        if (
-                !plugin.isLoadedCustoms()
-                || !ResourcePack.isResourcePackLoaded()
-        ) {
+        } else if (!plugin.isLoadedCustoms()) {
             event.disallow(
-                    AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-                    SERVER_NOT_FULLY_LOADED
+                    KICK_OTHER,
+                    MESSAGE_SERVER_NOT_FULLY_LOADED
             );
-            return;
-        }
-
-        if (
+        } else if (
                 plugin.getConfiguration().isDeveloperMode()
                 && !playerInfo.getOfflinePlayer().isOp()
         ) {
             event.disallow(
-                    AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-                    TECH_WORKS
+                    KICK_OTHER,
+                    MESSAGE_TECH_WORKS
             );
-            return;
-        }
+        } else {
+            final String hostAddress = event.getAddress().getHostAddress();
+            final PlayerFile playerFile = playerInfo.getPlayerFile();
 
-        final String hostAddress = event.getAddress().getHostAddress();
-        final PlayerFile playerFile = playerInfo.getPlayerFile();
-
-        if (
-                playerFile.exists()
-                && !playerFile.getIpList().contains(hostAddress)
-        ) {
-            playerFile.addIp(hostAddress);
-            playerFile.save();
-
-            MSLogger.warning(
-                    INFO_PLAYER_ADDED_IP
-                    .args(
-                            playerInfo.getGrayIDGoldName(),
-                            text(nickname),
-                            text(hostAddress)
-                    )
-            );
+            if (
+                    playerFile.exists()
+                    && !playerFile.getIpList().contains(hostAddress)
+            ) {
+                playerFile.addIp(hostAddress);
+                playerFile.save();
+                MSLogger.warning(
+                        INFO_PLAYER_ADDED_IP
+                        .args(
+                                playerInfo.getGrayIDGoldName(),
+                                text(nickname),
+                                text(hostAddress)
+                        )
+                );
+            }
         }
     }
 }
