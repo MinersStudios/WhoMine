@@ -13,6 +13,7 @@ import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,10 +75,11 @@ public final class KickCommand extends CommandExecutor<MSEssentials> {
             return true;
         }
 
-        playerInfo.kickPlayer(
+        playerInfo.kick(
                 COMMAND_KICK_MESSAGE_RECEIVER_TITLE,
                 COMMAND_KICK_MESSAGE_RECEIVER_SUBTITLE
-                        .args(reason)
+                        .args(reason),
+                PlayerKickEvent.Cause.KICK_COMMAND
         );
         MSLogger.fine(
                 sender,

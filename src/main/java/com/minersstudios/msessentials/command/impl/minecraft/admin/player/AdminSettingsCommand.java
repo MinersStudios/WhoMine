@@ -84,7 +84,7 @@ public final class AdminSettingsCommand {
                 playerSettings.save();
 
                 if (type == ResourcePack.Type.NONE || type == ResourcePack.Type.NULL) {
-                    playerInfo.kickPlayer(
+                    playerInfo.kick(
                             MENU_RESOURCE_PACK_BUTTON_NONE_KICK_TITLE,
                             MENU_RESOURCE_PACK_BUTTON_NONE_KICK_SUBTITLE
                     );

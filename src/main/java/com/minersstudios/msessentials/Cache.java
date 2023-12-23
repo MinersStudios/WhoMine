@@ -71,6 +71,10 @@ public final class Cache extends PluginCache<MSEssentials> {
     protected void onUnload() {
         this.discordManager.unload();
 
+        for (final var task : this.bukkitTasks) {
+            task.cancel();
+        }
+
         this.playerInfoMap = null;
         this.muteMap = null;
         this.discordMap = null;

@@ -10,6 +10,7 @@ import com.minersstudios.msessentials.player.ResourcePack;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -92,9 +93,10 @@ public final class ResourcePackMenu {
                     packType != ResourcePack.Type.NULL
                     && packType != ResourcePack.Type.NONE
             ) {
-                playerInfo.kickPlayer(
+                playerInfo.kick(
                         MENU_RESOURCE_PACK_BUTTON_NONE_KICK_TITLE,
-                        MENU_RESOURCE_PACK_BUTTON_NONE_KICK_SUBTITLE
+                        MENU_RESOURCE_PACK_BUTTON_NONE_KICK_SUBTITLE,
+                        PlayerKickEvent.Cause.RESOURCE_PACK_REJECTION
                 );
             }
 

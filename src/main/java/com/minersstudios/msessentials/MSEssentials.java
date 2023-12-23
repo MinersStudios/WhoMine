@@ -16,6 +16,7 @@ import com.minersstudios.msessentials.world.WorldDark;
 import fr.xephi.authme.AuthMe;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -23,6 +24,9 @@ import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.ON_DISABLE_MESSAGE_SUBTITLE;
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.ON_DISABLE_MESSAGE_TITLE;
 
 /**
  * The main class of the MSEssentials plugin
@@ -52,57 +56,29 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
         singleton = this;
         this.cache = new Cache(this);
         this.config = new Config(this);
-        this.scoreboardHideTags = this.getServer().getScoreboardManager().getNewScoreboard();
-        this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam(HIDE_TAGS_TEAM_NAME);
 
         this.cache.load();
         this.config.reload();
-        this.scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-        this.scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
+        this.setupHideTags();
+        this.setupAuthMe();
 
         this.runTask(WorldDark::init);
         this.runTaskTimer(new SeatsTask(this), 0L, 1L);
         this.runTaskTimer(new PlayerListTask(this), 6000L, 6000L);
         this.runTaskTimer(new MuteMapTask(this), 0L, 50L);
         this.runTaskTimer(new BanListTask(this), 0L, 6000L);
-
-        this.setupAuthMe();
     }
 
     @Override
     public void disable() {
-        final PlayerInfoMap playerInfoMap = this.cache.getPlayerInfoMap();
-        final var onlinePlayers = this.getServer().getOnlinePlayers();
+        this.kickAll();
+        this.sendServerDisableMessage();
 
-        if (
-                !playerInfoMap.isEmpty()
-                && !onlinePlayers.isEmpty()
-        ) {
-            for (final var player : onlinePlayers) {
-                playerInfoMap
-                .get(player)
-                .kickPlayer(
-                        player,
-                        LanguageRegistry.Components.ON_DISABLE_MESSAGE_TITLE,
-                        LanguageRegistry.Components.ON_DISABLE_MESSAGE_SUBTITLE
-                );
-            }
+        if (!this.cache.isLoaded()) {
+            this.cache.unload();
         }
-
-        for (final var task : this.cache.getBukkitTasks()) {
-            task.cancel();
-        }
-
-        final DiscordManager discordManager = this.cache.getDiscordHandler();
-
-        discordManager.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
-        discordManager.sendMessage(ChatType.LOCAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
 
         singleton = null;
-        this.cache = null;
-        this.config = null;
-        this.scoreboardHideTags = null;
-        this.scoreboardHideTagsTeam = null;
     }
 
     /**
@@ -168,6 +144,14 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
         return singleton == null ? null : singleton.config;
     }
 
+    private void setupHideTags() {
+        this.scoreboardHideTags = this.getServer().getScoreboardManager().getNewScoreboard();
+        this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam(HIDE_TAGS_TEAM_NAME);
+
+        this.scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+        this.scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
+    }
+
     private void setupAuthMe() {
         final Logger logger = this.getLogger();
         final PluginManager pluginManager = this.getServer().getPluginManager();
@@ -188,6 +172,37 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
                     "AuthMe is not installed, MSEssentials will not work properly"
             );
             pluginManager.disablePlugin(this);
+        }
+    }
+
+    private void kickAll() {
+        final PlayerInfoMap playerInfoMap = this.cache.getPlayerInfoMap();
+        final var onlinePlayers = this.getServer().getOnlinePlayers();
+
+        if (
+                playerInfoMap != null
+                && !playerInfoMap.isEmpty()
+                && !onlinePlayers.isEmpty()
+        ) {
+            for (final var player : onlinePlayers) {
+                playerInfoMap
+                .get(player)
+                .kick(
+                        player,
+                        ON_DISABLE_MESSAGE_TITLE,
+                        ON_DISABLE_MESSAGE_SUBTITLE,
+                        PlayerKickEvent.Cause.RESTART_COMMAND
+                );
+            }
+        }
+    }
+
+    private void sendServerDisableMessage() {
+        final DiscordManager discordManager = this.cache.getDiscordHandler();
+
+        if (discordManager != null) {
+            discordManager.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
+            discordManager.sendMessage(ChatType.LOCAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
         }
     }
 }

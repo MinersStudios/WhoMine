@@ -36,6 +36,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitTask;
@@ -575,9 +576,10 @@ public final class PlayerInfo {
             }
 
             userWhiteList.remove(gameProfile);
-            this.kickPlayer(
+            this.kick(
                     COMMAND_WHITE_LIST_REMOVE_RECEIVER_MESSAGE_TITLE,
-                    COMMAND_WHITE_LIST_REMOVE_RECEIVER_MESSAGE_SUBTITLE
+                    COMMAND_WHITE_LIST_REMOVE_RECEIVER_MESSAGE_SUBTITLE,
+                    PlayerKickEvent.Cause.WHITELIST
             );
         }
 
@@ -1202,13 +1204,14 @@ public final class PlayerInfo {
             }
 
             banList.addBan(this.profile, reason, Date.from(date), commandSender.getName());
-            this.kickPlayer(
+            this.kick(
                     COMMAND_BAN_MESSAGE_RECEIVER_TITLE,
                     COMMAND_BAN_MESSAGE_RECEIVER_SUBTITLE
                     .args(
                             text(reason),
                             text(DateUtils.getSenderDate(date, player))
-                    )
+                    ),
+                    PlayerKickEvent.Cause.BANNED
             );
             MSLogger.fine(
                     sender,
@@ -1520,9 +1523,10 @@ public final class PlayerInfo {
                                             RESOURCE_PACK_FAILED_DOWNLOAD_CONSOLE
                                             .args(text(this.nickname, NamedTextColor.GOLD))
                                     );
-                                    this.kickPlayer(
+                                    this.kick(
                                             RESOURCE_PACK_FAILED_DOWNLOAD_RECEIVER_TITLE,
-                                            RESOURCE_PACK_FAILED_DOWNLOAD_RECEIVER_SUBTITLE
+                                            RESOURCE_PACK_FAILED_DOWNLOAD_RECEIVER_SUBTITLE,
+                                            PlayerKickEvent.Cause.RESOURCE_PACK_REJECTION
                                     );
                                 }
                                 case DECLINED -> {
@@ -1530,9 +1534,10 @@ public final class PlayerInfo {
                                             RESOURCE_PACK_DECLINED_CONSOLE
                                             .args(text(this.nickname, NamedTextColor.GOLD))
                                     );
-                                    this.kickPlayer(
+                                    this.kick(
                                             RESOURCE_PACK_DECLINED_RECEIVER_TITLE,
-                                            RESOURCE_PACK_DECLINED_RECEIVER_SUBTITLE
+                                            RESOURCE_PACK_DECLINED_RECEIVER_SUBTITLE,
+                                            PlayerKickEvent.Cause.RESOURCE_PACK_REJECTION
                                     );
                                 }
                             }
@@ -1544,7 +1549,7 @@ public final class PlayerInfo {
                                             "An error occurred while sending the resource pack to " + this.nickname,
                                             throwable
                                     );
-                                    this.kickPlayer(
+                                    this.kick(
                                             SOMETHING_WENT_WRONG_TITLE,
                                             SOMETHING_WENT_WRONG_SUBTITLE
                                     );
@@ -1647,16 +1652,114 @@ public final class PlayerInfo {
     }
 
     /**
-     * Kicks the player from the server
+     * Kicks the player from the server with the default kick message and
+     * {@link PlayerKickEvent.Cause#PLUGIN} cause
+     */
+    public void kick() {
+        this.kick(this.getOnlinePlayer());
+    }
+
+    /**
+     * Kicks the player from the server with the default kick message and
+     * {@link PlayerKickEvent.Cause#PLUGIN} cause
+     *
+     * @param player Player to kick
+     */
+    public void kick(final @Nullable Player player) {
+        this.kick(
+                player,
+                PlayerKickEvent.Cause.PLUGIN
+        );
+    }
+
+    /**
+     * Kicks the player from the server with the default kick message
+     *
+     * @param cause Cause of the kick
+     */
+    public void kick(final @NotNull PlayerKickEvent.Cause cause) {
+        this.kick(
+                this.getOnlinePlayer(),
+                cause
+        );
+    }
+
+    /**
+     * Kicks the player from the server with
+     * {@link PlayerKickEvent.Cause#PLUGIN} cause
      *
      * @param title  Title of the kick message
      * @param reason Reason of the kick message
      */
-    public void kickPlayer(
+    public void kick(
             final @NotNull Component title,
             final @NotNull Component reason
     ) {
-        this.kickPlayer(this.getOnlinePlayer(), title, reason);
+        this.kick(
+                title,
+                reason,
+                PlayerKickEvent.Cause.PLUGIN
+        );
+    }
+
+    /**
+     * Kicks the player from the server
+     *
+     * @param title  Title of the kick message
+     * @param reason Reason of the kick message
+     * @param cause  Cause of the kick
+     */
+    public void kick(
+            final @NotNull Component title,
+            final @NotNull Component reason,
+            final @NotNull PlayerKickEvent.Cause cause
+    ) {
+        this.kick(
+                this.getOnlinePlayer(),
+                title,
+                reason,
+                cause
+        );
+    }
+
+    /**
+     * Kicks the player from the server with the default kick message
+     *
+     * @param player Player to kick
+     * @param cause  Cause of the kick
+     */
+    public void kick(
+            final @Nullable Player player,
+            final @NotNull PlayerKickEvent.Cause cause
+    ) {
+        this.kick(
+                player,
+                COMMAND_KICK_MESSAGE_RECEIVER_TITLE,
+                COMMAND_KICK_MESSAGE_RECEIVER_SUBTITLE
+                        .args(COMMAND_KICK_DEFAULT_REASON),
+                cause
+        );
+    }
+
+    /**
+     * Kicks the player from the server with
+     * {@link PlayerKickEvent.Cause#PLUGIN} cause
+     *
+     * @param player Player to kick
+     * @param title  Title of the kick message
+     * @param reason Reason of the kick message
+     */
+    public void kick(
+            final @Nullable Player player,
+            final @NotNull Component title,
+            final @NotNull Component reason
+    ) {
+        this.kick(
+                player,
+                title,
+                reason,
+                PlayerKickEvent.Cause.PLUGIN
+        );
     }
 
     /**
@@ -1665,24 +1768,26 @@ public final class PlayerInfo {
      * @param player Player to kick
      * @param title  Title of the kick message
      * @param reason Reason of the kick message
+     * @param cause  Cause of the kick
      */
-    public void kickPlayer(
+    public void kick(
             final @Nullable Player player,
             final @NotNull Component title,
-            final @NotNull Component reason
+            final @NotNull Component reason,
+            final @NotNull PlayerKickEvent.Cause cause
     ) {
         if (player == null) {
             return;
         }
 
-        this.handleQuit(player);
         player.kick(
                 FORMAT_LEAVE_MESSAGE
                 .args(
                         title.color(NamedTextColor.RED).decorate(TextDecoration.BOLD),
                         reason.color(NamedTextColor.GRAY)
                 )
-                .color(NamedTextColor.DARK_GRAY)
+                .color(NamedTextColor.DARK_GRAY),
+                cause
         );
     }
 

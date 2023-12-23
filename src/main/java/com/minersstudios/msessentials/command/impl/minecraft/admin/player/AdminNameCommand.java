@@ -78,7 +78,7 @@ public final class AdminNameCommand {
                 yaml.set("pronouns", null);
                 playerFile.save();
                 playerInfo.initNames();
-                playerInfo.kickPlayer(
+                playerInfo.kick(
                         COMMAND_PLAYER_NAME_FULL_RESET_RECEIVER_TITLE,
                         COMMAND_PLAYER_NAME_FULL_RESET_RECEIVER_SUBTITLE
                 );
