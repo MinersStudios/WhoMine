@@ -1039,8 +1039,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final Interaction interaction = interactions[i];
 
             uuidsBuilder
-                    .append(interaction.getUniqueId())
-                    .append(',');
+            .append(interaction.getUniqueId())
+            .append(',');
             interaction.getPersistentDataContainer().set(
                     DecorHitBox.HITBOX_CHILD_NAMESPACED_KEY,
                     PersistentDataType.STRING,

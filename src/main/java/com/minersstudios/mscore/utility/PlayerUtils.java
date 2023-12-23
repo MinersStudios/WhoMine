@@ -52,7 +52,7 @@ import java.util.function.Predicate;
 public final class PlayerUtils {
 
     @Contract(" -> fail")
-    private PlayerUtils() {
+    private PlayerUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

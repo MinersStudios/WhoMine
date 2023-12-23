@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Contract;
 public final class MSPluginUtils {
 
     @Contract(" -> fail")
-    private MSPluginUtils() {
+    private MSPluginUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

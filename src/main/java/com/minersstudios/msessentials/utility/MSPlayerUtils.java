@@ -26,7 +26,7 @@ public final class MSPlayerUtils {
     public static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
 
     @Contract(" -> fail")
-    private MSPlayerUtils() {
+    private MSPlayerUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

@@ -1,15 +1,10 @@
 package com.minersstudios.msblock;
 
-import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.utility.SharedConstants;
+import com.minersstudios.mscore.utility.PaperUtils;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import net.minecraft.server.MinecraftServer;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.UnknownNullability;
 
-import java.io.File;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -28,7 +23,10 @@ public final class MSBlock extends MSPlugin<MSBlock> {
 
     @Override
     public void load() {
-        disableNoteBlockUpdates();
+        PaperUtils
+        .editConfig(PaperUtils.ConfigType.GLOBAL, this.getServer())
+        .set(NOTE_BLOCK_UPDATES, true)
+        .save();
     }
 
     @Override
@@ -95,28 +93,5 @@ public final class MSBlock extends MSPlugin<MSBlock> {
      */
     public static @UnknownNullability Config config() {
         return singleton == null ? null : singleton.config;
-    }
-
-    private static void disableNoteBlockUpdates() {
-        final MinecraftServer server = MinecraftServer.getServer();
-        final File paperGlobalConfig = new File(SharedConstants.PAPER_GLOBAL_CONFIG_PATH);
-        final YamlConfiguration paperConfig = YamlConfiguration.loadConfiguration(paperGlobalConfig);
-
-        if (!paperConfig.getBoolean(NOTE_BLOCK_UPDATES, false)) {
-            paperConfig.set(NOTE_BLOCK_UPDATES, true);
-
-            try {
-                paperConfig.save(paperGlobalConfig);
-            } catch (final Exception e) {
-                MSLogger.log(
-                        Level.SEVERE,
-                        "Failed to save paper-global.yml with " + NOTE_BLOCK_UPDATES + " enabled",
-                        e
-                );
-            }
-
-            server.paperConfigurations.reloadConfigs(server);
-            server.server.reloadCount++;
-        }
     }
 }

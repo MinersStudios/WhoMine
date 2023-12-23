@@ -21,7 +21,7 @@ import static com.minersstudios.mscore.language.LanguageFile.renderTranslationCo
 public final class LanguageRegistry {
 
     @Contract(" -> fail")
-    private LanguageRegistry() {
+    private LanguageRegistry() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 
@@ -52,6 +52,12 @@ public final class LanguageRegistry {
         public static final String ERROR_SOMETHING_WENT_WRONG =                           "ms.error.something_went_wrong";
         public static final String ERROR_WRONG_FORMAT =                                   "ms.error.wrong_format";
         public static final String ERROR_ONLY_PLAYER_COMMAND =                            "ms.error.only_player_command";
+        public static final String ERROR_UNKNOWN_COMMAND =                                "ms.error.unknown_command";
+        public static final String ERROR_NO_PERMISSION =                                  "ms.error.no_permission";
+        public static final String ERROR_FLYING_PLAYER =                                  "ms.error.flying_player";
+        public static final String ERROR_FLYING_VEHICLE =                                 "ms.error.flying_vehicle";
+        public static final String ERROR_CONNECTION_THROTTLE =                            "ms.error.connection_throttle";
+        public static final String ERROR_TOO_MANY_PACKETS =                               "ms.error.too_many_packets";
         public static final String RESOURCE_PACK_ACCEPTED =                               "ms.resource_pack.accepted";
         public static final String RESOURCE_PACK_DECLINED_CONSOLE =                       "ms.resource_pack.declined.console";
         public static final String RESOURCE_PACK_DECLINED_RECEIVER_TITLE =                "ms.resource_pack.declined.receiver.title";
@@ -376,7 +382,7 @@ public final class LanguageRegistry {
         //</editor-fold>
 
         @Contract(" -> fail")
-        private Keys() {
+        private Keys() throws AssertionError {
             throw new AssertionError("Utility class");
         }
     }
@@ -412,6 +418,12 @@ public final class LanguageRegistry {
         public static final TranslatableComponent ERROR_SOMETHING_WENT_WRONG =                           renderTranslationComponent(Keys.ERROR_SOMETHING_WENT_WRONG);
         public static final TranslatableComponent ERROR_WRONG_FORMAT =                                   renderTranslationComponent(Keys.ERROR_WRONG_FORMAT);
         public static final TranslatableComponent ERROR_ONLY_PLAYER_COMMAND =                            renderTranslationComponent(Keys.ERROR_ONLY_PLAYER_COMMAND);
+        public static final TranslatableComponent ERROR_UNKNOWN_COMMAND =                                renderTranslationComponent(Keys.ERROR_UNKNOWN_COMMAND);
+        public static final TranslatableComponent ERROR_NO_PERMISSION =                                  renderTranslationComponent(Keys.ERROR_NO_PERMISSION);
+        public static final TranslatableComponent ERROR_FLYING_PLAYER =                                  renderTranslationComponent(Keys.ERROR_FLYING_PLAYER);
+        public static final TranslatableComponent ERROR_FLYING_VEHICLE =                                 renderTranslationComponent(Keys.ERROR_FLYING_VEHICLE);
+        public static final TranslatableComponent ERROR_CONNECTION_THROTTLE =                            renderTranslationComponent(Keys.ERROR_CONNECTION_THROTTLE);
+        public static final TranslatableComponent ERROR_TOO_MANY_PACKETS =                               renderTranslationComponent(Keys.ERROR_TOO_MANY_PACKETS);
         public static final TranslatableComponent RESOURCE_PACK_ACCEPTED =                               renderTranslationComponent(Keys.RESOURCE_PACK_ACCEPTED);
         public static final TranslatableComponent RESOURCE_PACK_DECLINED_CONSOLE =                       renderTranslationComponent(Keys.RESOURCE_PACK_DECLINED_CONSOLE);
         public static final TranslatableComponent RESOURCE_PACK_DECLINED_RECEIVER_TITLE =                renderTranslationComponent(Keys.RESOURCE_PACK_DECLINED_RECEIVER_TITLE);
@@ -736,7 +748,7 @@ public final class LanguageRegistry {
         //</editor-fold>
 
         @Contract(" -> fail")
-        private Components() {
+        private Components() throws AssertionError {
             throw new AssertionError("Utility class");
         }
     }
@@ -772,6 +784,12 @@ public final class LanguageRegistry {
         public static final String ERROR_SOMETHING_WENT_WRONG =                           renderTranslation(Keys.ERROR_SOMETHING_WENT_WRONG);
         public static final String ERROR_WRONG_FORMAT =                                   renderTranslation(Keys.ERROR_WRONG_FORMAT);
         public static final String ERROR_ONLY_PLAYER_COMMAND =                            renderTranslation(Keys.ERROR_ONLY_PLAYER_COMMAND);
+        public static final String ERROR_UNKNOWN_COMMAND =                                renderTranslation(Keys.ERROR_UNKNOWN_COMMAND);
+        public static final String ERROR_NO_PERMISSION =                                  renderTranslation(Keys.ERROR_NO_PERMISSION);
+        public static final String ERROR_FLYING_PLAYER =                                  renderTranslation(Keys.ERROR_FLYING_PLAYER);
+        public static final String ERROR_FLYING_VEHICLE =                                 renderTranslation(Keys.ERROR_FLYING_VEHICLE);
+        public static final String ERROR_CONNECTION_THROTTLE =                            renderTranslation(Keys.ERROR_CONNECTION_THROTTLE);
+        public static final String ERROR_TOO_MANY_PACKETS =                               renderTranslation(Keys.ERROR_TOO_MANY_PACKETS);
         public static final String RESOURCE_PACK_ACCEPTED =                               renderTranslation(Keys.RESOURCE_PACK_ACCEPTED);
         public static final String RESOURCE_PACK_DECLINED_CONSOLE =                       renderTranslation(Keys.RESOURCE_PACK_DECLINED_CONSOLE);
         public static final String RESOURCE_PACK_DECLINED_RECEIVER_TITLE =                renderTranslation(Keys.RESOURCE_PACK_DECLINED_RECEIVER_TITLE);
@@ -1096,7 +1114,7 @@ public final class LanguageRegistry {
         //</editor-fold>
 
         @Contract(" -> fail")
-        private Strings() {
+        private Strings() throws AssertionError {
             throw new AssertionError("Utility class");
         }
     }

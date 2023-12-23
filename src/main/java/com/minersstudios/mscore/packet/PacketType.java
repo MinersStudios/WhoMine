@@ -153,7 +153,7 @@ public final class PacketType {
         }
 
         @Contract(" -> fail")
-        private Handshaking() {
+        private Handshaking() throws AssertionError {
             throw new AssertionError("Utility class");
         }
 
@@ -161,7 +161,7 @@ public final class PacketType {
             public static final Map<Integer, PacketType> PACKET_MAP = Collections.emptyMap();
 
             @Contract(" -> fail")
-            private Client() {
+            private Client() throws AssertionError {
                 throw new AssertionError("Utility class");
             }
         }
@@ -175,7 +175,7 @@ public final class PacketType {
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
 
             @Contract(" -> fail")
-            private Server() {
+            private Server() throws AssertionError {
                 throw new AssertionError("Utility class");
             }
         }
@@ -201,7 +201,7 @@ public final class PacketType {
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
 
             @Contract(" -> fail")
-            private Client() {
+            private Client() throws AssertionError {
                 throw new AssertionError("Utility class");
             }
         }
@@ -215,7 +215,7 @@ public final class PacketType {
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
 
             @Contract(" -> fail")
-            private Server() {
+            private Server() throws AssertionError {
                 throw new AssertionError("Utility class");
             }
         }
@@ -233,7 +233,7 @@ public final class PacketType {
         }
 
         @Contract(" -> fail")
-        private Login() {
+        private Login() throws AssertionError {
             throw new AssertionError("Utility class");
         }
 
@@ -249,7 +249,7 @@ public final class PacketType {
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
 
             @Contract(" -> fail")
-            private Client() {
+            private Client() throws AssertionError {
                 throw new AssertionError("Utility class");
             }
         }
@@ -265,7 +265,7 @@ public final class PacketType {
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
 
             @Contract(" -> fail")
-            private Server() {
+            private Server() throws AssertionError {
                 throw new AssertionError("Utility class");
             }
         }
@@ -283,7 +283,7 @@ public final class PacketType {
         }
 
         @Contract(" -> fail")
-        private Configuration() {
+        private Configuration() throws AssertionError {
             throw new AssertionError("Utility class");
         }
 
@@ -304,7 +304,7 @@ public final class PacketType {
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
 
             @Contract(" -> fail")
-            private Client() {
+            private Client() throws AssertionError {
                 throw new AssertionError("Utility class");
             }
         }
@@ -322,7 +322,7 @@ public final class PacketType {
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
 
             @Contract(" -> fail")
-            private Server() {
+            private Server() throws AssertionError {
                 throw new AssertionError("Utility class");
             }
         }
@@ -340,7 +340,7 @@ public final class PacketType {
         }
 
         @Contract(" -> fail")
-        private Play() {
+        private Play() throws AssertionError {
             throw new AssertionError("Utility class");
         }
 
@@ -468,7 +468,7 @@ public final class PacketType {
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
 
             @Contract(" -> fail")
-            private Client() {
+            private Client() throws AssertionError {
                 throw new AssertionError("Utility class");
             }
         }
@@ -535,7 +535,7 @@ public final class PacketType {
             public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
 
             @Contract(" -> fail")
-            private Server() {
+            private Server() throws AssertionError {
                 throw new AssertionError("Utility class");
             }
         }

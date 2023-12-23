@@ -69,7 +69,7 @@ public final class ChatUtils {
     private static final GsonComponentSerializer GSON_SERIALIZER = GsonComponentSerializer.gson();
 
     @Contract(" -> fail")
-    private ChatUtils() {
+    private ChatUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

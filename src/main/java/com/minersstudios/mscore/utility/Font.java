@@ -17,7 +17,7 @@ import static com.minersstudios.mscore.utility.ChatUtils.createDefaultStyledText
 public final class Font {
 
     @Contract(" -> fail")
-    private Font() {
+    private Font() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 
@@ -80,7 +80,7 @@ public final class Font {
         //</editor-fold>
 
         @Contract(" -> fail")
-        private Chars() {
+        private Chars() throws AssertionError {
             throw new AssertionError("Utility class");
         }
     }
@@ -147,7 +147,7 @@ public final class Font {
         //</editor-fold>
 
         @Contract(" -> fail")
-        private Components() {
+        private Components() throws AssertionError {
             throw new AssertionError("Utility class");
         }
     }

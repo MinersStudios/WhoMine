@@ -23,7 +23,7 @@ import java.util.Collection;
 public final class ItemUtils {
 
     @Contract(" -> fail")
-    private ItemUtils() {
+    private ItemUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

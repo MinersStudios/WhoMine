@@ -27,7 +27,7 @@ public final class MSDecorUtils {
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(" -> fail")
-    private MSDecorUtils() {
+    private MSDecorUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

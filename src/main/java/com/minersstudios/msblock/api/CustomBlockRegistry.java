@@ -83,7 +83,7 @@ public final class CustomBlockRegistry {
     }
 
     @Contract(" -> fail")
-    private CustomBlockRegistry() {
+    private CustomBlockRegistry() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

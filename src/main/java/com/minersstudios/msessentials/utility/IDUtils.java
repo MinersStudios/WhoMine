@@ -15,7 +15,7 @@ public final class IDUtils {
     public static final Pattern ID_PATTERN = Pattern.compile(ID_REGEX);
 
     @Contract(" -> fail")
-    private IDUtils() {
+    private IDUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

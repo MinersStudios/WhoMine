@@ -39,7 +39,7 @@ public final class BlockUtils {
     }
 
     @Contract(" -> fail")
-    private BlockUtils() {
+    private BlockUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

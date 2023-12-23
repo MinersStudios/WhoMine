@@ -111,7 +111,7 @@ public final class LocationUtils {
     };
 
     @Contract(" -> fail")
-    private LocationUtils() {
+    private LocationUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

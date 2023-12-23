@@ -38,7 +38,7 @@ public final class DateUtils {
     public static final Pattern CHRONO_PATTERN = Pattern.compile(CHRONO_REGEX);
 
     @Contract(" -> fail")
-    private DateUtils() {
+    private DateUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

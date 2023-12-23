@@ -1,15 +1,20 @@
 package com.minersstudios.mscore;
 
 import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utility.CoreProtectUtils;
+import com.minersstudios.mscore.utility.PaperUtils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.logging.Logger;
+
+import static com.minersstudios.mscore.language.LanguageRegistry.Keys.ERROR_NO_PERMISSION;
+import static com.minersstudios.mscore.utility.Font.Chars.RED_EXCLAMATION_MARK;
 
 /**
  * Main class of the MSCore plugin
@@ -20,6 +25,30 @@ public final class MSCore extends MSPlugin<MSCore> {
     private static MSCore singleton;
 
     public static final String NAMESPACE = "mscore";
+
+    private static final String CONNECTION_THROTTLE = "messages.kick.connection-throttle";
+    private static final String FLYING_PLAYER = "messages.kick.flying-player";
+    private static final String FLYING_VEHICLE = "messages.kick.flying-vehicle";
+    private static final String NO_PERMISSION = "messages.no-permission";
+    private static final String TOO_MANY_PACKETS = "packet-limiter.kick-message";
+
+    private static final String MESSAGE_CONNECTION_THROTTLE = "<red><lang:" + LanguageRegistry.Keys.ERROR_CONNECTION_THROTTLE + '>';
+    private static final String MESSAGE_FLYING_PLAYER = "<red><lang:" + LanguageRegistry.Keys.ERROR_FLYING_PLAYER + '>';
+    private static final String MESSAGE_FLYING_VEHICLE = "<red><lang:" + LanguageRegistry.Keys.ERROR_FLYING_VEHICLE + '>';
+    private static final String MESSAGE_NO_PERMISSION = ' ' + RED_EXCLAMATION_MARK + " <red><lang:" + ERROR_NO_PERMISSION + '>';
+    private static final String MESSAGE_TOO_MANY_PACKETS = "<red><lang:" + LanguageRegistry.Keys.ERROR_TOO_MANY_PACKETS + '>';
+
+    @Override
+    public void load() {
+        PaperUtils
+        .editConfig(PaperUtils.ConfigType.GLOBAL, this.getServer())
+        .set(CONNECTION_THROTTLE, MESSAGE_CONNECTION_THROTTLE)
+        .set(FLYING_PLAYER, MESSAGE_FLYING_PLAYER)
+        .set(FLYING_VEHICLE, MESSAGE_FLYING_VEHICLE)
+        .set(NO_PERMISSION, MESSAGE_NO_PERMISSION)
+        .set(TOO_MANY_PACKETS, MESSAGE_TOO_MANY_PACKETS)
+        .save();
+    }
 
     @Override
     public void enable() {

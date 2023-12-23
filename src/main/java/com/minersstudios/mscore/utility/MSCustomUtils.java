@@ -32,7 +32,7 @@ import java.util.Optional;
 public final class MSCustomUtils {
 
     @Contract(" -> fail")
-    private MSCustomUtils() {
+    private MSCustomUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

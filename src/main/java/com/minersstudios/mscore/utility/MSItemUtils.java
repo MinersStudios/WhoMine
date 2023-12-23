@@ -19,7 +19,7 @@ public final class MSItemUtils {
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(" -> fail")
-    private MSItemUtils() {
+    private MSItemUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

@@ -24,7 +24,7 @@ public final class SharedConstants {
     public static final int SIT_RANGE =                                9;
 
     @Contract(" -> fail")
-    private SharedConstants() {
+    private SharedConstants() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 }

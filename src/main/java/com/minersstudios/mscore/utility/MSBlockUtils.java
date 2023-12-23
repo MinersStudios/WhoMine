@@ -19,7 +19,7 @@ public final class MSBlockUtils {
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(" -> fail")
-    private MSBlockUtils() {
+    private MSBlockUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 

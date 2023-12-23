@@ -30,7 +30,7 @@ import static net.kyori.adventure.text.Component.*;
 public final class MessageUtils {
 
     @Contract(" -> fail")
-    private MessageUtils() {
+    private MessageUtils() throws AssertionError {
         throw new AssertionError("Utility class");
     }
 
