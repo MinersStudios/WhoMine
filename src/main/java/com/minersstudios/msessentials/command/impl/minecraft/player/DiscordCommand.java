@@ -62,13 +62,14 @@ public final class DiscordCommand extends CommandExecutor<MSEssentials> {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
+        final MSEssentials plugin = this.getPlugin();
         final Player player = (Player) sender;
 
         if (args.length > 0) {
             switch (args[0]) {
-                case "link" -> DiscordLinkCodeMenu.open(this.getPlugin(), player);
+                case "link" -> plugin.openCustomInventory(DiscordLinkCodeMenu.class, player);
                 case "unlink" -> {
-                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
+                    final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
                     final long id = playerInfo.unlinkDiscord();
 
                     if (id == -1L) {
@@ -79,7 +80,7 @@ public final class DiscordCommand extends CommandExecutor<MSEssentials> {
                         return true;
                     }
 
-                    final DiscordManager discordManager = this.getPlugin().getCache().getDiscordHandler();
+                    final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
 
                     discordManager.getUser(id)
                     .ifPresent(user -> {

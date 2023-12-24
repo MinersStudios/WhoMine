@@ -9,6 +9,7 @@ import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -207,10 +208,13 @@ public final class MSLogger {
             default ->      message;
         };
 
-        if (target == null) {
+        if (
+                target == null
+                || target instanceof ConsoleCommandSender
+        ) {
             try {
                 Bukkit.getServer().getConsoleSender().sendMessage(coloredMessage);
-            } catch (final Exception e) {
+            } catch (final Throwable e) {
                 warning("Tried to log a message to the console, but the console was null!");
             }
         } else if (target instanceof BlockCommandSender) {

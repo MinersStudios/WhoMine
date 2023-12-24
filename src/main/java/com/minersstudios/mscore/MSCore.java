@@ -26,17 +26,21 @@ public final class MSCore extends MSPlugin<MSCore> {
 
     public static final String NAMESPACE = "mscore";
 
+    //<editor-fold desc="Config keys" defaultstate="collapsed">
     private static final String CONNECTION_THROTTLE = "messages.kick.connection-throttle";
     private static final String FLYING_PLAYER = "messages.kick.flying-player";
     private static final String FLYING_VEHICLE = "messages.kick.flying-vehicle";
     private static final String NO_PERMISSION = "messages.no-permission";
     private static final String TOO_MANY_PACKETS = "packet-limiter.kick-message";
+    //</editor-fold>
 
+    //<editor-fold desc="Config messages" defaultstate="collapsed">
     private static final String MESSAGE_CONNECTION_THROTTLE = "<red><lang:" + LanguageRegistry.Keys.ERROR_CONNECTION_THROTTLE + '>';
     private static final String MESSAGE_FLYING_PLAYER = "<red><lang:" + LanguageRegistry.Keys.ERROR_FLYING_PLAYER + '>';
     private static final String MESSAGE_FLYING_VEHICLE = "<red><lang:" + LanguageRegistry.Keys.ERROR_FLYING_VEHICLE + '>';
     private static final String MESSAGE_NO_PERMISSION = ' ' + RED_EXCLAMATION_MARK + " <red><lang:" + ERROR_NO_PERMISSION + '>';
     private static final String MESSAGE_TOO_MANY_PACKETS = "<red><lang:" + LanguageRegistry.Keys.ERROR_TOO_MANY_PACKETS + '>';
+    //</editor-fold>
 
     @Override
     public void load() {
@@ -84,6 +88,7 @@ public final class MSCore extends MSPlugin<MSCore> {
             if (coreProtect.isEnabled()) {
                 CoreProtectUtils.set(coreProtect.getAPI());
                 MSLogger.fine("CoreProtect connected");
+
                 return;
             }
 

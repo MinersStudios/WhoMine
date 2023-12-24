@@ -4,9 +4,6 @@ import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.discord.DiscordManager;
-import com.minersstudios.msessentials.menu.DiscordLinkCodeMenu;
-import com.minersstudios.msessentials.menu.ResourcePackMenu;
-import com.minersstudios.msessentials.menu.SkinsMenu;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.task.BanListTask;
 import com.minersstudios.msessentials.task.MuteMapTask;
@@ -43,13 +40,6 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
 
     public static final String NAMESPACE = "msessentials";
     public static final String HIDE_TAGS_TEAM_NAME = "hide_tags";
-
-    @Override
-    public void load() {
-        initClass(DiscordLinkCodeMenu.class);
-        initClass(ResourcePackMenu.class);
-        initClass(SkinsMenu.class);
-    }
 
     @Override
     public void enable() {

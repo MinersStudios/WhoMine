@@ -2,6 +2,8 @@ package com.minersstudios.msessentials.menu;
 
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
+import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
+import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
@@ -20,10 +22,12 @@ import java.util.ArrayList;
 
 import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 
-public final class PronounsMenu {
-    private static final CustomInventory INVENTORY;
+@InventoryHolder
+public final class PronounsMenu extends AbstractInventoryHolder<MSEssentials> {
 
-    static {
+    @Override
+    protected @NotNull CustomInventory createCustomInventory() {
+        final MSEssentials plugin = this.getPlugin();
         final ItemStack heItem = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
         final ItemMeta heMeta = heItem.getItemMeta();
         final var loreHe = new ArrayList<Component>();
@@ -53,7 +57,7 @@ public final class PronounsMenu {
 
         final InventoryButton heButton = new InventoryButton(heItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.HE);
@@ -64,7 +68,7 @@ public final class PronounsMenu {
 
         final InventoryButton sheButton = new InventoryButton(sheItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.SHE);
@@ -75,7 +79,7 @@ public final class PronounsMenu {
 
         final InventoryButton theyButton = new InventoryButton(theyItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.THEY);
@@ -84,8 +88,8 @@ public final class PronounsMenu {
             player.closeInventory();
         });
 
-        INVENTORY =
-                CustomInventory.single(
+        return CustomInventory
+                .single(
                         MENU_PRONOUNS_TITLE.style(ChatUtils.DEFAULT_STYLE),
                         1
                 )
@@ -99,7 +103,6 @@ public final class PronounsMenu {
                 .buttonAt(7, theyButton)
                 .buttonAt(8, theyButton)
                 .closeAction((event, inventory) -> {
-                    final MSEssentials plugin = MSEssentials.singleton();
                     final Player player = (Player) event.getPlayer();
                     final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
 
@@ -111,7 +114,8 @@ public final class PronounsMenu {
                 });
     }
 
-    public static void open(final @NotNull Player player) {
-        INVENTORY.open(player);
+    @Override
+    public void open(final @NotNull Player player) {
+        this.getCustomInventory().open(player);
     }
 }

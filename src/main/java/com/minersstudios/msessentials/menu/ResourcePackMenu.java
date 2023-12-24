@@ -3,6 +3,8 @@ package com.minersstudios.msessentials.menu;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
+import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
+import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.PlayerSettings;
@@ -21,10 +23,12 @@ import static com.minersstudios.mscore.utility.ChatUtils.COLORLESS_DEFAULT_STYLE
 import static com.minersstudios.mscore.utility.ChatUtils.DEFAULT_STYLE;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
-public final class ResourcePackMenu {
-    private static final CustomInventory INVENTORY;
+@InventoryHolder
+public final class ResourcePackMenu extends AbstractInventoryHolder<MSEssentials> {
 
-    static {
+    @Override
+    protected @NotNull CustomInventory createCustomInventory() {
+        final MSEssentials plugin = this.getPlugin();
         final ItemStack infoItem = new ItemStack(Material.KNOWLEDGE_BOOK);
         final ItemMeta infoMeta = infoItem.getItemMeta();
 
@@ -85,7 +89,7 @@ public final class ResourcePackMenu {
 
         final InventoryButton noneButton = new InventoryButton(noneItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
             final ResourcePack.Type packType = playerSettings.getResourcePackType();
 
@@ -112,16 +116,17 @@ public final class ResourcePackMenu {
 
         final InventoryButton fullButton = new InventoryButton(fullItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
             playerSettings.setResourcePackType(ResourcePack.Type.FULL);
             playerSettings.save();
             InventoryButton.playClickSound(player);
             player.closeInventory();
-            playerInfo.handleResourcePack().thenAccept(loadedResourcePack -> {
+            playerInfo.handleResourcePack()
+            .thenAccept(isLoaded -> {
                 if (
-                        loadedResourcePack
+                        isLoaded
                         && playerInfo.isInWorldDark()
                 ) {
                     playerInfo.handleJoin();
@@ -131,16 +136,17 @@ public final class ResourcePackMenu {
 
         final InventoryButton liteButton = new InventoryButton(liteItem, (event, inventory) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
             playerSettings.setResourcePackType(ResourcePack.Type.LITE);
             playerSettings.save();
             InventoryButton.playClickSound(player);
             player.closeInventory();
-            playerInfo.handleResourcePack().thenAccept(loadedResourcePack -> {
+            playerInfo.handleResourcePack()
+            .thenAccept(isLoaded -> {
                 if (
-                        loadedResourcePack
+                        isLoaded
                         && playerInfo.isInWorldDark()
                 ) {
                     playerInfo.handleJoin();
@@ -148,8 +154,8 @@ public final class ResourcePackMenu {
             });
         });
 
-        INVENTORY =
-                CustomInventory.single(
+        return CustomInventory
+                .single(
                         MENU_RESOURCE_PACK_TITLE.style(DEFAULT_STYLE),
                         1
                 )
@@ -163,7 +169,6 @@ public final class ResourcePackMenu {
                 .buttonAt(7, liteButton)
                 .buttonAt(8, liteButton)
                 .closeAction((event, inventory) -> {
-                    final MSEssentials plugin = MSEssentials.singleton();
                     final Player player = (Player) event.getPlayer();
                     final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
                     final ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
@@ -174,7 +179,8 @@ public final class ResourcePackMenu {
                 });
     }
 
-    public static void open(final @NotNull Player player) {
-        INVENTORY.open(player);
+    @Override
+    public void open(final @NotNull Player player) {
+        this.getCustomInventory().open(player);
     }
 }

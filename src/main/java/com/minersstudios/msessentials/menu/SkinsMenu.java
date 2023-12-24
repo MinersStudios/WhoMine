@@ -3,6 +3,8 @@ package com.minersstudios.msessentials.menu;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
+import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
+import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
 import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
@@ -24,16 +26,18 @@ import java.util.HashMap;
 
 import static net.kyori.adventure.text.Component.text;
 
-public final class SkinsMenu {
+@InventoryHolder
+public final class SkinsMenu extends AbstractInventoryHolder<MSEssentials> {
     private static final Component TITLE = LanguageRegistry.Components.MENU_SKINS_TITLE.style(ChatUtils.DEFAULT_STYLE);
     private static final InventoryButton EMPTY_BUTTON = new InventoryButton().item(new ItemStack(Material.AIR));
-    private static final InventoryButton APPLY_BUTTON;
-    private static final InventoryButton APPLY_BUTTON_EMPTY;
-    private static final InventoryButton DELETE_BUTTON;
-    private static final InventoryButton DELETE_BUTTON_EMPTY;
-    private static final CustomInventory CUSTOM_INVENTORY;
+    private InventoryButton applyButton;
+    private InventoryButton applyButtonEmpty;
+    private InventoryButton deleteButton;
+    private InventoryButton deleteButtonEmpty;
 
-    static {
+    @Override
+    protected @NotNull CustomInventory createCustomInventory() {
+        final MSEssentials plugin = this.getPlugin();
         final ItemStack applyItem = new ItemStack(Material.PAPER);
         final ItemMeta applyMeta = applyItem.getItemMeta();
 
@@ -50,9 +54,9 @@ public final class SkinsMenu {
         applyEmptyMeta.setCustomModelData(1);
         applyEmpty.setItemMeta(applyEmptyMeta);
 
-        APPLY_BUTTON = new InventoryButton(applyItem, (event, inv) -> {
+        this.applyButton = new InventoryButton(applyItem, (event, inv) -> {
             final Player player = (Player) event.getWhoClicked();
-            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(MSEssentials.singleton(), player);
+            final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final Skin skin = playerInfo.getPlayerFile().getSkin((int) inv.args().get(0));
 
             if (skin == null) {
@@ -62,7 +66,7 @@ public final class SkinsMenu {
             playerInfo.setSkin(skin);
             player.closeInventory();
         });
-        APPLY_BUTTON_EMPTY = APPLY_BUTTON.clone().item(applyEmpty);
+        this.applyButtonEmpty = this.applyButton.clone().item(applyEmpty);
 
         final ItemStack deleteItem = new ItemStack(Material.PAPER);
         final ItemMeta deleteMeta = deleteItem.getItemMeta();
@@ -80,8 +84,7 @@ public final class SkinsMenu {
         deleteEmptyMeta.setCustomModelData(1);
         deleteEmpty.setItemMeta(deleteEmptyMeta);
 
-        DELETE_BUTTON = new InventoryButton(deleteItem, (event, inv) -> {
-            final MSEssentials plugin = MSEssentials.singleton();
+        this.deleteButton = new InventoryButton(deleteItem, (event, inv) -> {
             final Player player = (Player) event.getWhoClicked();
             final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
             final PlayerFile playerFile = playerInfo.getPlayerFile();
@@ -118,29 +121,28 @@ public final class SkinsMenu {
                 );
             }
 
-            open(plugin, player);
+            this.open(player);
         });
-        DELETE_BUTTON_EMPTY = DELETE_BUTTON.clone().item(deleteEmpty);
+        this.deleteButtonEmpty = deleteButton.clone().item(deleteEmpty);
 
-        CUSTOM_INVENTORY = CustomInventory.single(TITLE, 3).buttonAt(
-                22,
-                new InventoryButton()
-                .clickAction((event, inv) -> {
-                    final Player player = (Player) event.getWhoClicked();
+        return CustomInventory
+                .single(TITLE, 3)
+                .buttonAt(
+                        22,
+                        new InventoryButton()
+                        .clickAction((event, inv) -> {
+                            final Player player = (Player) event.getWhoClicked();
 
-                    player.closeInventory();
-                    InventoryButton.playClickSound(player);
-                })
-        );
+                            player.closeInventory();
+                            InventoryButton.playClickSound(player);
+                        })
+                );
     }
 
-    public static void open(
-            final @NotNull MSEssentials plugin,
-            final @NotNull Player player
-    ) {
-        final CustomInventory customInventory = CUSTOM_INVENTORY.clone();
-
-        final var skins = PlayerInfo.fromOnlinePlayer(plugin, player).getPlayerFile().getSkins();
+    @Override
+    public void open(final @NotNull Player player) {
+        final CustomInventory customInventory = this.getCustomInventory().clone();
+        final var skins = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player).getPlayerFile().getSkins();
         final var skinButtons = new HashMap<Integer, InventoryButton>();
 
         for (int i = 0; i < skins.size(); i++) {
@@ -178,14 +180,14 @@ public final class SkinsMenu {
                         if (!isSame) {
                             inv
                             .buttonAt(finalI, inventoryButton.item(head))
-                            .buttonAt(18, APPLY_BUTTON)
-                            .buttonAt(19, APPLY_BUTTON_EMPTY)
-                            .buttonAt(20, APPLY_BUTTON_EMPTY)
-                            .buttonAt(21, APPLY_BUTTON_EMPTY)
-                            .buttonAt(23, DELETE_BUTTON)
-                            .buttonAt(24, DELETE_BUTTON_EMPTY)
-                            .buttonAt(25, DELETE_BUTTON_EMPTY)
-                            .buttonAt(26, DELETE_BUTTON_EMPTY)
+                            .buttonAt(18, applyButton)
+                            .buttonAt(19, applyButtonEmpty)
+                            .buttonAt(20, applyButtonEmpty)
+                            .buttonAt(21, applyButtonEmpty)
+                            .buttonAt(23, deleteButton)
+                            .buttonAt(24, deleteButtonEmpty)
+                            .buttonAt(25, deleteButtonEmpty)
+                            .buttonAt(26, deleteButtonEmpty)
                             .args(ImmutableList.of(finalI));
                         } else {
                             inv

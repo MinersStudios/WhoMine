@@ -138,7 +138,10 @@ public final class RegistrationProcess {
                     this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_12, 100L);
                     this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_13, 150L);
 
-                    this.plugin.runTaskLater(() -> PronounsMenu.open(this.player), 225L);
+                    this.plugin.runTaskLater(
+                            () -> this.plugin.openCustomInventory(PronounsMenu.class, this.player),
+                            225L
+                    );
 
                     return true;
                 }

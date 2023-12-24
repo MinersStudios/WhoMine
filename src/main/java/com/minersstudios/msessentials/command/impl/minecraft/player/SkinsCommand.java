@@ -29,7 +29,7 @@ public final class SkinsCommand extends CommandExecutor<MSEssentials> {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        SkinsMenu.open(this.getPlugin(), (Player) sender);
+        this.getPlugin().openCustomInventory(SkinsMenu.class, (Player) sender);
         return true;
     }
 

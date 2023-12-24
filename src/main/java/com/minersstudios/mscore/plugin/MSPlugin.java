@@ -4,6 +4,8 @@ import com.google.common.base.Charsets;
 import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.CommandExecutor;
 import com.minersstudios.mscore.command.api.Commodore;
+import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
+import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
 import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
@@ -22,6 +24,7 @@ import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -36,7 +39,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -61,7 +63,8 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     private final File pluginFolder;
     private final File configFile;
     private final List<String> classNames;
-    private final Map<Command, CommandExecutor<T>> commands;
+    private final Map<Command, CommandExecutor<T>> commandMap;
+    private final Map<Class<? extends AbstractInventoryHolder<T>>, AbstractInventoryHolder<T>> inventoryHolderMap;
     private final List<AbstractEventListener<T>> eventListeners;
     private final List<AbstractPacketListener<T>> packetListeners;
     private Commodore commodore;
@@ -113,27 +116,11 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     protected MSPlugin() {
         this.pluginFolder = new File(GLOBAL_FOLDER, this.getName() + '/');
         this.configFile = new File(this.pluginFolder, "config.yml");
-
-        List<String> classNames = null;
-
-        try {
-            classNames = loadClassNames(
-                    this.getClassLoader(),
-                    SharedConstants.GLOBAL_PACKAGE + '.' + this.getName().toLowerCase()
-            );
-        } catch (final IOException e) {
-            this.getLogger().log(
-                    Level.SEVERE,
-                    "Failed to load classnames",
-                    e
-            );
-            this.getServer().getPluginManager().disablePlugin(this);
-        }
-
-        this.classNames = classNames;
-        this.commands = this.loadCommands();
-        this.eventListeners = this.loadEventListeners();
-        this.packetListeners = this.loadPacketListeners();
+        this.classNames = this.loadClassNames(SharedConstants.GLOBAL_PACKAGE + '.' + this.getName().toLowerCase());
+        this.commandMap = new HashMap<>();
+        this.inventoryHolderMap = new HashMap<>();
+        this.eventListeners = new ArrayList<>();
+        this.packetListeners = new ArrayList<>();
 
         try {
             DATA_FOLDER_FIELD.set(this, this.pluginFolder);
@@ -159,6 +146,28 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     /**
+     * @return The unmodifiable map of commands
+     */
+    public final @NotNull @UnmodifiableView Map<Command, CommandExecutor<T>> getCommandMap() {
+        return Collections.unmodifiableMap(this.commandMap);
+    }
+
+    /**
+     * @return The unmodifiable map of custom inventories
+     */
+    public final @NotNull @UnmodifiableView Map<Class<? extends AbstractInventoryHolder<T>>, AbstractInventoryHolder<T>> getInventoryHolderMap() {
+        return Collections.unmodifiableMap(this.inventoryHolderMap);
+    }
+
+    /**
+     * @param clazz Class of the custom inventory holder
+     * @return The optional custom inventory holder
+     */
+    public final @NotNull Optional<AbstractInventoryHolder<T>> getInventoryHolder(final @NotNull Class<? extends AbstractInventoryHolder<T>> clazz) {
+        return Optional.ofNullable(this.inventoryHolderMap.get(clazz));
+    }
+
+    /**
      * @return The unmodifiable list of event listeners
      */
     public final @NotNull @UnmodifiableView List<AbstractEventListener<T>> getListeners() {
@@ -170,13 +179,6 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      */
     public final @NotNull @UnmodifiableView List<AbstractPacketListener<T>> getPacketListeners() {
         return Collections.unmodifiableList(this.packetListeners);
-    }
-
-    /**
-     * @return The unmodifiable map of commands
-     */
-    public final @NotNull @UnmodifiableView Map<Command, CommandExecutor<T>> getCommands() {
-        return Collections.unmodifiableMap(this.commands);
     }
 
     /**
@@ -238,12 +240,20 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * before any onEnable() is called. Also logs the time it took to load the
      * plugin.
      *
+     * @see #loadCommands()
+     * @see #loadInventoryHolders()
+     * @see #loadEventListeners()
+     * @see #loadPacketListeners()
      * @see #load()
      */
     @Override
     public final void onLoad() {
         final long time = System.currentTimeMillis();
 
+        this.loadCommands();
+        this.loadInventoryHolders();
+        this.loadEventListeners();
+        this.loadPacketListeners();
         this.load();
 
         this.getComponentLogger()
@@ -261,6 +271,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * enable the plugin.
      *
      * @see #registerCommands()
+     * @see #registerInventoryHolders()
      * @see #registerEventListeners()
      * @see #registerPacketListeners()
      * @see #enable()
@@ -273,6 +284,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         this.registerCommands();
         this.registerEventListeners();
         this.registerPacketListeners();
+        this.registerInventoryHolders();
         this.enable();
 
         if (this.isEnabled()) {
@@ -451,170 +463,6 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     public void saveDefaultConfig() {
         if (!this.configFile.exists()) {
             this.saveResource("config.yml", false);
-        }
-    }
-
-    /**
-     * Loads all commands annotated with {@link Command} in the project. All
-     * commands must be implemented using {@link CommandExecutor}.
-     *
-     * @return The map of commands
-     * @see Command
-     * @see CommandExecutor
-     * @see #registerCommands()
-     */
-    @SuppressWarnings("unchecked")
-    private @NotNull Map<Command, CommandExecutor<T>> loadCommands() {
-        final Logger logger = this.getLogger();
-        final ClassLoader classLoader = this.getClassLoader();
-        final var commands = new HashMap<Command, CommandExecutor<T>>();
-
-        for (final var className : this.classNames) {
-            try {
-                final var clazz = classLoader.loadClass(className);
-                final Command command = clazz.getAnnotation(Command.class);
-
-                if (command == null) {
-                    continue;
-                }
-
-                if (clazz.getDeclaredConstructor().newInstance() instanceof final CommandExecutor<?> commandExecutor) {
-                    commandExecutor.setPlugin(this);
-                    commands.put(command, (CommandExecutor<T>) commandExecutor);
-                } else {
-                    logger.warning(
-                            "Annotated class with MSCommand is not instance of MSCommandExecutor (" + className + ")"
-                    );
-                }
-            } catch (final Throwable e) {
-                logger.log(Level.SEVERE, "Failed to load command", e);
-            }
-        }
-
-        return commands;
-    }
-
-    /**
-     * Registers all commands in the project that is annotated with
-     * {@link Command}. All commands must be implemented using
-     * {@link CommandExecutor}.
-     *
-     * @see Command
-     * @see CommandExecutor
-     * @see #loadCommands()
-     * @see #registerCommand(Command, CommandExecutor)
-     */
-    public void registerCommands() {
-        this.commands.forEach(this::registerCommand);
-    }
-
-    /**
-     * Loads all events listeners annotated with {@link EventListener} in the
-     * project.
-     * <br>
-     * All listeners must be extended using {@link AbstractEventListener}.
-     *
-     * @return The list of listeners
-     * @see EventListener
-     * @see AbstractEventListener
-     * @see #registerEventListeners()
-     */
-    @SuppressWarnings("unchecked")
-    private @NotNull List<AbstractEventListener<T>> loadEventListeners() {
-        final Logger logger = this.getLogger();
-        final ClassLoader classLoader = this.getClassLoader();
-        final var listeners = new HashSet<AbstractEventListener<T>>();
-
-        for (final var className : this.classNames) {
-            try {
-                final var clazz = classLoader.loadClass(className);
-
-                if (!clazz.isAnnotationPresent(EventListener.class)) {
-                    continue;
-                }
-
-                if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractEventListener<?> listener) {
-                    listeners.add((AbstractEventListener<T>) listener);
-                } else {
-                    logger.warning(
-                            "Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")"
-                    );
-                }
-            } catch (final Exception e) {
-                logger.log(Level.SEVERE, "Failed to load listener", e);
-            }
-        }
-
-        return new ArrayList<>(listeners);
-    }
-
-    /**
-     * Registers all event listeners in the project that is annotated with
-     * {@link EventListener}. All listeners must be extended using
-     * {@link AbstractEventListener}.
-     *
-     * @see EventListener
-     * @see #loadEventListeners()
-     */
-    @SuppressWarnings("unchecked")
-    public void registerEventListeners() {
-        for (final var listener : this.eventListeners) {
-            listener.register((T) this);
-        }
-    }
-
-    /**
-     * Loads all packets listeners annotated with {@link PacketListener} in the
-     * project. All listeners must be extended using
-     * {@link AbstractPacketListener}.
-     *
-     * @return The list of packet listeners
-     * @see PacketListener
-     * @see AbstractPacketListener
-     * @see #registerPacketListeners()
-     */
-    @SuppressWarnings("unchecked")
-    private @NotNull List<AbstractPacketListener<T>> loadPacketListeners() {
-        final Logger logger = this.getLogger();
-        final ClassLoader classLoader = this.getClassLoader();
-        final var listeners = new HashSet<AbstractPacketListener<T>>();
-
-        for (final var className : this.classNames) {
-            try {
-                final var clazz = classLoader.loadClass(className);
-
-                if (!clazz.isAnnotationPresent(PacketListener.class)) {
-                    continue;
-                }
-
-                if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractPacketListener<?> listener) {
-                    listeners.add((AbstractPacketListener<T>) listener);
-                } else {
-                    logger.warning(
-                            "Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")"
-                    );
-                }
-            } catch (final Exception e) {
-                logger.log(Level.SEVERE, "Failed to load listener", e);
-            }
-        }
-
-        return new ArrayList<>(listeners);
-    }
-
-    /**
-     * Registers all packet listeners in the project that is annotated with
-     * {@link PacketListener}. All listeners must be extended using
-     * {@link AbstractPacketListener}.
-     *
-     * @see PacketListener
-     * @see AbstractPacketListener
-     * @see #loadPacketListeners()
-     */
-    @SuppressWarnings("unchecked")
-    public void registerPacketListeners() {
-        for (final var listener : this.packetListeners) {
-            listener.register((T) this);
         }
     }
 
@@ -947,6 +795,234 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     /**
+     * Opens a custom inventory for the given player if the custom inventory is
+     * registered to the plugin
+     *
+     * @param clazz  Class of the custom inventory holder
+     * @param player Player to open the custom inventory
+     * @see AbstractInventoryHolder
+     */
+    public void openCustomInventory(
+            final @NotNull Class<? extends AbstractInventoryHolder<T>> clazz,
+            final @NotNull Player player
+    ) {
+        this.getInventoryHolder(clazz)
+        .ifPresent(
+                holder -> holder.open(player)
+        );
+    }
+
+    /**
+     * Loads all commands annotated with {@link Command} in the project. All
+     * commands must be implemented using {@link CommandExecutor}.
+     *
+     * @see Command
+     * @see CommandExecutor
+     * @see #registerCommands()
+     */
+    @SuppressWarnings("unchecked")
+    private void loadCommands() {
+        final Logger logger = this.getLogger();
+        final ClassLoader classLoader = this.getClassLoader();
+
+        this.classNames.parallelStream()
+        .forEach(className -> {
+            try {
+                final var clazz = classLoader.loadClass(className);
+                final Command command = clazz.getAnnotation(Command.class);
+
+                if (command == null) {
+                    return;
+                }
+
+                if (clazz.getDeclaredConstructor().newInstance() instanceof final CommandExecutor<?> commandExecutor) {
+                    commandExecutor.setPlugin(this);
+                    this.commandMap.put(command, (CommandExecutor<T>) commandExecutor);
+                } else {
+                    logger.warning(
+                            "Annotated class with MSCommand is not instance of MSCommandExecutor (" + className + ")"
+                    );
+                }
+            } catch (final Throwable e) {
+                logger.log(Level.SEVERE, "Failed to load command", e);
+            }
+        });
+    }
+
+    /**
+     * Registers all commands in the project that is annotated with
+     * {@link Command}. All commands must be implemented using
+     * {@link CommandExecutor}.
+     *
+     * @see Command
+     * @see CommandExecutor
+     * @see #loadCommands()
+     * @see #registerCommand(Command, CommandExecutor)
+     */
+    private void registerCommands() {
+        this.commandMap.forEach(this::registerCommand);
+    }
+
+    /**
+     * Loads all inventory holders annotated with {@link InventoryHolder} in the
+     * project. All inventories holders must be extended using
+     * {@link AbstractInventoryHolder}.
+     *
+     * @see InventoryHolder
+     * @see AbstractInventoryHolder
+     * @see #registerInventoryHolders()
+     */
+    @SuppressWarnings("unchecked")
+    private void loadInventoryHolders() {
+        final Logger logger = this.getLogger();
+        final ClassLoader classLoader = this.getClassLoader();
+
+        this.classNames.parallelStream()
+        .forEach(className -> {
+            try {
+                final var clazz = classLoader.loadClass(className);
+
+                if (!clazz.isAnnotationPresent(InventoryHolder.class)) {
+                    return;
+                }
+
+                if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractInventoryHolder<?> inventory) {
+                    this.inventoryHolderMap.put(
+                            (Class<? extends AbstractInventoryHolder<T>>) clazz,
+                            (AbstractInventoryHolder<T>) inventory
+                    );
+                } else {
+                    logger.warning(
+                            "Annotated class with MSInventory is not instance of AbstractMSInventory (" + className + ")"
+                    );
+                }
+            } catch (final Throwable e) {
+                logger.log(Level.SEVERE, "Failed to load custom inventory", e);
+            }
+        });
+    }
+
+    /**
+     * Registers all inventory holders in the project that is annotated with
+     * {@link InventoryHolder}. All inventory holders must be extended using
+     * {@link AbstractInventoryHolder}.
+     *
+     * @see InventoryHolder
+     * @see AbstractInventoryHolder
+     * @see #loadInventoryHolders()
+     */
+    @SuppressWarnings("unchecked")
+    private void registerInventoryHolders() {
+        for (final var inventory : this.inventoryHolderMap.values()) {
+            inventory.register((T) this);
+        }
+    }
+
+    /**
+     * Loads all events listeners annotated with {@link EventListener} in the
+     * project.
+     * <br>
+     * All listeners must be extended using {@link AbstractEventListener}.
+     *
+     * @see EventListener
+     * @see AbstractEventListener
+     * @see #registerEventListeners()
+     */
+    @SuppressWarnings("unchecked")
+    private void loadEventListeners() {
+        final Logger logger = this.getLogger();
+        final ClassLoader classLoader = this.getClassLoader();
+
+        this.classNames.parallelStream()
+        .forEach(className -> {
+            try {
+                final var clazz = classLoader.loadClass(className);
+
+                if (!clazz.isAnnotationPresent(EventListener.class)) {
+                    return;
+                }
+
+                if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractEventListener<?> listener) {
+                    this.eventListeners.add((AbstractEventListener<T>) listener);
+                } else {
+                    logger.warning(
+                            "Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")"
+                    );
+                }
+            } catch (final Throwable e) {
+                logger.log(Level.SEVERE, "Failed to load event listener", e);
+            }
+        });
+    }
+
+    /**
+     * Registers all event listeners in the project that is annotated with
+     * {@link EventListener}. All listeners must be extended using
+     * {@link AbstractEventListener}.
+     *
+     * @see EventListener
+     * @see #loadEventListeners()
+     */
+    @SuppressWarnings("unchecked")
+    private void registerEventListeners() {
+        for (final var listener : this.eventListeners) {
+            listener.register((T) this);
+        }
+    }
+
+    /**
+     * Loads all packets listeners annotated with {@link PacketListener} in the
+     * project. All listeners must be extended using
+     * {@link AbstractPacketListener}.
+     *
+     * @see PacketListener
+     * @see AbstractPacketListener
+     * @see #registerPacketListeners()
+     */
+    @SuppressWarnings("unchecked")
+    private void loadPacketListeners() {
+        final Logger logger = this.getLogger();
+        final ClassLoader classLoader = this.getClassLoader();
+
+        this.classNames.parallelStream()
+        .forEach(className -> {
+            try {
+                final var clazz = classLoader.loadClass(className);
+
+                if (!clazz.isAnnotationPresent(PacketListener.class)) {
+                    return;
+                }
+
+                if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractPacketListener<?> listener) {
+                    this.packetListeners.add((AbstractPacketListener<T>) listener);
+                } else {
+                    logger.warning(
+                            "Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")"
+                    );
+                }
+            } catch (final Throwable e) {
+                logger.log(Level.SEVERE, "Failed to load packet listener", e);
+            }
+        });
+    }
+
+    /**
+     * Registers all packet listeners in the project that is annotated with
+     * {@link PacketListener}. All listeners must be extended using
+     * {@link AbstractPacketListener}.
+     *
+     * @see PacketListener
+     * @see AbstractPacketListener
+     * @see #loadPacketListeners()
+     */
+    @SuppressWarnings("unchecked")
+    private void registerPacketListeners() {
+        for (final var listener : this.packetListeners) {
+            listener.register((T) this);
+        }
+    }
+
+    /**
      * @return The global folder of the MSPlugins
      */
     public static @NotNull File globalFolder() {
@@ -970,22 +1046,18 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     /**
      * Loads the names of all classes in the given package
      *
-     * @param classLoader The class loader to use
      * @param packageName The package name
      * @return The list of class names
-     * @throws IOException              If an I/O error occurs
-     * @throws IllegalArgumentException If the package does not exist or is not
-     *                                  a valid URI
      */
-    protected static @NotNull List<String> loadClassNames(
-            final @NotNull ClassLoader classLoader,
-            final @NotNull String packageName
-    ) throws IOException, IllegalArgumentException {
+    protected @NotNull List<String> loadClassNames(final @NotNull String packageName) {
+        final ClassLoader classLoader = this.getClassLoader();
         final var classNames = new ArrayList<String>();
         final var url = classLoader.getResource(packageName.replace(".", "/"));
 
         if (url == null) {
-            throw new IllegalArgumentException("Package " + packageName + " does not exist");
+            MSLogger.severe("Package " + packageName + " does not exist, class names could not be loaded");
+
+            return classNames;
         }
 
         try {
@@ -1013,16 +1085,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                         final String fileName = path.getFileName().toString();
 
                         if (Files.isDirectory(path)) {
-                            try {
-                                classNames.addAll(
-                                        loadClassNames(
-                                                classLoader,
-                                                packageName + '.' + fileName
-                                        )
-                                );
-                            } catch (final IOException e) {
-                                throw new UncheckedIOException(e);
-                            }
+                            classNames.addAll(
+                                    this.loadClassNames(packageName + '.' + fileName)
+                            );
                         } else if (fileName.endsWith(".class")) {
                             classNames.add(
                                     packageName + '.' + fileName.substring(0, fileName.length() - 6)
@@ -1031,8 +1096,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                     });
                 }
             }
-        } catch (final URISyntaxException e) {
-            throw new IllegalArgumentException("URL " + url + " is not a valid URI", e);
+        } catch (final Throwable e) {
+            MSLogger.severe("Failed to load class names", e);
+            this.getServer().getPluginManager().disablePlugin(this);
         }
 
         return classNames;

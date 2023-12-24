@@ -1,6 +1,7 @@
 package com.minersstudios.mscore.listener.api;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,6 +29,7 @@ public interface MSListener<P extends MSPlugin<P>> {
      * @param plugin The plugin to register this listener to
      * @throws IllegalStateException If this listener is already registered
      */
+    @ApiStatus.Internal
     void register(final @NotNull P plugin) throws IllegalStateException;
 
     /**

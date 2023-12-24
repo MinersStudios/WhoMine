@@ -12,7 +12,7 @@ game-params:
   health: 20.0
   air: 300
 settings:
-  resource-pack-type: FULL/LITE/NONE
+  resource-pack-type: EXAMPLE/NONE
   skin: Default
 skins:
   - name: Default

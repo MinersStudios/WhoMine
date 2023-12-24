@@ -32,7 +32,7 @@ public final class ResourcePackCommand extends CommandExecutor<MSEssentials> {
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        ResourcePackMenu.open((Player) sender);
+        this.getPlugin().openCustomInventory(ResourcePackMenu.class, (Player) sender);
         return true;
     }
 

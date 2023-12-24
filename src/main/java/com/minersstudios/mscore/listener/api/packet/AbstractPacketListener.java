@@ -4,6 +4,7 @@ import com.minersstudios.mscore.listener.api.MSListener;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.plugin.MSPlugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -17,7 +18,6 @@ import java.util.Set;
  *
  * @param <P> The plugin, that this packet listener is registered to
  * @see PacketListener
- * @see MSPlugin#registerPacketListeners()
  */
 public abstract class AbstractPacketListener<P extends MSPlugin<P>> implements MSListener<P> {
     private P plugin;
@@ -82,6 +82,7 @@ public abstract class AbstractPacketListener<P extends MSPlugin<P>> implements M
                 && this.plugin.getPacketListeners().contains(this);
     }
 
+    @ApiStatus.Internal
     @Override
     public final void register(final @NotNull P plugin) throws IllegalStateException {
         if (this.isRegistered()) {

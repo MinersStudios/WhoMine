@@ -135,7 +135,7 @@ public class RenameableItem {
 
         try {
             renameableItemConfig = YamlConfiguration.loadConfiguration(file);
-        } catch (final Exception e) {
+        } catch (final Throwable e) {
             logger.log(Level.SEVERE, "Failed to load " + file.getName() + "!", e);
             return null;
         }

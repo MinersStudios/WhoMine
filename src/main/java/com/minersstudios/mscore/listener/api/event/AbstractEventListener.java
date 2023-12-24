@@ -3,6 +3,7 @@ package com.minersstudios.mscore.listener.api.event;
 import com.minersstudios.mscore.listener.api.MSListener;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <P> The plugin, that this event listener is registered to
  * @see EventListener
- * @see MSPlugin#registerEventListeners()
  */
 public abstract class AbstractEventListener<P extends MSPlugin<P>> implements MSListener<P>, Listener {
     private P plugin;
@@ -27,9 +27,11 @@ public abstract class AbstractEventListener<P extends MSPlugin<P>> implements MS
 
     @Override
     public final boolean isRegistered() {
-        return this.plugin != null && this.plugin.getListeners().contains(this);
+        return this.plugin != null
+                && this.plugin.getListeners().contains(this);
     }
 
+    @ApiStatus.Internal
     @Override
     public final void register(final @NotNull P plugin) throws IllegalStateException {
         if (this.isRegistered()) {

@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.logging.Level;
 
 /**
@@ -24,6 +24,10 @@ import java.util.logging.Level;
  */
 public final class Config extends PluginConfig<MSItem> {
     private long dosimeterCheckRate;
+
+    private static final String ITEMS_FOLDER = "items";
+    private static final String YAML_EXTENSION = ".yml";
+    private static final String EXAMPLE_YAML = "example.yml";
 
     /**
      * Configuration constructor
@@ -73,22 +77,16 @@ public final class Config extends PluginConfig<MSItem> {
         final long start = System.currentTimeMillis();
         final MSItem plugin = this.getPlugin();
 
-        try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + "/items"))) {
+        try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + '/' + ITEMS_FOLDER))) {
             pathStream.parallel()
             .filter(file -> {
                 final String fileName = file.getFileName().toString();
-                return Files.isRegularFile(file)
-                        && !fileName.equalsIgnoreCase("example.yml")
-                        && fileName.endsWith(".yml");
+                return fileName.endsWith(YAML_EXTENSION)
+                        && !fileName.equalsIgnoreCase(EXAMPLE_YAML);
             })
-            .map(Path::toFile)
-            .forEach(file -> {
-                final RenameableItem renameableItem = RenameableItem.fromFile(plugin, file);
-
-                if (renameableItem != null) {
-                    RenameableItemRegistry.register(renameableItem);
-                }
-            });
+            .map(path -> RenameableItem.fromFile(plugin, path.toFile()))
+            .filter(Objects::nonNull)
+            .forEach(RenameableItemRegistry::register);
 
             plugin.getComponentLogger().info(
                     Component.text(

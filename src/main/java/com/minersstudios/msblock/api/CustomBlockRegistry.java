@@ -359,8 +359,8 @@ public final class CustomBlockRegistry {
      *
      * @param customBlockData The custom block data to register
      * @throws IllegalArgumentException If the custom block data is already 
-     *                                  registered or if the custom block data
-     *                                  has unknown placing type
+     *                                  registered, or if the custom block data
+     *                                  has an unknown placing type
      * @see CustomBlockData
      * @see #KEY_MAP
      * @see #HASH_CODE_MAP

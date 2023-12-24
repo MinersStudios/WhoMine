@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.jetbrains.annotations.*;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -177,18 +178,18 @@ public final class PaperUtils {
 
     private static class EditResponseImpl implements EditResponse {
         private final Map<String, HistoryEntry> history;
-        private final MinecraftServer server;
         private final File file;
         private final YamlConfiguration yaml;
+        private final MinecraftServer server;
 
         private EditResponseImpl(
                 final @NotNull ConfigType configType,
                 final @NotNull Server server
         ) throws IOException, InvalidConfigurationException {
             this.history = new HashMap<>();
-            this.server = ((CraftServer) server).getServer();
             this.file = new File(configType.filePath);
             this.yaml = new YamlConfiguration();
+            this.server = ((CraftServer) server).getServer();
 
             this.yaml.load(this.file);
         }
@@ -321,6 +322,7 @@ public final class PaperUtils {
         }
     }
 
+    @Immutable
     public static final class HistoryEntry {
         private final Object oldValue;
         private final Object newValue;

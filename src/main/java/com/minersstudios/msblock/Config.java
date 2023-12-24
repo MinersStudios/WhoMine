@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.logging.Level;
 
 /**
@@ -30,6 +30,8 @@ public final class Config extends PluginConfig<MSBlock> {
     private String woodSoundHit;
 
     private static final String BLOCKS_FOLDER = "blocks";
+    private static final String JSON_EXTENSION = ".json";
+    private static final String EXAMPLE_JSON = "example.json";
 
     /**
      * Configuration constructor
@@ -119,18 +121,12 @@ public final class Config extends PluginConfig<MSBlock> {
             pathStream.parallel()
             .filter(file -> {
                 final String fileName = file.getFileName().toString();
-                return Files.isRegularFile(file)
-                        && !fileName.equalsIgnoreCase("example.json")
-                        && fileName.endsWith(".json");
+                return fileName.endsWith(JSON_EXTENSION)
+                        && !fileName.equalsIgnoreCase(EXAMPLE_JSON);
             })
-            .map(Path::toFile)
-            .forEach(file -> {
-                final CustomBlockData data = CustomBlockData.fromFile(plugin, file);
-
-                if (data != null) {
-                    CustomBlockRegistry.register(data);
-                }
-            });
+            .map(path -> CustomBlockData.fromFile(plugin, path.toFile()))
+            .filter(Objects::nonNull)
+            .forEach(CustomBlockRegistry::register);
 
             final var recipes = MSPlugin.globalCache().customBlockRecipes;
 

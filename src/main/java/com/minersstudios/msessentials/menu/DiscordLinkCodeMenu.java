@@ -2,6 +2,8 @@ package com.minersstudios.msessentials.menu;
 
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
+import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
+import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -12,12 +14,14 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 import static net.kyori.adventure.text.Component.text;
 
-public final class DiscordLinkCodeMenu {
+@InventoryHolder
+public final class DiscordLinkCodeMenu extends AbstractInventoryHolder<MSEssentials> {
     private static final Component TITLE = LanguageRegistry.Components.MENU_DISCORD_TITLE.style(ChatUtils.DEFAULT_STYLE);
     private static final List<TranslatableComponent> NUMBERS = ImmutableList.of(
             LanguageRegistry.Components.MENU_DISCORD_NUMBERS_0,
@@ -32,16 +36,19 @@ public final class DiscordLinkCodeMenu {
             LanguageRegistry.Components.MENU_DISCORD_NUMBERS_9
     );
 
-    public static void open(
-            final @NotNull MSEssentials plugin,
-            final @NotNull Player player
-    ) {
+    @Override
+    protected @Nullable CustomInventory createCustomInventory() {
+        return null; // creates on open
+    }
+
+    @Override
+    public void open(final @NotNull Player player) {
         CustomInventory.single(
                 TITLE
                 .append(
                         generateNumbers(
                                 PlayerInfo
-                                .fromOnlinePlayer(plugin, player)
+                                .fromOnlinePlayer(this.getPlugin(), player)
                                 .generateCode()
                         )
                 )

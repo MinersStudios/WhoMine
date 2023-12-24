@@ -32,8 +32,8 @@ allprojects {
         compileOnly("org.jetbrains:annotations:24.0.1")
         compileOnly("net.coreprotect:coreprotect:22.2")
         compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
-        implementation("net.dv8tion:JDA:5.0.0-beta.18")
-        implementation("com.fasterxml.jackson.core:jackson-annotations:2.16.0")
+        compileOnly("net.dv8tion:JDA:5.0.0-beta.18")
+        compileOnly("com.fasterxml.jackson.core:jackson-annotations:2.16.0")
     }
 
     sourceSets {

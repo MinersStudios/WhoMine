@@ -1500,7 +1500,7 @@ public final class PlayerInfo {
                         return;
                     }
 
-                    ResourcePackMenu.open(player);
+                    this.plugin.openCustomInventory(ResourcePackMenu.class, player);
                 }, 0L, 5L);
                 return CompletableFuture.completedFuture(false);
             }
@@ -1918,7 +1918,7 @@ public final class PlayerInfo {
             new RegistrationProcess(this.plugin).registerPlayer(this);
         } else {
             if (this.playerFile.getConfig().getString("pronouns") == null) {
-                PronounsMenu.open(player);
+                this.plugin.openCustomInventory(PronounsMenu.class, player);
             } else {
                 final Skin currentSkin = this.getCurrentSkin();
 
