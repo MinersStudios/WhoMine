@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 /**
  * The CustomItemType enum represents various types of custom items in the
@@ -56,8 +57,10 @@ public enum CustomItemType {
 
     private final Class<? extends CustomItem> clazz;
 
-    public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, "type");
+    public static final String TYPE_TAG_NAME = "type";
+    public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, TYPE_TAG_NAME);
 
+    private static final CustomItemType[] VALUES = values();
     private static final Map<String, CustomItemType> KEY_TO_TYPE_MAP = new HashMap<>();
     private static final Map<Class<? extends CustomItem>, CustomItemType> CLASS_TO_TYPE_MAP = new HashMap<>();
     private static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new HashMap<>();
@@ -85,11 +88,11 @@ public enum CustomItemType {
             throw new IllegalStateException("Custom item types have already been loaded!");
         }
 
-        final long startTime = System.currentTimeMillis();
-        final CustomItemType[] values = values();
         final var recipesToRegister = new ArrayList<CustomItem>();
+        final long startTime = System.currentTimeMillis();
 
-        for (final var registry : values) {
+        Stream.of(VALUES).parallel()
+        .forEach(registry -> {
             final CustomItem customItem;
 
             try {
@@ -100,7 +103,8 @@ public enum CustomItemType {
                         "An error occurred while loading custom item " + registry.name(),
                         e
                 );
-                continue;
+
+                return;
             }
 
             if (customItem instanceof final Damageable damageable) {
@@ -111,11 +115,12 @@ public enum CustomItemType {
             CLASS_TO_TYPE_MAP.put(registry.clazz, registry);
             CLASS_TO_ITEM_MAP.put(registry.clazz, customItem);
             recipesToRegister.add(customItem);
-        }
+        });
 
+        plugin.setLoadedCustoms(true);
         plugin.getComponentLogger().info(
                 Component.text(
-                        "Loaded " + values.length + " custom items in " + (System.currentTimeMillis() - startTime) + "ms",
+                        "Loaded " + VALUES.length + " custom items in " + (System.currentTimeMillis() - startTime) + "ms",
                         NamedTextColor.GREEN
                 )
         );

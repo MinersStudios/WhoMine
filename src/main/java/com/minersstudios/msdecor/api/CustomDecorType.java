@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * The CustomDecorType enum represents various types of custom decor in the
@@ -186,9 +187,11 @@ public enum CustomDecorType {
 
     public static final String TYPE_TAG_NAME = "type";
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSDecor.NAMESPACE, TYPE_TAG_NAME);
+
     public static final String TYPED_KEY_REGEX = "(" + ChatUtils.KEY_REGEX + ")\\.type\\.(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern TYPED_KEY_PATTERN = Pattern.compile(TYPED_KEY_REGEX);
 
+    private static final CustomDecorType[] VALUES = values();
     private static final Map<String, CustomDecorType> KEY_TO_TYPE_MAP = new HashMap<>();
     private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorType> CLASS_TO_TYPE_MAP = new HashMap<>();
     private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new HashMap<>();
@@ -216,35 +219,35 @@ public enum CustomDecorType {
             throw new IllegalStateException("Custom decor types have already been loaded!");
         }
 
-        final long startTime = System.currentTimeMillis();
-        final CustomDecorType[] values = values();
         final var recipesToRegister = new ArrayList<CustomDecorData<?>>();
+        final long startTime = System.currentTimeMillis();
 
-        for (final var registry : values) {
+        Stream.of(VALUES).parallel()
+        .forEach(registry -> {
             final CustomDecorData<?> data;
 
             try {
                 data = registry.getDataClass().getDeclaredConstructor().newInstance();
-            } catch (final Exception e) {
+            } catch (final Throwable e) {
                 plugin.getLogger().log(
                         Level.SEVERE,
                         "An error occurred while loading custom decor " + registry.name() + "!",
                         e
                 );
 
-                continue;
+                return;
             }
 
             KEY_TO_TYPE_MAP.put(data.getKey().getKey().toLowerCase(Locale.ENGLISH), registry);
             CLASS_TO_TYPE_MAP.put(registry.clazz, registry);
             CLASS_TO_DATA_MAP.put(registry.clazz, data);
             recipesToRegister.add(data);
-        }
+        });
 
         plugin.setLoadedCustoms(true);
         plugin.getComponentLogger().info(
                 Component.text(
-                        "Loaded " + values.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",
+                        "Loaded " + VALUES.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",
                         NamedTextColor.GREEN
                 )
         );

@@ -48,8 +48,7 @@ public final class Config extends PluginConfig<MSItem> {
         final MSItem plugin = this.getPlugin();
 
         plugin.saveResource("items/example.yml", true);
-        plugin.setLoadedCustoms(true);
-        plugin.runTaskTimer(task -> {
+        plugin.runTaskTimerAsync(task -> {
             if (MSPluginUtils.isLoadedCustoms()) {
                 task.cancel();
                 this.loadRenames();

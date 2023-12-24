@@ -2,6 +2,7 @@ package com.minersstudios.msessentials;
 
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSPlugin;
+import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.discord.DiscordManager;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
@@ -39,7 +40,6 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     private Team scoreboardHideTagsTeam;
 
     public static final String NAMESPACE = "msessentials";
-    public static final String HIDE_TAGS_TEAM_NAME = "hide_tags";
 
     @Override
     public void enable() {
@@ -136,7 +136,7 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
 
     private void setupHideTags() {
         this.scoreboardHideTags = this.getServer().getScoreboardManager().getNewScoreboard();
-        this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam(HIDE_TAGS_TEAM_NAME);
+        this.scoreboardHideTagsTeam = this.scoreboardHideTags.registerNewTeam(SharedConstants.HIDE_TAGS_TEAM_NAME);
 
         this.scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
         this.scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
