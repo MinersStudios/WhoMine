@@ -1,6 +1,7 @@
 package com.minersstudios.msessentials.listener.impl.discord;
 
 import com.minersstudios.msessentials.command.api.discord.InteractionHandler;
+import com.minersstudios.msessentials.command.api.discord.SlashCommandExecutor;
 import com.minersstudios.msessentials.listener.api.discord.AbstractDiscordListener;
 import com.minersstudios.msessentials.listener.api.discord.DiscordListener;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -11,13 +12,15 @@ public final class SlashCommandInteractionListener extends AbstractDiscordListen
 
     @Override
     public void onSlashCommandInteraction(final @NotNull SlashCommandInteractionEvent event) {
-        this.getPlugin().getCache().getDiscordHandler().slashCommandMap()
-        .get(event.getName())
-        .onInteract(
-                new InteractionHandler(
-                        this.getPlugin(),
-                        event
-                )
-        );
+        final SlashCommandExecutor executor = this.getPlugin().getCache().getDiscordHandler().slashCommandMap().get(event.getName());
+
+        if (executor != null) {
+            executor.onInteract(
+                    new InteractionHandler(
+                            this.getPlugin(),
+                            event
+                    )
+            );
+        }
     }
 }

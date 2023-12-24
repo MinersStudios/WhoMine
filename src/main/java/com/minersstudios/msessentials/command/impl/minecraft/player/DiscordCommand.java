@@ -82,7 +82,7 @@ public final class DiscordCommand extends CommandExecutor<MSEssentials> {
 
                     final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
 
-                    discordManager.getUser(id)
+                    discordManager.retrieveUser(id)
                     .ifPresent(user -> {
                         discordManager.sendEmbeds(
                                 user,

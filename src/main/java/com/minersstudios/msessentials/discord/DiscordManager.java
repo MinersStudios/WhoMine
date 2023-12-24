@@ -16,8 +16,10 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.managers.Presence;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -207,32 +209,32 @@ public final class DiscordManager {
     /**
      * @param user The user to check
      * @return True if the user is a member of the main guild, false otherwise
-     * @see #getMember(User)
+     * @see #retrieveMember(User)
      */
     public boolean isMember(final @Nullable User user) {
-        return this.getMember(user).isPresent();
+        return this.retrieveMember(user).isPresent();
     }
 
     /**
      * @param userId The id of the user to check
      * @return True if the user is a member of the main guild, false otherwise
-     * @see #getMember(long)
+     * @see #retrieveMember(long)
      */
     public boolean isMember(final long userId) {
-        return this.getMember(userId).isPresent();
+        return this.retrieveMember(userId).isPresent();
     }
 
     /**
      * @param user The user to check
      * @return True if the user is a member of the main guild and has the member
      *         role, false otherwise
-     * @see #getMember(User)
+     * @see #retrieveMember(User)
      * @see #getMemberRole()
      */
     public boolean isVerified(final @Nullable User user) {
         return user != null
                 && this.memberRole != null
-                && this.getMember(user)
+                && this.retrieveMember(user)
                 .map(member -> member.getRoles().contains(this.memberRole))
                 .orElse(false);
     }
@@ -241,12 +243,12 @@ public final class DiscordManager {
      * @param userId The id of the user to check
      * @return True if the user is a member of the main guild and has the member
      *         role, false otherwise
-     * @see #getMember(long)
+     * @see #retrieveMember(long)
      * @see #getMemberRole()
      */
     public boolean isVerified(final long userId) {
         return this.memberRole != null
-                && this.getMember(userId)
+                && this.retrieveMember(userId)
                 .map(member -> member.getRoles().contains(this.memberRole))
                 .orElse(false);
     }
@@ -540,6 +542,7 @@ public final class DiscordManager {
 
         final Logger logger = this.plugin.getLogger();
         final ClassLoader classLoader = this.plugin.getClass().getClassLoader();
+        final var commands = new ArrayList<CommandData>();
         this.slashCommandMap = new HashMap<>();
         this.listeners = new ArrayList<>();
 
@@ -550,8 +553,11 @@ public final class DiscordManager {
 
                 if (clazz.isAnnotationPresent(SlashCommand.class)) {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof final SlashCommandExecutor executor) {
+                        final CommandData commandData = executor.getData();
+
+                        commands.add(commandData);
                         this.slashCommandMap.put(
-                                executor.getData().getName(),
+                                commandData.getName(),
                                 executor
                         );
                     } else {
@@ -578,6 +584,9 @@ public final class DiscordManager {
                 );
             }
         });
+
+        this.jda.updateCommands().addCommands(commands).queue();
+        this.mainGuild.updateCommands().addCommands(commands).queue();
     }
 
     private @Nullable JDA buildJda(final @Nullable String botToken) throws InterruptedException, IllegalStateException {
@@ -586,9 +595,8 @@ public final class DiscordManager {
                 : JDABuilder
                 .createDefault(botToken)
                 .enableIntents(
-                        Collections.singletonList(
-                                GatewayIntent.MESSAGE_CONTENT
-                        )
+                        GatewayIntent.MESSAGE_CONTENT,
+                        GatewayIntent.GUILD_MEMBERS
                 )
                 .addEventListeners(new ListenerAdapter() {
 
@@ -601,6 +609,7 @@ public final class DiscordManager {
                         DiscordManager.this.memberRole = null;
                     }
                 })
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .build()
                 .awaitReady();
     }
