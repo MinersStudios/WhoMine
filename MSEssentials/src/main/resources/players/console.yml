@@ -12,7 +12,8 @@ game-params:
   health: 20.0
   air: 300
 settings:
-  resource-pack-type: NONE
+  resource-pack:
+    enabled: false
 locations:
   last-death-location:
     world: overworld

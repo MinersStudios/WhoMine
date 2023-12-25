@@ -88,19 +88,20 @@ public enum CustomItemType {
             throw new IllegalStateException("Custom item types have already been loaded!");
         }
 
-        final var recipesToRegister = new ArrayList<CustomItem>();
         final long startTime = System.currentTimeMillis();
+        final int size = VALUES.length;
+        final var typesWithRecipes = new ArrayList<CustomItemType>(size);
 
         Stream.of(VALUES).parallel()
-        .forEach(registry -> {
+        .forEach(type -> {
             final CustomItem customItem;
 
             try {
-                customItem = registry.getItemClass().getDeclaredConstructor().newInstance();
+                customItem = type.getItemClass().getDeclaredConstructor().newInstance();
             } catch (final Throwable e) {
                 plugin.getLogger().log(
                         Level.SEVERE,
-                        "An error occurred while loading custom item " + registry.name(),
+                        "An error occurred while loading custom item " + type.name(),
                         e
                 );
 
@@ -111,21 +112,22 @@ public enum CustomItemType {
                 damageable.buildDamageable().saveForItemStack(customItem.getItem());
             }
 
-            KEY_TO_TYPE_MAP.put(customItem.getKey().getKey().toLowerCase(Locale.ENGLISH), registry);
-            CLASS_TO_TYPE_MAP.put(registry.clazz, registry);
-            CLASS_TO_ITEM_MAP.put(registry.clazz, customItem);
-            recipesToRegister.add(customItem);
+            KEY_TO_TYPE_MAP.put(customItem.getKey().getKey().toLowerCase(Locale.ENGLISH), type);
+            CLASS_TO_TYPE_MAP.put(type.clazz, type);
+            CLASS_TO_ITEM_MAP.put(type.clazz, customItem);
+            typesWithRecipes.add(type);
         });
 
+        typesWithRecipes.sort(Comparator.comparingInt(CustomItemType::ordinal));
         plugin.setLoadedCustoms(true);
         plugin.getComponentLogger().info(
                 Component.text(
-                        "Loaded " + VALUES.length + " custom items in " + (System.currentTimeMillis() - startTime) + "ms",
+                        "Loaded " + size + " custom items in " + (System.currentTimeMillis() - startTime) + "ms",
                         NamedTextColor.GREEN
                 )
         );
 
-        if (!recipesToRegister.isEmpty()) {
+        if (!typesWithRecipes.isEmpty()) {
             final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
             final Server server = plugin.getServer();
 
@@ -135,11 +137,11 @@ public enum CustomItemType {
                             executor.shutdown();
 
                             plugin.runTask(() -> {
-                                for (final var customItem : recipesToRegister) {
-                                    customItem.registerRecipes(server);
+                                for (final var type : typesWithRecipes) {
+                                    type.getCustomItem().registerRecipes(server);
                                 }
 
-                                recipesToRegister.clear();
+                                typesWithRecipes.clear();
                                 CraftsMenu.putCrafts(
                                         CraftsMenu.Type.ITEMS,
                                         MSPlugin.globalCache().customItemRecipes

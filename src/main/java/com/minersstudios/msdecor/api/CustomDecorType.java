@@ -219,40 +219,42 @@ public enum CustomDecorType {
             throw new IllegalStateException("Custom decor types have already been loaded!");
         }
 
-        final var recipesToRegister = new ArrayList<CustomDecorData<?>>();
         final long startTime = System.currentTimeMillis();
+        final int size = VALUES.length;
+        final var typesWithRecipes = new ArrayList<CustomDecorType>(size);
 
         Stream.of(VALUES).parallel()
-        .forEach(registry -> {
+        .forEach(type -> {
             final CustomDecorData<?> data;
 
             try {
-                data = registry.getDataClass().getDeclaredConstructor().newInstance();
+                data = type.getDataClass().getDeclaredConstructor().newInstance();
             } catch (final Throwable e) {
                 plugin.getLogger().log(
                         Level.SEVERE,
-                        "An error occurred while loading custom decor " + registry.name() + "!",
+                        "An error occurred while loading custom decor " + type.name() + "!",
                         e
                 );
 
                 return;
             }
 
-            KEY_TO_TYPE_MAP.put(data.getKey().getKey().toLowerCase(Locale.ENGLISH), registry);
-            CLASS_TO_TYPE_MAP.put(registry.clazz, registry);
-            CLASS_TO_DATA_MAP.put(registry.clazz, data);
-            recipesToRegister.add(data);
+            KEY_TO_TYPE_MAP.put(data.getKey().getKey().toLowerCase(Locale.ENGLISH), type);
+            CLASS_TO_TYPE_MAP.put(type.clazz, type);
+            CLASS_TO_DATA_MAP.put(type.clazz, data);
+            typesWithRecipes.add(type);
         });
 
+        typesWithRecipes.sort(Comparator.comparingInt(CustomDecorType::ordinal));
         plugin.setLoadedCustoms(true);
         plugin.getComponentLogger().info(
                 Component.text(
-                        "Loaded " + VALUES.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",
+                        "Loaded " + size + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",
                         NamedTextColor.GREEN
                 )
         );
 
-        if (!recipesToRegister.isEmpty()) {
+        if (!typesWithRecipes.isEmpty()) {
             final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
             final Server server = plugin.getServer();
 
@@ -262,11 +264,11 @@ public enum CustomDecorType {
                             executor.shutdown();
 
                             plugin.runTask(() -> {
-                                for (final var data : recipesToRegister) {
-                                    data.registerRecipes(server);
+                                for (final var type : typesWithRecipes) {
+                                    type.getCustomDecorData().registerRecipes(server);
                                 }
 
-                                recipesToRegister.clear();
+                                typesWithRecipes.clear();
                                 CraftsMenu.putCrafts(
                                         CraftsMenu.Type.DECORS,
                                         MSPlugin.globalCache().customDecorRecipes

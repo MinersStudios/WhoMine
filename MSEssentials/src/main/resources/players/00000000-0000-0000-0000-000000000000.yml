@@ -12,7 +12,12 @@ game-params:
   health: 20.0
   air: 300
 settings:
-  resource-pack-type: EXAMPLE/NONE
+  resource-pack:
+    enabled: true/false
+    uuids:
+      - 00000000-0000-0000-0000-000000000000
+      - 00000000-0000-0000-0000-000000000000
+      - 00000000-0000-0000-0000-000000000000
   skin: Default
 skins:
   - name: Default

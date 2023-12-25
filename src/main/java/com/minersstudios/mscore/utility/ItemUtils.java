@@ -1,8 +1,11 @@
 package com.minersstudios.mscore.utility;
 
+import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msitem.api.damageable.DamageableItem;
+import net.minecraft.world.item.Item;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -14,7 +17,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.logging.Level;
 
 /**
  * Utility class for {@link ItemStack} and {@link ItemMeta}
@@ -195,5 +200,41 @@ public final class ItemUtils {
         }
 
         return true;
+    }
+
+    /**
+     * Sets the max stack size of the specified material to the specified value
+     *
+     * @param material     The material, whose max stack size will be changed
+     * @param maxStackSize The new max stack size
+     */
+    @SuppressWarnings("JavaReflectionMemberAccess")
+    public static void setMaxStackSize(
+            final @NotNull Material material,
+            final int maxStackSize
+    ) {
+        try {
+            final Field nmsSize = Item.class.getDeclaredField("d"); // "maxStackSize" field : https://nms.screamingsandals.org/1.20.4/net/minecraft/world/item/Item.html
+
+            nmsSize.setAccessible(true);
+            nmsSize.setInt(
+                    CraftItemStack.asNMSCopy(new ItemStack(material)).getItem(),
+                    maxStackSize
+            );
+
+            final Field bukkitSize = Material.class.getDeclaredField("maxStack");
+
+            bukkitSize.setAccessible(true);
+            bukkitSize.setInt(
+                    material,
+                    maxStackSize
+            );
+        } catch (final Throwable e) {
+            MSLogger.log(
+                    Level.SEVERE,
+                    "Failed to set max stack size for : " + material,
+                    e
+            );
+        }
     }
 }
