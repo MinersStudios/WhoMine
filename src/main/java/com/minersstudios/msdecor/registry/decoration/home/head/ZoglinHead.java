@@ -39,7 +39,7 @@ public final class ZoglinHead extends CustomDecorDataImpl<ZoglinHead> {
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        Map.entry(
+                        unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(

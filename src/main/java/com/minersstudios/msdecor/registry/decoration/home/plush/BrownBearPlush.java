@@ -38,7 +38,7 @@ public final class BrownBearPlush extends CustomDecorDataImpl<BrownBearPlush> {
                 .soundGroup(SoundGroup.WOOL)
                 .itemStack(itemStack)
                 .recipes(
-                        Map.entry(
+                        unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(

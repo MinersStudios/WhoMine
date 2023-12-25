@@ -41,7 +41,7 @@ public abstract class BigTable<C extends CustomDecorData<C>> extends CustomDecor
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        Map.entry(
+                        unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .group(MSDecor.NAMESPACE + ":big_table")
                                 .category(CraftingBookCategory.BUILDING)

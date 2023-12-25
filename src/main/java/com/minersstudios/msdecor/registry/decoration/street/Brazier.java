@@ -48,7 +48,7 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                 .soundGroup(SoundGroup.CHAIN)
                 .itemStack(itemStack)
                 .recipes(
-                        Map.entry(
+                        unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(

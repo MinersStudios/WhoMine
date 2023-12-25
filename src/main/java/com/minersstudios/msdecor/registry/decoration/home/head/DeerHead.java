@@ -39,7 +39,7 @@ public final class DeerHead extends CustomDecorDataImpl<DeerHead> {
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        Map.entry(
+                        unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(

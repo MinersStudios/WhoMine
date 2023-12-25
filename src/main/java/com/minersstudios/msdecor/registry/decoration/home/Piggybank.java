@@ -41,7 +41,7 @@ public abstract class Piggybank<C extends CustomDecorData<C>> extends CustomDeco
                 .soundGroup(SoundGroup.GLASS)
                 .itemStack(itemStack)
                 .recipes(
-                        Map.entry(
+                        unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .group(MSDecor.NAMESPACE + ":piggybank")
                                 .category(CraftingBookCategory.BUILDING)

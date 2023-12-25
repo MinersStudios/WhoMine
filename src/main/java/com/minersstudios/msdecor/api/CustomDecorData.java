@@ -1,5 +1,6 @@
 package com.minersstudios.msdecor.api;
 
+import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -25,12 +26,10 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * This interface represents the data of a custom decor in the game. It provides
@@ -73,10 +72,20 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     @NotNull SoundGroup getSoundGroup();
 
     /**
-     * @return An unmodifiable list of {@link Recipe} entries representing the
-     *         associated recipes
+     * @return A clone of the recipe functions, or null if the custom decor has
+     *         no recipes
      */
-    @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> recipes();
+    Function<D, Map.Entry<RecipeBuilder<?>, Boolean>> @Nullable [] recipeFunctions();
+
+    /**
+     * @return An unmodifiable list of {@link Recipe} entries representing the
+     *         associated recipes. The List will be non-empty after registering
+     *         recipes with the server.
+     *         <br>
+     *         If you want to access the recipes before registering them with
+     *         the server, use {@link #recipeFunctions()} instead.
+     */
+    @NotNull @UnmodifiableView List<Map.Entry<Recipe, Boolean>> recipeEntries();
 
     /**
      * @return The unmodifiable set of {@link DecorParameter}

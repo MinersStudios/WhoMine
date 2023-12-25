@@ -41,7 +41,7 @@ public abstract class RockingChair<C extends CustomDecorData<C>> extends CustomD
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        Map.entry(
+                        unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .group(MSDecor.NAMESPACE + ":rocking_chair")
                                 .category(CraftingBookCategory.BUILDING)

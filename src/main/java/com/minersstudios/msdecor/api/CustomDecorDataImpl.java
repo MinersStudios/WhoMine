@@ -40,6 +40,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
 import javax.annotation.concurrent.Immutable;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -59,22 +60,23 @@ import static com.minersstudios.mscore.plugin.MSPlugin.globalCache;
  */
 @Immutable
 public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implements CustomDecorData<D> {
-    protected final NamespacedKey namespacedKey;
-    protected final DecorHitBox hitBox;
-    protected final EnumSet<Facing> facingSet;
-    protected final SoundGroup soundGroup;
-    protected final ItemStack itemStack;
-    protected final List<Map.Entry<Recipe, Boolean>> recipes;
-    protected final EnumSet<DecorParameter> parameterSet;
-    protected final double sitHeight;
-    protected final int[] lightLevels;
-    protected final CustomDecorData.Type<D>[] types;
-    protected final EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
-    protected final Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
-    protected final boolean isDropType;
-    protected final DecorClickAction clickAction;
-    protected final DecorPlaceAction placeAction;
-    protected final DecorBreakAction breakAction;
+    private final NamespacedKey namespacedKey;
+    private final DecorHitBox hitBox;
+    private final EnumSet<Facing> facingSet;
+    private final SoundGroup soundGroup;
+    private final ItemStack itemStack;
+    private final List<Map.Entry<Recipe, Boolean>> recipeEntries;
+    private final Function<D, Map.Entry<RecipeBuilder<?>, Boolean>>[] recipeFunctions;
+    private final EnumSet<DecorParameter> parameterSet;
+    private final double sitHeight;
+    private final int[] lightLevels;
+    private final CustomDecorData.Type<D>[] types;
+    private final EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
+    private final Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
+    private final boolean isDropType;
+    private final DecorClickAction clickAction;
+    private final DecorPlaceAction placeAction;
+    private final DecorBreakAction breakAction;
 
     private static final int MAX_DECORATIONS_IN_BLOCK = 6;
 
@@ -105,30 +107,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.breakAction = builder.breakAction;
         this.isDropType = builder.dropsType;
 
-        if (builder.recipeBuilderList != null) {
-            this.recipes = new ArrayList<>(builder.recipeBuilderList.size());
-
-            for (final var entry : builder.recipeBuilderList) {
-                final var recipeBuilder = entry.getKey();
-                final boolean registerInCraftMenu = entry.getValue();
-
-                if (recipeBuilder.namespacedKey() == null) {
-                    recipeBuilder.namespacedKey(this.namespacedKey);
-                }
-
-                if (recipeBuilder.result() == null) {
-                    recipeBuilder.result(this.itemStack);
-                }
-
-                this.recipes.add(
-                        Map.entry(
-                                recipeBuilder.build(),
-                                registerInCraftMenu
-                        )
-                );
-            }
+        if (builder.recipeFunctions != null) {
+            this.recipeEntries = new ArrayList<>(builder.recipeFunctions.length);
+            this.recipeFunctions = builder.recipeFunctions;
         } else {
-            this.recipes = Collections.emptyList();
+            this.recipeEntries = Collections.emptyList();
+            this.recipeFunctions = null;
         }
     }
 
@@ -165,8 +149,15 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public final @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> recipes() {
-        return Collections.unmodifiableList(this.recipes);
+    public final Function<D, Map.Entry<RecipeBuilder<?>, Boolean>> @Nullable [] recipeFunctions() {
+        return this.recipeFunctions == null
+                ? null
+                : this.recipeFunctions.clone();
+    }
+
+    @Override
+    public final @NotNull @UnmodifiableView List<Map.Entry<Recipe, Boolean>> recipeEntries() {
+        return Collections.unmodifiableList(this.recipeEntries);
     }
 
     @Override
@@ -635,16 +626,34 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void registerRecipes(final @NotNull Server server) {
-        if (this.recipes.isEmpty()) {
+        if (this.recipeFunctions == null) {
             return;
         }
 
-        for (final var entry : this.recipes) {
-            final Recipe recipe = entry.getKey();
+        for (final var function : this.recipeFunctions) {
+            final var entry = function.apply((D) this);
+            final var recipeBuilder = entry.getKey();
             final boolean registerInMenu = entry.getValue();
 
+            if (recipeBuilder.namespacedKey() == null) {
+                recipeBuilder.namespacedKey(this.namespacedKey);
+            }
+
+            if (recipeBuilder.result() == null) {
+                recipeBuilder.result(this.itemStack);
+            }
+
+            final Recipe recipe = recipeBuilder.build();
+
+            this.recipeEntries.add(
+                    Map.entry(
+                            recipe,
+                            registerInMenu
+                    )
+            );
             server.addRecipe(recipe);
 
             if (registerInMenu) {
@@ -655,11 +664,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
     @Override
     public final void unregisterRecipes(final @NotNull Server server) {
-        if (this.recipes.isEmpty()) {
+        if (this.recipeEntries.isEmpty()) {
             return;
         }
 
-        for (final var entry : this.recipes) {
+        for (final var entry : this.recipeEntries) {
             final Keyed recipe = (Keyed) entry.getKey();
             final boolean isRegisteredInMenu = entry.getValue();
 
@@ -1179,7 +1188,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         private EnumSet<Facing> facingSet;
         private ItemStack itemStack;
         private SoundGroup soundGroup;
-        private List<Map.Entry<RecipeBuilder<?>, Boolean>> recipeBuilderList;
+        private Function<D, Map.Entry<RecipeBuilder<?>, Boolean>>[] recipeFunctions;
         private EnumSet<DecorParameter> parameterSet;
         private double sitHeight;
         private CustomDecorData.Type<D>[] types;
@@ -1398,39 +1407,21 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public List<Map.Entry<RecipeBuilder<?>, Boolean>> recipeBuilderList() {
-            return this.recipeBuilderList;
+        public Function<D, Map.Entry<RecipeBuilder<?>, Boolean>>[] recipeBuilders() {
+            return this.recipeFunctions.clone();
         }
 
+        @SuppressWarnings("unchecked")
         @SafeVarargs
         public final @NotNull Builder recipes(
-                final @NotNull Function<Builder, Map.Entry<RecipeBuilder<?>, Boolean>> first,
-                final Function<Builder, Map.Entry<RecipeBuilder<?>, Boolean>> @NotNull ... rest
+                final @NotNull Function<D, Map.Entry<RecipeBuilder<?>, Boolean>> first,
+                final Function<D, Map.Entry<RecipeBuilder<?>, Boolean>> @NotNull ... rest
         ) {
-            this.recipeBuilderList = new ArrayList<>(rest.length + 1);
+            final int length = rest.length + 1;
+            this.recipeFunctions = (Function<D, Map.Entry<RecipeBuilder<?>, Boolean>>[]) Array.newInstance(Function.class, length);
 
-            this.recipeBuilderList.add(first.apply(this));
-
-            for (final var entry : rest) {
-                this.recipeBuilderList.add(entry.apply(this));
-            }
-
-            return this;
-        }
-
-        @SafeVarargs
-        public final @NotNull Builder recipes(
-                final @NotNull Map.Entry<RecipeBuilder<?>, Boolean> first,
-                final Map.Entry<RecipeBuilder<?>, Boolean> @NotNull ... rest
-        ) {
-            final int restLength = rest.length;
-            this.recipeBuilderList = new ArrayList<>(restLength + 1);
-
-            this.recipeBuilderList.add(first);
-
-            if (restLength != 0) {
-                this.recipeBuilderList.addAll(Arrays.asList(rest));
-            }
+            System.arraycopy(rest, 0, this.recipeFunctions, 1, rest.length);
+            this.recipeFunctions[0] = first;
 
             return this;
         }

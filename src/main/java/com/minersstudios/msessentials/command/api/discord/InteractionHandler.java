@@ -56,6 +56,7 @@ public final class InteractionHandler {
 
         if (!this.plugin.getCache().getDiscordHandler().isVerified(user)) {
             this.send(LanguageRegistry.Strings.DISCORD_NOT_A_USER);
+
             return null;
         }
 
@@ -63,6 +64,7 @@ public final class InteractionHandler {
 
         if (playerInfo == null) {
             this.send(LanguageRegistry.Strings.DISCORD_NOT_LINKED);
+
             return null;
         }
 

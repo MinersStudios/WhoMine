@@ -77,7 +77,7 @@ public final class SnowflakeOnString extends CustomDecorDataImpl<SnowflakeOnStri
 
         return MSPlugin.globalConfig().isChristmas()
                 ? builder0.recipes(
-                        Map.entry(
+                        unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(

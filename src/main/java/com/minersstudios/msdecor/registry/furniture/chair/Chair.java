@@ -41,7 +41,7 @@ public abstract class Chair<C extends CustomDecorData<C>> extends CustomDecorDat
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        Map.entry(
+                        unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                 .group(MSDecor.NAMESPACE + ":chair")
                                 .category(CraftingBookCategory.BUILDING)

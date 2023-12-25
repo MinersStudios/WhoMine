@@ -74,7 +74,7 @@ public final class ChristmasTallBall extends CustomDecorDataImpl<ChristmasTallBa
 
         return MSPlugin.globalConfig().isChristmas()
                 ? builder0.recipes(
-                        Map.entry(
+                        unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
                                         .category(CraftingBookCategory.BUILDING)
                                         .shape(

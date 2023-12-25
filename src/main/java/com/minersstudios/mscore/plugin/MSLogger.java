@@ -38,8 +38,10 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 public final class MSLogger {
     private static final String NAME = "MS";
     private static final Logger LOGGER = Logger.getLogger(NAME);
+
     private static final String ANSI_LIME = "\u001B[92m";
     private static final String ANSI_RESET = "\u001B[0m";
+
     private static final int SEVERE = 1000;
     private static final int WARNING = 900;
     private static final int FINE = 500;
