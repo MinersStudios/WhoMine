@@ -49,7 +49,7 @@ public final class AddSkinCommand extends SlashCommandExecutor {
     }
 
     @Override
-    public void onInteract(@NotNull InteractionHandler handler) {
+    public void onInteract(final @NotNull InteractionHandler handler) {
         handler.deferReply();
 
         final PlayerInfo playerInfo = handler.retrievePlayerInfo();

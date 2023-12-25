@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The RenameableItemRegistry class is responsible for managing and storing
@@ -53,8 +52,8 @@ public final class RenameableItemRegistry {
     public static final String RENAMEABLE_KEY = "renameable";
     public static final NamespacedKey RENAMEABLE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, RENAMEABLE_KEY);
 
-    private static final Map<String, RenameableItem> KEY_MAP = new ConcurrentHashMap<>();
-    private static final Map<RenameEntry, String> RENAME_ENTRY_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, RenameableItem> KEY_MAP = new HashMap<>();
+    private static final Map<RenameEntry, String> RENAME_ENTRY_MAP = new HashMap<>();
 
     @Contract(" -> fail")
     private RenameableItemRegistry() throws AssertionError {
@@ -284,7 +283,7 @@ public final class RenameableItemRegistry {
      * @throws IllegalArgumentException If the key or any of the rename entries
      *                                  are already registered
      */
-    public static void register(final @NotNull RenameableItem renameableItem) throws IllegalArgumentException {
+    public static synchronized void register(final @NotNull RenameableItem renameableItem) throws IllegalArgumentException {
         final String key = renameableItem.getKey();
         final RenameCollection renameCollection = renameableItem.getRenames();
 
@@ -310,7 +309,7 @@ public final class RenameableItemRegistry {
      * @throws IllegalArgumentException If the key or any of the rename entries
      *                                  are not registered
      */
-    public static void unregister(final @NotNull RenameableItem renameableItem) throws IllegalArgumentException {
+    public static synchronized void unregister(final @NotNull RenameableItem renameableItem) throws IllegalArgumentException {
         final String key = renameableItem.getKey();
         final RenameCollection renameCollection = renameableItem.getRenames();
 
@@ -330,7 +329,7 @@ public final class RenameableItemRegistry {
      * Unregisters all renameable items from the {@link #KEY_MAP} and
      * {@link #RENAME_ENTRY_MAP}
      */
-    public static void unregisterAll() {
+    public static synchronized void unregisterAll() {
         KEY_MAP.clear();
         RENAME_ENTRY_MAP.clear();
     }

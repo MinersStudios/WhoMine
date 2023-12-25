@@ -35,7 +35,7 @@ public final class MessageReceivedListener extends AbstractDiscordListener {
 
         if (
                 event.isFromGuild()
-                && event.getChannel() == this.getPlugin().getCache().getDiscordHandler().getGlobalChannel().orElse(null)
+                && event.getChannel() == this.getPlugin().getCache().getDiscordManager().getGlobalChannel().orElse(null)
         ) {
             final Message referencedMessage = message.getReferencedMessage();
             final String reply =

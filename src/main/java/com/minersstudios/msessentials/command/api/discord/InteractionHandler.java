@@ -40,7 +40,7 @@ public final class InteractionHandler {
 
         final User user = this.interaction.getUser();
 
-        return !this.plugin.getCache().getDiscordHandler().isVerified(user)
+        return !this.plugin.getCache().getDiscordManager().isVerified(user)
                 ? null
                 : this.playerInfo == null
                 ? this.playerInfo = PlayerInfo.fromDiscord(this.plugin, user.getIdLong())
@@ -54,7 +54,7 @@ public final class InteractionHandler {
 
         final User user = this.interaction.getUser();
 
-        if (!this.plugin.getCache().getDiscordHandler().isVerified(user)) {
+        if (!this.plugin.getCache().getDiscordManager().isVerified(user)) {
             this.send(LanguageRegistry.Strings.DISCORD_NOT_A_USER);
 
             return null;

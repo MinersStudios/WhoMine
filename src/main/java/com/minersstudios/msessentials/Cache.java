@@ -128,7 +128,7 @@ public final class Cache extends PluginCache<MSEssentials> {
         return this.botHandlers;
     }
 
-    public @UnknownNullability DiscordManager getDiscordHandler() {
+    public @UnknownNullability DiscordManager getDiscordManager() {
         return this.discordManager;
     }
 

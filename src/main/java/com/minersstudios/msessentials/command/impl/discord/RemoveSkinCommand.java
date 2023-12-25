@@ -18,7 +18,7 @@ public final class RemoveSkinCommand extends SlashCommandExecutor {
     }
 
     @Override
-    public void onInteract(@NotNull InteractionHandler handler) {
+    public void onInteract(final @NotNull InteractionHandler handler) {
         // TODO
     }
 }

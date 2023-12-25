@@ -26,7 +26,7 @@ public abstract class AbstractDiscordListener extends ListenerAdapter implements
     @Override
     public final boolean isRegistered() {
         return this.plugin != null
-                && MSEssentials.singleton().getCache().getDiscordHandler().getJda()
+                && MSEssentials.singleton().getCache().getDiscordManager().getJda()
                 .map(jda -> jda.getRegisteredListeners().contains(this))
                 .orElse(false);
     }
@@ -39,7 +39,7 @@ public abstract class AbstractDiscordListener extends ListenerAdapter implements
 
         this.plugin = plugin;
 
-        plugin.getCache().getDiscordHandler().getJda()
+        plugin.getCache().getDiscordManager().getJda()
         .ifPresent(
                 jda -> jda.addEventListener(this)
         );

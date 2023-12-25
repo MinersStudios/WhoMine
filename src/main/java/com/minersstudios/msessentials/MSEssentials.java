@@ -188,7 +188,7 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     }
 
     private void sendServerDisableMessage() {
-        final DiscordManager discordManager = this.cache.getDiscordHandler();
+        final DiscordManager discordManager = this.cache.getDiscordManager();
 
         if (discordManager != null) {
             discordManager.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);

@@ -81,7 +81,7 @@ public final class MessageUtils {
     ) {
         final MSEssentials plugin = MSEssentials.singleton();
         final Config config = plugin.getConfiguration();
-        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordManager();
 
         if (chatType == ChatType.LOCAL && location != null) {
             final Component localMessage = space()
@@ -135,7 +135,7 @@ public final class MessageUtils {
             final @NotNull Component message
     ) {
         final MSEssentials plugin = MSEssentials.singleton();
-        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordManager();
         final CommandSender commandSender = sender == plugin.getCache().getConsolePlayerInfo()
                 ? plugin.getServer().getConsoleSender()
                 : sender.getOnlinePlayer();
@@ -193,7 +193,7 @@ public final class MessageUtils {
     ) {
         final MSEssentials plugin = MSEssentials.singleton();
         final Config config = plugin.getConfiguration();
-        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordManager();
         final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, sender);
         final Component fullMessage = switch (rolePlayActionType) {
             case DO ->
@@ -257,7 +257,7 @@ public final class MessageUtils {
             final @Nullable Player killer
     ) {
         final MSEssentials plugin = MSEssentials.singleton();
-        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordManager();
         final Location deathLocation = killed.getLocation();
         final PlayerInfo killedInfo = PlayerInfo.fromOnlinePlayer(plugin, killed);
         final PlayerInfo killerInfo = killer != null
@@ -318,7 +318,7 @@ public final class MessageUtils {
         }
 
         final MSEssentials plugin = MSEssentials.singleton();
-        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordManager();
         final Component joinMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
@@ -349,7 +349,7 @@ public final class MessageUtils {
         }
 
         final MSEssentials plugin = MSEssentials.singleton();
-        final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
+        final DiscordManager discordManager = plugin.getCache().getDiscordManager();
         final Component quitMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))

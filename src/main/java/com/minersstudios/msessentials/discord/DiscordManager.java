@@ -27,6 +27,7 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -542,7 +543,7 @@ public final class DiscordManager {
 
         final Logger logger = this.plugin.getLogger();
         final ClassLoader classLoader = this.plugin.getClass().getClassLoader();
-        final var commands = new ArrayList<CommandData>();
+        final var commands = new CopyOnWriteArrayList<CommandData>();
         this.slashCommandMap = new HashMap<>();
         this.listeners = new ArrayList<>();
 
@@ -586,7 +587,6 @@ public final class DiscordManager {
         });
 
         this.jda.updateCommands().addCommands(commands).queue();
-        this.mainGuild.updateCommands().addCommands(commands).queue();
     }
 
     private @Nullable JDA buildJda(final @Nullable String botToken) throws InterruptedException, IllegalStateException {

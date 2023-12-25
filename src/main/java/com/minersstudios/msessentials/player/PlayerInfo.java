@@ -1818,7 +1818,7 @@ public final class PlayerInfo {
             return false;
         }
 
-        this.plugin.getCache().getDiscordHandler().sendEmbeds(id, messageEmbed, other);
+        this.plugin.getCache().getDiscordManager().sendEmbeds(id, messageEmbed, other);
 
         return true;
     }
@@ -1836,7 +1836,7 @@ public final class PlayerInfo {
             return false;
         }
 
-        this.plugin.getCache().getDiscordHandler().sendMessage(id, message);
+        this.plugin.getCache().getDiscordManager().sendMessage(id, message);
 
         return true;
     }

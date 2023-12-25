@@ -23,9 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
@@ -89,8 +87,7 @@ public enum CustomItemType {
         }
 
         final long startTime = System.currentTimeMillis();
-        final int size = VALUES.length;
-        final var typesWithRecipes = new ArrayList<CustomItemType>(size);
+        final var typesWithRecipes = new ArrayList<CustomItemType>();
 
         Stream.of(VALUES).parallel()
         .forEach(type -> {
@@ -112,17 +109,19 @@ public enum CustomItemType {
                 damageable.buildDamageable().saveForItemStack(customItem.getItem());
             }
 
-            KEY_TO_TYPE_MAP.put(customItem.getKey().getKey().toLowerCase(Locale.ENGLISH), type);
-            CLASS_TO_TYPE_MAP.put(type.clazz, type);
-            CLASS_TO_ITEM_MAP.put(type.clazz, customItem);
-            typesWithRecipes.add(type);
+            synchronized (CustomItemType.class) {
+                KEY_TO_TYPE_MAP.put(customItem.getKey().getKey().toLowerCase(Locale.ENGLISH), type);
+                CLASS_TO_TYPE_MAP.put(type.clazz, type);
+                CLASS_TO_ITEM_MAP.put(type.clazz, customItem);
+                typesWithRecipes.add(type);
+            }
         });
 
         typesWithRecipes.sort(Comparator.comparingInt(CustomItemType::ordinal));
         plugin.setLoadedCustoms(true);
         plugin.getComponentLogger().info(
                 Component.text(
-                        "Loaded " + size + " custom items in " + (System.currentTimeMillis() - startTime) + "ms",
+                        "Loaded " + VALUES.length + " custom items in " + (System.currentTimeMillis() - startTime) + "ms",
                         NamedTextColor.GREEN
                 )
         );

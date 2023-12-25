@@ -837,7 +837,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
                 if (clazz.getDeclaredConstructor().newInstance() instanceof final CommandExecutor<?> commandExecutor) {
                     commandExecutor.setPlugin(this);
-                    this.commandMap.put(command, (CommandExecutor<T>) commandExecutor);
+
+                    synchronized (this.commandMap) {
+                        this.commandMap.put(command, (CommandExecutor<T>) commandExecutor);
+                    }
                 } else {
                     logger.warning(
                             "Annotated class with MSCommand is not instance of MSCommandExecutor (" + className + ")"
@@ -887,10 +890,12 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                 }
 
                 if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractInventoryHolder<?> inventory) {
-                    this.inventoryHolderMap.put(
-                            (Class<? extends AbstractInventoryHolder<T>>) clazz,
-                            (AbstractInventoryHolder<T>) inventory
-                    );
+                    synchronized (this.inventoryHolderMap) {
+                        this.inventoryHolderMap.put(
+                                (Class<? extends AbstractInventoryHolder<T>>) clazz,
+                                (AbstractInventoryHolder<T>) inventory
+                        );
+                    }
                 } else {
                     logger.warning(
                             "Annotated class with MSInventory is not instance of AbstractMSInventory (" + className + ")"
@@ -943,7 +948,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                 }
 
                 if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractEventListener<?> listener) {
-                    this.eventListeners.add((AbstractEventListener<T>) listener);
+                    synchronized (this.eventListeners) {
+                        this.eventListeners.add((AbstractEventListener<T>) listener);
+                    }
                 } else {
                     logger.warning(
                             "Annotated class with MSListener is not instance of AbstractMSListener (" + className + ")"
@@ -994,7 +1001,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                 }
 
                 if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractPacketListener<?> listener) {
-                    this.packetListeners.add((AbstractPacketListener<T>) listener);
+                    synchronized (this.packetListeners) {
+                        this.packetListeners.add((AbstractPacketListener<T>) listener);
+                    }
                 } else {
                     logger.warning(
                             "Annotated class with MSPacketListener is not instance of AbstractMSPacketListener (" + className + ")"
@@ -1065,7 +1074,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
             if (uri.isAbsolute()) {
                 try (final var jarFile = new JarFile(new File(uri))) {
-                    jarFile.stream()
+                    jarFile.stream().parallel()
                     .map(JarEntry::getName)
                     .filter(name ->
                             name.endsWith(".class")
@@ -1076,22 +1085,30 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                             .replace('/', '.')
                             .replace(".class", "")
                     )
-                    .forEach(classNames::add);
+                    .forEach(className -> {
+                        synchronized (classNames) {
+                            classNames.add(className);
+                        }
+                    });
                 }
             } else {
                 try (final var paths = Files.list(Path.of(url.toURI()))) {
-                    paths
+                    paths.parallel()
                     .forEach(path -> {
                         final String fileName = path.getFileName().toString();
 
                         if (Files.isDirectory(path)) {
-                            classNames.addAll(
-                                    this.loadClassNames(packageName + '.' + fileName)
-                            );
+                            synchronized (classNames) {
+                                classNames.addAll(
+                                        this.loadClassNames(packageName + '.' + fileName)
+                                );
+                            }
                         } else if (fileName.endsWith(".class")) {
-                            classNames.add(
-                                    packageName + '.' + fileName.substring(0, fileName.length() - 6)
-                            );
+                            synchronized (classNames) {
+                                classNames.add(
+                                        packageName + '.' + fileName.substring(0, fileName.length() - 6)
+                                );
+                            }
                         }
                     });
                 }

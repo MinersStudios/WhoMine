@@ -12,7 +12,7 @@ public final class SlashCommandInteractionListener extends AbstractDiscordListen
 
     @Override
     public void onSlashCommandInteraction(final @NotNull SlashCommandInteractionEvent event) {
-        final SlashCommandExecutor executor = this.getPlugin().getCache().getDiscordHandler().slashCommandMap().get(event.getName());
+        final SlashCommandExecutor executor = this.getPlugin().getCache().getDiscordManager().slashCommandMap().get(event.getName());
 
         if (executor != null) {
             executor.onInteract(

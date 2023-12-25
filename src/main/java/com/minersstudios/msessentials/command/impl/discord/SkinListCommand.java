@@ -18,14 +18,14 @@ public final class SkinListCommand extends SlashCommandExecutor {
     }
 
     @Override
-    public void onInteract(@NotNull InteractionHandler handler) {
+    public void onInteract(final @NotNull InteractionHandler handler) {
+        handler.deferReply();
+
         final PlayerInfo playerInfo = handler.retrievePlayerInfo();
 
         if (playerInfo == null) {
             return;
         }
-
-        handler.deferReply();
 
         final PlayerFile playerFile = playerInfo.getPlayerFile();
         final var skins = playerFile.getSkins();

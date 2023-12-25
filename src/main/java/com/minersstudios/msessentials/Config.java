@@ -115,7 +115,7 @@ public final class Config extends PluginConfig<MSEssentials> {
         cache.getBukkitTasks().add(plugin.runTaskTimer(new MainAnomalyActionTask(plugin), 0L, this.anomalyCheckRate));
         cache.getBukkitTasks().add(plugin.runTaskTimer(new AnomalyParticleTask(plugin), 0L, this.anomalyParticlesCheckRate));
 
-        cache.getDiscordHandler().load();
+        cache.getDiscordManager().load();
     }
 
     /**

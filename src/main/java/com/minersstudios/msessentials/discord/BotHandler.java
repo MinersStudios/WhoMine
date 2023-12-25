@@ -92,7 +92,7 @@ public final class BotHandler {
         final int attachmentSize = attachments.size();
         short code = 0;
 
-        if (!this.plugin.getCache().getDiscordHandler().isVerified(this.user)) {
+        if (!this.plugin.getCache().getDiscordManager().isVerified(this.user)) {
             this.reply(DISCORD_NOT_A_USER);
             return;
         }

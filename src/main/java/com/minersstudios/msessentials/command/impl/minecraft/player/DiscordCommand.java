@@ -80,7 +80,7 @@ public final class DiscordCommand extends CommandExecutor<MSEssentials> {
                         return true;
                     }
 
-                    final DiscordManager discordManager = plugin.getCache().getDiscordHandler();
+                    final DiscordManager discordManager = plugin.getCache().getDiscordManager();
 
                     discordManager.retrieveUser(id)
                     .ifPresent(user -> {

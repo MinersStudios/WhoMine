@@ -220,8 +220,7 @@ public enum CustomDecorType {
         }
 
         final long startTime = System.currentTimeMillis();
-        final int size = VALUES.length;
-        final var typesWithRecipes = new ArrayList<CustomDecorType>(size);
+        final var typesWithRecipes = new ArrayList<CustomDecorType>();
 
         Stream.of(VALUES).parallel()
         .forEach(type -> {
@@ -239,17 +238,19 @@ public enum CustomDecorType {
                 return;
             }
 
-            KEY_TO_TYPE_MAP.put(data.getKey().getKey().toLowerCase(Locale.ENGLISH), type);
-            CLASS_TO_TYPE_MAP.put(type.clazz, type);
-            CLASS_TO_DATA_MAP.put(type.clazz, data);
-            typesWithRecipes.add(type);
+            synchronized (CustomDecorType.class) {
+                KEY_TO_TYPE_MAP.put(data.getKey().getKey().toLowerCase(Locale.ENGLISH), type);
+                CLASS_TO_TYPE_MAP.put(type.clazz, type);
+                CLASS_TO_DATA_MAP.put(type.clazz, data);
+                typesWithRecipes.add(type);
+            }
         });
 
         typesWithRecipes.sort(Comparator.comparingInt(CustomDecorType::ordinal));
         plugin.setLoadedCustoms(true);
         plugin.getComponentLogger().info(
                 Component.text(
-                        "Loaded " + size + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",
+                        "Loaded " + VALUES.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",
                         NamedTextColor.GREEN
                 )
         );

@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The CustomBlockRegistry class is responsible for managing and storing custom
@@ -75,8 +74,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class CustomBlockRegistry {
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSBlock.NAMESPACE, "type");
 
-    private static final Map<Integer, CustomBlockData> HASH_CODE_MAP = new ConcurrentHashMap<>();
-    private static final Map<String, Set<Integer>> KEY_MAP = new ConcurrentHashMap<>();
+    private static final Map<Integer, CustomBlockData> HASH_CODE_MAP = new HashMap<>();
+    private static final Map<String, Set<Integer>> KEY_MAP = new HashMap<>();
 
     static {
         register(CustomBlockData.getDefault());
@@ -365,7 +364,7 @@ public final class CustomBlockRegistry {
      * @see #KEY_MAP
      * @see #HASH_CODE_MAP
      */
-    public static void register(final @NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
+    public static synchronized void register(final @NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
         final String key = customBlockData.getKey();
         final PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
 
@@ -403,7 +402,7 @@ public final class CustomBlockRegistry {
      * @throws IllegalArgumentException If the key, or hash code is not 
      *                                  registered
      */
-    public static void unregister(final @NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
+    public static synchronized void unregister(final @NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
         final String key = customBlockData.getKey().toLowerCase(Locale.ENGLISH);
         final int hashCode = customBlockData.hashCode();
 
@@ -424,7 +423,7 @@ public final class CustomBlockRegistry {
      * lists used to store them. After this method is called, the custom block 
      * registry will be empty.
      */
-    public static void unregisterAll() {
+    public static synchronized void unregisterAll() {
         KEY_MAP.clear();
         HASH_CODE_MAP.clear();
     }
@@ -444,7 +443,7 @@ public final class CustomBlockRegistry {
      * @see #HASH_CODE_MAP
      * @see #KEY_MAP
      */
-    private static void register(
+    private static synchronized void register(
             final @NotNull CustomBlockData customBlockData,
             final int hashCode,
             final String key
