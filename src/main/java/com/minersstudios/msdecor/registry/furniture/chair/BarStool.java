@@ -48,7 +48,7 @@ public final class BarStool extends CustomDecorDataImpl<BarStool> {
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(

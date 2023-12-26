@@ -1,6 +1,7 @@
 package com.minersstudios.msessentials;
 
 import com.minersstudios.mscore.plugin.config.PluginConfig;
+import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.msessentials.anomaly.Anomaly;
 import com.minersstudios.msessentials.anomaly.task.AnomalyParticleTask;
 import com.minersstudios.msessentials.anomaly.task.MainAnomalyActionTask;
@@ -21,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Configuration loader class.
@@ -40,6 +42,28 @@ public final class Config extends PluginConfig<MSEssentials> {
     private double localChatRadius;
     private String mineSkinApiKey;
     private Location spawnLocation;
+
+    //<editor-fold desc="File paths" defaultstate="collapsed">
+    private static final String YAML_EXTENSION = ".yml";
+
+    /** The player data folder */
+    public static final String PLAYERS_FOLDER = "players";
+
+    /** The anomaly configurations folder */
+    public static final String ANOMALIES_FOLDER = "anomalies";
+
+    /** The console player data file name */
+    public static final String CONSOLE_FILE_NAME = "console" + YAML_EXTENSION;
+
+    /** The example anomaly configuration file name */
+    public static final String EXAMPLE_ANOMALY_FILE_NAME = "example" + YAML_EXTENSION;
+
+    /** The path in the plugin folder to the console player data file */
+    public static final String CONSOLE_FILE_PATH = PLAYERS_FOLDER + '/' + CONSOLE_FILE_NAME;
+
+    /** The path in the plugin folder to the example anomaly configuration file */
+    public static final String EXAMPLE_ANOMALY_FILE_PATH = ANOMALIES_FOLDER + '/' + EXAMPLE_ANOMALY_FILE_NAME;
+    //</editor-fold>
 
     /**
      * Configuration constructor
@@ -99,15 +123,15 @@ public final class Config extends PluginConfig<MSEssentials> {
         cache.getPlayerAnomalyActionMap().clear();
         cache.getAnomalies().clear();
 
-        plugin.saveResource("anomalies/example.yml", true);
+        plugin.saveResource(EXAMPLE_ANOMALY_FILE_PATH, true);
 
-        final File consoleDataFile = new File(plugin.getPluginFolder(), "players/console.yml");
+        final File consoleDataFile = new File(plugin.getPluginFolder(), CONSOLE_FILE_PATH);
 
         if (!consoleDataFile.exists()) {
-            plugin.saveResource("players/console.yml", false);
+            plugin.saveResource(CONSOLE_FILE_PATH, false);
         }
 
-        cache.consolePlayerInfo = new PlayerInfo(plugin, UUID.randomUUID(), "$Console");
+        cache.consolePlayerInfo = new PlayerInfo(plugin, UUID.randomUUID(), SharedConstants.CONSOLE_NICKNAME);
 
         plugin.runTaskAsync(() -> ResourcePack.init(plugin));
         plugin.runTaskAsync(this::loadAnomalies);
@@ -352,24 +376,32 @@ public final class Config extends PluginConfig<MSEssentials> {
     private void loadAnomalies() {
         final MSEssentials plugin = this.getPlugin();
         final Cache cache = plugin.getCache();
+        final Logger logger = plugin.getLogger();
 
-        try (final var path = Files.walk(Paths.get(plugin.getPluginFolder() + "/anomalies"))) {
+        try (final var path = Files.walk(Paths.get(this.file.getParent() + '/' + ANOMALIES_FOLDER))) {
             path.parallel()
             .filter(file -> {
                 final String fileName = file.getFileName().toString();
 
-                return Files.isRegularFile(file)
-                        && !fileName.equalsIgnoreCase("example.yml")
-                        && fileName.endsWith(".yml");
+                return fileName.endsWith(YAML_EXTENSION)
+                        && !fileName.equalsIgnoreCase(EXAMPLE_ANOMALY_FILE_NAME);
             })
             .map(Path::toFile)
             .forEach(file -> {
-                final Anomaly anomaly = Anomaly.fromConfig(plugin, file);
+                try {
+                    final Anomaly anomaly = Anomaly.fromConfig(plugin, file);
 
-                cache.getAnomalies().put(anomaly.getNamespacedKey(), anomaly);
+                    cache.getAnomalies().put(anomaly.getNamespacedKey(), anomaly);
+                } catch (final IllegalArgumentException e) {
+                    logger.log(
+                            Level.SEVERE,
+                            "An error occurred while loading anomaly \"" + file.getName() + "\"!",
+                            e
+                    );
+                }
             });
         } catch (final IOException e) {
-            plugin.getLogger().log(
+            logger.log(
                     Level.SEVERE,
                     "An error occurred while loading anomalies!",
                     e

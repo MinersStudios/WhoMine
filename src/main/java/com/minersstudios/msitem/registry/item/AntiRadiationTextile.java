@@ -47,7 +47,7 @@ public final class AntiRadiationTextile extends CustomItemImpl {
                 .setIngredient('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem())
                 .setIngredient('W', Material.YELLOW_WOOL)
                 .setIngredient('S', Material.STRING),
-                true
+                Boolean.TRUE
         ));
     }
 }

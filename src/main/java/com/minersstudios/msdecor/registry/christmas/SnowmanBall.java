@@ -90,7 +90,7 @@ public final class SnowmanBall extends CustomDecorDataImpl<SnowmanBall> {
                                         ShapedRecipeBuilder.material('B', Material.SNOWBALL),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 : builder0;

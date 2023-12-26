@@ -49,7 +49,7 @@ public final class RacoonPlush extends CustomDecorDataImpl<RacoonPlush> {
                                 .ingredients(
                                         ShapedRecipeBuilder.material('W', Material.GRAY_WOOL)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(DecorParameter.SITTABLE)

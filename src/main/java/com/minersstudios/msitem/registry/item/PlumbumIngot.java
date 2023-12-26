@@ -57,10 +57,13 @@ public final class PlumbumIngot extends CustomItemImpl {
         final var plumbumBlock = MSBlockUtils.getItemStack("plumbum_block");
 
         if (plumbumBlock.isEmpty()) {
-            MSItem.logger().warning("Can't find custom block with key: plumbum_block! Shaped recipe will not be registered!");
+            MSItem.logger().warning(
+                    "Can't find custom block with key: plumbum_block! Shaped recipe will not be registered!"
+            );
+
             return ImmutableList.of(
-                    Map.entry(furnaceRecipe, false),
-                    Map.entry(blastingRecipe, false)
+                    Map.entry(furnaceRecipe, Boolean.FALSE),
+                    Map.entry(blastingRecipe, Boolean.FALSE)
             );
         }
 
@@ -74,7 +77,7 @@ public final class PlumbumIngot extends CustomItemImpl {
                         )
                         .shape("I")
                         .setIngredient('I', new RecipeChoice.ExactChoice(plumbumBlock.get())),
-                        true
+                        Boolean.TRUE
                 )
         );
     }

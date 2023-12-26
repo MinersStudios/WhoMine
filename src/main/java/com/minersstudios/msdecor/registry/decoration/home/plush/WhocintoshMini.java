@@ -54,7 +54,7 @@ public final class WhocintoshMini extends CustomDecorDataImpl<WhocintoshMini> {
                                         ShapedRecipeBuilder.material('W', Material.GRAY_WOOL),
                                         ShapedRecipeBuilder.material('G', Material.GLASS_PANE)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

@@ -75,7 +75,7 @@ public final class Snowman extends CustomDecorDataImpl<Snowman> {
                                         ShapedRecipeBuilder.material('S', Material.STICK),
                                         ShapedRecipeBuilder.material('B', Material.SNOW_BLOCK)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 : builder0;

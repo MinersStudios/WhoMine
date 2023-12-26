@@ -52,7 +52,7 @@ public final class DeerHead extends CustomDecorDataImpl<DeerHead> {
                                         ShapedRecipeBuilder.material('B', Material.BONE),
                                         ShapedRecipeBuilder.material('S', Material.SPRUCE_LOG)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

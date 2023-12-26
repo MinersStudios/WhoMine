@@ -76,17 +76,17 @@ public final class ChristmasTallBall extends CustomDecorDataImpl<ChristmasTallBa
                 ? builder0.recipes(
                         unused -> Map.entry(
                                 RecipeBuilder.shapedBuilder()
-                                        .category(CraftingBookCategory.BUILDING)
-                                        .shape(
-                                                " S ",
-                                                "CCC",
-                                                " C "
-                                        )
-                                        .ingredients(
-                                                ShapedRecipeBuilder.material('S', Material.STRING),
-                                                ShapedRecipeBuilder.material('C', Material.CLAY_BALL)
-                                        ),
-                                true
+                                .category(CraftingBookCategory.BUILDING)
+                                .shape(
+                                        " S ",
+                                        "CCC",
+                                        " C "
+                                )
+                                .ingredients(
+                                        ShapedRecipeBuilder.material('S', Material.STRING),
+                                        ShapedRecipeBuilder.material('C', Material.CLAY_BALL)
+                                ),
+                                Boolean.TRUE
                         )
                 )
                 : builder0;

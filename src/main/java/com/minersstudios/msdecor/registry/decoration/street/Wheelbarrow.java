@@ -51,7 +51,7 @@ public final class Wheelbarrow extends CustomDecorDataImpl<Wheelbarrow> {
                                         ShapedRecipeBuilder.material('C', Material.CAULDRON),
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

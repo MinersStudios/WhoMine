@@ -54,7 +54,7 @@ public final class LeatherHat extends CustomItemImpl implements Wearable {
                         " L ",
                         "LLL"
                 ).setIngredient('L', Material.LEATHER),
-                true
+                Boolean.TRUE
         ));
     }
 }

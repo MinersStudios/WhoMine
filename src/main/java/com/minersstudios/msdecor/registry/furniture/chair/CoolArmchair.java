@@ -51,7 +51,7 @@ public final class CoolArmchair extends CustomDecorDataImpl<CoolArmchair> {
                                         ShapedRecipeBuilder.material('I', Material.IRON_NUGGET),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(

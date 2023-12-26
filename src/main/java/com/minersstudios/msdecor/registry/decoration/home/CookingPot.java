@@ -50,7 +50,7 @@ public final class CookingPot extends CustomDecorDataImpl<CookingPot> {
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT),
                                         ShapedRecipeBuilder.material('S', Material.STICK)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(DecorParameter.TYPED)

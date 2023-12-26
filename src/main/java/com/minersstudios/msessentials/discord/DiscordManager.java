@@ -541,10 +541,6 @@ public final class DiscordManager {
             return;
         }
 
-        //for (final var command : DiscordManager.this.jda.retrieveCommands().complete()) {
-        //    DiscordManager.this.jda.deleteCommandById(command.getId()).queue();
-        //}
-
         final Logger logger = this.plugin.getLogger();
         final ClassLoader classLoader = this.plugin.getClass().getClassLoader();
 

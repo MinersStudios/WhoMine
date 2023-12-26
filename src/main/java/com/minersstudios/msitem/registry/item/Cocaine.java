@@ -60,7 +60,7 @@ public final class Cocaine extends CustomItemImpl {
                 .setIngredient('F', Material.FERN)
                 .setIngredient('S', Material.SUGAR_CANE)
                 .setIngredient('L', Material.OAK_LEAVES),
-                true
+                Boolean.TRUE
         ));
     }
 }

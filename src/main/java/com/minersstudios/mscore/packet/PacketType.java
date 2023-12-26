@@ -2,7 +2,10 @@ package com.minersstudios.mscore.packet;
 
 import com.minersstudios.mscore.plugin.MSLogger;
 import net.minecraft.network.protocol.PacketFlow;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collections;

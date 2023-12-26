@@ -15,7 +15,6 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -268,21 +267,13 @@ public enum DecorParameter {
         }
 
         final Player player = event.getPlayer();
-        final ItemStack typeItem = nextType.getItem();
-        final ItemMeta typeMeta = typeItem.getItemMeta();
-        final ItemMeta displayMeta = displayItem.getItemMeta();
 
-        if (
-                displayMeta instanceof final LeatherArmorMeta displayColorable
-                && typeMeta instanceof final LeatherArmorMeta typeColorable
-        ) {
-            typeColorable.setColor(displayColorable.getColor());
-        }
-
-        typeMeta.displayName(displayMeta.displayName());
-        typeItem.setItemMeta(typeMeta);
-
-        itemDisplay.setItemStack(typeItem);
+        itemDisplay.setItemStack(
+                CustomDecorDataImpl.copyMetaForTypeItem(
+                        nextType.getItem(),
+                        displayItem
+                )
+        );
 
         if (player.getGameMode() == GameMode.SURVIVAL) {
             ItemUtils.damageItem(player, itemInUse);

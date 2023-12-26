@@ -782,7 +782,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
         @NotNull NamespacedKey getKey();
 
         /**
-         * @return The item stack representing the custom decor type
+         * @return The clone of item stack representing the custom decor type
          */
         @NotNull ItemStack getItem();
 

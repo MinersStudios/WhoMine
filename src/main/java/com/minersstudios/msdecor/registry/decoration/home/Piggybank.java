@@ -51,7 +51,7 @@ public abstract class Piggybank<C extends CustomDecorData<C>> extends CustomDeco
                                         "P P"
                                 )
                                 .ingredients(ShapedRecipeBuilder.material('P', material)),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

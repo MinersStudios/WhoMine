@@ -55,7 +55,7 @@ public final class BigLamp extends CustomDecorDataImpl<BigLamp> {
                                         ShapedRecipeBuilder.material('S', Material.STICK),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(

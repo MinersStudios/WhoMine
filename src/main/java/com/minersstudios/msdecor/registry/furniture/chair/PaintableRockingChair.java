@@ -54,7 +54,7 @@ public abstract class PaintableRockingChair<C extends CustomDecorData<C>> extend
                                         ShapedRecipeBuilder.material('P', planksMaterial),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(

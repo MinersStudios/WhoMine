@@ -86,7 +86,7 @@ public final class ChristmasBall extends CustomDecorDataImpl<ChristmasBall> {
                                         ShapedRecipeBuilder.material('S', Material.STRING),
                                         ShapedRecipeBuilder.material('C', Material.CLAY_BALL)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 : builder0;

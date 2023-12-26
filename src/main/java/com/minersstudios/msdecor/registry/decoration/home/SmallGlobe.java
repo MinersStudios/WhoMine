@@ -49,7 +49,7 @@ public final class SmallGlobe extends CustomDecorDataImpl<SmallGlobe> {
                                         ShapedRecipeBuilder.material('M', Material.MAP),
                                         ShapedRecipeBuilder.material('S', Material.STICK)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

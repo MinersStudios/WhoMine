@@ -60,7 +60,7 @@ public final class Cell extends CustomDecorDataImpl<Cell> {
                                         ShapedRecipeBuilder.material('B', Material.IRON_BARS),
                                         ShapedRecipeBuilder.material('C', Material.CHAIN)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(DecorParameter.TYPED)

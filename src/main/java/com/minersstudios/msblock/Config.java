@@ -30,9 +30,18 @@ public final class Config extends PluginConfig<MSBlock> {
     private String woodSoundStep;
     private String woodSoundHit;
 
-    private static final String BLOCKS_FOLDER = "blocks";
+    //<editor-fold desc="File paths" defaultstate="collapsed">
     private static final String JSON_EXTENSION = ".json";
-    private static final String EXAMPLE_JSON = "example" + JSON_EXTENSION;
+
+    /** The custom block configurations folder */
+    public static final String BLOCKS_FOLDER = "blocks";
+
+    /** The example custom block configuration file name */
+    public static final String EXAMPLE_BLOCK_FILE_NAME = "example" + JSON_EXTENSION;
+
+    /** The path in the plugin folder to the example custom block configuration file */
+    public static final String EXAMPLE_BLOCK_FILE_PATH = BLOCKS_FOLDER + '/' + EXAMPLE_BLOCK_FILE_NAME;
+    //</editor-fold>
 
     /**
      * Configuration constructor
@@ -71,7 +80,7 @@ public final class Config extends PluginConfig<MSBlock> {
 
         final MSBlock plugin = this.getPlugin();
 
-        plugin.saveResource("blocks/example.json", true);
+        plugin.saveResource(EXAMPLE_BLOCK_FILE_PATH, true);
         plugin.runTaskAsync(this::loadBlocks);
     }
 
@@ -122,8 +131,9 @@ public final class Config extends PluginConfig<MSBlock> {
             pathStream.parallel()
             .filter(file -> {
                 final String fileName = file.getFileName().toString();
+
                 return fileName.endsWith(JSON_EXTENSION)
-                        && !fileName.equalsIgnoreCase(EXAMPLE_JSON);
+                        && !fileName.equalsIgnoreCase(EXAMPLE_BLOCK_FILE_NAME);
             })
             .map(path -> CustomBlockData.fromFile(plugin, path.toFile()))
             .filter(Objects::nonNull)

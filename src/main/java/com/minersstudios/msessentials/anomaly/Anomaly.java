@@ -1,7 +1,6 @@
 package com.minersstudios.msessentials.anomaly;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import com.google.common.collect.ImmutableList;
 import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomaly.action.AddPotionAction;
@@ -78,13 +77,27 @@ public class Anomaly {
             final @NotNull MSEssentials plugin,
             final @NotNull File file
     ) throws IllegalArgumentException {
-        final String fileName = file.getName();
         final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        final World world = Bukkit.getWorld(
-                Objects.requireNonNull(config.getString("bounding-box.location.world-name"), "world in " + fileName + " is null")
-        );
+        final String namespacedKeyStr = config.getString("namespaced-key");
+
+        if (namespacedKeyStr == null) {
+            throw new IllegalArgumentException("Namespaced key is not specified");
+        }
+
+        final String worldName = config.getString("bounding-box.location.world-name");
+
+        if (worldName == null) {
+            throw new IllegalArgumentException("World name is not specified");
+        }
+
+        final World world = Bukkit.getWorld(worldName);
+
+        if (world == null) {
+            throw new IllegalArgumentException("Specified world does not exist");
+        }
+
         final AnomalyBoundingBox anomalyBoundingBox = new AnomalyBoundingBox(
-                Objects.requireNonNull(world, "Can't find world, anomaly : " + fileName),
+                world,
                 new BoundingBox(
                         config.getDouble("bounding-box.location.first-corner.x"),
                         config.getDouble("bounding-box.location.first-corner.y"),
@@ -130,9 +143,12 @@ public class Anomaly {
 
         for (final var radius : anomalyBoundingBox.getRadii()) {
             final ConfigurationSection radiusSection = config.getConfigurationSection("on-entering-to-area." + radius);
-            final var actionStrings =
-                    Objects.requireNonNull(radiusSection, "Anomaly configuration radii not properly configured, anomaly : " + fileName)
-                    .getValues(false).keySet();
+
+            if (radiusSection == null) {
+                throw new IllegalArgumentException("Anomaly action radii not properly configured");
+            }
+
+            final var actionStrings = radiusSection.getValues(false).keySet();
 
             for (final var anomalyAction : actionStrings) {
                 final AnomalyAction action;
@@ -142,13 +158,28 @@ public class Anomaly {
                         final var potionEffects = new ArrayList<PotionEffect>();
                         final ConfigurationSection effectsSection = radiusSection.getConfigurationSection("add-potion-effect.effects");
 
-                        for (final var potionStr : Objects.requireNonNull(effectsSection).getValues(false).keySet()) {
+                        if (effectsSection == null) {
+                            throw new IllegalArgumentException("Effects section not specified in add-potion-effect");
+                        }
+
+                        for (final var potionStr : effectsSection.getValues(false).keySet()) {
                             final ConfigurationSection potionSection = effectsSection.getConfigurationSection(potionStr);
+                            final PotionEffectType potionEffectType =
+                                    Registry.POTION_EFFECT_TYPE.get(
+                                            new NamespacedKey(
+                                                    NamespacedKey.MINECRAFT,
+                                                    potionStr
+                                            )
+                                    );
+
                             assert potionSection != null;
-                            final PotionEffectType potionEffectType = PotionEffectType.getByName(potionStr);
+
+                            if (potionEffectType == null) {
+                                throw new IllegalArgumentException("Potion effect type is invalid");
+                            }
 
                             potionEffects.add(new PotionEffect(
-                                    Objects.requireNonNull(potionEffectType, "Invalid effect type name in : " + fileName),
+                                    potionEffectType,
                                     potionSection.getInt("time"),
                                     potionSection.getInt("amplifier"),
                                     potionSection.getBoolean("ambient"),
@@ -168,11 +199,16 @@ public class Anomaly {
                         final var particleBuilderList = new ArrayList<ParticleBuilder>();
                         final ConfigurationSection particlesSection = radiusSection.getConfigurationSection("spawn-particles.particles");
 
-                        for (final var particleStr : Objects.requireNonNull(particlesSection).getValues(false).keySet()) {
+                        if (particlesSection == null) {
+                            throw new IllegalArgumentException("Particles section not specified in spawn-particles");
+                        }
+
+                        for (final var particleStr : particlesSection.getValues(false).keySet()) {
                             final ConfigurationSection particleSection = particlesSection.getConfigurationSection(particleStr);
                             assert particleSection != null;
                             final Particle particle = Particle.valueOf(particleStr);
-                            final ParticleBuilder particleBuilder = new ParticleBuilder(particle)
+                            final ParticleBuilder particleBuilder =
+                                    new ParticleBuilder(particle)
                                     .count(particleSection.getInt("count"))
                                     .offset(
                                             particleSection.getDouble("offset.x"),
@@ -197,18 +233,16 @@ public class Anomaly {
                                 particleBuilderList.toArray(new ParticleBuilder[0])
                         );
                     }
-                    default -> action = null;
+                    default -> throw new IllegalArgumentException("Specified invalid anomaly action : " + anomalyAction);
                 }
 
-                if (action != null) {
-                    if (anomalyActionMap.containsKey(radius)) {
-                        final var actions = new ArrayList<>(anomalyActionMap.get(radius));
+                if (anomalyActionMap.containsKey(radius)) {
+                    final var actions = new ArrayList<>(anomalyActionMap.get(radius));
 
-                        actions.add(action);
-                        anomalyActionMap.put(radius, actions);
-                    } else {
-                        anomalyActionMap.put(radius, ImmutableList.of(action));
-                    }
+                    actions.add(action);
+                    anomalyActionMap.put(radius, actions);
+                } else {
+                    anomalyActionMap.put(radius, Collections.singletonList(action));
                 }
             }
         }
@@ -222,7 +256,7 @@ public class Anomaly {
         return new Anomaly(
                 new NamespacedKey(
                         MSEssentials.NAMESPACE,
-                        Objects.requireNonNull(config.getString("namespaced-key"), "namespaced-key in " + fileName + " is null")
+                        namespacedKeyStr
                 ),
                 anomalyBoundingBox,
                 equipmentSlots.isEmpty()

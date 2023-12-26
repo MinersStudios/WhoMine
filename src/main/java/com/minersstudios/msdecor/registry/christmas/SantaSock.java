@@ -56,7 +56,7 @@ public final class SantaSock extends CustomDecorDataImpl<SantaSock> {
                                         ShapedRecipeBuilder.material('L', Material.LEATHER),
                                         ShapedRecipeBuilder.material('A', Material.AIR)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 : builder;

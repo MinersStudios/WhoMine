@@ -54,7 +54,7 @@ public final class TreeStar extends CustomDecorDataImpl<TreeStar> {
                                         ShapedRecipeBuilder.material('I', Material.GOLD_INGOT),
                                         ShapedRecipeBuilder.material('B', Material.GOLD_BLOCK)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 : builder;

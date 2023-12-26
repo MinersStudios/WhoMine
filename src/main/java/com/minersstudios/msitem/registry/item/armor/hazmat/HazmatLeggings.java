@@ -59,7 +59,7 @@ public final class HazmatLeggings extends CustomItemImpl implements Damageable {
                         "T T"
                 )
                 .setIngredient('T', CustomItemType.ANTI_RADIATION_TEXTILE.getCustomItem().getItem()),
-                true
+                Boolean.TRUE
         ));
     }
 

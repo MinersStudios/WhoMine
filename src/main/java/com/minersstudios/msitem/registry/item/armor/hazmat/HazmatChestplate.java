@@ -60,7 +60,7 @@ public final class HazmatChestplate extends CustomItemImpl implements Damageable
                 )
                 .setIngredient('T', CustomItemType.ANTI_RADIATION_TEXTILE.getCustomItem().getItem())
                 .setIngredient('P', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem()),
-                true
+                Boolean.TRUE
         ));
     }
 

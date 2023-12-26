@@ -59,7 +59,7 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
                                 .ingredients(
                                         ShapedRecipeBuilder.material('P', planksMaterial)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(DecorParameter.WRENCHABLE)

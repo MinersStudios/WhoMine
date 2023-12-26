@@ -54,7 +54,7 @@ public abstract class Armchair<C extends CustomDecorData<C>> extends CustomDecor
                                         ShapedRecipeBuilder.material('P', planksMaterial),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(

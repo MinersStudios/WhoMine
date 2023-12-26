@@ -25,9 +25,18 @@ import java.util.logging.Level;
 public final class Config extends PluginConfig<MSItem> {
     private long dosimeterCheckRate;
 
-    private static final String ITEMS_FOLDER = "items";
+    //<editor-fold desc="File paths" defaultstate="collapsed">
     private static final String YAML_EXTENSION = ".yml";
-    private static final String EXAMPLE_YAML = "example" + YAML_EXTENSION;
+
+    /** The name of the renameable item configurations folder */
+    public static final String ITEMS_FOLDER = "items";
+
+    /** The name of the example renameable item configuration file */
+    public static final String EXAMPLE_RENAMEABLE_FILE_NAME = "example" + YAML_EXTENSION;
+
+    /** The path in the plugin folder to the example renameable item configuration file */
+    public static final String EXAMPLE_RENAMEABLE_FILE_PATH = ITEMS_FOLDER + '/' + EXAMPLE_RENAMEABLE_FILE_NAME;
+    //</editor-fold>
 
     /**
      * Configuration constructor
@@ -47,7 +56,7 @@ public final class Config extends PluginConfig<MSItem> {
 
         final MSItem plugin = this.getPlugin();
 
-        plugin.saveResource("items/example.yml", true);
+        plugin.saveResource(EXAMPLE_RENAMEABLE_FILE_PATH, true);
         plugin.runTaskTimerAsync(task -> {
             if (MSPluginUtils.isLoadedCustoms()) {
                 task.cancel();
@@ -80,8 +89,9 @@ public final class Config extends PluginConfig<MSItem> {
             pathStream.parallel()
             .filter(file -> {
                 final String fileName = file.getFileName().toString();
+
                 return fileName.endsWith(YAML_EXTENSION)
-                        && !fileName.equalsIgnoreCase(EXAMPLE_YAML);
+                        && !fileName.equalsIgnoreCase(EXAMPLE_RENAMEABLE_FILE_NAME);
             })
             .map(path -> RenameableItem.fromFile(plugin, path.toFile()))
             .filter(Objects::nonNull)

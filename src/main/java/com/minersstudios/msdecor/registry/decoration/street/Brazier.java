@@ -60,7 +60,7 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                                         ShapedRecipeBuilder.material('B', Material.IRON_BARS),
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(DecorParameter.LIGHT_TYPED)

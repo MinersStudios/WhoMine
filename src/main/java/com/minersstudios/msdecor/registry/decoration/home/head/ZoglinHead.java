@@ -52,7 +52,7 @@ public final class ZoglinHead extends CustomDecorDataImpl<ZoglinHead> {
                                         ShapedRecipeBuilder.material('B', Material.BONE),
                                         ShapedRecipeBuilder.material('S', Material.SPRUCE_LOG)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

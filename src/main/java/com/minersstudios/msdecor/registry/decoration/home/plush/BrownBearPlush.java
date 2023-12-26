@@ -49,7 +49,7 @@ public final class BrownBearPlush extends CustomDecorDataImpl<BrownBearPlush> {
                                         ShapedRecipeBuilder.material('W', Material.BROWN_WOOL),
                                         ShapedRecipeBuilder.material('A', Material.AIR)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

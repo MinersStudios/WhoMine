@@ -202,7 +202,7 @@ public interface CardsBicycle {
                             ).setIngredient('D', Material.BLUE_DYE)
                             .setIngredient('S', Material.STRING)
                             .setIngredient('P', Material.PAPER),
-                            true
+                            Boolean.TRUE
                     )
             );
         }
@@ -246,7 +246,7 @@ public interface CardsBicycle {
                             .setIngredient('S', Material.STRING)
                             .setIngredient('P', Material.PAPER)
                             .setIngredient('I', Material.IRON_INGOT),
-                            true
+                            Boolean.TRUE
                     )
             );
         }
@@ -289,7 +289,7 @@ public interface CardsBicycle {
                             ).setIngredient('D', Material.RED_DYE)
                             .setIngredient('S', Material.STRING)
                             .setIngredient('P', Material.PAPER),
-                            true
+                            Boolean.TRUE
                     )
             );
         }
@@ -333,7 +333,7 @@ public interface CardsBicycle {
                             .setIngredient('S', Material.STRING)
                             .setIngredient('P', Material.PAPER)
                             .setIngredient('I', Material.IRON_INGOT),
-                            true
+                            Boolean.TRUE
                     )
             );
         }

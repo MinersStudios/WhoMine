@@ -20,8 +20,6 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -160,27 +158,15 @@ public final class CustomDecor {
                 MSLogger.warning("Trying to drop a null item from a custom decor at " + this.display.getLocation());
             }
 
-            final ItemStack itemStack =
+            world.dropItemNaturally(
+                    center.toLocation(),
                     !this.data.isAnyTyped()
                     || this.data.isDropType()
                             ? displayItem.clone()
-                            : this.data.getItem();
-            final ItemMeta itemMeta = itemStack.getItemMeta();
-            final ItemMeta displayMeta = displayItem.getItemMeta();
-
-            if (
-                    displayMeta instanceof final LeatherArmorMeta displayColorable
-                    && itemMeta instanceof final LeatherArmorMeta itemColorable
-            ) {
-                itemColorable.setColor(displayColorable.getColor());
-            }
-
-            itemMeta.displayName(displayMeta.displayName());
-            itemStack.setItemMeta(itemMeta);
-
-            world.dropItemNaturally(
-                    center.toLocation(),
-                    itemStack
+                            : CustomDecorDataImpl.copyMetaForTypeItem(
+                                    this.data.getItem(),
+                                    displayItem
+                            )
             );
         }
 

@@ -51,7 +51,7 @@ public final class CoolChair extends CustomDecorDataImpl<CoolChair> {
                                         ShapedRecipeBuilder.material('L', Material.LEATHER),
                                         ShapedRecipeBuilder.material('A', Material.AIR)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(

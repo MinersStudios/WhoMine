@@ -53,7 +53,7 @@ public abstract class BigTable<C extends CustomDecorData<C>> extends CustomDecor
                                 .ingredients(
                                         ShapedRecipeBuilder.material('P', planksMaterial)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

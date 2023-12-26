@@ -53,7 +53,7 @@ public abstract class SmallTable<C extends CustomDecorData<C>> extends CustomDec
                                         ShapedRecipeBuilder.material('P', planksMaterial),
                                         ShapedRecipeBuilder.material('A', Material.AIR)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

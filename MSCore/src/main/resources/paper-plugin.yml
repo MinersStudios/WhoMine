@@ -1,3 +1,4 @@
+#file: noinspection YAMLSchemaValidation
 name: $name
 version: $version
 description: $description
@@ -17,7 +18,7 @@ dependencies:
   - name: MSBlock
     version: $version
   - name: CoreProtect
-    version: '21.3'
+    version: '22.2'
 load-after:
   - name: CoreProtect
 load-before:

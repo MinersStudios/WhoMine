@@ -1,3 +1,4 @@
+#file: noinspection YAMLSchemaValidation
 name: $name
 version: $version
 description: $description

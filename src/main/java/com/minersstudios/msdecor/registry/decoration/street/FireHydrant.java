@@ -50,7 +50,7 @@ public final class FireHydrant extends CustomDecorDataImpl<FireHydrant> {
                                         ShapedRecipeBuilder.material('B', Material.IRON_BLOCK),
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

@@ -51,7 +51,7 @@ public final class Wrench extends CustomItemImpl implements Damageable {
                 new ShapedRecipe(this.namespacedKey, this.itemStack)
                         .shape("I", "I", "I")
                         .setIngredient('I', Material.IRON_INGOT),
-                true
+                Boolean.TRUE
         ));
     }
 

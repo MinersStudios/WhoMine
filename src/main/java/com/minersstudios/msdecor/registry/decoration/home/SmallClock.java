@@ -52,7 +52,7 @@ public final class SmallClock extends CustomDecorDataImpl<SmallClock> {
                                         ShapedRecipeBuilder.material('L', Material.CLAY_BALL),
                                         ShapedRecipeBuilder.material('C', Material.CLOCK)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(DecorParameter.PAINTABLE);

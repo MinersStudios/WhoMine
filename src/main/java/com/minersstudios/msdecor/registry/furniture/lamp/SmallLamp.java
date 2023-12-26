@@ -50,7 +50,7 @@ public final class SmallLamp extends CustomDecorDataImpl<SmallLamp> {
                                         ShapedRecipeBuilder.material('S', Material.STICK),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(

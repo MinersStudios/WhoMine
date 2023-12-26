@@ -89,7 +89,7 @@ public final class SnowflakeOnString extends CustomDecorDataImpl<SnowflakeOnStri
                                         ShapedRecipeBuilder.material('S', Material.STRING),
                                         ShapedRecipeBuilder.material('B', Material.SNOWBALL)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 : builder0;

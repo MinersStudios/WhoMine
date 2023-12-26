@@ -49,7 +49,7 @@ public final class BMOPlush extends CustomDecorDataImpl<BMOPlush> {
                                         ShapedRecipeBuilder.material('D', Material.LIGHT_BLUE_DYE),
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

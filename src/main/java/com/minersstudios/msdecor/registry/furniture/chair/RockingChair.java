@@ -53,7 +53,7 @@ public abstract class RockingChair<C extends CustomDecorData<C>> extends CustomD
                                 .ingredients(
                                         ShapedRecipeBuilder.material('P', planksMaterial)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(

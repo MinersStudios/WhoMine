@@ -73,10 +73,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     private final CustomDecorData.Type<D>[] types;
     private final EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
     private final Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
-    private final boolean isDropType;
     private final DecorClickAction clickAction;
     private final DecorPlaceAction placeAction;
     private final DecorBreakAction breakAction;
+    private final boolean isDropType;
 
     private static final int MAX_DECORATIONS_IN_BLOCK = 6;
 
@@ -818,6 +818,27 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.doPlaceAction(event);
     }
 
+    static @NotNull ItemStack copyMetaForTypeItem(
+            final @NotNull ItemStack typeItem,
+            final @NotNull ItemStack item
+    ) {
+        final ItemMeta typeMeta = typeItem.getItemMeta();
+        final ItemMeta itemMeta = item.getItemMeta();
+
+        if (
+                itemMeta instanceof final LeatherArmorMeta colorable
+                && typeMeta instanceof final LeatherArmorMeta typeColorable
+        ) {
+            typeColorable.setColor(colorable.getColor());
+        }
+
+        typeMeta.displayName(itemMeta.displayName());
+        typeMeta.lore(itemMeta.lore());
+        typeItem.setItemMeta(typeMeta);
+
+        return typeItem;
+    }
+
     private @NotNull CustomDecor placeInWorld(
             final @NotNull String placerName,
             final @NotNull ItemDisplay itemDisplay,
@@ -911,21 +932,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     if (type == null) {
                         itemDisplay.setItemStack(itemStack);
                     } else {
-                        final ItemStack typeItem = type.getItem();
-                        final ItemMeta typeMeta = typeItem.getItemMeta();
-                        final ItemMeta itemMeta = itemStack.getItemMeta();
-
-                        if (
-                                itemMeta instanceof final LeatherArmorMeta colorable
-                                && typeMeta instanceof final LeatherArmorMeta typeColorable
-                        ) {
-                            typeColorable.setColor(colorable.getColor());
-                        }
-
-                        typeMeta.displayName(itemMeta.displayName());
-                        typeItem.setItemMeta(typeMeta);
-
-                        itemDisplay.setItemStack(typeItem);
+                        itemDisplay.setItemStack(
+                                copyMetaForTypeItem(type.getItem(), itemStack)
+                        );
                     }
 
                     itemDisplay.setDisplayHeight(1.0f);

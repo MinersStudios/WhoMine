@@ -54,7 +54,7 @@ public abstract class Chair<C extends CustomDecorData<C>> extends CustomDecorDat
                                         ShapedRecipeBuilder.material('P', planksMaterial),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .parameters(

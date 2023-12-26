@@ -52,7 +52,7 @@ public final class Whocintosh extends CustomDecorDataImpl<Whocintosh> {
                                         ShapedRecipeBuilder.material('G', Material.GLASS_PANE),
                                         ShapedRecipeBuilder.material('T', Material.REDSTONE_TORCH)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

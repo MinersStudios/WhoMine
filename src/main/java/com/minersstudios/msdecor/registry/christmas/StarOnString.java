@@ -89,7 +89,7 @@ public final class StarOnString extends CustomDecorDataImpl<StarOnString> {
                                         ShapedRecipeBuilder.material('S', Material.STRING),
                                         ShapedRecipeBuilder.material('G', Material.GOLD_NUGGET)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 : builder0;

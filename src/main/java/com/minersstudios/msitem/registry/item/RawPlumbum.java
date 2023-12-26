@@ -53,8 +53,11 @@ public final class RawPlumbum extends CustomItemImpl {
         final var rawPlumbumBlock = MSBlockUtils.getItemStack("raw_plumbum_block");
 
         if (rawPlumbumBlock.isEmpty()) {
-            MSLogger.warning("Can't find custom block with key: raw_plumbum_block! Shaped recipe for RawPlumbum will not be registered!");
-            return Collections.singletonList(Map.entry(shapedRecipe, true));
+            MSLogger.warning(
+                    "Can't find custom block with key: raw_plumbum_block! Shaped recipe for RawPlumbum will not be registered!"
+            );
+
+            return Collections.singletonList(Map.entry(shapedRecipe, Boolean.TRUE));
         }
 
         return ImmutableList.of(
@@ -66,7 +69,7 @@ public final class RawPlumbum extends CustomItemImpl {
                         )
                         .shape("I")
                         .setIngredient('I', new RecipeChoice.ExactChoice(rawPlumbumBlock.get())),
-                        true
+                        Boolean.TRUE
                 )
         );
     }

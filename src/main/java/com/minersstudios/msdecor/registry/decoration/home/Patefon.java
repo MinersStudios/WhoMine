@@ -46,7 +46,7 @@ public final class Patefon extends CustomDecorDataImpl<Patefon> {
                                         ShapedRecipeBuilder.material('J', Material.JUKEBOX),
                                         ShapedRecipeBuilder.material('P', Material.SPRUCE_PLANKS)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }

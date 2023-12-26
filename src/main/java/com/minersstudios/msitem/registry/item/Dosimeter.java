@@ -51,7 +51,7 @@ public final class Dosimeter extends CustomItemImpl {
                 .setIngredient('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem())
                 .setIngredient('L', Material.REDSTONE_LAMP)
                 .setIngredient('R', Material.REDSTONE_TORCH),
-                true
+                Boolean.TRUE
         ));
     }
 

@@ -55,7 +55,7 @@ public final class IronTrashcan extends CustomDecorDataImpl<IronTrashcan> {
                                         "III"
                                 )
                                 .ingredients(ShapedRecipeBuilder.material('I', Material.IRON_INGOT)),
-                                true
+                                Boolean.TRUE
                         )
                 )
                 .clickAction(

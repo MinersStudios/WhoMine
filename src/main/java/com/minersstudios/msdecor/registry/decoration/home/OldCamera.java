@@ -50,7 +50,7 @@ public final class OldCamera extends CustomDecorDataImpl<OldCamera> {
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT),
                                         ShapedRecipeBuilder.material('S', Material.STICK)
                                 ),
-                                true
+                                Boolean.TRUE
                         )
                 );
     }
