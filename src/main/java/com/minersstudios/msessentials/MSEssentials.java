@@ -49,14 +49,15 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
 
         this.cache.load();
         this.config.reload();
-        this.setupHideTags();
-        this.setupAuthMe();
 
         this.runTask(WorldDark::init);
         this.runTaskTimer(new SeatsTask(this), 0L, 1L);
         this.runTaskTimer(new PlayerListTask(this), 6000L, 6000L);
         this.runTaskTimer(new MuteMapTask(this), 0L, 50L);
         this.runTaskTimer(new BanListTask(this), 0L, 6000L);
+
+        this.setupHideTags();
+        this.setupAuthMe();
     }
 
     @Override

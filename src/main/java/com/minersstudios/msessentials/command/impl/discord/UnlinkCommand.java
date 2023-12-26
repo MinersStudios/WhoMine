@@ -30,31 +30,29 @@ public final class UnlinkCommand extends SlashCommandExecutor {
 
         final PlayerInfo playerInfo = handler.retrievePlayerInfo();
 
-        if (playerInfo == null) {
-            return;
-        }
-
-        playerInfo.unlinkDiscord();
-        handler.send(
-                BotHandler.craftEmbed(
-                        LanguageFile.renderTranslation(
-                                COMMAND_DISCORD_UNLINK_DISCORD_SUCCESS
-                                .args(
-                                        playerInfo.getDefaultName(),
-                                        text(playerInfo.getPlayerFile().getPlayerName().getNickname())
-                                )
-                        )
-                )
-        );
-
-        final Player onlinePlayer = playerInfo.getOnlinePlayer();
-
-        if (onlinePlayer != null) {
-            MSLogger.fine(
-                    onlinePlayer,
-                    COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS
-                            .args(text(handler.getInteraction().getUser().getName()))
+        if (playerInfo != null) {
+            playerInfo.unlinkDiscord();
+            handler.send(
+                    BotHandler.craftEmbed(
+                            LanguageFile.renderTranslation(
+                                    COMMAND_DISCORD_UNLINK_DISCORD_SUCCESS
+                                    .args(
+                                            playerInfo.getDefaultName(),
+                                            text(playerInfo.getPlayerFile().getPlayerName().getNickname())
+                                    )
+                            )
+                    )
             );
+
+            final Player onlinePlayer = playerInfo.getOnlinePlayer();
+
+            if (onlinePlayer != null) {
+                MSLogger.fine(
+                        onlinePlayer,
+                        COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS
+                        .args(text(handler.getInteraction().getUser().getName()))
+                );
+            }
         }
     }
 }

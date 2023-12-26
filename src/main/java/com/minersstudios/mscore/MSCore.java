@@ -92,13 +92,13 @@ public final class MSCore extends MSPlugin<MSCore> {
                 return;
             }
 
-            MSLogger.severe("CoreProtect is not Enabled, actions logging will not be available");
+            MSLogger.warning("CoreProtect is not Enabled, actions logging will not be available");
         } catch (final IllegalStateException e) {
-            MSLogger.severe("CoreProtect is already connected");
+            MSLogger.warning("CoreProtect is already connected");
         } catch (final NoClassDefFoundError e) {
-            MSLogger.severe("CoreProtect is not installed, actions logging will not be available");
+            MSLogger.warning("CoreProtect is not installed, actions logging will not be available");
         } catch (final NullPointerException e) {
-            MSLogger.severe("CoreProtectAPI is not running yet");
+            MSLogger.warning("CoreProtectAPI is not running yet");
         }
     }
 

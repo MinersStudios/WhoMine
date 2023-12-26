@@ -225,6 +225,8 @@ public final class LanguageRegistry {
         public static final String DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT =          "ms.discord.skin.successfully_removed.minecraft";
         public static final String DISCORD_SKIN_SUCCESSFULLY_RENAMED =                    "ms.discord.skin.successfully_renamed";
         public static final String DISCORD_SKIN_SUCCESSFULLY_RENAMED_MINECRAFT =          "ms.discord.skin.successfully_renamed.minecraft";
+        public static final String DISCORD_COMMAND_LIST_OF_SKINS =                        "ms.discord.command.list_of_skins";
+        public static final String DISCORD_COMMAND_SKIN_NOT_FOUND =                       "ms.discord.command.skin_not_found";
         public static final String MENU_SKINS_TITLE =                                     "ms.menu.skins.title";
         public static final String MENU_SKINS_BUTTON_APPLY =                              "ms.menu.skins.button.apply";
         public static final String MENU_SKINS_BUTTON_DELETE =                             "ms.menu.skins.button.delete";
@@ -591,6 +593,8 @@ public final class LanguageRegistry {
         public static final TranslatableComponent DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT =          renderTranslationComponent(Keys.DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT);
         public static final TranslatableComponent DISCORD_SKIN_SUCCESSFULLY_RENAMED =                    renderTranslationComponent(Keys.DISCORD_SKIN_SUCCESSFULLY_RENAMED);
         public static final TranslatableComponent DISCORD_SKIN_SUCCESSFULLY_RENAMED_MINECRAFT =          renderTranslationComponent(Keys.DISCORD_SKIN_SUCCESSFULLY_RENAMED_MINECRAFT);
+        public static final TranslatableComponent DISCORD_COMMAND_LIST_OF_SKINS =                        renderTranslationComponent(Keys.DISCORD_COMMAND_LIST_OF_SKINS);
+        public static final TranslatableComponent DISCORD_COMMAND_SKIN_NOT_FOUND =                       renderTranslationComponent(Keys.DISCORD_COMMAND_SKIN_NOT_FOUND);
         public static final TranslatableComponent MENU_SKINS_TITLE =                                     renderTranslationComponent(Keys.MENU_SKINS_TITLE);
         public static final TranslatableComponent MENU_SKINS_BUTTON_APPLY =                              renderTranslationComponent(Keys.MENU_SKINS_BUTTON_APPLY);
         public static final TranslatableComponent MENU_SKINS_BUTTON_DELETE =                             renderTranslationComponent(Keys.MENU_SKINS_BUTTON_DELETE);
@@ -957,6 +961,8 @@ public final class LanguageRegistry {
         public static final String DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT =          renderTranslation(Keys.DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT);
         public static final String DISCORD_SKIN_SUCCESSFULLY_RENAMED =                    renderTranslation(Keys.DISCORD_SKIN_SUCCESSFULLY_RENAMED);
         public static final String DISCORD_SKIN_SUCCESSFULLY_RENAMED_MINECRAFT =          renderTranslation(Keys.DISCORD_SKIN_SUCCESSFULLY_RENAMED_MINECRAFT);
+        public static final String DISCORD_COMMAND_LIST_OF_SKINS =                        renderTranslation(Keys.DISCORD_COMMAND_LIST_OF_SKINS);
+        public static final String DISCORD_COMMAND_SKIN_NOT_FOUND =                       renderTranslation(Keys.DISCORD_COMMAND_SKIN_NOT_FOUND);
         public static final String MENU_SKINS_TITLE =                                     renderTranslation(Keys.MENU_SKINS_TITLE);
         public static final String MENU_SKINS_BUTTON_APPLY =                              renderTranslation(Keys.MENU_SKINS_BUTTON_APPLY);
         public static final String MENU_SKINS_BUTTON_DELETE =                             renderTranslation(Keys.MENU_SKINS_BUTTON_DELETE);

@@ -33,6 +33,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import static com.minersstudios.msessentials.player.skin.Skin.isValidSkinImg;
+
 /**
  * Represents a response from the MineSkin API.
  */
@@ -61,8 +63,7 @@ public final class MineSkinResponse {
      *               .png
      * @return The response from the MineSkin API
      * @throws IOException if the connection could not be established
-     * @throws IllegalArgumentException if the link does not start with https://
-     *                                  and end with .png
+     * @throws IllegalArgumentException If the link is not a valid skin image
      * @see #MINE_SKIN_API_URL
      */
     @Contract("_, _ -> new")
@@ -70,11 +71,8 @@ public final class MineSkinResponse {
             final @NotNull MSEssentials plugin,
             final @NotNull String link
     ) throws IOException, IllegalArgumentException {
-        if (
-                !link.startsWith("https://")
-                || !link.endsWith(".png")
-        ) {
-            throw new IllegalArgumentException("The link must start with https:// and end with .png");
+        if (!isValidSkinImg(link)) {
+            throw new IllegalArgumentException("The link must be a valid skin image");
         }
 
         final String requestBody = "url=" + URLEncoder.encode(link, StandardCharsets.UTF_8);

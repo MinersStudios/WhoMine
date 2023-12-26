@@ -348,12 +348,12 @@ public final class CustomBlockRegistry {
     }
 
     /**
-     * Registers the custom block data to the data map. The key  and hash code 
+     * Registers the custom block data to the data map. The key and hash code
      * are all used to register the custom block data. If the custom block data
      * have the note block data, the note block data's hash code is used to 
      * register the custom block data in the data maps, otherwise the block
      * {@link PlacingType.Directional} or {@link PlacingType.Orientable} is used
-     * to generate the hash code of the note block data. Make sure, that one of 
+     * to generate the hash code of the note block data. Make sure that one of
      * the note block data, block face map, or block axis map is not null.
      *
      * @param customBlockData The custom block data to register
@@ -419,7 +419,7 @@ public final class CustomBlockRegistry {
     }
 
     /**
-     * Unregisters all custom block data and recipes by clearing  all maps and 
+     * Unregisters all custom block data and recipes by clearing all maps and
      * lists used to store them. After this method is called, the custom block 
      * registry will be empty.
      */

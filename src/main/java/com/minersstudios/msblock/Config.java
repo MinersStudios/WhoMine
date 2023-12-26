@@ -31,7 +31,7 @@ public final class Config extends PluginConfig<MSBlock> {
 
     private static final String BLOCKS_FOLDER = "blocks";
     private static final String JSON_EXTENSION = ".json";
-    private static final String EXAMPLE_JSON = "example.json";
+    private static final String EXAMPLE_JSON = "example" + JSON_EXTENSION;
 
     /**
      * Configuration constructor

@@ -27,7 +27,7 @@ public final class Config extends PluginConfig<MSItem> {
 
     private static final String ITEMS_FOLDER = "items";
     private static final String YAML_EXTENSION = ".yml";
-    private static final String EXAMPLE_YAML = "example.yml";
+    private static final String EXAMPLE_YAML = "example" + YAML_EXTENSION;
 
     /**
      * Configuration constructor

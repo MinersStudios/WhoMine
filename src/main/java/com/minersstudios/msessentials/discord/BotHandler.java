@@ -4,6 +4,7 @@ import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.msessentials.command.impl.discord.RemoveSkinCommand;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
@@ -128,7 +129,10 @@ public final class BotHandler {
             }
         }
 
-        if (code == 0 && this.playerInfo == null) {
+        if (
+                code == 0
+                && this.playerInfo == null
+        ) {
             this.reply(DISCORD_NOT_LINKED);
             return;
         }
@@ -144,16 +148,6 @@ public final class BotHandler {
         } else if (attachmentSize == 1) {
             final Message.Attachment attachment = attachments.get(0);
             final String link = attachment.getUrl();
-
-            if (this.messageString.isEmpty()) {
-                this.reply(DISCORD_SKIN_NO_NAME);
-                return;
-            }
-
-            if (!Skin.matchesNameRegex(this.messageString)) {
-                this.reply(DISCORD_SKIN_INVALID_NAME_REGEX);
-                return;
-            }
 
             try {
                 this.handleSkin(link);
@@ -264,12 +258,22 @@ public final class BotHandler {
     }
 
     private void handleSkin(final @NotNull String link) throws IllegalArgumentException {
-        final PlayerFile playerFile = this.playerInfo.getPlayerFile();
         final String skinName = this.messageString;
+
+        if (skinName.isEmpty()) {
+            this.reply(DISCORD_SKIN_NO_NAME);
+            return;
+        }
+
+        if (!Skin.matchesNameRegex(skinName)) {
+            this.reply(DISCORD_SKIN_INVALID_NAME_REGEX);
+            return;
+        }
+
+        final PlayerFile playerFile = this.playerInfo.getPlayerFile();
 
         if (playerFile.containsSkin(skinName)) {
             this.plugin.runTask(() -> this.handleEditTask(link, skinName));
-
             this.replyEmbed(
                     renderTranslation(
                             LanguageRegistry.Components.DISCORD_SKIN_ALREADY_SET
@@ -279,6 +283,7 @@ public final class BotHandler {
                             )
                     )
             );
+
             return;
         }
 
@@ -441,7 +446,7 @@ public final class BotHandler {
             switch (actionIndex) {
                 case 1 -> this.plugin.runTask(() -> this.handleEditImageTask(skin));
                 case 2 -> this.plugin.runTask(() -> this.handleEditNameTask(skin));
-                case 3 -> this.plugin.runTask(() -> this.handleDeleteTask(skin));
+                case 3 -> this.plugin.runTask(() -> RemoveSkinCommand.remove(playerInfo, skin, message, null));
                 default -> {
                     this.reply(DISCORD_SKIN_INVALID_INDEX);
                     return false;
@@ -557,29 +562,6 @@ public final class BotHandler {
 
             return true;
         };
-    }
-
-    private void handleDeleteTask(final @NotNull Skin skin) {
-        final String skinName = skin.getName();
-        final Player player = this.playerInfo.getOnlinePlayer();
-
-        this.playerInfo.getPlayerFile().removeSkin(skin);
-        this.replyEmbed(renderTranslation(
-                LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED
-                .args(
-                        text(skinName),
-                        this.playerInfo.getDefaultName(),
-                        text(this.playerInfo.getNickname())
-                )
-        ));
-
-        if (player != null) {
-            MSLogger.fine(
-                    player,
-                    LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT
-                    .args(text(skinName))
-            );
-        }
     }
 
     private boolean editSkin(

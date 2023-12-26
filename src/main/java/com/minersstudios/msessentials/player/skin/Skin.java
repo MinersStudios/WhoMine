@@ -113,8 +113,7 @@ public final class Skin implements ConfigurationSerializable {
      *
      * @param plugin Plugin instance
      * @param name   The name of the skin
-     * @param link   The link to the skin must start with "https://" and end
-     *               with ".png"
+     * @param link   The link to the skin must start with "https://" or "http://"
      * @return The skin if it was successfully retrieved, otherwise null
      * @throws IllegalArgumentException If the name or link is invalid or the
      *                                  image is not 64x64 pixels
@@ -132,23 +131,22 @@ public final class Skin implements ConfigurationSerializable {
             );
         }
 
-        if (!isValidSkinImg(link)) {
-            throw new IllegalArgumentException(
-                    "The link must start with https:// and end with .png and the image must be 64x64 pixels"
-            );
-        }
-
         final AtomicInteger retryAttempts = new AtomicInteger(0);
 
         do {
-            final var future = CompletableFuture.supplyAsync(() -> handleLink(plugin, name, link), EXECUTOR_SERVICE);
+            final var future =
+                    CompletableFuture
+                    .supplyAsync(() -> handleLink(plugin, name, link), EXECUTOR_SERVICE)
+                    .exceptionally(ignored -> null);
+
+            if (future == null) {
+                throw new IllegalArgumentException(
+                        "The link must be a valid image link"
+                );
+            }
 
             try {
-                final Skin skin = future.get();
-
-                if (skin != null) {
-                    return skin;
-                }
+                return future.get();
             } catch (final InterruptedException | ExecutionException e) {
                 LOGGER.log(
                         Level.SEVERE,
@@ -288,20 +286,13 @@ public final class Skin implements ConfigurationSerializable {
 
     /**
      * @param link Link to be checked
-     * @return True if the link starts with https:// and ends with .png and the
-     *         image is 64x64
+     * @return True if the link is a valid skin image
      */
     public static boolean isValidSkinImg(final @NotNull String link) {
-        if (
-                !link.startsWith("https://")
-                || !link.endsWith(".png")
-        ) {
-            return false;
-        }
-
         try {
             final BufferedImage image = ImageIO.read(new URL(link));
-            return image.getWidth() == 64
+            return image != null
+                    && image.getWidth() == 64
                     && image.getHeight() == 64;
         } catch (final IOException ignored) {
             return false;
@@ -314,7 +305,8 @@ public final class Skin implements ConfigurationSerializable {
      */
     @Contract("null -> false")
     public static boolean matchesNameRegex(final @Nullable String string) {
-        return string != null && NAME_PATTERN.matcher(string).matches();
+        return string != null
+                && NAME_PATTERN.matcher(string).matches();
     }
 
     /**
@@ -326,12 +318,13 @@ public final class Skin implements ConfigurationSerializable {
      * @param name   Name of the skin
      * @param link   Link to the skin
      * @return The skin if it was successfully retrieved, otherwise null
+     * @throws IllegalArgumentException If the link is not a valid skin image
      */
     private static @Nullable Skin handleLink(
             final @NotNull MSEssentials plugin,
             final @NotNull String name,
             final @NotNull String link
-    ) {
+    ) throws IllegalArgumentException {
         MineSkinResponse response;
 
         for (int i = 0; true; ++i) {

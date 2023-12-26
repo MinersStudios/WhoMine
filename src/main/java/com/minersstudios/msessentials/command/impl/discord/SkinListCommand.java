@@ -1,12 +1,16 @@
 package com.minersstudios.msessentials.command.impl.discord;
 
+import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.msessentials.command.api.discord.InteractionHandler;
 import com.minersstudios.msessentials.command.api.discord.SlashCommand;
 import com.minersstudios.msessentials.command.api.discord.SlashCommandExecutor;
-import com.minersstudios.msessentials.player.PlayerFile;
+import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
+
+import static com.minersstudios.mscore.language.LanguageRegistry.Components.DISCORD_COMMAND_LIST_OF_SKINS;
+import static net.kyori.adventure.text.Component.text;
 
 @SlashCommand
 public final class SkinListCommand extends SlashCommandExecutor {
@@ -23,23 +27,24 @@ public final class SkinListCommand extends SlashCommandExecutor {
 
         final PlayerInfo playerInfo = handler.retrievePlayerInfo();
 
-        if (playerInfo == null) {
-            return;
+        if (playerInfo != null) {
+            final StringBuilder skinList = new StringBuilder();
+
+            for (final var skin : playerInfo.getPlayerFile().getSkins()) {
+                skinList
+                .append('\n')
+                .append("- ")
+                .append(skin.getName());
+            }
+
+            handler.send(
+                    BotHandler.craftEmbed(
+                            LanguageFile.renderTranslation(
+                                    DISCORD_COMMAND_LIST_OF_SKINS
+                                    .args(text(skinList.toString()))
+                            )
+                    )
+            );
         }
-
-        final PlayerFile playerFile = playerInfo.getPlayerFile();
-        final var skins = playerFile.getSkins();
-        final StringBuilder skinList = new StringBuilder();
-
-        for (int i = 0; i < skins.size(); i++) {
-            skinList
-                    .append("\n")
-                    .append(i + 1)
-                    .append(" : \"")
-                    .append(skins.get(i).getName())
-                    .append("\"");
-        }
-
-        handler.send(skinList.toString());
     }
 }

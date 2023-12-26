@@ -27,7 +27,6 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,9 +39,9 @@ import java.util.logging.Logger;
  */
 public final class DiscordManager {
     private final MSEssentials plugin;
+    private final Map<String, SlashCommandExecutor> slashCommandMap;
+    private final List<AbstractDiscordListener> listeners;
     private JDA jda;
-    private Map<String, SlashCommandExecutor> slashCommandMap;
-    private List<AbstractDiscordListener> listeners;
     private Guild mainGuild;
     private TextChannel globalChannel;
     private TextChannel localChannel;
@@ -55,6 +54,8 @@ public final class DiscordManager {
      */
     public DiscordManager(final @NotNull MSEssentials plugin) {
         this.plugin = plugin;
+        this.slashCommandMap = new HashMap<>();
+        this.listeners = new ArrayList<>();
     }
 
     /**
@@ -543,9 +544,6 @@ public final class DiscordManager {
 
         final Logger logger = this.plugin.getLogger();
         final ClassLoader classLoader = this.plugin.getClass().getClassLoader();
-        final var commands = new CopyOnWriteArrayList<CommandData>();
-        this.slashCommandMap = new HashMap<>();
-        this.listeners = new ArrayList<>();
 
         this.plugin.getClassNames().parallelStream()
         .forEach(className -> {
@@ -556,11 +554,12 @@ public final class DiscordManager {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof final SlashCommandExecutor executor) {
                         final CommandData commandData = executor.getData();
 
-                        commands.add(commandData);
-                        this.slashCommandMap.put(
-                                commandData.getName(),
-                                executor
-                        );
+                        executor.setPlugin(this.plugin);
+
+                        synchronized (this.slashCommandMap) {
+                            this.slashCommandMap.put(commandData.getName(), executor);
+                            this.mainGuild.upsertCommand(commandData).queue();
+                        }
                     } else {
                         logger.warning(
                                 "Annotated class with SlashCommand is not instance of SlashCommandExecutor (" + className + ")"
@@ -568,9 +567,11 @@ public final class DiscordManager {
                     }
                 } else if (clazz.isAnnotationPresent(DiscordListener.class)) {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractDiscordListener listener) {
-
                         listener.register(this.plugin);
-                        this.listeners.add(listener);
+
+                        synchronized (this.listeners) {
+                            this.listeners.add(listener);
+                        }
                     } else {
                         logger.warning(
                                 "Annotated class with MSDiscordListener is not instance of AbstractMSDiscordListener (" + className + ")"
@@ -585,8 +586,6 @@ public final class DiscordManager {
                 );
             }
         });
-
-        this.jda.updateCommands().addCommands(commands).queue();
     }
 
     private @Nullable JDA buildJda(final @Nullable String botToken) throws InterruptedException, IllegalStateException {
@@ -602,6 +601,8 @@ public final class DiscordManager {
 
                     @Override
                     public void onShutdown(@NotNull ShutdownEvent event) {
+                        DiscordManager.this.slashCommandMap.clear();
+                        DiscordManager.this.listeners.clear();
                         DiscordManager.this.jda = null;
                         DiscordManager.this.mainGuild = null;
                         DiscordManager.this.globalChannel = null;

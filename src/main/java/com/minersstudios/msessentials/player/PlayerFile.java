@@ -273,7 +273,8 @@ public final class PlayerFile {
 
     @Contract("null -> false")
     public boolean containsSkin(final @Nullable Skin skin) {
-        return skin != null && this.skins.contains(skin);
+        return skin != null
+                && this.skins.contains(skin);
     }
 
     @Contract("null -> false")
