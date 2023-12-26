@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.utility;
 
+import com.google.common.base.Joiner;
 import com.minersstudios.mscore.plugin.MSLogger;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Server;
@@ -201,22 +202,7 @@ public final class PaperUtils {
 
         @Override
         public @NotNull String getHistoryAsString() {
-            final StringBuilder builder = new StringBuilder();
-
-            for (final var entry : this.history.entrySet()) {
-                builder
-                .append(entry.getKey())
-                .append(entry.getValue())
-                .append(", ");
-            }
-
-            final int length = builder.length();
-
-            if (length > 2) {
-                builder.setLength(length - 2);
-            }
-
-            return builder.toString();
+            return Joiner.on(", ").join(this.history.entrySet());
         }
 
         @Override

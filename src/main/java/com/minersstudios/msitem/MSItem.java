@@ -23,15 +23,14 @@ public final class MSItem extends MSPlugin<MSItem> {
 
     @Override
     public void load() {
-        this.cache = new Cache(this);
-        this.config = new Config(this);
-
         CustomItemType.load(this);
     }
 
     @Override
     public void enable() {
         singleton = this;
+        this.cache = new Cache(this);
+        this.config = new Config(this);
 
         this.cache.load();
         this.config.reload();
@@ -45,8 +44,6 @@ public final class MSItem extends MSPlugin<MSItem> {
     @Override
     public void disable() {
         singleton = null;
-        this.cache = null;
-        this.config = null;
     }
 
     /**

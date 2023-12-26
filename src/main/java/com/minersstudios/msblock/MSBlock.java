@@ -42,8 +42,6 @@ public final class MSBlock extends MSPlugin<MSBlock> {
     @Override
     public void disable() {
         singleton = null;
-        this.cache = null;
-        this.config = null;
     }
 
     /**

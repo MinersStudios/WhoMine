@@ -169,9 +169,10 @@ public abstract class MSConfig {
     public @NotNull String toString() {
         final String path = this.file.getPath();
         final String configValues =
-                Joiner.on(",")
-                .withKeyValueSeparator("=")
+                Joiner.on(',')
+                .withKeyValueSeparator('=')
                 .join(this.yaml.getValues(true));
+
         return this.getClass().getName()
                 + "{file=" + path
                 + ", config=[" + configValues
