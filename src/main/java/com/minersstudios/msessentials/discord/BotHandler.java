@@ -4,6 +4,7 @@ import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
+import com.minersstudios.msessentials.command.impl.discord.EditSkinCommand;
 import com.minersstudios.msessentials.command.impl.discord.RemoveSkinCommand;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -472,24 +473,22 @@ public final class BotHandler {
                     return true;
                 }
                 case 1 -> {
-                    final Message.Attachment attachment = attachments.get(0);
-                    final String link = attachment.getUrl();
-
                     try {
-                        if (editSkin(link, skinName, playerFile, playerFile.getSkinIndex(editableSkin))) {
-                            return true;
-                        }
+                        final Skin skin = Skin.create(
+                                this.plugin,
+                                skinName,
+                                attachments.get(0).getUrl()
+                        );
 
-                        final Player player = this.playerInfo.getOnlinePlayer();
-
-                        if (player != null) {
-                            MSLogger.fine(
-                                    player,
-                                    LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_EDITED_MINECRAFT
-                                    .args(text(skinName))
-                            );
-                        }
-                    } catch (final Exception ignored) {
+                        return skin != null
+                                && EditSkinCommand.edit(
+                                        this.playerInfo,
+                                        playerFile.getSkinIndex(editableSkin),
+                                        skin,
+                                        this.message,
+                                        null
+                                );
+                    } catch (final Throwable ignored) {
                         this.reply(DISCORD_SKIN_INVALID_IMG);
                         return false;
                     }
@@ -499,8 +498,6 @@ public final class BotHandler {
                     return false;
                 }
             }
-
-            return true;
         };
     }
 

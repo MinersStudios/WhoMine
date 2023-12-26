@@ -237,15 +237,9 @@ public interface CustomItem extends Keyed {
      * @see CustomItemType#fromClass(Class)
      */
     static <I extends CustomItem> @NotNull Optional<I> fromClass(final @Nullable Class<I> clazz) {
-        if (clazz == null) {
-            return Optional.empty();
-        }
-
-        final CustomItemType type = CustomItemType.fromClass(clazz);
-
-        return type == null
+        return clazz == null
                 ? Optional.empty()
-                : Optional.of(clazz.cast(type));
+                : Optional.ofNullable(clazz.cast(CustomItemType.CLASS_TO_ITEM_MAP.get(clazz)));
     }
 
     /**

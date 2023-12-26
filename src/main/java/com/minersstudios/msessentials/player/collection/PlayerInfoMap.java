@@ -140,7 +140,8 @@ public final class PlayerInfoMap {
      * @return True if the map contains the uuid of the player
      */
     public boolean containsUUID(final @Nullable UUID uuid) {
-        return this.map.containsKey(uuid);
+        return uuid != null
+                && this.map.containsKey(uuid);
     }
 
     /**

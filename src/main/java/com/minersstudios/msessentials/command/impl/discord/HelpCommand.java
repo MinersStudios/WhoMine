@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.command.impl.discord;
 
-import com.minersstudios.msessentials.command.api.discord.InteractionHandler;
+import com.minersstudios.msessentials.command.api.discord.interaction.CommandHandler;
 import com.minersstudios.msessentials.command.api.discord.SlashCommand;
 import com.minersstudios.msessentials.command.api.discord.SlashCommandExecutor;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -16,7 +16,7 @@ public final class HelpCommand extends SlashCommandExecutor {
     }
 
     @Override
-    public void onInteract(final @NotNull InteractionHandler handler) {
+    public void onCommand(final @NotNull CommandHandler handler) {
         // TODO
     }
 }

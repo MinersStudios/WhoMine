@@ -129,7 +129,8 @@ public final class MuteMap {
      * @return True if this map contains a mute for the specified uuid
      */
     public boolean containsUniqueId(final @Nullable UUID uuid) {
-        return this.map.containsKey(uuid);
+        return uuid != null
+                && this.map.containsKey(uuid);
     }
 
     /**

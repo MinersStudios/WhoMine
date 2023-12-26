@@ -153,14 +153,15 @@ public final class IDMap {
      * @return True if the map contains the uuid of the player
      */
     public boolean containsUUID(final @Nullable UUID uuid) {
-        return this.map.containsKey(uuid);
+        return uuid != null
+                && this.map.containsKey(uuid);
     }
 
     /**
      * @param id ID of player
      * @return True if the map contains the id of the player
      */
-    public boolean containsID(final @NotNull Integer id) {
+    public boolean containsID(final int id) {
         return this.map.containsValue(id);
     }
 

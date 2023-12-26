@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.player.roleplay;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.plugin.MSLogger;
@@ -36,7 +36,7 @@ import static net.kyori.adventure.text.Component.text;
         description = "Пукни вкусно на публику",
         playerOnly = true
 )
-public final class FartCommand extends CommandExecutor<MSEssentials> {
+public final class FartCommand extends AbstractCommandExecutor<MSEssentials> {
     private final SecureRandom random = new SecureRandom();
     private static final CommandNode<?> COMMAND_NODE =
             literal("fart")

@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.mute;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -36,7 +36,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msessentials.mute",
         permissionDefault = PermissionDefault.OP
 )
-public final class MuteCommand extends CommandExecutor<MSEssentials> {
+public final class MuteCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("mute")
             .then(

@@ -20,11 +20,11 @@ import static org.bukkit.SoundCategory.PLAYERS;
  * Represents a group of sounds associated with a custom block
  */
 @Immutable
-public final class SoundGroup implements Cloneable {
-    private Sound placeSound;
-    private Sound breakSound;
-    private Sound hitSound;
-    private Sound stepSound;
+public final class SoundGroup {
+    private final Sound placeSound;
+    private final Sound breakSound;
+    private final Sound hitSound;
+    private final Sound stepSound;
 
     //<editor-fold desc="Vanilla sounds" defaultstate="collapsed">
     public static final SoundGroup EMPTY =                    new SoundGroup(Sound.create("intentionally_empty",                  BLOCKS),             Sound.create("intentionally_empty",                  BLOCKS),             Sound.create("intentionally_empty",                BLOCKS, 0.5f, 0.5f), Sound.create("intentionally_empty",                 PLAYERS, 0.3f, 0.9f));
@@ -309,36 +309,15 @@ public final class SoundGroup implements Cloneable {
      * @return True if this SoundGroup is the same as the obj argument
      */
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         return this == obj
                 || (
-                        obj instanceof SoundGroup soundGroup
-                        && Objects.equals(this.placeSound, soundGroup.placeSound)
-                        && Objects.equals(this.breakSound, soundGroup.breakSound)
-                        && Objects.equals(this.hitSound, soundGroup.hitSound)
-                        && Objects.equals(this.stepSound, soundGroup.stepSound)
+                        obj instanceof final SoundGroup that
+                        && Objects.equals(this.placeSound, that.placeSound)
+                        && Objects.equals(this.breakSound, that.breakSound)
+                        && Objects.equals(this.hitSound, that.hitSound)
+                        && Objects.equals(this.stepSound, that.stepSound)
                 );
-    }
-
-    /**
-     * Creates a clone of this SoundGroup with the same sounds
-     *
-     * @return A clone of this SoundGroup
-     */
-    @Override
-    public @NotNull SoundGroup clone() {
-        try {
-            final SoundGroup clone = (SoundGroup) super.clone();
-
-            clone.placeSound = this.placeSound == null ? null : this.placeSound.clone();
-            clone.breakSound = this.breakSound == null ? null : this.breakSound.clone();
-            clone.hitSound = this.hitSound == null ? null : this.hitSound.clone();
-            clone.stepSound = this.stepSound == null ? null : this.stepSound.clone();
-
-            return clone;
-        } catch (final CloneNotSupportedException e) {
-            throw new AssertionError("An error occurred while cloning '" + this + "'", e);
-        }
     }
 
     /**
@@ -509,14 +488,14 @@ public final class SoundGroup implements Cloneable {
          * @return True if this Sound is the same as the obj argument
          */
         @Override
-        public boolean equals(final Object obj) {
+        public boolean equals(final @Nullable Object obj) {
             return this == obj
                     || (
-                            obj instanceof Sound sound
-                            && Float.compare(sound.volume, this.volume) == 0
-                            && Float.compare(sound.pitch, this.pitch) == 0
-                            && this.key.equals(sound.key)
-                            && this.category == sound.category
+                            obj instanceof final Sound that
+                            && Float.compare(that.volume, this.volume) == 0
+                            && Float.compare(that.pitch, this.pitch) == 0
+                            && this.key.equals(that.key)
+                            && this.category == that.category
                     );
         }
 

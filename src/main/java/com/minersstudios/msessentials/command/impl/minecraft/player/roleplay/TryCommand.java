@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.player.roleplay;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -31,7 +31,7 @@ import static net.kyori.adventure.text.Component.text;
         description = "Рандомно определяет исход того, что делает ваш персонаж",
         playerOnly = true
 )
-public final class TryCommand extends CommandExecutor<MSEssentials> {
+public final class TryCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("try")
             .then(argument("action", StringArgumentType.greedyString()))

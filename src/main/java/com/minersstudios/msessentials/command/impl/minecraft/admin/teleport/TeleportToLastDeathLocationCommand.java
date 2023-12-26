@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.teleport;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
@@ -34,7 +34,7 @@ import static net.kyori.adventure.text.Component.text;
         permission = "msessentials.teleporttolastdeathlocation",
         permissionDefault = PermissionDefault.OP
 )
-public final class TeleportToLastDeathLocationCommand extends CommandExecutor<MSEssentials> {
+public final class TeleportToLastDeathLocationCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("teleporttolastdeathlocation")
             .then(argument("id/никнейм", StringArgumentType.word()))

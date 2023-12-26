@@ -129,6 +129,19 @@ public final class RenameEntry {
     }
 
     /**
+     * @return A hash code for the RenameEntry
+     */
+    @Override
+    public int hashCode() {
+        int result = 17;
+
+        result = 31 * result + this.rename.hashCode();
+        result = 31 * result + this.item.hashCode();
+
+        return result;
+    }
+
+    /**
      * Compares this RenameEntry to another object for equality
      *
      * @param obj The object to compare to
@@ -140,9 +153,12 @@ public final class RenameEntry {
     @Contract("null -> false")
     @Override
     public boolean equals(final @Nullable Object obj) {
-        return obj instanceof final RenameEntry that
-                && this.isSimilarRename(that.rename)
-                && this.isSimilarItem(that.item);
+        return obj == this
+                || (
+                        obj instanceof final RenameEntry that
+                        && this.isSimilarRename(that.getRename())
+                        && this.isSimilarItem(that.getItem())
+                );
     }
 
     /**

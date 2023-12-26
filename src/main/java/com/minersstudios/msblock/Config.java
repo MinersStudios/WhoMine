@@ -9,6 +9,7 @@ import com.minersstudios.msessentials.menu.CraftsMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -88,28 +89,28 @@ public final class Config extends PluginConfig<MSBlock> {
     /**
      * @return The wood sound place
      */
-    public @NotNull String getWoodSoundPlace() {
+    public @UnknownNullability String getWoodSoundPlace() {
         return this.woodSoundPlace;
     }
 
     /**
      * @return The wood sound break
      */
-    public @NotNull String getWoodSoundBreak() {
+    public @UnknownNullability String getWoodSoundBreak() {
         return this.woodSoundBreak;
     }
 
     /**
      * @return The wood sound step
      */
-    public @NotNull String getWoodSoundStep() {
+    public @UnknownNullability String getWoodSoundStep() {
         return this.woodSoundStep;
     }
 
     /**
      * @return The wood sound hit
      */
-    public @NotNull String getWoodSoundHit() {
+    public @UnknownNullability String getWoodSoundHit() {
         return this.woodSoundHit;
     }
 

@@ -10,14 +10,14 @@ import static net.kyori.adventure.text.Component.text;
 
 public final class ReloadConfigCommand {
 
-    public static boolean runCommand(@NotNull CommandSender sender) {
+    public static boolean runCommand(final @NotNull CommandSender sender) {
         final long time = System.currentTimeMillis();
 
         MSPlugin.globalConfig().reload();
         MSLogger.fine(
                 sender,
                 LanguageRegistry.Components.COMMAND_MSCORE_RELOAD_CONFIG_SUCCESS
-                        .args(text(System.currentTimeMillis() - time))
+                .args(text(System.currentTimeMillis() - time))
         );
 
         return true;

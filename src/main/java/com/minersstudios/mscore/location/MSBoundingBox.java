@@ -1888,14 +1888,14 @@ public final class MSBoundingBox {
     }
 
     /**
-     * @param object The object to compare this bounding box against
+     * @param obj The object to compare this bounding box against
      * @return Whether the given object is equal to this bounding box
      */
     @Override
-    public boolean equals(final Object object) {
-        return this == object
+    public boolean equals(final @Nullable Object obj) {
+        return this == obj
                 || (
-                        object instanceof final MSBoundingBox that
+                        obj instanceof final MSBoundingBox that
                         && Double.compare(that.minX, this.minX) == 0
                         && Double.compare(that.minY, this.minY) == 0
                         && Double.compare(that.minZ, this.minZ) == 0

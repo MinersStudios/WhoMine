@@ -1934,13 +1934,23 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         @Override
+        public int hashCode() {
+            int result = 17;
+
+            result = 31 * result + this.namespacedKey.hashCode();
+            result = 31 * result + this.itemStack.hashCode();
+
+            return result;
+        }
+
+        @Override
         @Contract("null -> false")
-        public boolean equals(final @Nullable Object type) {
-            return type == this
+        public boolean equals(final @Nullable Object obj) {
+            return obj == this
                     || (
-                            type != null
-                            && type.getClass() == this.getClass()
-                            && ((CustomDecorData.Type<?>) type).getKey().equals(this.getKey())
+                            obj != null
+                            && obj.getClass() == this.getClass()
+                            && ((CustomDecorData.Type<?>) obj).getKey().equals(this.getKey())
                     );
         }
 

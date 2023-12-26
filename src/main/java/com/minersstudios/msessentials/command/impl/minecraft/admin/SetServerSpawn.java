@@ -2,12 +2,11 @@ package com.minersstudios.msessentials.command.impl.minecraft.admin;
 
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
-import com.minersstudios.msessentials.world.WorldDark;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.commands.arguments.DimensionArgument;
@@ -36,7 +35,7 @@ import static net.kyori.adventure.text.Component.text;
         permission = "msessentials.setserverspawn",
         permissionDefault = PermissionDefault.OP
 )
-public final class SetServerSpawn extends CommandExecutor<MSEssentials> {
+public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("setserverspawn")
             .then(
@@ -182,7 +181,7 @@ public final class SetServerSpawn extends CommandExecutor<MSEssentials> {
                 final var names = new ArrayList<String>();
 
                 for (final var world : sender.getServer().getWorlds()) {
-                    if (!WorldDark.isWorldDark(world)) {
+                    if (!this.getPlugin().getCache().getWorldDark().isWorldDark(world)) {
                         names.add(world.getName());
                     }
                 }

@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
@@ -30,7 +30,7 @@ import static net.kyori.adventure.text.Component.text;
         permissionDefault = PermissionDefault.OP,
         playerOnly = true
 )
-public final class GetMapLocationCommand extends CommandExecutor<MSEssentials> {
+public final class GetMapLocationCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE = LiteralArgumentBuilder.literal("getmaplocation").build();
 
     @Override

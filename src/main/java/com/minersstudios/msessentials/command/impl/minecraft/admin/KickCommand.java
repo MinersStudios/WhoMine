@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -32,7 +32,7 @@ import static net.kyori.adventure.text.Component.text;
         permission = "msessentials.kick",
         permissionDefault = PermissionDefault.OP
 )
-public final class KickCommand extends CommandExecutor<MSEssentials> {
+public final class KickCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("kick")
             .then(

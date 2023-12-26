@@ -5,7 +5,6 @@ import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
-import com.minersstudios.msessentials.world.WorldDark;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -25,7 +24,7 @@ public final class PlayerCommandPreprocessListener extends AbstractEventListener
                         && !message.startsWith("/logout")
                 )
                 || message.startsWith("/reg")
-                || !WorldDark.isInWorldDark(player)
+                || !this.getPlugin().getCache().getWorldDark().isInWorldDark(player)
         ) {
             return;
         }

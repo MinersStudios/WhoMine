@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.minecraft.admin.ban;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
@@ -36,7 +36,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msessentials.ban",
         permissionDefault = PermissionDefault.OP
 )
-public final class UnBanCommand extends CommandExecutor<MSEssentials> {
+public final class UnBanCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("unban")
             .then(argument("id/никнейм", StringArgumentType.word()))

@@ -16,11 +16,11 @@ import java.util.Map;
  * @see <a href="https://wiki.vg/Protocol">Protocol Wiki</a>
  */
 public enum PacketProtocol {
-    HANDSHAKING("handshake", PacketType.Handshaking.PACKET_MAP),
-    PLAY("play", PacketType.Play.PACKET_MAP),
-    STATUS("status", PacketType.Status.PACKET_MAP),
-    LOGIN("login", PacketType.Login.PACKET_MAP),
-    CONFIGURATION("configuration", PacketType.Configuration.PACKET_MAP);
+    HANDSHAKING("handshake", PacketType.Handshaking.packetMap()),
+    PLAY("play", PacketType.Play.packetMap()),
+    STATUS("status", PacketType.Status.packetMap()),
+    LOGIN("login", PacketType.Login.packetMap()),
+    CONFIGURATION("configuration", PacketType.Configuration.packetMap());
 
     private final String stateId;
     private final Map<PacketFlow, Map<Integer, PacketType>> packets;

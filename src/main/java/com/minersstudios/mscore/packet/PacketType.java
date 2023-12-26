@@ -2,12 +2,11 @@ package com.minersstudios.mscore.packet;
 
 import com.minersstudios.mscore.plugin.MSLogger;
 import net.minecraft.network.protocol.PacketFlow;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,7 +120,7 @@ public final class PacketType {
      * @param clazz The class from which to retrieve the packet map
      * @return A map of packet IDs to PacketType instances
      */
-    private static @NotNull Map<Integer, PacketType> getPacketsMap(final @NotNull Class<?> clazz) {
+    private static @NotNull @Unmodifiable Map<Integer, PacketType> getPacketsMap(final @NotNull Class<?> clazz) {
         final var map = new HashMap<Integer, PacketType>();
 
         for (final var field : clazz.getDeclaredFields()) {
@@ -138,16 +137,18 @@ public final class PacketType {
             }
         }
 
-        return map;
+        return Collections.unmodifiableMap(map);
     }
 
     /**
      * Nested class for the Handshaking packet state
      */
     public static final class Handshaking {
-        public static final Map<PacketFlow, Map<Integer, PacketType>> PACKET_MAP = new HashMap<>();
+        public static final EnumMap<PacketFlow, Map<Integer, PacketType>> PACKET_MAP;
 
         static {
+            PACKET_MAP = new EnumMap<>(PacketFlow.class);
+
             PACKET_MAP.put(CLIENTBOUND, Client.PACKET_MAP);
             PACKET_MAP.put(SERVERBOUND, Server.PACKET_MAP);
         }
@@ -157,8 +158,16 @@ public final class PacketType {
             throw new AssertionError("Utility class");
         }
 
+        /**
+         * @return An unmodifiable map of packet flows to packet IDs to
+         *         PacketType instances
+         */
+        public static @Unmodifiable @NotNull Map<PacketFlow, Map<Integer, PacketType>> packetMap() {
+            return Collections.unmodifiableMap(PACKET_MAP);
+        }
+
         public static final class Client {
-            public static final Map<Integer, PacketType> PACKET_MAP = Collections.emptyMap();
+            private static final Map<Integer, PacketType> PACKET_MAP = Collections.emptyMap();
 
             @Contract(" -> fail")
             private Client() throws AssertionError {
@@ -172,7 +181,7 @@ public final class PacketType {
             public static final PacketType LEGACY_SERVER_LIST_PING = new PacketType(SERVERBOUND, 0xFE, "Legacy Server List Ping");
             //</editor-fold>
 
-            public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
+            private static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
 
             @Contract(" -> fail")
             private Server() throws AssertionError {
@@ -185,11 +194,26 @@ public final class PacketType {
      * Nested class for the Status packet state
      */
     public static final class Status {
-        public static final Map<PacketFlow, Map<Integer, PacketType>> PACKET_MAP = new HashMap<>();
+        private static final EnumMap<PacketFlow, Map<Integer, PacketType>> PACKET_MAP;
 
         static {
+            PACKET_MAP = new EnumMap<>(PacketFlow.class);
+
             PACKET_MAP.put(CLIENTBOUND, Client.PACKET_MAP);
             PACKET_MAP.put(SERVERBOUND, Server.PACKET_MAP);
+        }
+
+        @Contract(" -> fail")
+        private Status() throws AssertionError {
+            throw new AssertionError("Utility class");
+        }
+
+        /**
+         * @return An unmodifiable map of packet flows to packet IDs to
+         *         PacketType instances
+         */
+        public static @Unmodifiable @NotNull Map<PacketFlow, Map<Integer, PacketType>> packetMap() {
+            return Collections.unmodifiableMap(PACKET_MAP);
         }
 
         public static final class Client {
@@ -198,7 +222,7 @@ public final class PacketType {
             public static final PacketType PING_RESPONSE =   new PacketType(CLIENTBOUND, 0x01, "Ping Response");
             //</editor-fold>
 
-            public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
+            private static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
 
             @Contract(" -> fail")
             private Client() throws AssertionError {
@@ -212,7 +236,7 @@ public final class PacketType {
             public static final PacketType PING_REQUEST =   new PacketType(SERVERBOUND, 0x01, "Ping Request");
             //</editor-fold>
 
-            public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
+            private static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
 
             @Contract(" -> fail")
             private Server() throws AssertionError {
@@ -225,9 +249,11 @@ public final class PacketType {
      * Nested class for the Login packet state
      */
     public static final class Login {
-        public static final Map<PacketFlow, Map<Integer, PacketType>> PACKET_MAP = new HashMap<>();
+        private static final EnumMap<PacketFlow, Map<Integer, PacketType>> PACKET_MAP;
 
         static {
+            PACKET_MAP = new EnumMap<>(PacketFlow.class);
+
             PACKET_MAP.put(CLIENTBOUND, Client.PACKET_MAP);
             PACKET_MAP.put(SERVERBOUND, Server.PACKET_MAP);
         }
@@ -235,6 +261,14 @@ public final class PacketType {
         @Contract(" -> fail")
         private Login() throws AssertionError {
             throw new AssertionError("Utility class");
+        }
+
+        /**
+         * @return An unmodifiable map of packet flows to packet IDs to
+         *         PacketType instances
+         */
+        public static @Unmodifiable @NotNull Map<PacketFlow, Map<Integer, PacketType>> packetMap() {
+            return Collections.unmodifiableMap(PACKET_MAP);
         }
 
         public static final class Client {
@@ -246,7 +280,7 @@ public final class PacketType {
             public static final PacketType LOGIN_PLUGIN_REQUEST = new PacketType(CLIENTBOUND, 0x04, "Login Plugin Request");
             //</editor-fold>
 
-            public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
+            private static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
 
             @Contract(" -> fail")
             private Client() throws AssertionError {
@@ -262,7 +296,7 @@ public final class PacketType {
             public static final PacketType LOGIN_ACKNOWLEDGED =    new PacketType(SERVERBOUND, 0x03, "Login Acknowledged");
             //</editor-fold>
 
-            public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
+            private static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
 
             @Contract(" -> fail")
             private Server() throws AssertionError {
@@ -275,9 +309,11 @@ public final class PacketType {
      * Nested class for the Configuration packet state
      */
     public static final class Configuration {
-        public static final Map<PacketFlow, Map<Integer, PacketType>> PACKET_MAP = new HashMap<>();
+        private static final EnumMap<PacketFlow, Map<Integer, PacketType>> PACKET_MAP;
 
         static {
+            PACKET_MAP = new EnumMap<>(PacketFlow.class);
+
             PACKET_MAP.put(CLIENTBOUND, Client.PACKET_MAP);
             PACKET_MAP.put(SERVERBOUND, Server.PACKET_MAP);
         }
@@ -285,6 +321,14 @@ public final class PacketType {
         @Contract(" -> fail")
         private Configuration() throws AssertionError {
             throw new AssertionError("Utility class");
+        }
+
+        /**
+         * @return An unmodifiable map of packet flows to packet IDs to
+         *         PacketType instances
+         */
+        public static @Unmodifiable @NotNull Map<PacketFlow, Map<Integer, PacketType>> packetMap() {
+            return Collections.unmodifiableMap(PACKET_MAP);
         }
 
         public static final class Client {
@@ -301,7 +345,7 @@ public final class PacketType {
             public static final PacketType UPDATE_TAGS =          new PacketType(CLIENTBOUND, 0x09, "Update Tags");
             //</editor-fold>
 
-            public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
+            private static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
 
             @Contract(" -> fail")
             private Client() throws AssertionError {
@@ -319,7 +363,7 @@ public final class PacketType {
             public static final PacketType RESOURCE_PACK_RESPONSE = new PacketType(SERVERBOUND, 0x05, "Resource Pack Response (configuration)");
             //</editor-fold>
 
-            public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
+            private static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
 
             @Contract(" -> fail")
             private Server() throws AssertionError {
@@ -332,9 +376,11 @@ public final class PacketType {
      * Nested class for the Play packet state
      */
     public static final class Play {
-        public static final Map<PacketFlow, Map<Integer, PacketType>> PACKET_MAP = new HashMap<>();
+        private static final EnumMap<PacketFlow, Map<Integer, PacketType>> PACKET_MAP;
 
         static {
+            PACKET_MAP = new EnumMap<>(PacketFlow.class);
+
             PACKET_MAP.put(CLIENTBOUND, Client.PACKET_MAP);
             PACKET_MAP.put(SERVERBOUND, Server.PACKET_MAP);
         }
@@ -342,6 +388,14 @@ public final class PacketType {
         @Contract(" -> fail")
         private Play() throws AssertionError {
             throw new AssertionError("Utility class");
+        }
+
+        /**
+         * @return An unmodifiable map of packet flows to packet IDs to
+         *         PacketType instances
+         */
+        public static @Unmodifiable @NotNull Map<PacketFlow, Map<Integer, PacketType>> packetMap() {
+            return Collections.unmodifiableMap(PACKET_MAP);
         }
 
         public static final class Client {
@@ -465,7 +519,7 @@ public final class PacketType {
             public static final PacketType UPDATE_TAGS =                         new PacketType(CLIENTBOUND, 0x74, "Update Tags");
             //</editor-fold>
 
-            public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
+            private static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Client.class);
 
             @Contract(" -> fail")
             private Client() throws AssertionError {
@@ -532,7 +586,7 @@ public final class PacketType {
             public static final PacketType USE_ITEM =                         new PacketType(SERVERBOUND, 0x36, "Use Item");
             //</editor-fold>
 
-            public static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
+            private static final Map<Integer, PacketType> PACKET_MAP = getPacketsMap(Server.class);
 
             @Contract(" -> fail")
             private Server() throws AssertionError {

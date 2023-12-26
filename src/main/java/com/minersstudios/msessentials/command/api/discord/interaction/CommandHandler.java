@@ -1,4 +1,4 @@
-package com.minersstudios.msessentials.command.api.discord;
+package com.minersstudios.msessentials.command.api.discord.interaction;
 
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.msessentials.MSEssentials;
@@ -12,39 +12,18 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class InteractionHandler {
-    private final MSEssentials plugin;
-    private final SlashCommandInteraction interaction;
-    private PlayerInfo playerInfo;
+public final class CommandHandler extends AbstractInteractionHandler<SlashCommandInteraction> {
 
-    public InteractionHandler(
+    public CommandHandler(
             final @NotNull MSEssentials plugin,
             final @NotNull SlashCommandInteraction interaction
     ) {
-        this.plugin = plugin;
-        this.interaction = interaction;
+        super(plugin, interaction);
     }
 
-    public @NotNull MSEssentials getPlugin() {
-        return this.plugin;
-    }
-
-    public @NotNull SlashCommandInteraction getInteraction() {
-        return this.interaction;
-    }
-
-    public @Nullable PlayerInfo getPlayerInfo() {
-        if (this.playerInfo != null) {
-            return this.playerInfo;
-        }
-
-        final User user = this.interaction.getUser();
-
-        return !this.plugin.getCache().getDiscordManager().isVerified(user)
-                ? null
-                : this.playerInfo == null
-                ? this.playerInfo = PlayerInfo.fromDiscord(this.plugin, user.getIdLong())
-                : this.playerInfo;
+    @Override
+    public @NotNull String getCommandName() {
+        return this.getInteraction().getName();
     }
 
     public @Nullable PlayerInfo retrievePlayerInfo() {
@@ -52,15 +31,15 @@ public final class InteractionHandler {
             return this.playerInfo;
         }
 
-        final User user = this.interaction.getUser();
+        final User user = this.getInteraction().getUser();
 
-        if (!this.plugin.getCache().getDiscordManager().isVerified(user)) {
+        if (!this.getPlugin().getCache().getDiscordManager().isVerified(user)) {
             this.send(LanguageRegistry.Strings.DISCORD_NOT_A_USER);
 
             return null;
         }
 
-        final PlayerInfo playerInfo = PlayerInfo.fromDiscord(this.plugin, user.getIdLong());
+        final PlayerInfo playerInfo = PlayerInfo.fromDiscord(this.getPlugin(), user.getIdLong());
 
         if (playerInfo == null) {
             this.send(LanguageRegistry.Strings.DISCORD_NOT_LINKED);
@@ -72,42 +51,42 @@ public final class InteractionHandler {
     }
 
     public void deferReply() {
-        this.deferReply(this.interaction.isFromGuild());
+        this.deferReply(this.getInteraction().isFromGuild());
     }
 
     public void deferReply(final boolean ephemeral) {
-        this.interaction
-                .deferReply()
-                .setEphemeral(ephemeral)
-                .queue();
+        this.getInteraction()
+        .deferReply()
+        .setEphemeral(ephemeral)
+        .queue();
     }
 
     public void send(final @NotNull String message) {
-        this.send(this.interaction.isFromGuild(), message);
+        this.send(this.getInteraction().isFromGuild(), message);
     }
 
     public void send(
             final boolean ephemeral,
             final @NotNull String message
     ) {
-        this.interaction.getHook()
-                .sendMessage(message)
-                .setEphemeral(ephemeral)
-                .queue();
+        this.getInteraction().getHook()
+        .sendMessage(message)
+        .setEphemeral(ephemeral)
+        .queue();
     }
 
     public void send(final @NotNull MessageCreateData message) {
-        this.send(this.interaction.isFromGuild(), message);
+        this.send(this.getInteraction().isFromGuild(), message);
     }
 
     public void send(
             final boolean ephemeral,
             final @NotNull MessageCreateData message
     ) {
-        this.interaction.getHook()
-                .sendMessage(message)
-                .setEphemeral(ephemeral)
-                .queue();
+        this.getInteraction().getHook()
+        .sendMessage(message)
+        .setEphemeral(ephemeral)
+        .queue();
     }
 
     public void send(
@@ -115,7 +94,7 @@ public final class InteractionHandler {
             final MessageEmbed @NotNull ... rest
     ) {
         this.send(
-                this.interaction.isFromGuild(),
+                this.getInteraction().isFromGuild(),
                 first,
                 rest
         );
@@ -126,10 +105,10 @@ public final class InteractionHandler {
             final @NotNull MessageEmbed first,
             final MessageEmbed @NotNull ... rest
     ) {
-        this.interaction.getHook()
-                .sendMessageEmbeds(first, rest)
-                .setEphemeral(ephemeral)
-                .queue();
+        this.getInteraction().getHook()
+        .sendMessageEmbeds(first, rest)
+        .setEphemeral(ephemeral)
+        .queue();
     }
 
     public void send(
@@ -137,7 +116,7 @@ public final class InteractionHandler {
             final FileUpload @NotNull ... rest
     ) {
         this.send(
-                this.interaction.isFromGuild(),
+                this.getInteraction().isFromGuild(),
                 first,
                 rest
         );
@@ -153,23 +132,23 @@ public final class InteractionHandler {
         System.arraycopy(rest, 0, files, 1, rest.length);
         files[0] = first;
 
-        this.interaction.getHook()
-                .sendFiles(files)
-                .setEphemeral(ephemeral)
-                .queue();
+        this.getInteraction().getHook()
+        .sendFiles(files)
+        .setEphemeral(ephemeral)
+        .queue();
     }
 
     public void sendEmbed(final @NotNull String message) {
-        this.sendEmbed(this.interaction.isFromGuild(), message);
+        this.sendEmbed(this.getInteraction().isFromGuild(), message);
     }
 
     public void sendEmbed(
             final boolean ephemeral,
             final @NotNull String message
     ) {
-        this.interaction.getHook()
-                .sendMessageEmbeds(BotHandler.craftEmbed(message))
-                .setEphemeral(ephemeral)
-                .queue();
+        this.getInteraction().getHook()
+        .sendMessageEmbeds(BotHandler.craftEmbed(message))
+        .setEphemeral(ephemeral)
+        .queue();
     }
 }

@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.player;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -35,7 +35,7 @@ import static net.kyori.adventure.text.Component.text;
         usage = " " + Font.Chars.RED_EXCLAMATION_MARK + " §cИспользуй: /<command> [id/никнейм] [сообщение]",
         description = "Отправь другому игроку приватное сообщение"
 )
-public final class PrivateMessageCommand extends CommandExecutor<MSEssentials> {
+public final class PrivateMessageCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("privatemessage")
             .then(

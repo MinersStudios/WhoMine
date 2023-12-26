@@ -1,7 +1,6 @@
 package com.minersstudios.msessentials.world;
 
 import com.google.common.collect.ImmutableList;
-import com.minersstudios.msessentials.MSEssentials;
 import net.kyori.adventure.util.TriState;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.*;
@@ -13,24 +12,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.*;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * World dark singleton. This world is used for safe registration and login.
- * Moving, interacting and other actions are not allowed in this world.
- * Use {@link #teleportToDarkWorld(Player)} to teleport player to world dark.
- *
- * @see #init()
- */
 public final class WorldDark extends CraftWorld {
-    private static WorldDark singleton = null;
-
     private static final String WORLD_NAME = "world_dark";
     private static final ChunkGenerator CHUNK_GENERATOR = new ChunkGenerator() {};
     private static final BiomeProvider BIOME_PROVIDER = new BiomeProvider() {
@@ -53,21 +40,12 @@ public final class WorldDark extends CraftWorld {
     };
     private static final Environment ENVIRONMENT = Environment.NORMAL;
 
-    private WorldDark() {
-        super(create(), CHUNK_GENERATOR, BIOME_PROVIDER, ENVIRONMENT);
-    }
-
     /**
-     * @return World dark singleton
-     * @throws UnsupportedOperationException If world dark singleton is not
-     *                                       initialized
+     * Creates new world dark instance
      */
-    public static @NotNull WorldDark getInstance() throws UnsupportedOperationException {
-        if (singleton == null) {
-            throw new UnsupportedOperationException("World dark singleton not initialized");
-        }
-
-        return singleton;
+    @ApiStatus.Internal
+    public WorldDark() {
+        super(create(), CHUNK_GENERATOR, BIOME_PROVIDER, ENVIRONMENT);
     }
 
     /**
@@ -75,8 +53,9 @@ public final class WorldDark extends CraftWorld {
      * @return True if world is world dark, false otherwise
      */
     @Contract("null -> false")
-    public static boolean isWorldDark(final @Nullable World world) {
-        return world != null && world.getName().equals(WORLD_NAME);
+    public boolean isWorldDark(final @Nullable World world) {
+        return world != null
+                && world.getName().equals(WORLD_NAME);
     }
 
     /**
@@ -84,8 +63,9 @@ public final class WorldDark extends CraftWorld {
      * @return True if location is in world dark, false otherwise
      */
     @Contract("null -> false")
-    public static boolean isInWorldDark(final @Nullable Location location) {
-        return location != null && location.getWorld().getName().equals(WORLD_NAME);
+    public boolean isInWorldDark(final @Nullable Location location) {
+        return location != null
+                && location.getWorld().getName().equals(WORLD_NAME);
     }
 
     /**
@@ -93,8 +73,9 @@ public final class WorldDark extends CraftWorld {
      * @return True if entity is in world dark, false otherwise
      */
     @Contract("null -> false")
-    public static boolean isInWorldDark(final @Nullable Entity entity) {
-        return entity != null && entity.getWorld().getName().equals(WORLD_NAME);
+    public boolean isInWorldDark(final @Nullable Entity entity) {
+        return entity != null
+                && entity.getWorld().getName().equals(WORLD_NAME);
     }
 
     /**
@@ -102,25 +83,13 @@ public final class WorldDark extends CraftWorld {
      *
      * @param player Player to teleport
      */
-    public static @NotNull CompletableFuture<Boolean> teleportToDarkWorld(final @NotNull Player player) {
-        return player.teleportAsync(singleton.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN)
+    public @NotNull CompletableFuture<Boolean> teleportToDarkWorld(final @NotNull Player player) {
+        return player.teleportAsync(this.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN)
                 .thenApply(bool -> {
                     player.setGameMode(GameMode.SPECTATOR);
 
                     return bool;
                 });
-    }
-
-    /**
-     * Initializes world dark instance.
-     * Called once in {@link MSEssentials#enable()} method.
-     */
-    public static void init() {
-        if (singleton != null) {
-            throw new UnsupportedOperationException("Cannot redefine world dark instance");
-        }
-
-        singleton = new WorldDark();
     }
 
     /**

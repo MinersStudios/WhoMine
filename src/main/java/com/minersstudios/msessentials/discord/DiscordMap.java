@@ -330,7 +330,7 @@ public final class DiscordMap {
      *
      * @see DiscordMap
      */
-    public static class Params {
+    public static final class Params {
         private final UUID uuid;
         private final String nickname;
 
@@ -380,12 +380,41 @@ public final class DiscordMap {
         }
 
         /**
-         * @param params {@link Params} to compare
+         * @return Hash code of this params
+         */
+        @Override
+        public int hashCode() {
+            int result = 17;
+
+            result = 31 * result + uuid.hashCode();
+            result = 31 * result + nickname.hashCode();
+
+            return result;
+        }
+
+        /**
+         * @param obj {@link Params} to compare
          * @return True if uuid and nickname are equals
          */
-        public boolean equals(final @NotNull Params params) {
-            return this.uuid.equals(params.uuid)
-                    && this.nickname.equals(params.nickname);
+        @Override
+        public boolean equals(final @Nullable Object obj) {
+            return this == obj
+                    || (
+                            obj instanceof final Params that
+                            && this.uuid.equals(that.uuid)
+                            && this.nickname.equals(that.nickname)
+                    );
+        }
+
+        /**
+         * @return String representation of this params
+         */
+        @Override
+        public @NotNull String toString() {
+            return "Params{" +
+                    "uuid=" + this.uuid +
+                    ", nickname='" + this.nickname + '\'' +
+                    '}';
         }
     }
 }

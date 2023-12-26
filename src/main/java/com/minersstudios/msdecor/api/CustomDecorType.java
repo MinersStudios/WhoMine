@@ -194,7 +194,7 @@ public enum CustomDecorType {
     private static final CustomDecorType[] VALUES = values();
     private static final Map<String, CustomDecorType> KEY_TO_TYPE_MAP = new HashMap<>();
     private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorType> CLASS_TO_TYPE_MAP = new HashMap<>();
-    private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new HashMap<>();
+    static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new HashMap<>();
 
     /**
      * Constructor for CustomDecorType enum values
@@ -310,7 +310,7 @@ public enum CustomDecorType {
      * @throws IllegalStateException    If custom decor types have not been
      *                                  loaded yet
      */
-    public <D extends CustomDecorData<D>> @NotNull D getCustomDecorData(final @NotNull Class<D> clazz) throws IllegalArgumentException, IllegalStateException {
+    public <D extends CustomDecorData<?>> @NotNull D getCustomDecorData(final @NotNull Class<D> clazz) throws IllegalArgumentException, IllegalStateException {
         checkLoaded();
         try {
             return clazz.cast(CLASS_TO_DATA_MAP.get(this.clazz));

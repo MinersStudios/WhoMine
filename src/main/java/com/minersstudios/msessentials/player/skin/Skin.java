@@ -199,15 +199,32 @@ public final class Skin implements ConfigurationSerializable {
     }
 
     /**
-     * @param skin Skin to be checked
+     * @return A hash code value for the skin
+     */
+    @Override
+    public int hashCode() {
+        int result = 17;
+
+        result = 31 * result + this.name.hashCode();
+        result = 31 * result + this.value.hashCode();
+        result = 31 * result + this.signature.hashCode();
+
+        return result;
+    }
+
+    /**
+     * @param obj Skin to compare
      * @return True if the skin's name, value, and signature are equal
      */
     @Contract("null -> false")
-    public boolean equals(final @Nullable Skin skin) {
-        return skin != null
-                && this.name.equalsIgnoreCase(skin.getName())
-                && this.value.equals(skin.getValue())
-                && this.signature.equals(skin.getSignature());
+    public boolean equals(final @Nullable Object obj) {
+        return obj == this
+                || (
+                        obj instanceof Skin that
+                        && this.name.equalsIgnoreCase(that.getName())
+                        && this.value.equals(that.getValue())
+                        && this.signature.equals(that.getSignature())
+                );
     }
 
     /**

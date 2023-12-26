@@ -3,7 +3,7 @@ package com.minersstudios.mscore.command.impl;
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.MSCore;
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.utility.Font;
 import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.command.CommandSender;
@@ -22,7 +22,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
         permission = "mscore.*",
         permissionDefault = PermissionDefault.OP
 )
-public final class MSCoreCommandHandler extends CommandExecutor<MSCore> {
+public final class MSCoreCommandHandler extends AbstractCommandExecutor<MSCore> {
     private static final List<String> TAB = ImmutableList.of("reloadconfig");
     private static final CommandNode<?> COMMAND_NODE =
             literal("mscore")

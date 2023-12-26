@@ -856,10 +856,10 @@ public final class MSVector {
     public boolean equals(final @Nullable Object obj) {
         return this == obj
                 || (
-                        obj instanceof MSVector other
-                        && Math.abs(this.x - other.x) < EPSILON
-                        && Math.abs(this.y - other.y) < EPSILON
-                        && Math.abs(this.z - other.z) < EPSILON
+                        obj instanceof final MSVector that
+                        && Math.abs(this.x - that.x) < EPSILON
+                        && Math.abs(this.y - that.y) < EPSILON
+                        && Math.abs(this.z - that.z) < EPSILON
                 );
     }
 

@@ -523,15 +523,9 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
      *         if the class is an instance of the custom decor data
      */
     static <D extends CustomDecorData<?>> @NotNull Optional<D> fromClass(final @Nullable Class<D> clazz) {
-        if (clazz == null) {
-            return Optional.empty();
-        }
-
-        final CustomDecorType type = CustomDecorType.fromClass(clazz);
-
-        return type == null
+        return clazz == null
                 ? Optional.empty()
-                : Optional.of(clazz.cast(type));
+                : Optional.ofNullable(clazz.cast(CustomDecorType.CLASS_TO_DATA_MAP.get(clazz)));
     }
 
     /**
@@ -791,6 +785,12 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
          * @return The item stack representing the custom decor type
          */
         @NotNull ItemStack getItem();
+
+        /**
+         * @return The hash code of this custom decor type
+         */
+        @Override
+        int hashCode();
 
         /**
          * @return True if the given object is the same as this custom decor

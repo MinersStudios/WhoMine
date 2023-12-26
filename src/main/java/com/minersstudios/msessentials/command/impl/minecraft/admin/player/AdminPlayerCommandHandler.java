@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.minecraft.admin.player;
 
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.DateUtils;
@@ -35,7 +35,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msessentials.player.*",
         permissionDefault = PermissionDefault.OP
 )
-public final class AdminPlayerCommandHandler extends CommandExecutor<MSEssentials> {
+public final class AdminPlayerCommandHandler extends AbstractCommandExecutor<MSEssentials> {
     private static final List<String> TAB_2 = ImmutableList.of(
             "update",
             "info",

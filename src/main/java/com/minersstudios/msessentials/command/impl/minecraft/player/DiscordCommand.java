@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.minecraft.player;
 
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
@@ -36,7 +36,7 @@ import static net.kyori.adventure.text.event.HoverEvent.showText;
         permissionDefault = PermissionDefault.NOT_OP,
         playerOnly = true
 )
-public final class DiscordCommand extends CommandExecutor<MSEssentials> {
+public final class DiscordCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final List<String> TAB = ImmutableList.of("link", "unlink");
     private static final CommandNode<?> COMMAND_NODE =
             literal("discord")

@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.minecraft.admin.msessentials
 
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import com.mojang.brigadier.tree.CommandNode;
@@ -44,7 +44,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
                 true
         }
 )
-public final class MSEssentialsCommandHandler extends CommandExecutor<MSEssentials> {
+public final class MSEssentialsCommandHandler extends AbstractCommandExecutor<MSEssentials> {
     private static final List<String> TAB = ImmutableList.of("reload", "updateids", "updatemutes");
     private static final CommandNode<?> COMMAND_NODE =
             literal("msessentials")

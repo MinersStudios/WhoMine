@@ -50,7 +50,7 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
         this.cache.load();
         this.config.reload();
 
-        this.runTask(WorldDark::init);
+        this.runTask(() -> this.cache.worldDark = new WorldDark());
         this.runTaskTimer(new SeatsTask(this), 0L, 1L);
         this.runTaskTimer(new PlayerListTask(this), 6000L, 6000L);
         this.runTaskTimer(new MuteMapTask(this), 0L, 50L);

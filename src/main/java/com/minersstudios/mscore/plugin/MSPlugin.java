@@ -2,7 +2,7 @@ package com.minersstudios.mscore.plugin;
 
 import com.google.common.base.Charsets;
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.command.api.Commodore;
 import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
 import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
@@ -63,7 +63,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     private final File pluginFolder;
     private final File configFile;
     private final List<String> classNames;
-    private final Map<Command, CommandExecutor<T>> commandMap;
+    private final Map<Command, AbstractCommandExecutor<T>> commandMap;
     private final Map<Class<? extends AbstractInventoryHolder<T>>, AbstractInventoryHolder<T>> inventoryHolderMap;
     private final List<AbstractEventListener<T>> eventListeners;
     private final List<AbstractPacketListener<T>> packetListeners;
@@ -148,7 +148,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     /**
      * @return The unmodifiable map of commands
      */
-    public final @NotNull @UnmodifiableView Map<Command, CommandExecutor<T>> getCommandMap() {
+    public final @NotNull @UnmodifiableView Map<Command, AbstractCommandExecutor<T>> getCommandMap() {
         return Collections.unmodifiableMap(this.commandMap);
     }
 
@@ -508,13 +508,13 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @param command Command to be registered
      * @param executor  Command executor
      * @see Command
-     * @see CommandExecutor
+     * @see AbstractCommandExecutor
      * @see #loadCommands()
      * @see #registerCommands()
      */
     public final void registerCommand(
             final @NotNull Command command,
-            final @NotNull CommandExecutor<T> executor
+            final @NotNull AbstractCommandExecutor<T> executor
     ) {
         final String name = command.command();
         final var commandNode = executor.getCommandNode();
@@ -814,10 +814,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
     /**
      * Loads all commands annotated with {@link Command} in the project. All
-     * commands must be implemented using {@link CommandExecutor}.
+     * commands must be implemented using {@link AbstractCommandExecutor}.
      *
      * @see Command
-     * @see CommandExecutor
+     * @see AbstractCommandExecutor
      * @see #registerCommands()
      */
     @SuppressWarnings("unchecked")
@@ -835,11 +835,11 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                     return;
                 }
 
-                if (clazz.getDeclaredConstructor().newInstance() instanceof final CommandExecutor<?> commandExecutor) {
+                if (clazz.getDeclaredConstructor().newInstance() instanceof final AbstractCommandExecutor<?> commandExecutor) {
                     commandExecutor.setPlugin(this);
 
                     synchronized (this.commandMap) {
-                        this.commandMap.put(command, (CommandExecutor<T>) commandExecutor);
+                        this.commandMap.put(command, (AbstractCommandExecutor<T>) commandExecutor);
                     }
                 } else {
                     logger.warning(
@@ -855,12 +855,12 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     /**
      * Registers all commands in the project that is annotated with
      * {@link Command}. All commands must be implemented using
-     * {@link CommandExecutor}.
+     * {@link AbstractCommandExecutor}.
      *
      * @see Command
-     * @see CommandExecutor
+     * @see AbstractCommandExecutor
      * @see #loadCommands()
-     * @see #registerCommand(Command, CommandExecutor)
+     * @see #registerCommand(Command, AbstractCommandExecutor)
      */
     private void registerCommands() {
         this.commandMap.forEach(this::registerCommand);

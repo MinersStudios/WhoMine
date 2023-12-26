@@ -4,7 +4,6 @@ import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
-import com.minersstudios.msessentials.world.WorldDark;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,7 +34,8 @@ public final class PlayerJoinListener extends AbstractEventListener<MSEssentials
 
         playerInfo.hideNameTag();
         player.displayName(playerInfo.getDefaultName());
-        WorldDark.teleportToDarkWorld(player)
+        this.getPlugin().getCache().getWorldDark()
+        .teleportToDarkWorld(player)
         .thenRun(() -> this.getPlugin().runTaskTimer(task -> {
             if (!player.isOnline()) {
                 task.cancel();

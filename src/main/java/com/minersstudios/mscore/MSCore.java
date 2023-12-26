@@ -85,6 +85,12 @@ public final class MSCore extends MSPlugin<MSCore> {
         try {
             final CoreProtect coreProtect = CoreProtect.getInstance();
 
+            if (coreProtect == null) {
+                MSLogger.warning("CoreProtectAPI is not running yet");
+
+                return;
+            }
+
             if (coreProtect.isEnabled()) {
                 CoreProtectUtils.set(coreProtect.getAPI());
                 MSLogger.fine("CoreProtect connected");
@@ -97,8 +103,6 @@ public final class MSCore extends MSPlugin<MSCore> {
             MSLogger.warning("CoreProtect is already connected");
         } catch (final NoClassDefFoundError e) {
             MSLogger.warning("CoreProtect is not installed, actions logging will not be available");
-        } catch (final NullPointerException e) {
-            MSLogger.warning("CoreProtectAPI is not running yet");
         }
     }
 

@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.discord;
 
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.msessentials.command.api.discord.InteractionHandler;
+import com.minersstudios.msessentials.command.api.discord.interaction.CommandHandler;
 import com.minersstudios.msessentials.command.api.discord.SlashCommand;
 import com.minersstudios.msessentials.command.api.discord.SlashCommandExecutor;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -49,7 +49,7 @@ public final class AddSkinCommand extends SlashCommandExecutor {
     }
 
     @Override
-    public void onInteract(final @NotNull InteractionHandler handler) {
+    protected void onCommand(final @NotNull CommandHandler handler) {
         handler.deferReply();
 
         final PlayerInfo playerInfo = handler.retrievePlayerInfo();
@@ -125,12 +125,12 @@ public final class AddSkinCommand extends SlashCommandExecutor {
                 handler.send(DISCORD_SKIN_INVALID_IMG);
             }
         } else {
-            handler.send("Invalid arguments!");
+            handler.send(DISCORD_COMMAND_INVALID_ARGUMENTS);
         }
     }
 
     private static void addSkin(
-            final @NotNull InteractionHandler handler,
+            final @NotNull CommandHandler handler,
             final @NotNull PlayerInfo playerInfo,
             final @NotNull Skin skin
     ) {

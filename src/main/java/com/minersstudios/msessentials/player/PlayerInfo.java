@@ -45,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
@@ -427,7 +428,7 @@ public final class PlayerInfo {
      * @param location The location to set as the last leave location
      */
     public void setLastLeaveLocation(final @Nullable Location location) {
-        if (!WorldDark.isInWorldDark(location)) {
+        if (!this.getPlugin().getCache().getWorldDark().isInWorldDark(location)) {
             this.playerFile.setLastLeaveLocation(location);
             this.playerFile.save();
         }
@@ -440,7 +441,7 @@ public final class PlayerInfo {
      * @param location The location to set as the last death location
      */
     public void setLastDeathLocation(final @Nullable Location location) {
-        if (!WorldDark.isInWorldDark(location)) {
+        if (!this.getPlugin().getCache().getWorldDark().isInWorldDark(location)) {
             this.playerFile.setLastDeathLocation(location);
             this.playerFile.save();
         }
@@ -1378,7 +1379,7 @@ public final class PlayerInfo {
      * @return True, if the player is online and in the {@link WorldDark}
      */
     public boolean isInWorldDark() {
-        return WorldDark.isInWorldDark(this.getOnlinePlayer());
+        return this.getPlugin().getCache().getWorldDark().isInWorldDark(this.getOnlinePlayer());
     }
 
     /**
@@ -1631,11 +1632,15 @@ public final class PlayerInfo {
 
         this.playerFile.getConfig().set("name.nickname", this.nickname);
 
-        if (this.getOnlinePlayer() != null) {
+        final Player player = this.getOnlinePlayer();
+
+        if (player != null) {
+            final InetSocketAddress address = player.getAddress();
+
             this.playerFile.addIp(
-                    this.getOnlinePlayer().getAddress() == null
+                    address == null
                     ? null
-                    : this.getOnlinePlayer().getAddress().getAddress().getHostAddress()
+                    : address.getAddress().getHostAddress()
             );
             this.playerFile.setFirstJoin(Instant.now());
         }

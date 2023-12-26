@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 
 /**
  * All commands annotated using {@link Command} will be registered automatically.
- * Also, must be implemented using {@link CommandExecutor}
+ * Also, must be implemented using {@link AbstractCommandExecutor}
  *
- * @see CommandExecutor
+ * @see AbstractCommandExecutor
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

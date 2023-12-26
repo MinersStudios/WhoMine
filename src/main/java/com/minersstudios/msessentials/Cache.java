@@ -11,6 +11,7 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.IDMap;
 import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
+import com.minersstudios.msessentials.world.WorldDark;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -40,6 +41,7 @@ public final class Cache extends PluginCache<MSEssentials> {
     private Map<Long, BotHandler> botHandlers;
     private DiscordManager discordManager;
     PlayerInfo consolePlayerInfo;
+    WorldDark worldDark;
 
     /**
      * Cache constructor
@@ -134,5 +136,9 @@ public final class Cache extends PluginCache<MSEssentials> {
 
     public @UnknownNullability PlayerInfo getConsolePlayerInfo() {
         return this.consolePlayerInfo;
+    }
+
+    public @UnknownNullability WorldDark getWorldDark() {
+        return this.worldDark;
     }
 }

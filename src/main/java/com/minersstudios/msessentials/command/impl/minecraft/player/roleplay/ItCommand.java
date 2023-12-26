@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.player.roleplay;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -27,7 +27,7 @@ import static net.kyori.adventure.text.Component.text;
         description = "Описывает действие, от третьего лица",
         playerOnly = true
 )
-public final class ItCommand extends CommandExecutor<MSEssentials> {
+public final class ItCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("it")
             .then(argument("action", StringArgumentType.greedyString()))

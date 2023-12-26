@@ -1101,10 +1101,10 @@ public final class MSPosition implements Cloneable {
     }
 
     @Override
-    public boolean equals(final @Nullable Object object) {
-        return this == object
+    public boolean equals(final @Nullable Object obj) {
+        return this == obj
                 || (
-                        object instanceof MSPosition that
+                        obj instanceof final MSPosition that
                         && Double.compare(that.x, this.x) == 0
                         && Double.compare(that.y, this.y) == 0
                         && Double.compare(that.z, this.z) == 0

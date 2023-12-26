@@ -316,14 +316,16 @@ public final class RenameCollection {
     }
 
     /**
-     * @return A string representation of the rename collection
+     * @return A hash code of this rename collection
      */
     @Override
-    public @NotNull String toString() {
-        return "RenameCollection{" +
-                "renames=" + this.renames +
-                ", items=" + this.items +
-                '}';
+    public int hashCode() {
+        int result = 17;
+
+        result = 31 * result + this.renames.hashCode();
+        result = 31 * result + this.items.hashCode();
+
+        return result;
     }
 
     /**
@@ -336,9 +338,22 @@ public final class RenameCollection {
     @Override
     public boolean equals(final @Nullable Object obj) {
         return this == obj
-                || (obj instanceof final RenameCollection that
-                && this.containsAllItems(that.items)
-                && this.containsAllRenames(that.renames));
+                || (
+                        obj instanceof final RenameCollection that
+                        && this.containsAllItems(that.items)
+                        && this.containsAllRenames(that.renames)
+                );
+    }
+
+    /**
+     * @return A string representation of the rename collection
+     */
+    @Override
+    public @NotNull String toString() {
+        return "RenameCollection{" +
+                "renames=" + this.renames +
+                ", items=" + this.items +
+                '}';
     }
 
     /**

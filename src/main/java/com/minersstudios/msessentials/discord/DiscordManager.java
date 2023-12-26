@@ -16,7 +16,6 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.managers.Presence;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -39,7 +38,7 @@ import java.util.logging.Logger;
  */
 public final class DiscordManager {
     private final MSEssentials plugin;
-    private final Map<String, SlashCommandExecutor> slashCommandMap;
+    private final Map<Long, SlashCommandExecutor> slashCommandMap;
     private final List<AbstractDiscordListener> listeners;
     private JDA jda;
     private Guild mainGuild;
@@ -110,7 +109,7 @@ public final class DiscordManager {
     /**
      * @return An unmodifiable view of the slash commands map
      */
-    public @UnknownNullability @UnmodifiableView Map<String, SlashCommandExecutor> slashCommandMap() {
+    public @UnknownNullability @UnmodifiableView Map<Long, SlashCommandExecutor> slashCommandMap() {
         return Collections.unmodifiableMap(this.slashCommandMap);
     }
 
@@ -542,6 +541,10 @@ public final class DiscordManager {
             return;
         }
 
+        //for (final var command : DiscordManager.this.jda.retrieveCommands().complete()) {
+        //    DiscordManager.this.jda.deleteCommandById(command.getId()).queue();
+        //}
+
         final Logger logger = this.plugin.getLogger();
         final ClassLoader classLoader = this.plugin.getClass().getClassLoader();
 
@@ -552,13 +555,18 @@ public final class DiscordManager {
 
                 if (clazz.isAnnotationPresent(SlashCommand.class)) {
                     if (clazz.getDeclaredConstructor().newInstance() instanceof final SlashCommandExecutor executor) {
-                        final CommandData commandData = executor.getData();
-
-                        executor.setPlugin(this.plugin);
-
                         synchronized (this.slashCommandMap) {
-                            this.slashCommandMap.put(commandData.getName(), executor);
-                            this.mainGuild.upsertCommand(commandData).queue();
+                            this.jda
+                            .upsertCommand(executor.getData())
+                            .onSuccess(
+                                    command -> {
+                                        final long id = command.getIdLong();
+
+                                        this.slashCommandMap.put(id, executor);
+                                        executor.setUp(this.plugin, id);
+                                    }
+                            )
+                            .queue();
                         }
                     } else {
                         logger.warning(
@@ -600,7 +608,7 @@ public final class DiscordManager {
                 .addEventListeners(new ListenerAdapter() {
 
                     @Override
-                    public void onShutdown(@NotNull ShutdownEvent event) {
+                    public void onShutdown(final @NotNull ShutdownEvent event) {
                         DiscordManager.this.slashCommandMap.clear();
                         DiscordManager.this.listeners.clear();
                         DiscordManager.this.jda = null;

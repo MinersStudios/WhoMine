@@ -195,6 +195,45 @@ public class NoteBlockData implements Cloneable {
     }
 
     /**
+     * @return The hash code of the note block data,
+     *         based on the instrument, note and powered state
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+
+        result = prime * result + this.instrument.ordinal();
+        result = prime * result + this.note.hashCode();
+        result = prime * result + (this.powered ? 1 : 0);
+
+        return result;
+    }
+
+    /**
+     * @param obj The object to compare with
+     * @return True if the given object is {@link NoteBlockData}
+     *         or {@link NoteBlock} and has the same instrument,
+     *         note and powered state
+     */
+    @Override
+    public boolean equals(final @Nullable Object obj) {
+        return obj == this
+                || (
+                        obj instanceof final NoteBlockData noteBlockData
+                        && this.instrument == noteBlockData.instrument
+                        && this.note == noteBlockData.note
+                        && this.powered == noteBlockData.powered
+                )
+                || (
+                        obj instanceof final NoteBlock noteBlock
+                        && this.instrument == noteBlock.getInstrument()
+                        && this.note == noteBlock.getNote()
+                        && this.powered == noteBlock.isPowered()
+                );
+    }
+
+    /**
      * Creates a clone of this note block data
      * with the same instrument, note and powered state
      *
@@ -219,48 +258,5 @@ public class NoteBlockData implements Cloneable {
                 ", note=" + this.note +
                 ", powered=" + this.powered +
                 '}';
-    }
-
-    /**
-     * @return The hash code of the note block data,
-     *         based on the instrument, note and powered state
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-
-        result = prime * result + this.instrument.ordinal();
-        result = prime * result + this.note.hashCode();
-        result = prime * result + (this.powered ? 1 : 0);
-
-        return result;
-    }
-
-    /**
-     * @param obj The object to compare with
-     * @return True if the given object is {@link NoteBlockData}
-     *         or {@link NoteBlock} and has the same instrument,
-     *         note and powered state
-     */
-    @Override
-    public boolean equals(final @Nullable Object obj) {
-        if (obj == this) {
-            return true;
-        }
-
-        if (obj instanceof final NoteBlockData noteBlockData) {
-            return this.instrument == noteBlockData.instrument
-                    && this.note == noteBlockData.note
-                    && this.powered == noteBlockData.powered;
-        }
-
-        if (obj instanceof final NoteBlock noteBlock) {
-            return this.instrument == noteBlock.getInstrument()
-                    && this.note == noteBlock.getNote()
-                    && this.powered == noteBlock.isPowered();
-        }
-
-        return false;
     }
 }

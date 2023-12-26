@@ -2,7 +2,7 @@ package com.minersstudios.msdecor.command;
 
 import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecorType;
@@ -29,7 +29,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msdecor.*",
         permissionDefault = PermissionDefault.OP
 )
-public final class MSDecorCommandHandler extends CommandExecutor<MSDecor> {
+public final class MSDecorCommandHandler extends AbstractCommandExecutor<MSDecor> {
 
     private static final List<String> TAB = ImmutableList.of("reload", "give");
     private static final CommandNode<?> COMMAND_NODE =

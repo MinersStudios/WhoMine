@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
@@ -31,7 +31,7 @@ import static net.kyori.adventure.text.Component.text;
         permission = "msessentials.whitelist",
         permissionDefault = PermissionDefault.OP
 )
-public final class WhitelistCommand extends CommandExecutor<MSEssentials> {
+public final class WhitelistCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final List<String> TAB = Arrays.asList("add", "remove", "reload");
     private static final CommandNode<?> COMMAND_NODE =
             literal("whitelist")

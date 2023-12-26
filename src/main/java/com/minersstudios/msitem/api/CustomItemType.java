@@ -61,7 +61,7 @@ public enum CustomItemType {
     private static final CustomItemType[] VALUES = values();
     private static final Map<String, CustomItemType> KEY_TO_TYPE_MAP = new HashMap<>();
     private static final Map<Class<? extends CustomItem>, CustomItemType> CLASS_TO_TYPE_MAP = new HashMap<>();
-    private static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new HashMap<>();
+    static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new HashMap<>();
 
     /**
      * Constructor for CustomItemType enum values

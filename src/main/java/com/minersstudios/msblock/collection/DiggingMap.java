@@ -557,6 +557,21 @@ public class DiggingMap {
         }
 
         /**
+         * @return The hash code of this Entry
+         */
+        @Override
+        public int hashCode() {
+            int result = 17;
+
+            result = 31 * result + Integer.hashCode(taskId);
+            result = 31 * result + Integer.hashCode(stage);
+            result = 31 * result + Boolean.hashCode(farAway);
+            result = 31 * result + this.player.getName().hashCode();
+
+            return result;
+        }
+
+        /**
          * @param obj The object to compare with this Entry
          * @return True if the object is equal to this Entry
          */
@@ -565,8 +580,8 @@ public class DiggingMap {
         public boolean equals(final @Nullable Object obj) {
             return obj == this
                     || (
-                            obj instanceof final Entry entry
-                            && entry.taskId == this.taskId
+                            obj instanceof final Entry that
+                            && that.taskId == this.taskId
                     );
         }
 

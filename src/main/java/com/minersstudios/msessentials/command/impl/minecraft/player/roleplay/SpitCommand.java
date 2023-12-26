@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.player.roleplay;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -33,7 +33,7 @@ import static net.kyori.adventure.text.Component.text;
         description = "Покажи свою дерзость и плюнь кому-то в лицо",
         playerOnly = true
 )
-public final class SpitCommand extends CommandExecutor<MSEssentials> {
+public final class SpitCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("spit")
             .then(argument("speech", StringArgumentType.greedyString()))

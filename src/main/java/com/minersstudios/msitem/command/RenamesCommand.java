@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.command;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.menu.RenamesMenu;
@@ -20,7 +20,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
         description = "Открывает меню с переименованиями предметов",
         playerOnly = true
 )
-public final class RenamesCommand extends CommandExecutor<MSItem> {
+public final class RenamesCommand extends AbstractCommandExecutor<MSItem> {
     private static final CommandNode<?> COMMAND_NODE = literal("renames").build();
 
     @Override

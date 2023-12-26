@@ -3,6 +3,7 @@ package com.minersstudios.mscore.command.api;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Represents a class which contains a bunch of methods for handling commands
  */
-public abstract class CommandExecutor<P extends MSPlugin<P>> implements org.bukkit.command.CommandExecutor, TabCompleter {
+public abstract class AbstractCommandExecutor<P extends MSPlugin<P>> implements CommandExecutor, TabCompleter {
     private P plugin;
 
     /**
@@ -24,7 +25,7 @@ public abstract class CommandExecutor<P extends MSPlugin<P>> implements org.bukk
      */
     public static final List<String> EMPTY_TAB = Collections.emptyList();
 
-    protected CommandExecutor() {
+    protected AbstractCommandExecutor() {
         this.plugin = null;
     }
 

@@ -5,7 +5,6 @@ import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
-import com.minersstudios.msessentials.world.WorldDark;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,7 +32,7 @@ public final class InventoryClickListener extends AbstractEventListener<MSEssent
             return;
         }
 
-        if (WorldDark.isInWorldDark(player)) {
+        if (this.getPlugin().getCache().getWorldDark().isInWorldDark(player)) {
             event.setCancelled(true);
         }
 

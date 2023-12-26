@@ -40,8 +40,10 @@ public final class MessageUtils {
      * @param message message
      */
     public static void sendGlobalMessage(final @NotNull Component message) {
+        final WorldDark worldDark = MSEssentials.singleton().getCache().getWorldDark();
+
         for (final var player : Bukkit.getOnlinePlayers()) {
-            if (!WorldDark.isInWorldDark(player)) {
+            if (!worldDark.isInWorldDark(player)) {
                 player.sendMessage(message);
             }
         }

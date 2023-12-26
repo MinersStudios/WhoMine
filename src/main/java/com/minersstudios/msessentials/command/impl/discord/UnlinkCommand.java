@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.discord;
 
 import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.msessentials.command.api.discord.InteractionHandler;
+import com.minersstudios.msessentials.command.api.discord.interaction.CommandHandler;
 import com.minersstudios.msessentials.command.api.discord.SlashCommand;
 import com.minersstudios.msessentials.command.api.discord.SlashCommandExecutor;
 import com.minersstudios.msessentials.discord.BotHandler;
@@ -25,7 +25,7 @@ public final class UnlinkCommand extends SlashCommandExecutor {
     }
 
     @Override
-    public void onInteract(final @NotNull InteractionHandler handler) {
+    public void onCommand(final @NotNull CommandHandler handler) {
         handler.deferReply();
 
         final PlayerInfo playerInfo = handler.retrievePlayerInfo();

@@ -211,11 +211,12 @@ public final class PlayerFile {
     }
 
     public boolean setSkin(
-            final @Range(from = 0, to = Integer.MAX_VALUE) int index,
+            final int index,
             final @NotNull Skin skin
     ) {
         if (
-                index >= this.skins.size()
+                index < 0
+                || index >= this.skins.size()
                 || this.containsSkin(skin)
         ) {
             return false;

@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.ban;
 
 import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.command.api.CommandExecutor;
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -33,7 +33,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permission = "msessentials.ban",
         permissionDefault = PermissionDefault.OP
 )
-public final class BanCommand extends CommandExecutor<MSEssentials> {
+public final class BanCommand extends AbstractCommandExecutor<MSEssentials> {
     private static final CommandNode<?> COMMAND_NODE =
             literal("ban")
             .then(
