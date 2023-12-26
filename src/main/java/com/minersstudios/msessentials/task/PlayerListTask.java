@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.task;
 
+import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.world.WorldDark;
@@ -8,13 +9,11 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PlayerListTask implements Runnable {
     private final Server server;
-    private final PlayerInfoMap playerInfoMap;
-    private final WorldDark worldDark;
+    private final Cache cache;
 
     public PlayerListTask(final @NotNull MSEssentials plugin) {
         this.server = plugin.getServer();
-        this.playerInfoMap = plugin.getCache().getPlayerInfoMap();
-        this.worldDark = plugin.getCache().getWorldDark();
+        this.cache = plugin.getCache();
     }
 
     @Override
@@ -25,10 +24,13 @@ public final class PlayerListTask implements Runnable {
             return;
         }
 
+        final WorldDark worldDark = this.cache.getWorldDark();
+        final PlayerInfoMap playerInfoMap = this.cache.getPlayerInfoMap();
+
         onlinePlayers.stream().parallel()
-        .filter(player -> !this.worldDark.isInWorldDark(player))
+        .filter(player -> !worldDark.isInWorldDark(player))
         .forEach(player ->
-                this.playerInfoMap
+                playerInfoMap
                 .get(player)
                 .savePlayerDataParams()
         );
