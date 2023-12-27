@@ -450,6 +450,8 @@ public final class DiscordManager {
 
         this.plugin.runTaskAsync(() -> {
             try {
+                this.plugin.setStatus(MSEssentials.LOADING_DISCORD);
+
                 this.jda = this.buildJda(botToken);
             } catch (final Throwable e) {
                 logger.log(
@@ -461,7 +463,7 @@ public final class DiscordManager {
 
             if (this.jda == null) {
                 logger.warning("Discord bot not found!");
-                this.plugin.setLoadedCustoms(true);
+                this.plugin.setStatus(MSEssentials.FAILED_LOAD_DISCORD);
 
                 return;
             }
@@ -470,7 +472,7 @@ public final class DiscordManager {
 
             if (this.mainGuild == null) {
                 logger.warning("Discord server not found!");
-                this.plugin.setLoadedCustoms(true);
+                this.plugin.setStatus(MSEssentials.FAILED_LOAD_DISCORD);
                 this.unload();
 
                 return;
@@ -520,7 +522,7 @@ public final class DiscordManager {
             );
 
             this.loadCommandsAndListeners();
-            this.plugin.setLoadedCustoms(true);
+            this.plugin.setStatus(MSEssentials.LOADED_DISCORD);
 
             this.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_ENABLED);
             this.sendMessage(ChatType.LOCAL, LanguageRegistry.Strings.DISCORD_SERVER_ENABLED);

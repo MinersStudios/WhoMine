@@ -48,7 +48,7 @@ public final class Cache extends PluginCache<MSEssentials> {
      *
      * @param plugin The plugin that owns this cache
      */
-    public Cache(final @NotNull MSEssentials plugin) {
+    Cache(final @NotNull MSEssentials plugin) {
         super(plugin);
     }
 

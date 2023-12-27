@@ -24,7 +24,7 @@ public final class Cache extends PluginCache<MSItem> {
      *
      * @param plugin The plugin that owns this cache
      */
-    public Cache(final @NotNull MSItem plugin) {
+    Cache(final @NotNull MSItem plugin) {
         super(plugin);
     }
 

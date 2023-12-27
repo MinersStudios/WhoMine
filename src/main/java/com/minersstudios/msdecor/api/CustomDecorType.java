@@ -219,6 +219,8 @@ public enum CustomDecorType {
             throw new IllegalStateException("Custom decor types have already been loaded!");
         }
 
+        plugin.setStatus(MSDecor.LOADING_DECORATIONS);
+
         final long startTime = System.currentTimeMillis();
         final var typesWithRecipes = new ArrayList<CustomDecorType>();
 
@@ -247,7 +249,7 @@ public enum CustomDecorType {
         });
 
         typesWithRecipes.sort(Comparator.comparingInt(CustomDecorType::ordinal));
-        plugin.setLoadedCustoms(true);
+        plugin.setStatus(MSDecor.LOADED_DECORATIONS);
         plugin.getComponentLogger().info(
                 Component.text(
                         "Loaded " + VALUES.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",

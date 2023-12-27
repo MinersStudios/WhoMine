@@ -15,7 +15,7 @@ public abstract class PluginConfig<P extends MSPlugin<P>> extends MSConfig {
      * @param plugin The plugin that owns this config
      * @param file The config file, where the configuration is stored
      */
-    public PluginConfig(
+    protected PluginConfig(
             final @NotNull P plugin,
             final @NotNull File file
     ) {

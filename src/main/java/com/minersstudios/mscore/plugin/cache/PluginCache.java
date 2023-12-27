@@ -18,7 +18,7 @@ public abstract class PluginCache<P extends MSPlugin<P>> extends MSCache {
      *
      * @param plugin The plugin that owns this cache
      */
-    public PluginCache(final @NotNull P plugin) {
+    protected PluginCache(final @NotNull P plugin) {
         this.plugin = plugin;
     }
 

@@ -18,7 +18,7 @@ public final class Cache extends PluginCache<MSBlock> {
      *
      * @param plugin The plugin that owns this cache
      */
-    public Cache(final @NotNull MSBlock plugin) {
+    Cache(final @NotNull MSBlock plugin) {
         super(plugin);
     }
 

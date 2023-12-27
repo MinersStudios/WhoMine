@@ -334,7 +334,7 @@ public final class ChatUtils {
      * @param string String to be checked
      * @return True if the string is blank
      */
-    @Contract(value = "null -> true")
+    @Contract("null -> true")
     public static boolean isBlank(final @Nullable String string) {
         return string == null || string.isBlank();
     }

@@ -4,6 +4,7 @@ import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.mscore.utility.MSPluginUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -66,7 +67,7 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
                             )
                     )
             );
-        } else if (!plugin.isLoadedCustoms()) {
+        } else if (!MSPluginUtils.isLoadedCustoms()) {
             event.disallow(
                     KICK_OTHER,
                     MESSAGE_SERVER_NOT_FULLY_LOADED

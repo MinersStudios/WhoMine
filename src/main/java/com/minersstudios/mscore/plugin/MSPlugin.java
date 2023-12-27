@@ -1,8 +1,8 @@
 package com.minersstudios.mscore.plugin;
 
 import com.google.common.base.Charsets;
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.Commodore;
 import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
 import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
@@ -16,6 +16,9 @@ import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketListenersMap;
 import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
+import com.minersstudios.mscore.plugin.status.PluginStatus;
+import com.minersstudios.mscore.plugin.status.SuccessStatus;
+import com.minersstudios.mscore.plugin.status.StatusHandler;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.utility.*;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -30,6 +33,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -48,6 +52,8 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.minersstudios.mscore.plugin.status.SuccessStatus.high;
+import static com.minersstudios.mscore.plugin.status.SuccessStatus.low;
 import static net.kyori.adventure.text.Component.text;
 
 /**
@@ -59,26 +65,44 @@ import static net.kyori.adventure.text.Component.text;
  * @see #enable()
  * @see #disable()
  */
+@ApiStatus.Internal
 public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
-    private final File pluginFolder;
-    private final File configFile;
+    private final StatusHandler statusHandler;
     private final List<String> classNames;
     private final Map<Command, AbstractCommandExecutor<T>> commandMap;
     private final Map<Class<? extends AbstractInventoryHolder<T>>, AbstractInventoryHolder<T>> inventoryHolderMap;
     private final List<AbstractEventListener<T>> eventListeners;
     private final List<AbstractPacketListener<T>> packetListeners;
+    private final File pluginFolder;
+    private final File configFile;
     private Commodore commodore;
     private FileConfiguration newConfig;
-    private boolean isLoadedCustoms;
-
-    private static final File GLOBAL_FOLDER = new File(SharedConstants.GLOBAL_FOLDER_PATH);
-    private static final GlobalCache GLOBAL_CACHE = new GlobalCache();
-    private static final GlobalConfig GLOBAL_CONFIG = new GlobalConfig();
 
     private static final Field DATA_FOLDER_FIELD;
     private static final Constructor<PluginCommand> COMMAND_CONSTRUCTOR;
 
+    //<editor-fold desc="Shared constants" defaultstate="collapsed">
+    private static final File GLOBAL_FOLDER;
+    private static final GlobalCache GLOBAL_CACHE;
+    private static final GlobalConfig GLOBAL_CONFIG;
+    //</editor-fold>
+
+    //<editor-fold desc="Plugin statuses" defaultstate="collapsed">
+    public static final SuccessStatus INITIALIZING = high("INITIALIZING");
+    public static final SuccessStatus INITIALIZED =  low("INITIALIZED");
+    public static final SuccessStatus LOADING =      high("LOADING");
+    public static final SuccessStatus LOADED =       low("LOADED");
+    public static final SuccessStatus ENABLING =     high("ENABLING");
+    public static final SuccessStatus ENABLED =      high("ENABLED");
+    public static final SuccessStatus DISABLING =    high("DISABLING");
+    public static final SuccessStatus DISABLED =     high("DISABLED");
+    //</editor-fold>
+
     static {
+        GLOBAL_FOLDER = new File(SharedConstants.GLOBAL_FOLDER_PATH);
+        GLOBAL_CACHE = new GlobalCache();
+        GLOBAL_CONFIG = new GlobalConfig();
+
         if (GLOBAL_FOLDER.mkdirs()) {
             MSLogger.info("The global folder was created");
         }
@@ -114,13 +138,17 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     protected MSPlugin() {
-        this.pluginFolder = new File(GLOBAL_FOLDER, this.getName() + '/');
-        this.configFile = new File(this.pluginFolder, "config.yml");
+        this.statusHandler = new StatusHandler();
+
+        this.setStatus(INITIALIZING);
+
         this.classNames = this.loadClassNames(SharedConstants.GLOBAL_PACKAGE + '.' + this.getName().toLowerCase());
         this.commandMap = new HashMap<>();
         this.inventoryHolderMap = new HashMap<>();
         this.eventListeners = new ArrayList<>();
         this.packetListeners = new ArrayList<>();
+        this.pluginFolder = new File(GLOBAL_FOLDER, this.getName() + '/');
+        this.configFile = new File(this.pluginFolder, "config.yml");
 
         try {
             DATA_FOLDER_FIELD.set(this, this.pluginFolder);
@@ -132,6 +160,35 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             );
             this.getServer().getPluginManager().disablePlugin(this);
         }
+
+        this.setStatus(INITIALIZED);
+    }
+
+    /**
+     * @return The status handler of the plugin
+     */
+    public final @NotNull StatusHandler getStatusHandler() {
+        return this.statusHandler;
+    }
+
+    /**
+     * @return An optional containing the high-priority status if present,
+     *         otherwise an empty optional
+     * @see StatusHandler
+     */
+    public final @NotNull Optional<PluginStatus> getStatus() {
+        return this.statusHandler.get();
+    }
+
+    /**
+     * Sets the specified status and runs all the registered watchers with this
+     * status
+     *
+     * @param status Status to be set
+     * @see StatusHandler
+     */
+    public final void setStatus(final @NotNull PluginStatus status) {
+        this.statusHandler.set(status);
     }
 
     /**
@@ -182,13 +239,6 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     /**
-     * @return Commodore instance
-     */
-    public final @NotNull Commodore getCommodore() {
-        return this.commodore;
-    }
-
-    /**
      * @return Plugin config file "/config/minersstudios/PLUGIN_NAME/config.yml"
      */
     public final @NotNull File getConfigFile() {
@@ -203,10 +253,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     /**
-     * @param isLoadedCustoms True if the plugin has loaded the customs to the cache
+     * @return Commodore instance
      */
-    public final void setLoadedCustoms(final boolean isLoadedCustoms) {
-        this.isLoadedCustoms = isLoadedCustoms;
+    public final @NotNull Commodore getCommodore() {
+        return this.commodore;
     }
 
     /**
@@ -228,10 +278,40 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     }
 
     /**
-     * @return True if the plugin has loaded the customs to the cache
+     * @param status Status to be checked
+     * @return True if the status is present, false otherwise
+     * @see StatusHandler
      */
-    public final boolean isLoadedCustoms() {
-        return this.isLoadedCustoms;
+    public boolean containsStatus(final @NotNull PluginStatus status) {
+        return this.statusHandler.contains(status);
+    }
+
+    /**
+     * @param first First status to be checked
+     * @param rest  Rest of the statuses to be checked
+     * @return True if any of the statuses are present, false otherwise
+     * @see StatusHandler
+     */
+    public boolean containsAnyStatus(
+            final @NotNull PluginStatus first,
+            final PluginStatus @NotNull ... rest
+    ) {
+        return this.statusHandler.containsAny(first, rest);
+    }
+
+    /**
+     * @param first First status to be checked
+     * @param rest  Rest of the statuses to be checked
+     * @return True if all the statuses are present, false otherwise
+     * @throws IllegalArgumentException If there are multiple high-priority
+     *                                  statuses
+     * @see StatusHandler
+     */
+    public boolean containsAllStatuses(
+            final @NotNull PluginStatus first,
+            final PluginStatus @NotNull ... rest
+    ) throws IllegalArgumentException {
+        return this.statusHandler.containsAll(first, rest);
     }
 
     /**
@@ -250,11 +330,13 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     public final void onLoad() {
         final long time = System.currentTimeMillis();
 
+        this.setStatus(LOADING);
         this.loadCommands();
         this.loadInventoryHolders();
         this.loadEventListeners();
         this.loadPacketListeners();
         this.load();
+        this.setStatus(LOADED);
 
         this.getComponentLogger()
         .info(
@@ -279,6 +361,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     @Override
     public final void onEnable() {
         final long time = System.currentTimeMillis();
+
+        this.setStatus(ENABLING);
+
         this.commodore = new Commodore(this);
 
         this.registerCommands();
@@ -286,6 +371,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         this.registerPacketListeners();
         this.registerInventoryHolders();
         this.enable();
+        this.setStatus(ENABLED);
 
         if (this.isEnabled()) {
             this.getComponentLogger()
@@ -307,8 +393,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     public final void onDisable() {
         final long time = System.currentTimeMillis();
 
-        this.setLoadedCustoms(false);
+        this.setStatus(DISABLING);
         this.disable();
+        this.setStatus(DISABLED);
 
         this.getComponentLogger()
         .info(

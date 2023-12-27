@@ -2,6 +2,8 @@ package com.minersstudios.msessentials;
 
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSPlugin;
+import com.minersstudios.mscore.plugin.status.FailureStatus;
+import com.minersstudios.mscore.plugin.status.SuccessStatus;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.discord.DiscordManager;
@@ -25,6 +27,7 @@ import java.util.logging.Logger;
 
 import static com.minersstudios.mscore.language.LanguageRegistry.Components.ON_DISABLE_MESSAGE_SUBTITLE;
 import static com.minersstudios.mscore.language.LanguageRegistry.Components.ON_DISABLE_MESSAGE_TITLE;
+import static com.minersstudios.mscore.plugin.status.SuccessStatus.low;
 
 /**
  * The main class of the MSEssentials plugin
@@ -40,6 +43,16 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     private Team scoreboardHideTagsTeam;
 
     public static final String NAMESPACE = "msessentials";
+
+    //<editor-fold desc="Plugin Statuses" defaultstate="collapsed">
+    public static final FailureStatus FAILED_LOAD_ANOMALIES = FailureStatus.low("FAILED_LOAD_ANOMALIES");
+    public static final FailureStatus FAILED_LOAD_DISCORD =   FailureStatus.low("FAILED_LOAD_DISCORD");
+
+    public static final SuccessStatus LOADING_ANOMALIES = low("LOADING_ANOMALIES");
+    public static final SuccessStatus LOADED_ANOMALIES =  low("LOADED_ANOMALIES", FAILED_LOAD_ANOMALIES);
+    public static final SuccessStatus LOADING_DISCORD =   low("LOADING_DISCORD");
+    public static final SuccessStatus LOADED_DISCORD =    low("LOADED_DISCORD", FAILED_LOAD_DISCORD);
+    //</editor-fold>
 
     @Override
     public void enable() {

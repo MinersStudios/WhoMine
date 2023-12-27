@@ -86,6 +86,8 @@ public enum CustomItemType {
             throw new IllegalStateException("Custom item types have already been loaded!");
         }
 
+        plugin.setStatus(MSItem.LOADING_ITEMS);
+
         final long startTime = System.currentTimeMillis();
         final var typesWithRecipes = new ArrayList<CustomItemType>();
 
@@ -118,7 +120,7 @@ public enum CustomItemType {
         });
 
         typesWithRecipes.sort(Comparator.comparingInt(CustomItemType::ordinal));
-        plugin.setLoadedCustoms(true);
+        plugin.setStatus(MSItem.LOADED_ITEMS);
         plugin.getComponentLogger().info(
                 Component.text(
                         "Loaded " + VALUES.length + " custom items in " + (System.currentTimeMillis() - startTime) + "ms",

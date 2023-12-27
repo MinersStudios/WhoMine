@@ -48,7 +48,7 @@ public final class Config extends PluginConfig<MSBlock> {
      *
      * @param plugin The plugin that owns this config
      */
-    public Config(final @NotNull MSBlock plugin) {
+    Config(final @NotNull MSBlock plugin) {
         super(plugin, plugin.getConfigFile());
     }
 
@@ -127,6 +127,8 @@ public final class Config extends PluginConfig<MSBlock> {
         final long start = System.currentTimeMillis();
         final MSBlock plugin = this.getPlugin();
 
+        plugin.setStatus(MSBlock.LOADING_BLOCKS);
+
         try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + '/' + BLOCKS_FOLDER))) {
             pathStream.parallel()
             .filter(file -> {
@@ -139,21 +141,7 @@ public final class Config extends PluginConfig<MSBlock> {
             .filter(Objects::nonNull)
             .forEach(CustomBlockRegistry::register);
 
-            final var recipes = MSPlugin.globalCache().customBlockRecipes;
-
-            plugin.runTaskTimer(
-                    task -> {
-                        if (
-                                !recipes.isEmpty()
-                                && plugin.isLoadedCustoms()
-                        ) {
-                            CraftsMenu.putCrafts(CraftsMenu.Type.BLOCKS, recipes);
-                        }
-                    },
-                    0L, 10L
-            );
-
-            plugin.setLoadedCustoms(true);
+            plugin.setStatus(MSBlock.LOADED_BLOCKS);
             plugin.getComponentLogger().info(
                     Component.text(
                             "Loaded " + CustomBlockRegistry.size() + " custom blocks in " + (System.currentTimeMillis() - start) + "ms",
@@ -161,11 +149,26 @@ public final class Config extends PluginConfig<MSBlock> {
                     )
             );
         } catch (final IOException e) {
+            plugin.setStatus(MSBlock.FAILED_LOAD_BLOCKS);
             plugin.getLogger().log(
                     Level.SEVERE,
                     "An error occurred while loading blocks",
                     e
             );
         }
+
+        final var recipes = MSPlugin.globalCache().customBlockRecipes;
+
+        plugin.runTaskTimer(
+                task -> {
+                    if (
+                            !recipes.isEmpty()
+                            && plugin.containsStatus(MSBlock.LOADED_BLOCKS)
+                    ) {
+                        CraftsMenu.putCrafts(CraftsMenu.Type.BLOCKS, recipes);
+                    }
+                },
+                0L, 10L
+        );
     }
 }

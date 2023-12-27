@@ -43,7 +43,7 @@ public final class Config extends PluginConfig<MSItem> {
      *
      * @param plugin The plugin that owns this config
      */
-    public Config(final @NotNull MSItem plugin) {
+    Config(final @NotNull MSItem plugin) {
         super(plugin, plugin.getConfigFile());
     }
 
@@ -85,6 +85,8 @@ public final class Config extends PluginConfig<MSItem> {
         final long start = System.currentTimeMillis();
         final MSItem plugin = this.getPlugin();
 
+        plugin.setStatus(MSItem.LOADING_RENAMEABLES);
+
         try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + '/' + ITEMS_FOLDER))) {
             pathStream.parallel()
             .filter(file -> {
@@ -97,6 +99,7 @@ public final class Config extends PluginConfig<MSItem> {
             .filter(Objects::nonNull)
             .forEach(RenameableItemRegistry::register);
 
+            plugin.setStatus(MSItem.LOADED_RENAMEABLES);
             plugin.getComponentLogger().info(
                     Component.text(
                             "Loaded " + RenameableItemRegistry.keysSize() + " renameable items in " + (System.currentTimeMillis() - start) + "ms",
@@ -104,6 +107,7 @@ public final class Config extends PluginConfig<MSItem> {
                     )
             );
         } catch (final IOException e) {
+            plugin.setStatus(MSItem.FAILED_LOAD_RENAMEABLES);
             plugin.getLogger().log(
                     Level.SEVERE,
                     "An error occurred while loading renameable items",

@@ -1,6 +1,7 @@
 package com.minersstudios.msdecor;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
+import com.minersstudios.mscore.plugin.status.SuccessStatus;
 import com.minersstudios.mscore.utility.ItemUtils;
 import com.minersstudios.msdecor.api.CustomDecorType;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -8,6 +9,8 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.logging.Logger;
+
+import static com.minersstudios.mscore.plugin.status.SuccessStatus.low;
 
 /**
  * The main class of the MSDecor plugin
@@ -18,6 +21,11 @@ public final class MSDecor extends MSPlugin<MSDecor> {
     private static MSDecor singleton;
 
     public static final String NAMESPACE = "msdecor";
+
+    //<editor-fold desc="Plugin Statuses" defaultstate="collapsed">
+    public static final SuccessStatus LOADING_DECORATIONS = low("LOADING_DECORATIONS");
+    public static final SuccessStatus LOADED_DECORATIONS =  low("LOADED_DECORATIONS");
+    //</editor-fold>
 
     @Override
     public void load() {

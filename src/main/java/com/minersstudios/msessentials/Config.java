@@ -70,7 +70,7 @@ public final class Config extends PluginConfig<MSEssentials> {
      *
      * @param plugin The plugin that owns this config
      */
-    public Config(final @NotNull MSEssentials plugin) throws IllegalArgumentException {
+    Config(final @NotNull MSEssentials plugin) throws IllegalArgumentException {
         super(plugin, plugin.getConfigFile());
     }
 
@@ -378,6 +378,8 @@ public final class Config extends PluginConfig<MSEssentials> {
         final Cache cache = plugin.getCache();
         final Logger logger = plugin.getLogger();
 
+        plugin.setStatus(MSEssentials.LOADING_ANOMALIES);
+
         try (final var path = Files.walk(Paths.get(this.file.getParent() + '/' + ANOMALIES_FOLDER))) {
             path.parallel()
             .filter(file -> {
@@ -400,7 +402,10 @@ public final class Config extends PluginConfig<MSEssentials> {
                     );
                 }
             });
+
+            plugin.setStatus(MSEssentials.LOADED_ANOMALIES);
         } catch (final IOException e) {
+            plugin.setStatus(MSEssentials.FAILED_LOAD_ANOMALIES);
             logger.log(
                     Level.SEVERE,
                     "An error occurred while loading anomalies!",

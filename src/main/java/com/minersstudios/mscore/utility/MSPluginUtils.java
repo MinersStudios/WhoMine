@@ -19,21 +19,19 @@ public final class MSPluginUtils {
     /**
      * @return True if MSDecor, MSBlock, MSItem
      *         have loaded its custom decors / blocks / items
-     * @see MSDecor#isLoadedCustoms()
-     * @see MSBlock#isLoadedCustoms()
-     * @see MSItem#isLoadedCustoms()
      */
     public static boolean isLoadedCustoms() {
         try {
             final MSDecor msDecor = MSDecor.singleton();
             final MSBlock msBlock = MSBlock.singleton();
             final MSItem msItem = MSItem.singleton();
+
             return msDecor != null
                     && msBlock != null
                     && msItem != null
-                    && msDecor.isLoadedCustoms()
-                    && msBlock.isLoadedCustoms()
-                    && msItem.isLoadedCustoms();
+                    && msDecor.containsStatus(MSDecor.LOADED_DECORATIONS)
+                    && msBlock.containsStatus(MSBlock.LOADED_BLOCKS)
+                    && msItem.containsStatus(MSItem.LOADED_ITEMS);
         } catch (final NoClassDefFoundError e) {
             return false;
         }

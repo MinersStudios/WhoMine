@@ -1,11 +1,15 @@
 package com.minersstudios.msblock;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
+import com.minersstudios.mscore.plugin.status.FailureStatus;
+import com.minersstudios.mscore.plugin.status.SuccessStatus;
 import com.minersstudios.mscore.utility.PaperUtils;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.logging.Logger;
+
+import static com.minersstudios.mscore.plugin.status.SuccessStatus.low;
 
 /**
  * The main class of the MSBlock plugin
@@ -19,6 +23,14 @@ public final class MSBlock extends MSPlugin<MSBlock> {
     private Config config;
 
     public static final String NAMESPACE = "msblock";
+
+    //<editor-fold desc="Plugin Statuses" defaultstate="collapsed">
+    public static final FailureStatus FAILED_LOAD_BLOCKS = FailureStatus.low("FAILED_LOAD_BLOCKS");
+
+    public static final SuccessStatus LOADING_BLOCKS = low("LOADING_BLOCKS");
+    public static final SuccessStatus LOADED_BLOCKS =  low("LOADED_BLOCKS", FAILED_LOAD_BLOCKS);
+    //</editor-fold>
+
     private static final String NOTE_BLOCK_UPDATES = "block-updates.disable-noteblock-updates";
 
     @Override
