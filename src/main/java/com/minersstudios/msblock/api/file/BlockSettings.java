@@ -1,5 +1,6 @@
 package com.minersstudios.msblock.api.file;
 
+import com.google.common.base.Joiner;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -337,7 +338,7 @@ public class BlockSettings {
         public @NotNull String toString() {
             return "Placing{" +
                     "type=" + this.type +
-                    ", placeableMaterials=" + this.placeableMaterials +
+                    ", placeableMaterials=[" + Joiner.on(", ").join(this.placeableMaterials) + ']' +
                     '}';
         }
     }

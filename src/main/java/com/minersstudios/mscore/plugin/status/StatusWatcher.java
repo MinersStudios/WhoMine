@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.plugin.status;
 
+import com.google.common.base.Joiner;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -300,8 +301,8 @@ public class StatusWatcher {
     @Override
     public @NotNull String toString() {
         return "Watcher{" +
-                "successStatusSet=" + this.successStatusSet +
-                ", failureStatusSet=" + this.failureStatusSet +
+                "successStatusSet=[" + Joiner.on(", ").join(this.successStatusSet) + ']' +
+                ", failureStatusSet=[" + Joiner.on(", ").join(this.failureStatusSet) + ']' +
                 ", successRunnable=" + this.successRunnable +
                 ", failureRunnable=" + this.failureRunnable +
                 '}';

@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.listener.api.packet;
 
+import com.google.common.base.Joiner;
 import com.minersstudios.mscore.listener.api.MSListener;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
@@ -98,8 +99,8 @@ public abstract class AbstractPacketListener<P extends MSPlugin<P>> implements M
     public @NotNull String toString() {
         return this.getClass().getSimpleName() +
                 "plugin=" + this.plugin +
-                ", sendWhiteList=" + this.sendWhiteList +
-                ", receiveWhiteList=" + this.receiveWhiteList +
+                ", sendWhiteList=[" + Joiner.on(", ").join(this.sendWhiteList) + ']' +
+                ", receiveWhiteList=[" + Joiner.on(", ").join(this.receiveWhiteList) + ']' +
                 '}';
     }
 
