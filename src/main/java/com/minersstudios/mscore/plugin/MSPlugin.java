@@ -177,7 +177,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @see StatusHandler
      */
     public final @NotNull Optional<PluginStatus> getStatus() {
-        return this.statusHandler.get();
+        return this.statusHandler.getHighStatus();
     }
 
     /**
@@ -188,7 +188,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @see StatusHandler
      */
     public final void setStatus(final @NotNull PluginStatus status) {
-        this.statusHandler.set(status);
+        this.statusHandler.setStatus(status);
     }
 
     /**

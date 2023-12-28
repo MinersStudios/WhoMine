@@ -11,7 +11,7 @@ import java.util.Locale;
 public final class SuccessStatus extends ImplPluginStatus {
     private final FailureStatus failureStatus;
 
-    SuccessStatus(
+    private SuccessStatus(
             final @NotNull String name,
             final @NotNull Priority priority,
             final @Nullable FailureStatus failureStatus

@@ -14,31 +14,23 @@ import java.util.concurrent.atomic.AtomicReference;
  * @see StatusWatcher
  */
 public final class StatusHandler {
-    private final List<StatusWatcher> watcherList;
-    private final Set<PluginStatus> lowStatusSet;
     private final AtomicReference<PluginStatus> highStatus;
+    private final Set<PluginStatus> lowStatusSet;
+    private final List<StatusWatcher> watcherList;
 
     /**
      * Constructs a new status handler
      */
-    @ApiStatus.Internal
     public StatusHandler() {
-        this.watcherList = new CopyOnWriteArrayList<>();
-        this.lowStatusSet = new CopyOnWriteArraySet<>();
         this.highStatus = new AtomicReference<>(null);
+        this.lowStatusSet = new CopyOnWriteArraySet<>();
+        this.watcherList = new CopyOnWriteArrayList<>();
     }
 
     /**
-     * @return An unmodifiable view of the watcher list
+     * @return An unmodifiable set of all low-priority statuses
      */
-    public @NotNull @UnmodifiableView List<StatusWatcher> watcherList() {
-        return Collections.unmodifiableList(this.watcherList);
-    }
-
-    /**
-     * @return An unmodifiable view of the low-priority status set
-     */
-    public @NotNull @UnmodifiableView Set<PluginStatus> lowStatusSet() {
+    public @NotNull @Unmodifiable Set<PluginStatus> lowStatusSet() {
         return Collections.unmodifiableSet(this.lowStatusSet);
     }
 
@@ -57,6 +49,47 @@ public final class StatusHandler {
     }
 
     /**
+     * @return An unmodifiable watcher list
+     */
+    public @NotNull @Unmodifiable List<StatusWatcher> watcherList() {
+        return Collections.unmodifiableList(this.watcherList);
+    }
+
+    /**
+     * @return An optional containing the high-priority status if present,
+     *         otherwise an empty optional
+     */
+    public @NotNull Optional<PluginStatus> getHighStatus() {
+        return Optional.ofNullable(this.highStatus.get());
+    }
+
+    /**
+     * Sets the specified status and runs all the registered watchers with
+     * this status
+     *
+     * @param status Status to be set
+     */
+    public void setStatus(final @NotNull PluginStatus status) {
+        if (status.getPriority() == PluginStatus.Priority.HIGH) {
+            this.highStatus.set(status);
+        } else {
+            this.lowStatusSet.add(status);
+        }
+
+        if (!this.watcherList.isEmpty()) {
+            final var completed = new ArrayList<StatusWatcher>();
+
+            for (final var watcher : this.watcherList) {
+                if (watcher.tryRun(status)) {
+                    completed.add(watcher);
+                }
+            }
+
+            this.watcherList.removeAll(completed);
+        }
+    }
+
+    /**
      * @param status Status to be checked
      * @return A new list of watchers that contain the specified status
      * @throws UnsupportedOperationException If the status type is not supported
@@ -64,28 +97,10 @@ public final class StatusHandler {
     @Contract("_ -> new")
     public @NotNull List<StatusWatcher> getWatchers(final @NotNull PluginStatus status) throws UnsupportedOperationException {
         final var list = new ArrayList<StatusWatcher>();
-        final SuccessStatus successStatus;
-        final FailureStatus failureStatus;
-
-        if (status instanceof final SuccessStatus success) {
-            successStatus = success;
-            failureStatus = null;
-        } else if (status instanceof final FailureStatus failure) {
-            successStatus = null;
-            failureStatus = failure;
-        } else {
-            throw new UnsupportedOperationException("Unsupported status type: " + status.getClass().getName());
-        }
 
         for (final var watcher : this.watcherList) {
-            if (successStatus != null) {
-                if (watcher.containsSuccess(successStatus)) {
-                    list.add(watcher);
-                }
-            } else {
-                if (watcher.containsFailure(failureStatus)) {
-                    list.add(watcher);
-                }
+            if (watcher.contains(status)) {
+                list.add(watcher);
             }
         }
 
@@ -99,21 +114,13 @@ public final class StatusHandler {
      * @param watcher Watcher to be added
      */
     public void addWatcher(final @NotNull StatusWatcher watcher) {
-        if (!this.lowStatusSet.isEmpty()) {
-            for (final var status : this.lowStatusSet) {
-                if (status instanceof final SuccessStatus success) {
-                    if (watcher.runSuccess(success)) {
-                        return;
-                    }
-                } else if (status instanceof final FailureStatus failure) {
-                    if (watcher.runFailure(failure)) {
-                        return;
-                    }
-                }
+        for (final var status : this.lowStatusSet) {
+            if (watcher.tryRun(status)) {
+                return;
             }
-
-            this.watcherList.add(watcher);
         }
+
+        this.watcherList.add(watcher);
     }
 
     /**
@@ -123,46 +130,6 @@ public final class StatusHandler {
      */
     public void removeWatcher(final @NotNull StatusWatcher watcher) {
         this.watcherList.remove(watcher);
-    }
-
-    /**
-     * @return An optional containing the high-priority status if present,
-     *         otherwise an empty optional
-     */
-    public @NotNull Optional<PluginStatus> get() {
-        return Optional.ofNullable(this.highStatus.get());
-    }
-
-    /**
-     * Sets the specified status and runs all the registered watchers with
-     * this status
-     *
-     * @param status Status to be set
-     */
-    public void set(final @NotNull PluginStatus status) {
-        if (status.getPriority() == PluginStatus.Priority.HIGH) {
-            this.highStatus.set(status);
-        } else {
-            this.lowStatusSet.add(status);
-        }
-
-        if (!this.watcherList.isEmpty()) {
-            final var completed = new ArrayList<StatusWatcher>();
-
-            for (final var watcher : this.watcherList) {
-                if (status instanceof final SuccessStatus success) {
-                    if (watcher.runSuccess(success)) {
-                        completed.add(watcher);
-                    }
-                } else if (status instanceof final FailureStatus failure) {
-                    if (watcher.runFailure(failure)) {
-                        completed.add(watcher);
-                    }
-                }
-            }
-
-            this.watcherList.removeAll(completed);
-        }
     }
 
     /**

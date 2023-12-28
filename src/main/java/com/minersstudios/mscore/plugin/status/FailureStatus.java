@@ -7,7 +7,7 @@ import javax.annotation.concurrent.Immutable;
 import java.util.Locale;
 
 @Immutable
-public class FailureStatus extends ImplPluginStatus {
+public final class FailureStatus extends ImplPluginStatus {
 
     private FailureStatus(
             final @NotNull String name,

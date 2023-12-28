@@ -88,6 +88,75 @@ public class StatusWatcher {
     }
 
     /**
+     * @param first First status to be checked
+     * @param rest  Rest of the statuses to be checked
+     * @return True if all the statuses are present, false otherwise
+     * @throws UnsupportedOperationException If the status type is not supported
+     * @see #contains(PluginStatus)
+     */
+    public boolean containsAll(
+            final @NotNull PluginStatus first,
+            final PluginStatus @NotNull ... rest
+    ) throws UnsupportedOperationException {
+        if (!this.contains(first)) {
+            return false;
+        }
+
+        for (final var status : rest) {
+            if (!this.contains(status)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param first First status to be checked
+     * @param rest  Rest of the statuses to be checked
+     * @return True if any of the statuses is present, false otherwise
+     * @throws UnsupportedOperationException If the status type is not supported
+     * @see #contains(PluginStatus)
+     */
+    public boolean containsAny(
+            final @NotNull PluginStatus first,
+            final PluginStatus @NotNull ... rest
+    ) throws UnsupportedOperationException {
+        if (this.contains(first)) {
+            return true;
+        }
+
+        for (final var status : rest) {
+            if (this.contains(status)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param status Status to be checked
+     * @return True if the status is present, false otherwise
+     * @throws UnsupportedOperationException If the status type is not supported
+     * @see #containsSuccess(SuccessStatus)
+     * @see #containsFailure(FailureStatus)
+     */
+    public boolean contains(final @Nullable PluginStatus status) throws UnsupportedOperationException {
+        if (status == null) {
+            return false;
+        }
+
+        if (status instanceof final SuccessStatus success) {
+            return this.containsSuccess(success);
+        } else if (status instanceof final FailureStatus failure) {
+            return this.containsFailure(failure);
+        }
+
+        throw new UnsupportedOperationException("Unsupported status type: " + status.getClass().getName());
+    }
+
+    /**
      * @param status Status to be checked
      * @return True if the status is present, false otherwise
      */
@@ -128,17 +197,17 @@ public class StatusWatcher {
             final @NotNull SuccessStatus first,
             final SuccessStatus @NotNull ... rest
     ) {
-        if (this.containsSuccess(first)) {
-            for (final var status : rest) {
-                if (!this.containsSuccess(status)) {
-                    return false;
-                }
-            }
-
-            return true;
+        if (!this.containsSuccess(first)) {
+            return false;
         }
 
-        return false;
+        for (final var status : rest) {
+            if (!this.containsSuccess(status)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -181,17 +250,32 @@ public class StatusWatcher {
             final @NotNull FailureStatus first,
             final FailureStatus @NotNull ... rest
     ) {
-        if (this.containsFailure(first)) {
-            for (final var status : rest) {
-                if (!this.containsFailure(status)) {
-                    return false;
-                }
-            }
-
-            return true;
+        if (!this.containsFailure(first)) {
+            return false;
         }
 
-        return false;
+        for (final var status : rest) {
+            if (!this.containsFailure(status)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param status Status to be checked
+     * @return True if the status is present and the runnable was run, false
+     *         otherwise
+     */
+    public boolean tryRun(final @NotNull PluginStatus status) {
+        if (status instanceof final SuccessStatus success) {
+            return this.tryRunSuccess(success);
+        } else if (status instanceof final FailureStatus failure) {
+            return this.tryRunFailure(failure);
+        }
+
+        throw new UnsupportedOperationException("Unsupported status type: " + status.getClass().getName());
     }
 
     /**
@@ -203,7 +287,7 @@ public class StatusWatcher {
      * @return True if the status is present and the success runnable was
      *         run, false otherwise
      */
-    public boolean runSuccess(final @NotNull SuccessStatus status) {
+    public boolean tryRunSuccess(final @NotNull SuccessStatus status) {
         if (this.successStatusSet.contains(status)) {
             this.successStatusSet.remove(status);
 
@@ -229,7 +313,7 @@ public class StatusWatcher {
      * @return True if the status is present and the failure runnable was
      *         run, false otherwise
      */
-    public boolean runFailure(final @NotNull FailureStatus status) {
+    public boolean tryRunFailure(final @NotNull FailureStatus status) {
         if (this.failureStatusSet.contains(status)) {
             this.failureStatusSet.remove(status);
 
@@ -335,11 +419,32 @@ public class StatusWatcher {
          */
         @Contract(" -> new")
         public @NotNull StatusWatcher build() throws IllegalStateException {
+            final boolean isEmptySuccess = this.successStatusSet.isEmpty();
+            final boolean isEmptyFailure = this.failureStatusSet.isEmpty();
+
             if (
-                    this.successStatusSet.isEmpty()
-                    && this.failureStatusSet.isEmpty()
+                    isEmptySuccess
+                    && isEmptyFailure
             ) {
                 throw new IllegalStateException("Cannot build watcher with no statuses");
+            }
+
+            final boolean hasAnyRunnable =
+                    this.successRunnable != null
+                    || this.failureRunnable != null;
+
+            if (
+                    !isEmptySuccess
+                    && !hasAnyRunnable
+            ) {
+                throw new IllegalStateException("Cannot build watcher with success statuses and no runnable");
+            }
+
+            if (
+                    !isEmptyFailure
+                    && !hasAnyRunnable
+            ) {
+                throw new IllegalStateException("Cannot build watcher with failure statuses and no runnable");
             }
 
             return new StatusWatcher(this);
@@ -348,28 +453,34 @@ public class StatusWatcher {
         /**
          * @return A set of success statuses, or an empty unmodifiable set
          *         if there are no success statuses
+         * @see #successStatuses(SuccessStatus, SuccessStatus...)
          */
         public @NotNull Set<SuccessStatus> successStatuses() {
             return this.successStatusSet;
         }
 
         /**
-         * @param runnable Runnable to be run when all success statuses have
-         *                 been triggered
+         * Sets the success statuses for the watcher. If any of the success
+         * statuses provide a failure status, it will be added to the set of
+         * failure statuses.
+         *
          * @param first    First success status
          * @param rest     Rest of the success statuses
          * @return This builder
          */
-        @Contract("_, _, _ -> this")
+        @Contract("_, _ -> this")
         public @NotNull Builder successStatuses(
-                final @NotNull Runnable runnable,
                 final @NotNull SuccessStatus first,
                 final SuccessStatus @NotNull ... rest
         ) {
-            this.successRunnable = runnable;
             this.successStatusSet = new HashSet<>(Arrays.asList(rest));
 
             this.successStatusSet.add(first);
+            this.addFailureStatus(first.getFailureStatus());
+
+            for (final var status : rest) {
+                this.addFailureStatus(status.getFailureStatus());
+            }
 
             return this;
         }
@@ -377,25 +488,24 @@ public class StatusWatcher {
         /**
          * @return A set of failure statuses, or an empty unmodifiable set
          *         if there are no failure statuses
+         * @see #failureStatuses(FailureStatus, FailureStatus...)
          */
         public @NotNull Set<FailureStatus> failureStatuses() {
             return this.failureStatusSet;
         }
 
         /**
-         * @param runnable Runnable to be run when all failure statuses have
-         *                 been triggered
+         * Sets the failure statuses for the watcher
+         *
          * @param first    First failure status
          * @param rest     Rest of the failure statuses
          * @return This builder
          */
-        @Contract("_, _, _ -> this")
+        @Contract("_, _ -> this")
         public @NotNull Builder failureStatuses(
-                final @NotNull Runnable runnable,
                 final @NotNull FailureStatus first,
                 final FailureStatus @NotNull ... rest
         ) {
-            this.failureRunnable = runnable;
             this.failureStatusSet = new HashSet<>(Arrays.asList(rest));
 
             this.failureStatusSet.add(first);
@@ -405,16 +515,50 @@ public class StatusWatcher {
 
         /**
          * @return The success runnable
+         * @see #successRunnable(Runnable)
          */
         public @UnknownNullability Runnable successRunnable() {
             return this.successRunnable;
         }
 
         /**
+         * Sets the success-runnable for the watcher, which will be run when
+         * all success statuses have been triggered successfully, or if
+         * {@link #anySuccess} is true, when any success status has been
+         * triggered successfully.
+         *
+         * @param successRunnable The success runnable
+         * @return This builder
+         */
+        @Contract("_ -> this")
+        public @NotNull Builder successRunnable(final @Nullable Runnable successRunnable) {
+            this.successRunnable = successRunnable;
+
+            return this;
+        }
+
+        /**
          * @return The failure runnable
+         * @see #failureRunnable(Runnable)
          */
         public @UnknownNullability Runnable failureRunnable() {
             return this.failureRunnable;
+        }
+
+        /**
+         * Sets the failure-runnable for the watcher, which will be run when
+         * all failure statuses have been triggered successfully, or if
+         * {@link #anyFailure} is true, when any failure status has been
+         * triggered successfully.
+         *
+         * @param failureRunnable The failure runnable
+         * @return This builder
+         */
+        @Contract("_ -> this")
+        public @NotNull Builder failureRunnable(final @Nullable Runnable failureRunnable) {
+            this.failureRunnable = failureRunnable;
+
+            return this;
         }
 
         /**
@@ -469,6 +613,18 @@ public class StatusWatcher {
             this.anyFailure = anyFailure;
 
             return this;
+        }
+
+        private void addFailureStatus(final @Nullable FailureStatus status) {
+            if (status == null) {
+                return;
+            }
+
+            if (this.failureStatusSet.isEmpty()) {
+                this.failureStatusSet = new HashSet<>();
+            }
+
+            this.failureStatusSet.add(status);
         }
     }
 }
