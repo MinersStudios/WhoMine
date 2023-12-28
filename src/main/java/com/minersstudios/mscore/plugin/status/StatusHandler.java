@@ -99,26 +99,20 @@ public final class StatusHandler {
      * @param watcher Watcher to be added
      */
     public void addWatcher(final @NotNull StatusWatcher watcher) {
-        this.watcherList.add(watcher);
-
         if (!this.lowStatusSet.isEmpty()) {
-            final var completed = new ArrayList<PluginStatus>();
-
             for (final var status : this.lowStatusSet) {
                 if (status instanceof final SuccessStatus success) {
                     if (watcher.runSuccess(success)) {
-                        completed.add(success);
+                        return;
                     }
                 } else if (status instanceof final FailureStatus failure) {
                     if (watcher.runFailure(failure)) {
-                        completed.add(failure);
+                        return;
                     }
                 }
             }
 
-            for (final var status : completed) {
-                this.lowStatusSet.remove(status);
-            }
+            this.watcherList.add(watcher);
         }
     }
 
