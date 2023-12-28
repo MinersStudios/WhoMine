@@ -861,14 +861,10 @@ public final class PlayerInfo {
             final boolean value,
             final @NotNull Instant date,
             final @NotNull String reason,
-            @Nullable CommandSender sender
+            final @NotNull CommandSender sender
     ) {
         final Player player = this.getOnlinePlayer();
         final MuteMap muteMap = this.plugin.getCache().getMuteMap();
-
-        if (sender == null) {
-            sender = this.server.getConsoleSender();
-        }
 
         if (value) {
             if (this.isMuted()) {
@@ -963,7 +959,7 @@ public final class PlayerInfo {
      * @param commandSender The command sender, who unmuted the player, can be
      *                      null, in this case the console sender will be used
      */
-    public void unmute(final @Nullable CommandSender commandSender) {
+    public void unmute(final @NotNull CommandSender commandSender) {
         this.setMuted(false, Instant.EPOCH, "", commandSender);
     }
 

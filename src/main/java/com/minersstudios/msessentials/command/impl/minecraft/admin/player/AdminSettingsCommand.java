@@ -240,7 +240,9 @@ public final class AdminSettingsCommand {
 
                                     return true;
                                 }
-                            } catch (final IllegalArgumentException ignored) {}
+                            } catch (final IllegalArgumentException ignored) {
+                                // fallthrough
+                            }
                         }
 
                         MSLogger.severe(

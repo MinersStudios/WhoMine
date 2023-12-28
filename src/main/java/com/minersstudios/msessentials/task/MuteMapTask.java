@@ -37,7 +37,7 @@ public final class MuteMapTask implements Runnable {
             if (name != null) {
                 this.playerInfoMap
                 .get(player.getUniqueId(), name)
-                .unmute(null);
+                .unmute(this.server.getConsoleSender());
             }
         });
     }

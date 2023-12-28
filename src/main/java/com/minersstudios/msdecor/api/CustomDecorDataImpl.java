@@ -1865,26 +1865,6 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             }
         }
 
-        private void validateParams(
-                final @NotNull String message,
-                final @NotNull DecorParameter first,
-                final DecorParameter @NotNull ... rest
-        ) throws IllegalStateException {
-            if (this.parameterSet == null) {
-                throw new IllegalStateException("Parameters are not set! First set parameters!");
-            }
-
-            if (!this.parameterSet.contains(first)) {
-                throw new IllegalStateException("Parameter '" + first + "' is not set! " + message);
-            }
-
-            for (final var param : rest) {
-                if (!this.parameterSet.contains(param)) {
-                    throw new IllegalStateException("Parameter '" + param + "' is not set! " + message);
-                }
-            }
-        }
-
         private void validateAnyOfParams(
                 final @NotNull String message,
                 final @NotNull DecorParameter first,

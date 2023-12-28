@@ -41,8 +41,11 @@ public final class AsyncChatListener extends AbstractEventListener<MSEssentials>
             return;
         }
 
-        if (playerInfo.isMuted() && playerInfo.getMutedTo().isBefore(Instant.now())) {
-            playerInfo.unmute(null);
+        if (
+                playerInfo.isMuted()
+                && playerInfo.getMutedTo().isBefore(Instant.now())
+        ) {
+            playerInfo.unmute(player.getServer().getConsoleSender());
         }
 
         if (playerInfo.isMuted()) {

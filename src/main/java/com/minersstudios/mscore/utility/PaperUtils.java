@@ -133,8 +133,6 @@ public final class PaperUtils {
 
     private static class EmptyEditResponse implements EditResponse {
 
-        private EmptyEditResponse() {}
-
         @Override
         public @NotNull @UnmodifiableView Map<String, HistoryEntry> getHistory() {
             return Collections.emptyMap();

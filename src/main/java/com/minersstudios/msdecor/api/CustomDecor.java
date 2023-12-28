@@ -68,7 +68,7 @@ public final class CustomDecor {
      * @return An Optional containing the CustomDecor instance if found,
      *         otherwise an empty Optional
      */
-    public static @NotNull Optional<CustomDecor> fromBlock(final @Nullable org.bukkit.block.Block block) {
+    public static @NotNull Optional<CustomDecor> fromBlock(final @Nullable Block block) {
         return block == null
                 ? Optional.empty()
                 : fromInteraction(

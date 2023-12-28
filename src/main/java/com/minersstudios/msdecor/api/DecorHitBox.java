@@ -195,7 +195,9 @@ public final class DecorHitBox {
             final @NotNull BlockFace blockFace,
             final float rotation
     ) {
-        double x, y, z;
+        double x;
+        final double y;
+        double z;
 
         final boolean isWall = this.isWall(blockFace);
         final boolean isCeiling = this.isCeiling(blockFace);

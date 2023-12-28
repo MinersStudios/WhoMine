@@ -1,8 +1,8 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin;
 
 import com.google.common.collect.ImmutableList;
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.Config;
@@ -96,7 +96,9 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                     return true;
                 }
 
-                final double x, y, z;
+                final double x;
+                final double y;
+                final double z;
 
                 try {
                     x = Double.parseDouble(args[1]);
@@ -106,7 +108,10 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                     return false;
                 }
 
-                if (x > 29999984 || z > 29999984) {
+                if (
+                        x > 29999984
+                        || z > 29999984
+                ) {
                     MSLogger.warning(
                             sender,
                             COMMAND_SET_SERVER_SPAWN_TOO_BIG_COORDINATES
@@ -145,7 +150,8 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                     return true;
                 }
 
-                final float yaw, pitch;
+                final float yaw;
+                final float pitch;
 
                 try {
                     yaw = Float.parseFloat(args[4]);
