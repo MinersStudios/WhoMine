@@ -1,6 +1,5 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin;
 
-import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.plugin.MSLogger;
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
@@ -212,7 +212,7 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                     };
                     final double roundedCoordinate = Math.round(coordinate * 100.0d) / 100.0d;
 
-                    yield ImmutableList.of(String.valueOf(roundedCoordinate));
+                    yield Collections.singletonList(String.valueOf(roundedCoordinate));
                 }
 
                 yield EMPTY_TAB;
@@ -231,7 +231,7 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                     final float degree = args.length == 5 ? playerLoc.getYaw() : playerLoc.getPitch();
                     final float roundedDegree = Math.round(degree * 100.0f) / 100.0f;
 
-                    yield ImmutableList.of(String.valueOf(roundedDegree));
+                    yield Collections.singletonList(String.valueOf(roundedDegree));
                 }
 
                 yield EMPTY_TAB;

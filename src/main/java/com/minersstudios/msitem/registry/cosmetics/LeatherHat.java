@@ -1,8 +1,7 @@
 package com.minersstudios.msitem.registry.cosmetics;
 
-import com.google.common.collect.ImmutableList;
-import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msitem.api.CustomItemImpl;
 import com.minersstudios.msitem.api.Wearable;
 import org.bukkit.Material;
@@ -33,7 +32,7 @@ public final class LeatherHat extends CustomItemImpl implements Wearable {
 
         meta.displayName(ChatUtils.createDefaultStyledText("Кожаная шляпа"));
         meta.setCustomModelData(999);
-        meta.lore(ImmutableList.of(Font.Components.PAINTABLE));
+        meta.lore(Collections.singletonList(Font.Components.PAINTABLE));
         meta.addAttributeModifier(
                 Attribute.GENERIC_ARMOR,
                 new AttributeModifier(UUID.randomUUID(), "armor", 1.0f, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)

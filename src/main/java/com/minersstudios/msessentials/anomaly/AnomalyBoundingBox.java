@@ -1,7 +1,6 @@
 package com.minersstudios.msessentials.anomaly;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import com.minersstudios.mscore.location.MSBoundingBox;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
@@ -9,6 +8,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
+import javax.annotation.concurrent.Immutable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +20,11 @@ import java.util.Map;
  * {@link #getRadiusInside(Player)} to get the radius of the anomaly the player
  * is inside.
  */
+@Immutable
 public final class AnomalyBoundingBox extends BoundingBox {
     private final World world;
     private final List<Double> radii;
-    private final Map<Double, BoundingBox> radiusBoundingBoxes;
+    private final Map<Double, MSBoundingBox> radiusBoundingBoxes;
 
     /**
      * Creates a new anomaly bounding box, with a list of radii and a map of
@@ -34,18 +37,16 @@ public final class AnomalyBoundingBox extends BoundingBox {
      */
     public AnomalyBoundingBox(
             final @NotNull World world,
-            final @NotNull BoundingBox boundingBox,
+            final @NotNull MSBoundingBox boundingBox,
             final @NotNull List<Double> radii
     ) {
         this.world = world;
-        this.radii = ImmutableList.copyOf(radii);
-        final var mapBuilder = new ImmutableMap.Builder<Double, BoundingBox>();
+        this.radii = radii;
+        this.radiusBoundingBoxes = new HashMap<>();
 
         for (final var radius : radii) {
-            mapBuilder.put(radius, boundingBox.clone().expand(radius));
+            this.radiusBoundingBoxes.put(radius, boundingBox.inflate(radius));
         }
-
-        this.radiusBoundingBoxes = mapBuilder.build();
     }
 
     /**
@@ -59,14 +60,14 @@ public final class AnomalyBoundingBox extends BoundingBox {
      * @return Unmodifiable list of anomaly radii
      */
     public @NotNull @Unmodifiable List<Double> getRadii() {
-        return this.radii;
+        return Collections.unmodifiableList(this.radii);
     }
 
     /**
      * @return Unmodifiable map of bounding boxes for each radius
      */
-    public @NotNull @Unmodifiable Map<Double, BoundingBox> getRadiusBoundingBoxes() {
-        return this.radiusBoundingBoxes;
+    public @NotNull @Unmodifiable Map<Double, MSBoundingBox> getRadiusBoundingBoxes() {
+        return Collections.unmodifiableMap(this.radiusBoundingBoxes);
     }
 
     /**

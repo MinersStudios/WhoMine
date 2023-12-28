@@ -1,8 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.teleport;
 
-import com.google.common.collect.ImmutableList;
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
@@ -178,7 +178,7 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
                     };
                     final double roundedCoordinate = Math.round(coordinate * 100.0d) / 100.0d;
 
-                    yield ImmutableList.of(String.valueOf(roundedCoordinate));
+                    yield Collections.singletonList(String.valueOf(roundedCoordinate));
                 }
 
                 yield EMPTY_TAB;

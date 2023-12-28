@@ -1,6 +1,5 @@
 package com.minersstudios.msitem.registry.item;
 
-import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.MSBlockUtils;
 import com.minersstudios.msitem.MSItem;
@@ -14,6 +13,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -61,15 +61,15 @@ public final class PlumbumIngot extends CustomItemImpl {
                     "Can't find custom block with key: plumbum_block! Shaped recipe will not be registered!"
             );
 
-            return ImmutableList.of(
+            return Arrays.asList(
                     Map.entry(furnaceRecipe, Boolean.FALSE),
                     Map.entry(blastingRecipe, Boolean.FALSE)
             );
         }
 
-        return ImmutableList.of(
-                Map.entry(furnaceRecipe, false),
-                Map.entry(blastingRecipe, false),
+        return Arrays.asList(
+                Map.entry(furnaceRecipe, Boolean.FALSE),
+                Map.entry(blastingRecipe, Boolean.FALSE),
                 Map.entry(
                         new ShapedRecipe(
                                 new NamespacedKey(MSItem.NAMESPACE, "plumbum_ingot_from_block"),

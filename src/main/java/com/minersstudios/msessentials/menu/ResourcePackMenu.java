@@ -1,6 +1,5 @@
 package com.minersstudios.msessentials.menu;
 
-import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
@@ -17,6 +16,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static com.minersstudios.mscore.utility.ChatUtils.COLORLESS_DEFAULT_STYLE;
@@ -35,7 +36,7 @@ public final class ResourcePackMenu extends AbstractInventoryHolder<MSEssentials
         infoMeta.displayName(MENU_RESOURCE_PACK_BUTTON_INFO_TITLE.style(DEFAULT_STYLE));
         infoMeta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
         infoMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
-        infoMeta.lore(ImmutableList.of(
+        infoMeta.lore(Arrays.asList(
                 MENU_RESOURCE_PACK_BUTTON_INFO_LORE_0.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
                 MENU_RESOURCE_PACK_BUTTON_INFO_LORE_1.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
                 MENU_RESOURCE_PACK_BUTTON_INFO_LORE_2.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
@@ -48,7 +49,7 @@ public final class ResourcePackMenu extends AbstractInventoryHolder<MSEssentials
         final ItemMeta noneMeta = noneItem.getItemMeta();
 
         noneMeta.displayName(MENU_RESOURCE_PACK_BUTTON_NONE_TITLE.style(DEFAULT_STYLE));
-        noneMeta.lore(ImmutableList.of(
+        noneMeta.lore(Arrays.asList(
                 MENU_RESOURCE_PACK_BUTTON_NONE_LORE_0.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
                 MENU_RESOURCE_PACK_BUTTON_NONE_LORE_1.style(COLORLESS_DEFAULT_STYLE).color(GRAY)
         ));
@@ -58,7 +59,7 @@ public final class ResourcePackMenu extends AbstractInventoryHolder<MSEssentials
         final ItemMeta liteMeta = liteItem.getItemMeta();
 
         liteMeta.displayName(MENU_RESOURCE_PACK_BUTTON_LITE_TITLE.style(DEFAULT_STYLE));
-        liteMeta.lore(ImmutableList.of(
+        liteMeta.lore(Arrays.asList(
                 MENU_RESOURCE_PACK_BUTTON_LITE_LORE_0.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
                 MENU_RESOURCE_PACK_BUTTON_LITE_LORE_1.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
                 MENU_RESOURCE_PACK_BUTTON_LITE_LORE_2.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
@@ -70,7 +71,7 @@ public final class ResourcePackMenu extends AbstractInventoryHolder<MSEssentials
         final ItemMeta fullMeta = fullItem.getItemMeta();
 
         fullMeta.displayName(MENU_RESOURCE_PACK_BUTTON_FULL_TITLE.style(DEFAULT_STYLE));
-        fullMeta.lore(ImmutableList.of(
+        fullMeta.lore(Arrays.asList(
                 MENU_RESOURCE_PACK_BUTTON_FULL_LORE_0.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
                 MENU_RESOURCE_PACK_BUTTON_FULL_LORE_1.style(COLORLESS_DEFAULT_STYLE).color(GRAY),
                 MENU_RESOURCE_PACK_BUTTON_FULL_LORE_2.style(COLORLESS_DEFAULT_STYLE).color(GRAY),

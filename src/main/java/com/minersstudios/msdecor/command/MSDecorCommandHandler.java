@@ -1,8 +1,7 @@
 package com.minersstudios.msdecor.command;
 
-import com.google.common.collect.ImmutableList;
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecorType;
@@ -17,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -31,7 +31,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 )
 public final class MSDecorCommandHandler extends AbstractCommandExecutor<MSDecor> {
 
-    private static final List<String> TAB = ImmutableList.of("reload", "give");
+    private static final List<String> TAB = Arrays.asList("reload", "give");
     private static final CommandNode<?> COMMAND_NODE =
             literal("msdecor")
             .then(

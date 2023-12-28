@@ -3,10 +3,8 @@ package com.minersstudios.mscore.utility;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msitem.api.damageable.DamageableItem;
 import net.minecraft.world.item.Item;
-import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -20,6 +18,9 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.logging.Level;
+
+import static org.bukkit.EntityEffect.*;
+import static org.bukkit.enchantments.Enchantment.DURABILITY;
 
 /**
  * Utility class for {@link ItemStack} and {@link ItemMeta}
@@ -150,16 +151,16 @@ public final class ItemUtils {
             damageableItem.setRealDamage(damageableItem.getRealDamage() + originalDamage);
 
             if (
-                    !damageable.hasEnchant(Enchantment.DURABILITY)
-                    || Math.random() < 1.0d / (damageable.getEnchantLevel(Enchantment.DURABILITY) + 1.0d)
+                    !damageable.hasEnchant(DURABILITY)
+                    || Math.random() < 1.0d / (damageable.getEnchantLevel(DURABILITY) + 1.0d)
             ) {
                 damage = originalDamage;
 
                 damageableItem.saveForItemStack(item);
             }
         } else if (
-                !damageable.hasEnchant(Enchantment.DURABILITY)
-                || Math.random() < 1.0d / (damageable.getEnchantLevel(Enchantment.DURABILITY) + 1.0d)
+                !damageable.hasEnchant(DURABILITY)
+                || Math.random() < 1.0d / (damageable.getEnchantLevel(DURABILITY) + 1.0d)
         ) {
             damage = originalDamage;
 
@@ -185,17 +186,17 @@ public final class ItemUtils {
             item.setAmount(item.getAmount() - 1);
 
             if (item.getType() == Material.SHIELD) {
-                holder.playEffect(EntityEffect.SHIELD_BREAK);
+                holder.playEffect(SHIELD_BREAK);
                 return true;
             }
 
             switch (slot == null ? EquipmentSlot.HAND : slot) {
-                case HEAD -> holder.playEffect(EntityEffect.BREAK_EQUIPMENT_HELMET);
-                case CHEST -> holder.playEffect(EntityEffect.BREAK_EQUIPMENT_CHESTPLATE);
-                case LEGS -> holder.playEffect(EntityEffect.BREAK_EQUIPMENT_LEGGINGS);
-                case FEET -> holder.playEffect(EntityEffect.BREAK_EQUIPMENT_BOOTS);
-                case OFF_HAND -> holder.playEffect(EntityEffect.BREAK_EQUIPMENT_OFF_HAND);
-                default -> holder.playEffect(EntityEffect.BREAK_EQUIPMENT_MAIN_HAND);
+                case HEAD ->     holder.playEffect(BREAK_EQUIPMENT_HELMET);
+                case CHEST ->    holder.playEffect(BREAK_EQUIPMENT_CHESTPLATE);
+                case LEGS ->     holder.playEffect(BREAK_EQUIPMENT_LEGGINGS);
+                case FEET ->     holder.playEffect(BREAK_EQUIPMENT_BOOTS);
+                case OFF_HAND -> holder.playEffect(BREAK_EQUIPMENT_OFF_HAND);
+                default ->       holder.playEffect(BREAK_EQUIPMENT_MAIN_HAND);
             }
         }
 

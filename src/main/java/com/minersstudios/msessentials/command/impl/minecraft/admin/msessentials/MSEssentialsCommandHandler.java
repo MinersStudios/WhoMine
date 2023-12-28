@@ -1,8 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.msessentials;
 
-import com.google.common.collect.ImmutableList;
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import com.mojang.brigadier.tree.CommandNode;
@@ -11,6 +10,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -45,7 +45,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
         }
 )
 public final class MSEssentialsCommandHandler extends AbstractCommandExecutor<MSEssentials> {
-    private static final List<String> TAB = ImmutableList.of("reload", "updateids", "updatemutes");
+    private static final List<String> TAB = Arrays.asList("reload", "updateids", "updatemutes");
     private static final CommandNode<?> COMMAND_NODE =
             literal("msessentials")
             .then(literal("reload"))

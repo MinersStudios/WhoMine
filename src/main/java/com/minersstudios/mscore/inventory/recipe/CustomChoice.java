@@ -8,10 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -47,7 +44,7 @@ public final class CustomChoice implements RecipeChoice {
      *                                  any of the namespaced keys are invalid
      */
     public CustomChoice(final String @NotNull ... namespacedKeys) throws IllegalArgumentException {
-        this(List.of(namespacedKeys));
+        this(Arrays.asList(namespacedKeys));
     }
 
     /**

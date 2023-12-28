@@ -1,6 +1,5 @@
 package com.minersstudios.msessentials.menu;
 
-import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
@@ -188,7 +187,7 @@ public final class SkinsMenu extends AbstractInventoryHolder<MSEssentials> {
                             .buttonAt(24, deleteButtonEmpty)
                             .buttonAt(25, deleteButtonEmpty)
                             .buttonAt(26, deleteButtonEmpty)
-                            .args(ImmutableList.of(finalI));
+                            .args(Collections.singletonList(finalI));
                         } else {
                             inv
                             .buttonAt(18, EMPTY_BUTTON)

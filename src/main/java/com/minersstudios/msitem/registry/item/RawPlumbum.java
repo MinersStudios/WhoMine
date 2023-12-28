@@ -1,6 +1,5 @@
 package com.minersstudios.msitem.registry.item;
 
-import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.MSBlockUtils;
@@ -17,6 +16,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +60,8 @@ public final class RawPlumbum extends CustomItemImpl {
             return Collections.singletonList(Map.entry(shapedRecipe, Boolean.TRUE));
         }
 
-        return ImmutableList.of(
-                Map.entry(shapedRecipe, true),
+        return Arrays.asList(
+                Map.entry(shapedRecipe, Boolean.TRUE),
                 Map.entry(
                         new ShapedRecipe(
                                 new NamespacedKey(MSItem.NAMESPACE, "raw_plumbum_from_block"),

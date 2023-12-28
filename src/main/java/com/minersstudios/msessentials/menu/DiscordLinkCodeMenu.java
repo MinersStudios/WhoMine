@@ -1,6 +1,5 @@
 package com.minersstudios.msessentials.menu;
 
-import com.google.common.collect.ImmutableList;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
 import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
@@ -16,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static net.kyori.adventure.text.Component.text;
@@ -23,7 +23,7 @@ import static net.kyori.adventure.text.Component.text;
 @InventoryHolder
 public final class DiscordLinkCodeMenu extends AbstractInventoryHolder<MSEssentials> {
     private static final Component TITLE = LanguageRegistry.Components.MENU_DISCORD_TITLE.style(ChatUtils.DEFAULT_STYLE);
-    private static final List<TranslatableComponent> NUMBERS = ImmutableList.of(
+    private static final List<TranslatableComponent> NUMBERS = Arrays.asList(
             LanguageRegistry.Components.MENU_DISCORD_NUMBERS_0,
             LanguageRegistry.Components.MENU_DISCORD_NUMBERS_1,
             LanguageRegistry.Components.MENU_DISCORD_NUMBERS_2,

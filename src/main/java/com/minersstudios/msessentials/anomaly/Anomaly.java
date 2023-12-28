@@ -1,6 +1,7 @@
 package com.minersstudios.msessentials.anomaly;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomaly.action.AddPotionAction;
@@ -13,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -98,7 +98,7 @@ public class Anomaly {
 
         final AnomalyBoundingBox anomalyBoundingBox = new AnomalyBoundingBox(
                 world,
-                new BoundingBox(
+                MSBoundingBox.of(
                         config.getDouble("bounding-box.location.first-corner.x"),
                         config.getDouble("bounding-box.location.first-corner.y"),
                         config.getDouble("bounding-box.location.first-corner.z"),

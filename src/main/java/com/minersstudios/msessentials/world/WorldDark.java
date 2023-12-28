@@ -1,6 +1,5 @@
 package com.minersstudios.msessentials.world;
 
-import com.google.common.collect.ImmutableList;
 import net.kyori.adventure.util.TriState;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.*;
@@ -14,6 +13,7 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 import org.jetbrains.annotations.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -21,7 +21,7 @@ public final class WorldDark extends CraftWorld {
     private static final String WORLD_NAME = "world_dark";
     private static final ChunkGenerator CHUNK_GENERATOR = new ChunkGenerator() {};
     private static final BiomeProvider BIOME_PROVIDER = new BiomeProvider() {
-        private static final List<Biome> BIOMES = ImmutableList.of(Biome.THE_VOID);
+        private static final List<Biome> BIOMES = Collections.singletonList(Biome.THE_VOID);
 
         @Override
         public @NotNull Biome getBiome(

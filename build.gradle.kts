@@ -52,6 +52,7 @@ allprojects {
         compileJava {
             options.encoding = Charsets.UTF_8.name()
             options.release.set(17)
+            options.compilerArgs.add("-Xlint:deprecation")
         }
 
         javadoc {

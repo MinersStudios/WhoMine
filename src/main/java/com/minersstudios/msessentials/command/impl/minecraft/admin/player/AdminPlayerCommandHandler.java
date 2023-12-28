@@ -1,8 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.player;
 
-import com.google.common.collect.ImmutableList;
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.DateUtils;
@@ -22,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +36,7 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
         permissionDefault = PermissionDefault.OP
 )
 public final class AdminPlayerCommandHandler extends AbstractCommandExecutor<MSEssentials> {
-    private static final List<String> TAB_2 = ImmutableList.of(
+    private static final List<String> TAB_2 = Arrays.asList(
             "update",
             "info",
             "first-join",
@@ -47,50 +47,50 @@ public final class AdminPlayerCommandHandler extends AbstractCommandExecutor<MSE
             "mute-info",
             "name"
     );
-    private static final List<String> TAB_3_PRONOUNS = ImmutableList.of(
+    private static final List<String> TAB_3_PRONOUNS = Arrays.asList(
             "he",
             "she",
             "they"
     );
-    private static final List<String> TAB_3_GAME_PARAMS = ImmutableList.of(
+    private static final List<String> TAB_3_GAME_PARAMS = Arrays.asList(
             "game-mode",
             "health",
             "air"
     );
-    private static final List<String> TAB_3_SETTINGS = ImmutableList.of(
+    private static final List<String> TAB_3_SETTINGS = Arrays.asList(
             "resourcepack-type"
     );
-    private static final List<String> TAB_3_BAN_MUTE_INFO = ImmutableList.of(
+    private static final List<String> TAB_3_BAN_MUTE_INFO = Arrays.asList(
             "reason",
             "time"
     );
-    private static final List<String> TAB_3_NAME = ImmutableList.of(
+    private static final List<String> TAB_3_NAME = Arrays.asList(
             "reset",
             "first-name",
             "last-name",
             "patronymic"
     );
-    private static final List<String> TAB_4_GAME_PARAMS_GAME_MODE = ImmutableList.of(
+    private static final List<String> TAB_4_GAME_PARAMS_GAME_MODE = Arrays.asList(
             "survival",
             "creative",
             "spectator",
             "adventure"
     );
-    private static final List<String> TAB_4_GAME_PARAMS_AIR = ImmutableList.of(
+    private static final List<String> TAB_4_GAME_PARAMS_AIR = Arrays.asList(
             "300",
             "0"
     );
-    private static final List<String> TAB_4_GAME_PARAMS_HEALTH = ImmutableList.of(
+    private static final List<String> TAB_4_GAME_PARAMS_HEALTH = Arrays.asList(
             "20.0",
             "0.0"
     );
-    private static final List<String> TAB_4_SETTINGS_RESOURCEPACK_TYPE = ImmutableList.of(
+    private static final List<String> TAB_4_SETTINGS_RESOURCEPACK_TYPE = Arrays.asList(
             "full",
             "lite",
             "none",
             "null"
     );
-    private static final List<String> TAB_4_SETTINGS_SKIN = ImmutableList.of(
+    private static final List<String> TAB_4_SETTINGS_SKIN = Arrays.asList(
             "set",
             "remove",
             "add"
