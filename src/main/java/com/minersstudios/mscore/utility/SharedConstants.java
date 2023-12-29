@@ -17,7 +17,7 @@ public final class SharedConstants {
     public static final String PAPER_GLOBAL_CONFIG_PATH =              CONFIG_DIR + '/' + PAPER_GLOBAL_CONFIG_FILE_NAME;
     public static final String PAPER_WORLD_DEFAULTS_PATH =             CONFIG_DIR + '/' + PAPER_WORLD_DEFAULTS_CONFIG_FILE_NAME;
     public static final String DATE_FORMAT =                           "EEE, yyyy-MM-dd HH:mm z";
-    public static final String LANGUAGE_CODE =                         "ru_ru";
+    public static final String LANGUAGE_CODE =                         "uk_ua";
     public static final String LANGUAGE_FOLDER_LINK =                  "https://raw.githubusercontent.com/MinersStudios/WMConfig/release/lang/";
     public static final String DISCORD_LINK =                          "https://discord.whomine.net";
     public static final String CONSOLE_NICKNAME =                      "$Console";
