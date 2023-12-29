@@ -60,7 +60,7 @@ public final class InventoryClickListener extends AbstractEventListener<MSEssent
                 clickedInventory.setItem(slot, new ItemStack(Material.AIR));
                 MSLogger.warning(
                         LanguageRegistry.Components.INFO_PLAYER_ITEM_REMOVED
-                        .args(
+                        .arguments(
                                 player.name(),
                                 text(currentItem.toString())
                         )

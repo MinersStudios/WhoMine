@@ -249,7 +249,7 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
         MSLogger.fine(
                 sender,
                 COMMAND_SET_SERVER_SPAWN_SUCCESSFULLY_SET
-                .args(
+                .arguments(
                         text(location.getWorld().getName()),
                         text(String.valueOf(location.x())),
                         text(String.valueOf(location.y())),

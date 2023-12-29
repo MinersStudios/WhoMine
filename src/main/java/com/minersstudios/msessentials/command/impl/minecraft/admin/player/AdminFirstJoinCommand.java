@@ -18,7 +18,7 @@ public final class AdminFirstJoinCommand {
         MSLogger.fine(
                 sender,
                 LanguageRegistry.Components.COMMAND_PLAYER_FIRST_JOIN
-                .args(
+                .arguments(
                         playerInfo.getGrayIDGreenName(),
                         text(playerInfo.getNickname()),
                         text(DateUtils.getSenderDate(playerInfo.getPlayerFile().getFirstJoin(), sender))

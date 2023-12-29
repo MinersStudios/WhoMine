@@ -20,7 +20,7 @@ public final class UpdateMutesCommand {
         MSLogger.fine(
                 sender,
                 LanguageRegistry.Components.COMMAND_MSESSENTIALS_UPDATE_MUTES_SUCCESS
-                .args(text(System.currentTimeMillis() - time))
+                .arguments(text(System.currentTimeMillis() - time))
         );
 
         return true;

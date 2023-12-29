@@ -41,7 +41,7 @@ public final class SkinListCommand extends SlashCommandExecutor {
                     BotHandler.craftEmbed(
                             LanguageFile.renderTranslation(
                                     DISCORD_COMMAND_LIST_OF_SKINS
-                                    .args(text(skinList.toString()))
+                                    .arguments(text(skinList.toString()))
                             )
                     )
             );

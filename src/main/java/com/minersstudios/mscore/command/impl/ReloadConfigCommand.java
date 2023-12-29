@@ -17,7 +17,7 @@ public final class ReloadConfigCommand {
         MSLogger.fine(
                 sender,
                 LanguageRegistry.Components.COMMAND_MSCORE_RELOAD_CONFIG_SUCCESS
-                .args(text(System.currentTimeMillis() - time))
+                .arguments(text(System.currentTimeMillis() - time))
         );
 
         return true;

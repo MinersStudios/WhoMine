@@ -871,7 +871,7 @@ public final class PlayerInfo {
                 MSLogger.warning(
                         sender,
                         COMMAND_MUTE_ALREADY_SENDER
-                        .args(
+                        .arguments(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
                         )
@@ -883,7 +883,7 @@ public final class PlayerInfo {
             MSLogger.fine(
                     sender,
                     COMMAND_MUTE_MESSAGE_SENDER
-                    .args(
+                    .arguments(
                             this.getGrayIDGreenName(),
                             text(this.nickname),
                             text(reason),
@@ -895,7 +895,7 @@ public final class PlayerInfo {
                 MSLogger.warning(
                         player,
                         COMMAND_MUTE_MESSAGE_RECEIVER
-                        .args(
+                        .arguments(
                                 text(reason),
                                 text(DateUtils.getSenderDate(date, sender))
                         )
@@ -906,7 +906,7 @@ public final class PlayerInfo {
                 MSLogger.warning(
                         sender,
                         COMMAND_UNMUTE_NOT_MUTED
-                        .args(
+                        .arguments(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
                         )
@@ -918,7 +918,7 @@ public final class PlayerInfo {
             MSLogger.fine(
                     sender,
                     COMMAND_UNMUTE_SENDER_MESSAGE
-                    .args(
+                    .arguments(
                             this.getGrayIDGreenName(),
                             text(this.nickname)
                     )
@@ -936,13 +936,13 @@ public final class PlayerInfo {
             this.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                     LanguageFile.renderTranslation(
                             value
-                            ? DISCORD_MUTED.args(
+                            ? DISCORD_MUTED.arguments(
                                     this.defaultName,
                                     text(this.nickname),
                                     text(reason),
                                     text(DateUtils.getSenderDate(date, player))
                             )
-                            : DISCORD_UNMUTED.args(
+                            : DISCORD_UNMUTED.arguments(
                                     this.defaultName,
                                     text(this.nickname)
                             )
@@ -1192,7 +1192,7 @@ public final class PlayerInfo {
                 MSLogger.warning(
                         sender,
                         COMMAND_BAN_ALREADY_SENDER
-                        .args(
+                        .arguments(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
                         )
@@ -1204,7 +1204,7 @@ public final class PlayerInfo {
             this.kick(
                     COMMAND_BAN_MESSAGE_RECEIVER_TITLE,
                     COMMAND_BAN_MESSAGE_RECEIVER_SUBTITLE
-                    .args(
+                    .arguments(
                             text(reason),
                             text(DateUtils.getSenderDate(date, player))
                     ),
@@ -1213,7 +1213,7 @@ public final class PlayerInfo {
             MSLogger.fine(
                     sender,
                     COMMAND_BAN_MESSAGE_SENDER
-                    .args(
+                    .arguments(
                             this.getGrayIDGreenName(),
                             text(this.nickname),
                             text(reason),
@@ -1225,7 +1225,7 @@ public final class PlayerInfo {
                 MSLogger.warning(
                         sender,
                         COMMAND_UNBAN_NOT_BANNED
-                        .args(
+                        .arguments(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
                         )
@@ -1237,7 +1237,7 @@ public final class PlayerInfo {
             MSLogger.fine(
                     sender,
                     COMMAND_UNBAN_MESSAGE_SENDER
-                    .args(
+                    .arguments(
                             this.getGrayIDGreenName(),
                             text(this.nickname)
                     )
@@ -1248,13 +1248,13 @@ public final class PlayerInfo {
             this.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                     LanguageFile.renderTranslation(
                             value
-                            ? DISCORD_BANNED.args(
+                            ? DISCORD_BANNED.arguments(
                                     this.defaultName,
                                     text(this.nickname),
                                     text(reason),
                                     text(DateUtils.getSenderDate(date, player))
                             )
-                            : DISCORD_UNBANNED.args(
+                            : DISCORD_UNBANNED.arguments(
                                     this.defaultName,
                                     text(this.nickname)
                             )
@@ -1508,7 +1508,7 @@ public final class PlayerInfo {
                                 case SUCCESSFULLY_LOADED -> {
                                     componentLogger.info(
                                             RESOURCE_PACK_SUCCESSFULLY_LOADED
-                                            .args(text(this.nickname, NamedTextColor.GREEN))
+                                            .arguments(text(this.nickname, NamedTextColor.GREEN))
                                     );
                                     return true;
                                 }
@@ -1518,7 +1518,7 @@ public final class PlayerInfo {
 
                                     componentLogger.warn(
                                             RESOURCE_PACK_FAILED_DOWNLOAD_CONSOLE
-                                            .args(text(this.nickname, NamedTextColor.GOLD))
+                                            .arguments(text(this.nickname, NamedTextColor.GOLD))
                                     );
                                     this.kick(
                                             RESOURCE_PACK_FAILED_DOWNLOAD_RECEIVER_TITLE,
@@ -1529,7 +1529,7 @@ public final class PlayerInfo {
                                 case DECLINED -> {
                                     componentLogger.warn(
                                             RESOURCE_PACK_DECLINED_CONSOLE
-                                            .args(text(this.nickname, NamedTextColor.GOLD))
+                                            .arguments(text(this.nickname, NamedTextColor.GOLD))
                                     );
                                     this.kick(
                                             RESOURCE_PACK_DECLINED_RECEIVER_TITLE,
@@ -1644,7 +1644,7 @@ public final class PlayerInfo {
         this.playerFile.save();
         this.plugin.getComponentLogger().info(
                 INFO_PLAYER_FILE_CREATED
-                .args(
+                .arguments(
                         text(this.nickname),
                         text(this.offlinePlayer.getUniqueId().toString())
                 )
@@ -1737,7 +1737,7 @@ public final class PlayerInfo {
                 player,
                 COMMAND_KICK_MESSAGE_RECEIVER_TITLE,
                 COMMAND_KICK_MESSAGE_RECEIVER_SUBTITLE
-                        .args(COMMAND_KICK_DEFAULT_REASON),
+                        .arguments(COMMAND_KICK_DEFAULT_REASON),
                 cause
         );
     }
@@ -1783,7 +1783,7 @@ public final class PlayerInfo {
 
         player.kick(
                 FORMAT_LEAVE_MESSAGE
-                .args(
+                .arguments(
                         title.color(NamedTextColor.RED).decorate(TextDecoration.BOLD),
                         reason.color(NamedTextColor.GRAY)
                 )

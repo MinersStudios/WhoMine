@@ -22,7 +22,7 @@ public final class ReloadCommand {
         MSLogger.fine(
                 sender,
                 LanguageRegistry.Components.COMMAND_MSESSENTIALS_RELOAD_SUCCESS
-                .args(text(System.currentTimeMillis() - time))
+                .arguments(text(System.currentTimeMillis() - time))
         );
 
         return true;

@@ -71,7 +71,7 @@ public final class RemoveSkinCommand extends SlashCommandExecutor {
             handler.send(
                     renderTranslation(
                             LanguageRegistry.Components.DISCORD_COMMAND_SKIN_NOT_FOUND
-                            .args(text(name))
+                            .arguments(text(name))
                     )
             );
         }
@@ -121,7 +121,7 @@ public final class RemoveSkinCommand extends SlashCommandExecutor {
                 BotHandler.craftEmbed(
                         renderTranslation(
                                 LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED
-                                .args(
+                                .arguments(
                                         text(skinName),
                                         playerInfo.getDefaultName(),
                                         text(playerInfo.getNickname())
@@ -133,7 +133,7 @@ public final class RemoveSkinCommand extends SlashCommandExecutor {
             MSLogger.fine(
                     player,
                     LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT
-                    .args(text(skinName))
+                    .arguments(text(skinName))
             );
         }
 

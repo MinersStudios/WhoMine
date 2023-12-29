@@ -24,7 +24,7 @@ public final class UpdateIdsCommand {
         MSLogger.fine(
                 sender,
                 LanguageRegistry.Components.COMMAND_MSESSENTIALS_UPDATE_IDS_SUCCESS
-                .args(text(System.currentTimeMillis() - time))
+                .arguments(text(System.currentTimeMillis() - time))
         );
 
         return true;

@@ -101,12 +101,12 @@ public final class SkinsMenu extends AbstractInventoryHolder<MSEssentials> {
                 MSLogger.fine(
                         player,
                         LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT
-                        .args(skinName)
+                        .arguments(skinName)
                 );
                 playerInfo.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                         LanguageFile.renderTranslation(
                                 LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED
-                                .args(
+                                .arguments(
                                         skinName,
                                         playerInfo.getDefaultName(),
                                         text(playerInfo.getNickname())

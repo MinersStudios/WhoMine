@@ -515,7 +515,7 @@ public final class DiscordManager {
             presence.setActivity(
                     Activity.playing(ChatUtils.serializePlainComponent(
                             LanguageRegistry.Components.DISCORD_BOT_STATUS
-                            .args(
+                            .arguments(
                                     Component.text(this.plugin.getServer().getMinecraftVersion())
                             ))
                     )

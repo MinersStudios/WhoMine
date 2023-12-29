@@ -40,12 +40,12 @@ public final class AdminGameParamsCommand {
                     MSLogger.fine(
                             sender,
                             player == null
-                            ? COMMAND_PLAYER_GAME_PARAMS_GET_GAME_MODE.args(
+                            ? COMMAND_PLAYER_GAME_PARAMS_GET_GAME_MODE.arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerFile.getGameMode().name().toLowerCase(Locale.ROOT))
                             )
-                            : COMMAND_PLAYER_GAME_PARAMS_GET_GAME_MODE_FULL.args(
+                            : COMMAND_PLAYER_GAME_PARAMS_GET_GAME_MODE_FULL.arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerFile.getGameMode().name().toLowerCase(Locale.ROOT)),
@@ -75,7 +75,7 @@ public final class AdminGameParamsCommand {
                 MSLogger.fine(
                         sender,
                         COMMAND_PLAYER_GAME_PARAMS_SET_GAME_MODE
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(paramArgString)
@@ -88,12 +88,12 @@ public final class AdminGameParamsCommand {
                     MSLogger.fine(
                             sender,
                             player == null
-                            ? COMMAND_PLAYER_GAME_PARAMS_GET_HEALTH.args(
+                            ? COMMAND_PLAYER_GAME_PARAMS_GET_HEALTH.arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(Double.toString(playerFile.getHealth()))
                             )
-                            : COMMAND_PLAYER_GAME_PARAMS_GET_HEALTH_FULL.args(
+                            : COMMAND_PLAYER_GAME_PARAMS_GET_HEALTH_FULL.arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(Double.toString(playerFile.getHealth())),
@@ -123,7 +123,7 @@ public final class AdminGameParamsCommand {
                 MSLogger.fine(
                         sender,
                         COMMAND_PLAYER_GAME_PARAMS_SET_HEALTH
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(paramArgString)
@@ -136,12 +136,12 @@ public final class AdminGameParamsCommand {
                     MSLogger.fine(
                             sender,
                             player == null
-                            ? COMMAND_PLAYER_GAME_PARAMS_GET_AIR.args(
+                            ? COMMAND_PLAYER_GAME_PARAMS_GET_AIR.arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerFile.getAir())
                             )
-                            : COMMAND_PLAYER_GAME_PARAMS_GET_AIR_FULL.args(
+                            : COMMAND_PLAYER_GAME_PARAMS_GET_AIR_FULL.arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerFile.getAir()),
@@ -171,7 +171,7 @@ public final class AdminGameParamsCommand {
                 MSLogger.fine(
                         sender,
                         COMMAND_PLAYER_GAME_PARAMS_SET_AIR
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(paramArgString)

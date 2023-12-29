@@ -16,7 +16,7 @@ import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 public class PlayerKickListener extends AbstractEventListener<MSEssentials> {
     private static final TranslatableComponent SERVER_RESTARTING =
             FORMAT_LEAVE_MESSAGE
-            .args(
+            .arguments(
                     ON_DISABLE_MESSAGE_TITLE.color(NamedTextColor.RED).decorate(TextDecoration.BOLD),
                     ON_DISABLE_MESSAGE_SUBTITLE.color(NamedTextColor.GRAY)
             )

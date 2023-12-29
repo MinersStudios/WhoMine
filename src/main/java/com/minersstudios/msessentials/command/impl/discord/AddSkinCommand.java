@@ -77,7 +77,7 @@ public final class AddSkinCommand extends SlashCommandExecutor {
             handler.send(
                     renderTranslation(
                             LanguageRegistry.Components.DISCORD_SKIN_ALREADY_SET
-                            .args(
+                            .arguments(
                                     playerInfo.getDefaultName(),
                                     text(playerInfo.getNickname())
                             )
@@ -141,7 +141,7 @@ public final class AddSkinCommand extends SlashCommandExecutor {
         handler.sendEmbed(
                 renderTranslation(
                         LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_ADDED
-                        .args(
+                        .arguments(
                                 text(skinName),
                                 playerInfo.getDefaultName(),
                                 text(playerInfo.getNickname())
@@ -152,7 +152,7 @@ public final class AddSkinCommand extends SlashCommandExecutor {
         if (onlinePlayer != null) {
             MSLogger.fine(
                     onlinePlayer,
-                    LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_ADDED_MINECRAFT.args(text(skinName))
+                    LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_ADDED_MINECRAFT.arguments(text(skinName))
             );
         }
     }

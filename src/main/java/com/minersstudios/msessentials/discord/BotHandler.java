@@ -234,7 +234,7 @@ public final class BotHandler {
             this.replyEmbed(
                     renderTranslation(
                             LanguageRegistry.Components.DISCORD_SUCCESSFULLY_LINKED
-                            .args(
+                            .arguments(
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
                             )
@@ -252,7 +252,7 @@ public final class BotHandler {
                 MSLogger.fine(
                         onlinePlayer,
                         LanguageRegistry.Components.COMMAND_DISCORD_LINK_SUCCESS
-                        .args(text(this.user.getName()))
+                        .arguments(text(this.user.getName()))
                 );
             }
         }
@@ -278,7 +278,7 @@ public final class BotHandler {
             this.replyEmbed(
                     renderTranslation(
                             LanguageRegistry.Components.DISCORD_SKIN_ALREADY_SET
-                            .args(
+                            .arguments(
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
                             )
@@ -300,7 +300,7 @@ public final class BotHandler {
             this.replyEmbed(
                     renderTranslation(
                             LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_ADDED
-                            .args(
+                            .arguments(
                                     text(skinName),
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
@@ -314,7 +314,7 @@ public final class BotHandler {
                 MSLogger.fine(
                         player,
                         LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_ADDED_MINECRAFT
-                        .args(text(skinName))
+                        .arguments(text(skinName))
                 );
             }
         } else {
@@ -323,7 +323,7 @@ public final class BotHandler {
             this.replyEmbed(
                     renderTranslation(
                             LanguageRegistry.Components.DISCORD_SKIN_TOO_MANY_SKINS
-                            .args(
+                            .arguments(
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
                             )
@@ -351,7 +351,7 @@ public final class BotHandler {
                     MSLogger.fine(
                             player,
                             LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_EDITED_MINECRAFT
-                            .args(text(skinName))
+                            .arguments(text(skinName))
                     );
                 }
             } else if (reply.equals(VARIANT_NO)) {
@@ -386,7 +386,7 @@ public final class BotHandler {
 
                 this.replyEmbed(renderTranslation(
                         LanguageRegistry.Components.DISCORD_SKIN_LIST_OF_SKINS
-                        .args(text(skinList.toString()))
+                        .arguments(text(skinList.toString()))
                 ));
                 this.plugin.runTask(this::handleSkinListTask);
             } else if (reply.equals(VARIANT_NO)) {
@@ -519,7 +519,7 @@ public final class BotHandler {
                 this.replyEmbed(
                         renderTranslation(
                                 LanguageRegistry.Components.DISCORD_SKIN_ALREADY_SET
-                                .args(
+                                .arguments(
                                         this.playerInfo.getDefaultName(),
                                         text(this.playerInfo.getNickname())
                                 )
@@ -535,7 +535,7 @@ public final class BotHandler {
             this.replyEmbed(
                     renderTranslation(
                             LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_RENAMED
-                            .args(
+                            .arguments(
                                     text(oldName),
                                     text(newName),
                                     this.playerInfo.getDefaultName(),
@@ -550,7 +550,7 @@ public final class BotHandler {
                 MSLogger.fine(
                         player,
                         LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_RENAMED_MINECRAFT
-                        .args(
+                        .arguments(
                                 text(oldName),
                                 text(newName)
                         )
@@ -578,7 +578,7 @@ public final class BotHandler {
         this.replyEmbed(
                 renderTranslation(
                         LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_EDITED
-                        .args(
+                        .arguments(
                                 text(skinName),
                                 this.playerInfo.getDefaultName(),
                                 text(this.playerInfo.getNickname())

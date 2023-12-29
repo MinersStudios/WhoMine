@@ -26,7 +26,7 @@ public final class AdminPronounsCommand {
             MSLogger.fine(
                     sender,
                     COMMAND_PLAYER_PRONOUNS_GET
-                    .args(
+                    .arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(playerFile.getPronouns().name().toLowerCase(Locale.ROOT))
@@ -43,7 +43,7 @@ public final class AdminPronounsCommand {
                 MSLogger.severe(
                         sender,
                         COMMAND_PLAYER_PRONOUNS_USE_ONE_OF
-                        .args(text(
+                        .arguments(text(
                                 Arrays.toString(Pronouns.values())
                                 .toLowerCase()
                                 .replaceAll("[\\[\\]]", "")
@@ -57,7 +57,7 @@ public final class AdminPronounsCommand {
             MSLogger.fine(
                     sender,
                     COMMAND_PLAYER_PRONOUNS_SET
-                    .args(
+                    .arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(pronouns.name().toLowerCase(Locale.ROOT))

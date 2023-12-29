@@ -27,19 +27,19 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
     private static final TranslatableComponent LEAVE_MESSAGE_FORMAT =
             FORMAT_LEAVE_MESSAGE.color(NamedTextColor.DARK_GRAY);
     private static final Component MESSAGE_WHITELIST = LanguageFile.renderTranslationComponent(
-            LEAVE_MESSAGE_FORMAT.args(
+            LEAVE_MESSAGE_FORMAT.arguments(
                     PRE_LOGIN_WHITELISTED_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
                     PRE_LOGIN_WHITELISTED_SUBTITLE.color(NamedTextColor.GRAY)
             )
     );
     private static final Component MESSAGE_SERVER_NOT_FULLY_LOADED = LanguageFile.renderTranslationComponent(
-            LEAVE_MESSAGE_FORMAT.args(
+            LEAVE_MESSAGE_FORMAT.arguments(
                     SERVER_NOT_FULLY_LOADED_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
                     SERVER_NOT_FULLY_LOADED_SUBTITLE.color(NamedTextColor.GRAY)
             )
     );
     private static final Component MESSAGE_TECH_WORKS = LanguageFile.renderTranslationComponent(
-            LEAVE_MESSAGE_FORMAT.args(
+            LEAVE_MESSAGE_FORMAT.arguments(
                     PRE_LOGIN_TECH_WORKS_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
                     PRE_LOGIN_TECH_WORKS_SUBTITLE.color(NamedTextColor.GRAY)
             )
@@ -59,9 +59,9 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
         } else if (playerInfo.isBanned()) {
             event.disallow(
                     KICK_BANNED,
-                    LEAVE_MESSAGE_FORMAT.args(
+                    LEAVE_MESSAGE_FORMAT.arguments(
                             PRE_LOGIN_BANNED_TITLE,
-                            PRE_LOGIN_BANNED_SUBTITLE.args(
+                            PRE_LOGIN_BANNED_SUBTITLE.arguments(
                                     playerInfo.getBanReason(),
                                     playerInfo.getBannedTo(event.getAddress())
                             )
@@ -92,7 +92,7 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
                 playerFile.save();
                 MSLogger.warning(
                         INFO_PLAYER_ADDED_IP
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGoldName(),
                                 text(nickname),
                                 text(hostAddress)

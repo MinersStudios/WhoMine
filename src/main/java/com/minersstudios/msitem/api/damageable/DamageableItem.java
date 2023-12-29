@@ -172,7 +172,7 @@ public class DamageableItem {
         newLore.add(empty());
         newLore.add(
                 DURABILITY
-                .args(
+                .arguments(
                         text(this.maxDamage - this.realDamage),
                         text(this.maxDamage)
                 )

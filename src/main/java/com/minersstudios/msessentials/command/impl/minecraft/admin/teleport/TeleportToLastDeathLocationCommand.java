@@ -73,7 +73,7 @@ public final class TeleportToLastDeathLocationCommand extends AbstractCommandExe
                 MSLogger.fine(
                         sender,
                         COMMAND_TELEPORT_TO_LAST_DEATH_SENDER_MESSAGE
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname())
                         )

@@ -127,7 +127,7 @@ public final class RegistrationProcess {
                     this.playerInfo.initNames();
 
                     this.sendDialogueMessage(
-                            LanguageRegistry.Components.REGISTRATION_MESSAGE_11.args(
+                            LanguageRegistry.Components.REGISTRATION_MESSAGE_11.arguments(
                                     text(this.playerInfo.getID(true, false)),
                                     text(name.getFirstName()),
                                     text(name.getLastName()),
@@ -162,7 +162,7 @@ public final class RegistrationProcess {
         this.sendDialogueMessage(LanguageRegistry.Components.REGISTRATION_MESSAGE_16, 125L);
         this.sendDialogueMessage(
                 LanguageRegistry.Components.REGISTRATION_MESSAGE_17
-                .args(
+                .arguments(
                         pronouns.getPronouns(),
                         pronouns.getTraveler()
                 ),
@@ -193,7 +193,7 @@ public final class RegistrationProcess {
         this.plugin.runTaskLater(() -> {
             this.player.sendMessage(
                     LanguageRegistry.Components.CHAT_LOCAL_FORMAT
-                    .args(
+                    .arguments(
                             LanguageRegistry.Components.REGISTRATION_ANONYMOUS_NAME,
                             message.color(MessageUtils.Colors.CHAT_COLOR_SECONDARY)
                     )

@@ -291,7 +291,7 @@ public final class MessageUtils {
         MSLogger.info(
                 null,
                 INFO_PLAYER_DEATH_INFO
-                .args(
+                .arguments(
                         killedInfo.getDefaultName(),
                         text(killed.getName()),
                         text(deathLocation.getBlock().getWorld().getName()),

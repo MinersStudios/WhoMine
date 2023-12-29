@@ -18,7 +18,7 @@ public final class AdminUpdateCommand {
         MSLogger.fine(
                 sender,
                 LanguageRegistry.Components.COMMAND_PLAYER_UPDATE_SUCCESS
-                .args(
+                .arguments(
                         playerInfo.getGrayIDGreenName(),
                         text(playerInfo.getNickname())
                 )

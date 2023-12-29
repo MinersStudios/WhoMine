@@ -66,7 +66,7 @@ public final class GiveCommand {
                     MSLogger.fine(
                             sender,
                             LanguageRegistry.Components.COMMAND_MSITEM_GIVE_SUCCESS
-                            .args(
+                            .arguments(
                                     text(amount),
                                     itemStack.displayName(),
                                     playerInfo.getDefaultName()

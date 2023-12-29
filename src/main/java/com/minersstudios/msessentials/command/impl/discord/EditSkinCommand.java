@@ -72,7 +72,7 @@ public final class EditSkinCommand extends SlashCommandExecutor {
             handler.send(
                     renderTranslation(
                             LanguageRegistry.Components.DISCORD_COMMAND_SKIN_NOT_FOUND
-                                    .args(text(name))
+                                    .arguments(text(name))
                     )
             );
         }
@@ -167,7 +167,7 @@ public final class EditSkinCommand extends SlashCommandExecutor {
                 BotHandler.craftEmbed(
                         renderTranslation(
                                 LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_EDITED
-                                .args(
+                                .arguments(
                                         text(skinName),
                                         playerInfo.getDefaultName(),
                                         text(playerInfo.getNickname())
@@ -179,7 +179,7 @@ public final class EditSkinCommand extends SlashCommandExecutor {
             MSLogger.fine(
                     player,
                     LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_EDITED_MINECRAFT
-                    .args(text(skinName))
+                    .arguments(text(skinName))
             );
         }
 

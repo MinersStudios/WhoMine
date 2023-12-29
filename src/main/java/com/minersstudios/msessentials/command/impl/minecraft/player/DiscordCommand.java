@@ -46,7 +46,7 @@ public final class DiscordCommand extends AbstractCommandExecutor<MSEssentials> 
 
     private static final TranslatableComponent DISCORD_MESSAGE =
             COMMAND_DISCORD
-            .args(
+            .arguments(
                     text(DISCORD_LINK)
                     .hoverEvent(showText(LINK_HOVER.color(NamedTextColor.GRAY)))
                     .clickEvent(ClickEvent.openUrl(DISCORD_LINK)),
@@ -89,7 +89,7 @@ public final class DiscordCommand extends AbstractCommandExecutor<MSEssentials> 
                                 BotHandler.craftEmbed(
                                         LanguageFile.renderTranslation(
                                                 COMMAND_DISCORD_UNLINK_DISCORD_SUCCESS
-                                                .args(
+                                                .arguments(
                                                         playerInfo.getDefaultName(),
                                                         text(player.getName())
                                                 )
@@ -99,7 +99,7 @@ public final class DiscordCommand extends AbstractCommandExecutor<MSEssentials> 
                         MSLogger.fine(
                                 player,
                                 COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS
-                                .args(text(user.getName()))
+                                .arguments(text(user.getName()))
                         );
                     });
                 }

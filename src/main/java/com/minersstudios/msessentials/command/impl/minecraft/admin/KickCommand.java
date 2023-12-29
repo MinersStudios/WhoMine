@@ -78,13 +78,13 @@ public final class KickCommand extends AbstractCommandExecutor<MSEssentials> {
         playerInfo.kick(
                 COMMAND_KICK_MESSAGE_RECEIVER_TITLE,
                 COMMAND_KICK_MESSAGE_RECEIVER_SUBTITLE
-                        .args(reason),
+                        .arguments(reason),
                 PlayerKickEvent.Cause.KICK_COMMAND
         );
         MSLogger.fine(
                 sender,
                 COMMAND_KICK_MESSAGE_SENDER
-                .args(
+                .arguments(
                         playerInfo.getGrayIDGreenName(),
                         text(playerInfo.getNickname()),
                         reason

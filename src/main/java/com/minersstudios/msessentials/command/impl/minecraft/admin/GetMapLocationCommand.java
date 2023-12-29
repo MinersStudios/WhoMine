@@ -70,7 +70,7 @@ public final class GetMapLocationCommand extends AbstractCommandExecutor<MSEssen
         MSLogger.warning(
                 player,
                 COMMAND_GET_MAP_LOCATION_FORMAT
-                .args(
+                .arguments(
                         text(mapView.getWorld().getName(), NamedTextColor.WHITE),
                         text(x, NamedTextColor.WHITE),
                         text(y, NamedTextColor.WHITE),

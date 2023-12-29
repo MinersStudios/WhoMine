@@ -69,7 +69,7 @@ public final class GiveCommand {
                     MSLogger.fine(
                             sender,
                             COMMAND_MSDECOR_GIVE_SUCCESS
-                            .args(
+                            .arguments(
                                     text(amount),
                                     itemStack.displayName(),
                                     playerInfo.getDefaultName()

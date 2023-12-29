@@ -32,7 +32,7 @@ public final class AdminMuteInfoCommand {
             MSLogger.fine(
                     sender,
                     muted
-                    ? COMMAND_PLAYER_MUTE_INFO_INFO.args(
+                    ? COMMAND_PLAYER_MUTE_INFO_INFO.arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(playerInfo.getMutedBy()),
@@ -40,7 +40,7 @@ public final class AdminMuteInfoCommand {
                             playerInfo.getMutedFrom(sender),
                             playerInfo.getMutedTo(sender)
                     )
-                    : COMMAND_PLAYER_MUTE_INFO_INFO_NOT_MUTED.args(
+                    : COMMAND_PLAYER_MUTE_INFO_INFO_NOT_MUTED.arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname())
                     )
@@ -52,7 +52,7 @@ public final class AdminMuteInfoCommand {
             MSLogger.severe(
                     sender,
                     COMMAND_PLAYER_MUTE_INFO_NOT_MUTED
-                    .args(
+                    .arguments(
                             playerInfo.getDefaultName(),
                             text(playerInfo.getNickname())
                     )
@@ -68,7 +68,7 @@ public final class AdminMuteInfoCommand {
                     MSLogger.fine(
                             sender,
                             COMMAND_PLAYER_MUTE_INFO_GET_REASON
-                            .args(
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerInfo.getMuteReason())
@@ -83,7 +83,7 @@ public final class AdminMuteInfoCommand {
                 MSLogger.fine(
                         sender,
                         COMMAND_PLAYER_MUTE_INFO_SET_REASON
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(reason)
@@ -96,7 +96,7 @@ public final class AdminMuteInfoCommand {
                     MSLogger.fine(
                             sender,
                             COMMAND_PLAYER_MUTE_INFO_GET_TIME_TO
-                            .args(
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     playerInfo.getMutedTo(sender)
@@ -119,7 +119,7 @@ public final class AdminMuteInfoCommand {
                 MSLogger.fine(
                         sender,
                         COMMAND_PLAYER_MUTE_INFO_SET_TIME_TO
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(DateUtils.getSenderDate(instant, sender))

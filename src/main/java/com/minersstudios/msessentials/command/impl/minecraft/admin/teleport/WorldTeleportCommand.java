@@ -124,7 +124,7 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
             () -> MSLogger.fine(
                     sender,
                     COMMAND_WORLD_TELEPORT_SENDER_MESSAGE
-                    .args(
+                    .arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(world.getName()),

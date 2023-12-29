@@ -32,7 +32,7 @@ public final class AdminBanInfoCommand {
             MSLogger.fine(
                     sender,
                     banned
-                    ? COMMAND_PLAYER_BAN_INFO_INFO.args(
+                    ? COMMAND_PLAYER_BAN_INFO_INFO.arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(playerInfo.getBannedBy()),
@@ -40,7 +40,7 @@ public final class AdminBanInfoCommand {
                             playerInfo.getBannedFrom(sender),
                             playerInfo.getBannedTo(sender)
                     )
-                    : COMMAND_PLAYER_BAN_INFO_NOT_BANNED.args(
+                    : COMMAND_PLAYER_BAN_INFO_NOT_BANNED.arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname())
                     )
@@ -52,7 +52,7 @@ public final class AdminBanInfoCommand {
             MSLogger.severe(
                     sender,
                     COMMAND_PLAYER_BAN_INFO_NOT_BANNED
-                    .args(
+                    .arguments(
                             playerInfo.getDefaultName(),
                             text(playerInfo.getNickname())
                     )
@@ -66,7 +66,7 @@ public final class AdminBanInfoCommand {
                     MSLogger.fine(
                             sender,
                             COMMAND_PLAYER_BAN_INFO_GET_REASON
-                            .args(
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     playerInfo.getBanReason()
@@ -81,7 +81,7 @@ public final class AdminBanInfoCommand {
                 MSLogger.fine(
                         sender,
                         COMMAND_PLAYER_BAN_INFO_SET_REASON
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(reason)
@@ -94,7 +94,7 @@ public final class AdminBanInfoCommand {
                     MSLogger.fine(
                             sender,
                             COMMAND_PLAYER_BAN_INFO_GET_TIME_TO
-                            .args(
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     playerInfo.getBannedTo(sender)
@@ -127,7 +127,7 @@ public final class AdminBanInfoCommand {
                 MSLogger.fine(
                         sender,
                         COMMAND_PLAYER_BAN_INFO_SET_TIME_TO
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(DateUtils.getSenderDate(instant, sender))

@@ -48,7 +48,7 @@ public final class AdminSettingsCommand {
                     MSLogger.fine(
                             sender,
                             COMMAND_PLAYER_SETTINGS_GET_RESOURCEPACK_TYPE
-                            .args(
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerSettings.getResourcePackType().name().toLowerCase(Locale.ROOT))
@@ -69,7 +69,7 @@ public final class AdminSettingsCommand {
                     MSLogger.severe(
                             sender,
                             COMMAND_PLAYER_SETTINGS_RESOURCEPACK_TYPE_USE_ONE_OF
-                            .args(
+                            .arguments(
                                     text(
                                             Arrays.toString(ResourcePack.Type.values())
                                             .toLowerCase()
@@ -93,7 +93,7 @@ public final class AdminSettingsCommand {
                 MSLogger.fine(
                         sender,
                         COMMAND_PLAYER_SETTINGS_SET_RESOURCEPACK_TYPE
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(paramArgString)
@@ -110,7 +110,7 @@ public final class AdminSettingsCommand {
                         MSLogger.warning(
                                 sender,
                                 COMMAND_PLAYER_SETTINGS_GET_NO_SKIN
-                                .args(
+                                .arguments(
                                         playerInfo.getGrayIDGreenName(),
                                         text(playerInfo.getNickname())
                                 )
@@ -119,7 +119,7 @@ public final class AdminSettingsCommand {
                         MSLogger.fine(
                                 sender,
                                 COMMAND_PLAYER_SETTINGS_GET_SKIN
-                                .args(
+                                .arguments(
                                         playerInfo.getGrayIDGreenName(),
                                         text(playerInfo.getNickname()),
                                         text(skin.getName())
@@ -143,7 +143,7 @@ public final class AdminSettingsCommand {
                             MSLogger.severe(
                                     sender,
                                     COMMAND_PLAYER_SETTINGS_SKIN_NOT_FOUND
-                                    .args(text(skinName))
+                                    .arguments(text(skinName))
                             );
                         } else {
                             if (paramArgString.equals("set")) {
@@ -151,7 +151,7 @@ public final class AdminSettingsCommand {
                                 MSLogger.fine(
                                         sender,
                                         COMMAND_PLAYER_SETTINGS_SET_SKIN
-                                        .args(
+                                        .arguments(
                                                 playerInfo.getDefaultName(),
                                                 text(playerInfo.getNickname()),
                                                 text(skinName)
@@ -162,7 +162,7 @@ public final class AdminSettingsCommand {
                                 MSLogger.fine(
                                         sender,
                                         COMMAND_PLAYER_SETTINGS_REMOVE_SKIN
-                                        .args(
+                                        .arguments(
                                                 text(skinName),
                                                 playerInfo.getDefaultName(),
                                                 text(playerInfo.getNickname())
@@ -173,14 +173,14 @@ public final class AdminSettingsCommand {
                                     MSLogger.fine(
                                             player,
                                             DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT
-                                            .args(text(skinName))
+                                            .arguments(text(skinName))
                                     );
                                 }
 
                                 playerInfo.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                                         LanguageFile.renderTranslation(
                                                 DISCORD_SKIN_SUCCESSFULLY_REMOVED
-                                                .args(
+                                                .arguments(
                                                         text(skinName),
                                                         playerInfo.getDefaultName(),
                                                         text(playerInfo.getNickname())
@@ -212,7 +212,7 @@ public final class AdminSettingsCommand {
                                     MSLogger.fine(
                                             sender,
                                             COMMAND_PLAYER_SETTINGS_ADD_SKIN
-                                            .args(
+                                            .arguments(
                                                     text(skinName),
                                                     playerInfo.getDefaultName(),
                                                     text(playerInfo.getNickname())
@@ -223,14 +223,14 @@ public final class AdminSettingsCommand {
                                         MSLogger.fine(
                                                 player,
                                                 DISCORD_SKIN_SUCCESSFULLY_ADDED_MINECRAFT
-                                                .args(text(skinName))
+                                                .arguments(text(skinName))
                                         );
                                     }
 
                                     playerInfo.sendPrivateDiscordMessage(BotHandler.craftEmbed(
                                             LanguageFile.renderTranslation(
                                                     DISCORD_SKIN_SUCCESSFULLY_ADDED
-                                                    .args(
+                                                    .arguments(
                                                             text(skinName),
                                                             playerInfo.getDefaultName(),
                                                             text(playerInfo.getNickname())
@@ -248,7 +248,7 @@ public final class AdminSettingsCommand {
                         MSLogger.severe(
                                 sender,
                                 COMMAND_PLAYER_SETTINGS_ADD_SKIN_ERROR
-                                .args(
+                                .arguments(
                                         text(skinName),
                                         playerInfo.getDefaultName(),
                                         text(playerInfo.getNickname())

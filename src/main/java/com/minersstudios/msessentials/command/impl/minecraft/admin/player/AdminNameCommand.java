@@ -34,7 +34,7 @@ public final class AdminNameCommand {
             MSLogger.fine(
                     sender,
                     COMMAND_PLAYER_NAME_ABOUT
-                    .args(
+                    .arguments(
                             playerInfo.getGrayIDGreenName()
                             .appendSpace()
                             .append(text(playerName.getPatronymic(), NamedTextColor.GREEN)),
@@ -66,7 +66,7 @@ public final class AdminNameCommand {
                 MSLogger.fine(
                         sender,
                         COMMAND_PLAYER_NAME_FULL_RESET_SENDER
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname())
                         )
@@ -90,7 +90,7 @@ public final class AdminNameCommand {
                     MSLogger.fine(
                             sender,
                             COMMAND_PLAYER_NAME_GET_FIRST_NAME
-                            .args(text(playerName.getFirstName()))
+                            .arguments(text(playerName.getFirstName()))
                     );
                     return true;
                 }
@@ -102,7 +102,7 @@ public final class AdminNameCommand {
                     MSLogger.fine(
                             sender,
                             COMMAND_PLAYER_NAME_GET_LAST_NAME
-                            .args(text(playerName.getLastName()))
+                            .arguments(text(playerName.getLastName()))
                     );
                     return true;
                 }
@@ -114,7 +114,7 @@ public final class AdminNameCommand {
                     MSLogger.fine(
                             sender,
                             COMMAND_PLAYER_NAME_GET_PATRONYMIC
-                            .args(text(playerName.getPatronymic()))
+                            .arguments(text(playerName.getPatronymic()))
                     );
                     return true;
                 }
@@ -129,7 +129,7 @@ public final class AdminNameCommand {
         MSLogger.fine(
                 sender,
                 COMMAND_PLAYER_NAME_NOW_FULL
-                .args(
+                .arguments(
                         playerInfo.getGrayIDGreenName()
                         .appendSpace()
                         .append(text(playerName.getPatronymic(), NamedTextColor.GREEN))

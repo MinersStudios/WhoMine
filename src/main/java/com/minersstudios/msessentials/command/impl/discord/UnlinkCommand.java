@@ -36,7 +36,7 @@ public final class UnlinkCommand extends SlashCommandExecutor {
                     BotHandler.craftEmbed(
                             LanguageFile.renderTranslation(
                                     COMMAND_DISCORD_UNLINK_DISCORD_SUCCESS
-                                    .args(
+                                    .arguments(
                                             playerInfo.getDefaultName(),
                                             text(playerInfo.getPlayerFile().getPlayerName().getNickname())
                                     )
@@ -50,7 +50,7 @@ public final class UnlinkCommand extends SlashCommandExecutor {
                 MSLogger.fine(
                         onlinePlayer,
                         COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS
-                        .args(text(handler.getInteraction().getUser().getName()))
+                        .arguments(text(handler.getInteraction().getUser().getName()))
                 );
             }
         }

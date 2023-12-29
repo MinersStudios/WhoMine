@@ -90,7 +90,7 @@ public final class WhitelistCommand extends AbstractCommandExecutor<MSEssentials
                     MSLogger.fine(
                             sender,
                             COMMAND_WHITE_LIST_ADD_SENDER_MESSAGE
-                            .args(
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname())
                             )
@@ -101,7 +101,7 @@ public final class WhitelistCommand extends AbstractCommandExecutor<MSEssentials
                 MSLogger.warning(
                         sender,
                         COMMAND_WHITE_LIST_ADD_ALREADY
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGoldName(),
                                 text(playerInfo.getNickname())
                         )
@@ -128,7 +128,7 @@ public final class WhitelistCommand extends AbstractCommandExecutor<MSEssentials
                     MSLogger.fine(
                             sender,
                             COMMAND_WHITE_LIST_REMOVE_SENDER_MESSAGE
-                            .args(
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname())
                             )
@@ -139,7 +139,7 @@ public final class WhitelistCommand extends AbstractCommandExecutor<MSEssentials
                 MSLogger.warning(
                         sender,
                         COMMAND_WHITE_LIST_REMOVE_NOT_FOUND
-                        .args(
+                        .arguments(
                                 playerInfo.getGrayIDGoldName(),
                                 text(playerArg)
                         )
