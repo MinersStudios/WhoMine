@@ -112,9 +112,7 @@ public final class PlayerActionListener extends AbstractPacketListener<MSBlock> 
         final boolean hasSlowDigging = effect != null;
 
         if (hasSlowDigging) {
-            final int duration = effect.getDuration();
-
-            if (duration == INFINITE_DURATION) {
+            if (!effect.isVisible()) {
                 return false;
             }
 
@@ -144,7 +142,7 @@ public final class PlayerActionListener extends AbstractPacketListener<MSBlock> 
 
         if (
                 effect != null
-                && effect.getDuration() == INFINITE_DURATION
+                && !effect.isVisible()
         ) {
             serverPlayer.removeEffect(DIG_SLOWDOWN, PLUGIN);
 
@@ -441,7 +439,7 @@ public final class PlayerActionListener extends AbstractPacketListener<MSBlock> 
                             if (progressInStage > stage) {
                                 entry.setStage(progressInStage);
 
-                                if (stage == SharedConstants.FINAL_BREAK_STAGE) {
+                                if (stage >= SharedConstants.FINAL_BREAK_STAGE) {
                                     Handler.this.finish();
                                     new CustomBlock(block, customBlockData)
                                             .destroy(plugin, player);

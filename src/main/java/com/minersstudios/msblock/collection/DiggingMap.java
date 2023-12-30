@@ -572,7 +572,7 @@ public class DiggingMap {
             return biggestStageEntry != null
                     && (
                             this.equals(biggestStageEntry)
-                            || this.stage > biggestStageEntry.getStage()
+                            || this.stage > biggestStageEntry.stage
                     );
         }
 
