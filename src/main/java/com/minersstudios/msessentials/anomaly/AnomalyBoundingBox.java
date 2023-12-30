@@ -1,6 +1,8 @@
 package com.minersstudios.msessentials.anomaly;
 
 import com.minersstudios.mscore.location.MSBoundingBox;
+import it.unimi.dsi.fastutil.doubles.Double2ObjectArrayMap;
+import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
@@ -10,7 +12,6 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ import java.util.Map;
 public final class AnomalyBoundingBox extends BoundingBox {
     private final World world;
     private final List<Double> radii;
-    private final Map<Double, MSBoundingBox> radiusBoundingBoxes;
+    private final Double2ObjectMap<MSBoundingBox> radiusBoundingBoxes;
 
     /**
      * Creates a new anomaly bounding box, with a list of radii and a map of
@@ -42,10 +43,13 @@ public final class AnomalyBoundingBox extends BoundingBox {
     ) {
         this.world = world;
         this.radii = radii;
-        this.radiusBoundingBoxes = new HashMap<>();
+        this.radiusBoundingBoxes = new Double2ObjectArrayMap<>();
 
-        for (final var radius : radii) {
-            this.radiusBoundingBoxes.put(radius, boundingBox.inflate(radius));
+        for (final double radius : radii) {
+            this.radiusBoundingBoxes.put(
+                    radius,
+                    boundingBox.inflate(radius)
+            );
         }
     }
 
@@ -80,9 +84,9 @@ public final class AnomalyBoundingBox extends BoundingBox {
         if (player.getWorld() == this.world) {
             final Vector playerPosition = player.getLocation().toVector();
 
-            for (final var entry : this.radiusBoundingBoxes.entrySet()) {
+            for (final var entry : this.radiusBoundingBoxes.double2ObjectEntrySet()) {
                 if (entry.getValue().contains(playerPosition)) {
-                    return entry.getKey();
+                    return entry.getDoubleKey();
                 }
             }
         }

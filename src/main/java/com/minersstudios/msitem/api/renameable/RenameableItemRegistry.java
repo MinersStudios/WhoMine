@@ -2,6 +2,7 @@ package com.minersstudios.msitem.api.renameable;
 
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msitem.MSItem;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -52,8 +53,8 @@ public final class RenameableItemRegistry {
     public static final String RENAMEABLE_KEY = "renameable";
     public static final NamespacedKey RENAMEABLE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, RENAMEABLE_KEY);
 
-    private static final Map<String, RenameableItem> KEY_MAP = new HashMap<>();
-    private static final Map<RenameEntry, String> RENAME_ENTRY_MAP = new HashMap<>();
+    private static final Map<String, RenameableItem> KEY_MAP = new Object2ObjectOpenHashMap<>();
+    private static final Map<RenameEntry, String> RENAME_ENTRY_MAP = new Object2ObjectOpenHashMap<>();
 
     @Contract(" -> fail")
     private RenameableItemRegistry() throws AssertionError {

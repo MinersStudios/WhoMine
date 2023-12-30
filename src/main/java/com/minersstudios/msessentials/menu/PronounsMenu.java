@@ -10,6 +10,7 @@ import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.Pronouns;
 import com.minersstudios.msessentials.player.RegistrationProcess;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -17,8 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 
@@ -30,7 +29,7 @@ public final class PronounsMenu extends AbstractInventoryHolder<MSEssentials> {
         final MSEssentials plugin = this.getPlugin();
         final ItemStack heItem = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
         final ItemMeta heMeta = heItem.getItemMeta();
-        final var loreHe = new ArrayList<Component>();
+        final var loreHe = new ObjectArrayList<Component>();
 
         heMeta.displayName(MENU_PRONOUNS_BUTTON_HE_TITLE.style(ChatUtils.DEFAULT_STYLE));
         loreHe.add(MENU_PRONOUNS_BUTTON_HE_LORE.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
@@ -39,7 +38,7 @@ public final class PronounsMenu extends AbstractInventoryHolder<MSEssentials> {
 
         final ItemStack sheItem = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         final ItemMeta sheMeta = sheItem.getItemMeta();
-        final var loreShe = new ArrayList<Component>();
+        final var loreShe = new ObjectArrayList<Component>();
 
         sheMeta.displayName(MENU_PRONOUNS_BUTTON_SHE_TITLE.style(ChatUtils.DEFAULT_STYLE));
         loreShe.add(MENU_PRONOUNS_BUTTON_SHE_LORE.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
@@ -48,7 +47,7 @@ public final class PronounsMenu extends AbstractInventoryHolder<MSEssentials> {
 
         final ItemStack theyItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         final ItemMeta theyMeta = theyItem.getItemMeta();
-        final var loreThey = new ArrayList<Component>();
+        final var loreThey = new ObjectArrayList<Component>();
 
         theyMeta.displayName(MENU_PRONOUNS_BUTTON_THEY_TITLE.style(ChatUtils.DEFAULT_STYLE));
         loreThey.add(MENU_PRONOUNS_BUTTON_THEY_LORE.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));

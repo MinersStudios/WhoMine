@@ -6,6 +6,7 @@ import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +22,6 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -238,7 +238,7 @@ public final class Skin implements ConfigurationSerializable {
      */
     @Override
     public @NotNull Map<String, Object> serialize() {
-        final var serialized = new HashMap<String, Object>();
+        final var serialized = new Object2ObjectOpenHashMap<String, Object>();
 
         serialized.put("name", this.name);
         serialized.put("value", this.value);
@@ -265,7 +265,7 @@ public final class Skin implements ConfigurationSerializable {
             return null;
         }
 
-        final var map = new HashMap<String, String>();
+        final var map = new Object2ObjectOpenHashMap<String, String>();
         final Matcher matcher = DESERIALIZE_PATTERN.matcher(string);
 
         while (matcher.find()) {

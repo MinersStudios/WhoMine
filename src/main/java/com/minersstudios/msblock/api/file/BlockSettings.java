@@ -12,9 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 /**
@@ -77,19 +76,25 @@ public class BlockSettings {
     }
 
     /**
-     * Calculates the dig speed of the custom block for a specific
-     * player. The dig speed is influenced by the player's tool,
-     * enchantments, and potion effects.
+     * Calculates the dig speed of the custom block for a specific player. The
+     * dig speed is influenced by the player's tool, enchantments, and potion
+     * effects.
      *
-     * @param player The player whose dig speed is being calculated
-     * @return The calculated dig speed of the custom block for the
-     *         player
+     * @param player               The player whose dig speed is being
+     *                             calculated
+     * @param slowDiggingAmplifier The amplifier of the slow digging effect,
+     *                             or -1 if the player doesn't have the effect
+     * @return The calculated dig speed of the custom block for the player using
+     *         magic numbers
      */
-    public float calculateDigSpeed(final @NotNull Player player) {
+    public float calculateDigSpeed(
+            final @NotNull Player player,
+            final int slowDiggingAmplifier
+    ) {
         float base = 1.0f;
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         final Material material = itemInMainHand.getType();
-        final PotionEffect potionEffect = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
+        final PotionEffect fastDigging = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
 
         if (this.tool.type == ToolType.fromMaterial(material)) {
             base = ToolTier.fromMaterial(material).getDigSpeed();
@@ -103,8 +108,12 @@ public class BlockSettings {
             base /= 5.0f;
         }
 
-        if (potionEffect != null) {
-            base *= (potionEffect.getAmplifier() + 1) * 0.32f;
+        if (fastDigging != null) {
+            base *= (fastDigging.getAmplifier() + 1) * 1.8f;
+        }
+
+        if (slowDiggingAmplifier != -1) {
+            base /= (slowDiggingAmplifier + 1) * 3.6f;
         }
 
         return base / this.hardness;
@@ -209,11 +218,11 @@ public class BlockSettings {
      */
     public static class Placing {
         private PlacingType type;
-        private Set<Material> placeableMaterials;
+        private EnumSet<Material> placeableMaterials;
 
         private Placing(
                 final @NotNull PlacingType type,
-                final @NotNull Set<Material> placeableMaterials
+                final @NotNull EnumSet<Material> placeableMaterials
         ) {
             this.type = type;
             this.placeableMaterials = placeableMaterials;
@@ -232,9 +241,9 @@ public class BlockSettings {
         @Contract("_, _ -> new")
         public static @NotNull Placing create(
                 final @NotNull PlacingType type,
-                final @NotNull Set<Material> placeableMaterials
+                final @NotNull EnumSet<Material> placeableMaterials
         ) {
-            return new Placing(type, Collections.unmodifiableSet(placeableMaterials));
+            return new Placing(type, placeableMaterials);
         }
 
         /**
@@ -252,7 +261,12 @@ public class BlockSettings {
                 final @NotNull PlacingType type,
                 final Material @NotNull ... placeableMaterials
         ) {
-            return new Placing(type, Set.of(placeableMaterials));
+            return new Placing(
+                    type,
+                    placeableMaterials.length == 0
+                    ? EnumSet.noneOf(Material.class)
+                    : EnumSet.of(placeableMaterials[0], placeableMaterials)
+            );
         }
 
         /**
@@ -293,8 +307,9 @@ public class BlockSettings {
          *                           (like a Grass)
          * @return The Placing object with the new set of placeable
          */
-        public @NotNull Placing placeableMaterials(final @NotNull Set<Material> placeableMaterials) {
+        public @NotNull Placing placeableMaterials(final @NotNull EnumSet<Material> placeableMaterials) {
             this.placeableMaterials = placeableMaterials;
+
             return this;
         }
 
@@ -311,10 +326,7 @@ public class BlockSettings {
                 final @NotNull Material first,
                 final Material @NotNull ... rest
         ) {
-            this.placeableMaterials = new HashSet<>(rest.length + 1);
-
-            this.placeableMaterials.add(first);
-            this.placeableMaterials.addAll(Arrays.asList(rest));
+            this.placeableMaterials = EnumSet.of(first, rest);
 
             return this;
         }

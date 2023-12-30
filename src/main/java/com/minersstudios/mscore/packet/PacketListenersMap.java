@@ -5,12 +5,12 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.minersstudios.mscore.listener.api.packet.AbstractPacketListener;
 import com.minersstudios.mscore.plugin.MSPlugin;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -74,7 +74,7 @@ public final class PacketListenersMap {
      * @see AbstractPacketListener
      */
     public @NotNull @UnmodifiableView Collection<AbstractPacketListener<? extends MSPlugin<?>>> listeners() {
-        final var listeners = new HashSet<AbstractPacketListener<? extends MSPlugin<?>>>(this.listenerCount());
+        final var listeners = new ObjectOpenHashSet<AbstractPacketListener<? extends MSPlugin<?>>>(this.listenerCount());
 
         listeners.addAll(this.sendWhiteList.values());
         listeners.addAll(this.receiveWhiteList.values());
@@ -111,7 +111,7 @@ public final class PacketListenersMap {
      * @see PacketType
      */
     public @NotNull @UnmodifiableView Set<PacketType> packetTypeSet() {
-        var packetTypes = new HashSet<PacketType>(this.packetTypeCount());
+        var packetTypes = new ObjectOpenHashSet<PacketType>(this.packetTypeCount());
 
         packetTypes.addAll(this.receiveWhiteList.keySet());
         packetTypes.addAll(this.sendWhiteList.keySet());

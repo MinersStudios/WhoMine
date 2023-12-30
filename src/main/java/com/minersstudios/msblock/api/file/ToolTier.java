@@ -9,12 +9,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum ToolTier {
     HAND(0.1f),
-    WOOD(0.3f),
-    STONE(0.45f),
-    IRON(0.56f),
-    GOLD(0.8f),
-    DIAMOND(0.65f),
-    NETHERITE(0.8f);
+    WOOD(0.35f),
+    STONE(0.6f),
+    IRON(0.7f),
+    GOLD(1.3f),
+    DIAMOND(0.95f),
+    NETHERITE(1.0f);
 
     private final float digSpeed;
 

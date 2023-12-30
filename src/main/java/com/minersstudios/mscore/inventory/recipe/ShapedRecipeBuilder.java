@@ -1,19 +1,20 @@
 package com.minersstudios.mscore.inventory.recipe;
 
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedRecipeBuilder, ShapedRecipe> {
+    private final Char2ObjectMap<RecipeChoice> ingredients;
     private String[] rows;
-    private final Map<Character, RecipeChoice> ingredients = new HashMap<>();
 
-    ShapedRecipeBuilder() {}
+    ShapedRecipeBuilder() {
+        this.ingredients = new Char2ObjectOpenHashMap<>();
+    }
 
     @Override
     protected @NotNull ShapedRecipe newRecipe() throws IllegalStateException {
@@ -33,8 +34,11 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
                 new ShapedRecipe(this.namespacedKey, this.result)
                 .shape(this.rows);
 
-        for (final var entry : this.ingredients.entrySet()) {
-            recipe.setIngredient(entry.getKey(), entry.getValue());
+        for (final var entry : this.ingredients.char2ObjectEntrySet()) {
+            recipe.setIngredient(
+                    entry.getCharKey(),
+                    entry.getValue()
+            );
         }
 
         return recipe;
@@ -63,7 +67,7 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
         return this.shape0(first);
     }
 
-    public Map<Character, RecipeChoice> ingredients() {
+    public Char2ObjectMap<RecipeChoice> ingredients() {
         return this.ingredients;
     }
 

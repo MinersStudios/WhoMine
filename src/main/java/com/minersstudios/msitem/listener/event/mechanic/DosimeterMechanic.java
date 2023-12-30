@@ -7,6 +7,8 @@ import com.minersstudios.msessentials.anomaly.Anomaly;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.CustomItem;
 import com.minersstudios.msitem.registry.item.Dosimeter;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -216,7 +218,7 @@ public final class DosimeterMechanic extends AbstractEventListener<MSItem> {
                     copy.setItem(itemStack);
 
                     if (copy.isEnabled()) {
-                        final var radiiPlayerInside = new HashMap<Anomaly, Double>();
+                        final var radiiPlayerInside = new Object2DoubleOpenHashMap<Anomaly>();
 
                         for (final var anomaly : MSEssentials.cache().getAnomalies().values()) {
                             final double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
@@ -257,7 +259,7 @@ public final class DosimeterMechanic extends AbstractEventListener<MSItem> {
                 final @Nullable Double radius,
                 final @NotNull Location loc
         ) {
-            final var reversedRadii = new ArrayList<>(radii);
+            final var reversedRadii = new ObjectArrayList<>(radii);
 
             Collections.reverse(reversedRadii);
 

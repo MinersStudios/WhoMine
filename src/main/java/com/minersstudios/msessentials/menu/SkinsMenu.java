@@ -13,6 +13,7 @@ import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +22,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -142,7 +142,7 @@ public final class SkinsMenu extends AbstractInventoryHolder<MSEssentials> {
     public void open(final @NotNull Player player) {
         final CustomInventory customInventory = this.getCustomInventory().clone();
         final var skins = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player).getPlayerFile().getSkins();
-        final var skinButtons = new HashMap<Integer, InventoryButton>();
+        final var skinButtons = new Int2ObjectOpenHashMap<InventoryButton>();
 
         for (int i = 0; i < skins.size(); i++) {
             final Skin skin = skins.get(i);

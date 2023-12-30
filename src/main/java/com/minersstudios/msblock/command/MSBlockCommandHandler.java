@@ -10,12 +10,12 @@ import com.minersstudios.msessentials.utility.MSPlayerUtils;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -74,7 +74,7 @@ public final class MSBlockCommandHandler extends AbstractCommandExecutor<MSBlock
                     ? MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton())
                     : EMPTY_TAB;
             case 3 -> args[0].equals("give")
-                    ? new ArrayList<>(CustomBlockRegistry.keySet())
+                    ? new ObjectArrayList<>(CustomBlockRegistry.keySet())
                     : EMPTY_TAB;
             default -> EMPTY_TAB;
         };

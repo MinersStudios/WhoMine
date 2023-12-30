@@ -3,6 +3,7 @@ package com.minersstudios.msitem.registry.item.cards;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msitem.api.CustomItemImpl;
 import com.minersstudios.msitem.api.CustomItemType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -25,7 +26,7 @@ import static net.kyori.adventure.text.Component.text;
 
 @SuppressWarnings("UnstableApiUsage")
 public interface CardsBicycle {
-    List<ItemStack> BLUE_CARD_ITEMS = List.of(
+    List<ItemStack> BLUE_CARD_ITEMS = ObjectArrayList.of(
             //<editor-fold desc="Blue cards" defaultstate="collapsed">
             createCardItem(1260, "Туз треф", "Синяя колода карт \"Bicycle\""),
             createCardItem(1261, "2 треф", "Синяя колода карт \"Bicycle\""),
@@ -84,7 +85,7 @@ public interface CardsBicycle {
             //</editor-fold>
     );
 
-    List<ItemStack> RED_CARD_ITEMS = List.of(
+    List<ItemStack> RED_CARD_ITEMS = ObjectArrayList.of(
             //<editor-fold desc="Red cards" defaultstate="collapsed">
             createCardItem(1314, "Туз треф", "Красная колода карт \"Bicycle\""),
             createCardItem(1315, "2 треф", "Красная колода карт \"Bicycle\""),

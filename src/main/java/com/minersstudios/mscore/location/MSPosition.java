@@ -407,6 +407,7 @@ public final class MSPosition implements Cloneable {
                 world == null
                 ? null
                 : new WeakReference<>(world);
+
         return clone;
     }
 
@@ -1088,9 +1089,8 @@ public final class MSPosition implements Cloneable {
     @Override
     public int hashCode() {
         int hash = 3;
-        final World world = this.world == null ? null : this.world.get();
 
-        hash = 19 * hash + (world != null ? world.hashCode() : 0);
+        hash = 19 * hash + Objects.hashCode(this.world());
         hash = 19 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
         hash = 19 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
         hash = 19 * hash + (int) (Double.doubleToLongBits(this.z) ^ (Double.doubleToLongBits(this.z) >>> 32));
@@ -1098,6 +1098,40 @@ public final class MSPosition implements Cloneable {
         hash = 19 * hash + Float.floatToIntBits(this.yaw);
 
         return hash;
+    }
+
+    public boolean equalsCoords(final @NotNull MSVector vec) {
+        return this.equalsCoords(vec.x(), vec.y(), vec.z());
+    }
+
+    public boolean equalsCoords(final @NotNull Vector vec) {
+        return this.equalsCoords(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    public boolean equalsCoords(final @NotNull Vec3i vec) {
+        return this.equalsCoords(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+    public boolean equalsCoords(final @NotNull MSPosition pos) {
+        return this.equalsCoords(pos.x(), pos.y(), pos.z());
+    }
+
+    public boolean equalsCoords(final @NotNull Position pos) {
+        return this.equalsCoords(pos.x(), pos.y(), pos.z());
+    }
+
+    public boolean equalsCoords(final @NotNull io.papermc.paper.math.Position pos) {
+        return this.equalsCoords(pos.x(), pos.y(), pos.z());
+    }
+
+    public boolean equalsCoords(
+            final double x,
+            final double y,
+            final double z
+    ) {
+        return Double.compare(x, this.x) == 0
+                && Double.compare(y, this.y) == 0
+                && Double.compare(z, this.z) == 0;
     }
 
     @Override
@@ -1110,10 +1144,7 @@ public final class MSPosition implements Cloneable {
                         && Double.compare(that.z, this.z) == 0
                         && Float.compare(that.pitch, this.pitch) == 0
                         && Float.compare(that.yaw, this.yaw) == 0
-                        && !Objects.equals(
-                                this.world == null ? null : this.world.get(),
-                                that.world == null ? null : that.world.get()
-                        )
+                        && Objects.equals(this.world(), that.world())
                 );
     }
 
@@ -1129,7 +1160,7 @@ public final class MSPosition implements Cloneable {
     @Override
     public @NotNull String toString() {
         return "MSPosition{" +
-                "world=" + (this.world == null ? null : this.world.get()) +
+                "world=" + (this.world()) +
                 ",x=" + this.x +
                 ",y=" + this.y +
                 ",z=" + this.z +
@@ -1141,9 +1172,7 @@ public final class MSPosition implements Cloneable {
     @Contract(" -> new")
     public @NotNull Location toLocation() {
         return new Location(
-                this.world == null
-                        ? null
-                        : this.world.get(),
+                this.world(),
                 this.x, this.y, this.z,
                 this.yaw, this.pitch
         );

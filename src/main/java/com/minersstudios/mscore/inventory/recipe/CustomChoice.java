@@ -1,6 +1,7 @@
 package com.minersstudios.mscore.inventory.recipe;
 
 import com.minersstudios.mscore.utility.MSCustomUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.jetbrains.annotations.Contract;
@@ -61,7 +62,7 @@ public final class CustomChoice implements RecipeChoice {
         }
 
         this.namespacedKeys = namespacedKeys;
-        this.choices = new ArrayList<>();
+        this.choices = new ObjectArrayList<>();
 
         for (final var namespacedKey : namespacedKeys) {
             if (namespacedKey == null) {
@@ -129,8 +130,8 @@ public final class CustomChoice implements RecipeChoice {
         try {
             final CustomChoice clone = (CustomChoice) super.clone();
 
-            clone.choices = new ArrayList<>(this.choices);
-            clone.namespacedKeys = new ArrayList<>(this.namespacedKeys);
+            clone.choices = new ObjectArrayList<>(this.choices);
+            clone.namespacedKeys = new ObjectArrayList<>(this.namespacedKeys);
 
             return clone;
         } catch (final CloneNotSupportedException e) {

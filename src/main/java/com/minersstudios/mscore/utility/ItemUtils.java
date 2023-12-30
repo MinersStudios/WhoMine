@@ -208,6 +208,7 @@ public final class ItemUtils {
      *
      * @param material     The material, whose max stack size will be changed
      * @param maxStackSize The new max stack size
+     * @see <a href="https://nms.screamingsandals.org/1.20.4/net/minecraft/world/item/Item.html">NMS Item</a>
      */
     @SuppressWarnings("JavaReflectionMemberAccess")
     public static void setMaxStackSize(
@@ -215,7 +216,7 @@ public final class ItemUtils {
             final int maxStackSize
     ) {
         try {
-            final Field nmsSize = Item.class.getDeclaredField("d"); // "maxStackSize" field : https://nms.screamingsandals.org/1.20.4/net/minecraft/world/item/Item.html
+            final Field nmsSize = Item.class.getDeclaredField("d"); // "maxStackSize" field
 
             nmsSize.setAccessible(true);
             nmsSize.setInt(

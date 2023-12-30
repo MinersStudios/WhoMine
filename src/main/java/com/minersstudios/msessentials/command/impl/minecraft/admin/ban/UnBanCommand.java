@@ -1,8 +1,8 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.ban;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
@@ -11,6 +11,7 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -20,7 +21,6 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -76,7 +76,7 @@ public final class UnBanCommand extends AbstractCommandExecutor<MSEssentials> {
             final String @NotNull ... args
     ) {
         if (args.length == 1) {
-            final var completions = new ArrayList<String>();
+            final var completions = new ObjectArrayList<String>();
             final PlayerInfoMap playerInfoMap = this.getPlugin().getCache().getPlayerInfoMap();
             final ProfileBanList banList = Bukkit.getServer().getBanList(BanList.Type.PROFILE);
             final Set<BanEntry<PlayerProfile>> entries = banList.getEntries();

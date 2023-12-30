@@ -13,6 +13,9 @@ import com.minersstudios.msdecor.api.action.DecorPlaceAction;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import com.minersstudios.msdecor.event.CustomDecorPlaceEvent;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -72,7 +75,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     private final int[] lightLevels;
     private final CustomDecorData.Type<D>[] types;
     private final EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
-    private final Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
+    private final Int2ObjectMap<CustomDecorData.Type<D>> lightLevelTypeMap;
     private final DecorClickAction clickAction;
     private final DecorPlaceAction placeAction;
     private final DecorBreakAction breakAction;
@@ -108,7 +111,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         this.isDropType = builder.dropsType;
 
         if (builder.recipeFunctions != null) {
-            this.recipeEntries = new ArrayList<>(builder.recipeFunctions.length);
+            this.recipeEntries = new ObjectArrayList<>(builder.recipeFunctions.length);
             this.recipeFunctions = builder.recipeFunctions;
         } else {
             this.recipeEntries = Collections.emptyList();
@@ -348,7 +351,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public @NotNull @Unmodifiable Map<Integer, CustomDecorData.Type<D>> typeLightLevelMap() throws UnsupportedOperationException {
+    public @NotNull @Unmodifiable Int2ObjectMap<CustomDecorData.Type<D>> typeLightLevelMap() throws UnsupportedOperationException {
         if (!this.isLightTyped()) {
             throw new UnsupportedOperationException("This custom decor is not light typed!");
         }
@@ -455,9 +458,9 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.lightLevels[0];
         }
 
-        for (final var entry : this.lightLevelTypeMap.entrySet()) {
+        for (final var entry : this.lightLevelTypeMap.int2ObjectEntrySet()) {
             if (key.equals(entry.getValue().getKey().getKey())) {
-                return entry.getKey();
+                return entry.getIntKey();
             }
         }
 
@@ -736,7 +739,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         final ServerLevel serverLevel = world.getHandle();
         final MSBoundingBox msbb = this.hitBox.getBoundingBox(position, finalFace, rotation);
         final BlockPos[] blocksToReplace = msbb.getBlockPositions();
-        final var blockStates = new ArrayList<org.bukkit.block.BlockState>();
+        final var blockStates = new ObjectArrayList<org.bukkit.block.BlockState>();
 
         for (final var blockPos : blocksToReplace) {
             final BlockState blockState = serverLevel.getBlockState(blockPos);
@@ -1112,8 +1115,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final @NotNull BlockState fillBlockState,
             final @Nullable Predicate<BlockPos> predicate
     ) {
-        final var blockList = new ArrayList<Block>();
-        final var list = new ArrayList<BlockPos>();
+        final var blockList = new ObjectArrayList<Block>();
+        final var list = new ObjectArrayList<BlockPos>();
         final Material fillMaterial = fillBlockState.getBukkitMaterial();
         final BlockData fillBlockData = fillBlockState.createCraftBlockData();
 
@@ -1203,7 +1206,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         private CustomDecorData.Type<D>[] types;
         private EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap;
         private int[] lightLevels;
-        private Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap;
+        private Int2ObjectMap<CustomDecorData.Type<D>> lightLevelTypeMap;
         private DecorClickAction clickAction;
         private DecorPlaceAction placeAction;
         private DecorBreakAction breakAction;
@@ -1254,7 +1257,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                 ) {
                     final ItemMeta meta = this.itemStack.getItemMeta();
                     final var currentLore = meta.lore();
-                    final var newLore = new ArrayList<Component>();
+                    final var newLore = new ObjectArrayList<Component>();
 
                     if (this.isPaintable()) {
                         newLore.add(Font.Components.PAINTABLE);
@@ -1672,7 +1675,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public Map<Integer, CustomDecorData.Type<D>> lightLevelTypeMap() {
+        public Int2ObjectMap<CustomDecorData.Type<D>> lightLevelTypeMap() {
             return this.lightLevelTypeMap;
         }
 
@@ -1707,7 +1710,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
                     "Set light typed parameter before setting light level type map!"
             );
 
-            this.lightLevelTypeMap = new HashMap<>();
+            this.lightLevelTypeMap = new Int2ObjectOpenHashMap<>();
 
             this.putLightLevelType(first.getKey(), first.getValue());
 

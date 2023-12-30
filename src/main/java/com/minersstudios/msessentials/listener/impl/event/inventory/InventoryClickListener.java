@@ -19,35 +19,44 @@ import static net.kyori.adventure.text.Component.text;
 
 @EventListener
 public final class InventoryClickListener extends AbstractEventListener<MSEssentials> {
+    private static final int HELMET_SLOT = 39;
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryClick(final @NotNull InventoryClickEvent event) {
-        final Player player = (Player) event.getWhoClicked();
         final Inventory clickedInventory = event.getClickedInventory();
-        final int slot = event.getSlot();
-        final ItemStack cursorItem = event.getCursor();
-        final ItemStack currentItem = event.getCurrentItem();
 
         if (clickedInventory == null) {
             return;
         }
 
-        if (this.getPlugin().getCache().getWorldDark().isInWorldDark(player)) {
+        final MSEssentials plugin = this.getPlugin();
+        final Player player = (Player) event.getWhoClicked();
+        final ItemStack currentItem = event.getCurrentItem();
+
+        if (plugin.getCache().getWorldDark().isInWorldDark(player)) {
             event.setCancelled(true);
         }
 
-        if (
-                slot == 39
-                && event.getSlotType() == InventoryType.SlotType.ARMOR
-                && currentItem != null
-                && currentItem.getType() == Material.AIR
-                && cursorItem.getType() != Material.AIR
-        ) {
-            player.setItemOnCursor(null);
-            this.getPlugin().runTask(() -> player.getInventory().setHelmet(cursorItem));
+        if (currentItem == null) {
+            return;
         }
 
-        if (currentItem != null && currentItem.getType() != Material.AIR) {
+        final int slot = event.getSlot();
+        final ItemStack cursorItem = event.getCursor();
+
+        if (
+                slot == HELMET_SLOT
+                && event.getSlotType() == InventoryType.SlotType.ARMOR
+                && currentItem.isEmpty()
+                && !cursorItem.isEmpty()
+        ) {
+            player.setItemOnCursor(null);
+            plugin.runTask(
+                    () -> player.getInventory().setHelmet(cursorItem)
+            );
+        }
+
+        if (!currentItem.isEmpty()) {
             boolean remove = currentItem.getType() == Material.BEDROCK;
 
             if (!remove) {

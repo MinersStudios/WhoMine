@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.menu;
 
 import com.minersstudios.mscore.inventory.*;
 import com.minersstudios.mscore.inventory.action.ButtonClickAction;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,7 +12,6 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -154,7 +154,7 @@ public final class CraftsMenu {
             final @NotNull Type type,
             final @NotNull Collection<Recipe> recipes
     ) {
-        final var elements = new ArrayList<InventoryButton>();
+        final var elements = new ObjectArrayList<InventoryButton>();
         final ElementPagedInventory customInventory = switch (type) {
             case BLOCKS -> BLOCKS_INVENTORY;
             case DECORS -> DECORS_INVENTORY;

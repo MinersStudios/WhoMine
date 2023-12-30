@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.msessentials.utility.IDUtils;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -203,7 +204,7 @@ public final class IDMap {
      * @return next player ID
      */
     public int nextID() {
-        final var usedIDs = new HashSet<>(this.map.values());
+        final var usedIDs = new ObjectOpenHashSet<>(this.map.values());
 
         for (int id = 0; id < Integer.MAX_VALUE; id++) {
             if (!usedIDs.contains(id)) {

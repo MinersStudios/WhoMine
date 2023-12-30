@@ -2,15 +2,15 @@ package com.minersstudios.mscore.inventory;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Builder for paged inventory with elements. Element slots are slots where
@@ -105,8 +105,8 @@ public class ElementPagedInventory extends PagedCustomInventoryImpl<ElementPaged
      * @param page Page index
      * @return Elements of the page
      */
-    public @NotNull Map<Integer, InventoryButton> getPageContents(final int page) {
-        final var buttons = new HashMap<Integer, InventoryButton>(this.elementSlots.length);
+    public @NotNull Int2ObjectMap<InventoryButton> getPageContents(final int page) {
+        final var buttons = new Int2ObjectOpenHashMap<InventoryButton>(this.elementSlots.length);
         final var buttonList = this.elements.get(page);
 
         for (int i = 0; i < buttonList.size(); ++i) {

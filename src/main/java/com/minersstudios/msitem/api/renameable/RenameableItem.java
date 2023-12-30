@@ -2,6 +2,8 @@ package com.minersstudios.msitem.api.renameable;
 
 import com.minersstudios.mscore.utility.MSCustomUtils;
 import com.minersstudios.msitem.MSItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -111,7 +113,7 @@ public class RenameableItem {
         this.whiteList =
                 whiteList == null
                 ? Collections.emptySet()
-                : new HashSet<>(whiteList);
+                : new ObjectOpenHashSet<>(whiteList);
 
         if (isShowInRenameMenu) {
             plugin.getCache().getRenameableMenuItems().add(this);
@@ -154,8 +156,8 @@ public class RenameableItem {
         final int customModelData = renameableItemConfig.getInt("custom-model-data", -1);
 
         final RenameCollection renameCollection = new RenameCollection(key);
-        final var lore = new ArrayList<Component>();
-        final var whiteList = new HashSet<UUID>();
+        final var lore = new ObjectArrayList<Component>();
+        final var whiteList = new ObjectOpenHashSet<UUID>();
 
         if (itemsString.isEmpty()) {
             final String item = renameableItemConfig.getString("items");

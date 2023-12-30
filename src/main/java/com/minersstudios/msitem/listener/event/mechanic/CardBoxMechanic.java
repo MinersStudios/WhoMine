@@ -6,6 +6,7 @@ import com.minersstudios.mscore.utility.ItemUtils;
 import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.CustomItem;
 import com.minersstudios.msitem.registry.item.cards.CardsBicycle;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -17,12 +18,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BundleMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @EventListener
 public final class CardBoxMechanic extends AbstractEventListener<MSItem> {
-    private static final List<ItemStack> CARDS = new ArrayList<>();
+    private static final List<ItemStack> CARDS = new ObjectArrayList<>();
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryMoveItem(final @NotNull InventoryMoveItemEvent event) {
@@ -104,7 +104,7 @@ public final class CardBoxMechanic extends AbstractEventListener<MSItem> {
 
         if (ItemUtils.isContainsItem(CARDS, cardItem)) {
             final BundleMeta bundleMeta = (BundleMeta) cardBoxItem.getItemMeta();
-            final var itemStacks = new ArrayList<ItemStack>();
+            final var itemStacks = new ObjectArrayList<ItemStack>();
 
             itemStacks.add(cardItem);
             itemStacks.addAll(bundleMeta.getItems());

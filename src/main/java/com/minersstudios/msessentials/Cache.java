@@ -12,6 +12,9 @@ import com.minersstudios.msessentials.player.collection.IDMap;
 import com.minersstudios.msessentials.player.collection.MuteMap;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.world.WorldDark;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -19,8 +22,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +39,7 @@ public final class Cache extends PluginCache<MSEssentials> {
     private Map<Player, Map<AnomalyAction, Long>> playerAnomalyActionMap;
     private ChatBuffer chatBuffer;
     private List<BukkitTask> bukkitTasks;
-    private Map<Long, BotHandler> botHandlers;
+    private Long2ObjectMap<BotHandler> botHandlers;
     private DiscordManager discordManager;
     PlayerInfo consolePlayerInfo;
     WorldDark worldDark;
@@ -64,8 +65,8 @@ public final class Cache extends PluginCache<MSEssentials> {
         this.anomalies = new ConcurrentHashMap<>();
         this.playerAnomalyActionMap = new ConcurrentHashMap<>();
         this.chatBuffer = new ChatBuffer(plugin);
-        this.bukkitTasks = new ArrayList<>();
-        this.botHandlers = new HashMap<>();
+        this.bukkitTasks = new ObjectArrayList<>();
+        this.botHandlers = new Long2ObjectOpenHashMap<>();
         this.discordManager = new DiscordManager(plugin);
     }
 
@@ -126,7 +127,7 @@ public final class Cache extends PluginCache<MSEssentials> {
         return this.bukkitTasks;
     }
 
-    public @UnknownNullability Map<Long, BotHandler> getBotHandlers() {
+    public @UnknownNullability Long2ObjectMap<BotHandler> getBotHandlers() {
         return this.botHandlers;
     }
 

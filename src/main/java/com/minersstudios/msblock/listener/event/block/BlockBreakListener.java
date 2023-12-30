@@ -8,6 +8,7 @@ import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.utility.BlockUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,8 +38,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 @EventListener
 public final class BlockBreakListener extends AbstractEventListener<MSBlock> {
@@ -205,7 +204,7 @@ public final class BlockBreakListener extends AbstractEventListener<MSBlock> {
             }
 
             final org.bukkit.block.BlockState state = bblock.getState();
-            gameMode.level.captureDrops = new ArrayList<>();
+            gameMode.level.captureDrops = new ObjectArrayList<>();
             block.playerWillDestroy(gameMode.level, pos, iBlockData, serverPlayer);
 
             final boolean flag = gameMode.level.removeBlock(pos, false);

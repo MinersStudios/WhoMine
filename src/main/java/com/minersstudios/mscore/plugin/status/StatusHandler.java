@@ -1,8 +1,15 @@
 package com.minersstudios.mscore.plugin.status;
 
-import org.jetbrains.annotations.*;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,14 +45,14 @@ public final class StatusHandler {
      * @return An unmodifiable set of all statuses
      */
     public @NotNull @Unmodifiable Set<PluginStatus> statusSet() {
-        final var list = new HashSet<>(this.lowStatusSet);
+        final var set = new ObjectOpenHashSet<>(this.lowStatusSet);
         final PluginStatus highStatus = this.highStatus.get();
 
         if (highStatus != null) {
-            list.add(highStatus);
+            set.add(highStatus);
         }
 
-        return Collections.unmodifiableSet(list);
+        return Collections.unmodifiableSet(set);
     }
 
     /**
@@ -77,7 +84,7 @@ public final class StatusHandler {
         }
 
         if (!this.watcherList.isEmpty()) {
-            final var completed = new ArrayList<StatusWatcher>();
+            final var completed = new ObjectArrayList<StatusWatcher>();
 
             for (final var watcher : this.watcherList) {
                 if (watcher.tryRun(status)) {
@@ -96,7 +103,7 @@ public final class StatusHandler {
      */
     @Contract("_ -> new")
     public @NotNull List<StatusWatcher> getWatchers(final @NotNull PluginStatus status) throws UnsupportedOperationException {
-        final var list = new ArrayList<StatusWatcher>();
+        final var list = new ObjectArrayList<StatusWatcher>();
 
         for (final var watcher : this.watcherList) {
             if (watcher.contains(status)) {

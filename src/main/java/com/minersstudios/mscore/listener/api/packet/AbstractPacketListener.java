@@ -5,12 +5,12 @@ import com.minersstudios.mscore.listener.api.MSListener;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.plugin.MSPlugin;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -36,8 +36,8 @@ public abstract class AbstractPacketListener<P extends MSPlugin<P>> implements M
             final @NotNull PacketType first,
             final PacketType @NotNull ... rest
     ) {
-        this.sendWhiteList = new HashSet<>();
-        this.receiveWhiteList = new HashSet<>();
+        this.sendWhiteList = new ObjectOpenHashSet<>();
+        this.receiveWhiteList = new ObjectOpenHashSet<>();
         final PacketType[] whitelist = new PacketType[rest.length + 1];
 
         System.arraycopy(rest, 0, whitelist, 0, rest.length);

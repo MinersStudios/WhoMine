@@ -3,6 +3,7 @@ package com.minersstudios.msessentials.task;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Server;
@@ -11,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,7 +23,7 @@ public final class BanListTask implements Runnable {
     public BanListTask(final @NotNull MSEssentials plugin) {
         this.server = plugin.getServer();
         this.playerInfoMap = plugin.getCache().getPlayerInfoMap();
-        this.ignoreBanSet = new HashSet<>();
+        this.ignoreBanSet = new ObjectOpenHashSet<>();
     }
 
     @Override

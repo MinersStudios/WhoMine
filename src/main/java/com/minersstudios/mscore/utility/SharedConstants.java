@@ -24,6 +24,7 @@ public final class SharedConstants {
     public static final String INVISIBLE_ITEM_FRAME_TAG =              "invisibleItemFrame";
     public static final String HIDE_TAGS_TEAM_NAME =                   "hide_tags";
     public static final int SIT_RANGE =                                9;
+    public static final int FINAL_BREAK_STAGE =                        10;
 
     @Contract(" -> fail")
     private SharedConstants() throws AssertionError {

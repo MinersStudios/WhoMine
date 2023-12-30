@@ -2,13 +2,14 @@ package com.minersstudios.msessentials.command.impl.discord;
 
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.msessentials.command.api.discord.interaction.CommandHandler;
 import com.minersstudios.msessentials.command.api.discord.SlashCommand;
 import com.minersstudios.msessentials.command.api.discord.SlashCommandExecutor;
+import com.minersstudios.msessentials.command.api.discord.interaction.CommandHandler;
 import com.minersstudios.msessentials.command.api.discord.interaction.TabCompleterHandler;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.skin.Skin;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.interactions.commands.Command;
@@ -21,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.minersstudios.mscore.language.LanguageFile.renderTranslation;
@@ -134,7 +134,7 @@ public final class EditSkinCommand extends SlashCommandExecutor {
             return EMPTY_TAB;
         }
 
-        final var skinNames = new ArrayList<Command.Choice>(MAX_TAB_SIZE);
+        final var skinNames = new ObjectArrayList<Command.Choice>(MAX_TAB_SIZE);
 
         for (final var skin : playerInfo.getPlayerFile().getSkins()) {
             skinNames.add(

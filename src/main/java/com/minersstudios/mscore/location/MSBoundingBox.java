@@ -2,6 +2,7 @@ package com.minersstudios.mscore.location;
 
 import io.papermc.paper.chunk.system.entity.EntityLookup;
 import io.papermc.paper.world.ChunkEntitySlices;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
@@ -24,7 +25,6 @@ import org.spigotmc.AsyncCatcher;
 
 import javax.annotation.concurrent.Immutable;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -1970,7 +1970,7 @@ public final class MSBoundingBox {
         AsyncCatcher.catchOp("retrieveEntities");
 
         final AABB aabb = this.toAABB();
-        final var list = new ArrayList<net.minecraft.world.entity.Entity>();
+        final var list = new ObjectArrayList<net.minecraft.world.entity.Entity>();
         final EntityLookup entityLookup = level.getEntityLookup();
 
         final int minChunkX = ((int) Math.floor(this.minX) - 2) >> 4;

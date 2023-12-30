@@ -1,6 +1,9 @@
 package com.minersstudios.mscore.inventory;
 
 import com.minersstudios.mscore.inventory.action.InventoryAction;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.Container;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventory;
@@ -16,8 +19,6 @@ import org.jetbrains.annotations.Range;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"unused", "UnusedReturnValue", "unchecked"})
 abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInventoryCustom implements CustomInventory {
-    protected @NotNull Map<Integer, InventoryButton> buttons;
+    protected @NotNull Int2ObjectMap<InventoryButton> buttons;
     protected @Nullable InventoryAction<InventoryOpenEvent> openAction;
     protected @Nullable InventoryAction<InventoryCloseEvent> closeAction;
     protected @Nullable InventoryAction<InventoryClickEvent> clickAction;
@@ -47,8 +48,8 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
         super(null, verticalSize * 9, title);
 
         this.size = verticalSize * 9;
-        this.buttons = new HashMap<>(this.size);
-        this.args = new ArrayList<>();
+        this.buttons = new Int2ObjectOpenHashMap<>(this.size);
+        this.args = new ObjectArrayList<>();
     }
 
     @Override
@@ -207,7 +208,7 @@ abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInven
             final Unsafe unsafe = (Unsafe) unsafeField.get(null);
             unsafe.putObject(clone, unsafe.objectFieldOffset(inventoryField), newContainer);
 
-            clone.buttons = new HashMap<>(this.buttons);
+            clone.buttons = new Int2ObjectOpenHashMap<>(this.buttons);
             clone.setContents(this.getContents());
 
             return (S) clone;

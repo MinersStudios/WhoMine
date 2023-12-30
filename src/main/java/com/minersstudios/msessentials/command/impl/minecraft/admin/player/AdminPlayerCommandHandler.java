@@ -14,13 +14,13 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -244,7 +244,7 @@ public final class AdminPlayerCommandHandler extends AbstractCommandExecutor<MSE
     ) {
         switch (args.length) {
             case 1 -> {
-                final var completions = new ArrayList<String>();
+                final var completions = new ObjectArrayList<String>();
                 final IDMap idMap = this.getPlugin().getCache().getIdMap();
 
                 for (final var offlinePlayer : sender.getServer().getOfflinePlayers()) {
@@ -366,7 +366,7 @@ public final class AdminPlayerCommandHandler extends AbstractCommandExecutor<MSE
                                 }
 
                                 final var skins = playerInfo.getPlayerFile().getSkins();
-                                final var names = new ArrayList<String>(skins.size());
+                                final var names = new ObjectArrayList<String>(skins.size());
 
                                 for (var skin : skins) {
                                     names.add(skin.getName());

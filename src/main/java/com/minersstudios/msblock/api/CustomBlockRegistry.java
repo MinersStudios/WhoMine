@@ -4,6 +4,11 @@ import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.file.NoteBlockData;
 import com.minersstudios.msblock.api.file.PlacingType;
 import com.minersstudios.mscore.utility.ChatUtils;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -74,8 +79,8 @@ import java.util.*;
 public final class CustomBlockRegistry {
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSBlock.NAMESPACE, "type");
 
-    private static final Map<Integer, CustomBlockData> HASH_CODE_MAP = new HashMap<>();
-    private static final Map<String, Set<Integer>> KEY_MAP = new HashMap<>();
+    private static final Int2ObjectMap<CustomBlockData> HASH_CODE_MAP = new Int2ObjectOpenHashMap<>();
+    private static final Map<String, IntSet> KEY_MAP = new Object2ObjectOpenHashMap<>();
 
     static {
         register(CustomBlockData.getDefault());
@@ -147,7 +152,7 @@ public final class CustomBlockRegistry {
                 .flatMap(
                         hashCodes -> hashCodes.isEmpty()
                                 ? Optional.empty()
-                                : fromHashCode(hashCodes.iterator().next())
+                                : fromHashCode(hashCodes.iterator().nextInt())
                 );
     }
 
@@ -459,7 +464,7 @@ public final class CustomBlockRegistry {
             throw new IllegalArgumentException("The hash code " + hashCode + " is already registered! See " + key + " custom block data!");
         }
 
-        final var hashKeys = KEY_MAP.computeIfAbsent(key, k -> new HashSet<>());
+        final var hashKeys = KEY_MAP.computeIfAbsent(key, k -> new IntOpenHashSet());
 
         hashKeys.add(hashCode);
         HASH_CODE_MAP.put(hashCode, customBlockData);

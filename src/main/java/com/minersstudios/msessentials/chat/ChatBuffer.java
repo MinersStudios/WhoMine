@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.chat;
 
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -23,7 +24,7 @@ public final class ChatBuffer {
 
     public ChatBuffer(final @NotNull MSEssentials plugin) {
         this.plugin = plugin;
-        this.chatQueue = new HashMap<>();
+        this.chatQueue = new Object2ObjectOpenHashMap<>();
     }
 
     public @NotNull @UnmodifiableView Map<UUID, Queue<String>> getChatQueue() {

@@ -7,6 +7,7 @@ import com.minersstudios.msitem.MSItem;
 import com.minersstudios.msitem.api.renameable.RenameCollection;
 import com.minersstudios.msitem.api.renameable.RenameableItem;
 import com.minersstudios.msitem.api.renameable.RenameableItemRegistry;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.GameMode;
@@ -24,7 +25,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.stream.IntStream;
 
 import static com.minersstudios.mscore.inventory.InventoryButton.playClickSound;
@@ -139,13 +139,13 @@ public final class RenamesMenu {
     }
 
     public static void update(final @NotNull MSItem plugin) {
-        final var elements = new ArrayList<InventoryButton>();
+        final var elements = new ObjectArrayList<InventoryButton>();
 
         for (final var renameableItem : plugin.getCache().getRenameableMenuItems()) {
             final RenameCollection renameCollection = renameableItem.getRenames();
             final ItemStack resultItem = renameCollection.getMainItem();
-            final var renameableItemStacks = new ArrayList<>(renameCollection.items());
-            final var renames = new ArrayList<String>();
+            final var renameableItemStacks = new ObjectArrayList<>(renameCollection.items());
+            final var renames = new ObjectArrayList<String>();
 
             assert resultItem != null;
 

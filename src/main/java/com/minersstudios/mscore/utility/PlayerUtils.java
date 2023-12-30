@@ -369,6 +369,7 @@ public final class PlayerUtils {
                 FluidCollisionMode.NEVER,
                 false
         );
+
         return rayTraceResult != null
                 ? rayTraceResult.getHitBlock()
                 : null;

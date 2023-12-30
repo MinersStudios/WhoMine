@@ -6,6 +6,8 @@ import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
@@ -16,7 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -25,7 +29,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
  * API for registering commands with Mojang's Brigadier command system
  */
 public final class Commodore {
-    public final Set<Command> commands = new HashSet<>();
+    public final Set<Command> commands;
     private final String pluginName;
 
     private static final Field CHILDREN_FIELD;
@@ -67,6 +71,7 @@ public final class Commodore {
      * @param plugin Plugin to register Commodore for
      */
     public Commodore(final @NotNull Plugin plugin) {
+        this.commands = new ObjectOpenHashSet<>();
         this.pluginName = plugin.getName().toLowerCase().trim();
 
         plugin.getServer().getPluginManager().registerEvents(new Listener() {
@@ -131,7 +136,7 @@ public final class Commodore {
      */
     private @NotNull List<String> getAliases(final @NotNull PluginCommand command) {
         final var commandAliases = command.getAliases();
-        final var aliases = new ArrayList<String>(commandAliases.size() + 1);
+        final var aliases = new ObjectArrayList<String>(commandAliases.size() + 1);
 
         aliases.add(command.getLabel());
         aliases.add(this.pluginName + ":" + command.getLabel());

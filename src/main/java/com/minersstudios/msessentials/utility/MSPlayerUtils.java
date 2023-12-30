@@ -4,6 +4,7 @@ import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -11,7 +12,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -49,7 +49,7 @@ public final class MSPlayerUtils {
      * @return A list of all online players' names and IDs
      */
     public static @NotNull List<String> getLocalPlayerNames(final @NotNull MSEssentials plugin) {
-        final var completions = new ArrayList<String>();
+        final var completions = new ObjectArrayList<String>();
         final PlayerInfoMap playerInfoMap = plugin.getCache().getPlayerInfoMap();
 
         for (final var player : plugin.getServer().getOnlinePlayers()) {

@@ -3,6 +3,7 @@ package com.minersstudios.msessentials.player;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.skin.Skin;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -99,7 +100,7 @@ public final class PlayerFile {
                 (float) lastDeathSection.getDouble("pitch")
         );
 
-        this.skins = new ArrayList<>(MAX_SKINS);
+        this.skins = new ObjectArrayList<>(MAX_SKINS);
         this.skins.addAll(this.deserializeSkinsSection());
 
         this.playerSettings = new PlayerSettings(this);
@@ -388,7 +389,7 @@ public final class PlayerFile {
     }
 
     public void serializeSkinsSection() {
-        final var list = new ArrayList<>(MAX_SKINS);
+        final var list = new ObjectArrayList<>(MAX_SKINS);
 
         for (final var skin : this.skins) {
             list.add(skin.serialize());
@@ -405,7 +406,7 @@ public final class PlayerFile {
             return Collections.emptyList();
         }
 
-        final var skins = new ArrayList<Skin>(size);
+        final var skins = new ObjectArrayList<Skin>(size);
 
         for (final var skin : names) {
             if (!(skin instanceof Map)) {

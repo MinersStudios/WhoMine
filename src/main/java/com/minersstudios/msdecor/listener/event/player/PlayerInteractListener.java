@@ -9,6 +9,7 @@ import com.minersstudios.msdecor.MSDecor;
 import com.minersstudios.msdecor.api.CustomDecor;
 import com.minersstudios.msdecor.api.CustomDecorData;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,13 +26,12 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @EventListener
 public final class PlayerInteractListener extends AbstractEventListener<MSDecor> {
-    private static final Set<UUID> HAND_HANDLER = new HashSet<>();
+    private static final Set<UUID> HAND_HANDLER = new ObjectOpenHashSet<>();
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(final @NotNull PlayerInteractEvent event) {

@@ -119,8 +119,6 @@ public abstract class SlashCommandExecutor {
         ) {
             handler = new TabCompleterHandler(this.plugin, interaction);
 
-            System.out.println("Tab complete handler: " + handler);
-
             this.userRemainingTabCompletes.put(
                     interaction.getUser(),
                     Map.entry(

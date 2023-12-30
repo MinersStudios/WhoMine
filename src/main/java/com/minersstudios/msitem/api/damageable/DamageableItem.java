@@ -2,6 +2,7 @@ package com.minersstudios.msitem.api.damageable;
 
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msitem.MSItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,8 +14,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
 
 import static net.kyori.adventure.text.Component.*;
 
@@ -158,7 +157,7 @@ public class DamageableItem {
         damageable.setDamage(Math.round((float) this.realDamage / (float) this.maxDamage * (float) this.defaultDamage));
 
         final var lore = damageable.lore();
-        final var newLore = new ArrayList<Component>();
+        final var newLore = new ObjectArrayList<Component>();
 
         if (lore != null) {
             newLore.addAll(lore);

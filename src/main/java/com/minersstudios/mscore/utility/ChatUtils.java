@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.utility;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -10,7 +11,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -242,7 +242,7 @@ public final class ChatUtils {
             final @Nullable Style style,
             final @NotNull List<String> strings
     ) {
-        final var components = new ArrayList<Component>(strings.size());
+        final var components = new ObjectArrayList<Component>(strings.size());
 
         for (final var string : strings) {
             components.add(

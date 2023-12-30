@@ -17,11 +17,14 @@ import com.minersstudios.mscore.packet.PacketListenersMap;
 import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
 import com.minersstudios.mscore.plugin.status.PluginStatus;
-import com.minersstudios.mscore.plugin.status.SuccessStatus;
 import com.minersstudios.mscore.plugin.status.StatusHandler;
+import com.minersstudios.mscore.plugin.status.SuccessStatus;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.utility.*;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
@@ -143,10 +146,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         this.setStatus(INITIALIZING);
 
         this.classNames = this.loadClassNames(SharedConstants.GLOBAL_PACKAGE + '.' + this.getName().toLowerCase());
-        this.commandMap = new HashMap<>();
-        this.inventoryHolderMap = new HashMap<>();
-        this.eventListeners = new ArrayList<>();
-        this.packetListeners = new ArrayList<>();
+        this.commandMap = new Object2ObjectOpenHashMap<>();
+        this.inventoryHolderMap = new Object2ObjectOpenHashMap<>();
+        this.eventListeners = new ObjectArrayList<>();
+        this.packetListeners = new ObjectArrayList<>();
         this.pluginFolder = new File(GLOBAL_FOLDER, this.getName() + '/');
         this.configFile = new File(this.pluginFolder, "config.yml");
 
@@ -227,7 +230,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     /**
      * @return The unmodifiable list of event listeners
      */
-    public final @NotNull @UnmodifiableView List<AbstractEventListener<T>> getListeners() {
+    public final @NotNull @UnmodifiableView List<AbstractEventListener<T>> getEventListeners() {
         return Collections.unmodifiableList(this.eventListeners);
     }
 
@@ -636,7 +639,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
 
         if (!permissionStr.isEmpty()) {
             final PluginManager pluginManager = server.getPluginManager();
-            final var children = new HashMap<String, Boolean>();
+            final var children = new Object2BooleanOpenHashMap<String>();
             final String[] keys = command.permissionParentKeys();
             final boolean[] values = command.permissionParentValues();
 
@@ -1147,7 +1150,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      */
     protected @NotNull List<String> loadClassNames(final @NotNull String packageName) {
         final ClassLoader classLoader = this.getClassLoader();
-        final var classNames = new ArrayList<String>();
+        final var classNames = new ObjectArrayList<String>();
         final var url = classLoader.getResource(packageName.replace(".", "/"));
 
         if (url == null) {

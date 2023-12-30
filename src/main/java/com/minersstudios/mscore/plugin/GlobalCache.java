@@ -1,10 +1,10 @@
 package com.minersstudios.mscore.plugin;
 
 import com.minersstudios.mscore.packet.PacketListenersMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.bukkit.inventory.Recipe;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,8 +14,8 @@ import java.util.Set;
  */
 public final class GlobalCache {
     public final PacketListenersMap packetListenerMap = new PacketListenersMap();
-    public final Set<String> onlyPlayerCommandSet = new HashSet<>();
-    public final List<Recipe> customDecorRecipes = new ArrayList<>();
-    public final List<Recipe> customItemRecipes = new ArrayList<>();
-    public final List<Recipe> customBlockRecipes = new ArrayList<>();
+    public final Set<String> onlyPlayerCommandSet = new ObjectOpenHashSet<>();
+    public final List<Recipe> customDecorRecipes = new ObjectArrayList<>();
+    public final List<Recipe> customItemRecipes = new ObjectArrayList<>();
+    public final List<Recipe> customBlockRecipes = new ObjectArrayList<>();
 }

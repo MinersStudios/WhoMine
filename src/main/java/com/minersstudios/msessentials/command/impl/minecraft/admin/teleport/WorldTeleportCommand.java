@@ -9,6 +9,7 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.utility.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import org.bukkit.Location;
@@ -19,7 +20,6 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -150,7 +150,7 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
         return switch (args.length) {
             case 1 -> MSPlayerUtils.getLocalPlayerNames(plugin);
             case 2 -> {
-                final var names = new ArrayList<String>();
+                final var names = new ObjectArrayList<String>();
 
                 for (final var world : sender.getServer().getWorlds()) {
                     if (!plugin.getCache().getWorldDark().isWorldDark(world)) {

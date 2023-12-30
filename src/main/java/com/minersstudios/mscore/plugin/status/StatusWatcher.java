@@ -1,6 +1,7 @@
 package com.minersstudios.mscore.plugin.status;
 
 import com.google.common.base.Joiner;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -473,7 +474,7 @@ public class StatusWatcher {
                 final @NotNull SuccessStatus first,
                 final SuccessStatus @NotNull ... rest
         ) {
-            this.successStatusSet = new HashSet<>(Arrays.asList(rest));
+            this.successStatusSet = new ObjectOpenHashSet<>(rest);
 
             this.successStatusSet.add(first);
             this.addFailureStatus(first.getFailureStatus());
@@ -506,7 +507,7 @@ public class StatusWatcher {
                 final @NotNull FailureStatus first,
                 final FailureStatus @NotNull ... rest
         ) {
-            this.failureStatusSet = new HashSet<>(Arrays.asList(rest));
+            this.failureStatusSet = new ObjectOpenHashSet<>(rest);
 
             this.failureStatusSet.add(first);
 
@@ -621,7 +622,7 @@ public class StatusWatcher {
             }
 
             if (this.failureStatusSet.isEmpty()) {
-                this.failureStatusSet = new HashSet<>();
+                this.failureStatusSet = new ObjectOpenHashSet<>();
             }
 
             this.failureStatusSet.add(status);

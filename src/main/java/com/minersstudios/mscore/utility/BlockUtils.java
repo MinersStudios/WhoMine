@@ -1,6 +1,5 @@
 package com.minersstudios.mscore.utility;
 
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.level.block.SoundType;
 import org.bukkit.Material;
 import org.bukkit.SoundGroup;
@@ -13,17 +12,18 @@ import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 /**
  * Utility class for blocks
  */
 public final class BlockUtils {
-    public static final Set<Material> WOOD_SOUND_MATERIAL_SET;
+    private static final Set<Material> WOOD_SOUND_MATERIAL_SET;
 
     static {
+        WOOD_SOUND_MATERIAL_SET = EnumSet.noneOf(Material.class);
         final SoundGroup woodSoundGroup = CraftSoundGroup.getSoundGroup(SoundType.WOOD);
-        final var materialSet = new ImmutableSet.Builder<Material>();
 
         for (final var material : Material.values()) {
             if (
@@ -31,11 +31,9 @@ public final class BlockUtils {
                     && material.isBlock()
                     && material.createBlockData().getSoundGroup() == woodSoundGroup
             ) {
-                materialSet.add(material);
+                WOOD_SOUND_MATERIAL_SET.add(material);
             }
         }
-
-        WOOD_SOUND_MATERIAL_SET = materialSet.build();
     }
 
     @Contract(" -> fail")

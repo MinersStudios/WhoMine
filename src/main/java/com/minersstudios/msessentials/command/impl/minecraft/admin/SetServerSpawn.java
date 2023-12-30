@@ -8,6 +8,7 @@ import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import org.bukkit.Location;
@@ -19,7 +20,6 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -184,7 +184,7 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
     ) {
         return switch (args.length) {
             case 1 -> {
-                final var names = new ArrayList<String>();
+                final var names = new ObjectArrayList<String>();
 
                 for (final var world : sender.getServer().getWorlds()) {
                     if (!this.getPlugin().getCache().getWorldDark().isWorldDark(world)) {

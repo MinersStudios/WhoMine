@@ -10,6 +10,7 @@ import com.minersstudios.mscore.utility.BlockUtils;
 import com.minersstudios.mscore.utility.CoreProtectUtils;
 import com.minersstudios.mscore.utility.ItemUtils;
 import net.coreprotect.CoreProtectAPI;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.*;
@@ -184,16 +185,15 @@ public final class CustomBlock {
         final World world = this.block.getWorld();
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         final Material mainHandMaterial = itemInMainHand.getType();
-
-        plugin.getCache().getDiggingMap().removeAll(this.block);
-
         final CraftBlock craftBlock = (CraftBlock) this.block;
+        final BlockPos position = craftBlock.getPosition();
         final LevelAccessor levelAccessor = craftBlock.getHandle();
         final BlockState blockState = craftBlock.getNMS();
 
+        plugin.getCache().getDiggingMap().removeAll(this.block);
         levelAccessor.levelEvent(
-                2001,
-                craftBlock.getPosition(),
+                2001, // Block break + block break sound
+                position,
                 net.minecraft.world.level.block.Block.getId(blockState)
         );
         this.customBlockData.getSoundGroup().playBreakSound(this.block.getLocation().toCenterLocation());

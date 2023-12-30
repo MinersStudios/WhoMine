@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.packet;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.protocol.PacketFlow;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,7 @@ public enum PacketProtocol {
     CONFIGURATION("configuration", PacketType.Configuration.packetMap());
 
     private final String stateId;
-    private final Map<PacketFlow, Map<Integer, PacketType>> packets;
+    private final Map<PacketFlow, Int2ObjectMap<PacketType>> packets;
 
     private static final PacketProtocol[] VALUES = values();
 
@@ -36,7 +37,7 @@ public enum PacketProtocol {
      */
     PacketProtocol(
             final @NotNull String stateId,
-            final @NotNull Map<PacketFlow, Map<Integer, PacketType>> packets
+            final @NotNull Map<PacketFlow, Int2ObjectMap<PacketType>> packets
     ) {
         this.stateId = stateId;
         this.packets = packets;
@@ -70,7 +71,7 @@ public enum PacketProtocol {
      *
      * @return The packet map of this protocol.
      */
-    public @NotNull Map<PacketFlow, Map<Integer, PacketType>> getPackets() {
+    public @NotNull Map<PacketFlow, Int2ObjectMap<PacketType>> getPackets() {
         return this.packets;
     }
 }

@@ -11,6 +11,7 @@ import com.minersstudios.msdecor.api.action.DecorPlaceAction;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
 import com.minersstudios.msdecor.event.CustomDecorClickEvent;
 import com.minersstudios.msdecor.event.CustomDecorPlaceEvent;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -205,7 +206,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
      * @throws UnsupportedOperationException If the custom decor is not
      *                                       {@link DecorParameter#LIGHT_TYPED}
      */
-    @NotNull @Unmodifiable Map<Integer, Type<D>> typeLightLevelMap() throws UnsupportedOperationException;
+    @NotNull @Unmodifiable Int2ObjectMap<Type<D>> typeLightLevelMap() throws UnsupportedOperationException;
 
     /**
      * @param interaction Interaction to get a type from

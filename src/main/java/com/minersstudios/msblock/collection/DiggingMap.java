@@ -2,28 +2,26 @@ package com.minersstudios.msblock.collection;
 
 import com.google.common.collect.ImmutableSet;
 import com.minersstudios.msblock.MSBlock;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.*;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 /**
- * The DiggingMap class represents a data structure
- * that associates digging entries with blocks. It
- * allows storing and managing multiple digging
- * entries for different blocks and players.
+ * The DiggingMap class represents a data structure that associates digging
+ * entries with blocks. It allows storing and managing multiple digging entries
+ * for different blocks and players.
  */
 public class DiggingMap {
-    private final Map<Block, Set<Entry>> diggingBlockMap = new ConcurrentHashMap<>();
+    private final Map<Block, List<Entry>> diggingBlockMap = new Object2ObjectOpenHashMap<>();
 
     /**
-     * @return An unmodifiable set of all digging entries present
-     *         in the DiggingMap
+     * @return An unmodifiable set of all digging entries present in the
+     *         DiggingMap
      * @see Entry
      */
     public @NotNull @Unmodifiable Set<Entry> diggingEntrySet() {
@@ -44,8 +42,8 @@ public class DiggingMap {
     }
 
     /**
-     * @return An unmodifiable set of map entries containing blocks
-     *         and their corresponding digging entries
+     * @return An unmodifiable set of map entries containing blocks and their
+     *         corresponding digging entries
      */
     public @NotNull @Unmodifiable Set<Map.Entry<Block, Entry>> entrySet() {
         final var entries = new ImmutableSet.Builder<Map.Entry<Block, Entry>>();
@@ -60,33 +58,29 @@ public class DiggingMap {
     }
 
     /**
-     * @param block The block for which to retrieve the associated
-     *              digging entries
-     * @return An unmodifiable set of digging entries associated
-     *         with the given block
+     * @param block The block for which to retrieve the associated digging
+     *              entries
+     * @return An unmodifiable list of digging entries associated with the given
+     *         block
      * @see Entry
      */
-    public @NotNull @Unmodifiable Set<Entry> getDiggingEntrySet(final @NotNull Block block) {
-        return Collections.unmodifiableSet(this.entries(block));
+    public @NotNull @Unmodifiable List<Entry> getDiggingEntries(final @NotNull Block block) {
+        return Collections.unmodifiableList(
+                this.diggingBlockMap.getOrDefault(block, Collections.emptyList())
+        );
     }
 
     /**
      * @param diggingEntry The digging entry for which to retrieve the
      *                     associated block
-     * @return The block associated with the digging entry,
-     *         or null if the entry is not found in the map
+     * @return The block associated with the digging entry, or null if the entry
+     *         is not found in the map
      * @see Entry
      */
     public @Nullable Block getBlock(final @NotNull Entry diggingEntry) {
         for (final var entry : this.diggingBlockMap.entrySet()) {
-            if (!entry.getValue().contains(diggingEntry)) {
-                continue;
-            }
-
-            for (final var digging : entry.getValue()) {
-                if (digging.equals(diggingEntry)) {
-                    return entry.getKey();
-                }
+            if (entry.getValue().contains(diggingEntry)) {
+                return entry.getKey();
             }
         }
 
@@ -95,16 +89,19 @@ public class DiggingMap {
 
     /**
      * @param player The player for which to retrieve the associated block
-     * @return The block associated with the player,
-     *         or null if the player is not found in the map
+     * @return The block associated with the player, or null if the player is
+     *         not found in the map
      * @see Entry
-     * @see Entry#player()
+     * @see Entry#getPlayer()
      */
     public @Nullable Block getBlock(final @NotNull Player player) {
         for (final var entry : this.diggingBlockMap.entrySet()) {
-            for (final var diggingEntry : entry.getValue()) {
+            final Block block = entry.getKey();
+            final var entries = entry.getValue();
+
+            for (final var diggingEntry : entries) {
                 if (diggingEntry.player.equals(player)) {
-                    return entry.getKey();
+                    return block;
                 }
             }
         }
@@ -122,11 +119,13 @@ public class DiggingMap {
             final @NotNull Block block,
             final @NotNull Player player
     ) {
-        if (!this.diggingBlockMap.containsKey(block)) {
+        final var entries = this.diggingBlockMap.get(block);
+
+        if (entries == null) {
             return null;
         }
 
-        for (final var diggingEntry : this.diggingBlockMap.get(block)) {
+        for (final var diggingEntry : entries) {
             if (diggingEntry.player.equals(player)) {
                 return diggingEntry;
             }
@@ -141,24 +140,24 @@ public class DiggingMap {
      * @return The digging entry with the highest stage for the block,
      *         or null if no entries are found for the block
      * @see Entry
-     * @see Entry#stage()
+     * @see Entry#getStage()
      */
     public @Nullable Entry getBiggestStageEntry(final @NotNull Block block) {
-        final var entrySet = this.entries(block);
+        final var entries = this.diggingBlockMap.get(block);
 
-        if (entrySet.isEmpty()) {
+        if (entries == null) {
             return null;
         }
 
         Entry maxStageEntry = null;
         int maxStage = Integer.MIN_VALUE;
 
-        for (final var diggingEntry : entrySet) {
-            final int currentStage = diggingEntry.stage;
+        for (final var entry : entries) {
+            final int currentStage = entry.stage;
 
             if (currentStage > maxStage) {
                 maxStage = currentStage;
-                maxStageEntry = diggingEntry;
+                maxStageEntry = entry;
             }
         }
 
@@ -175,17 +174,14 @@ public class DiggingMap {
      * @param diggingEntry The digging entry to associate with the block
      * @see Entry
      */
-    public synchronized void put(
+    public void put(
             final @NotNull Block block,
             final @NotNull Entry diggingEntry
     ) {
-        final var diggingEntrySet = this.diggingBlockMap.computeIfAbsent(
+        this.diggingBlockMap.computeIfAbsent(
                 block,
-                b -> ConcurrentHashMap.newKeySet()
-        );
-
-        diggingEntrySet.add(diggingEntry);
-        this.diggingBlockMap.put(block, diggingEntrySet);
+                unused -> new ObjectArrayList<>()
+        ).add(diggingEntry);
     }
 
     /**
@@ -200,19 +196,23 @@ public class DiggingMap {
      * @see Entry
      * @see Entry#cancelTask()
      */
-    public synchronized void remove(
+    public void remove(
             final @NotNull Block block,
             final @NotNull Entry diggingEntry
     ) {
-        final var diggingEntrySet = this.entries(block);
+        final var entries = this.diggingBlockMap.get(block);
 
-        diggingEntrySet.remove(diggingEntry);
+        if (entries == null) {
+            return;
+        }
+
+        entries.remove(diggingEntry);
         diggingEntry.cancelTask();
 
-        if (diggingEntrySet.isEmpty()) {
+        if (entries.isEmpty()) {
             this.diggingBlockMap.remove(block);
         } else {
-            this.diggingBlockMap.put(block, diggingEntrySet);
+            this.diggingBlockMap.put(block, entries);
         }
     }
 
@@ -228,7 +228,7 @@ public class DiggingMap {
      * @see Entry
      * @see Entry#cancelTask()
      */
-    public synchronized void remove(
+    public void remove(
             final @NotNull Block block,
             final @NotNull Player player
     ) {
@@ -257,11 +257,13 @@ public class DiggingMap {
      * @see Entry
      * @see Entry#cancelTask()
      */
-    public synchronized void removeAll(final @NotNull Block block) {
-        final var diggingEntrySet = this.diggingBlockMap.remove(block);
+    public void removeAll(final @NotNull Block block) {
+        final var entries = this.diggingBlockMap.remove(block);
 
-        if (diggingEntrySet != null) {
-            diggingEntrySet.forEach(Entry::cancelTask);
+        if (entries != null) {
+            for (final var diggingEntry : entries) {
+                diggingEntry.cancelTask();
+            }
         }
     }
 
@@ -275,14 +277,21 @@ public class DiggingMap {
      * @see Entry#cancelTask()
      * @see #remove(Block, Entry)
      */
-    public synchronized void removeAll(final @NotNull Entry diggingEntry) {
-        this.diggingBlockMap.forEach((block, entrySet) ->
-                entrySet.forEach(digging -> {
-                    if (digging.equals(diggingEntry)) {
-                        this.remove(block, digging);
-                    }
-                })
-        );
+    public void removeAll(final @NotNull Entry diggingEntry) {
+        final var toRemove = new ObjectArrayList<Block>();
+
+        for (final var entry : this.diggingBlockMap.entrySet()) {
+            final Block block = entry.getKey();
+            final var entries = entry.getValue();
+
+            if (entries.contains(diggingEntry)) {
+                toRemove.add(block);
+            }
+        }
+
+        for (final var block : toRemove) {
+            this.remove(block, diggingEntry);
+        }
     }
 
     /**
@@ -291,18 +300,36 @@ public class DiggingMap {
      * cancelled.
      *
      * @param player The player whose digging entries to remove
+     * @return A list of map entries containing blocks and their corresponding
+     *         digging entries that were removed from the DiggingMap
      * @see Entry
      * @see Entry#cancelTask()
      * @see #remove(Block, Entry)
      */
-    public synchronized void removeAll(final @NotNull Player player) {
-        this.diggingBlockMap.forEach((block, entrySet) ->
-                entrySet.forEach(diggingEntry -> {
-                    if (diggingEntry.player.equals(player)) {
-                        this.remove(block, diggingEntry);
-                    }
-                })
-        );
+    public @NotNull List<Map.Entry<Block, Entry>> removeAll(final @NotNull Player player) {
+        final var toRemove = new ObjectArrayList<Map.Entry<Block, Entry>>();
+
+        for (final var entry : this.diggingBlockMap.entrySet()) {
+            final Block block = entry.getKey();
+            final var entries = entry.getValue();
+
+            for (final var diggingEntry : entries) {
+                if (diggingEntry.player.equals(player)) {
+                    toRemove.add(
+                            Map.entry(block, diggingEntry)
+                    );
+                }
+            }
+        }
+
+        for (final var entry : toRemove) {
+            this.remove(
+                    entry.getKey(),
+                    entry.getValue()
+            );
+        }
+
+        return toRemove;
     }
 
     /**
@@ -361,7 +388,7 @@ public class DiggingMap {
      * Clears all blocks and their associated digging entries from
      * the DiggingMap
      */
-    public synchronized void clear() {
+    public void clear() {
         this.diggingBlockMap.clear();
     }
 
@@ -386,15 +413,6 @@ public class DiggingMap {
     }
 
     /**
-     * @param block The block for which to retrieve the associated
-     *              digging entries
-     * @return The set of digging entries associated with the block
-     */
-    private @NotNull Set<Entry> entries(final @NotNull Block block) {
-        return this.diggingBlockMap.getOrDefault(block, ConcurrentHashMap.newKeySet());
-    }
-
-    /**
      * The Entry class represents a single digging entry
      * associated with a player and a block in the DiggingMap.
      * It contains information about the player, the stage,
@@ -404,7 +422,7 @@ public class DiggingMap {
         private final Player player;
         private int taskId;
         private int stage;
-        private boolean farAway;
+        private boolean isAborting;
 
         private Entry(
                 final @NotNull Player player,
@@ -415,7 +433,7 @@ public class DiggingMap {
             this.player = player;
             this.stage = stage;
             this.taskId = taskId;
-            this.farAway = farAway;
+            this.isAborting = farAway;
         }
 
         /**
@@ -473,14 +491,14 @@ public class DiggingMap {
         /**
          * @return The player associated with the digging entry
          */
-        public @NotNull Player player() {
+        public @NotNull Player getPlayer() {
             return this.player;
         }
 
         /**
          * @return The task ID associated with the digging entry
          */
-        public int taskId() {
+        public int getTaskId() {
             return this.taskId;
         }
 
@@ -490,15 +508,16 @@ public class DiggingMap {
          * @param taskId The task ID to set for the digging entry
          * @return The current Entry instance with the updated task ID
          */
-        public @NotNull Entry taskId(final int taskId) {
+        public @NotNull Entry setTaskId(final int taskId) {
             this.taskId = taskId;
+
             return this;
         }
 
         /**
          * @return The current stage of the digging process
          */
-        public int stage() {
+        public int getStage() {
             return this.stage;
         }
 
@@ -508,27 +527,28 @@ public class DiggingMap {
          * @param stage The stage to set for the digging entry
          * @return The current Entry instance with the updated stage
          */
-        public @NotNull Entry stage(final int stage) {
+        public @NotNull Entry setStage(final int stage) {
             this.stage = stage;
+
             return this;
         }
 
         /**
-         * @return True if the player is considered far away from the block
+         * @return True if the player is aborting the digging process
          */
-        public boolean farAway() {
-            return this.farAway;
+        public boolean isAborting() {
+            return this.isAborting;
         }
 
         /**
-         * Sets whether the player is considered far away from the block
-         * being dug
+         * Sets whether the player is aborting the digging process
          *
-         * @param farAway A boolean indicating whether the player is far away
-         * @return The current Entry instance with the updated farAway value
+         * @param aborting A new boolean value for the aborting property
+         * @return The current Entry instance with the updated aborting property
          */
-        public @NotNull Entry farAway(final boolean farAway) {
-            this.farAway = farAway;
+        public @NotNull Entry setAborting(final boolean aborting) {
+            this.isAborting = aborting;
+
             return this;
         }
 
@@ -552,36 +572,7 @@ public class DiggingMap {
             return biggestStageEntry != null
                     && (
                             this.equals(biggestStageEntry)
-                            || this.stage > biggestStageEntry.stage()
-                    );
-        }
-
-        /**
-         * @return The hash code of this Entry
-         */
-        @Override
-        public int hashCode() {
-            int result = 17;
-
-            result = 31 * result + Integer.hashCode(taskId);
-            result = 31 * result + Integer.hashCode(stage);
-            result = 31 * result + Boolean.hashCode(farAway);
-            result = 31 * result + this.player.getName().hashCode();
-
-            return result;
-        }
-
-        /**
-         * @param obj The object to compare with this Entry
-         * @return True if the object is equal to this Entry
-         */
-        @Override
-        @Contract("null -> false")
-        public boolean equals(final @Nullable Object obj) {
-            return obj == this
-                    || (
-                            obj instanceof final Entry that
-                            && that.taskId == this.taskId
+                            || this.stage > biggestStageEntry.getStage()
                     );
         }
 
@@ -590,10 +581,11 @@ public class DiggingMap {
          */
         @Override
         public @NotNull String toString() {
-            return "Entry{" +
+            return "DiggingEntry{" +
                     "player=" + this.player.getName() +
                     ", taskId=" + this.taskId +
                     ", stage=" + this.stage +
+                    ", isAborting=" + this.isAborting +
                     '}';
         }
 
@@ -607,7 +599,7 @@ public class DiggingMap {
          */
         public void cancelTask() throws NullPointerException {
             if (this.taskId != -1) {
-                player.getServer().getScheduler().cancelTask(this.taskId);
+                this.player.getServer().getScheduler().cancelTask(this.taskId);
                 this.taskId = -1;
             }
         }

@@ -1,7 +1,7 @@
 package com.minersstudios.msitem.command;
 
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.utility.MSPlayerUtils;
@@ -10,12 +10,12 @@ import com.minersstudios.msitem.api.CustomItemType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -73,7 +73,7 @@ public final class MSItemCommandHandler extends AbstractCommandExecutor<MSItem> 
                     ? MSPlayerUtils.getLocalPlayerNames(MSEssentials.singleton())
                     : EMPTY_TAB;
             case 3 -> args[0].equals("give")
-                    ? new ArrayList<>(CustomItemType.keySet())
+                    ? new ObjectArrayList<>(CustomItemType.keySet())
                     : EMPTY_TAB;
             default -> EMPTY_TAB;
         };

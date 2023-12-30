@@ -2,6 +2,8 @@ package com.minersstudios.msitem.api.renameable;
 
 import com.google.common.collect.ImmutableSet;
 import com.minersstudios.mscore.utility.ChatUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -28,8 +30,8 @@ public final class RenameCollection {
      */
     public RenameCollection(final @NotNull String key) {
         this.key = key;
-        this.renames = new ArrayList<>();
-        this.items = new ArrayList<>();
+        this.renames = new ObjectArrayList<>();
+        this.items = new ObjectArrayList<>();
     }
 
     /**
@@ -45,8 +47,8 @@ public final class RenameCollection {
             final @NotNull Collection<ItemStack> items
     ) {
         this.key = key;
-        this.renames = new ArrayList<>();
-        this.items = new ArrayList<>();
+        this.renames = new ObjectArrayList<>();
+        this.items = new ObjectArrayList<>();
 
         this.addAllRenames(renames);
         this.addAllItems(items);
@@ -273,7 +275,7 @@ public final class RenameCollection {
      * @return True if the collection contains all the renames
      */
     public boolean containsAllRenames(final @NotNull Collection<String> renames) {
-        return new HashSet<>(this.renames).containsAll(renames);
+        return new ObjectOpenHashSet<>(this.renames).containsAll(renames);
     }
 
     /**
@@ -291,7 +293,7 @@ public final class RenameCollection {
      * @return True if the collection contains all the items
      */
     public boolean containsAllItems(final @NotNull Collection<ItemStack> items) {
-        return new HashSet<>(this.items).containsAll(items);
+        return new ObjectOpenHashSet<>(this.items).containsAll(items);
     }
 
     /**

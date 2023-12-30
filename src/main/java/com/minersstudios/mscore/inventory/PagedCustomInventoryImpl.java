@@ -1,5 +1,7 @@
 package com.minersstudios.mscore.inventory;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -7,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,8 +23,8 @@ import java.util.Map;
 abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> extends CustomInventoryImpl<S> implements PagedCustomInventory {
     protected int page;
     protected int pagesCount;
-    protected final @NotNull Map<Integer, StaticInventoryButton> staticButtons;
-    protected final @NotNull Map<Integer, S> pages;
+    protected final @NotNull Int2ObjectMap<StaticInventoryButton> staticButtons;
+    protected final @NotNull Int2ObjectMap<S> pages;
 
     protected PagedCustomInventoryImpl(
             final @NotNull Component title,
@@ -31,8 +32,8 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
     ) {
         super(title, verticalSize);
 
-        this.staticButtons = new HashMap<>(this.size);
-        this.pages = new HashMap<>();
+        this.staticButtons = new Int2ObjectOpenHashMap<>(this.size);
+        this.pages = new Int2ObjectOpenHashMap<>();
     }
 
     @Override
@@ -135,8 +136,8 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
             return;
         }
 
-        for (final var entry : this.staticButtons.entrySet()) {
-            final int slot = entry.getKey();
+        for (final var entry : this.staticButtons.int2ObjectEntrySet()) {
+            final int slot = entry.getIntKey();
             final StaticInventoryButton button = entry.getValue();
 
             for (final var pagedInventory : this.pages.values()) {
@@ -155,9 +156,9 @@ abstract class PagedCustomInventoryImpl<S extends PagedCustomInventoryImpl<S>> e
         if (this.hasStaticButtons()) {
             final S pagedInventory = this.pages.get(page);
 
-            for (final var entry : this.staticButtons.entrySet()) {
+            for (final var entry : this.staticButtons.int2ObjectEntrySet()) {
                 pagedInventory.setItem(
-                        entry.getKey(),
+                        entry.getIntKey(),
                         entry.getValue().getButton(pagedInventory).item()
                 );
             }

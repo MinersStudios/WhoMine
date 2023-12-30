@@ -2,6 +2,7 @@ package com.minersstudios.mscore.utility;
 
 import com.google.common.base.Joiner;
 import com.minersstudios.mscore.plugin.MSLogger;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Server;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -14,7 +15,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -185,7 +185,7 @@ public final class PaperUtils {
                 final @NotNull ConfigType configType,
                 final @NotNull Server server
         ) throws IOException, InvalidConfigurationException {
-            this.history = new HashMap<>();
+            this.history = new Object2ObjectOpenHashMap<>();
             this.file = new File(configType.filePath);
             this.yaml = new YamlConfiguration();
             this.server = ((CraftServer) server).getServer();

@@ -2,6 +2,7 @@ package com.minersstudios.msitem.api;
 
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msitem.MSItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
@@ -12,7 +13,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +55,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
         this.namespacedKey = new NamespacedKey(MSItem.NAMESPACE, key);
         this.itemStack = itemStack;
-        this.recipes = new ArrayList<>();
+        this.recipes = new ObjectArrayList<>();
 
         final ItemMeta meta = itemStack.getItemMeta();
         final PersistentDataContainer container = meta.getPersistentDataContainer();
@@ -180,7 +180,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
             final CustomItemImpl clone = (CustomItemImpl) super.clone();
 
             clone.itemStack = this.itemStack.clone();
-            clone.recipes = new ArrayList<>(this.recipes);
+            clone.recipes = new ObjectArrayList<>(this.recipes);
 
             return (T) clone;
         } catch (final CloneNotSupportedException e) {

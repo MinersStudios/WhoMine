@@ -28,7 +28,7 @@ public abstract class AbstractEventListener<P extends MSPlugin<P>> implements MS
     @Override
     public final boolean isRegistered() {
         return this.plugin != null
-                && this.plugin.getListeners().contains(this);
+                && this.plugin.getEventListeners().contains(this);
     }
 
     @ApiStatus.Internal

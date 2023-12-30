@@ -13,6 +13,8 @@ import com.minersstudios.msitem.registry.item.armor.hazmat.HazmatChestplate;
 import com.minersstudios.msitem.registry.item.armor.hazmat.HazmatHelmet;
 import com.minersstudios.msitem.registry.item.armor.hazmat.HazmatLeggings;
 import com.minersstudios.msitem.registry.item.cards.CardsBicycle;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
@@ -23,7 +25,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
@@ -59,9 +63,9 @@ public enum CustomItemType {
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(MSItem.NAMESPACE, TYPE_TAG_NAME);
 
     private static final CustomItemType[] VALUES = values();
-    private static final Map<String, CustomItemType> KEY_TO_TYPE_MAP = new HashMap<>();
-    private static final Map<Class<? extends CustomItem>, CustomItemType> CLASS_TO_TYPE_MAP = new HashMap<>();
-    static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new HashMap<>();
+    private static final Map<String, CustomItemType> KEY_TO_TYPE_MAP = new Object2ObjectOpenHashMap<>();
+    private static final Map<Class<? extends CustomItem>, CustomItemType> CLASS_TO_TYPE_MAP = new Object2ObjectOpenHashMap<>();
+    static final Map<Class<? extends CustomItem>, CustomItem> CLASS_TO_ITEM_MAP = new Object2ObjectOpenHashMap<>();
 
     /**
      * Constructor for CustomItemType enum values
@@ -89,7 +93,7 @@ public enum CustomItemType {
         plugin.setStatus(MSItem.LOADING_ITEMS);
 
         final long startTime = System.currentTimeMillis();
-        final var typesWithRecipes = new ArrayList<CustomItemType>();
+        final var typesWithRecipes = new ObjectArrayList<CustomItemType>();
 
         Stream.of(VALUES).parallel()
         .forEach(type -> {

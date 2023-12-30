@@ -6,6 +6,7 @@ import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.MSDecorUtils;
 import com.minersstudios.msdecor.event.CustomDecorBreakEvent;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.level.block.Blocks;
 import org.bukkit.GameMode;
@@ -25,7 +26,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -343,7 +343,7 @@ public final class CustomDecor {
 
         CustomDecorData<?> data = null;
         ItemDisplay display = null;
-        final var interactions = new ArrayList<Interaction>();
+        final var interactions = new ObjectArrayList<Interaction>();
         MSBoundingBox msbb = null;
 
         interactions.add(interaction);

@@ -6,6 +6,10 @@ import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomaly.action.AddPotionAction;
 import com.minersstudios.msessentials.anomaly.action.SpawnParticlesAction;
+import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
+import it.unimi.dsi.fastutil.doubles.Double2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -40,7 +44,7 @@ public class Anomaly {
     private final NamespacedKey namespacedKey;
     private final AnomalyBoundingBox anomalyBoundingBox;
     private final AnomalyIgnorableItems anomalyIgnorableItems;
-    private final Map<Double, List<AnomalyAction>> anomalyActionMap;
+    private final Double2ObjectMap<List<AnomalyAction>> anomalyActionMap;
     private final Set<OfflinePlayer> ignorablePlayers;
 
     /**
@@ -54,7 +58,7 @@ public class Anomaly {
             final @NotNull NamespacedKey namespacedKey,
             final @NotNull AnomalyBoundingBox anomalyBoundingBox,
             final @Nullable AnomalyIgnorableItems anomalyIgnorableItems,
-            final @NotNull Map<Double, List<AnomalyAction>> anomalyActionMap,
+            final @NotNull Double2ObjectMap<List<AnomalyAction>> anomalyActionMap,
             final @NotNull Set<OfflinePlayer> ignorablePlayers
     ) {
         this.namespacedKey = namespacedKey;
@@ -108,8 +112,9 @@ public class Anomaly {
                 ),
                 config.getDoubleList("bounding-box.radius")
         );
-        final var equipmentSlots = new ArrayList<EquipmentSlot>();
+        final var equipmentSlots = new ObjectArrayList<EquipmentSlot>();
         final ConfigurationSection slotsSection = config.getConfigurationSection("ignorable-items.slots");
+        final var items = new EnumMap<EquipmentSlot, ItemStack>(EquipmentSlot.class);
 
         if (slotsSection != null) {
             try {
@@ -119,18 +124,16 @@ public class Anomaly {
             } catch (final IllegalArgumentException e) {
                 throw new IllegalArgumentException("Anomaly config specified an invalid equipment slot name", e);
             }
-        }
 
-        final var items = new HashMap<EquipmentSlot, ItemStack>();
+            for (final var equipmentSlot : equipmentSlots) {
+                final String name = equipmentSlot.name().toLowerCase(Locale.ROOT);
+                final ItemStack itemStack = new ItemStack(Material.valueOf(slotsSection.getString(name + ".material")));
+                final ItemMeta itemMeta = itemStack.getItemMeta();
 
-        for (final var equipmentSlot : equipmentSlots) {
-            final String name = equipmentSlot.name().toLowerCase(Locale.ROOT);
-            final ItemStack itemStack = new ItemStack(Material.valueOf(slotsSection.getString(name + ".material")));
-            final ItemMeta itemMeta = itemStack.getItemMeta();
-
-            itemMeta.setCustomModelData(slotsSection.getInt(name + ".custom-model-data"));
-            itemStack.setItemMeta(itemMeta);
-            items.put(equipmentSlot, itemStack);
+                itemMeta.setCustomModelData(slotsSection.getInt(name + ".custom-model-data"));
+                itemStack.setItemMeta(itemMeta);
+                items.put(equipmentSlot, itemStack);
+            }
         }
 
         final AnomalyIgnorableItems anomalyIgnorableItems = new AnomalyIgnorableItems(
@@ -139,9 +142,9 @@ public class Anomaly {
                 config.getInt("ignorable-items.breaking-per-action")
         );
 
-        final var anomalyActionMap = new HashMap<Double, List<AnomalyAction>>();
+        final var anomalyActionMap = new Double2ObjectOpenHashMap<List<AnomalyAction>>();
 
-        for (final var radius : anomalyBoundingBox.getRadii()) {
+        for (final double radius : anomalyBoundingBox.getRadii()) {
             final ConfigurationSection radiusSection = config.getConfigurationSection("on-entering-to-area." + radius);
 
             if (radiusSection == null) {
@@ -155,7 +158,7 @@ public class Anomaly {
 
                 switch (anomalyAction) {
                     case "add-potion-effect" -> {
-                        final var potionEffects = new ArrayList<PotionEffect>();
+                        final var potionEffects = new ObjectArrayList<PotionEffect>();
                         final ConfigurationSection effectsSection = radiusSection.getConfigurationSection("add-potion-effect.effects");
 
                         if (effectsSection == null) {
@@ -196,7 +199,7 @@ public class Anomaly {
                         );
                     }
                     case "spawn-particles" -> {
-                        final var particleBuilderList = new ArrayList<ParticleBuilder>();
+                        final var particleBuilderList = new ObjectArrayList<ParticleBuilder>();
                         final ConfigurationSection particlesSection = radiusSection.getConfigurationSection("spawn-particles.particles");
 
                         if (particlesSection == null) {
@@ -237,7 +240,7 @@ public class Anomaly {
                 }
 
                 if (anomalyActionMap.containsKey(radius)) {
-                    final var actions = new ArrayList<>(anomalyActionMap.get(radius));
+                    final var actions = new ObjectArrayList<>(anomalyActionMap.get(radius));
 
                     actions.add(action);
                     anomalyActionMap.put(radius, actions);
@@ -247,7 +250,7 @@ public class Anomaly {
             }
         }
 
-        final var ignorablePlayers = new HashSet<OfflinePlayer>();
+        final var ignorablePlayers = new ObjectOpenHashSet<OfflinePlayer>();
 
         for (final var uuid : config.getStringList("ignorable-players")) {
             ignorablePlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
@@ -316,9 +319,9 @@ public class Anomaly {
             final @NotNull AnomalyAction anomalyAction,
             final double radius
     ) {
-        for (final var entry : this.anomalyActionMap.entrySet()) {
+        for (final var entry : this.anomalyActionMap.double2ObjectEntrySet()) {
             if (entry.getValue().contains(anomalyAction)) {
-                return entry.getKey() == radius;
+                return entry.getDoubleKey() == radius;
             }
         }
 

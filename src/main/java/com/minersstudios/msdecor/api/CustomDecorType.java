@@ -25,6 +25,8 @@ import com.minersstudios.msdecor.registry.furniture.table.BigTable;
 import com.minersstudios.msdecor.registry.furniture.table.SmallTable;
 import com.minersstudios.msdecor.registry.other.Poop;
 import com.minersstudios.msessentials.menu.CraftsMenu;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
@@ -192,9 +194,9 @@ public enum CustomDecorType {
     public static final Pattern TYPED_KEY_PATTERN = Pattern.compile(TYPED_KEY_REGEX);
 
     private static final CustomDecorType[] VALUES = values();
-    private static final Map<String, CustomDecorType> KEY_TO_TYPE_MAP = new HashMap<>();
-    private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorType> CLASS_TO_TYPE_MAP = new HashMap<>();
-    static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new HashMap<>();
+    private static final Map<String, CustomDecorType> KEY_TO_TYPE_MAP = new Object2ObjectOpenHashMap<>();
+    private static final Map<Class<? extends CustomDecorData<?>>, CustomDecorType> CLASS_TO_TYPE_MAP = new Object2ObjectOpenHashMap<>();
+    static final Map<Class<? extends CustomDecorData<?>>, CustomDecorData<?>> CLASS_TO_DATA_MAP = new Object2ObjectOpenHashMap<>();
 
     /**
      * Constructor for CustomDecorType enum values
@@ -222,7 +224,7 @@ public enum CustomDecorType {
         plugin.setStatus(MSDecor.LOADING_DECORATIONS);
 
         final long startTime = System.currentTimeMillis();
-        final var typesWithRecipes = new ArrayList<CustomDecorType>();
+        final var typesWithRecipes = new ObjectArrayList<CustomDecorType>();
 
         Stream.of(VALUES).parallel()
         .forEach(type -> {

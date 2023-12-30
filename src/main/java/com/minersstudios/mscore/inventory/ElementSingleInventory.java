@@ -1,12 +1,12 @@
 package com.minersstudios.mscore.inventory;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class ElementSingleInventory extends CustomInventoryImpl<ElementSingleInv
         super(title, verticalSize);
 
         this.elementSlots = elementSlots;
-        this.elements = new ArrayList<>();
+        this.elements = new ObjectArrayList<>();
     }
 
     /**

@@ -2,12 +2,12 @@ package com.minersstudios.msitem;
 
 import com.minersstudios.mscore.plugin.cache.PluginCache;
 import com.minersstudios.msitem.api.renameable.RenameableItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +31,7 @@ public final class Cache extends PluginCache<MSItem> {
     @Override
     public void onLoad() {
         this.dosimeterPlayers = new ConcurrentHashMap<>();
-        this.renameableMenuItems = new ArrayList<>();
+        this.renameableMenuItems = new ObjectArrayList<>();
     }
 
     @Override
