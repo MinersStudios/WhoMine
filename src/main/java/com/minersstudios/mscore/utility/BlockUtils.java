@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.utility;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.world.level.block.SoundType;
 import org.bukkit.Material;
 import org.bukkit.SoundGroup;
@@ -11,21 +12,32 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntityType;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Utility class for blocks
  */
 public final class BlockUtils {
+    private static final Map<String, Material> KEY_TO_MATERIAL_MAP;
     private static final Set<Material> WOOD_SOUND_MATERIAL_SET;
 
     static {
-        WOOD_SOUND_MATERIAL_SET = EnumSet.noneOf(Material.class);
+        final Material[] materials = Material.values();
         final SoundGroup woodSoundGroup = CraftSoundGroup.getSoundGroup(SoundType.WOOD);
+        KEY_TO_MATERIAL_MAP = new Object2ObjectOpenHashMap<>(materials.length);
+        WOOD_SOUND_MATERIAL_SET = EnumSet.noneOf(Material.class);
 
-        for (final var material : Material.values()) {
+        for (final var material : materials) {
+            KEY_TO_MATERIAL_MAP.put(
+                    material.name().toUpperCase(Locale.ENGLISH),
+                    material
+            );
+
             if (
                     !material.isLegacy()
                     && material.isBlock()
@@ -57,6 +69,25 @@ public final class BlockUtils {
         if (isBreaksOnBlockPlace(bottomBlock.getType())) {
             bottomBlock.getHandle().destroyBlock(bottomBlock.getPosition(), true);
         }
+    }
+
+    /**
+     * @param key Key that will be checked
+     * @return Material by key
+     */
+    public static @Nullable Material getMaterial(final @Nullable String key) {
+        return key == null
+                ? null
+                : KEY_TO_MATERIAL_MAP.get(key.toUpperCase(Locale.ENGLISH));
+    }
+
+    /**
+     * @param key Key that will be checked
+     * @return True if key is a material key
+     */
+    public static boolean containsMaterial(final @Nullable String key) {
+        return key != null
+                && KEY_TO_MATERIAL_MAP.containsKey(key.toUpperCase(Locale.ENGLISH));
     }
 
     /**

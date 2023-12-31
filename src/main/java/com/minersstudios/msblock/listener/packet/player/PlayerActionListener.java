@@ -394,7 +394,7 @@ public final class PlayerActionListener extends AbstractPacketListener<MSBlock> 
             final CustomBlockData customBlockData =
                     CustomBlockRegistry
                     .fromNoteBlock(noteBlock)
-                    .orElse(CustomBlockData.getDefault());
+                    .orElse(CustomBlockData.defaultData());
             final SoundGroup soundGroup = customBlockData.getSoundGroup();
             final float digSpeed = customBlockData.getBlockSettings().calculateDigSpeed(
                     player,

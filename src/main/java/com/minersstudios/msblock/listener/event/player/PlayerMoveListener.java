@@ -37,7 +37,7 @@ public final class PlayerMoveListener extends AbstractEventListener<MSBlock> {
                 final Location stepLocation = block.getLocation().toCenterLocation();
 
                 CustomBlockRegistry.fromBlockData(block.getBlockData())
-                .orElse(CustomBlockData.getDefault())
+                .orElse(CustomBlockData.defaultData())
                 .getSoundGroup().playStepSound(stepLocation);
             }
         }

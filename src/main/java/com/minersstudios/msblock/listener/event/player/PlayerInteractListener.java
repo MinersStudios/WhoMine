@@ -6,8 +6,9 @@ import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
-import com.minersstudios.msblock.api.file.BlockSettings;
-import com.minersstudios.msblock.api.file.PlacingType;
+import com.minersstudios.msblock.api.params.BlockSettings;
+import com.minersstudios.msblock.api.params.PlacingType;
+import com.minersstudios.msblock.api.params.settings.Placing;
 import com.minersstudios.msblock.event.CustomBlockRightClickEvent;
 import com.minersstudios.msblock.utility.UseBucketsAndSpawnableItems;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
@@ -244,8 +245,8 @@ public final class PlayerInteractListener extends AbstractEventListener<MSBlock>
 
             final CustomBlockData customBlockData = CustomBlockRegistry.fromItemStack(itemInHand).orElseThrow();
             final BlockSettings blockSettings = customBlockData.getBlockSettings();
-            final BlockSettings.Placing placing = blockSettings.getPlacing();
-            final PlacingType placingType = placing.type();
+            final Placing placing = blockSettings.getPlacing();
+            final PlacingType placingType = placing.getType();
             final CustomBlock customBlock = new CustomBlock(replaceableBlock, customBlockData);
 
             if (placingType instanceof PlacingType.Default) {

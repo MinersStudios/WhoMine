@@ -1,4 +1,4 @@
-package com.minersstudios.msblock.api.file;
+package com.minersstudios.msblock.api.params;
 
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
@@ -34,36 +34,47 @@ public enum ToolTier {
      */
     public static @NotNull ToolTier fromMaterial(final @NotNull Material material) {
         return switch (material) {
+            //<editor-fold desc="Wooden tools" defaultstate="collapsed">
             case
                     WOODEN_PICKAXE,
                     WOODEN_AXE,
                     WOODEN_HOE,
                     WOODEN_SHOVEL,
                     WOODEN_SWORD -> WOOD;
+            //</editor-fold>
+            //<editor-fold desc="Stone tools" defaultstate="collapsed">
             case
                     STONE_PICKAXE,
                     STONE_AXE,
                     STONE_HOE,
                     STONE_SHOVEL,
                     STONE_SWORD -> STONE;
+            //</editor-fold>
+            //<editor-fold desc="Iron tools" defaultstate="collapsed">
             case
                     IRON_PICKAXE,
                     IRON_AXE,
                     IRON_HOE,
                     IRON_SHOVEL,
                     IRON_SWORD -> IRON;
+            //</editor-fold>
+            //<editor-fold desc="Golden tools" defaultstate="collapsed">
             case
                     GOLDEN_PICKAXE,
                     GOLDEN_AXE,
                     GOLDEN_HOE,
                     GOLDEN_SHOVEL,
                     GOLDEN_SWORD -> GOLD;
+            //</editor-fold>
+            //<editor-fold desc="Diamond tools" defaultstate="collapsed">
             case
                     DIAMOND_PICKAXE,
                     DIAMOND_AXE,
                     DIAMOND_HOE,
                     DIAMOND_SHOVEL,
                     DIAMOND_SWORD -> DIAMOND;
+            //</editor-fold>
+            //<editor-fold desc="Netherite tools" defaultstate="collapsed">
             case
                     NETHERITE_PICKAXE,
                     NETHERITE_AXE,
@@ -71,6 +82,7 @@ public enum ToolTier {
                     NETHERITE_SHOVEL,
                     NETHERITE_SWORD,
                     SHEARS -> NETHERITE;
+            //</editor-fold>
             default -> HAND;
         };
     }

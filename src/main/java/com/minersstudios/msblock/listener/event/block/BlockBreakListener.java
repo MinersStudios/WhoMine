@@ -3,7 +3,7 @@ package com.minersstudios.msblock.listener.event.block;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
-import com.minersstudios.msblock.api.file.ToolType;
+import com.minersstudios.msblock.api.params.ToolType;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.sound.SoundGroup;
@@ -61,7 +61,7 @@ public final class BlockBreakListener extends AbstractEventListener<MSBlock> {
         }
 
         if (block.getBlockData() instanceof final NoteBlock noteBlock) {
-            final CustomBlockData customBlockMaterial = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault());
+            final CustomBlockData customBlockMaterial = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.defaultData());
             final GameMode gameMode = player.getGameMode();
 
             event.setCancelled(true);
@@ -74,7 +74,7 @@ public final class BlockBreakListener extends AbstractEventListener<MSBlock> {
             }
 
             if (
-                    customBlockMaterial.getBlockSettings().getTool().type() == ToolType.AXE
+                    customBlockMaterial.getBlockSettings().getTool().getToolType() == ToolType.AXE
                     && gameMode != GameMode.CREATIVE
             ) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));

@@ -1,9 +1,9 @@
 package com.minersstudios.msblock.api;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.api.file.BlockSettings;
-import com.minersstudios.msblock.api.file.PlacingType;
-import com.minersstudios.msblock.api.file.ToolType;
+import com.minersstudios.msblock.api.params.PlacingType;
+import com.minersstudios.msblock.api.params.ToolType;
+import com.minersstudios.msblock.api.params.settings.Tool;
 import com.minersstudios.msblock.event.CustomBlockBreakEvent;
 import com.minersstudios.msblock.event.CustomBlockPlaceEvent;
 import com.minersstudios.mscore.utility.BlockUtils;
@@ -40,8 +40,8 @@ public final class CustomBlock {
     /**
      * Custom block constructor which takes the block and custom block data.
      *
-     * @param block           The block which is a custom block,
-     *                        or will be a custom block after placing
+     * @param block           The block which is a custom block, or will be a
+     *                        custom block after placing
      * @param customBlockData The custom block data of this custom block
      */
     public CustomBlock(
@@ -53,8 +53,8 @@ public final class CustomBlock {
     }
 
     /**
-     * @return The block which is a custom block,
-     *         or will be a custom block after placing
+     * @return The block which is a custom block, or will be a custom block
+     *         after placing
      */
     public @NotNull Block getBlock() {
         return this.block;
@@ -68,10 +68,10 @@ public final class CustomBlock {
     }
 
     /**
-     * Places the custom block and calls the {@link CustomBlockPlaceEvent},
-     * if the event is cancelled the block won't be placed. Otherwise,
-     * block will be placed with the specified parameters. Also, logs block
-     * place in the CoreProtect and plays the place sound.
+     * Places the custom block and calls the {@link CustomBlockPlaceEvent}, if
+     * the event is cancelled the block won't be placed. Otherwise, block will
+     * be placed with the specified parameters. Also, logs block place in the
+     * CoreProtect and plays the place sound.
      *
      * @param plugin The plugin that owns this custom block
      * @param player The player who broke the block
@@ -88,10 +88,10 @@ public final class CustomBlock {
     }
 
     /**
-     * Places the custom block and calls the {@link CustomBlockPlaceEvent},
-     * if the event is cancelled the block won't be placed. Otherwise, the
-     * block will be placed with the specified parameters. Also, logs the
-     * block place in the CoreProtect and plays the place sound.
+     * Places the custom block and calls the {@link CustomBlockPlaceEvent}, if
+     * the event is cancelled the block won't be placed. Otherwise, the block
+     * will be placed with the specified parameters. Also, logs the block place
+     * in the CoreProtect and plays the place sound.
      *
      * @param plugin    The plugin that owns this custom block
      * @param player    The player who placed the block
@@ -125,7 +125,7 @@ public final class CustomBlock {
             final String key = this.customBlockData.getKey();
             final BlockData blockData = this.block.getBlockData();
             final NoteBlock noteBlock;
-            final PlacingType placingType = this.customBlockData.getBlockSettings().getPlacing().type();
+            final PlacingType placingType = this.customBlockData.getBlockSettings().getPlacing().getType();
 
             if (placingType instanceof final PlacingType.Default normal) {
                 noteBlock = normal.getNoteBlockData().craftNoteBlock(blockData);
@@ -161,8 +161,10 @@ public final class CustomBlock {
     /**
      * Breaks the custom block and calls the {@link CustomBlockBreakEvent}, if
      * the event is cancelled, the block will not be broken.
+     * <br>
      * Otherwise, drop the item if the player is holding the correct tool, or if
      * the custom block has force tool set to false.
+     * <br>
      * Also drops experience if the custom block has exp to drop a set to a
      * value greater than 0. Also plays the break sound and logs the break to
      * CoreProtect.
@@ -200,12 +202,12 @@ public final class CustomBlock {
         CoreProtectUtils.logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
         this.block.setType(Material.AIR);
 
-        final BlockSettings.Tool tool = this.customBlockData.getBlockSettings().getTool();
+        final Tool tool = this.customBlockData.getBlockSettings().getTool();
         final int experience = this.customBlockData.getDropSettings().getExperience();
 
         if (
-                !tool.force()
-                || tool.type() == ToolType.fromMaterial(mainHandMaterial)
+                !tool.isForce()
+                || tool.getToolType() == ToolType.fromMaterial(mainHandMaterial)
         ) {
             world.dropItemNaturally(blockLocation, this.customBlockData.craftItemStack());
 

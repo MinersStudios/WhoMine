@@ -1,27 +1,26 @@
-package com.minersstudios.msblock.api.file;
+package com.minersstudios.msblock.api.params;
 
-import com.google.common.collect.ImmutableMap;
 import org.bukkit.Axis;
 import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.Map;
+import javax.annotation.concurrent.Immutable;
+import java.util.*;
 
 /**
- * Abstract class representing different types of placing
- * behavior for custom note block data. Each implementing
- * class corresponds to a specific type of placing behavior.
+ * Abstract class representing different types of placing behavior for custom
+ * note block data. Each implementing class corresponds to a specific type of
+ * placing behavior.
  */
 public abstract class PlacingType {
 
     /**
-     * Creates a Default placing type with the specified
-     * note block data
+     * Creates a Default placing type with the specified note block data
      *
-     * @param noteBlockData The note block data associated
-     *                      with this placing type
+     * @param noteBlockData The note block data associated with this placing
+     *                      type
      * @return The Default PlacingType object
      */
     @Contract("_ -> new")
@@ -30,15 +29,14 @@ public abstract class PlacingType {
     }
 
     /**
-     * Creates a Directional placing type with the specified
-     * map of note block data for each block face
+     * Creates a Directional placing type with the specified map of note block
+     * data for each block face
      *
-     * @param map The map of BlockFace to NoteBlockData
-     *            representing different directions
+     * @param map The map of BlockFace to NoteBlockData representing different
+     *            directions
      * @return The Directional PlacingType object
-     * @throws IllegalArgumentException If the map does not contain
-     *                                  exactly 6 entries or contains
-     *                                  unsupported BlockFaces
+     * @throws IllegalArgumentException If the map does not contain exactly 6
+     *                                  entries or contains unsupported faces
      * @see Directional#isSupported(BlockFace)
      */
     @Contract("_ -> new")
@@ -47,18 +45,25 @@ public abstract class PlacingType {
             throw new IllegalArgumentException("Map must contain 6 entries");
         }
 
-        for (final var blockFace : map.keySet()) {
-            if (!Directional.isSupported(blockFace)) {
-                throw new IllegalArgumentException("Unsupported BlockFace: " + blockFace);
+        final var enumMap = new EnumMap<BlockFace, NoteBlockData>(BlockFace.class);
+
+        for (final var entry : map.entrySet()) {
+            final BlockFace face = entry.getKey();
+            final NoteBlockData data = entry.getValue();
+
+            if (!Directional.isSupported(face)) {
+                throw new IllegalArgumentException("Unsupported BlockFace: " + entry);
             }
+
+            enumMap.put(face, data);
         }
 
-        return new Directional(map);
+        return new Directional(enumMap);
     }
 
     /**
-     * Creates a Directional placing type with note block data
-     * for each supported block face direction
+     * Creates a Directional placing type with note block data for each
+     * supported block face direction
      *
      * @param up    The note block data for {@link BlockFace#UP}
      * @param down  The note block data for {@link BlockFace#DOWN}
@@ -77,25 +82,27 @@ public abstract class PlacingType {
             final @NotNull NoteBlockData south,
             final @NotNull NoteBlockData west
     ) {
-        return new Directional(ImmutableMap.of(
-                BlockFace.UP, up,
-                BlockFace.DOWN, down,
-                BlockFace.NORTH, north,
-                BlockFace.EAST, east,
-                BlockFace.SOUTH, south,
-                BlockFace.WEST, west
-        ));
+        final var map = new EnumMap<BlockFace, NoteBlockData>(BlockFace.class);
+
+        map.put(BlockFace.UP, up);
+        map.put(BlockFace.DOWN, down);
+        map.put(BlockFace.NORTH, north);
+        map.put(BlockFace.EAST, east);
+        map.put(BlockFace.SOUTH, south);
+        map.put(BlockFace.WEST, west);
+
+        return new Directional(map);
     }
 
     /**
-     * Creates an Orientable placing type with the specified map
-     * of note block data for each axis orientation
+     * Creates an Orientable placing type with the specified map of note block
+     * data for each axis orientation
      *
-     * @param map The map of Axis to NoteBlockData representing
-     *            different orientations
+     * @param map The map of Axis to NoteBlockData representing different
+     *            orientations
      * @return The Orientable PlacingType object
-     * @throws IllegalArgumentException If the map does not contain
-     *                                  exactly 3 entries
+     * @throws IllegalArgumentException If the map does not contain exactly 3
+     *                                  entries
      */
     @Contract("_ -> new")
     public static @NotNull Orientable orientableType(final @NotNull Map<Axis, NoteBlockData> map) throws IllegalArgumentException {
@@ -103,7 +110,7 @@ public abstract class PlacingType {
             throw new IllegalArgumentException("Map must contain 3 entries");
         }
 
-        return new Orientable(map);
+        return new Orientable(new EnumMap<>(map));
     }
 
     /**
@@ -121,18 +128,21 @@ public abstract class PlacingType {
             final @NotNull NoteBlockData y,
             final @NotNull NoteBlockData z
     ) {
-        return new Orientable(ImmutableMap.of(
-                Axis.X, x,
-                Axis.Y, y,
-                Axis.Z, z
-        ));
+        final var map = new EnumMap<Axis, NoteBlockData>(Axis.class);
+
+        map.put(Axis.X, x);
+        map.put(Axis.Y, y);
+        map.put(Axis.Z, z);
+
+        return new Orientable(map);
     }
 
     /**
-     * Default placing type for a note block data. Includes only
-     * one note block data.
+     * Default placing type for note block data. Includes only one note block
+     * data.
      */
-    public static class Default extends PlacingType {
+    @Immutable
+    public static final class Default extends PlacingType {
         private final NoteBlockData noteBlockData;
 
         private Default(final @NotNull NoteBlockData noteBlockData) {
@@ -140,8 +150,7 @@ public abstract class PlacingType {
         }
 
         /**
-         * @return The note block data associated with this
-         *         placing type
+         * @return The note block data associated with this placing type
          */
         public @NotNull NoteBlockData getNoteBlockData() {
             return this.noteBlockData;
@@ -149,13 +158,13 @@ public abstract class PlacingType {
     }
 
     /**
-     * Directional placing type for a note block data. Includes
-     * a map of note block data for each block face. Each block
-     * face is mapped to a note block data. The note block data
-     * for the block face is used when the note block is placed
-     * on that block face.
+     * Directional placing type for note block data. Includes a map of note
+     * block data for each block face. Each block face is mapped to note block
+     * data. The note block data for the block face is used when the note block
+     * is placed on that block face.
      */
-    public static class Directional extends PlacingType {
+    @Immutable
+    public static final class Directional extends PlacingType {
         private final Map<BlockFace, NoteBlockData> map;
 
         private Directional(final @NotNull Map<BlockFace, NoteBlockData> map) {
@@ -175,13 +184,12 @@ public abstract class PlacingType {
          *         representing different directions
          */
         public @NotNull @Unmodifiable Map<BlockFace, NoteBlockData> getMap() {
-            return this.map;
+            return Collections.unmodifiableMap(this.map);
         }
 
         /**
          * @param face The block face to check
-         * @return True if the specified block face is supported
-         *         by this placing type
+         * @return True if this placing type supports the specified block face
          */
         public static boolean isSupported(final @NotNull BlockFace face) {
             return face == BlockFace.UP
@@ -194,13 +202,13 @@ public abstract class PlacingType {
     }
 
     /**
-     * Orientable placing type for a note block data. Includes a
-     * map of note block data for each axis orientation (X, Y, Z).
-     * Each axis orientation is mapped to a note block data. The
-     * note block data for the axis orientation is used when the
-     * note block is placed on that axis orientation.
+     * Orientable placing type for note block data. Includes a map of note block
+     * data for each axis orientation (X, Y, Z). Each axis orientation is mapped
+     * to note block data. The note block data for the axis orientation is used
+     * when the note block is placed on that axis orientation.
      */
-    public static class Orientable extends PlacingType {
+    @Immutable
+    public static final class Orientable extends PlacingType {
         private final Map<Axis, NoteBlockData> map;
 
         private Orientable(final @NotNull Map<Axis, NoteBlockData> map) {
@@ -208,8 +216,8 @@ public abstract class PlacingType {
         }
 
         /**
-         * Gets the note block data associated with the specified
-         * axis orientation (X, Y, Z)
+         * Gets the note block data associated with the specified axis
+         * orientation (X, Y, Z)
          *
          * @param axis The axis orientation
          * @return The note block data for the given orientation
@@ -219,11 +227,11 @@ public abstract class PlacingType {
         }
 
         /**
-         * @return An unmodifiable map of Axis to NoteBlockData
-         *         representing different orientations
+         * @return An unmodifiable map of Axis to NoteBlockData representing
+         *         different orientations
          */
         public @NotNull @Unmodifiable Map<Axis, NoteBlockData> getMap() {
-            return this.map;
+            return Collections.unmodifiableMap(this.map);
         }
     }
 }

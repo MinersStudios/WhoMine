@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.inventory.recipe;
+package com.minersstudios.mscore.inventory.recipe.builder;
 
 import org.bukkit.inventory.SmithingTransformRecipe;
 import org.jetbrains.annotations.NotNull;

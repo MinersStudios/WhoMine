@@ -4,6 +4,9 @@ import com.google.gson.*;
 import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockData;
 import com.minersstudios.msblock.api.file.adapter.*;
+import com.minersstudios.msblock.api.params.NoteBlockData;
+import com.minersstudios.msblock.api.params.PlacingType;
+import com.minersstudios.msblock.api.params.ToolType;
 import com.minersstudios.mscore.plugin.config.ConfigurationException;
 import com.minersstudios.mscore.utility.MSPluginUtils;
 import org.bukkit.NamespacedKey;
@@ -25,35 +28,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Represents a handler for a custom block file,
- * that is used to load and save {@link CustomBlockData}
- * to and from a file in json format using {@link Gson}.
+ * Represents a handler for a custom block file, that is used to load and save
+ * {@link CustomBlockData} to and from a file in json format using {@link Gson}.
  * <br>
  * You can create a {@link CustomBlockFile} using
  * {@link #create(File, CustomBlockData)} or {@link #create(MSBlock, File)}.
  * <br>
- * The first method creates a new {@link CustomBlockFile} with the
- * specified file and data, and the second method creates a new
- * {@link CustomBlockFile} from the specified file and loads the
- * {@link CustomBlockData} from the file, or returns null if the
- * error occurs.
+ * The first method creates a new {@link CustomBlockFile} with the specified
+ * file and data, and the second method creates a new {@link CustomBlockFile}
+ * from the specified file and loads the {@link CustomBlockData} from the file,
+ * or returns null if the error occurs.
  */
-public class CustomBlockFile {
-    private CustomBlockData data;
+public final class CustomBlockFile {
     private final File file;
+    private CustomBlockData data;
 
     private static final Gson GSON =
             new GsonBuilder()
-                    .registerTypeAdapter(NamespacedKey.class, new NamespacedKeyAdapter())
-                    .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
-                    .registerTypeAdapter(Recipe.class, new RecipeAdapter())
-                    .registerTypeAdapter(RecipeChoice.class, new RecipeChoiceAdapter())
-                    .registerTypeAdapter(SoundCategory.class, new EnumDeserializer<>(SoundCategory.class))
-                    .registerTypeAdapter(ToolType.class, new EnumDeserializer<>(ToolType.class))
-                    .registerTypeAdapter(PlacingType.class, new PlacingTypeAdapter())
-                    .registerTypeAdapter(NoteBlockData.class, new NoteBlockDataAdapter())
-                    .setPrettyPrinting()
-                    .create();
+            .registerTypeAdapter(NamespacedKey.class, new NamespacedKeyAdapter(MSBlock.NAMESPACE))
+            .registerTypeAdapter(ItemStack.class,     new ItemStackAdapter())
+            .registerTypeAdapter(Recipe.class,        new RecipeAdapter())
+            .registerTypeAdapter(RecipeChoice.class,  new RecipeChoiceAdapter())
+            .registerTypeAdapter(SoundCategory.class, new EnumAdapter<>(SoundCategory.values()))
+            .registerTypeAdapter(ToolType.class,      new EnumAdapter<>(ToolType.values()))
+            .registerTypeAdapter(PlacingType.class,   new PlacingTypeAdapter())
+            .registerTypeAdapter(NoteBlockData.class, new NoteBlockDataAdapter())
+            .setPrettyPrinting()
+            .create();
 
     private CustomBlockFile(
             final @NotNull File file,
@@ -68,13 +69,11 @@ public class CustomBlockFile {
     }
 
     /**
-     * Creates a {@link CustomBlockFile} with the specified file
-     * and data
+     * Creates a {@link CustomBlockFile} with the specified file and data
      *
      * @param file The file to use
      * @param data The data to use
-     * @return A new {@link CustomBlockFile} with the specified file
-     *         and data
+     * @return A new {@link CustomBlockFile} with the specified file and data
      * @throws IllegalArgumentException If the file is not a json file
      */
     @Contract("_, _ -> new")
@@ -86,10 +85,9 @@ public class CustomBlockFile {
     }
 
     /**
-     * Creates a {@link CustomBlockFile} from the specified file
-     * and loads the {@link CustomBlockData} from the file. All
-     * errors are logged to the console and null is returned if
-     * an error occurs.
+     * Creates a {@link CustomBlockFile} from the specified file and loads the
+     * {@link CustomBlockData} from the file. All errors are logged to the
+     * console, and null is returned if an error occurs.
      *
      * @param plugin The plugin to load the data for
      * @param file   The file to load
@@ -108,6 +106,7 @@ public class CustomBlockFile {
             final CustomBlockFile customBlockFile = new CustomBlockFile(file, null);
 
             customBlockFile.load(plugin);
+
             return customBlockFile;
         } catch (final ConfigurationException e) {
             logger.log(
@@ -124,6 +123,14 @@ public class CustomBlockFile {
         }
 
         return null;
+    }
+
+    /**
+     * @return The {@link Gson} instance used to serialize and deserialize this
+     *         custom block file
+     */
+    public static @NotNull Gson gson() {
+        return GSON;
     }
 
     /**
@@ -186,14 +193,6 @@ public class CustomBlockFile {
                     e
             );
         }
-    }
-
-    /**
-     * @return The {@link Gson} instance used to serialize and deserialize
-     *         this custom block file
-     */
-    public static @NotNull Gson getGson() {
-        return GSON;
     }
 
     private static @NotNull CustomBlockData deserialize(

@@ -19,11 +19,12 @@ import java.util.Locale;
  * Serialized output you can see in the "MSBlock/blocks/example.json" file.
  */
 public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDeserializer<RecipeChoice> {
-    private static final String CHOICES_KEY = "choices";
-    private static final String TYPE_KEY = "type";
+    private static final String CHOICES_KEY =     "choices";
+    private static final String TYPE_KEY =        "type";
     private static final String MATERIAL_CHOICE = "MATERIAL_CHOICE";
-    private static final String EXACT_CHOICE = "EXACT_CHOICE";
-    private static final String CUSTOM_CHOICE = "CUSTOM_CHOICE";
+    private static final String EXACT_CHOICE =    "EXACT_CHOICE";
+    private static final String CUSTOM_CHOICE =   "CUSTOM_CHOICE";
+
     private static final Type NAMESPACED_LIST_TYPE = new TypeToken<List<String>>() {}.getType();
 
     @Override
@@ -33,7 +34,13 @@ public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDe
             final @NotNull JsonDeserializationContext context
     ) throws JsonParseException, IllegalArgumentException {
         final JsonObject jsonObject = json.getAsJsonObject();
-        final String typeString = jsonObject.get(TYPE_KEY).getAsString().toUpperCase(Locale.ENGLISH);
+        final JsonElement typeElement = jsonObject.get(TYPE_KEY);
+
+        if (typeElement == null) {
+            throw new JsonParseException("Missing type");
+        }
+
+        final String typeString = typeElement.getAsString().toUpperCase(Locale.ENGLISH);
 
         switch (typeString) {
             case MATERIAL_CHOICE -> {
@@ -55,13 +62,13 @@ public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDe
                 );
                 return new CustomChoice(namespacedKeys).toExactChoice();
             }
-            default -> throw new IllegalArgumentException("Unknown RecipeChoice type: " + typeString);
+            default -> throw new IllegalArgumentException("Unknown RecipeChoice type : " + typeString);
         }
     }
 
     @Override
     public @NotNull JsonElement serialize(
-            final @NotNull RecipeChoice src,
+            final @NotNull RecipeChoice choice,
             final @NotNull Type type,
             final @NotNull JsonSerializationContext context
     ) throws IllegalArgumentException {
@@ -69,21 +76,21 @@ public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDe
 
         jsonObject.addProperty(
                 TYPE_KEY,
-                src instanceof RecipeChoice.MaterialChoice
+                choice instanceof RecipeChoice.MaterialChoice
                 ? MATERIAL_CHOICE
-                : src instanceof RecipeChoice.ExactChoice
+                : choice instanceof RecipeChoice.ExactChoice
                 ? EXACT_CHOICE
                 : CUSTOM_CHOICE
         );
 
-        if (src instanceof final RecipeChoice.MaterialChoice materialChoice) {
+        if (choice instanceof final RecipeChoice.MaterialChoice materialChoice) {
             jsonObject.add(CHOICES_KEY, context.serialize(materialChoice.getChoices()));
-        } else if (src instanceof final RecipeChoice.ExactChoice exactChoice) {
+        } else if (choice instanceof final RecipeChoice.ExactChoice exactChoice) {
             jsonObject.add(CHOICES_KEY, context.serialize(exactChoice.getChoices()));
-        } else if (src instanceof final CustomChoice customChoice) {
+        } else if (choice instanceof final CustomChoice customChoice) {
             jsonObject.add(CHOICES_KEY, context.serialize(customChoice.getNamespacedKeys()));
         } else {
-            throw new IllegalArgumentException("Unknown RecipeChoice type: " + src.getClass().getName());
+            throw new IllegalArgumentException("Unknown RecipeChoice type: " + choice.getClass().getName());
         }
 
         return jsonObject;

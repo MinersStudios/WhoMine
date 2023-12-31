@@ -1,6 +1,7 @@
 package com.minersstudios.msblock.api.file.adapter;
 
 import com.google.gson.*;
+import com.minersstudios.mscore.utility.BlockUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.nbt.TagParser;
 import org.bukkit.Material;
@@ -20,23 +21,27 @@ import java.util.Locale;
  * Serialized output you can see in the "MSBlock/blocks/example.json" file.
  */
 public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
-    private static final String TYPE_KEY = "type";
+    private static final String TYPE_KEY =   "type";
     private static final String AMOUNT_KEY = "amount";
-    private static final String NBT_KEY = "nbt";
+    private static final String NBT_KEY =    "nbt";
 
     @Override
     public @NotNull ItemStack deserialize(
             final @NotNull JsonElement json,
-            final @NotNull Type typeOfT,
+            final @NotNull Type type,
             final @NotNull JsonDeserializationContext context
-    ) throws JsonParseException, IllegalArgumentException {
+    ) throws JsonParseException {
         final JsonObject jsonObject = json.getAsJsonObject();
 
         final String typeName = jsonObject.get(TYPE_KEY).getAsString().toUpperCase(Locale.ENGLISH);
-        final Material type = Material.valueOf(typeName);
+        final Material material = BlockUtils.getMaterial(typeName);
+
+        if (material == null) {
+            throw new JsonParseException("Invalid material: " + typeName);
+        }
 
         final int amount = jsonObject.get(AMOUNT_KEY).getAsInt();
-        final ItemStack itemStack = new ItemStack(type, amount);
+        final ItemStack itemStack = new ItemStack(material, amount);
 
         if (jsonObject.has(NBT_KEY)) {
             final net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
@@ -56,15 +61,15 @@ public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserial
 
     @Override
     public @NotNull JsonElement serialize(
-            final @NotNull ItemStack src,
-            final @NotNull Type typeOfSrc,
+            final @NotNull ItemStack itemStack,
+            final @NotNull Type type,
             final @NotNull JsonSerializationContext context
     ) {
         final JsonObject jsonObject = new JsonObject();
-        final String nbt = src.getItemMeta().getAsString();
+        final String nbt = itemStack.getItemMeta().getAsString();
 
-        jsonObject.addProperty(TYPE_KEY, src.getType().name());
-        jsonObject.addProperty(AMOUNT_KEY, src.getAmount());
+        jsonObject.addProperty(TYPE_KEY, itemStack.getType().name());
+        jsonObject.addProperty(AMOUNT_KEY, itemStack.getAmount());
 
         if (!nbt.equals("{}")) {
             jsonObject.addProperty(NBT_KEY, nbt);

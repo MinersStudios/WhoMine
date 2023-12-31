@@ -2,11 +2,16 @@ package com.minersstudios.msblock.api;
 
 import com.google.gson.JsonElement;
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.api.file.*;
+import com.minersstudios.msblock.api.file.CustomBlockFile;
 import com.minersstudios.msblock.api.file.adapter.RecipeAdapter;
+import com.minersstudios.msblock.api.params.*;
+import com.minersstudios.msblock.api.params.settings.Placing;
+import com.minersstudios.msblock.api.params.settings.Tool;
+import com.minersstudios.mscore.inventory.recipe.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.msessentials.menu.CraftsMenu;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -18,38 +23,39 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.logging.Level;
 
 /**
- * Class representing the data of a custom block. This class
- * holds information about the block's key, block settings,
- * drop settings, sound group, and recipe entries. It also
- * holds a default instance of the CustomBlockData class which
+ * Class representing the data of a custom block. This class holds information
+ * about the block's key, block settings, drop settings, sound group, and recipe
+ * entries. It also holds a default instance of the CustomBlockData class which
  * is used as a fallback in some scenarios.
  *
- * @see #getDefault()
+ * @see #defaultData()
  */
-public class CustomBlockData {
+@Immutable
+public final class CustomBlockData {
     private final String key;
     private final BlockSettings blockSettings;
     private final DropSettings dropSettings;
     private final SoundGroup soundGroup;
-    private Set<RecipeEntry> recipeEntries;
+    private List<RecipeEntry> recipeEntries;
 
     private static final CustomBlockData DEFAULT = new CustomBlockData(
             //<editor-fold desc="Default note block params" defaultstate="collapsed">
             "default",
             new BlockSettings(
                     11.0f,
-                    BlockSettings.Tool.create(
+                    Tool.create(
                             ToolType.AXE,
                             false
                     ),
-                    BlockSettings.Placing.create(
+                    Placing.create(
                             PlacingType.defaultType(NoteBlockData.defaultData())
                     )
             ),
@@ -75,13 +81,13 @@ public class CustomBlockData {
             final @NotNull BlockSettings blockSettings,
             final @NotNull DropSettings dropSettings,
             final @NotNull SoundGroup soundGroup,
-            final @NotNull Set<RecipeEntry> recipeEntries
+            final @NotNull List<RecipeEntry> recipeEntries
     ) {
         this.key = key.toLowerCase(Locale.ENGLISH);
         this.blockSettings = blockSettings;
         this.dropSettings = dropSettings;
         this.soundGroup = soundGroup;
-        this.recipeEntries = recipeEntries;
+        this.recipeEntries = new ObjectArrayList<>(recipeEntries);
     }
 
     /**
@@ -105,8 +111,31 @@ public class CustomBlockData {
                 blockSettings,
                 dropSettings,
                 soundGroup,
-                Set.of(recipeEntries)
+                ObjectArrayList.of(recipeEntries)
         );
+    }
+
+    /**
+     * Loads the custom block data from the specified file
+     *
+     * @param file The file to load the custom block data from
+     * @return The custom block data loaded from the file, or null if an error
+     *         occurred
+     * @see CustomBlockFile#create(MSBlock, File)
+     */
+    public static @Nullable CustomBlockData fromFile(
+            final @NotNull MSBlock plugin,
+            final @NotNull File file
+    ) {
+        final CustomBlockFile blockFile = CustomBlockFile.create(plugin, file);
+
+        if (blockFile == null) {
+            plugin.getLogger().severe("Failed to load custom block file: " + file.getName());
+
+            return null;
+        }
+
+        return blockFile.getData();
     }
 
     /**
@@ -119,30 +148,8 @@ public class CustomBlockData {
      *     <br> - sound group: {@link SoundGroup#WOOD}
      * @see #DEFAULT
      */
-    public static @NotNull CustomBlockData getDefault() {
+    public static @NotNull CustomBlockData defaultData() {
         return DEFAULT;
-    }
-
-    /**
-     * Loads the custom block data from the specified file
-     *
-     * @param file The file to load the custom block data from
-     * @return The custom block data loaded from the file,
-     *         or null if an error occurred
-     * @see CustomBlockFile#create(MSBlock, File)
-     */
-    public static @Nullable CustomBlockData fromFile(
-            final @NotNull MSBlock plugin,
-            final @NotNull File file
-    ) {
-        final CustomBlockFile blockFile = CustomBlockFile.create(plugin, file);
-
-        if (blockFile == null) {
-            plugin.getLogger().severe("Failed to load custom block file: " + file.getName());
-            return null;
-        }
-
-        return blockFile.getData();
     }
 
     /**
@@ -179,32 +186,13 @@ public class CustomBlockData {
     /**
      * @return The recipe entries of the custom block data
      */
-    public @NotNull @Unmodifiable Set<RecipeEntry> getRecipeEntries() {
-        return this.recipeEntries == null
-                ? Collections.emptySet()
-                : Collections.unmodifiableSet(this.recipeEntries);
-    }
-
-    /**
-     * Sets the recipe entries of the custom block data
-     *
-     * @param server        The server to register the recipes to
-     * @param recipeEntries The new recipe entries of the custom block data
-     */
-    public void setRecipeEntries(
-            final @NotNull Server server,
-            final @NotNull Set<RecipeEntry> recipeEntries
-    ) {
-        if (this.recipeEntries != null) {
-            this.unregisterRecipes(server);
-        }
-
-        this.recipeEntries = recipeEntries;
+    public @NotNull @Unmodifiable List<RecipeEntry> getRecipeEntries() {
+        return Collections.unmodifiableList(this.recipeEntries);
     }
 
     /**
      * @return True if the custom block data is the default instance
-     * @see #getDefault()
+     * @see #defaultData()
      */
     public boolean isDefault() {
         return this == DEFAULT;
@@ -223,12 +211,11 @@ public class CustomBlockData {
     }
 
     /**
-     * Creates an ItemStack based on the custom block data
-     * parameters. The ItemStack will have the custom block
-     * data key stored in its persistent data container.
+     * Creates an ItemStack based on the custom block data parameters. The
+     * ItemStack will have the custom block data key stored in its persistent
+     * data container.
      *
-     * @return The new ItemStack based on the custom block data
-     *         parameters
+     * @return The new ItemStack based on the custom block data parameters
      * @see CustomBlockRegistry#TYPE_NAMESPACED_KEY
      */
     public @NotNull ItemStack craftItemStack() {
@@ -246,12 +233,10 @@ public class CustomBlockData {
     }
 
     /**
-     * Registers the recipes of the custom block data.
-     * If the showInCraftsMenu parameter of a recipe entry
-     * is true, the recipe will be added to the global
-     * cache's custom block recipes list. This list is
-     * used to display the custom block recipes in the
-     * {@link CraftsMenu}
+     * Registers the recipes of the custom block data. If the showInCraftsMenu
+     * parameter of a recipe entry is true, the recipe will be added to the
+     * global cache's custom block recipes list. This list is used to display
+     * the custom block recipes in the {@link CraftsMenu}
      *
      * @param plugin     The plugin that owns this custom block data
      * @param recipeJson The json element containing the recipes
@@ -262,21 +247,22 @@ public class CustomBlockData {
     ) {
         final Server server = plugin.getServer();
 
-        try {
-            this.setRecipeEntries(
-                    server,
-                    RecipeAdapter.deserializeEntries(
-                            new ItemStack(this.craftItemStack()),
-                            recipeJson.getAsJsonArray()
-                    )
-            );
-        } catch (final Exception e) {
-            plugin.getLogger().log(
-                    Level.SEVERE,
-                    "Failed to deserialize recipes for custom block data: " + this.key,
-                    e
-            );
-            return;
+        if (this.recipeEntries == null) {
+            try {
+                this.recipeEntries = new ObjectArrayList<>(
+                        RecipeAdapter.deserializeEntries(
+                                new ItemStack(this.craftItemStack()),
+                                recipeJson.getAsJsonArray()
+                        )
+                );
+            } catch (final Throwable e) {
+                plugin.getLogger().log(
+                        Level.SEVERE,
+                        "Failed to deserialize recipes for custom block data: " + this.key,
+                        e
+                );
+                return;
+            }
         }
 
         for (final var recipeEntry : this.recipeEntries) {
@@ -284,7 +270,7 @@ public class CustomBlockData {
 
             server.addRecipe(recipe);
 
-            if (recipeEntry.isShowInCraftsMenu()) {
+            if (recipeEntry.isRegisteredInMenu()) {
                 MSPlugin.globalCache().customBlockRecipes.add(recipe);
             }
         }
@@ -294,19 +280,18 @@ public class CustomBlockData {
      * Unregisters the recipes of the custom block data
      */
     public void unregisterRecipes(final @NotNull Server server) {
-        final var recipes = MSPlugin.globalCache().customBlockRecipes;
-
-        if (recipes.isEmpty()) {
+        if (this.recipeEntries == null) {
             return;
         }
 
-        for (final var recipeEntry : this.recipeEntries) {
-            final Keyed recipe = (Keyed) recipeEntry.getRecipe();
+        for (final var entry : this.recipeEntries) {
+            final Keyed recipe = (Keyed) entry.getRecipe();
+            final boolean isRegisteredInMenu = entry.isRegisteredInMenu();
 
             server.removeRecipe(recipe.getKey());
 
-            if (recipeEntry.isShowInCraftsMenu()) {
-                recipes.remove(recipe);
+            if (isRegisteredInMenu) {
+                MSPlugin.globalCache().customBlockRecipes.remove(recipe);
             }
         }
     }

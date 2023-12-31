@@ -4,11 +4,8 @@ import com.minersstudios.msblock.MSBlock;
 import com.minersstudios.msblock.api.CustomBlockRegistry;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.plugin.MSPlugin;
-import org.bukkit.Keyed;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
-import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
@@ -21,20 +18,11 @@ public final class ReloadCommand {
     ) {
         final long time = System.currentTimeMillis();
         final Server server = sender.getServer();
-        final var crafts = server.recipeIterator();
 
-        while (crafts.hasNext()) {
-            final Recipe recipe = crafts.next();
-
-            if (
-                    recipe instanceof final Keyed keyed
-                    && MSBlock.NAMESPACE.equals(keyed.getKey().getNamespace())
-            ) {
-                server.removeRecipe(keyed.getKey());
-            }
+        for (final var data : CustomBlockRegistry.customBlockDataCollection()) {
+            data.unregisterRecipes(server);
         }
 
-        MSPlugin.globalCache().customBlockRecipes.clear();
         CustomBlockRegistry.unregisterAll();
         plugin.getConfiguration().reload();
         MSLogger.fine(

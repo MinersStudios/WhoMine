@@ -1,7 +1,7 @@
 package com.minersstudios.msblock.listener.event.block;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.api.file.NoteBlockData;
+import com.minersstudios.msblock.api.params.NoteBlockData;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import org.bukkit.Instrument;

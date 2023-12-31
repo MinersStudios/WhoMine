@@ -1,4 +1,4 @@
-package com.minersstudios.msblock.api.file;
+package com.minersstudios.msblock.api.params;
 
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +17,7 @@ public enum ToolType {
      */
     public static @NotNull ToolType fromMaterial(final @NotNull Material material) {
         return switch (material) {
+            //<editor-fold desc="Swords" defaultstate="collapsed">
             case
                     WOODEN_SWORD,
                     STONE_SWORD,
@@ -24,6 +25,8 @@ public enum ToolType {
                     GOLDEN_SWORD,
                     DIAMOND_SWORD,
                     NETHERITE_SWORD -> SWORD;
+            //</editor-fold>
+            //<editor-fold desc="Pickaxes" defaultstate="collapsed">
             case
                     WOODEN_PICKAXE,
                     STONE_PICKAXE,
@@ -31,6 +34,8 @@ public enum ToolType {
                     GOLDEN_PICKAXE,
                     DIAMOND_PICKAXE,
                     NETHERITE_PICKAXE -> PICKAXE;
+            //</editor-fold>
+            //<editor-fold desc="Axes" defaultstate="collapsed">
             case
                     WOODEN_AXE,
                     STONE_AXE,
@@ -38,6 +43,8 @@ public enum ToolType {
                     GOLDEN_AXE,
                     DIAMOND_AXE,
                     NETHERITE_AXE -> AXE;
+            //</editor-fold>
+            //<editor-fold desc="Shovels" defaultstate="collapsed">
             case
                     WOODEN_SHOVEL,
                     STONE_SHOVEL,
@@ -45,6 +52,8 @@ public enum ToolType {
                     GOLDEN_SHOVEL,
                     DIAMOND_SHOVEL,
                     NETHERITE_SHOVEL -> SHOVEL;
+            //</editor-fold>
+            //<editor-fold desc="Hoes" defaultstate="collapsed">
             case
                     WOODEN_HOE,
                     STONE_HOE,
@@ -52,7 +61,10 @@ public enum ToolType {
                     GOLDEN_HOE,
                     DIAMOND_HOE,
                     NETHERITE_HOE -> HOE;
+            //</editor-fold>
+            //<editor-fold desc="Shears" defaultstate="collapsed">
             case SHEARS -> SHEARS;
+            //</editor-fold>
             default -> HAND;
         };
     }

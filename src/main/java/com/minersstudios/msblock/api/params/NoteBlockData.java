@@ -1,4 +1,4 @@
-package com.minersstudios.msblock.api.file;
+package com.minersstudios.msblock.api.params;
 
 import org.bukkit.Instrument;
 import org.bukkit.Note;
@@ -9,18 +9,22 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Represents the data of a note block.
  * <br>
- * Use {@link #craftNoteBlock(BlockData)} to create
- * a {@link NoteBlock} from the note block data.
+ * Use {@link #craftNoteBlock(BlockData)} to create a {@link NoteBlock} from the
+ * note block data.
  */
-public class NoteBlockData implements Cloneable {
-    private Instrument instrument;
-    private Note note;
-    private boolean powered;
+@Immutable
+public final class NoteBlockData {
+    private final Instrument instrument;
+    private final Note note;
+    private final boolean powered;
 
     private static final NoteBlockData DEFAULT = new NoteBlockData(Instrument.BIT, new Note(0), false);
+    private static final int PRIME = 31;
 
     private NoteBlockData(
             final @NotNull Instrument instrument,
@@ -46,8 +50,8 @@ public class NoteBlockData implements Cloneable {
     }
 
     /**
-     * Constructs a NoteBlockData with the given instrument, note
-     * and powered state
+     * Constructs a NoteBlockData with the given instrument, note and powered
+     * state
      *
      * @param instrument The instrument of the note block
      * @param note       The note of the note block
@@ -55,7 +59,7 @@ public class NoteBlockData implements Cloneable {
      * @return New note block data
      */
     @Contract("_, _, _ -> new")
-    public static @NotNull NoteBlockData fromParams(
+    public static @NotNull NoteBlockData from(
             final @NotNull Instrument instrument,
             final @NotNull Note note,
             final boolean powered
@@ -64,17 +68,17 @@ public class NoteBlockData implements Cloneable {
     }
 
     /**
-     * Constructs a NoteBlockData with the given instrument, note
-     * and powered state
+     * Constructs a NoteBlockData with the given instrument, note and powered
+     * state
      *
      * @param instrument The instrument of the note block
-     * @param note       Internal note id,
-     *                   the value has to be in the interval [0; 24]
+     * @param note       Internal note id, the value has to be in the interval
+     *                   [0; 24]
      * @param powered    True if the note block is powered
      * @return New note block data
      */
     @Contract("_, _, _ -> new")
-    public static @NotNull NoteBlockData fromParams(
+    public static @NotNull NoteBlockData from(
             final @NotNull Instrument instrument,
             final @Range(from = 0, to = 24) int note,
             final boolean powered
@@ -83,13 +87,13 @@ public class NoteBlockData implements Cloneable {
     }
 
     /**
-     * Creates a new note block data from values of the given note block
+     * Creates new note block data from values of the given note block
      *
      * @param noteBlock The note block to get the note block data from
      * @return New note block data
      */
     @Contract("_ -> new")
-    public static @NotNull NoteBlockData fromNoteBlock(final @NotNull NoteBlock noteBlock) {
+    public static @NotNull NoteBlockData from(final @NotNull NoteBlock noteBlock) {
         return new NoteBlockData(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
     }
 
@@ -101,13 +105,12 @@ public class NoteBlockData implements Cloneable {
     }
 
     /**
-     * Sets new instrument of the note block data
+     * Sets a new instrument of the note block data
      *
      * @param instrument The instrument to set
      */
     public @NotNull NoteBlockData instrument(final @NotNull Instrument instrument) {
-        this.instrument = instrument;
-        return this;
+        return new NoteBlockData(instrument, this.note, this.powered);
     }
 
     /**
@@ -124,24 +127,21 @@ public class NoteBlockData implements Cloneable {
      * @return The note block data with the new note
      */
     public @NotNull NoteBlockData note(final @NotNull Note note) {
-        this.note = note;
-        return this;
+        return new NoteBlockData(this.instrument, note, this.powered);
     }
 
     /**
-     * @return The internal note id of the note block data,
-     *         the value is in the interval [0; 24]
+     * @return The internal note id of the note block data, the value is in the
+     *         interval [0; 24]
      */
     public int noteId() {
-        final int prime = 31;
-        return this.note.hashCode() - prime;
+        return this.note.hashCode() - PRIME;
     }
 
     /**
      * Sets new note of the note block data by the internal note id
      *
-     * @param note Internal note id,
-     *             the value has to be in the interval [0; 24]
+     * @param note Internal note id, the value has to be in the interval [0; 24]
      * @return The note block data with the new note
      * @see #note(Note)
      */
@@ -163,8 +163,7 @@ public class NoteBlockData implements Cloneable {
      * @return The note block data with the new powered state
      */
     public @NotNull NoteBlockData powered(final boolean powered) {
-        this.powered = powered;
-        return this;
+        return new NoteBlockData(this.instrument, this.note, powered);
     }
 
     /**
@@ -180,7 +179,8 @@ public class NoteBlockData implements Cloneable {
      *
      * @param blockData The block data to get the note block data from
      * @return The {@link NoteBlock} of the given block data
-     * @throws IllegalArgumentException If the given block data is not a {@link NoteBlock}
+     * @throws IllegalArgumentException If the given block data is not a
+     *                                  {@link NoteBlock}
      */
     public @NotNull NoteBlock craftNoteBlock(final @NotNull BlockData blockData) throws IllegalArgumentException {
         if (!(blockData instanceof final NoteBlock noteBlock)) {
@@ -195,26 +195,25 @@ public class NoteBlockData implements Cloneable {
     }
 
     /**
-     * @return The hash code of the note block data,
-     *         based on the instrument, note and powered state
+     * @return The hash code of the note block data, based on the instrument,
+     *         note and powered state
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
         int result = 1;
 
-        result = prime * result + this.instrument.ordinal();
-        result = prime * result + this.note.hashCode();
-        result = prime * result + (this.powered ? 1 : 0);
+        result = PRIME * result + this.instrument.ordinal();
+        result = PRIME * result + this.note.hashCode();
+        result = PRIME * result + (this.powered ? 1 : 0);
 
         return result;
     }
 
     /**
      * @param obj The object to compare with
-     * @return True if the given object is {@link NoteBlockData}
-     *         or {@link NoteBlock} and has the same instrument,
-     *         note and powered state
+     * @return True if the given object is {@link NoteBlockData} or
+     *         {@link NoteBlock} and has the same instrument, note and powered
+     *         state
      */
     @Override
     public boolean equals(final @Nullable Object obj) {
@@ -231,21 +230,6 @@ public class NoteBlockData implements Cloneable {
                         && this.note == noteBlock.getNote()
                         && this.powered == noteBlock.isPowered()
                 );
-    }
-
-    /**
-     * Creates a clone of this note block data
-     * with the same instrument, note and powered state
-     *
-     * @return Clone of this note block data
-     */
-    @Override
-    public @NotNull NoteBlockData clone() {
-        try {
-            return (NoteBlockData) super.clone();
-        } catch (final CloneNotSupportedException e) {
-            throw new AssertionError("An error occurred while cloning '" + this + "'", e);
-        }
     }
 
     /**

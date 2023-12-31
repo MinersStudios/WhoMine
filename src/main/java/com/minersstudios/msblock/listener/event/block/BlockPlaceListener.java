@@ -39,7 +39,7 @@ public final class BlockPlaceListener extends AbstractEventListener<MSBlock> {
         }
 
         if (blockType == Material.NOTE_BLOCK) {
-            new CustomBlock(block, CustomBlockData.getDefault())
+            new CustomBlock(block, CustomBlockData.defaultData())
                     .place(this.getPlugin(), player, event.getHand());
         }
     }

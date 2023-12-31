@@ -36,7 +36,7 @@ public final class BlockDamageListener extends AbstractEventListener<MSBlock> {
 
         if (block.getBlockData() instanceof final NoteBlock noteBlock) {
             final Player player = event.getPlayer();
-            final CustomBlockData customBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.getDefault());
+            final CustomBlockData customBlockData = CustomBlockRegistry.fromNoteBlock(noteBlock).orElse(CustomBlockData.defaultData());
             final CustomBlock customBlock = new CustomBlock(block, customBlockData);
             final CustomBlockDamageEvent damageEvent = new CustomBlockDamageEvent(customBlock, player, event.getItemInHand());
 

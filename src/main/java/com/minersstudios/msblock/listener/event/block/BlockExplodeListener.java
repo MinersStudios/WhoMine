@@ -26,7 +26,7 @@ public final class BlockExplodeListener extends AbstractEventListener<MSBlock> {
                         block.getLocation(),
                         CustomBlockRegistry
                         .fromNoteBlock((NoteBlock) block.getBlockData())
-                        .orElse(CustomBlockData.getDefault())
+                        .orElse(CustomBlockData.defaultData())
                         .craftItemStack()
                 );
             }

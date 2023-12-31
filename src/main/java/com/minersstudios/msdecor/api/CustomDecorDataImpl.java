@@ -1,6 +1,7 @@
 package com.minersstudios.msdecor.api;
 
-import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.RecipeEntry;
+import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.location.MSVector;
@@ -68,7 +69,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     private final EnumSet<Facing> facingSet;
     private final SoundGroup soundGroup;
     private final ItemStack itemStack;
-    private final List<Map.Entry<Recipe, Boolean>> recipeEntries;
+    private final List<RecipeEntry> recipeEntries;
     private final Function<D, Map.Entry<RecipeBuilder<?>, Boolean>>[] recipeFunctions;
     private final EnumSet<DecorParameter> parameterSet;
     private final double sitHeight;
@@ -159,7 +160,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public final @NotNull @UnmodifiableView List<Map.Entry<Recipe, Boolean>> recipeEntries() {
+    public final @NotNull @UnmodifiableView List<RecipeEntry> recipeEntries() {
         return Collections.unmodifiableList(this.recipeEntries);
     }
 
@@ -652,7 +653,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final Recipe recipe = recipeBuilder.build();
 
             this.recipeEntries.add(
-                    Map.entry(
+                    new RecipeEntry(
                             recipe,
                             registerInMenu
                     )
@@ -672,8 +673,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         for (final var entry : this.recipeEntries) {
-            final Keyed recipe = (Keyed) entry.getKey();
-            final boolean isRegisteredInMenu = entry.getValue();
+            final Keyed recipe = (Keyed) entry.getRecipe();
+            final boolean isRegisteredInMenu = entry.isRegisteredInMenu();
 
             server.removeRecipe(recipe.getKey());
 

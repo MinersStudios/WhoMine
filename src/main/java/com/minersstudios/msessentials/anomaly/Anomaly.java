@@ -2,6 +2,7 @@ package com.minersstudios.msessentials.anomaly;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import com.minersstudios.mscore.location.MSBoundingBox;
+import com.minersstudios.mscore.utility.BlockUtils;
 import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomaly.action.AddPotionAction;
@@ -127,7 +128,13 @@ public class Anomaly {
 
             for (final var equipmentSlot : equipmentSlots) {
                 final String name = equipmentSlot.name().toLowerCase(Locale.ROOT);
-                final ItemStack itemStack = new ItemStack(Material.valueOf(slotsSection.getString(name + ".material")));
+                final Material material = BlockUtils.getMaterial(slotsSection.getString(name + ".material"));
+
+                if (material == null) {
+                    throw new IllegalArgumentException("Anomaly config specified an invalid material name : " + name);
+                }
+
+                final ItemStack itemStack = new ItemStack(material);
                 final ItemMeta itemMeta = itemStack.getItemMeta();
 
                 itemMeta.setCustomModelData(slotsSection.getInt(name + ".custom-model-data"));

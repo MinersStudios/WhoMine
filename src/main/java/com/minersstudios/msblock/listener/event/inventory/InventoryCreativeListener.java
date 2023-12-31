@@ -41,7 +41,7 @@ public final class InventoryCreativeListener extends AbstractEventListener<MSBlo
                         event.getSlot(),
                         CustomBlockRegistry
                         .fromNoteBlock(noteBlock)
-                        .orElse(CustomBlockData.getDefault())
+                        .orElse(CustomBlockData.defaultData())
                         .craftItemStack()
                 )
         );

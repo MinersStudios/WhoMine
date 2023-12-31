@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.inventory.recipe;
+package com.minersstudios.mscore.inventory.recipe.builder;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;

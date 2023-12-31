@@ -1,8 +1,8 @@
 package com.minersstudios.msblock.api;
 
 import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.api.file.NoteBlockData;
-import com.minersstudios.msblock.api.file.PlacingType;
+import com.minersstudios.msblock.api.params.NoteBlockData;
+import com.minersstudios.msblock.api.params.PlacingType;
 import com.minersstudios.mscore.utility.ChatUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -83,7 +83,7 @@ public final class CustomBlockRegistry {
     private static final Map<String, IntSet> KEY_MAP = new Object2ObjectOpenHashMap<>();
 
     static {
-        register(CustomBlockData.getDefault());
+        register(CustomBlockData.defaultData());
     }
 
     @Contract(" -> fail")
@@ -179,7 +179,7 @@ public final class CustomBlockRegistry {
     /**
      * Gets the {@link CustomBlockData} from the given note block. It will get
      * the {@link NoteBlockData} from the note block, by calling
-     * {@link NoteBlockData#fromNoteBlock(NoteBlock)} method, and then it will
+     * {@link NoteBlockData#from(NoteBlock)} method, and then it will
      * get the custom block data from the note block data, by calling
      * {@link #fromNoteBlockData(NoteBlockData)} method.
      *
@@ -187,11 +187,11 @@ public final class CustomBlockRegistry {
      * @return An {@link Optional} containing the {@link CustomBlockData},
      *         or an {@link Optional#empty()} if the given note block is not
      *         associated with any custom block data
-     * @see NoteBlockData#fromNoteBlock(NoteBlock)
+     * @see NoteBlockData#from(NoteBlock)
      * @see #fromNoteBlockData(NoteBlockData)
      */
     public static @NotNull Optional<CustomBlockData> fromNoteBlock(final @NotNull NoteBlock noteBlock) {
-        return fromNoteBlockData(NoteBlockData.fromNoteBlock(noteBlock));
+        return fromNoteBlockData(NoteBlockData.from(noteBlock));
     }
 
     /**
@@ -269,7 +269,7 @@ public final class CustomBlockRegistry {
             return false;
         }
 
-        final PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
+        final PlacingType placingType = customBlockData.getBlockSettings().getPlacing().getType();
 
         if (placingType instanceof final PlacingType.Default normal) {
             return containsHashCode(normal.getNoteBlockData().hashCode());
@@ -371,7 +371,7 @@ public final class CustomBlockRegistry {
      */
     public static synchronized void register(final @NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
         final String key = customBlockData.getKey();
-        final PlacingType placingType = customBlockData.getBlockSettings().getPlacing().type();
+        final PlacingType placingType = customBlockData.getBlockSettings().getPlacing().getType();
 
         if (placingType instanceof final PlacingType.Default normal) {
             register(
@@ -458,7 +458,7 @@ public final class CustomBlockRegistry {
         }
 
         if (
-                customBlockData.getBlockSettings().getPlacing().type() instanceof PlacingType.Default
+                customBlockData.getBlockSettings().getPlacing().getType() instanceof PlacingType.Default
                 && containsHashCode(hashCode)
         ) {
             throw new IllegalArgumentException("The hash code " + hashCode + " is already registered! See " + key + " custom block data!");

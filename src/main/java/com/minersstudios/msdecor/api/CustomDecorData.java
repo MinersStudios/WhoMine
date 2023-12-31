@@ -1,6 +1,7 @@
 package com.minersstudios.msdecor.api;
 
-import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.RecipeEntry;
+import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -23,7 +24,6 @@ import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -79,14 +79,14 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
     Function<D, Map.Entry<RecipeBuilder<?>, Boolean>> @Nullable [] recipeFunctions();
 
     /**
-     * @return An unmodifiable list of {@link Recipe} entries representing the
+     * @return An unmodifiable list of recipe entries representing the
      *         associated recipes. The List will be non-empty after registering
      *         recipes with the server.
      *         <br>
      *         If you want to access the recipes before registering them with
      *         the server, use {@link #recipeFunctions()} instead.
      */
-    @NotNull @UnmodifiableView List<Map.Entry<Recipe, Boolean>> recipeEntries();
+    @NotNull @UnmodifiableView List<RecipeEntry> recipeEntries();
 
     /**
      * @return The unmodifiable set of {@link DecorParameter}

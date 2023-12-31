@@ -25,7 +25,7 @@ public final class EntityExplodeListener extends AbstractEventListener<MSBlock> 
                         block.getLocation(),
                         CustomBlockRegistry
                         .fromBlockData(block.getBlockData())
-                        .orElse(CustomBlockData.getDefault())
+                        .orElse(CustomBlockData.defaultData())
                         .craftItemStack()
                 );
             }

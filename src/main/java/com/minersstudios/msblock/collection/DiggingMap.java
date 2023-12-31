@@ -2,14 +2,17 @@ package com.minersstudios.msblock.collection;
 
 import com.google.common.collect.ImmutableSet;
 import com.minersstudios.msblock.MSBlock;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.*;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The DiggingMap class represents a data structure that associates digging
@@ -17,7 +20,7 @@ import java.util.*;
  * for different blocks and players.
  */
 public class DiggingMap {
-    private final Map<Block, List<Entry>> diggingBlockMap = new Object2ObjectOpenHashMap<>();
+    private final Map<Block, List<Entry>> diggingBlockMap = new ConcurrentHashMap<>();
 
     /**
      * @return An unmodifiable set of all digging entries present in the

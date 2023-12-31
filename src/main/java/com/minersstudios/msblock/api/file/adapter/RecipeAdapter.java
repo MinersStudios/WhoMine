@@ -3,13 +3,14 @@ package com.minersstudios.msblock.api.file.adapter;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.minersstudios.msblock.api.file.CustomBlockFile;
-import com.minersstudios.msblock.api.file.RecipeEntry;
-import com.minersstudios.msblock.api.file.RecipeType;
+import com.minersstudios.mscore.inventory.recipe.RecipeEntry;
+import com.minersstudios.msblock.api.params.RecipeType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,43 +24,56 @@ import java.util.Set;
  * @see RecipeType
  */
 public class RecipeAdapter implements JsonSerializer<Recipe>, JsonDeserializer<Recipe> {
-    private static final String TYPE_KEY = "type";
+    private static final String TYPE_KEY =   "type";
     private static final String RECIPE_KEY = "recipe";
     private static final String OUTPUT_KEY = "output";
     private static final String AMOUNT_KEY = "amount";
-    private static final Type RECIPE_ENTRY_SET_TYPE = new TypeToken<Set<RecipeEntry>>() {}.getType();
+
+    private static final Type RECIPE_ENTRY_LIST_TYPE = new TypeToken<List<RecipeEntry>>() {}.getType();
 
     @Override
     public @NotNull Recipe deserialize(
             final @NotNull JsonElement json,
-            final @NotNull Type typeOfT,
+            final @NotNull Type type,
             final @NotNull JsonDeserializationContext context
-    ) throws JsonParseException {
+    ) throws JsonParseException, IllegalArgumentException {
         final JsonObject jsonObject = json.getAsJsonObject();
-        final JsonElement recipeElement = jsonObject.get(RECIPE_KEY);
-        final String type = jsonObject.get(TYPE_KEY).getAsString();
+        final JsonElement typeElement = jsonObject.get(TYPE_KEY);
 
-        return context.deserialize(recipeElement, RecipeType.clazzOf(type));
+        if (typeElement == null) {
+            throw new JsonParseException("Missing type");
+        }
+
+        final JsonElement recipeElement = jsonObject.get(RECIPE_KEY);
+
+        if (recipeElement == null) {
+            throw new JsonParseException("Missing recipe");
+        }
+
+        return context.deserialize(
+                recipeElement,
+                RecipeType.clazzOf(typeElement.getAsString())
+        );
     }
 
     @Override
     public @NotNull JsonElement serialize(
-            final @NotNull Recipe src,
-            final @NotNull Type typeOfSrc,
+            final @NotNull Recipe recipe,
+            final @NotNull Type type,
             final @NotNull JsonSerializationContext context
-    ) {
+    ) throws IllegalArgumentException {
         final JsonObject jsonObject = new JsonObject();
-        final JsonObject recipeObject = context.serialize(src).getAsJsonObject();
+        final JsonObject recipeObject = context.serialize(recipe).getAsJsonObject();
 
-        jsonObject.addProperty(TYPE_KEY, RecipeType.nameOf(src.getClass()));
+        jsonObject.addProperty(TYPE_KEY, RecipeType.nameOf(recipe.getClass()));
         recipeObject.remove(OUTPUT_KEY);
-        recipeObject.addProperty(AMOUNT_KEY, src.getResult().getAmount());
+        recipeObject.addProperty(AMOUNT_KEY, recipe.getResult().getAmount());
         jsonObject.add(RECIPE_KEY, recipeObject);
 
         return jsonObject;
     }
 
-    public static @NotNull Set<RecipeEntry> deserializeEntries(
+    public static @NotNull List<RecipeEntry> deserializeEntries(
             final @NotNull ItemStack output,
             final @NotNull JsonArray json
     ) {
@@ -68,7 +82,7 @@ public class RecipeAdapter implements JsonSerializer<Recipe>, JsonDeserializer<R
                     element.getAsJsonObject()
                     .get(RECIPE_KEY).getAsJsonObject()
                     .get(RECIPE_KEY).getAsJsonObject();
-            final JsonObject outputObj = CustomBlockFile.getGson().toJsonTree(output).getAsJsonObject();
+            final JsonObject outputObj = CustomBlockFile.gson().toJsonTree(output).getAsJsonObject();
             final JsonElement amountElement = recipeObject.get(AMOUNT_KEY);
 
             if (amountElement != null) {
@@ -83,10 +97,10 @@ public class RecipeAdapter implements JsonSerializer<Recipe>, JsonDeserializer<R
             }
         }
 
-        return CustomBlockFile.getGson().fromJson(json, RECIPE_ENTRY_SET_TYPE);
+        return CustomBlockFile.gson().fromJson(json, RECIPE_ENTRY_LIST_TYPE);
     }
 
     public static @NotNull JsonElement serializeEntries(final @NotNull Set<RecipeEntry> entries) {
-        return CustomBlockFile.getGson().toJsonTree(entries, RECIPE_ENTRY_SET_TYPE);
+        return CustomBlockFile.gson().toJsonTree(entries, RECIPE_ENTRY_LIST_TYPE);
     }
 }

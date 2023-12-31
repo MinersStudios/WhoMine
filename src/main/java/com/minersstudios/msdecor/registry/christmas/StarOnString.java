@@ -1,7 +1,7 @@
 package com.minersstudios.msdecor.registry.christmas;
 
-import com.minersstudios.mscore.inventory.recipe.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.sound.SoundGroup;
 import com.minersstudios.mscore.utility.ChatUtils;
