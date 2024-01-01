@@ -2,9 +2,8 @@ package com.minersstudios.mscore.utility;
 
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
-import com.minersstudios.msdecor.MSDecor;
-import com.minersstudios.msdecor.api.CustomDecorData;
-import com.minersstudios.msdecor.api.DecorHitBox;
+import com.minersstudios.mscustoms.custom.decor.CustomDecorData;
+import com.minersstudios.mscustoms.custom.decor.DecorHitBox;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -23,7 +22,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomDecorData}
  */
 public final class MSDecorUtils {
-    public static final String NAMESPACED_KEY_REGEX = '(' + MSDecor.NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
+    public static final String NAMESPACED_KEY_REGEX = '(' + SharedConstants.MSDECOR_NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(" -> fail")

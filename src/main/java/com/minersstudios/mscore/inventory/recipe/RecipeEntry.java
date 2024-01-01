@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.inventory.recipe;
 
-import com.minersstudios.msessentials.menu.CraftsMenu;
+import com.minersstudios.mscustoms.menu.CraftsMenu;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;

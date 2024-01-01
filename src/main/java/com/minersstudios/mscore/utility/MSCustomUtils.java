@@ -1,15 +1,12 @@
 package com.minersstudios.mscore.utility;
 
-import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.api.CustomBlockData;
-import com.minersstudios.msblock.api.CustomBlockRegistry;
-import com.minersstudios.msdecor.MSDecor;
-import com.minersstudios.msdecor.api.CustomDecorData;
-import com.minersstudios.msdecor.api.CustomDecorType;
-import com.minersstudios.msitem.MSItem;
-import com.minersstudios.msitem.api.CustomItem;
-import com.minersstudios.msitem.api.CustomItemType;
-import com.minersstudios.msitem.api.renameable.RenameableItemRegistry;
+import com.minersstudios.mscustoms.custom.block.CustomBlockData;
+import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
+import com.minersstudios.mscustoms.custom.decor.CustomDecorData;
+import com.minersstudios.mscustoms.custom.decor.CustomDecorType;
+import com.minersstudios.mscustoms.custom.item.CustomItem;
+import com.minersstudios.mscustoms.custom.item.CustomItemType;
+import com.minersstudios.mscustoms.custom.item.renameable.RenameableItemRegistry;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+
+import static com.minersstudios.mscore.utility.SharedConstants.*;
 
 /**
  * Utility class for custom items / blocks / decor.
@@ -99,9 +98,9 @@ public final class MSCustomUtils {
         return namespace == null || key == null
                 ? Optional.empty()
                 : switch (namespace) {
-                    case MSBlock.NAMESPACE -> MSBlockUtils.getItemStack(key);
-                    case MSDecor.NAMESPACE -> MSDecorUtils.getItemStack(key);
-                    case MSItem.NAMESPACE -> MSItemUtils.getItemStack(key);
+                    case MSBLOCK_NAMESPACE -> MSBlockUtils.getItemStack(key);
+                    case MSDECOR_NAMESPACE -> MSDecorUtils.getItemStack(key);
+                    case MSITEMS_NAMESPACE -> MSItemUtils.getItemStack(key);
                     default -> Optional.empty();
                 };
     }
@@ -197,12 +196,12 @@ public final class MSCustomUtils {
         return ChatUtils.isBlank(namespace) || ChatUtils.isBlank(key)
                 ? Optional.empty()
                 : switch (namespace) {
-                    case MSBlock.NAMESPACE,
-                            MSBlock.NAMESPACE + ":type" -> CustomBlockRegistry.fromKey(key);
-                    case MSDecor.NAMESPACE,
-                            MSDecor.NAMESPACE + ":type" -> CustomDecorData.fromKey(key);
-                    case MSItem.NAMESPACE,
-                            MSItem.NAMESPACE + ":type" -> CustomItem.fromKey(key);
+                    case MSBLOCK_NAMESPACE,
+                         MSBLOCK_NAMESPACE + ":type" -> CustomBlockRegistry.fromKey(key);
+                    case MSDECOR_NAMESPACE,
+                         MSDECOR_NAMESPACE + ":type" -> CustomDecorData.fromKey(key);
+                    case MSITEMS_NAMESPACE,
+                         MSITEMS_NAMESPACE + ":type" -> CustomItem.fromKey(key);
                     default -> Optional.empty();
                 };
     }

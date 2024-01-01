@@ -11,11 +11,7 @@ api-version: $apiVersion
 dependencies:
   - name: MSEssentials
     version: $version
-  - name: MSItem
-    version: $version
-  - name: MSDecor
-    version: $version
-  - name: MSBlock
+  - name: MSCustoms
     version: $version
   - name: CoreProtect
     version: '22.2'
@@ -23,6 +19,4 @@ load-after:
   - name: CoreProtect
 load-before:
   - name: MSEssentials
-  - name: MSBlock
-  - name: MSItem
-  - name: MSDecor
+  - name: MSCustoms

@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.utility;
 
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.msitem.api.damageable.DamageableItem;
+import com.minersstudios.mscustoms.custom.item.damageable.DamageableItem;
 import net.minecraft.world.item.Item;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;

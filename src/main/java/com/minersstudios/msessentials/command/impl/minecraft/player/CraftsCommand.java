@@ -4,7 +4,7 @@ import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
-import com.minersstudios.msessentials.menu.CraftsMenu;
+import com.minersstudios.mscustoms.menu.CraftsMenu;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.command.CommandSender;

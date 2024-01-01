@@ -10,4 +10,4 @@ plugins {
 }
 
 rootProject.name = "WhoMine"
-include("MSBlock", "MSCore", "MSDecor", "MSItem", "MSEssentials")
+include("MSCustoms", "MSCore", "MSEssentials")

@@ -12,11 +12,7 @@ api-version: $apiVersion
 dependencies:
   - name: MSCore
     version: $version
-  - name: MSItem
-    version: $version
-  - name: MSBlock
-    version: $version
-  - name: MSDecor
+  - name: MSCustoms
     version: $version
   - name: AuthMe
     version: 5.6.0-SNAPSHOT

@@ -1,8 +1,7 @@
 package com.minersstudios.mscore.utility;
 
-import com.minersstudios.msblock.MSBlock;
-import com.minersstudios.msblock.api.CustomBlockData;
-import com.minersstudios.msblock.api.CustomBlockRegistry;
+import com.minersstudios.mscustoms.custom.block.CustomBlockData;
+import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +14,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomBlockData}
  */
 public final class MSBlockUtils {
-    public static final String NAMESPACED_KEY_REGEX = '(' + MSBlock.NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
+    public static final String NAMESPACED_KEY_REGEX = '(' + SharedConstants.MSBLOCK_NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(" -> fail")

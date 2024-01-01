@@ -8,7 +8,7 @@ import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.BlockUtils;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
-import com.minersstudios.msdecor.api.CustomDecorType;
+import com.minersstudios.mscustoms.custom.decor.CustomDecorType;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;

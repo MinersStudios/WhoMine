@@ -1,0 +1,15 @@
+#file: noinspection YAMLSchemaValidation
+name: $name
+version: $version
+description: $description
+authors: [ $authors ]
+contributors: [ $contributors ]
+website: $website
+
+main: $main
+api-version: $apiVersion
+dependencies:
+  - name: MSCore
+    version: $version
+  - name: MSEssentials
+    version: $version

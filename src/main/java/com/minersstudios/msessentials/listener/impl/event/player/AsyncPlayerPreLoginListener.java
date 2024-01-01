@@ -4,7 +4,7 @@ import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.utility.MSPluginUtils;
+import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -67,7 +67,13 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
                             )
                     )
             );
-        } else if (!MSPluginUtils.isLoadedCustoms()) {
+        } else if (
+                !MSCustoms.singleton().containsAllStatuses(
+                        MSCustoms.LOADED_BLOCKS,
+                        MSCustoms.LOADED_ITEMS,
+                        MSCustoms.LOADED_DECORATIONS
+                )
+        ) {
             event.disallow(
                     KICK_OTHER,
                     MESSAGE_SERVER_NOT_FULLY_LOADED

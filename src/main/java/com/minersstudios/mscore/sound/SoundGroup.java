@@ -1,9 +1,9 @@
 package com.minersstudios.mscore.sound;
 
-import com.minersstudios.msblock.Config;
-import com.minersstudios.msblock.MSBlock;
+import com.minersstudios.mscustoms.Config;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.mscustoms.MSCustoms;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
@@ -566,10 +566,10 @@ public final class SoundGroup {
             world.playSound(
                     location,
                     switch (this.key) {
-                        case WOOD_PLACE_SOUND_KEY -> MSBlock.config().getWoodSoundPlace();
-                        case WOOD_BREAK_SOUND_KEY -> MSBlock.config().getWoodSoundBreak();
-                        case WOOD_HIT_SOUND_KEY ->   MSBlock.config().getWoodSoundHit();
-                        case WOOD_STEP_SOUND_KEY ->  MSBlock.config().getWoodSoundStep();
+                        case WOOD_PLACE_SOUND_KEY -> MSCustoms.config().getWoodSoundPlace();
+                        case WOOD_BREAK_SOUND_KEY -> MSCustoms.config().getWoodSoundBreak();
+                        case WOOD_HIT_SOUND_KEY ->   MSCustoms.config().getWoodSoundHit();
+                        case WOOD_STEP_SOUND_KEY ->  MSCustoms.config().getWoodSoundStep();
                         default -> this.key;
                     },
                     this.category,

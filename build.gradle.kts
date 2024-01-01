@@ -71,9 +71,7 @@ subprojects {
     val description = when (project.name) {
         "mscore" ->       "A Minecraft core plugin for WhoMine plugins"
         "msessentials" -> "A Minecraft plugin with custom features for WhoMine"
-        "msblock" ->      "A Minecraft plugin with custom blocks for WhoMine"
-        "msdecor" ->      "A Minecraft plugin with decorations for WhoMine"
-        "msitem" ->       "A Minecraft plugin with custom items for WhoMine"
+        "mscustoms" ->    "A Minecraft plugin with custom blocks, items, decorations and more for WhoMine"
         else ->           "A Minecraft plugin for WhoMine"
     }
 

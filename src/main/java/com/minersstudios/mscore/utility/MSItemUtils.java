@@ -1,8 +1,7 @@
 package com.minersstudios.mscore.utility;
 
-import com.minersstudios.msitem.MSItem;
-import com.minersstudios.msitem.api.CustomItem;
-import com.minersstudios.msitem.api.CustomItemType;
+import com.minersstudios.mscustoms.custom.item.CustomItem;
+import com.minersstudios.mscustoms.custom.item.CustomItemType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +14,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomItem}
  */
 public final class MSItemUtils {
-    public static final String NAMESPACED_KEY_REGEX = '(' + MSItem.NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
+    public static final String NAMESPACED_KEY_REGEX = '(' + SharedConstants.MSITEMS_NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(" -> fail")
