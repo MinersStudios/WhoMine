@@ -11,7 +11,7 @@
     </a>
   </p>
   <p>
-    A Minecraft plugin with Blocks for WhoMine<br>
+    A Minecraft plugin with custom blocks, items, decorations and more for WhoMine<br>
     (Project is in development, so there is shit)
   </p>
   <br>
