@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.player.roleplay;
 
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
-@Command(
+@MSCommand(
         command = "spit",
         usage = " " + Font.Chars.RED_EXCLAMATION_MARK + " §cИспользуй: /<command> [речь]",
         description = "Покажи свою дерзость и плюнь кому-то в лицо",
@@ -42,7 +43,7 @@ public final class SpitCommand extends AbstractCommandExecutor<MSEssentials> {
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {

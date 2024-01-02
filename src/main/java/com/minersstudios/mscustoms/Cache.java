@@ -6,10 +6,10 @@ import com.minersstudios.mscustoms.collection.DiggingMap;
 import com.minersstudios.mscustoms.collection.StepMap;
 import com.minersstudios.mscustoms.custom.block.CustomBlockData;
 import com.minersstudios.mscustoms.custom.item.renameable.RenameableItem;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -25,7 +25,7 @@ public final class Cache extends PluginCache<MSCustoms> {
     private DiggingMap diggingMap;
     private Map<Player, EquipmentSlot> dosimeterPlayers;
     private List<RenameableItem> renameableMenuItems;
-    private Map<CustomBlockData, JsonElement> blockDataRecipeMap;
+    private List<Map.Entry<CustomBlockData, JsonElement>> blockDataRecipes;
 
     /**
      * Cache constructor
@@ -42,7 +42,7 @@ public final class Cache extends PluginCache<MSCustoms> {
         this.diggingMap = new DiggingMap();
         this.dosimeterPlayers = new ConcurrentHashMap<>();
         this.renameableMenuItems = new ObjectArrayList<>();
-        this.blockDataRecipeMap = new Object2ObjectOpenHashMap<>();
+        this.blockDataRecipes = new ObjectArrayList<>();
     }
 
     @Override
@@ -51,7 +51,7 @@ public final class Cache extends PluginCache<MSCustoms> {
         this.diggingMap = null;
         this.dosimeterPlayers = null;
         this.renameableMenuItems = null;
-        this.blockDataRecipeMap = null;
+        this.blockDataRecipes = null;
     }
 
     public @UnknownNullability StepMap getStepMap() {
@@ -70,7 +70,8 @@ public final class Cache extends PluginCache<MSCustoms> {
         return this.renameableMenuItems;
     }
 
-    public @UnknownNullability Map<CustomBlockData, JsonElement> getBlockDataRecipeMap() {
-        return this.blockDataRecipeMap;
+    @ApiStatus.Internal
+    public @UnknownNullability List<Map.Entry<CustomBlockData, JsonElement>> getBlockDataRecipes() {
+        return this.blockDataRecipes;
     }
 }

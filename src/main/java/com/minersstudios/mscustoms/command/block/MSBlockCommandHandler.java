@@ -1,16 +1,17 @@
 package com.minersstudios.mscustoms.command.block;
 
+import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.MSCommand;
+import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
-import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
-import com.minersstudios.mscore.command.api.Command;
-import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.utility.MSPlayerUtils;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ import java.util.List;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
-@Command(
+@MSCommand(
         command = "msblock",
         usage = " " + Font.Chars.RED_EXCLAMATION_MARK + " §cИспользуй: /<command> [параметры]",
         description = "Прочие команды",
@@ -49,7 +50,7 @@ public final class MSBlockCommandHandler extends AbstractCommandExecutor<MSCusto
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {
@@ -64,7 +65,7 @@ public final class MSBlockCommandHandler extends AbstractCommandExecutor<MSCusto
     @Override
     public @NotNull List<String> onTabComplete(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {

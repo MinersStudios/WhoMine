@@ -50,10 +50,10 @@ public final class MSPlayerUtils {
      */
     public static @NotNull List<String> getLocalPlayerNames(final @NotNull MSEssentials plugin) {
         final var completions = new ObjectArrayList<String>();
-        final PlayerInfoMap playerInfoMap = plugin.getCache().getPlayerInfoMap();
+        final PlayerInfoMap map = plugin.getCache().getPlayerInfoMap();
 
         for (final var player : plugin.getServer().getOnlinePlayers()) {
-            final PlayerInfo playerInfo = playerInfoMap.get(player);
+            final PlayerInfo playerInfo = map.get(player);
 
             if (playerInfo.isOnline()) {
                 final int id = playerInfo.getID(false, false);

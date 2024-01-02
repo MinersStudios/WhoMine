@@ -2,7 +2,7 @@ package com.minersstudios.mscustoms.registry.decor.decoration.home;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
-import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
 import com.minersstudios.mscustoms.custom.decor.DecorHitBox;

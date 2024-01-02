@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -205,11 +206,11 @@ public final class CustomBlockFile {
         if (recipeEntries != null) {
             jsonObject.remove("recipeEntries");
 
-            final CustomBlockData data = GSON.fromJson(jsonObject, CustomBlockData.class);
-            final var map = plugin.getCache().getBlockDataRecipeMap();
+            final CustomBlockData data = new CustomBlockData(GSON.fromJson(jsonObject, CustomBlockData.class));
+            final var list = plugin.getCache().getBlockDataRecipes();
 
-            synchronized (map) {
-                map.put(data, recipeEntries);
+            synchronized (list) {
+                list.add(Map.entry(data, recipeEntries));
             }
 
             return data;

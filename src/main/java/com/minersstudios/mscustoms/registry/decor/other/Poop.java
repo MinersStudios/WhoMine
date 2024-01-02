@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.other;
 
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
 import com.minersstudios.mscustoms.custom.decor.DecorHitBox;
 import com.minersstudios.mscustoms.custom.decor.Facing;

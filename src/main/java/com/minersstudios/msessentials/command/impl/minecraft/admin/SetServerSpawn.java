@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin;
 
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
-import com.minersstudios.mscore.command.api.Command;
+import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.Config;
@@ -14,6 +14,7 @@ import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
@@ -28,7 +29,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
-@Command(
+@MSCommand(
         command = "setserverspawn",
         usage = " " + Font.Chars.RED_EXCLAMATION_MARK + " §cИспользуй: /<command> [world name] [x] [y] [z]",
         description = "Устанавливает спавн сервера",
@@ -53,7 +54,7 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {
@@ -178,7 +179,7 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
     @Override
     public @NotNull List<String> onTabComplete(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {

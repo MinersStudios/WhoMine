@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.sound;
+package com.minersstudios.mscustoms.sound;
 
 import com.minersstudios.mscustoms.Config;
 import com.minersstudios.mscore.location.MSPosition;

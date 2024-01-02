@@ -60,7 +60,7 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
         this.cache.load();
         this.config.reload();
 
-        this.runTaskTimer(
+        this.runTaskTimerAsync(
                 () -> new DosimeterMechanic.DosimeterTask(this).run(),
                 0L, this.config.getDosimeterCheckRate()
         );

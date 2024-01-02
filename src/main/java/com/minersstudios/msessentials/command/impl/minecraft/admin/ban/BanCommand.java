@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.ban;
 
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
-import com.minersstudios.mscore.command.api.Command;
+import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -12,6 +12,7 @@ import com.minersstudios.msessentials.player.PlayerInfo;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,7 @@ import static com.minersstudios.mscore.language.LanguageRegistry.Components.ERRO
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
-@Command(
+@MSCommand(
         command = "ban",
         usage = " " + Font.Chars.RED_EXCLAMATION_MARK + " §cИспользуй: /<command> [id/никнейм] [время][s/m/h/d/M/y] [причина]",
         description = "Покажи кто тут главный и забань игрока",
@@ -47,7 +48,7 @@ public final class BanCommand extends AbstractCommandExecutor<MSEssentials> {
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {
@@ -86,7 +87,7 @@ public final class BanCommand extends AbstractCommandExecutor<MSEssentials> {
     @Override
     public @NotNull List<String> onTabComplete(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {

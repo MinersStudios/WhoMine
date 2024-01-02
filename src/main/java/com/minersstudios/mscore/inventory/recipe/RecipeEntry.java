@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.inventory.recipe;
 
+import com.google.gson.annotations.SerializedName;
 import com.minersstudios.mscustoms.menu.CraftsMenu;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -14,6 +15,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class RecipeEntry {
     private final @NotNull Recipe recipe;
+    @SerializedName("showInCraftsMenu")
     private final boolean isRegisteredInMenu;
 
     /**
@@ -30,7 +32,9 @@ public final class RecipeEntry {
             final boolean isRegisteredInMenu
     ) {
         this.recipe = recipe;
-        this.isRegisteredInMenu = isRegisteredInMenu && isSupportedInCraftsMenu(recipe);
+        this.isRegisteredInMenu =
+                isRegisteredInMenu
+                && isSupportedInCraftsMenu(recipe);
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.player;
 
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
-import com.minersstudios.mscore.command.api.Command;
+import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.DateUtils;
@@ -16,6 +16,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ import java.util.List;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
-@Command(
+@MSCommand(
         command = "player",
         usage = " " + Font.Chars.RED_EXCLAMATION_MARK + " §cИспользуй: /<command> [id/никнейм] [параметры]",
         description = "Команды, отвечающие за параметры игрока",
@@ -202,7 +203,7 @@ public final class AdminPlayerCommandHandler extends AbstractCommandExecutor<MSE
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {
@@ -238,7 +239,7 @@ public final class AdminPlayerCommandHandler extends AbstractCommandExecutor<MSE
     @Override
     public @NotNull List<String> onTabComplete(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {

@@ -11,11 +11,12 @@ import java.util.Map;
 
 /**
  * Gson adapter for serializing and deserializing NoteBlockData objects.
- * This adapter handles NoteBlockData serialization by converting it into
- * a JsonObject, and deserialization by reading the JsonObject and
- * constructing the corresponding NoteBlockData.
  * <br>
- * Serialized output you can see in the "MSBlock/blocks/example.json" file.
+ * This adapter handles NoteBlockData serialization by converting it into a
+ * JsonObject, and deserialization by reading the JsonObject and constructing
+ * the corresponding NoteBlockData.
+ * <br>
+ * Serialized output you can see in the "MSCustoms/blocks/example.json" file.
  */
 public class NoteBlockDataAdapter implements JsonSerializer<NoteBlockData>, JsonDeserializer<NoteBlockData> {
     private static final Map<String, Instrument> KEY_TO_INSTRUMENT_MAP;

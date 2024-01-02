@@ -9,14 +9,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * All commands annotated using {@link Command} will be registered automatically.
- * Also, must be implemented using {@link AbstractCommandExecutor}
+ * All commands annotated using {@link MSCommand} will be registered
+ * automatically. Also, must be implemented using
+ * {@link AbstractCommandExecutor}.
  *
  * @see AbstractCommandExecutor
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Command {
+public @interface MSCommand {
 
     /**
      * @return Command name

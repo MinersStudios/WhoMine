@@ -111,12 +111,16 @@ public final class Config extends PluginConfig<MSCustoms> {
                         () -> {
                             plugin.runTaskAsync(this::loadRenames);
                             plugin.runTask(() -> {
-                                final var map = plugin.getCache().getBlockDataRecipeMap();
+                                final var list = plugin.getCache().getBlockDataRecipes();
 
-                                map.forEach(
-                                        (data, recipeEntries) -> data.registerRecipes(plugin, recipeEntries)
-                                );
-                                map.clear();
+                                for (final var entry : list) {
+                                    entry.getKey().registerRecipes(
+                                            plugin,
+                                            entry.getValue()
+                                    );
+                                }
+
+                                list.clear();
                                 CraftsMenu.putCrafts(
                                         CraftsMenu.Type.BLOCKS,
                                         MSPlugin.globalCache().customBlockRecipes

@@ -29,7 +29,7 @@ import java.util.Map;
  *
  * @param <S> Self-type, the specific implementation of the custom inventory.
  */
-@SuppressWarnings({"unused", "UnusedReturnValue", "unchecked"})
+@SuppressWarnings({ "unused", "UnusedReturnValue", "unchecked" })
 abstract class CustomInventoryImpl<S extends CustomInventory> extends CraftInventoryCustom implements CustomInventory {
     protected @NotNull Int2ObjectMap<InventoryButton> buttons;
     protected @Nullable InventoryAction<InventoryOpenEvent> openAction;

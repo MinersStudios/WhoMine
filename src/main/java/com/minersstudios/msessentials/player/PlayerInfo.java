@@ -1286,8 +1286,12 @@ public final class PlayerInfo {
      */
     public boolean isOnline(boolean ignoreWorld) {
         final Player player = this.getOnlinePlayer();
+
         return player != null
-                && (ignoreWorld || !this.isInWorldDark())
+                && (
+                        ignoreWorld
+                        || !this.isInWorldDark()
+                )
                 && !this.isVanished();
     }
 

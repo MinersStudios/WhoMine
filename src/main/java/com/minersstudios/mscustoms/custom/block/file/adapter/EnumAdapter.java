@@ -10,12 +10,13 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Gson adapter for serializing and deserializing enum constants. This adapter
- * handles enum serialization by converting it into a JsonPrimitive, and
- * deserialization by reading the JsonPrimitive and constructing the
+ * Gson adapter for serializing and deserializing enum constants.
+ * <br>
+ * This adapter handles enum serialization by converting it into a JsonPrimitive,
+ * and deserialization by reading the JsonPrimitive and constructing the
  * corresponding enum constant.
  * <br>
- * Serialized output you can see in the "MSBlock/blocks/example.json" file.
+ * Serialized output you can see in the "MSCustoms/blocks/example.json" file.
  */
 public class EnumAdapter<E extends Enum<E>> implements JsonSerializer<E>, JsonDeserializer<E> {
     private final Map<String, E> enumMap;

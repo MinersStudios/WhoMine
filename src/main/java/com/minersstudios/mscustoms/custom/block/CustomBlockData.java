@@ -1,17 +1,18 @@
 package com.minersstudios.mscustoms.custom.block;
 
 import com.google.gson.JsonElement;
+import com.minersstudios.mscore.inventory.recipe.RecipeEntry;
+import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.block.file.CustomBlockFile;
 import com.minersstudios.mscustoms.custom.block.file.adapter.RecipeAdapter;
+import com.minersstudios.mscustoms.custom.block.params.*;
 import com.minersstudios.mscustoms.custom.block.params.settings.Placing;
 import com.minersstudios.mscustoms.custom.block.params.settings.Tool;
-import com.minersstudios.mscore.inventory.recipe.RecipeEntry;
-import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.sound.SoundGroup;
-import com.minersstudios.mscustoms.custom.block.params.*;
 import com.minersstudios.mscustoms.menu.CraftsMenu;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -44,7 +46,7 @@ public final class CustomBlockData {
     private final BlockSettings blockSettings;
     private final DropSettings dropSettings;
     private final SoundGroup soundGroup;
-    private List<RecipeEntry> recipeEntries;
+    private final List<RecipeEntry> recipeEntries;
 
     private static final CustomBlockData DEFAULT = new CustomBlockData(
             //<editor-fold desc="Default note block params" defaultstate="collapsed">
@@ -112,6 +114,22 @@ public final class CustomBlockData {
                 dropSettings,
                 soundGroup,
                 ObjectArrayList.of(recipeEntries)
+        );
+    }
+
+    /**
+     * Copies the specified custom block data
+     *
+     * @param data The custom block data to copy
+     */
+    @ApiStatus.Internal
+    public CustomBlockData(final @NotNull CustomBlockData data) {
+        this(
+                data.key,
+                data.blockSettings,
+                data.dropSettings,
+                data.soundGroup,
+                data.recipeEntries == null ? ObjectLists.emptyList() : data.recipeEntries
         );
     }
 
@@ -247,22 +265,21 @@ public final class CustomBlockData {
     ) {
         final Server server = plugin.getServer();
 
-        if (this.recipeEntries == null) {
-            try {
-                this.recipeEntries = new ObjectArrayList<>(
-                        RecipeAdapter.deserializeEntries(
-                                new ItemStack(this.craftItemStack()),
-                                recipeJson.getAsJsonArray()
-                        )
-                );
-            } catch (final Throwable e) {
-                plugin.getLogger().log(
-                        Level.SEVERE,
-                        "Failed to deserialize recipes for custom block data: " + this.key,
-                        e
-                );
-                return;
-            }
+        try {
+            this.recipeEntries.addAll(
+                    RecipeAdapter.deserializeEntries(
+                            new ItemStack(this.craftItemStack()),
+                            recipeJson.getAsJsonArray()
+                    )
+            );
+        } catch (final Throwable e) {
+            plugin.getLogger().log(
+                    Level.SEVERE,
+                    "Failed to deserialize recipes for custom block data: " + this.key,
+                    e
+            );
+
+            return;
         }
 
         for (final var recipeEntry : this.recipeEntries) {

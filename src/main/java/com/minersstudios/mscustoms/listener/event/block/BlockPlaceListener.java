@@ -2,7 +2,7 @@ package com.minersstudios.mscustoms.listener.event.block;
 
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
-import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.BlockUtils;
 import com.minersstudios.mscore.utility.MSDecorUtils;
 import com.minersstudios.mscustoms.MSCustoms;

@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.teleport;
 
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
-import com.minersstudios.mscore.command.api.Command;
+import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
@@ -14,6 +14,7 @@ import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
@@ -28,7 +29,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
-@Command(
+@MSCommand(
         command = "worldteleport",
         aliases = {
                 "worldtp",
@@ -52,11 +53,12 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
                             .then(argument("координаты", Vec3Argument.vec3()))
                     )
             ).build();
+    private static final int MAX_COORDINATE = 29999984;
 
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {
@@ -105,7 +107,10 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
                 return false;
             }
 
-            if (x > 29999984 || z > 29999984) {
+            if (
+                    x > MAX_COORDINATE
+                    || z > MAX_COORDINATE
+            ) {
                 MSLogger.severe(
                         sender,
                         COMMAND_WORLD_TELEPORT_TOO_BIG_COORDINATES
@@ -141,7 +146,7 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
     @Override
     public @NotNull List<String> onTabComplete(
             @NotNull CommandSender sender,
-            @NotNull org.bukkit.command.Command command,
+            @NotNull Command command,
             @NotNull String label,
             String @NotNull ... args
     ) {

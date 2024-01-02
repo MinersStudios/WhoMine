@@ -12,11 +12,12 @@ import java.util.Locale;
 
 /**
  * Gson adapter for serializing and deserializing RecipeChoice objects.
- * This adapter handles RecipeChoice serialization by converting it into
- * a JsonObject, and deserialization by reading the JsonObject and
- * constructing the corresponding RecipeChoice object.
  * <br>
- * Serialized output you can see in the "MSBlock/blocks/example.json" file.
+ * This adapter handles RecipeChoice serialization by converting it into a
+ * JsonObject, and deserialization by reading the JsonObject and constructing
+ * the corresponding RecipeChoice object.
+ * <br>
+ * Serialized output you can see in the "MSCustoms/blocks/example.json" file.
  */
 public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDeserializer<RecipeChoice> {
     private static final String CHOICES_KEY =     "choices";

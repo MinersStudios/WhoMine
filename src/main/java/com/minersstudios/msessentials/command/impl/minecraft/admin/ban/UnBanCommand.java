@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.minecraft.admin.ban;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
-import com.minersstudios.mscore.command.api.Command;
+import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
@@ -16,6 +16,7 @@ import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ban.ProfileBanList;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
@@ -28,9 +29,9 @@ import java.util.UUID;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
-@Command(
+@MSCommand(
         command = "unban",
-        aliases = {"pardon"},
+        aliases = "pardon",
         usage = " " + Font.Chars.RED_EXCLAMATION_MARK + " §cИспользуй: /<command> [id/никнейм]",
         description = "Разбанить игрока",
         permission = "msessentials.ban",
@@ -45,7 +46,7 @@ public final class UnBanCommand extends AbstractCommandExecutor<MSEssentials> {
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {
@@ -71,7 +72,7 @@ public final class UnBanCommand extends AbstractCommandExecutor<MSEssentials> {
     @Override
     public @NotNull List<String> onTabComplete(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {

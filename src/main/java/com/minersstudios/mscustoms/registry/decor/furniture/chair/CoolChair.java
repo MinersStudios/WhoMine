@@ -3,7 +3,7 @@ package com.minersstudios.mscustoms.registry.decor.furniture.chair;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
 import com.minersstudios.mscustoms.custom.decor.DecorHitBox;
 import com.minersstudios.mscustoms.custom.decor.DecorParameter;

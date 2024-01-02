@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin;
 
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
@@ -10,6 +10,7 @@ import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.MapMeta;
@@ -21,9 +22,9 @@ import org.jetbrains.annotations.Nullable;
 import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
 import static net.kyori.adventure.text.Component.text;
 
-@Command(
+@MSCommand(
         command = "getmaplocation",
-        aliases = {"getmaploc"},
+        aliases = "getmaploc",
         usage = " " + Font.Chars.RED_EXCLAMATION_MARK + " §cИспользуй: /<command>",
         description = "Добывает координаты карты, находящейся в руке",
         permission = "msessentials.maplocation",
@@ -36,7 +37,7 @@ public final class GetMapLocationCommand extends AbstractCommandExecutor<MSEssen
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {
@@ -47,6 +48,7 @@ public final class GetMapLocationCommand extends AbstractCommandExecutor<MSEssen
                     player,
                     COMMAND_GET_MAP_LOCATION_NO_MAP_IN_RIGHT_HAND
             );
+
             return true;
         }
 

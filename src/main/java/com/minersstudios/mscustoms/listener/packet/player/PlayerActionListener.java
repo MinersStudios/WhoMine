@@ -11,7 +11,7 @@ import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.packet.PacketContainer;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketType;
-import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.BlockUtils;
 import com.minersstudios.mscore.utility.PlayerUtils;
 import com.minersstudios.mscore.utility.SharedConstants;

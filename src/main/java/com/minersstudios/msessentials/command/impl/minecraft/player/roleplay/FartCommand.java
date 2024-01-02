@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.player.roleplay;
 
-import com.minersstudios.mscore.command.api.Command;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
+import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.plugin.MSLogger;
@@ -15,6 +15,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -30,7 +31,7 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
-@Command(
+@MSCommand(
         command = "fart",
         usage = " " + Font.Chars.RED_EXCLAMATION_MARK + " §cИспользуй: /<command> [речь]",
         description = "Пукни вкусно на публику",
@@ -46,7 +47,7 @@ public final class FartCommand extends AbstractCommandExecutor<MSEssentials> {
     @Override
     public boolean onCommand(
             final @NotNull CommandSender sender,
-            final @NotNull org.bukkit.command.Command command,
+            final @NotNull Command command,
             final @NotNull String label,
             final String @NotNull ... args
     ) {

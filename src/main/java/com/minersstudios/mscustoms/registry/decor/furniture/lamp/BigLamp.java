@@ -3,7 +3,7 @@ package com.minersstudios.mscustoms.registry.decor.furniture.lamp;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscustoms.event.decor.CustomDecorClickEvent;
 import com.minersstudios.mscustoms.custom.decor.*;
 import org.bukkit.Material;

@@ -6,7 +6,7 @@ import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
 import com.minersstudios.mscustoms.custom.block.params.ToolType;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
-import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.BlockUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancements.CriteriaTriggers;

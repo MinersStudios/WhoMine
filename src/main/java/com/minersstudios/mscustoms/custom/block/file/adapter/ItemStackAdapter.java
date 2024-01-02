@@ -14,11 +14,12 @@ import java.util.Locale;
 
 /**
  * Gson adapter for serializing and deserializing ItemStack objects.
- * This adapter handles ItemStack serialization by converting it into
- * a JsonObject, and deserialization by reading the JsonObject and
- * constructing the corresponding ItemStack.
  * <br>
- * Serialized output you can see in the "MSBlock/blocks/example.json" file.
+ * This adapter handles ItemStack serialization by converting it into a
+ * JsonObject, and deserialization by reading the JsonObject and constructing
+ * the corresponding ItemStack.
+ * <br>
+ * Serialized output you can see in the "MSCustoms/blocks/example.json" file.
  */
 public class ItemStackAdapter implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
     private static final String TYPE_KEY =   "type";

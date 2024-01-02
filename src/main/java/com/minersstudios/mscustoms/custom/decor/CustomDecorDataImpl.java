@@ -5,7 +5,7 @@ import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.location.MSVector;
-import com.minersstudios.mscore.sound.SoundGroup;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.*;
 import com.minersstudios.mscustoms.custom.decor.action.DecorBreakAction;
 import com.minersstudios.mscustoms.custom.decor.action.DecorClickAction;

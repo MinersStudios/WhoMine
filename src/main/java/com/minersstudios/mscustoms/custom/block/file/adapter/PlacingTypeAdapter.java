@@ -14,11 +14,12 @@ import java.util.Map;
 
 /**
  * Gson adapter for serializing and deserializing PlacingType objects.
- * This adapter handles PlacingType serialization by converting it into
- * a JsonObject, and deserialization by reading the JsonObject and
- * constructing the corresponding PlacingType.
  * <br>
- * Serialized output you can see in the "MSBlock/blocks/example.json" file.
+ * This adapter handles PlacingType serialization by converting it into a
+ * JsonObject, and deserialization by reading the JsonObject and constructing
+ * the corresponding PlacingType.
+ * <br>
+ * Serialized output you can see in the "MSCustoms/blocks/example.json" file.
  */
 public class PlacingTypeAdapter implements JsonSerializer<PlacingType>, JsonDeserializer<PlacingType> {
     private static final String TYPE_KEY =            "type";
