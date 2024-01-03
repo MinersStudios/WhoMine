@@ -91,14 +91,25 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     //</editor-fold>
 
     //<editor-fold desc="Plugin statuses" defaultstate="collapsed">
+    /** High-priority plugin initializing status */
     public static final SuccessStatus INITIALIZING = high("INITIALIZING");
-    public static final SuccessStatus INITIALIZED =  low("INITIALIZED");
-    public static final SuccessStatus LOADING =      high("LOADING");
-    public static final SuccessStatus LOADED =       low("LOADED");
-    public static final SuccessStatus ENABLING =     high("ENABLING");
-    public static final SuccessStatus ENABLED =      high("ENABLED");
-    public static final SuccessStatus DISABLING =    high("DISABLING");
-    public static final SuccessStatus DISABLED =     high("DISABLED");
+    /** Low-priority plugin initialized status */
+    public static final SuccessStatus INITIALIZED = low("INITIALIZED");
+
+    /** High-priority plugin loading status */
+    public static final SuccessStatus LOADING = high("LOADING");
+    /** Low-priority plugin loaded status */
+    public static final SuccessStatus LOADED = low("LOADED");
+
+    /** High-priority plugin enabling status */
+    public static final SuccessStatus ENABLING = high("ENABLING");
+    /** High-priority plugin enabled status */
+    public static final SuccessStatus ENABLED = high("ENABLED");
+
+    /** High-priority plugin disabling status */
+    public static final SuccessStatus DISABLING = high("DISABLING");
+    /** High-priority plugin disabled status */
+    public static final SuccessStatus DISABLED = high("DISABLED");
     //</editor-fold>
 
     static {

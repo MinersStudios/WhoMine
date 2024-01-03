@@ -18,20 +18,14 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
 
     protected final @NotNull Builder createBuilder(
             final @NotNull String key,
-            final int customModelData,
-            final int cmdSecondLeft,
-            final int cmdSecondMiddle,
-            final int cmdSecondRight,
-            final int cmdThirdLeft,
-            final int cmdThirdMiddle,
-            final int cmdThirdRight,
             final @NotNull String displayName,
-            final @NotNull Material planksMaterial
+            final @NotNull Material planksMaterial,
+            final int @NotNull ... cmd
     ) {
         final ItemStack itemStack = new ItemStack(Material.LEATHER_HORSE_ARMOR);
         final ItemMeta itemMeta = itemStack.getItemMeta();
 
-        itemMeta.setCustomModelData(customModelData);
+        itemMeta.setCustomModelData(cmd[0]);
         itemMeta.displayName(ChatUtils.createDefaultStyledText(displayName));
         itemStack.setItemMeta(itemMeta);
 
@@ -64,12 +58,12 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
                 )
                 .parameters(DecorParameter.WRENCHABLE)
                 .types(
-                        builder -> new Type(builder, "second_left",   createItem(itemStack, cmdSecondLeft)),
-                        builder -> new Type(builder, "second_middle", createItem(itemStack, cmdSecondMiddle)),
-                        builder -> new Type(builder, "second_right",  createItem(itemStack, cmdSecondRight)),
-                        builder -> new Type(builder, "third_left",    createItem(itemStack, cmdThirdLeft)),
-                        builder -> new Type(builder, "third_middle",  createItem(itemStack, cmdThirdMiddle)),
-                        builder -> new Type(builder, "third_right",   createItem(itemStack, cmdThirdRight))
+                        builder -> new Type(builder, "second_left",   createItem(itemStack, cmd[1])),
+                        builder -> new Type(builder, "second_middle", createItem(itemStack, cmd[2])),
+                        builder -> new Type(builder, "second_right",  createItem(itemStack, cmd[3])),
+                        builder -> new Type(builder, "third_left",    createItem(itemStack, cmd[4])),
+                        builder -> new Type(builder, "third_middle",  createItem(itemStack, cmd[5])),
+                        builder -> new Type(builder, "third_right",   createItem(itemStack, cmd[6]))
                 );
     }
 
@@ -92,11 +86,11 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
         protected @NotNull Builder builder() {
             return this.createBuilder(
                     "acacia_nightstand",
+                    "Акациевая тумбочка",
+                    Material.ACACIA_PLANKS,
                     1086,
                     1087, 1088, 1089,
-                    1090, 1091, 1092,
-                    "Акациевая тумбочка",
-                    Material.ACACIA_PLANKS
+                    1090, 1091, 1092
             );
         }
     }
@@ -107,11 +101,11 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
         protected @NotNull Builder builder() {
             return this.createBuilder(
                     "birch_nightstand",
+                    "Берёзовая тумбочка",
+                    Material.BIRCH_PLANKS,
                     1093,
                     1094, 1095, 1096,
-                    1097, 1098, 1099,
-                    "Берёзовая тумбочка",
-                    Material.BIRCH_PLANKS
+                    1097, 1098, 1099
             );
         }
     }
@@ -122,11 +116,11 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
         protected @NotNull Builder builder() {
             return this.createBuilder(
                     "cherry_nightstand",
+                    "Вишнёвая тумбочка",
+                    Material.CHERRY_PLANKS,
                     1386,
                     1387, 1388, 1389,
-                    1390, 1391, 1392,
-                    "Вишнёвая тумбочка",
-                    Material.CHERRY_PLANKS
+                    1390, 1391, 1392
             );
         }
     }
@@ -137,11 +131,11 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
         protected @NotNull Builder builder() {
             return this.createBuilder(
                     "crimson_nightstand",
+                    "Багровая тумбочка",
+                    Material.CRIMSON_PLANKS,
                     1100,
                     1101, 1102, 1103,
-                    1104, 1105, 1106,
-                    "Багровая тумбочка",
-                    Material.CRIMSON_PLANKS
+                    1104, 1105, 1106
             );
         }
     }
@@ -152,11 +146,11 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
         protected @NotNull Builder builder() {
             return this.createBuilder(
                     "dark_oak_nightstand",
+                    "Тумбочка из тёмного дуба",
+                    Material.DARK_OAK_PLANKS,
                     1107,
                     1108, 1109, 1110,
-                    1111, 1112, 1113,
-                    "Тумбочка из тёмного дуба",
-                    Material.DARK_OAK_PLANKS
+                    1111, 1112, 1113
             );
         }
     }
@@ -167,11 +161,11 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
         protected @NotNull Builder builder() {
             return this.createBuilder(
                     "jungle_nightstand",
+                    "Тропическая тумбочка",
+                    Material.JUNGLE_PLANKS,
                     1114,
                     1115, 1116, 1117,
-                    1118, 1119, 1120,
-                    "Тропическая тумбочка",
-                    Material.JUNGLE_PLANKS
+                    1118, 1119, 1120
             );
         }
     }
@@ -182,11 +176,11 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
         protected @NotNull Builder builder() {
             return this.createBuilder(
                     "mangrove_nightstand",
+                    "Мангровая тумбочка",
+                    Material.MANGROVE_PLANKS,
                     1203,
                     1204, 1205, 1206,
-                    1207, 1208, 1209,
-                    "Мангровая тумбочка",
-                    Material.MANGROVE_PLANKS
+                    1207, 1208, 1209
             );
         }
     }
@@ -197,11 +191,11 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
         protected @NotNull Builder builder() {
             return this.createBuilder(
                     "oak_nightstand",
+                    "Дубовая тумбочка",
+                    Material.OAK_PLANKS,
                     1121,
                     1122, 1123, 1124,
-                    1125, 1126, 1127,
-                    "Дубовая тумбочка",
-                    Material.OAK_PLANKS
+                    1125, 1126, 1127
             );
         }
     }
@@ -212,11 +206,11 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
         protected @NotNull Builder builder() {
             return this.createBuilder(
                     "spruce_nightstand",
+                    "Еловая тумбочка",
+                    Material.SPRUCE_PLANKS,
                     1128,
                     1129, 1130, 1131,
-                    1132, 1133, 1134,
-                    "Еловая тумбочка",
-                    Material.SPRUCE_PLANKS
+                    1132, 1133, 1134
             );
         }
     }
@@ -227,11 +221,11 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
         protected @NotNull Builder builder() {
             return this.createBuilder(
                     "warped_nightstand",
+                    "Искажённая тумбочка",
+                    Material.WARPED_PLANKS,
                     1135,
                     1136, 1137, 1138,
-                    1139, 1140, 1141,
-                    "Искажённая тумбочка",
-                    Material.WARPED_PLANKS
+                    1139, 1140, 1141
             );
         }
     }

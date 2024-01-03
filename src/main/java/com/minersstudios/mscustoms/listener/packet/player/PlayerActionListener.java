@@ -439,12 +439,12 @@ public final class PlayerActionListener extends AbstractPacketListener<MSCustoms
                             if (progressInStage > stage) {
                                 entry.setStage(progressInStage);
 
-                                if (stage >= SharedConstants.FINAL_BREAK_STAGE) {
+                                if (progressInStage > SharedConstants.FINAL_DESTROY_STAGE) {
                                     Handler.this.finish();
                                     new CustomBlock(block, customBlockData)
                                             .destroy(plugin, player);
                                 } else if (entry.isStageTheBiggest(plugin, block)) {
-                                    Handler.this.broadcastStage(block, stage);
+                                    Handler.this.broadcastStage(block, progressInStage);
                                 }
                             }
                         }

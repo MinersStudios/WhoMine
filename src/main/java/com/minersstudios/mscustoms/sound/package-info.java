@@ -1,6 +1,6 @@
 /**
- * This package contains classes and interfaces related to sound functionality
- * in the {@code MSCustoms} plugin.
+ * Classes and interfaces related to sound functionality in the
+ * {@code MSCustoms} plugin.
  * <br>
  * The classes in this package are responsible for playing sounds in the world
  * or to the player.

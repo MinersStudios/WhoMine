@@ -13,7 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
+ * Sound interface.
+ * <br>
  * Represents a sound with :
  * <ul>
  *     <li>A key {@link String}</li>
@@ -43,6 +47,7 @@ import org.jetbrains.annotations.UnknownNullability;
  *
  * @see Builder
  */
+@Immutable
 public interface Sound {
     String KEY_KEY =      "key";
     String CATEGORY_KEY = "category";
@@ -315,7 +320,9 @@ public interface Sound {
     void play(final @NotNull Location location) throws IllegalStateException;
 
     /**
-     * A builder for {@link Sound}, with the following chainable methods :
+     * A builder for {@link Sound}.
+     * <br>
+     * This builder can be used with the following chain methods :
      * <ul>
      *     <li>{@link #key(SoundEvent)}</li>
      *     <li>{@link #key(String)}</li>

@@ -9,6 +9,7 @@ import com.minersstudios.mscustoms.custom.block.file.adapter.*;
 import com.minersstudios.mscustoms.custom.block.params.NoteBlockData;
 import com.minersstudios.mscustoms.custom.block.params.PlacingType;
 import com.minersstudios.mscustoms.custom.block.params.ToolType;
+import com.minersstudios.mscustoms.custom.block.params.settings.Placing;
 import com.minersstudios.mscustoms.sound.Sound;
 import com.minersstudios.mscustoms.sound.SoundAdapter;
 import org.bukkit.NamespacedKey;
@@ -54,6 +55,7 @@ public final class CustomBlockFile {
             .registerTypeAdapter(RecipeChoice.class,  new RecipeChoiceAdapter())
             .registerTypeAdapter(SoundCategory.class, new EnumAdapter<>(SoundCategory.values()))
             .registerTypeAdapter(ToolType.class,      new EnumAdapter<>(ToolType.values()))
+            .registerTypeAdapter(Placing.class,       new PlacingAdapter())
             .registerTypeAdapter(PlacingType.class,   new PlacingTypeAdapter())
             .registerTypeAdapter(NoteBlockData.class, new NoteBlockDataAdapter())
             .registerTypeAdapter(Sound.class,         new SoundAdapter())

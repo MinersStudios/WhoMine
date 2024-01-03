@@ -110,17 +110,6 @@ public final class CustomChoice implements RecipeChoice {
     }
 
     /**
-     * Converts this CustomChoice to an ExactChoice. It is important to use this
-     * method because bukkit does not support custom choices.
-     *
-     * @return A new ExactChoice with the same choices
-     *         as this CustomChoice
-     */
-    public @NotNull ExactChoice toExactChoice() {
-        return new ExactChoice(this.choices);
-    }
-
-    /**
      * Creates and returns a clone of this CustomChoice
      *
      * @return A clone of this choice
@@ -183,5 +172,15 @@ public final class CustomChoice implements RecipeChoice {
     @Override
     public @NotNull String toString() {
         return "CustomChoice{choices=" + this.choices + '}';
+    }
+
+    /**
+     * Converts this CustomChoice to an ExactChoice. It is important to use this
+     * method because bukkit does not support custom choices.
+     *
+     * @return A new ExactChoice with the same choices as this CustomChoice
+     */
+    public @NotNull ExactChoice toExactChoice() {
+        return new ExactChoice(this.choices);
     }
 }

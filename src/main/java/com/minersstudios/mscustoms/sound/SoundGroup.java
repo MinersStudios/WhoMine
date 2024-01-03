@@ -17,7 +17,9 @@ import static org.bukkit.SoundCategory.BLOCKS;
 import static org.bukkit.SoundCategory.PLAYERS;
 
 /**
- * Represents a group of sounds :
+ * Represents a group of sounds for a block.
+ * <br>
+ * A sound group contains 4 sounds :
  * <ul>
  *     <li>Place sound</li>
  *     <li>Break sound</li>

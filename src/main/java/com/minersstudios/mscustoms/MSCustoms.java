@@ -9,6 +9,7 @@ import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorType;
 import com.minersstudios.mscustoms.custom.item.CustomItemType;
 import com.minersstudios.mscustoms.listener.mechanic.DosimeterMechanic;
+import com.minersstudios.mscustoms.sound.SoundAdapter;
 import com.minersstudios.mscustoms.sound.SoundGroup;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Material;
@@ -19,6 +20,11 @@ import java.util.logging.Logger;
 
 import static com.minersstudios.mscore.plugin.status.SuccessStatus.low;
 
+/**
+ * The main class of the MSCustoms plugin
+ *
+ * @see MSPlugin
+ */
 public class MSCustoms extends MSPlugin<MSCustoms> {
     private static MSCustoms singleton;
 
@@ -43,6 +49,7 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
 
     static {
         initClass(SoundGroup.class);
+        initClass(SoundAdapter.class);
     }
 
     @Override
