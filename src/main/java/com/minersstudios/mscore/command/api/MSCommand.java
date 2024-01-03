@@ -3,10 +3,7 @@ package com.minersstudios.mscore.command.api;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * All commands annotated using {@link MSCommand} will be registered
@@ -15,6 +12,7 @@ import java.lang.annotation.Target;
  *
  * @see AbstractCommandExecutor
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface MSCommand {

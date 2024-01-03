@@ -3,6 +3,7 @@ package com.minersstudios.msessentials.listener.api.discord;
 import com.minersstudios.mscore.listener.api.MSListener;
 import com.minersstudios.msessentials.MSEssentials;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,6 +33,12 @@ public abstract class AbstractDiscordListener extends ListenerAdapter implements
     }
 
     @Override
+    public @NotNull String toString() {
+        return this.getClass().getSimpleName() + "{plugin=" + this.plugin + '}';
+    }
+
+    @ApiStatus.Internal
+    @Override
     public final void register(final @NotNull MSEssentials plugin) throws IllegalStateException {
         if (this.isRegistered()) {
             throw new IllegalStateException("Discord listener " + this + " already registered!");
@@ -41,12 +48,10 @@ public abstract class AbstractDiscordListener extends ListenerAdapter implements
 
         plugin.getCache().getDiscordManager().getJda()
         .ifPresent(
-                jda -> jda.addEventListener(this)
+                jda -> {
+                    jda.addEventListener(this);
+                    this.onRegister();
+                }
         );
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return this.getClass().getSimpleName() + "{plugin=" + this.plugin + '}';
     }
 }

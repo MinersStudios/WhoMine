@@ -3,7 +3,6 @@ package com.minersstudios.mscustoms.registry.item.cards;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
 import com.minersstudios.mscustoms.custom.item.CustomItemType;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -17,6 +16,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +26,7 @@ import static net.kyori.adventure.text.Component.text;
 
 @SuppressWarnings("UnstableApiUsage")
 public interface CardsBicycle {
-    List<ItemStack> BLUE_CARD_ITEMS = ObjectArrayList.of(
+    List<ItemStack> BLUE_CARD_ITEMS = Arrays.asList(
             //<editor-fold desc="Blue cards" defaultstate="collapsed">
             createCardItem(1260, "Туз треф", "Синяя колода карт \"Bicycle\""),
             createCardItem(1261, "2 треф", "Синяя колода карт \"Bicycle\""),
@@ -85,7 +85,7 @@ public interface CardsBicycle {
             //</editor-fold>
     );
 
-    List<ItemStack> RED_CARD_ITEMS = ObjectArrayList.of(
+    List<ItemStack> RED_CARD_ITEMS = Arrays.asList(
             //<editor-fold desc="Red cards" defaultstate="collapsed">
             createCardItem(1314, "Туз треф", "Красная колода карт \"Bicycle\""),
             createCardItem(1315, "2 треф", "Красная колода карт \"Bicycle\""),

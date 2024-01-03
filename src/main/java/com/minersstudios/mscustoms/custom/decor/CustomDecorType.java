@@ -5,6 +5,7 @@ import com.minersstudios.mscore.plugin.status.StatusWatcher;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.MSCustoms;
+import com.minersstudios.mscustoms.menu.CraftsMenu;
 import com.minersstudios.mscustoms.registry.decor.christmas.*;
 import com.minersstudios.mscustoms.registry.decor.decoration.home.*;
 import com.minersstudios.mscustoms.registry.decor.decoration.home.head.DeerHead;
@@ -25,7 +26,6 @@ import com.minersstudios.mscustoms.registry.decor.furniture.lamp.SmallLamp;
 import com.minersstudios.mscustoms.registry.decor.furniture.table.BigTable;
 import com.minersstudios.mscustoms.registry.decor.furniture.table.SmallTable;
 import com.minersstudios.mscustoms.registry.decor.other.Poop;
-import com.minersstudios.mscustoms.menu.CraftsMenu;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
@@ -218,11 +218,10 @@ public enum CustomDecorType {
             throw new IllegalStateException("Custom decor types have already been loaded!");
         }
 
-        plugin.setStatus(MSCustoms.LOADING_DECORATIONS);
-
         final long startTime = System.currentTimeMillis();
         final var typesWithRecipes = new ObjectArrayList<CustomDecorType>();
 
+        plugin.setStatus(MSCustoms.LOADING_DECORATIONS);
         Stream.of(VALUES).parallel()
         .forEach(type -> {
             final CustomDecorData<?> data;
@@ -246,9 +245,9 @@ public enum CustomDecorType {
                 typesWithRecipes.add(type);
             }
         });
-
         typesWithRecipes.sort(Comparator.comparingInt(CustomDecorType::ordinal));
         plugin.setStatus(MSCustoms.LOADED_DECORATIONS);
+
         plugin.getComponentLogger().info(
                 Component.text(
                         "Loaded " + VALUES.length + " custom decors in " + (System.currentTimeMillis() - startTime) + "ms",
@@ -256,30 +255,27 @@ public enum CustomDecorType {
                 )
         );
 
-        if (!typesWithRecipes.isEmpty()) {
-            plugin.getStatusHandler().addWatcher(
-                    StatusWatcher.builder()
-                    .successStatuses(
-                            MSCustoms.LOADED_BLOCKS,
-                            MSCustoms.LOADED_ITEMS,
-                            MSCustoms.LOADED_DECORATIONS
-                    )
-                    .successRunnable(
-                            () -> plugin.runTask(() -> {
-                                for (final var type : typesWithRecipes) {
-                                    type.getCustomDecorData().registerRecipes(plugin.getServer());
-                                }
+        plugin.getStatusHandler().addWatcher(
+                StatusWatcher.builder()
+                .successStatuses(
+                        MSCustoms.LOADED_BLOCKS,
+                        MSCustoms.LOADED_ITEMS,
+                        MSCustoms.LOADED_DECORATIONS
+                )
+                .successRunnable(
+                        () -> plugin.runTask(() -> {
+                            for (final var type : typesWithRecipes) {
+                                type.getCustomDecorData().registerRecipes(plugin.getServer());
+                            }
 
-                                typesWithRecipes.clear();
-                                CraftsMenu.putCrafts(
-                                        CraftsMenu.Type.DECORS,
-                                        MSPlugin.globalCache().customDecorRecipes
-                                );
-                            })
-                    )
-                    .build()
-            );
-        }
+                            CraftsMenu.putCrafts(
+                                    CraftsMenu.Type.DECORS,
+                                    MSPlugin.globalCache().customDecorRecipes
+                            );
+                        })
+                )
+                .build()
+        );
     }
 
     /**

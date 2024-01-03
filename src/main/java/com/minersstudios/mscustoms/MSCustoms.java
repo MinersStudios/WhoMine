@@ -5,9 +5,11 @@ import com.minersstudios.mscore.plugin.status.FailureStatus;
 import com.minersstudios.mscore.plugin.status.SuccessStatus;
 import com.minersstudios.mscore.utility.ItemUtils;
 import com.minersstudios.mscore.utility.PaperUtils;
+import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorType;
 import com.minersstudios.mscustoms.custom.item.CustomItemType;
 import com.minersstudios.mscustoms.listener.mechanic.DosimeterMechanic;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Material;
 import org.jetbrains.annotations.UnknownNullability;
@@ -37,15 +39,22 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
     public static final SuccessStatus LOADED_RENAMEABLES =  low("LOADED_RENAMEABLES", FAILED_LOAD_RENAMEABLES);
     //</editor-fold>
 
-    private static final String NOTE_BLOCK_UPDATES = "block-updates.disable-noteblock-updates";
+    public static final String NAMESPACE = "mscustoms";
+
+    static {
+        initClass(SoundGroup.class);
+    }
 
     @Override
     public void load() {
         PaperUtils
         .editConfig(PaperUtils.ConfigType.GLOBAL, this.getServer())
-        .set(NOTE_BLOCK_UPDATES, true)
+        .set("block-updates.disable-noteblock-updates", true)
         .save();
-        ItemUtils.setMaxStackSize(Material.LEATHER_HORSE_ARMOR, 8);
+        ItemUtils.setMaxStackSize(
+                Material.LEATHER_HORSE_ARMOR,
+                SharedConstants.LEATHER_HORSE_ARMOR_MAX_STACK_SIZE
+        );
 
         CompletableFuture.runAsync(() -> CustomDecorType.load(this));
         CompletableFuture.runAsync(() -> CustomItemType.load(this));
@@ -83,6 +92,18 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
      */
     public @UnknownNullability Config getConfiguration() {
         return this.config;
+    }
+
+    /**
+     * @return True if the plugin is fully loaded
+     */
+    public boolean isFullyLoaded() {
+        return this.getStatusHandler().containsAll(
+                LOADED_DECORATIONS,
+                LOADED_BLOCKS,
+                LOADED_ITEMS,
+                LOADED_RENAMEABLES
+        );
     }
 
     /**

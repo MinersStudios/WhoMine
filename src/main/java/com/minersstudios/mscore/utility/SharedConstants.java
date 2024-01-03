@@ -28,6 +28,7 @@ public final class SharedConstants {
     public static final String MSDECOR_NAMESPACE =                     "msdecor";
     public static final int SIT_RANGE =                                9;
     public static final int FINAL_BREAK_STAGE =                        10;
+    public static final int LEATHER_HORSE_ARMOR_MAX_STACK_SIZE =       8;
 
     @Contract(" -> fail")
     private SharedConstants() throws AssertionError {

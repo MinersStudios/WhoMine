@@ -24,6 +24,12 @@ public interface MSListener<P extends MSPlugin<P>> {
     boolean isRegistered();
 
     /**
+     * @return A string representation of this listener
+     */
+    @Override
+    @NotNull String toString();
+
+    /**
      * Registers this listener to the plugin
      *
      * @param plugin The plugin to register this listener to
@@ -33,8 +39,9 @@ public interface MSListener<P extends MSPlugin<P>> {
     void register(final @NotNull P plugin) throws IllegalStateException;
 
     /**
-     * @return A string representation of this listener
+     * Called when this listener is registered
      */
-    @Override
-    @NotNull String toString();
+    default void onRegister() {
+        // Some magic
+    }
 }

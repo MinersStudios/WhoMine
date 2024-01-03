@@ -6,6 +6,7 @@ import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.item.damageable.Damageable;
+import com.minersstudios.mscustoms.menu.CraftsMenu;
 import com.minersstudios.mscustoms.registry.item.*;
 import com.minersstudios.mscustoms.registry.item.armor.hazmat.HazmatBoots;
 import com.minersstudios.mscustoms.registry.item.armor.hazmat.HazmatChestplate;
@@ -13,12 +14,12 @@ import com.minersstudios.mscustoms.registry.item.armor.hazmat.HazmatHelmet;
 import com.minersstudios.mscustoms.registry.item.armor.hazmat.HazmatLeggings;
 import com.minersstudios.mscustoms.registry.item.cards.CardsBicycle;
 import com.minersstudios.mscustoms.registry.item.cosmetics.LeatherHat;
-import com.minersstudios.mscustoms.menu.CraftsMenu;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -87,11 +88,10 @@ public enum CustomItemType {
             throw new IllegalStateException("Custom item types have already been loaded!");
         }
 
-        plugin.setStatus(MSCustoms.LOADING_ITEMS);
-
         final long startTime = System.currentTimeMillis();
         final var typesWithRecipes = new ObjectArrayList<CustomItemType>();
 
+        plugin.setStatus(MSCustoms.LOADING_ITEMS);
         Stream.of(VALUES).parallel()
         .forEach(type -> {
             final CustomItem customItem;
@@ -119,9 +119,9 @@ public enum CustomItemType {
                 typesWithRecipes.add(type);
             }
         });
-
         typesWithRecipes.sort(Comparator.comparingInt(CustomItemType::ordinal));
         plugin.setStatus(MSCustoms.LOADED_ITEMS);
+
         plugin.getComponentLogger().info(
                 Component.text(
                         "Loaded " + VALUES.length + " custom items in " + (System.currentTimeMillis() - startTime) + "ms",
@@ -129,30 +129,29 @@ public enum CustomItemType {
                 )
         );
 
-        if (!typesWithRecipes.isEmpty()) {
-            plugin.getStatusHandler().addWatcher(
-                    StatusWatcher.builder()
-                    .successStatuses(
-                            MSCustoms.LOADED_BLOCKS,
-                            MSCustoms.LOADED_DECORATIONS,
-                            MSCustoms.LOADED_ITEMS
-                    )
-                    .successRunnable(
-                            () -> plugin.runTask(() -> {
-                                for (final var type : typesWithRecipes) {
-                                    type.getCustomItem().registerRecipes(plugin.getServer());
-                                }
+        plugin.getStatusHandler().addWatcher(
+                StatusWatcher.builder()
+                .successStatuses(
+                        MSCustoms.LOADED_BLOCKS,
+                        MSCustoms.LOADED_DECORATIONS,
+                        MSCustoms.LOADED_ITEMS
+                )
+                .successRunnable(
+                        () -> plugin.runTask(() -> {
+                            final Server server = plugin.getServer();
 
-                                typesWithRecipes.clear();
-                                CraftsMenu.putCrafts(
-                                        CraftsMenu.Type.ITEMS,
-                                        MSPlugin.globalCache().customItemRecipes
-                                );
-                            })
-                    )
-                    .build()
-            );
-        }
+                            for (final var item : typesWithRecipes) {
+                                item.getCustomItem().registerRecipes(server);
+                            }
+
+                            CraftsMenu.putCrafts(
+                                    CraftsMenu.Type.ITEMS,
+                                    MSPlugin.globalCache().customItemRecipes
+                            );
+                        })
+                )
+                .build()
+        );
     }
 
     /**

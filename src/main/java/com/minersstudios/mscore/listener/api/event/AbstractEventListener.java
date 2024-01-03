@@ -31,6 +31,11 @@ public abstract class AbstractEventListener<P extends MSPlugin<P>> implements MS
                 && this.plugin.getEventListeners().contains(this);
     }
 
+    @Override
+    public @NotNull String toString() {
+        return this.getClass().getSimpleName() + "{plugin=" + this.plugin + '}';
+    }
+
     @ApiStatus.Internal
     @Override
     public final void register(final @NotNull P plugin) throws IllegalStateException {
@@ -41,10 +46,6 @@ public abstract class AbstractEventListener<P extends MSPlugin<P>> implements MS
         this.plugin = plugin;
 
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return this.getClass().getSimpleName() + "{plugin=" + this.plugin + '}';
+        this.onRegister();
     }
 }

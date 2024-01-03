@@ -24,26 +24,31 @@ import static org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result.*;
 
 @EventListener
 public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSEssentials> {
+    //<editor-fold desc="Component Messages" defaultstate="collapsed">
+    private static final Style TITLE_STYLE = Style.style(NamedTextColor.RED, TextDecoration.BOLD);
+    private static final Style SUBTITLE_STYLE = Style.style(NamedTextColor.GRAY);
+
     private static final TranslatableComponent LEAVE_MESSAGE_FORMAT =
             FORMAT_LEAVE_MESSAGE.color(NamedTextColor.DARK_GRAY);
     private static final Component MESSAGE_WHITELIST = LanguageFile.renderTranslationComponent(
             LEAVE_MESSAGE_FORMAT.arguments(
-                    PRE_LOGIN_WHITELISTED_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
-                    PRE_LOGIN_WHITELISTED_SUBTITLE.color(NamedTextColor.GRAY)
+                    PRE_LOGIN_WHITELISTED_TITLE.style(TITLE_STYLE),
+                    PRE_LOGIN_WHITELISTED_SUBTITLE.style(SUBTITLE_STYLE)
             )
     );
     private static final Component MESSAGE_SERVER_NOT_FULLY_LOADED = LanguageFile.renderTranslationComponent(
             LEAVE_MESSAGE_FORMAT.arguments(
-                    SERVER_NOT_FULLY_LOADED_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
-                    SERVER_NOT_FULLY_LOADED_SUBTITLE.color(NamedTextColor.GRAY)
+                    SERVER_NOT_FULLY_LOADED_TITLE.style(TITLE_STYLE),
+                    SERVER_NOT_FULLY_LOADED_SUBTITLE.style(SUBTITLE_STYLE)
             )
     );
     private static final Component MESSAGE_TECH_WORKS = LanguageFile.renderTranslationComponent(
             LEAVE_MESSAGE_FORMAT.arguments(
-                    PRE_LOGIN_TECH_WORKS_TITLE.style(Style.style(NamedTextColor.RED, TextDecoration.BOLD)),
-                    PRE_LOGIN_TECH_WORKS_SUBTITLE.color(NamedTextColor.GRAY)
+                    PRE_LOGIN_TECH_WORKS_TITLE.style(TITLE_STYLE),
+                    PRE_LOGIN_TECH_WORKS_SUBTITLE.style(SUBTITLE_STYLE)
             )
     );
+    //</editor-fold>
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAsyncPlayerPreLogin(final @NotNull AsyncPlayerPreLoginEvent event) {
@@ -67,13 +72,7 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
                             )
                     )
             );
-        } else if (
-                !MSCustoms.singleton().containsAllStatuses(
-                        MSCustoms.LOADED_BLOCKS,
-                        MSCustoms.LOADED_ITEMS,
-                        MSCustoms.LOADED_DECORATIONS
-                )
-        ) {
+        } else if (!MSCustoms.singleton().isFullyLoaded()) {
             event.disallow(
                     KICK_OTHER,
                     MESSAGE_SERVER_NOT_FULLY_LOADED

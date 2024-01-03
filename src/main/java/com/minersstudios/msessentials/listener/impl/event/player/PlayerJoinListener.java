@@ -30,11 +30,12 @@ public final class PlayerJoinListener extends AbstractEventListener<MSEssentials
     }
 
     private void handle(final @NotNull Player player) {
-        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player);
+        final MSEssentials plugin = this.getPlugin();
+        final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, player);
 
         playerInfo.hideNameTag();
         player.displayName(playerInfo.getDefaultName());
-        this.getPlugin().getCache().getWorldDark()
+        plugin.getCache().getWorldDark()
         .teleportToDarkWorld(player)
         .thenRun(() -> this.getPlugin().runTaskTimer(task -> {
             if (!player.isOnline()) {

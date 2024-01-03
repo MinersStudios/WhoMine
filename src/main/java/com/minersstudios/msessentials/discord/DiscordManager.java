@@ -10,6 +10,7 @@ import com.minersstudios.msessentials.command.api.discord.SlashCommandExecutor;
 import com.minersstudios.msessentials.listener.api.discord.AbstractDiscordListener;
 import com.minersstudios.msessentials.listener.api.discord.DiscordListener;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.dv8tion.jda.api.JDA;
@@ -30,7 +31,6 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -115,8 +115,8 @@ public final class DiscordManager {
     /**
      * @return An unmodifiable view of the slash commands map
      */
-    public @UnknownNullability @UnmodifiableView Map<Long, SlashCommandExecutor> slashCommandMap() {
-        return Collections.unmodifiableMap(this.slashCommandMap);
+    public @UnknownNullability @UnmodifiableView Long2ObjectMap<SlashCommandExecutor> slashCommandMap() {
+        return Long2ObjectMaps.unmodifiable(this.slashCommandMap);
     }
 
     /**

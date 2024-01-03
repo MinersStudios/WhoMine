@@ -83,6 +83,15 @@ public abstract class AbstractPacketListener<P extends MSPlugin<P>> implements M
                 && this.plugin.getPacketListeners().contains(this);
     }
 
+    @Override
+    public @NotNull String toString() {
+        return this.getClass().getSimpleName() +
+                "plugin=" + this.plugin +
+                ", sendWhiteList=[" + Joiner.on(", ").join(this.sendWhiteList) + ']' +
+                ", receiveWhiteList=[" + Joiner.on(", ").join(this.receiveWhiteList) + ']' +
+                '}';
+    }
+
     @ApiStatus.Internal
     @Override
     public final void register(final @NotNull P plugin) throws IllegalStateException {
@@ -93,15 +102,7 @@ public abstract class AbstractPacketListener<P extends MSPlugin<P>> implements M
         this.plugin = plugin;
 
         MSPlugin.globalCache().packetListenerMap.addListener(this);
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return this.getClass().getSimpleName() +
-                "plugin=" + this.plugin +
-                ", sendWhiteList=[" + Joiner.on(", ").join(this.sendWhiteList) + ']' +
-                ", receiveWhiteList=[" + Joiner.on(", ").join(this.receiveWhiteList) + ']' +
-                '}';
+        this.onRegister();
     }
 
     /**
