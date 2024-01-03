@@ -9,6 +9,8 @@ import com.minersstudios.mscustoms.custom.block.file.adapter.*;
 import com.minersstudios.mscustoms.custom.block.params.NoteBlockData;
 import com.minersstudios.mscustoms.custom.block.params.PlacingType;
 import com.minersstudios.mscustoms.custom.block.params.ToolType;
+import com.minersstudios.mscustoms.sound.Sound;
+import com.minersstudios.mscustoms.sound.SoundAdapter;
 import org.bukkit.NamespacedKey;
 import org.bukkit.SoundCategory;
 import org.bukkit.inventory.ItemStack;
@@ -54,6 +56,7 @@ public final class CustomBlockFile {
             .registerTypeAdapter(ToolType.class,      new EnumAdapter<>(ToolType.values()))
             .registerTypeAdapter(PlacingType.class,   new PlacingTypeAdapter())
             .registerTypeAdapter(NoteBlockData.class, new NoteBlockDataAdapter())
+            .registerTypeAdapter(Sound.class,         new SoundAdapter())
             .setPrettyPrinting()
             .create();
 

@@ -2,18 +2,16 @@ package com.minersstudios.mscustoms.sound;
 
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscustoms.MSCustoms;
+import com.minersstudios.mscustoms.Config;
 import net.minecraft.sounds.SoundEvent;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
-import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
-
-import javax.annotation.concurrent.Immutable;
-import java.util.Objects;
 
 /**
  * Represents a sound with :
@@ -26,12 +24,12 @@ import java.util.Objects;
  *
  * Sound can be created with builder, for example :
  * <pre>
- *     Sound sound = Sound.builder()
- *             .key("block.wood.place")
- *             .category(SoundCategory.BLOCKS)
- *             .volume(1.0f)
- *             .pitch(1.0f)
- *             .build();
+ * Sound sound = Sound.builder()
+ *         .key("block.wood.place")
+ *         .category(SoundCategory.BLOCKS)
+ *         .volume(1.0f)
+ *         .pitch(1.0f)
+ *         .build();
  * </pre>
  * Or with static methods :
  * <ul>
@@ -42,32 +40,15 @@ import java.util.Objects;
  *     <li>{@link #create(SoundEvent, SoundCategory, float, float)}</li>
  *     <li>{@link #create(String, SoundCategory, float, float)}</li>
  * </ul>
+ *
+ * @see Builder
  */
-@Immutable
-public final class Sound {
-    private final String key;
-    private final SoundCategory category;
-    private final float volume;
-    private final float pitch;
-
-    //<editor-fold desc="Wood Sound Keys" defaultstate="collapsed">
-    private static final String WOOD_PLACE_SOUND_KEY = "block.wood.place";
-    private static final String WOOD_BREAK_SOUND_KEY = "block.wood.break";
-    private static final String WOOD_HIT_SOUND_KEY =   "block.wood.hit";
-    private static final String WOOD_STEP_SOUND_KEY =  "block.wood.step";
-    //</editor-fold>
-
-    /**
-     * Sound constructor
-     *
-     * @param builder The builder to create this Sound
-     */
-    private Sound(final @NotNull Builder builder) {
-        this.key = builder.key;
-        this.category = builder.category;
-        this.volume = builder.volume;
-        this.pitch = builder.pitch;
-    }
+public interface Sound {
+    String KEY_KEY =      "key";
+    String CATEGORY_KEY = "category";
+    String VOLUME_KEY =   "volume";
+    String PITCH_KEY =    "pitch";
+    String EMPTY_VALUE =  "empty";
 
     /**
      * Creates a new Sound instance with 1.0f volume and pitch and
@@ -78,7 +59,7 @@ public final class Sound {
      * @see #create(String)
      */
     @Contract("_ -> new")
-    public static @NotNull Sound create(final @NotNull SoundEvent soundEvent) {
+    static @NotNull Sound create(final @NotNull SoundEvent soundEvent) {
         return create(soundEvent.getLocation().getPath());
     }
 
@@ -93,7 +74,7 @@ public final class Sound {
      * @see #create(String, SoundCategory, float, float)
      */
     @Contract("_ -> new")
-    public static @NotNull Sound create(final @NotNull String key) throws IllegalArgumentException {
+    static @NotNull Sound create(final @NotNull String key) throws IllegalArgumentException {
         return create(
                 key,
                 SoundCategory.MASTER
@@ -109,7 +90,7 @@ public final class Sound {
      * @see #create(String, SoundCategory)
      */
     @Contract("_, _ -> new")
-    public static @NotNull Sound create(
+    static @NotNull Sound create(
             final @NotNull SoundEvent soundEvent,
             final @NotNull SoundCategory soundCategory
     ) {
@@ -129,7 +110,7 @@ public final class Sound {
      * @see #create(String, SoundCategory, float, float)
      */
     @Contract("_, _ -> new")
-    public static @NotNull Sound create(
+    static @NotNull Sound create(
             final @NotNull String key,
             final @NotNull SoundCategory soundCategory
     ) throws IllegalArgumentException {
@@ -151,7 +132,7 @@ public final class Sound {
      * @see #create(String, SoundCategory, float, float)
      */
     @Contract("_, _, _, _ -> new")
-    public static @NotNull Sound create(
+    static @NotNull Sound create(
             final @NotNull SoundEvent soundEvent,
             final @NotNull SoundCategory soundCategory,
             final float volume,
@@ -176,13 +157,13 @@ public final class Sound {
      * @throws IllegalArgumentException If the key is blank
      */
     @Contract("_, _, _, _ -> new")
-    public static @NotNull Sound create(
+    static @NotNull Sound create(
             final @NotNull String key,
             final @NotNull SoundCategory soundCategory,
             final float volume,
             final float pitch
     ) throws IllegalArgumentException {
-        return new Sound.Builder()
+        return new Builder()
                 .key(key)
                 .category(soundCategory)
                 .volume(volume)
@@ -195,140 +176,167 @@ public final class Sound {
      *
      * @return A new builder
      */
-    public static @NotNull Builder builder() {
+    @Contract(" -> new")
+    static @NotNull Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * @return An empty Sound
+     */
+    static @NotNull Sound empty() {
+        return EmptySound.EMPTY;
     }
 
     /**
      * @return The key of this Sound
      */
-    public @NotNull String getKey() {
-        return this.key;
-    }
+    @NotNull String getKey();
 
     /**
      * @return The sound category of this Sound
      */
-    public @NotNull SoundCategory getCategory() {
-        return this.category;
-    }
+    @NotNull SoundCategory getCategory();
 
     /**
      * @return The volume of this Sound
      */
-    public float getVolume() {
-        return this.volume;
-    }
+    float getVolume();
 
     /**
      * @return The pitch of this Sound
      */
-    public float getPitch() {
-        return this.pitch;
-    }
+    float getPitch();
 
     /**
-     * @return A hash code value for this Sound
+     * @return The hash code value for this sound. If this sound is empty, the
+     *         hash code will be 0.
      */
     @Override
-    public int hashCode() {
-        return Objects.hash(this.key, this.category, this.volume, this.pitch);
-    }
+    int hashCode();
+
+    /**
+     * @return True if this Sound is empty
+     */
+    boolean isEmpty();
 
     /**
      * @param obj The reference object with which to compare
      * @return True if this Sound is the same as the obj argument
      */
+    @Contract("null -> false")
     @Override
-    public boolean equals(final @Nullable Object obj) {
-        return this == obj
-                || (
-                        obj instanceof final Sound that
-                        && Float.compare(that.volume, this.volume) == 0
-                        && Float.compare(that.pitch, this.pitch) == 0
-                        && this.key.equals(that.key)
-                        && this.category == that.category
-                );
-    }
+    boolean equals(final @Nullable Object obj);
 
     /**
      * @return A string representation of this Sound
      */
     @Override
-    public @NotNull String toString() {
-        return "Sound{" +
-                "key=" + this.key +
-                ", soundCategory=" + this.category +
-                ", volume=" + this.volume +
-                ", pitch=" + this.pitch +
-                '}';
-    }
+    @NotNull String toString();
 
     /**
      * @return A builder with the values of this Sound
      */
-    public @NotNull Builder toBuilder() {
-        final Builder builder = new Builder();
-
-        builder.key = this.key;
-        builder.category = this.category;
-        builder.volume = this.volume;
-        builder.pitch = this.pitch;
-
-        return builder;
-    }
+    @Contract(" -> new")
+    @NotNull Builder toBuilder();
 
     /**
-     * Plays this Sound at the specified position
+     * Plays this Sound to the specified player.
+     * <br>
+     * If the place sound is {@link SoundGroup#WOOD}, the wood place sound from
+     * the {@link Config} will be played instead.
      *
-     * @param position The position to play this Sound at
+     * @param player The player to play this sound to
+     * @param entity The entity source of this sound
+     */
+    void play(
+            final @NotNull Player player,
+            final @NotNull Entity entity
+    );
+
+    /**
+     * Plays this Sound to the specified player.
+     * <br>
+     * If the place sound is {@link SoundGroup#WOOD}, the wood place sound from
+     * the {@link Config} will be played instead.
+     *
+     * @param player   The player to play this sound to
+     * @param position The position to play this sound at
+     */
+    void play(
+            final @NotNull Player player,
+            final @NotNull MSPosition position
+    );
+
+    /**
+     * Plays this Sound to the specified player.
+     * <br>
+     * If the place sound is {@link SoundGroup#WOOD}, the wood place sound from
+     * the {@link Config} will be played instead.
+     *
+     * @param player   The player to play this sound to
+     * @param location The location to play this sound at
+     */
+    void play(
+            final @NotNull Player player,
+            final @NotNull Location location
+    );
+
+    /**
+     * Plays this Sound at the specified entity in the world.
+     * <br>
+     * If the place sound is {@link SoundGroup#WOOD}, the wood place sound from
+     * the {@link Config} will be played instead.
+     *
+     * @param entity The entity source of this sound
+     */
+    void play(final @NotNull Entity entity);
+
+    /**
+     * Plays this Sound at the specified position in the world.
+     * <br>
+     * If the place sound is {@link SoundGroup#WOOD}, the wood place sound from
+     * the {@link Config} will be played instead.
+     *
+     * @param position The position to play this sound at
      * @throws IllegalStateException If the world of the position is null
      */
-    public void play(final @NotNull MSPosition position) {
-        this.play(position.toLocation());
-    }
+    void play(final @NotNull MSPosition position) throws IllegalStateException;
 
     /**
-     * Plays this Sound at the specified location
+     * Plays this Sound at the specified location in the world.
+     * <br>
+     * If the place sound is {@link SoundGroup#WOOD}, the wood place sound from
+     * the {@link Config} will be played instead.
      *
-     * @param location The location to play this Sound at
+     * @param location The location to play this sound at
      * @throws IllegalStateException If the world of the location is null
      */
-    public void play(final @NotNull Location location) {
-        final World world = location.getWorld();
-
-        if (world == null) {
-            throw new IllegalStateException("The world of the location cannot be null");
-        }
-
-        world.playSound(
-                location,
-                switch (this.key) {
-                    case WOOD_PLACE_SOUND_KEY -> MSCustoms.config().getWoodSoundPlace();
-                    case WOOD_BREAK_SOUND_KEY -> MSCustoms.config().getWoodSoundBreak();
-                    case WOOD_HIT_SOUND_KEY ->   MSCustoms.config().getWoodSoundHit();
-                    case WOOD_STEP_SOUND_KEY ->  MSCustoms.config().getWoodSoundStep();
-                    default -> this.key;
-                },
-                this.category,
-                this.volume,
-                this.pitch
-        );
-    }
+    void play(final @NotNull Location location) throws IllegalStateException;
 
     /**
-     * A builder for {@link Sound}
+     * A builder for {@link Sound}, with the following chainable methods :
+     * <ul>
+     *     <li>{@link #key(SoundEvent)}</li>
+     *     <li>{@link #key(String)}</li>
+     *     <li>{@link #category(SoundCategory)}</li>
+     *     <li>{@link #volume(float)}</li>
+     *     <li>{@link #pitch(float)}</li>
+     * </ul>
+     *
+     * Default values :
+     * <ul>
+     *     <li>{@code key} : {@code null}</li>
+     *     <li>{@code category} : {@link SoundCategory#MASTER}</li>
+     *     <li>{@code volume} : {@code 0.0f}</li>
+     *     <li>{@code pitch} : {@code 0.0f}</li>
+     * </ul>
      */
-    public static class Builder {
+    class Builder {
         private String key;
         private SoundCategory category;
         private float volume;
         private float pitch;
-
-        private Builder() {
-            this.volume = 1.0f;
-            this.pitch = 1.0f;
-        }
 
         /**
          * @return The key of this Sound
@@ -421,14 +429,18 @@ public final class Sound {
          * Builds a Sound with the values of this builder
          *
          * @return The built Sound
-         * @throws IllegalStateException If the key is blank or null
+         * @throws IllegalArgumentException If the key is blank or null
          */
-        public @NotNull Sound build() throws IllegalStateException {
+        public @NotNull Sound build() throws IllegalArgumentException {
             if (ChatUtils.isBlank(this.key)) {
                 throw new IllegalArgumentException("Key cannot be blank or null!");
             }
 
-            return new Sound(this);
+            if (this.category == null) {
+                this.category = SoundCategory.MASTER;
+            }
+
+            return new SoundImpl(this);
         }
     }
 }

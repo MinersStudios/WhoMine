@@ -72,7 +72,10 @@ public class StepMap {
      */
     public double remove(final @NotNull Player player) {
         final Double previousDistance = this.stepMap.remove(player);
-        return previousDistance == null ? -1.0d : previousDistance;
+
+        return previousDistance == null
+                ? -1.0d
+                : previousDistance;
     }
 
     /**

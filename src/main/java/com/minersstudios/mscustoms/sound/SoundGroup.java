@@ -1,11 +1,11 @@
 package com.minersstudios.mscustoms.sound;
 
 import com.minersstudios.mscore.location.MSPosition;
-import com.minersstudios.mscustoms.Config;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.SoundType;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,9 +17,22 @@ import static org.bukkit.SoundCategory.BLOCKS;
 import static org.bukkit.SoundCategory.PLAYERS;
 
 /**
- * Represents a group of sounds associated with a custom block
+ * Represents a group of sounds :
+ * <ul>
+ *     <li>Place sound</li>
+ *     <li>Break sound</li>
+ *     <li>Hit sound</li>
+ *     <li>Step sound</li>
+ * </ul>
  *
- * @see SoundType
+ * Sound group can be created with :
+ * <ul>
+ *     <li>{@link #create(SoundType)} - for vanilla sounds</li>
+ *     <li>{@link #create(Sound, Sound, Sound, Sound)} - for custom sounds</li>
+ * </ul>
+ *
+ * This class also contains all the vanilla sound constants for the blocks
+ *
  * @version 1.20.4
  */
 @Immutable
@@ -151,10 +164,10 @@ public final class SoundGroup {
      * @param stepSound  The step sound
      */
     private SoundGroup(
-            final @Nullable Sound placeSound,
-            final @Nullable Sound breakSound,
-            final @Nullable Sound hitSound,
-            final @Nullable Sound stepSound
+            final @NotNull Sound placeSound,
+            final @NotNull Sound breakSound,
+            final @NotNull Sound hitSound,
+            final @NotNull Sound stepSound
     ) {
         this.placeSound = placeSound;
         this.breakSound = breakSound;
@@ -169,50 +182,28 @@ public final class SoundGroup {
      * <br>
      * The key, pitch and volume of the specified SoundType will be used to
      * create the sound instances.
+     * <br>
+     * Pitch and volume for sounds :
+     * <ul>
+     *     <li>Place : {@code pitch = specified, volume = specified}</li>
+     *     <li>Break : {@code pitch = specified, volume = specified}</li>
+     *     <li>Hit : {@code pitch = 0.5f, volume = 0.5f}</li>
+     *     <li>Step : {@code pitch = 0.3f, volume = 0.9f}</li>
+     * </ul>
      *
      * @param soundType The sound type
      * @return A new SoundGroup created based on the specified SoundType
-     * @see Sound#create(SoundEvent, SoundCategory, float, float)
      */
     @Contract("_ -> new")
     public static @NotNull SoundGroup create(final @NotNull SoundType soundType) {
-        return create(
-                soundType,
-                BLOCKS, BLOCKS, BLOCKS, PLAYERS
-        );
-    }
-
-    /**
-     * Creates a new SoundGroup based on the specified SoundType and categories.
-     * <br>
-     * The key, pitch and volume of the specified SoundType will be used to
-     * create the sound instances.
-     *
-     * @param soundType     The sound type
-     * @param placeCategory The place sound category
-     * @param breakCategory The break sound category
-     * @param hitCategory   The hit sound category
-     * @param stepCategory  The step sound category
-     * @return A new SoundGroup created based on the specified SoundType and
-     *         categories
-     * @see Sound#create(SoundEvent, SoundCategory, float, float)
-     */
-    @Contract("_, _, _, _, _ -> new")
-    public static @NotNull SoundGroup create(
-            final @NotNull SoundType soundType,
-            final @NotNull SoundCategory placeCategory,
-            final @NotNull SoundCategory breakCategory,
-            final @NotNull SoundCategory hitCategory,
-            final @NotNull SoundCategory stepCategory
-    ) {
         final float pitch = soundType.getPitch();
         final float volume = soundType.getVolume();
 
         return new SoundGroup(
-                Sound.create(soundType.getPlaceSound(), placeCategory, pitch, volume),
-                Sound.create(soundType.getBreakSound(), breakCategory, pitch, volume),
-                Sound.create(soundType.getHitSound(), hitCategory, pitch, volume),
-                Sound.create(soundType.getStepSound(), stepCategory, pitch, volume)
+                Sound.create(soundType.getPlaceSound(), BLOCKS, pitch, volume),
+                Sound.create(soundType.getBreakSound(), BLOCKS, pitch, volume),
+                Sound.create(soundType.getHitSound(), BLOCKS, 0.5f, 0.5f),
+                Sound.create(soundType.getStepSound(), PLAYERS, 0.3f, 0.9f)
         );
     }
 
@@ -227,10 +218,10 @@ public final class SoundGroup {
      */
     @Contract("_, _, _, _ -> new")
     public static @NotNull SoundGroup create(
-            final @Nullable Sound placeSound,
-            final @Nullable Sound breakSound,
-            final @Nullable Sound hitSound,
-            final @Nullable Sound stepSound
+            final @NotNull Sound placeSound,
+            final @NotNull Sound breakSound,
+            final @NotNull Sound hitSound,
+            final @NotNull Sound stepSound
     ) {
         return new SoundGroup(
                 placeSound,
@@ -244,7 +235,7 @@ public final class SoundGroup {
      * @return The place sound of this SoundGroup, or null if the place sound is
      *         not set
      */
-    public @Nullable Sound getPlaceSound() {
+    public @NotNull Sound getPlaceSound() {
         return this.placeSound;
     }
 
@@ -252,7 +243,7 @@ public final class SoundGroup {
      * @return The break sound of this SoundGroup, or null if the break sound is
      *         not set
      */
-    public @Nullable Sound getBreakSound() {
+    public @NotNull Sound getBreakSound() {
         return this.breakSound;
     }
 
@@ -260,7 +251,7 @@ public final class SoundGroup {
      * @return The hit sound of this SoundGroup, or null if the hit sound is not
      *         set
      */
-    public @Nullable Sound getHitSound() {
+    public @NotNull Sound getHitSound() {
         return this.hitSound;
     }
 
@@ -268,46 +259,159 @@ public final class SoundGroup {
      * @return The step sound of this SoundGroup, or null if the step sound is
      *         not set
      */
-    public @Nullable Sound getStepSound() {
+    public @NotNull Sound getStepSound() {
         return this.stepSound;
     }
 
     /**
-     * Plays the place sound of this SoundGroup at the specified location. If
-     * the place sound is "block.wood.place", the wood place sound from the
-     * {@link Config} will be played instead. If the place sound is null,
-     * nothing will be played.
+     * Plays the place sound of this SoundGroup to the specified player from the
+     * specified entity. If the place sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player The player to play the place sound to
+     * @param entity The entity source of this sound
+     * @see Sound#play(Player, Entity)
+     */
+    public void playPlaceSound(
+            final @NotNull Player player,
+            final @NotNull Entity entity
+    ) {
+        this.placeSound.play(player, entity);
+    }
+
+    /**
+     * Plays the place sound of this SoundGroup to the specified player at the
+     * specified position. If the place sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player   The player to play the place sound to
+     * @param position The position to play the place sound at
+     * @see Sound#play(Player, MSPosition)
+     */
+    public void playPlaceSound(
+            final @NotNull Player player,
+            final @NotNull MSPosition position
+    ) {
+        this.placeSound.play(player, position);
+    }
+
+    /**
+     * Plays the place sound of this SoundGroup to the specified player at the
+     * specified location. If the place sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player   The player to play the place sound to
+     * @param location The location to play the place sound at
+     * @see Sound#play(Player, Location)
+     */
+    public void playPlaceSound(
+            final @NotNull Player player,
+            final @NotNull Location location
+    ) {
+        this.placeSound.play(player, location);
+    }
+
+    /**
+     * Plays the place sound of this SoundGroup from the specified entity. If
+     * the place sound is {@link Sound#empty()}, nothing will be played.
+     *
+     * @param entity The entity source of this sound
+     * @see Sound#play(Entity)
+     */
+    public void playPlaceSound(final @NotNull Entity entity) {
+        this.placeSound.play(entity);
+    }
+
+    /**
+     * Plays the place sound of this SoundGroup at the specified position. If
+     * the place sound is {@link Sound#empty()}}, nothing will be played.
      *
      * @param position The location to play the place sound at
      * @throws IllegalStateException If the world of the position is null
+     * @see Sound#play(MSPosition)
      */
     public void playPlaceSound(final @NotNull MSPosition position) throws IllegalStateException {
-        this.playPlaceSound(position.toLocation());
+        this.placeSound.play(position);
     }
 
     /**
      * Plays the place sound of this SoundGroup at the specified location. If
-     * the place sound is "block.wood.place", the wood place sound from the
-     * {@link Config} will be played instead. If the place sound is null,
-     * nothing will be played.
+     * the place sound is {@link Sound#empty()}}, nothing will be played.
      *
      * @param location The location to play the place sound at
      * @throws IllegalStateException If the world of the location is null
+     * @see Sound#play(Location)
      */
     public void playPlaceSound(final @NotNull Location location) throws IllegalStateException {
-        if (this.placeSound != null) {
-            this.placeSound.play(location);
-        }
+        this.placeSound.play(location);
+    }
+
+    /**
+     * Plays the break sound of this SoundGroup to the specified player from the
+     * specified entity. If the break sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player The player to play the break sound to
+     * @param entity The entity source of this sound
+     * @see Sound#play(Player, Entity)
+     */
+    public void playBreakSound(
+            final @NotNull Player player,
+            final @NotNull Entity entity
+    ) {
+        this.breakSound.play(player, entity);
+    }
+
+    /**
+     * Plays the break sound of this SoundGroup to the specified player at the
+     * specified position. If the break sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player   The player to play the break sound to
+     * @param position The position to play the break sound at
+     * @see Sound#play(Player, MSPosition)
+     */
+    public void playBreakSound(
+            final @NotNull Player player,
+            final @NotNull MSPosition position
+    ) {
+        this.breakSound.play(player, position);
+    }
+
+    /**
+     * Plays the break sound of this SoundGroup to the specified player at the
+     * specified location. If the break sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player   The player to play the break sound to
+     * @param location The location to play the break sound at
+     * @see Sound#play(Player, Location)
+     */
+    public void playBreakSound(
+            final @NotNull Player player,
+            final @NotNull Location location
+    ) {
+        this.breakSound.play(player, location);
+    }
+
+    /**
+     * Plays the break sound of this SoundGroup from the specified entity. If
+     * the break sound is {@link Sound#empty()}, nothing will be played.
+     *
+     * @param entity The entity source of this sound
+     * @see Sound#play(Entity)
+     */
+    public void playBreakSound(final @NotNull Entity entity) {
+        this.breakSound.play(entity);
     }
 
     /**
      * Plays the break sound of this SoundGroup at the specified location. If
-     * the break sound is "block.wood.break", the wood break sound from the
-     * {@link Config} will be played instead. If the break sound is null,
-     * nothing will be played.
+     * the break sound is {@link Sound#empty()}, nothing will be played.
      *
      * @param position The position to play the break sound at
      * @throws IllegalStateException If the world of the position is null
+     * @see Sound#play(MSPosition)
      */
     public void playBreakSound(final @NotNull MSPosition position) throws IllegalStateException {
         this.playBreakSound(position.toLocation());
@@ -315,26 +419,82 @@ public final class SoundGroup {
 
     /**
      * Plays the break sound of this SoundGroup at the specified location. If
-     * the break sound is "block.wood.break", the wood break sound from the
-     * {@link Config} will be played instead. If the break sound is null,
-     * nothing will be played.
+     * the break sound is {@link Sound#empty()}, nothing will be played.
      *
      * @param location The location to play the break sound at
      * @throws IllegalStateException If the world of the location is null
+     * @see Sound#play(Location)
      */
     public void playBreakSound(final @NotNull Location location) throws IllegalStateException {
-        if (this.breakSound != null) {
-            this.breakSound.play(location);
-        }
+        this.breakSound.play(location);
+    }
+
+    /**
+     * Plays the hit sound of this SoundGroup to the specified player from the
+     * specified entity. If the hit sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player The player to play the hit sound to
+     * @param entity The entity source of this sound
+     * @see Sound#play(Player, Entity)
+     */
+    public void playHitSound(
+            final @NotNull Player player,
+            final @NotNull Entity entity
+    ) {
+        this.hitSound.play(player, entity);
+    }
+
+    /**
+     * Plays the hit sound of this SoundGroup to the specified player at the
+     * specified position. If the hit sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player   The player to play the hit sound to
+     * @param position The position to play the hit sound at
+     * @see Sound#play(Player, MSPosition)
+     */
+    public void playHitSound(
+            final @NotNull Player player,
+            final @NotNull MSPosition position
+    ) {
+        this.hitSound.play(player, position);
+    }
+
+    /**
+     * Plays the hit sound of this SoundGroup to the specified player at the
+     * specified location. If the hit sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player   The player to play the hit sound to
+     * @param location The location to play the hit sound at
+     * @see Sound#play(Player, Location)
+     */
+    public void playHitSound(
+            final @NotNull Player player,
+            final @NotNull Location location
+    ) {
+        this.hitSound.play(player, location);
+    }
+
+    /**
+     * Plays the hit sound of this SoundGroup from the specified entity. If the
+     * hit sound is {@link Sound#empty()}, nothing will be played.
+     *
+     * @param entity The entity source of this sound
+     * @see Sound#play(Entity)
+     */
+    public void playHitSound(final @NotNull Entity entity) {
+        this.hitSound.play(entity);
     }
 
     /**
      * Plays the hit sound of this SoundGroup at the specified location. If the
-     * hit sound is "block.wood.hit", the wood hit sound from the {@link Config}
-     * will be played instead. If the hit sound is null, nothing will be played.
+     * hit sound is {@link Sound#empty()}, nothing will be played.
      *
      * @param position The position to play the hit sound at
      * @throws IllegalStateException If the world of the position is null
+     * @see Sound#play(MSPosition)
      */
     public void playHitSound(final @NotNull MSPosition position) throws IllegalStateException {
         this.playHitSound(position.toLocation());
@@ -342,26 +502,82 @@ public final class SoundGroup {
 
     /**
      * Plays the hit sound of this SoundGroup at the specified location. If the
-     * hit sound is "block.wood.hit", the wood hit sound from the {@link Config}
-     * will be played instead. If the hit sound is null, nothing will be played.
+     * hit sound is {@link Sound#empty()}, nothing will be played.
      *
      * @param location The location to play the hit sound at
      * @throws IllegalStateException If the world of the location is null
+     * @see Sound#play(Location)
      */
     public void playHitSound(final @NotNull Location location) throws IllegalStateException {
-        if (this.hitSound != null) {
-            this.hitSound.play(location);
-        }
+        this.hitSound.play(location);
+    }
+
+    /**
+     * Plays the step sound of this SoundGroup to the specified player from the
+     * specified entity. If the step sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player The player to play the step sound to
+     * @param entity The entity source of this sound
+     * @see Sound#play(Player, Entity)
+     */
+    public void playStepSound(
+            final @NotNull Player player,
+            final @NotNull Entity entity
+    ) {
+        this.stepSound.play(player, entity);
+    }
+
+    /**
+     * Plays the step sound of this SoundGroup to the specified player at the
+     * specified position. If the step sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player   The player to play the step sound to
+     * @param position The position to play the step sound at
+     * @see Sound#play(Player, MSPosition)
+     */
+    public void playStepSound(
+            final @NotNull Player player,
+            final @NotNull MSPosition position
+    ) {
+        this.stepSound.play(player, position);
+    }
+
+    /**
+     * Plays the step sound of this SoundGroup to the specified player at the
+     * specified location. If the step sound is {@link Sound#empty()}, nothing
+     * will be played.
+     *
+     * @param player   The player to play the step sound to
+     * @param location The location to play the step sound at
+     * @see Sound#play(Player, Location)
+     */
+    public void playStepSound(
+            final @NotNull Player player,
+            final @NotNull Location location
+    ) {
+        this.stepSound.play(player, location);
+    }
+
+    /**
+     * Plays the step sound of this SoundGroup from the specified entity. If the
+     * step sound is {@link Sound#empty()}, nothing will be played.
+     *
+     * @param entity The entity source of this sound
+     * @see Sound#play(Entity)
+     */
+    public void playStepSound(final @NotNull Entity entity) {
+        this.stepSound.play(entity);
     }
 
     /**
      * Plays the step sound of this SoundGroup at the specified location. If the
-     * step sound is "block.wood.step", the wood step sound from the
-     * {@link Config} will be played instead. If the step sound is null, nothing
-     * will be played.
+     * step sound is {@link Sound#empty()}, nothing will be played.
      *
      * @param position The position to play the step sound at
      * @throws IllegalStateException If the world of the position is null
+     * @see Sound#play(MSPosition)
      */
     public void playStepSound(final @NotNull MSPosition position) throws IllegalStateException {
         this.playStepSound(position.toLocation());
@@ -369,17 +585,14 @@ public final class SoundGroup {
 
     /**
      * Plays the step sound of this SoundGroup at the specified location. If the
-     * step sound is "block.wood.step", the wood step sound from the
-     * {@link Config} will be played instead. If the step sound is null, nothing
-     * will be played.
+     * step sound is {@link Sound#empty()}, nothing will be played.
      *
      * @param location The location to play the step sound at
      * @throws IllegalStateException If the world of the location is null
+     * @see Sound#play(Location)
      */
     public void playStepSound(final @NotNull Location location) throws IllegalStateException {
-        if (this.stepSound != null) {
-            this.stepSound.play(location);
-        }
+        this.stepSound.play(location);
     }
 
     /**
@@ -387,7 +600,15 @@ public final class SoundGroup {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(this.placeSound, this.breakSound, this.hitSound, this.stepSound);
+        final int prime = 31;
+        int result = 1;
+
+        result = prime * result + this.placeSound.hashCode();
+        result = prime * result + this.breakSound.hashCode();
+        result = prime * result + this.hitSound.hashCode();
+        result = prime * result + this.stepSound.hashCode();
+
+        return result;
     }
 
     /**
