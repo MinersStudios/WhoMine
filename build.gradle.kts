@@ -22,9 +22,8 @@ allprojects {
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
-        maven("https://maven.playpro.com")
-        maven("https://m2.dv8tion.net/releases")
         maven("https://repo.codemc.org/repository/maven-public/")
+        maven("https://maven.playpro.com")
     }
 
     dependencies {
@@ -32,7 +31,7 @@ allprojects {
         compileOnly("org.jetbrains:annotations:24.0.1")
         compileOnly("net.coreprotect:coreprotect:22.2")
         compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
-        compileOnly("net.dv8tion:JDA:5.0.0-beta.18")
+        compileOnly("net.dv8tion:JDA:5.0.0-beta.19")
         compileOnly("com.fasterxml.jackson.core:jackson-annotations:2.16.0")
     }
 
