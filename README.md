@@ -1,7 +1,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
   <a href="https://whomine.net">
-    <img alt="Header" src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=18&height=200&descSize=13&descAlignY=50&animation=fadeIn&section=header&text=WhoMine&fontAlignY=35&fontSize=70&desc=Minecraft%20server%20with%20weird%20things" align="center" style="width: 100%">
+    <img alt="Header" src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=18&height=200&descSize=13&descAlignY=50&animation=fadeIn&section=header&text=WhoMine&fontAlignY=35&fontSize=70&desc=Minecraft%20server%20with%20weird%20bugs" align="center" style="width: 100%">
   </a>
   
   <p>
