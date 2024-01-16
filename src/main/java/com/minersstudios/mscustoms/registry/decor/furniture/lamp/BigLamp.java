@@ -2,10 +2,11 @@ package com.minersstudios.mscustoms.registry.decor.furniture.lamp;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscustoms.sound.SoundGroup;
-import com.minersstudios.mscustoms.event.decor.CustomDecorClickEvent;
 import com.minersstudios.mscustoms.custom.decor.*;
+import com.minersstudios.mscustoms.event.decor.CustomDecorClickEvent;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -16,8 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public final class BigLamp extends CustomDecorDataImpl<BigLamp> {
 
@@ -43,7 +42,7 @@ public final class BigLamp extends CustomDecorDataImpl<BigLamp> {
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        unused -> Map.entry(
+                        unused -> RecipeEntry.of(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
@@ -55,7 +54,7 @@ public final class BigLamp extends CustomDecorDataImpl<BigLamp> {
                                         ShapedRecipeBuilder.material('S', Material.STICK),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
                                 ),
-                                Boolean.TRUE
+                                true
                         )
                 )
                 .parameters(

@@ -89,7 +89,7 @@ public final class CustomBlockRegistry {
 
     @Contract(" -> fail")
     private CustomBlockRegistry() throws AssertionError {
-        throw new AssertionError("Utility class");
+        throw new AssertionError("Registry class");
     }
 
     /**

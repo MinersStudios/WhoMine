@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.custom.block;
 
 import com.google.gson.JsonElement;
-import com.minersstudios.mscore.inventory.recipe.RecipeEntry;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.block.file.CustomBlockFile;

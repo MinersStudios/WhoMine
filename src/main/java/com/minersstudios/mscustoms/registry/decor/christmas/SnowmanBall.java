@@ -2,6 +2,7 @@ package com.minersstudios.mscustoms.registry.decor.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -57,27 +58,13 @@ public final class SnowmanBall extends CustomDecorDataImpl<SnowmanBall> {
                         DecorParameter.PAINTABLE
                 )
                 .faceTypes(
-                        builder -> Map.entry(
-                                Facing.CEILING,
-                                new Type(
-                                        builder,
-                                        "default",
-                                        ceiling
-                                )
-                        ),
-                        builder -> Map.entry(
-                                Facing.WALL,
-                                new Type(
-                                        builder,
-                                        "wall",
-                                        wall
-                                )
-                        )
+                        builder -> Map.entry(Facing.CEILING, new Type(builder, "default", ceiling)),
+                        builder -> Map.entry(Facing.WALL,    new Type(builder, "wall",    wall))
                 );
 
         return MSPlugin.globalConfig().isChristmas()
                 ? builder0.recipes(
-                        unused -> Map.entry(
+                        unused -> RecipeEntry.of(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
@@ -90,7 +77,7 @@ public final class SnowmanBall extends CustomDecorDataImpl<SnowmanBall> {
                                         ShapedRecipeBuilder.material('B', Material.SNOWBALL),
                                         ShapedRecipeBuilder.material('L', Material.LEATHER)
                                 ),
-                                Boolean.TRUE
+                                true
                         )
                 )
                 : builder0;

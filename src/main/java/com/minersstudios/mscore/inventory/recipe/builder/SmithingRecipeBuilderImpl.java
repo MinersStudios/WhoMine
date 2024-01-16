@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmithingRecipe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 @SuppressWarnings("unchecked")
 abstract class SmithingRecipeBuilderImpl<B extends SmithingRecipeBuilderImpl<B, R>, R extends SmithingRecipe> implements RecipeBuilder<R> {
@@ -15,6 +16,16 @@ abstract class SmithingRecipeBuilderImpl<B extends SmithingRecipeBuilderImpl<B, 
     protected RecipeChoice base;
     protected RecipeChoice addition;
     protected boolean copyNbt;
+
+    SmithingRecipeBuilderImpl() {}
+
+    SmithingRecipeBuilderImpl(final @NotNull SmithingRecipe recipe) {
+        this.namespacedKey = recipe.getKey();
+        this.result = recipe.getResult();
+        this.base = recipe.getBase();
+        this.addition = recipe.getAddition();
+        this.copyNbt = recipe.willCopyNbt();
+    }
 
     protected abstract @NotNull R newRecipe();
 
@@ -44,28 +55,30 @@ abstract class SmithingRecipeBuilderImpl<B extends SmithingRecipeBuilderImpl<B, 
     }
 
     @Override
-    public final NamespacedKey namespacedKey() {
+    public final @UnknownNullability NamespacedKey namespacedKey() {
         return this.namespacedKey;
     }
 
     @Override
     public final @NotNull B namespacedKey(final @NotNull NamespacedKey namespacedKey) {
         this.namespacedKey = namespacedKey;
+
         return (B) this;
     }
 
     @Override
-    public final ItemStack result() {
+    public final @UnknownNullability ItemStack result() {
         return this.result;
     }
 
     @Override
     public final @NotNull B result(final @NotNull ItemStack result) {
         this.result = result;
+
         return (B) this;
     }
 
-    public final RecipeChoice template() {
+    public final @UnknownNullability RecipeChoice template() {
         return this.template;
     }
 
@@ -79,10 +92,11 @@ abstract class SmithingRecipeBuilderImpl<B extends SmithingRecipeBuilderImpl<B, 
 
     public final @NotNull B template(final @NotNull RecipeChoice template) {
         this.template = template;
+
         return (B) this;
     }
 
-    public final RecipeChoice base() {
+    public final @UnknownNullability RecipeChoice base() {
         return this.base;
     }
 
@@ -96,10 +110,11 @@ abstract class SmithingRecipeBuilderImpl<B extends SmithingRecipeBuilderImpl<B, 
 
     public final @NotNull B base(final @NotNull RecipeChoice base) {
         this.base = base;
+
         return (B) this;
     }
 
-    public final RecipeChoice addition() {
+    public final @UnknownNullability RecipeChoice addition() {
         return this.addition;
     }
 
@@ -113,6 +128,7 @@ abstract class SmithingRecipeBuilderImpl<B extends SmithingRecipeBuilderImpl<B, 
 
     public final @NotNull B addition(final @NotNull RecipeChoice addition) {
         this.addition = addition;
+
         return (B) this;
     }
 
@@ -122,6 +138,7 @@ abstract class SmithingRecipeBuilderImpl<B extends SmithingRecipeBuilderImpl<B, 
 
     public final @NotNull B copyNbt(final boolean copyNbt) {
         this.copyNbt = copyNbt;
+
         return (B) this;
     }
 }

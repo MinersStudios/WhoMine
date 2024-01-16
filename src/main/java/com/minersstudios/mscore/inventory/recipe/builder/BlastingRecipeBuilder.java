@@ -5,6 +5,12 @@ import org.jetbrains.annotations.NotNull;
 
 public final class BlastingRecipeBuilder extends CookingRecipeBuilderImpl<BlastingRecipeBuilder, BlastingRecipe> {
 
+    BlastingRecipeBuilder() {}
+
+    BlastingRecipeBuilder(final @NotNull BlastingRecipe recipe) {
+        super(recipe);
+    }
+
     @Override
     protected @NotNull BlastingRecipe newRecipe() throws IllegalStateException {
         return new BlastingRecipe(

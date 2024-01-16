@@ -2,7 +2,7 @@ package com.minersstudios.mscustoms.listener.event.inventory;
 
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
-import com.minersstudios.mscore.utility.MSCustomUtils;
+import com.minersstudios.mscustoms.utility.MSCustomUtils;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.block.CustomBlockData;
 import com.minersstudios.mscustoms.custom.item.CustomItem;

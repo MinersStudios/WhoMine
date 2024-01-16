@@ -8,6 +8,7 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.recipe.CookingBookCategory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.UnknownNullability;
 
 @SuppressWarnings("unchecked")
 abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>, R extends CookingRecipe<R>> implements RecipeBuilder<R> {
@@ -18,6 +19,18 @@ abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>
     protected int cookingTime;
     protected String group;
     protected CookingBookCategory category;
+
+    CookingRecipeBuilderImpl() {}
+
+    CookingRecipeBuilderImpl(final @NotNull CookingRecipe<R> recipe) {
+        this.namespacedKey = recipe.getKey();
+        this.result = recipe.getResult();
+        this.ingredient = recipe.getInputChoice();
+        this.experience = recipe.getExperience();
+        this.cookingTime = recipe.getCookingTime();
+        this.group = recipe.getGroup();
+        this.category = recipe.getCategory();
+    }
 
     protected abstract @NotNull R newRecipe();
 
@@ -37,25 +50,34 @@ abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>
 
         final R recipe = this.newRecipe();
 
-        recipe.setGroup(this.group == null ? "" : this.group);
-        recipe.setCategory(this.category == null ? CookingBookCategory.MISC : this.category);
+        recipe.setGroup(
+                this.group == null
+                ? ""
+                : this.group
+        );
+        recipe.setCategory(
+                this.category == null
+                ? CookingBookCategory.MISC
+                : this.category
+        );
 
         return recipe;
     }
 
     @Override
-    public final NamespacedKey namespacedKey() {
+    public final @UnknownNullability NamespacedKey namespacedKey() {
         return this.namespacedKey;
     }
 
     @Override
     public final @NotNull B namespacedKey(final @NotNull NamespacedKey namespacedKey) {
         this.namespacedKey = namespacedKey;
+
         return (B) this;
     }
 
     @Override
-    public final ItemStack result() {
+    public final @UnknownNullability  ItemStack result() {
         return this.result;
     }
 
@@ -66,10 +88,11 @@ abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>
         }
 
         this.result = result;
+
         return (B) this;
     }
 
-    public final RecipeChoice ingredient() {
+    public final @UnknownNullability RecipeChoice ingredient() {
         return this.ingredient;
     }
 
@@ -83,6 +106,7 @@ abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>
 
     public final @NotNull B ingredient(final @NotNull RecipeChoice ingredient) {
         this.ingredient = ingredient;
+
         return (B) this;
     }
 
@@ -92,6 +116,7 @@ abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>
 
     public final @NotNull B experience(final float experience) {
         this.experience = experience;
+
         return (B) this;
     }
 
@@ -101,24 +126,27 @@ abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>
 
     public final @NotNull B cookingTime(final @Range(from = 0, to = Integer.MAX_VALUE) int cookingTime) {
         this.cookingTime = cookingTime;
+
         return (B) this;
     }
 
-    public final String group() {
+    public final @UnknownNullability String group() {
         return this.group;
     }
 
     public final @NotNull B group(final @NotNull String group) {
         this.group = group;
+
         return (B) this;
     }
 
-    public final CookingBookCategory category() {
+    public final @UnknownNullability CookingBookCategory category() {
         return this.category;
     }
 
     public final @NotNull B category(final @NotNull CookingBookCategory category) {
         this.category = category;
+
         return (B) this;
     }
 }

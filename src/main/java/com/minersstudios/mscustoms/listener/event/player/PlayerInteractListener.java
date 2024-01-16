@@ -5,7 +5,7 @@ import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.utility.BlockUtils;
 import com.minersstudios.mscore.utility.CoreProtectUtils;
-import com.minersstudios.mscore.utility.MSDecorUtils;
+import com.minersstudios.mscustoms.utility.MSDecorUtils;
 import com.minersstudios.mscore.utility.PlayerUtils;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.block.CustomBlock;

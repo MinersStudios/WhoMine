@@ -1,11 +1,9 @@
 package com.minersstudios.mscustoms.custom.decor;
 
-import com.minersstudios.mscore.inventory.recipe.RecipeEntry;
-import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.location.MSVector;
-import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.*;
 import com.minersstudios.mscustoms.custom.decor.action.DecorBreakAction;
 import com.minersstudios.mscustoms.custom.decor.action.DecorClickAction;
@@ -13,6 +11,7 @@ import com.minersstudios.mscustoms.custom.decor.action.DecorPlaceAction;
 import com.minersstudios.mscustoms.event.decor.CustomDecorBreakEvent;
 import com.minersstudios.mscustoms.event.decor.CustomDecorClickEvent;
 import com.minersstudios.mscustoms.event.decor.CustomDecorPlaceEvent;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -69,7 +68,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     private final SoundGroup soundGroup;
     private final ItemStack itemStack;
     private final List<RecipeEntry> recipeEntries;
-    private final Function<D, Map.Entry<RecipeBuilder<?>, Boolean>>[] recipeFunctions;
+    private final Function<D, RecipeEntry>[] recipeFunctions;
     private final EnumSet<DecorParameter> parameterSet;
     private final double sitHeight;
     private final int[] lightLevels;
@@ -152,7 +151,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public final Function<D, Map.Entry<RecipeBuilder<?>, Boolean>> @Nullable [] recipeFunctions() {
+    public final Function<D, RecipeEntry> @Nullable [] recipeFunctions() {
         return this.recipeFunctions == null
                 ? null
                 : this.recipeFunctions.clone();
@@ -638,21 +637,27 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
         for (final var function : this.recipeFunctions) {
             final var entry = function.apply((D) this);
-            final var recipeBuilder = entry.getKey();
-            final boolean registerInMenu = entry.getValue();
+            final boolean registerInMenu = entry.isRegisteredInMenu();
+            final Recipe recipe;
 
-            if (recipeBuilder.namespacedKey() == null) {
-                recipeBuilder.namespacedKey(this.namespacedKey);
+            if (entry.isBuildable()) {
+                final var recipeBuilder = entry.getBuilder();
+
+                if (recipeBuilder.namespacedKey() == null) {
+                    recipeBuilder.namespacedKey(this.namespacedKey);
+                }
+
+                if (recipeBuilder.result() == null) {
+                    recipeBuilder.result(this.itemStack);
+                }
+
+                recipe = recipeBuilder.build();
+            } else {
+                recipe = entry.getRecipe();
             }
-
-            if (recipeBuilder.result() == null) {
-                recipeBuilder.result(this.itemStack);
-            }
-
-            final Recipe recipe = recipeBuilder.build();
 
             this.recipeEntries.add(
-                    new RecipeEntry(
+                    RecipeEntry.of(
                             recipe,
                             registerInMenu
                     )
@@ -1200,7 +1205,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         private EnumSet<Facing> facingSet;
         private ItemStack itemStack;
         private SoundGroup soundGroup;
-        private Function<D, Map.Entry<RecipeBuilder<?>, Boolean>>[] recipeFunctions;
+        private Function<D, RecipeEntry>[] recipeFunctions;
         private EnumSet<DecorParameter> parameterSet;
         private double sitHeight;
         private CustomDecorData.Type<D>[] types;
@@ -1365,7 +1370,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public NamespacedKey key() {
+        public @UnknownNullability NamespacedKey key() {
             return this.namespacedKey;
         }
 
@@ -1377,12 +1382,13 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public DecorHitBox hitBox() {
+        public @UnknownNullability DecorHitBox hitBox() {
             return this.hitBox;
         }
 
         public @NotNull Builder hitBox(final @NotNull DecorHitBox hitBox) {
             this.hitBox = hitBox;
+
             return this;
         }
 
@@ -1399,7 +1405,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public SoundGroup soundGroup() {
+        public @UnknownNullability SoundGroup soundGroup() {
             return this.soundGroup;
         }
 
@@ -1409,7 +1415,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public ItemStack itemStack() {
+        public @UnknownNullability ItemStack itemStack() {
             return this.itemStack;
         }
 
@@ -1423,18 +1429,18 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public Function<D, Map.Entry<RecipeBuilder<?>, Boolean>>[] recipeBuilders() {
+        public Function<D, RecipeEntry> @UnknownNullability [] recipes() {
             return this.recipeFunctions.clone();
         }
 
         @SuppressWarnings("unchecked")
         @SafeVarargs
         public final @NotNull Builder recipes(
-                final @NotNull Function<D, Map.Entry<RecipeBuilder<?>, Boolean>> first,
-                final Function<D, Map.Entry<RecipeBuilder<?>, Boolean>> @NotNull ... rest
+                final @NotNull Function<D, RecipeEntry> first,
+                final Function<D, RecipeEntry> @NotNull ... rest
         ) {
             final int length = rest.length + 1;
-            this.recipeFunctions = (Function<D, Map.Entry<RecipeBuilder<?>, Boolean>>[]) Array.newInstance(Function.class, length);
+            this.recipeFunctions = (Function<D, RecipeEntry>[]) Array.newInstance(Function.class, length);
 
             System.arraycopy(rest, 0, this.recipeFunctions, 1, rest.length);
             this.recipeFunctions[0] = first;
@@ -1442,7 +1448,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public EnumSet<DecorParameter> parameterSet() {
+        public @UnknownNullability EnumSet<DecorParameter> parameterSet() {
             return this.parameterSet;
         }
 
@@ -1502,6 +1508,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             }
 
             this.parameterSet = parameters;
+
             return this;
         }
 
@@ -1529,7 +1536,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public CustomDecorData.Type<D>[] types() {
+        public CustomDecorData.Type<D> @UnknownNullability [] types() {
             return this.types;
         }
 
@@ -1547,7 +1554,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final var firstType = first.apply(this);
             final CustomDecorData.Type<D>[] restTypes = (CustomDecorData.Type<D>[]) new CustomDecorData.Type<?>[rest.length];
 
-            for (int i = 0; i < rest.length; i++) {
+            for (int i = 0; i < rest.length; ++i) {
                 restTypes[i] = rest[i].apply(this);
             }
 
@@ -1587,7 +1594,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public @NotNull EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap() {
+        public @UnknownNullability EnumMap<Facing, CustomDecorData.Type<D>> faceTypeMap() {
             return this.faceTypeMap;
         }
 
@@ -1605,7 +1612,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final var firstType = first.apply(this);
             final var restTypes = (Map.Entry<Facing, CustomDecorData.Type<D>>[]) new Map.Entry<?, ?>[rest.length];
 
-            for (int i = 0; i < rest.length; i++) {
+            for (int i = 0; i < rest.length; ++i) {
                 restTypes[i] = rest[i].apply(this);
             }
 
@@ -1639,7 +1646,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public int[] lightLevels() {
+        public int @UnknownNullability [] lightLevels() {
             return this.lightLevels;
         }
 
@@ -1658,7 +1665,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             System.arraycopy(rest, 0, this.lightLevels, 1, rest.length);
             this.lightLevels[0] = first;
 
-            for (int i = 0; i < length; i++) {
+            for (int i = 0; i < length; ++i) {
                 final int level = this.lightLevels[i];
 
                 if (
@@ -1680,7 +1687,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public Int2ObjectMap<CustomDecorData.Type<D>> lightLevelTypeMap() {
+        public @UnknownNullability Int2ObjectMap<CustomDecorData.Type<D>> lightLevelTypeMap() {
             return this.lightLevelTypeMap;
         }
 
@@ -1698,7 +1705,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final var firstType = first.apply(this);
             final var restTypes = (Map.Entry<Integer, CustomDecorData.Type<D>>[]) new Map.Entry<?, ?>[rest.length];
 
-            for (int i = 0; i < rest.length; i++) {
+            for (int i = 0; i < rest.length; ++i) {
                 restTypes[i] = rest[i].apply(this);
             }
 
@@ -1730,7 +1737,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public DecorClickAction clickAction() {
+        public @UnknownNullability DecorClickAction clickAction() {
             return this.clickAction;
         }
 
@@ -1739,7 +1746,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public DecorPlaceAction placeAction() {
+        public @UnknownNullability DecorPlaceAction placeAction() {
             return this.placeAction;
         }
 
@@ -1748,7 +1755,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public DecorBreakAction breakAction() {
+        public @UnknownNullability DecorBreakAction breakAction() {
             return this.breakAction;
         }
 
@@ -1905,6 +1912,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
     }
 
+    @Immutable
     protected final class Type implements CustomDecorData.Type<D> {
         private final NamespacedKey namespacedKey;
         private final ItemStack itemStack;

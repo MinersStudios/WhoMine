@@ -96,7 +96,9 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
             return true;
         }
 
-        final double x, y, z;
+        final double x;
+        final double y;
+        final double z;
 
         if (args.length > 2) {
             try {

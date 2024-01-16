@@ -375,7 +375,7 @@ public final class BotHandler {
                 final var skins = playerFile.getSkins();
                 final StringBuilder skinList = new StringBuilder();
 
-                for (int i = 0; i < skins.size(); i++) {
+                for (int i = 0; i < skins.size(); ++i) {
                     skinList
                     .append("\n")
                     .append(i + 1)

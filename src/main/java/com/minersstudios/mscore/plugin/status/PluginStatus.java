@@ -1,8 +1,8 @@
 package com.minersstudios.mscore.plugin.status;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.regex.Pattern;
 
 public interface PluginStatus {

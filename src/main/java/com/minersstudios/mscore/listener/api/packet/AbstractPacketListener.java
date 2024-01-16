@@ -40,8 +40,8 @@ public abstract class AbstractPacketListener<P extends MSPlugin<P>> implements M
         this.receiveWhiteList = new ObjectOpenHashSet<>();
         final PacketType[] whitelist = new PacketType[rest.length + 1];
 
-        System.arraycopy(rest, 0, whitelist, 0, rest.length);
-        whitelist[rest.length] = first;
+        System.arraycopy(rest, 0, whitelist, 1, rest.length);
+        whitelist[0] = first;
 
         for (final var packetType : whitelist) {
             if (packetType.isReceive()) {

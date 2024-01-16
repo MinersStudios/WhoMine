@@ -7,7 +7,7 @@ import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
-import org.spigotmc.event.entity.EntityDismountEvent;
+import org.bukkit.event.entity.EntityDismountEvent;
 
 @EventListener
 public final class EntityDismountListener extends AbstractEventListener<MSEssentials> {

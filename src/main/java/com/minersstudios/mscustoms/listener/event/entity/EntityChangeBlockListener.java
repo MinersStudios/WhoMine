@@ -2,7 +2,7 @@ package com.minersstudios.mscustoms.listener.event.entity;
 
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
-import com.minersstudios.mscore.utility.MSDecorUtils;
+import com.minersstudios.mscustoms.utility.MSDecorUtils;
 import com.minersstudios.mscustoms.MSCustoms;
 import org.bukkit.block.Block;
 import org.bukkit.entity.FallingBlock;

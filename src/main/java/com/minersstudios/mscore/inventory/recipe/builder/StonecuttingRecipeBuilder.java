@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 public final class StonecuttingRecipeBuilder implements RecipeBuilder<StonecuttingRecipe> {
     private NamespacedKey namespacedKey;
@@ -14,6 +15,13 @@ public final class StonecuttingRecipeBuilder implements RecipeBuilder<Stonecutti
     private String group;
 
     StonecuttingRecipeBuilder() {}
+
+    StonecuttingRecipeBuilder(final @NotNull StonecuttingRecipe recipe) {
+        this.namespacedKey = recipe.getKey();
+        this.result = recipe.getResult();
+        this.ingredient = recipe.getInputChoice();
+        this.group = recipe.getGroup();
+    }
 
     @Override
     public @NotNull StonecuttingRecipe build() throws IllegalStateException {
@@ -42,18 +50,19 @@ public final class StonecuttingRecipeBuilder implements RecipeBuilder<Stonecutti
     }
 
     @Override
-    public NamespacedKey namespacedKey() {
+    public @UnknownNullability NamespacedKey namespacedKey() {
         return this.namespacedKey;
     }
 
     @Override
     public @NotNull StonecuttingRecipeBuilder namespacedKey(final @NotNull NamespacedKey namespacedKey) {
         this.namespacedKey = namespacedKey;
+
         return this;
     }
 
     @Override
-    public ItemStack result() {
+    public @UnknownNullability ItemStack result() {
         return this.result;
     }
 
@@ -64,19 +73,21 @@ public final class StonecuttingRecipeBuilder implements RecipeBuilder<Stonecutti
         }
 
         this.result = result;
+
         return this;
     }
 
-    public String group() {
+    public @UnknownNullability String group() {
         return this.group;
     }
 
     public @NotNull StonecuttingRecipeBuilder group(final @NotNull String group) {
         this.group = group;
+
         return this;
     }
 
-    public RecipeChoice ingredient() {
+    public @UnknownNullability RecipeChoice ingredient() {
         return this.ingredient;
     }
 
@@ -90,6 +101,7 @@ public final class StonecuttingRecipeBuilder implements RecipeBuilder<Stonecutti
 
     public @NotNull StonecuttingRecipeBuilder ingredient(final @NotNull RecipeChoice ingredient) {
         this.ingredient = ingredient;
+
         return this;
     }
 }

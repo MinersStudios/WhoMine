@@ -1,17 +1,16 @@
 package com.minersstudios.mscustoms.custom.item;
 
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscustoms.menu.CraftsMenu;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -54,21 +53,21 @@ public interface CustomItem extends Keyed {
     void setItem(final @NotNull ItemStack itemStack);
 
     /**
-     * @return An unmodifiable list of {@link Recipe} entries representing the
+     * @return An unmodifiable list of recipe entries representing the
      *         associated recipes
      */
-    @NotNull @UnmodifiableView List<Map.Entry<Recipe, Boolean>> getRecipes();
+    @NotNull @UnmodifiableView List<RecipeEntry> getRecipeEntries();
 
     /**
      * Set the list of associated recipes for this custom item
      *
      * @param server  The server to register the recipes
-     * @param recipes A list of {@link Recipe} entries representing the
-     *                associated recipes
+     * @param recipes A list of recipe entries representing the associated
+     *                recipes
      */
-    void setRecipes(
+    void setRecipeEntries(
             final @NotNull Server server,
-            final @Nullable List<Map.Entry<Recipe, Boolean>> recipes
+            final @Nullable List<RecipeEntry> recipes
     );
 
     /**
@@ -95,11 +94,11 @@ public interface CustomItem extends Keyed {
      * Boolean value in the entry represents whether the recipe should be
      * registered in {@link CraftsMenu}.
      *
-     * @return A list of {@link Recipe} entries representing the associated
+     * @return A list of recipe entries representing the associated
      *         recipes, or null if there are no recipes
      * @see #registerRecipes(Server)
      */
-    @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes();
+    @NotNull @Unmodifiable List<RecipeEntry> initRecipes();
 
     /**
      * Register the associated recipes of this custom item with the server
@@ -160,12 +159,12 @@ public interface CustomItem extends Keyed {
     static @NotNull CustomItem create(
             final @NotNull String key,
             final @NotNull ItemStack itemStack,
-            final @NotNull Function<CustomItem, List<Map.Entry<Recipe, Boolean>>> initRecipes
+            final @NotNull Function<CustomItem, List<RecipeEntry>> initRecipes
     ) throws IllegalArgumentException {
         return new CustomItemImpl(key, itemStack) {
 
             @Override
-            public @NotNull List<Map.Entry<Recipe, Boolean>> initRecipes() {
+            public @NotNull List<RecipeEntry> initRecipes() {
                 return initRecipes.apply(this);
             }
         };

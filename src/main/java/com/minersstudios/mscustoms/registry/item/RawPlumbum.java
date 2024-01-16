@@ -1,16 +1,16 @@
 package com.minersstudios.mscustoms.registry.item;
 
+import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscore.utility.MSBlockUtils;
+import com.minersstudios.mscustoms.utility.MSBlockUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public final class RawPlumbum extends CustomItemImpl {
     private static final String KEY;
@@ -41,14 +40,20 @@ public final class RawPlumbum extends CustomItemImpl {
 
     @Contract(" -> new")
     @Override
-    public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        final ShapedRecipe shapedRecipe = new ShapedRecipe(this.namespacedKey, this.itemStack)
+    public @NotNull @Unmodifiable List<RecipeEntry> initRecipes() {
+        final var shapedBuilder =
+                RecipeBuilder.shapedBuilder()
+                .namespacedKey(this.namespacedKey)
+                .result(this.itemStack)
                 .shape(
                         " I ",
                         "BIB",
                         " I "
-                ).setIngredient('I', Material.RAW_IRON)
-                .setIngredient('B', Material.WATER_BUCKET);
+                )
+                .ingredients(
+                        ShapedRecipeBuilder.material('I', Material.RAW_IRON),
+                        ShapedRecipeBuilder.material('B', Material.WATER_BUCKET)
+                );
 
         final var rawPlumbumBlock = MSBlockUtils.getItemStack("raw_plumbum_block");
 
@@ -57,19 +62,20 @@ public final class RawPlumbum extends CustomItemImpl {
                     "Can't find custom block with key: raw_plumbum_block! Shaped recipe for RawPlumbum will not be registered!"
             );
 
-            return Collections.singletonList(Map.entry(shapedRecipe, Boolean.TRUE));
+            return Collections.singletonList(RecipeEntry.of(shapedBuilder, true));
         }
 
         return Arrays.asList(
-                Map.entry(shapedRecipe, Boolean.TRUE),
-                Map.entry(
-                        new ShapedRecipe(
-                                new NamespacedKey(SharedConstants.MSITEMS_NAMESPACE, "raw_plumbum_from_block"),
-                                this.itemStack.clone().add(8)
-                        )
+                RecipeEntry.of(shapedBuilder, true),
+                RecipeEntry.of(
+                        RecipeBuilder.shapedBuilder()
+                        .namespacedKey(new NamespacedKey(SharedConstants.MSITEMS_NAMESPACE, "raw_plumbum_from_block"))
+                        .result(this.itemStack.clone().add(8))
                         .shape("I")
-                        .setIngredient('I', new RecipeChoice.ExactChoice(rawPlumbumBlock.get())),
-                        Boolean.TRUE
+                        .ingredients(
+                                ShapedRecipeBuilder.itemStack('I', rawPlumbumBlock.get())
+                        ),
+                        true
                 )
         );
     }

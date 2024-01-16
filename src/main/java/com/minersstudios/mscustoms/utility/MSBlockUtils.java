@@ -1,5 +1,7 @@
-package com.minersstudios.mscore.utility;
+package com.minersstudios.mscustoms.utility;
 
+import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.custom.block.CustomBlockData;
 import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
 import org.bukkit.inventory.ItemStack;

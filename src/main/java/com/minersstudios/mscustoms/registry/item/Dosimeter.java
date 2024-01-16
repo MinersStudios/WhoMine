@@ -1,12 +1,13 @@
 package com.minersstudios.mscustoms.registry.item;
 
+import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
 import com.minersstudios.mscustoms.custom.item.CustomItemType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
@@ -16,7 +17,6 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public final class Dosimeter extends CustomItemImpl {
@@ -40,23 +40,34 @@ public final class Dosimeter extends CustomItemImpl {
 
     @Contract(" -> new")
     @Override
-    public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        return Collections.singletonList(Map.entry(
-                new ShapedRecipe(this.namespacedKey, this.itemStack)
-                .shape(
-                        "III",
-                        "ILI",
-                        "IRI"
+    public @NotNull @Unmodifiable List<RecipeEntry> initRecipes() {
+        return Collections.singletonList(
+                RecipeEntry.of(
+                        RecipeBuilder.shapedBuilder()
+                        .namespacedKey(this.namespacedKey)
+                        .result(this.itemStack)
+                        .shape(
+                                "III",
+                                "ILI",
+                                "IRI"
+                        )
+                        .ingredients(
+                                ShapedRecipeBuilder.itemStack('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem()),
+                                ShapedRecipeBuilder.material('L', Material.REDSTONE_LAMP),
+                                ShapedRecipeBuilder.material('R', Material.REDSTONE_TORCH)
+                        ),
+                        true
                 )
-                .setIngredient('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem())
-                .setIngredient('L', Material.REDSTONE_LAMP)
-                .setIngredient('R', Material.REDSTONE_TORCH),
-                Boolean.TRUE
-        ));
+        );
     }
 
     public boolean isEnabled() {
-        return this.itemStack.getItemMeta().getPersistentDataContainer().getOrDefault(this.namespacedKey, PersistentDataType.BYTE, (byte) 0) == 1;
+        return this.itemStack.getItemMeta().getPersistentDataContainer()
+                .getOrDefault(
+                        this.namespacedKey,
+                        PersistentDataType.BYTE,
+                        (byte) 0
+                ) == 1;
     }
 
     public void setEnabled(final boolean enabled) {

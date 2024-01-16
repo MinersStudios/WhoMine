@@ -5,6 +5,14 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SmithingTrimRecipeBuilder extends SmithingRecipeBuilderImpl<SmithingTrimRecipeBuilder, SmithingTrimRecipe> {
 
+    SmithingTrimRecipeBuilder() {}
+
+    SmithingTrimRecipeBuilder(final @NotNull SmithingTrimRecipe recipe) {
+        super(recipe);
+
+        this.template = recipe.getTemplate();
+    }
+
     @Override
     protected @NotNull SmithingTrimRecipe newRecipe() {
         return new SmithingTrimRecipe(

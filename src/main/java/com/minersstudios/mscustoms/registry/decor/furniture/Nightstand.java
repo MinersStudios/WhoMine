@@ -2,17 +2,16 @@ package com.minersstudios.mscustoms.registry.decor.furniture;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.custom.decor.*;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDecorDataImpl<C> {
 
@@ -41,7 +40,7 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        unused -> Map.entry(
+                        unused -> RecipeEntry.of(
                                 RecipeBuilder.shapedBuilder()
                                 .group(SharedConstants.MSDECOR_NAMESPACE + ":nightstand")
                                 .category(CraftingBookCategory.BUILDING)
@@ -53,7 +52,7 @@ public abstract class Nightstand<C extends CustomDecorData<C>> extends CustomDec
                                 .ingredients(
                                         ShapedRecipeBuilder.material('P', planksMaterial)
                                 ),
-                                Boolean.TRUE
+                                true
                         )
                 )
                 .parameters(DecorParameter.WRENCHABLE)

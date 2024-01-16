@@ -1,7 +1,9 @@
 package com.minersstudios.mscustoms.sound;
 
 import com.minersstudios.mscore.location.MSPosition;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.MSCustoms;
+import net.minecraft.sounds.SoundEvent;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
@@ -10,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
@@ -174,5 +177,94 @@ final class SoundImpl implements Sound {
             case WOOD_STEP_SOUND_KEY ->  MSCustoms.config().getWoodSoundStep();
             default -> this.key;
         };
+    }
+
+    static final class BuilderImpl implements Sound.Builder {
+        private String key;
+        private SoundCategory category;
+        private float volume;
+        private float pitch;
+
+        @Override
+        public @UnknownNullability String key() {
+            return this.key;
+        }
+
+        @Contract("_ -> this")
+        @Override
+        public @NotNull Sound.Builder key(final @NotNull SoundEvent soundEvent) {
+            return this.key(soundEvent.getLocation().getPath());
+        }
+
+        @Contract("_ -> this")
+        @Override
+        public @NotNull Sound.Builder key(final @NotNull String key) {
+            this.key = key;
+
+            return this;
+        }
+
+        @Override
+        public @UnknownNullability SoundCategory category() {
+            return this.category;
+        }
+
+        @Contract("_ -> this")
+        @Override
+        public @NotNull Sound.Builder category(final @NotNull SoundCategory category) {
+            this.category = category;
+
+            return this;
+        }
+
+        @Override
+        public float volume() {
+            return this.volume;
+        }
+
+        @Contract("_ -> this")
+        @Override
+        public @NotNull Builder volume(final float volume) {
+            this.volume = volume;
+
+            return this;
+        }
+
+        @Override
+        public float pitch() {
+            return this.pitch;
+        }
+
+        @Contract("_ -> this")
+        @Override
+        public @NotNull Builder pitch(final float pitch) {
+            this.pitch = pitch;
+
+            return this;
+        }
+
+        @Contract(" -> new")
+        @Override
+        public @NotNull Sound build() throws IllegalStateException {
+            if (ChatUtils.isBlank(this.key)) {
+                throw new IllegalStateException("Key cannot be blank or null!");
+            }
+
+            if (this.category == null) {
+                this.category = SoundCategory.MASTER;
+            }
+
+            return new SoundImpl(this);
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return "Sound.Builder{" +
+                    "key=" + this.key +
+                    ", soundCategory=" + this.category +
+                    ", volume=" + this.volume +
+                    ", pitch=" + this.pitch +
+                    '}';
+        }
     }
 }

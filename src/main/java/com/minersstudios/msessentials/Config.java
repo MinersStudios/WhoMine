@@ -5,12 +5,15 @@ import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.msessentials.anomaly.Anomaly;
 import com.minersstudios.msessentials.anomaly.task.AnomalyParticleTask;
 import com.minersstudios.msessentials.anomaly.task.MainAnomalyActionTask;
-import com.minersstudios.msessentials.player.ResourcePack;
 import com.minersstudios.msessentials.player.PlayerInfo;
+import com.minersstudios.msessentials.resourcepack.ResourcePack;
+import com.minersstudios.msessentials.resourcepack.throwable.FatalPackLoadException;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,9 +23,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static net.kyori.adventure.text.Component.text;
 
 /**
  * Configuration loader class.
@@ -103,6 +110,7 @@ public final class Config extends PluginConfig<MSEssentials> {
 
         if (spawnLocationWorld == null) {
             plugin.getLogger().warning("World \"" + spawnLocationWorldName + "\" not found!\nUsing default spawn location!");
+
             this.spawnLocation = server.getWorlds().get(0).getSpawnLocation();
         } else {
            this.spawnLocation = new Location(
@@ -133,7 +141,7 @@ public final class Config extends PluginConfig<MSEssentials> {
 
         cache.consolePlayerInfo = new PlayerInfo(plugin, UUID.randomUUID(), SharedConstants.CONSOLE_NICKNAME);
 
-        plugin.runTaskAsync(() -> ResourcePack.init(plugin));
+        this.loadResourcePacks();
         plugin.runTaskAsync(this::loadAnomalies);
 
         cache.getBukkitTasks().add(plugin.runTaskTimer(new MainAnomalyActionTask(plugin), 0L, this.anomalyCheckRate));
@@ -371,6 +379,71 @@ public final class Config extends PluginConfig<MSEssentials> {
         this.yaml.set("spawn-location.pitch", location.getPitch());
 
         this.save();
+    }
+
+    private void loadResourcePacks() {
+        final MSEssentials plugin = this.getPlugin();
+        final ConfigurationSection resourcePacksSection = this.yaml.getConfigurationSection("resource-packs");
+
+        plugin.setStatus(MSEssentials.LOADING_RESOURCE_PACKS);
+
+        if (resourcePacksSection == null) {
+            plugin.setStatus(MSEssentials.LOADED_RESOURCE_PACKS);
+
+            return;
+        }
+
+        final ComponentLogger logger = this.getPlugin().getComponentLogger();
+        final long start = System.currentTimeMillis();
+        final Map<String, CompletableFuture<ResourcePack>> futureMap;
+
+        try {
+            futureMap = ResourcePack.loadAll(
+                    this.file,
+                    this.yaml,
+                    resourcePacksSection,
+                    entry -> {
+                        logger.info(
+                                text("Loaded resource pack \"")
+                                .append(text(entry.getKey()))
+                                .append(text("\" in "))
+                                .append(text(System.currentTimeMillis() - start))
+                                .append(text("ms"))
+                        );
+
+                        return entry;
+                    },
+                    (entry, throwable) -> {
+                        logger.warn(
+                                text("Failed to load resource pack \"")
+                                .append(text(entry.getKey()))
+                                .append(text('"'))
+                                .append(text(" this resource pack will be disabled!")),
+                                throwable
+                        );
+
+                        return entry;
+                    }
+            );
+        } catch (final FatalPackLoadException e) {
+            plugin.setStatus(MSEssentials.FAILED_LOAD_RESOURCE_PACKS);
+            logger.error(
+                    "Failed to load resource packs due to a fatal error!",
+                    e
+            );
+
+            return;
+        }
+
+        CompletableFuture
+        .allOf(
+                futureMap
+                .values()
+                .toArray(CompletableFuture[]::new)
+        )
+        .thenRun(
+                () -> plugin.setStatus(MSEssentials.LOADED_RESOURCE_PACKS)
+        );
     }
 
     private void loadAnomalies() {

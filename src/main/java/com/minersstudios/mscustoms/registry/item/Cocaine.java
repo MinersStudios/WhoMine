@@ -1,12 +1,13 @@
 package com.minersstudios.mscustoms.registry.item;
 
+import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -16,7 +17,6 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public final class Cocaine extends CustomItemImpl {
     private static final String KEY;
@@ -49,18 +49,25 @@ public final class Cocaine extends CustomItemImpl {
 
     @Contract(" -> new")
     @Override
-    public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        return Collections.singletonList(Map.entry(
-                new ShapedRecipe(this.namespacedKey, this.itemStack)
-                .shape(
-                        "NNN",
-                        "FSF",
-                        "LFL"
-                ).setIngredient('N', Material.IRON_INGOT)
-                .setIngredient('F', Material.FERN)
-                .setIngredient('S', Material.SUGAR_CANE)
-                .setIngredient('L', Material.OAK_LEAVES),
-                Boolean.TRUE
-        ));
+    public @NotNull @Unmodifiable List<RecipeEntry> initRecipes() {
+        return Collections.singletonList(
+                RecipeEntry.of(
+                        RecipeBuilder.shapedBuilder()
+                        .namespacedKey(this.namespacedKey)
+                        .result(this.itemStack)
+                        .shape(
+                                "NNN",
+                                "FSF",
+                                "LFL"
+                        )
+                        .ingredients(
+                                ShapedRecipeBuilder.material('N', Material.IRON_INGOT),
+                                ShapedRecipeBuilder.material('F', Material.FERN),
+                                ShapedRecipeBuilder.material('S', Material.SUGAR_CANE),
+                                ShapedRecipeBuilder.material('L', Material.OAK_LEAVES)
+                        ),
+                        true
+                )
+        );
     }
 }

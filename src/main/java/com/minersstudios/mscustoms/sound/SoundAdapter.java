@@ -29,13 +29,21 @@ import java.util.Map;
  * </pre>
  *
  * If sound is empty, then serialized output will be primitive string
- * {@link Sound#EMPTY_VALUE}.
+ * {@link #EMPTY_VALUE}.
  * <br>
- * If json is primitive string {@link Sound#EMPTY_VALUE}, then deserialized
+ * If json is primitive string {@link #EMPTY_VALUE}, then deserialized
  * sound will be empty.
  */
 public final class SoundAdapter implements JsonSerializer<Sound>, JsonDeserializer<Sound> {
     private static final Map<String, SoundCategory> KEY_TO_CATEGORY_MAP;
+
+    //<editor-fold desc="Properties" defaultstate="collapsed">
+    public static final String KEY_KEY =      "key";
+    public static final String CATEGORY_KEY = "category";
+    public static final String VOLUME_KEY =   "volume";
+    public static final String PITCH_KEY =    "pitch";
+    public static final String EMPTY_VALUE =  "empty";
+    //</editor-fold>
 
     static {
         final SoundCategory[] categories = SoundCategory.values();
@@ -58,7 +66,7 @@ public final class SoundAdapter implements JsonSerializer<Sound>, JsonDeserializ
         if (json.isJsonPrimitive()) {
             final String value = json.getAsString();
 
-            if (Sound.EMPTY_VALUE.equals(value)) {
+            if (EMPTY_VALUE.equals(value)) {
                 return Sound.empty();
             }
 
@@ -111,15 +119,15 @@ public final class SoundAdapter implements JsonSerializer<Sound>, JsonDeserializ
             final @Nullable JsonSerializationContext context
     ) {
         if (sound.isEmpty()) {
-            return new JsonPrimitive(Sound.EMPTY_VALUE);
+            return new JsonPrimitive(EMPTY_VALUE);
         }
 
         final JsonObject jsonObject = new JsonObject();
 
-        jsonObject.addProperty(Sound.KEY_KEY, sound.getKey());
-        jsonObject.addProperty(Sound.CATEGORY_KEY, sound.getCategory().name());
-        jsonObject.addProperty(Sound.VOLUME_KEY, sound.getVolume());
-        jsonObject.addProperty(Sound.PITCH_KEY, sound.getPitch());
+        jsonObject.addProperty(KEY_KEY, sound.getKey());
+        jsonObject.addProperty(CATEGORY_KEY, sound.getCategory().name());
+        jsonObject.addProperty(VOLUME_KEY, sound.getVolume());
+        jsonObject.addProperty(PITCH_KEY, sound.getPitch());
 
         return jsonObject;
     }

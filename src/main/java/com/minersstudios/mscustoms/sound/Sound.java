@@ -1,7 +1,6 @@
 package com.minersstudios.mscustoms.sound;
 
 import com.minersstudios.mscore.location.MSPosition;
-import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.Config;
 import net.minecraft.sounds.SoundEvent;
 import org.bukkit.Location;
@@ -12,8 +11,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Sound interface.
@@ -47,151 +44,7 @@ import javax.annotation.concurrent.Immutable;
  *
  * @see Builder
  */
-@Immutable
 public interface Sound {
-    String KEY_KEY =      "key";
-    String CATEGORY_KEY = "category";
-    String VOLUME_KEY =   "volume";
-    String PITCH_KEY =    "pitch";
-    String EMPTY_VALUE =  "empty";
-
-    /**
-     * Creates a new Sound instance with 1.0f volume and pitch and
-     * {@link SoundCategory#MASTER} category
-     *
-     * @param soundEvent The sound event, which will be converted to a key
-     * @return A new Sound instance
-     * @see #create(String)
-     */
-    @Contract("_ -> new")
-    static @NotNull Sound create(final @NotNull SoundEvent soundEvent) {
-        return create(soundEvent.getLocation().getPath());
-    }
-
-    /**
-     * Creates a new Sound instance with 1.0f volume and pitch and
-     * {@link SoundCategory#MASTER} category
-     *
-     * @param key The key of the sound
-     * @return A new Sound instance
-     * @throws IllegalArgumentException If the key is blank
-     * @see #create(String, SoundCategory)
-     * @see #create(String, SoundCategory, float, float)
-     */
-    @Contract("_ -> new")
-    static @NotNull Sound create(final @NotNull String key) throws IllegalArgumentException {
-        return create(
-                key,
-                SoundCategory.MASTER
-        );
-    }
-
-    /**
-     * Creates a new Sound instance with 1.0f volume and pitch
-     *
-     * @param soundEvent The sound event, which will be converted to a key
-     * @param soundCategory The sound category of the sound
-     * @return A new Sound instance
-     * @see #create(String, SoundCategory)
-     */
-    @Contract("_, _ -> new")
-    static @NotNull Sound create(
-            final @NotNull SoundEvent soundEvent,
-            final @NotNull SoundCategory soundCategory
-    ) {
-        return create(
-                soundEvent.getLocation().getPath(),
-                soundCategory
-        );
-    }
-
-    /**
-     * Creates a new Sound instance with 1.0f volume and pitch
-     *
-     * @param key           The key of the sound
-     * @param soundCategory The sound category of the sound
-     * @return A new Sound instance
-     * @throws IllegalArgumentException If the key is blank
-     * @see #create(String, SoundCategory, float, float)
-     */
-    @Contract("_, _ -> new")
-    static @NotNull Sound create(
-            final @NotNull String key,
-            final @NotNull SoundCategory soundCategory
-    ) throws IllegalArgumentException {
-        return create(
-                key,
-                soundCategory,
-                1.0f, 1.0f
-        );
-    }
-
-    /**
-     * Creates a new Sound instance
-     *
-     * @param soundEvent    The sound event, which will be converted to a key
-     * @param soundCategory The sound category of the sound
-     * @param volume        The volume of the sound
-     * @param pitch         The pitch of the sound
-     * @return A new Sound instance
-     * @see #create(String, SoundCategory, float, float)
-     */
-    @Contract("_, _, _, _ -> new")
-    static @NotNull Sound create(
-            final @NotNull SoundEvent soundEvent,
-            final @NotNull SoundCategory soundCategory,
-            final float volume,
-            final float pitch
-    ) {
-        return create(
-                soundEvent.getLocation().getPath(),
-                soundCategory,
-                volume,
-                pitch
-        );
-    }
-
-    /**
-     * Creates a new Sound instance
-     *
-     * @param key           The key of the sound
-     * @param soundCategory The sound category of the sound
-     * @param volume        The volume of the sound
-     * @param pitch         The pitch of the sound
-     * @return A new Sound instance
-     * @throws IllegalArgumentException If the key is blank
-     */
-    @Contract("_, _, _, _ -> new")
-    static @NotNull Sound create(
-            final @NotNull String key,
-            final @NotNull SoundCategory soundCategory,
-            final float volume,
-            final float pitch
-    ) throws IllegalArgumentException {
-        return new Builder()
-                .key(key)
-                .category(soundCategory)
-                .volume(volume)
-                .pitch(pitch)
-                .build();
-    }
-
-    /**
-     * Creates a new builder for {@link Sound}
-     *
-     * @return A new builder
-     */
-    @Contract(" -> new")
-    static @NotNull Builder builder() {
-        return new Builder();
-    }
-
-    /**
-     * @return An empty Sound
-     */
-    static @NotNull Sound empty() {
-        return EmptySound.EMPTY;
-    }
 
     /**
      * @return The key of this Sound
@@ -320,6 +173,144 @@ public interface Sound {
     void play(final @NotNull Location location) throws IllegalStateException;
 
     /**
+     * Creates a new Sound instance with 1.0f volume and pitch and
+     * {@link SoundCategory#MASTER} category
+     *
+     * @param soundEvent The sound event, which will be converted to a key
+     * @return A new Sound instance
+     * @see #create(String)
+     */
+    @Contract("_ -> new")
+    static @NotNull Sound create(final @NotNull SoundEvent soundEvent) {
+        return create(soundEvent.getLocation().getPath());
+    }
+
+    /**
+     * Creates a new Sound instance with 1.0f volume and pitch and
+     * {@link SoundCategory#MASTER} category
+     *
+     * @param key The key of the sound
+     * @return A new Sound instance
+     * @throws IllegalArgumentException If the key is blank
+     * @see #create(String, SoundCategory)
+     * @see #create(String, SoundCategory, float, float)
+     */
+    @Contract("_ -> new")
+    static @NotNull Sound create(final @NotNull String key) throws IllegalArgumentException {
+        return create(
+                key,
+                SoundCategory.MASTER
+        );
+    }
+
+    /**
+     * Creates a new Sound instance with 1.0f volume and pitch
+     *
+     * @param soundEvent The sound event, which will be converted to a key
+     * @param soundCategory The sound category of the sound
+     * @return A new Sound instance
+     * @see #create(String, SoundCategory)
+     */
+    @Contract("_, _ -> new")
+    static @NotNull Sound create(
+            final @NotNull SoundEvent soundEvent,
+            final @NotNull SoundCategory soundCategory
+    ) {
+        return create(
+                soundEvent.getLocation().getPath(),
+                soundCategory
+        );
+    }
+
+    /**
+     * Creates a new Sound instance with 1.0f volume and pitch
+     *
+     * @param key           The key of the sound
+     * @param soundCategory The sound category of the sound
+     * @return A new Sound instance
+     * @throws IllegalArgumentException If the key is blank
+     * @see #create(String, SoundCategory, float, float)
+     */
+    @Contract("_, _ -> new")
+    static @NotNull Sound create(
+            final @NotNull String key,
+            final @NotNull SoundCategory soundCategory
+    ) throws IllegalArgumentException {
+        return create(
+                key,
+                soundCategory,
+                1.0f, 1.0f
+        );
+    }
+
+    /**
+     * Creates a new Sound instance
+     *
+     * @param soundEvent    The sound event, which will be converted to a key
+     * @param soundCategory The sound category of the sound
+     * @param volume        The volume of the sound
+     * @param pitch         The pitch of the sound
+     * @return A new Sound instance
+     * @see #create(String, SoundCategory, float, float)
+     */
+    @Contract("_, _, _, _ -> new")
+    static @NotNull Sound create(
+            final @NotNull SoundEvent soundEvent,
+            final @NotNull SoundCategory soundCategory,
+            final float volume,
+            final float pitch
+    ) {
+        return create(
+                soundEvent.getLocation().getPath(),
+                soundCategory,
+                volume,
+                pitch
+        );
+    }
+
+    /**
+     * Creates a new Sound instance
+     *
+     * @param key           The key of the sound
+     * @param soundCategory The sound category of the sound
+     * @param volume        The volume of the sound
+     * @param pitch         The pitch of the sound
+     * @return A new Sound instance
+     * @throws IllegalArgumentException If the key is blank
+     */
+    @Contract("_, _, _, _ -> new")
+    static @NotNull Sound create(
+            final @NotNull String key,
+            final @NotNull SoundCategory soundCategory,
+            final float volume,
+            final float pitch
+    ) throws IllegalArgumentException {
+        return builder()
+                .key(key)
+                .category(soundCategory)
+                .volume(volume)
+                .pitch(pitch)
+                .build();
+    }
+
+    /**
+     * Creates a new builder for {@link Sound}
+     *
+     * @return A new builder
+     */
+    @Contract(" -> new")
+    static @NotNull Builder builder() {
+        return new SoundImpl.BuilderImpl();
+    }
+
+    /**
+     * @return An empty Sound constant
+     */
+    static @NotNull Sound empty() {
+        return EmptySound.SINGLETON;
+    }
+
+    /**
      * A builder for {@link Sound}.
      * <br>
      * This builder can be used with the following chain methods :
@@ -339,18 +330,12 @@ public interface Sound {
      *     <li>{@code pitch} : {@code 0.0f}</li>
      * </ul>
      */
-    class Builder {
-        private String key;
-        private SoundCategory category;
-        private float volume;
-        private float pitch;
+    interface Builder {
 
         /**
          * @return The key of this Sound
          */
-        public @UnknownNullability String key() {
-            return this.key;
-        }
+        @UnknownNullability String key();
 
         /**
          * Sets the key of this Sound
@@ -359,9 +344,8 @@ public interface Sound {
          * @return This builder, for chaining
          * @see #key(String)
          */
-        public @NotNull Builder key(final @NotNull SoundEvent soundEvent) {
-            return this.key(soundEvent.getLocation().getPath());
-        }
+        @Contract("_ -> this")
+        @NotNull Builder key(final @NotNull SoundEvent soundEvent);
 
         /**
          * Sets the key of this Sound
@@ -369,18 +353,13 @@ public interface Sound {
          * @param key The key to set
          * @return This builder, for chaining
          */
-        public @NotNull Builder key(final @NotNull String key) {
-            this.key = key;
-
-            return this;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder key(final @NotNull String key);
 
         /**
          * @return The sound category of this Sound
          */
-        public @UnknownNullability SoundCategory category() {
-            return this.category;
-        }
+        @UnknownNullability SoundCategory category();
 
         /**
          * Sets the sound category of this Sound
@@ -388,18 +367,13 @@ public interface Sound {
          * @param category The sound category to set
          * @return This builder, for chaining
          */
-        public @NotNull Builder category(final @NotNull SoundCategory category) {
-            this.category = category;
-
-            return this;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder category(final @NotNull SoundCategory category);
 
         /**
          * @return The volume of this Sound
          */
-        public float volume() {
-            return this.volume;
-        }
+        float volume();
 
         /**
          * Sets the volume of this Sound
@@ -407,18 +381,13 @@ public interface Sound {
          * @param volume The volume to set
          * @return This builder, for chaining
          */
-        public @NotNull Builder volume(final float volume) {
-            this.volume = volume;
-
-            return this;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder volume(final float volume);
 
         /**
          * @return The pitch of this Sound
          */
-        public float pitch() {
-            return this.pitch;
-        }
+        float pitch();
 
         /**
          * Sets the pitch of this Sound
@@ -426,28 +395,22 @@ public interface Sound {
          * @param pitch The pitch to set
          * @return This builder, for chaining
          */
-        public @NotNull Builder pitch(final float pitch) {
-            this.pitch = pitch;
-
-            return this;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder pitch(final float pitch);
 
         /**
          * Builds a Sound with the values of this builder
          *
          * @return The built Sound
-         * @throws IllegalArgumentException If the key is blank or null
+         * @throws IllegalStateException If the key is blank or null
          */
-        public @NotNull Sound build() throws IllegalArgumentException {
-            if (ChatUtils.isBlank(this.key)) {
-                throw new IllegalArgumentException("Key cannot be blank or null!");
-            }
+        @Contract(" -> new")
+        @NotNull Sound build() throws IllegalStateException;
 
-            if (this.category == null) {
-                this.category = SoundCategory.MASTER;
-            }
-
-            return new SoundImpl(this);
-        }
+        /**
+         * @return A string representation of this builder
+         */
+        @Override
+        @NotNull String toString();
     }
 }

@@ -48,10 +48,10 @@ public enum CustomItemType {
     HAZMAT_BOOTS(HazmatBoots.class),
     COCAINE(Cocaine.class),
     WRENCH(Wrench.class),
-    CARDS_BICYCLE_BLUE_1(CardsBicycle.Blue1.class),
-    CARDS_BICYCLE_BLUE_2(CardsBicycle.Blue2.class),
-    CARDS_BICYCLE_RED_1(CardsBicycle.Red1.class),
-    CARDS_BICYCLE_RED_2(CardsBicycle.Red2.class),
+    CARDS_BICYCLE_BLUE_1(CardsBicycle.Blue.First.class),
+    CARDS_BICYCLE_BLUE_2(CardsBicycle.Blue.Second.class),
+    CARDS_BICYCLE_RED_1(CardsBicycle.Red.First.class),
+    CARDS_BICYCLE_RED_2(CardsBicycle.Red.Second.class),
     BAN_SWORD(BanSword.class);
     //</editor-fold>
 

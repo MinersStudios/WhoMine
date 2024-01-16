@@ -133,7 +133,9 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                     return true;
                 }
 
-                final double x, y, z;
+                final double x;
+                final double y;
+                final double z;
 
                 try {
                     x = Double.parseDouble(args[1]);

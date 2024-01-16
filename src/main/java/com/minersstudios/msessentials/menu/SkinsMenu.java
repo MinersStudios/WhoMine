@@ -144,7 +144,7 @@ public final class SkinsMenu extends AbstractInventoryHolder<MSEssentials> {
         final var skins = PlayerInfo.fromOnlinePlayer(this.getPlugin(), player).getPlayerFile().getSkins();
         final var skinButtons = new Int2ObjectOpenHashMap<InventoryButton>();
 
-        for (int i = 0; i < skins.size(); i++) {
+        for (int i = 0; i < skins.size(); ++i) {
             final Skin skin = skins.get(i);
             final ItemStack head = skin.getHead();
             final InventoryButton inventoryButton = new InventoryButton();

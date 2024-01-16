@@ -4,7 +4,7 @@ import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.BlockUtils;
-import com.minersstudios.mscore.utility.MSDecorUtils;
+import com.minersstudios.mscustoms.utility.MSDecorUtils;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.block.CustomBlock;
 import com.minersstudios.mscustoms.custom.block.CustomBlockData;

@@ -1,5 +1,8 @@
 package com.minersstudios.mscustoms.registry.item.cosmetics;
 
+import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
@@ -9,8 +12,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public final class LeatherHat extends CustomItemImpl implements Wearable {
@@ -46,14 +46,21 @@ public final class LeatherHat extends CustomItemImpl implements Wearable {
 
     @Contract(" -> new")
     @Override
-    public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
-        return Collections.singletonList(Map.entry(
-                new ShapedRecipe(this.namespacedKey, this.itemStack)
-                .shape(
-                        " L ",
-                        "LLL"
-                ).setIngredient('L', Material.LEATHER),
-                Boolean.TRUE
-        ));
+    public @NotNull @Unmodifiable List<RecipeEntry> initRecipes() {
+        return Collections.singletonList(
+                RecipeEntry.of(
+                        RecipeBuilder.shapedBuilder()
+                        .namespacedKey(this.namespacedKey)
+                        .result(this.itemStack)
+                        .shape(
+                                " L ",
+                                "LLL"
+                        )
+                        .ingredients(
+                                ShapedRecipeBuilder.material('L', Material.LEATHER)
+                        ),
+                        true
+                )
+        );
     }
 }

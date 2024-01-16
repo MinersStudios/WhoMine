@@ -2,20 +2,19 @@ package com.minersstudios.mscustoms.registry.decor.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
 import com.minersstudios.mscustoms.custom.decor.DecorHitBox;
 import com.minersstudios.mscustoms.custom.decor.DecorParameter;
 import com.minersstudios.mscustoms.custom.decor.Facing;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public final class Snowman extends CustomDecorDataImpl<Snowman> {
 
@@ -52,17 +51,13 @@ public final class Snowman extends CustomDecorDataImpl<Snowman> {
                         DecorParameter.PAINTABLE
                 )
                 .types(
-                        builder -> new Type(
-                                builder,
-                                "broken",
-                                broken
-                        )
+                        builder -> new Type(builder, "broken", broken)
                 )
                 .dropsType(true);
 
         return MSPlugin.globalConfig().isChristmas()
                 ? builder0.recipes(
-                        unused -> Map.entry(
+                        unused -> RecipeEntry.of(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
@@ -75,7 +70,7 @@ public final class Snowman extends CustomDecorDataImpl<Snowman> {
                                         ShapedRecipeBuilder.material('S', Material.STICK),
                                         ShapedRecipeBuilder.material('B', Material.SNOW_BLOCK)
                                 ),
-                                Boolean.TRUE
+                                true
                         )
                 )
                 : builder0;

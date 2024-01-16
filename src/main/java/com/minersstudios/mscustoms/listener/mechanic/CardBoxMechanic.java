@@ -98,8 +98,8 @@ public final class CardBoxMechanic extends AbstractEventListener<MSCustoms> {
             final @NotNull ItemStack cardItem
     ) {
         if (CARDS.isEmpty()) {
-            CARDS.addAll(CardsBicycle.BLUE_CARD_ITEMS);
-            CARDS.addAll(CardsBicycle.RED_CARD_ITEMS);
+            CARDS.addAll(CardsBicycle.Blue.cardItems());
+            CARDS.addAll(CardsBicycle.Red.cardItems());
         }
 
         if (ItemUtils.isContainsItem(CARDS, cardItem)) {

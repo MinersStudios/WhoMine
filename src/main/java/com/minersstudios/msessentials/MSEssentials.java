@@ -45,13 +45,16 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     public static final String NAMESPACE = "msessentials";
 
     //<editor-fold desc="Plugin Statuses" defaultstate="collapsed">
-    public static final FailureStatus FAILED_LOAD_ANOMALIES = FailureStatus.low("FAILED_LOAD_ANOMALIES");
-    public static final FailureStatus FAILED_LOAD_DISCORD =   FailureStatus.low("FAILED_LOAD_DISCORD");
+    public static final FailureStatus FAILED_LOAD_RESOURCE_PACKS = FailureStatus.low("FAILED_LOAD_RESOURCE_PACKS");
+    public static final FailureStatus FAILED_LOAD_ANOMALIES =      FailureStatus.low("FAILED_LOAD_ANOMALIES");
+    public static final FailureStatus FAILED_LOAD_DISCORD =        FailureStatus.low("FAILED_LOAD_DISCORD");
 
-    public static final SuccessStatus LOADING_ANOMALIES = low("LOADING_ANOMALIES");
-    public static final SuccessStatus LOADED_ANOMALIES =  low("LOADED_ANOMALIES", FAILED_LOAD_ANOMALIES);
-    public static final SuccessStatus LOADING_DISCORD =   low("LOADING_DISCORD");
-    public static final SuccessStatus LOADED_DISCORD =    low("LOADED_DISCORD", FAILED_LOAD_DISCORD);
+    public static final SuccessStatus LOADING_RESOURCE_PACKS = low("LOADING_RESOURCE_PACKS");
+    public static final SuccessStatus LOADED_RESOURCE_PACKS =  low("LOADED_RESOURCE_PACKS", FAILED_LOAD_RESOURCE_PACKS);
+    public static final SuccessStatus LOADING_ANOMALIES =      low("LOADING_ANOMALIES");
+    public static final SuccessStatus LOADED_ANOMALIES =       low("LOADED_ANOMALIES", FAILED_LOAD_ANOMALIES);
+    public static final SuccessStatus LOADING_DISCORD =        low("LOADING_DISCORD");
+    public static final SuccessStatus LOADED_DISCORD =         low("LOADED_DISCORD", FAILED_LOAD_DISCORD);
     //</editor-fold>
 
     @Override

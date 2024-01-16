@@ -2,6 +2,7 @@ package com.minersstudios.mscustoms.registry.decor.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -57,27 +58,13 @@ public final class StarOnString extends CustomDecorDataImpl<StarOnString> {
                         DecorParameter.PAINTABLE
                 )
                 .faceTypes(
-                        builder -> Map.entry(
-                                Facing.CEILING,
-                                new Type(
-                                        builder,
-                                        "default",
-                                        ceiling
-                                )
-                        ),
-                        builder -> Map.entry(
-                                Facing.WALL,
-                                new Type(
-                                        builder,
-                                        "wall",
-                                        wall
-                                )
-                        )
+                        builder -> Map.entry(Facing.CEILING, new Type(builder, "default", ceiling)),
+                        builder -> Map.entry(Facing.WALL,    new Type(builder, "wall",    wall))
                 );
 
         return MSPlugin.globalConfig().isChristmas()
                 ? builder0.recipes(
-                        unused -> Map.entry(
+                        unused -> RecipeEntry.of(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
@@ -89,7 +76,7 @@ public final class StarOnString extends CustomDecorDataImpl<StarOnString> {
                                         ShapedRecipeBuilder.material('S', Material.STRING),
                                         ShapedRecipeBuilder.material('G', Material.GOLD_NUGGET)
                                 ),
-                                Boolean.TRUE
+                                true
                         )
                 )
                 : builder0;

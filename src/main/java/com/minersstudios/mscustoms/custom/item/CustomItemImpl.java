@@ -1,5 +1,6 @@
 package com.minersstudios.mscustoms.custom.item;
 
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -15,7 +16,6 @@ import org.jetbrains.annotations.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static com.minersstudios.mscore.plugin.MSPlugin.globalCache;
 
@@ -30,7 +30,7 @@ import static com.minersstudios.mscore.plugin.MSPlugin.globalCache;
 public abstract class CustomItemImpl implements CustomItem, Cloneable {
     protected final NamespacedKey namespacedKey;
     protected ItemStack itemStack;
-    protected List<Map.Entry<Recipe, Boolean>> recipes;
+    protected List<RecipeEntry> recipeEntries;
 
     /**
      * Protected constructor to initialize a custom item with the given key and
@@ -55,7 +55,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
         this.namespacedKey = new NamespacedKey(SharedConstants.MSITEMS_NAMESPACE, key);
         this.itemStack = itemStack;
-        this.recipes = new ObjectArrayList<>();
+        this.recipeEntries = new ObjectArrayList<>();
 
         final ItemMeta meta = itemStack.getItemMeta();
         final PersistentDataContainer container = meta.getPersistentDataContainer();
@@ -86,23 +86,23 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
     }
 
     @Override
-    public final @NotNull @UnmodifiableView List<Map.Entry<Recipe, Boolean>> getRecipes() {
-        return Collections.unmodifiableList(this.recipes);
+    public final @NotNull @UnmodifiableView List<RecipeEntry> getRecipeEntries() {
+        return Collections.unmodifiableList(this.recipeEntries);
     }
 
     @Override
-    public final void setRecipes(
+    public final void setRecipeEntries(
             final @NotNull Server server,
-            final @Nullable List<Map.Entry<Recipe, Boolean>> recipes
+            final @Nullable List<RecipeEntry> recipeEntries
     ) {
         this.unregisterRecipes(server);
-        this.recipes.clear();
+        this.recipeEntries.clear();
 
         if (
-                recipes != null
-                && !recipes.isEmpty()
+                recipeEntries != null
+                && !recipeEntries.isEmpty()
         ) {
-            this.recipes.addAll(recipes);
+            this.recipeEntries.addAll(recipeEntries);
         }
     }
 
@@ -133,23 +133,22 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
     }
 
     @Override
-    public @NotNull @Unmodifiable List<Map.Entry<Recipe, Boolean>> initRecipes() {
+    public @NotNull @Unmodifiable List<RecipeEntry> initRecipes() {
         return Collections.emptyList();
     }
 
     @Override
     public final void registerRecipes(final @NotNull Server server) {
-        if (this.recipes.isEmpty()) {
-            this.setRecipes(server, this.initRecipes());
+        if (this.recipeEntries.isEmpty()) {
+            this.setRecipeEntries(server, this.initRecipes());
         }
 
-        for (final var entry : this.recipes) {
-            final Recipe recipe = entry.getKey();
-            final boolean registerInMenu = entry.getValue();
+        for (final var entry : this.recipeEntries) {
+            final Recipe recipe = entry.getRecipe();
 
             server.addRecipe(recipe);
 
-            if (registerInMenu) {
+            if (entry.isRegisteredInMenu()) {
                 globalCache().customItemRecipes.add(recipe);
             }
         }
@@ -157,17 +156,16 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
 
     @Override
     public final void unregisterRecipes(final @NotNull Server server) {
-        if (this.recipes.isEmpty()) {
+        if (this.recipeEntries.isEmpty()) {
             return;
         }
 
-        for (final var entry : this.recipes) {
-            final Keyed recipe = (Keyed) entry.getKey();
-            final boolean isRegisteredInMenu = entry.getValue();
+        for (final var entry : this.recipeEntries) {
+            final Keyed recipe = (Keyed) entry.getRecipe();
 
             server.removeRecipe(recipe.getKey());
 
-            if (isRegisteredInMenu) {
+            if (entry.isRegisteredInMenu()) {
                 globalCache().customItemRecipes.remove(recipe);
             }
         }
@@ -180,7 +178,7 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
             final CustomItemImpl clone = (CustomItemImpl) super.clone();
 
             clone.itemStack = this.itemStack.clone();
-            clone.recipes = new ObjectArrayList<>(this.recipes);
+            clone.recipeEntries = new ObjectArrayList<>(this.recipeEntries);
 
             return (T) clone;
         } catch (final CloneNotSupportedException e) {

@@ -4,7 +4,7 @@ import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscore.utility.MSDecorUtils;
+import com.minersstudios.mscustoms.utility.MSDecorUtils;
 import com.minersstudios.mscustoms.event.decor.CustomDecorBreakEvent;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;

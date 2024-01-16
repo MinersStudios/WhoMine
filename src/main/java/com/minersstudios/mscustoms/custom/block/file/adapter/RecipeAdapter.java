@@ -3,7 +3,7 @@ package com.minersstudios.mscustoms.custom.block.file.adapter;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.minersstudios.mscustoms.custom.block.file.CustomBlockFile;
-import com.minersstudios.mscore.inventory.recipe.RecipeEntry;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscustoms.custom.block.params.RecipeType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -67,8 +67,10 @@ public class RecipeAdapter implements JsonSerializer<Recipe>, JsonDeserializer<R
         final JsonObject recipeObject = context.serialize(recipe).getAsJsonObject();
 
         jsonObject.addProperty(TYPE_KEY, RecipeType.nameOf(recipe.getClass()));
+
         recipeObject.remove(OUTPUT_KEY);
         recipeObject.addProperty(AMOUNT_KEY, recipe.getResult().getAmount());
+
         jsonObject.add(RECIPE_KEY, recipeObject);
 
         return jsonObject;

@@ -1,17 +1,16 @@
 package com.minersstudios.mscustoms.custom.decor;
 
-import com.minersstudios.mscore.inventory.recipe.RecipeEntry;
-import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.location.MSPosition;
-import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscore.utility.MSDecorUtils;
+import com.minersstudios.mscustoms.utility.MSDecorUtils;
 import com.minersstudios.mscustoms.custom.decor.action.DecorBreakAction;
 import com.minersstudios.mscustoms.custom.decor.action.DecorClickAction;
 import com.minersstudios.mscustoms.custom.decor.action.DecorPlaceAction;
 import com.minersstudios.mscustoms.event.decor.CustomDecorBreakEvent;
 import com.minersstudios.mscustoms.event.decor.CustomDecorClickEvent;
 import com.minersstudios.mscustoms.event.decor.CustomDecorPlaceEvent;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Keyed;
@@ -76,7 +75,7 @@ public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
      * @return A clone of the recipe functions, or null if the custom decor has
      *         no recipes
      */
-    Function<D, Map.Entry<RecipeBuilder<?>, Boolean>> @Nullable [] recipeFunctions();
+    Function<D, RecipeEntry> @Nullable [] recipeFunctions();
 
     /**
      * @return An unmodifiable list of recipe entries representing the

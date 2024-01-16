@@ -13,7 +13,9 @@ import javax.annotation.concurrent.Immutable;
 
 @Immutable
 final class EmptySound implements Sound {
-    static final Sound EMPTY = new EmptySound();
+    static final Sound SINGLETON = new EmptySound();
+
+    private EmptySound() {}
 
     @Override
     public @NotNull String getKey() {

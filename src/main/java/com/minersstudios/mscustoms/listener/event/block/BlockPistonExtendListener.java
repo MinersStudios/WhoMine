@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.listener.event.block;
 
 import com.minersstudios.mscore.listener.api.event.EventListener;
-import com.minersstudios.mscore.utility.MSDecorUtils;
+import com.minersstudios.mscustoms.utility.MSDecorUtils;
 import com.minersstudios.mscustoms.MSCustoms;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

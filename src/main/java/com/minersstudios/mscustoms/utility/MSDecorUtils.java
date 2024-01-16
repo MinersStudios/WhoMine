@@ -1,7 +1,9 @@
-package com.minersstudios.mscore.utility;
+package com.minersstudios.mscustoms.utility;
 
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
+import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorData;
 import com.minersstudios.mscustoms.custom.decor.DecorHitBox;
 import org.bukkit.Material;
@@ -76,7 +78,7 @@ public final class MSDecorUtils {
         final int size = entities.size();
         final Interaction[] interactions = new Interaction[size];
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; ++i) {
             interactions[i] = (Interaction) entities.get(i).getBukkitEntity();
         }
 

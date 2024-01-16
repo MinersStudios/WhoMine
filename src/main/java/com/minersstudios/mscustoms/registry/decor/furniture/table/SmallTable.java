@@ -2,20 +2,19 @@ package com.minersstudios.mscustoms.registry.decor.furniture.table;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorData;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
 import com.minersstudios.mscustoms.custom.decor.DecorHitBox;
 import com.minersstudios.mscustoms.custom.decor.Facing;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public abstract class SmallTable<C extends CustomDecorData<C>> extends CustomDecorDataImpl<C> {
 
@@ -44,7 +43,7 @@ public abstract class SmallTable<C extends CustomDecorData<C>> extends CustomDec
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        unused -> Map.entry(
+                        unused -> RecipeEntry.of(
                                 RecipeBuilder.shapedBuilder()
                                 .group(SharedConstants.MSDECOR_NAMESPACE + ":small_table")
                                 .category(CraftingBookCategory.BUILDING)
@@ -56,7 +55,7 @@ public abstract class SmallTable<C extends CustomDecorData<C>> extends CustomDec
                                         ShapedRecipeBuilder.material('P', planksMaterial),
                                         ShapedRecipeBuilder.material('A', Material.AIR)
                                 ),
-                                Boolean.TRUE
+                                true
                         )
                 );
     }

@@ -1,6 +1,6 @@
-package com.minersstudios.mscore.inventory.recipe;
+package com.minersstudios.mscore.inventory.recipe.choice;
 
-import com.minersstudios.mscore.utility.MSCustomUtils;
+import com.minersstudios.mscustoms.utility.MSCustomUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;

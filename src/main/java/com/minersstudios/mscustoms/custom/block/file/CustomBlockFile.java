@@ -1,6 +1,7 @@
 package com.minersstudios.mscustoms.custom.block.file;
 
 import com.google.gson.*;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.config.ConfigurationException;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.MSCustoms;
@@ -59,6 +60,7 @@ public final class CustomBlockFile {
             .registerTypeAdapter(PlacingType.class,   new PlacingTypeAdapter())
             .registerTypeAdapter(NoteBlockData.class, new NoteBlockDataAdapter())
             .registerTypeAdapter(Sound.class,         new SoundAdapter())
+            .registerTypeAdapter(RecipeEntry.class,   new RecipeEntryAdapter())
             .setPrettyPrinting()
             .create();
 

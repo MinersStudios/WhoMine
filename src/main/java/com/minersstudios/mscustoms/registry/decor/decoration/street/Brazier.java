@@ -2,6 +2,7 @@ package com.minersstudios.mscustoms.registry.decor.decoration.street;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.ItemUtils;
 import com.minersstudios.mscustoms.sound.SoundGroup;
@@ -48,7 +49,7 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                 .soundGroup(SoundGroup.CHAIN)
                 .itemStack(itemStack)
                 .recipes(
-                        unused -> Map.entry(
+                        unused -> RecipeEntry.of(
                                 RecipeBuilder.shapedBuilder()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
@@ -60,28 +61,14 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
                                         ShapedRecipeBuilder.material('B', Material.IRON_BARS),
                                         ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
                                 ),
-                                Boolean.TRUE
+                                true
                         )
                 )
                 .parameters(DecorParameter.LIGHT_TYPED)
                 .lightLevels(0, 15)
                 .lightLevelTypes(
-                        builder -> Map.entry(
-                                0,
-                                new Type(
-                                        builder,
-                                        "default",
-                                        itemStack
-                                )
-                        ),
-                        builder -> Map.entry(
-                                15,
-                                new Type(
-                                        builder,
-                                        "fired",
-                                        itemStack2
-                                )
-                        )
+                        builder -> Map.entry(0,  new Type(builder, "default", itemStack)),
+                        builder -> Map.entry(15, new Type(builder, "fired",   itemStack2))
                 )
                 .dropsType(true)
                 .clickAction(

@@ -1,6 +1,6 @@
 package com.minersstudios.mscustoms.listener.event.player;
 
-import com.minersstudios.mscore.utility.MSDecorUtils;
+import com.minersstudios.mscustoms.utility.MSDecorUtils;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;

@@ -1,6 +1,6 @@
 package com.minersstudios.mscustoms.custom.item.renameable;
 
-import com.minersstudios.mscore.utility.MSCustomUtils;
+import com.minersstudios.mscustoms.utility.MSCustomUtils;
 import com.minersstudios.mscustoms.MSCustoms;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
