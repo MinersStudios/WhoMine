@@ -15,7 +15,7 @@
     <a href="https://github.com/MinersStudios/WhoMine/stargazers">
       <picture>
         <source media="(prefers-color-scheme: light)" srcset="https://img.shields.io/github/stars/MinersStudios/WhoMine?style=for-the-badge&color=f9ebbf&labelColor=fcf6e4">
-        <img alt="Stars" src="https://img.shields.io/github/stars/MinersStudios/WhoMine?style=for-the-badge&logo=starship&color=f9ebbf&logoColor=d9e0ee&labelColor=302d41">
+        <img alt="Stars" src="https://img.shields.io/github/stars/MinersStudios/WhoMine?style=for-the-badge&color=f9ebbf&labelColor=302d41">
       </picture>
     </a>
     <a href="https://github.com/MinersStudios/WhoMine/contributors">
