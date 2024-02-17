@@ -1,5 +1,6 @@
 package com.minersstudios.mscustoms.utility;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.custom.block.CustomBlockData;
@@ -16,7 +17,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomBlockData}
  */
 public final class MSBlockUtils {
-    public static final String NAMESPACED_KEY_REGEX = '(' + SharedConstants.MSBLOCK_NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
+    public static final String NAMESPACED_KEY_REGEX = '(' + SharedConstants.MSBLOCK_NAMESPACE + "):(" + Key.REGEX + ")";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(" -> fail")

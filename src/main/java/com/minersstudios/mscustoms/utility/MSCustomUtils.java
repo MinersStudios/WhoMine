@@ -1,5 +1,8 @@
 package com.minersstudios.mscustoms.utility;
 
+import com.minersstudios.mscore.annotation.Key;
+import com.minersstudios.mscore.annotation.Namespace;
+import com.minersstudios.mscore.annotation.ResourceKey;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.block.CustomBlockData;
 import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
@@ -46,7 +49,7 @@ public final class MSCustomUtils {
      *         or empty optional if not found
      * @see #getItemStack(String, String)
      */
-    public static @NotNull Optional<ItemStack> getItemStack(final @Nullable String namespacedKeyStr) {
+    public static @NotNull Optional<ItemStack> getItemStack(final @ResourceKey @Nullable String namespacedKeyStr) {
         if (
                 ChatUtils.isBlank(namespacedKeyStr)
                 || !namespacedKeyStr.contains(":")
@@ -93,8 +96,8 @@ public final class MSCustomUtils {
      * @see MSItemUtils#getItemStack(String)
      */
     public static @NotNull Optional<ItemStack> getItemStack(
-            final @Nullable String namespace,
-            final @Nullable String key
+            final @Namespace @Nullable String namespace,
+            final @Key @Nullable String key
     ) {
         return namespace == null || key == null
                 ? Optional.empty()
@@ -147,8 +150,11 @@ public final class MSCustomUtils {
      *         or {@link CustomItem} or empty optional if not found
      * @see #getCustom(String, String)
      */
-    public static @NotNull Optional<?> getCustom(final @Nullable String namespacedKeyStr) {
-        if (ChatUtils.isBlank(namespacedKeyStr)) {
+    public static @NotNull Optional<?> getCustom(final @ResourceKey @Nullable String namespacedKeyStr) {
+        if (
+                ChatUtils.isBlank(namespacedKeyStr)
+                || !namespacedKeyStr.contains(":")
+        ) {
             return Optional.empty();
         }
 

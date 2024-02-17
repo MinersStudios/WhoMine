@@ -1,8 +1,10 @@
 package com.minersstudios.mscustoms.custom.block.file.adapter;
 
 import com.google.gson.*;
+import com.minersstudios.mscore.annotation.ResourceKey;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 
@@ -19,7 +21,7 @@ import java.lang.reflect.Type;
 public class NamespacedKeyAdapter implements JsonSerializer<NamespacedKey>, JsonDeserializer<NamespacedKey> {
     private final String namespace;
 
-    public NamespacedKeyAdapter(final String namespace) {
+    public NamespacedKeyAdapter(final @ResourceKey @NotNull String namespace) {
         this.namespace = namespace;
     }
 

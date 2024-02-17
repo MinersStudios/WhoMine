@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials;
 
+import com.minersstudios.mscore.annotation.Namespace;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.status.FailureStatus;
 import com.minersstudios.mscore.status.SuccessStatus;
@@ -41,7 +42,8 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     private Scoreboard scoreboardHideTags;
     private Team scoreboardHideTagsTeam;
 
-    public static final String NAMESPACE = "msessentials";
+    /** The namespace of the plugin */
+    public static final @Namespace String NAMESPACE = "msessentials";
 
     //<editor-fold desc="Plugin Statuses" defaultstate="collapsed">
     public static final FailureStatus FAILED_LOAD_RESOURCE_PACKS = failureLow("FAILED_LOAD_RESOURCE_PACKS");

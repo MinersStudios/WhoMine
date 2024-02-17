@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.utility;
 
+import com.minersstudios.mscore.annotation.Namespace;
 import net.kyori.adventure.translation.Translator;
 import org.jetbrains.annotations.Contract;
 
@@ -26,10 +27,10 @@ public final class SharedConstants {
     public static final String CONSOLE_NICKNAME =                      "$Console";
     public static final String INVISIBLE_ITEM_FRAME_TAG =              "invisibleItemFrame";
     public static final String HIDE_TAGS_TEAM_NAME =                   "hide_tags";
-    public static final String WHOMINE_NAMESPACE =                     "whomine";
-    public static final String MSBLOCK_NAMESPACE =                     "msblock";
-    public static final String MSITEMS_NAMESPACE =                     "msitems";
-    public static final String MSDECOR_NAMESPACE =                     "msdecor";
+    public static final @Namespace String WHOMINE_NAMESPACE =          "whomine";
+    public static final @Namespace String MSBLOCK_NAMESPACE =          "msblock";
+    public static final @Namespace String MSITEMS_NAMESPACE =          "msitems";
+    public static final @Namespace String MSDECOR_NAMESPACE =          "msdecor";
     public static final Locale DEFAULT_LOCALE =                        Objects.requireNonNull(Translator.parseLocale(DEFAULT_LANGUAGE_CODE), "Not found default locale for " + DEFAULT_LANGUAGE_CODE);
     public static final int SIT_RANGE =                                9;
     public static final int FINAL_DESTROY_STAGE =                      9;

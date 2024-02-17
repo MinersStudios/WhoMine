@@ -1,5 +1,6 @@
 package com.minersstudios.mscustoms;
 
+import com.minersstudios.mscore.annotation.Namespace;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.status.FailureStatus;
 import com.minersstudios.mscore.status.SuccessStatus;
@@ -32,6 +33,9 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
     private Cache cache;
     private Config config;
 
+    /** The namespace of the plugin */
+    public static final @Namespace String NAMESPACE = "mscustoms";
+
     //<editor-fold desc="Plugin Statuses" defaultstate="collapsed">
     public static final FailureStatus FAILED_LOAD_BLOCKS =      failureLow("FAILED_LOAD_BLOCKS");
     public static final FailureStatus FAILED_LOAD_RENAMEABLES = failureLow("FAILED_LOAD_RENAMEABLES");
@@ -45,9 +49,6 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
     public static final SuccessStatus LOADING_RENAMEABLES = successLow("LOADING_RENAMEABLES");
     public static final SuccessStatus LOADED_RENAMEABLES =  successLow("LOADED_RENAMEABLES", FAILED_LOAD_RENAMEABLES);
     //</editor-fold>
-
-    /** The namespace of the plugin */
-    public static final String NAMESPACE = "mscustoms";
 
     static {
         initClass(SoundGroup.class);

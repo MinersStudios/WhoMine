@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
@@ -61,8 +60,6 @@ public final class ChatUtils {
             STRIKETHROUGH.withState(false),
             UNDERLINED.withState(false)
     );
-    public static final String KEY_REGEX = "[a-z0-9./_-]+";
-    public static final Pattern KEY_PATTERN = Pattern.compile(KEY_REGEX);
 
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
     private static final PlainTextComponentSerializer PLAIN_SERIALIZER = PlainTextComponentSerializer.plainText();
@@ -286,7 +283,7 @@ public final class ChatUtils {
      * @param rest  Other strings
      * @return List of components
      */
-    public static @NotNull List<Component>  convertStringsToComponents(
+    public static @NotNull List<Component> convertStringsToComponents(
             final @NotNull String first,
             final String @NotNull ... rest
     ) {
@@ -346,26 +343,5 @@ public final class ChatUtils {
     @Contract("null -> false")
     public static boolean isNotBlank(final @Nullable String string) {
         return !isBlank(string);
-    }
-
-    /**
-     * @param string String to be checked
-     * @return True if string matches {@link #KEY_REGEX}
-     */
-    @Contract("null -> false")
-    public static boolean matchesKey(final @Nullable String string) {
-        return isNotBlank(string)
-                && KEY_PATTERN.matcher(string).matches();
-    }
-
-    /**
-     * @param string String to be checked
-     * @throws IllegalArgumentException If string doesn't match {@link #KEY_REGEX}
-     */
-    @Contract("null -> fail")
-    public static void validateKey(final @Nullable String string) {
-        if (!matchesKey(string)) {
-            throw new IllegalArgumentException("Key '" + string + "' does not match regex " + ChatUtils.KEY_REGEX);
-        }
     }
 }

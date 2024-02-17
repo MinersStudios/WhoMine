@@ -1,5 +1,6 @@
 package com.minersstudios.mscustoms.custom.decor;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.status.StatusWatcher;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -187,7 +188,7 @@ public enum CustomDecorType {
     public static final String TYPE_TAG_NAME = "type";
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(SharedConstants.MSDECOR_NAMESPACE, TYPE_TAG_NAME);
 
-    public static final String TYPED_KEY_REGEX = "(" + ChatUtils.KEY_REGEX + ")\\.type\\.(" + ChatUtils.KEY_REGEX + ")";
+    public static final String TYPED_KEY_REGEX = "(" + Key.REGEX + ")\\.type\\.(" + Key.REGEX + ")";
     public static final Pattern TYPED_KEY_PATTERN = Pattern.compile(TYPED_KEY_REGEX);
 
     private static final CustomDecorType[] VALUES = values();

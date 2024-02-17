@@ -1,10 +1,15 @@
 package com.minersstudios.mscore.status;
 
+import com.minersstudios.mscore.throwable.InvalidRegexException;
 import org.intellij.lang.annotations.RegExp;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.regex.Pattern;
 
 import static java.lang.annotation.ElementType.*;
@@ -52,21 +57,49 @@ public @interface StatusKey {
          * @param key Key of the status
          * @return Whether the key matches the {@link #REGEX regex}
          */
-        public static boolean matches(final @StatusKey @NotNull String key) {
-            return PATTERN.matcher(key).matches();
+        public static boolean matches(final @Subst("STATUS_KEY") @StatusKey @Nullable String key) {
+            if (key == null) {
+                return false;
+            }
+
+            final int length = key.length();
+
+            if (length == 0) {
+                return false;
+            }
+
+            final char first = key.charAt(0);
+
+            if (first < 'A' || first > 'Z') {
+                return false;
+            }
+
+            for (int i = 1; i < length; ++i) {
+                final char character = key.charAt(i);
+
+                if (
+                        (character < 'A' || character > 'Z')
+                        && (character < '0' || character > '9')
+                        && character != '_'
+                ) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /**
          * Validates the key of the status
          *
          * @param key Key of the status
-         * @throws IllegalArgumentException If the key does not match the
-         *                                  {@link #REGEX regex}
+         * @throws InvalidRegexException If the key does not match the
+         *                               {@link #REGEX regex}
          * @see #matches(String)
          */
-        public static void validate(final @StatusKey @NotNull String key) throws IllegalArgumentException {
+        public static void validate(final @Subst("STATUS_KEY") @StatusKey @Nullable String key) throws InvalidRegexException {
             if (!matches(key)) {
-                throw new IllegalArgumentException("Key must match regex: " + REGEX);
+                throw new InvalidRegexException("Status key must match regex: " + REGEX);
             }
         }
     }

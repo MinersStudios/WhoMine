@@ -1,5 +1,6 @@
 package com.minersstudios.mscore;
 
+import com.minersstudios.mscore.annotation.Namespace;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utility.CoreProtectUtils;
@@ -22,7 +23,8 @@ import static com.minersstudios.mscore.utility.Font.Chars.RED_EXCLAMATION_MARK;
 public final class MSCore extends MSPlugin<MSCore> {
     private static MSCore singleton;
 
-    public static final String NAMESPACE = "mscore";
+    /** The namespace of the plugin */
+    public static final @Namespace String NAMESPACE = "mscore";
 
     //<editor-fold desc="Config keys" defaultstate="collapsed">
     private static final String KEY_CONNECTION_THROTTLE = "messages.kick.connection-throttle";

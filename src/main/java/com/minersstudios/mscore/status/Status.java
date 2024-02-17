@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.status;
 
+import com.minersstudios.mscore.throwable.InvalidRegexException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -106,12 +107,12 @@ public interface Status {
      *
      * @param key Key of the status
      * @return A new status with the specified key and low priority
-     * @throws IllegalArgumentException If the key does not match the
-     *                                  {@link StatusKey#REGEX regex}
+     * @throws InvalidRegexException If the key does not match the
+     *                               {@link StatusKey#REGEX regex}
      * @see #success(String, Priority)
      */
     @Contract("_ -> new")
-    static @NotNull SuccessStatus successLow(final @StatusKey @NotNull String key) throws IllegalArgumentException {
+    static @NotNull SuccessStatus successLow(final @StatusKey @NotNull String key) throws InvalidRegexException {
         return success(key, Priority.LOW);
     }
 
@@ -123,9 +124,9 @@ public interface Status {
      * @param failureStatus The status that will be set if this status is not
      *                      successful, or null if there is no failure status
      * @return A new status with the given key and low priority
-     * @throws IllegalArgumentException If the key does not match the
+     * @throws InvalidRegexException    If the key does not match the
      *                                  {@link StatusKey#REGEX regex}
-     * @throws IllegalStateException    If the failure status has a different
+     * @throws IllegalArgumentException If the failure status has a different
      *                                  priority than the specified priority
      * @see #success(String, Priority, FailureStatus)
      */
@@ -133,7 +134,7 @@ public interface Status {
     static @NotNull SuccessStatus successLow(
             final @StatusKey @NotNull String key,
             final @Nullable FailureStatus failureStatus
-    ) throws IllegalArgumentException, IllegalStateException {
+    ) throws InvalidRegexException, IllegalArgumentException {
         return success(key, Priority.LOW, failureStatus);
     }
 
@@ -142,12 +143,12 @@ public interface Status {
      *
      * @param key Key of the status
      * @return A new status with the specified key and high priority
-     * @throws IllegalArgumentException If the key does not match the
-     *                                  {@link StatusKey#REGEX regex}
+     * @throws InvalidRegexException If the key does not match the
+     *                               {@link StatusKey#REGEX regex}
      * @see #success(String, Priority)
      */
     @Contract("_ -> new")
-    static @NotNull SuccessStatus successHigh(final @StatusKey @NotNull String key) throws IllegalArgumentException {
+    static @NotNull SuccessStatus successHigh(final @StatusKey @NotNull String key) throws InvalidRegexException {
         return success(key, Priority.HIGH);
     }
 
@@ -160,9 +161,9 @@ public interface Status {
      *                      successful, or null if there is no failure status
      * @return A new status with the specified key, failure status, and high
      *         priority
-     * @throws IllegalArgumentException If the key does not match the
+     * @throws InvalidRegexException    If the key does not match the
      *                                  {@link StatusKey#REGEX regex}
-     * @throws IllegalStateException    If the failure status has a different
+     * @throws IllegalArgumentException If the failure status has a different
      *                                  priority than the specified priority
      * @see #success(String, Priority, FailureStatus)
      */
@@ -170,7 +171,7 @@ public interface Status {
     static @NotNull SuccessStatus successHigh(
             final @StatusKey @NotNull String key,
             final @Nullable FailureStatus failureStatus
-    ) throws IllegalArgumentException, IllegalStateException {
+    ) throws InvalidRegexException, IllegalArgumentException {
         return success(key, Priority.HIGH, failureStatus);
     }
 
@@ -180,15 +181,15 @@ public interface Status {
      * @param key      Key of the status
      * @param priority Priority of the status
      * @return A new status with the specified key and priority
-     * @throws IllegalArgumentException If the key does not match the
-     *                                  {@link StatusKey#REGEX regex}
+     * @throws InvalidRegexException If the key does not match the
+     *                               {@link StatusKey#REGEX regex}
      * @see StatusKey.Validator#validate(String)
      */
     @Contract("_, _ -> new")
     static @NotNull SuccessStatus success(
             final @StatusKey @NotNull String key,
             final @NotNull Priority priority
-    ) throws IllegalArgumentException {
+    ) throws InvalidRegexException {
         validate(key);
 
         return new SuccessStatus(key, priority, null);
@@ -202,9 +203,9 @@ public interface Status {
      * @param failureStatus The status that will be set if this status is not
      *                      successful, or null if there is no failure status
      * @return A new status with the specified key, priority, and failure status
-     * @throws IllegalArgumentException If the key does not match the
+     * @throws InvalidRegexException    If the key does not match the
      *                                  {@link StatusKey#REGEX regex}
-     * @throws IllegalStateException    If the failure status has a different
+     * @throws IllegalArgumentException If the failure status has a different
      *                                  priority than the specified priority
      * @see StatusKey.Validator#validate(String)
      */
@@ -213,7 +214,7 @@ public interface Status {
             final @StatusKey @NotNull String key,
             final @NotNull Priority priority,
             final @Nullable FailureStatus failureStatus
-    ) throws IllegalArgumentException, IllegalStateException {
+    ) throws InvalidRegexException, IllegalArgumentException {
         validate(key);
 
         if (
@@ -233,12 +234,12 @@ public interface Status {
      *
      * @param key Key of the failure status
      * @return A new failure status with the specified key and low priority
-     * @throws IllegalArgumentException If the key does not match the
-     *                                  {@link StatusKey#REGEX regex}
+     * @throws InvalidRegexException If the key does not match the
+     *                               {@link StatusKey#REGEX regex}
      * @see #failure(String, Priority)
      */
     @Contract("_ -> new")
-    static @NotNull FailureStatus failureLow(final @StatusKey @NotNull String key) throws IllegalArgumentException {
+    static @NotNull FailureStatus failureLow(final @StatusKey @NotNull String key) throws InvalidRegexException {
         return failure(key, Priority.LOW);
     }
 
@@ -247,12 +248,12 @@ public interface Status {
      *
      * @param key Key of the failure status
      * @return A new failure status with the specified key and medium priority
-     * @throws IllegalArgumentException If the key does not match the
-     *                                  {@link StatusKey#REGEX regex}
+     * @throws InvalidRegexException If the key does not match the
+     *                               {@link StatusKey#REGEX regex}
      * @see #failure(String, Priority)
      */
     @Contract("_ -> new")
-    static @NotNull FailureStatus failureHigh(final @StatusKey @NotNull String key) throws IllegalArgumentException {
+    static @NotNull FailureStatus failureHigh(final @StatusKey @NotNull String key) throws InvalidRegexException {
         return failure(key, Priority.HIGH);
     }
 
@@ -262,15 +263,15 @@ public interface Status {
      * @param key      Key of the failure status
      * @param priority Priority of the failure status
      * @return A new failure status with the specified key and priority
-     * @throws IllegalArgumentException If the key does not match the
-     *                                  {@link StatusKey#REGEX regex}
+     * @throws InvalidRegexException If the key does not match the
+     *                               {@link StatusKey#REGEX regex}
      * @see StatusKey.Validator#validate(String)
      */
     @Contract("_, _ -> new")
     static @NotNull FailureStatus failure(
             final @StatusKey @NotNull String key,
             final @NotNull Priority priority
-    ) throws IllegalArgumentException {
+    ) throws InvalidRegexException {
         validate(key);
 
         return new FailureStatus(key, priority);

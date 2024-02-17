@@ -1,7 +1,9 @@
 package com.minersstudios.mscore.inventory.recipe.choice;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.mscore.annotation.ResourceKey;
+import com.minersstudios.mscore.throwable.InvalidRegexException;
 import com.minersstudios.mscustoms.utility.MSCustomUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -14,8 +16,10 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import javax.annotation.concurrent.Immutable;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a choice that will be valid only one of the stacks is exactly
@@ -29,54 +33,47 @@ import java.util.regex.Pattern;
 public final class CustomChoice implements RecipeChoice {
     private Object2ObjectMap<String, ItemStack> choiceMap;
 
-    private static final String REGEX = "[a-z0-9/._-]+:[a-z0-9/._-]+";
-    private static final Pattern PATTERN = Pattern.compile(REGEX);
-
     /**
      * Constructs a new custom choice with the specified namespaced keys
      *
      * @param namespacedKey The namespaced key to use for the choice
-     * @throws IllegalArgumentException If the namespaced key is invalid
+     * @throws InvalidRegexException If the namespaced key is invalid
      */
-    public CustomChoice(final @NotNull String namespacedKey) throws IllegalArgumentException {
+    public CustomChoice(final @ResourceKey @NotNull String namespacedKey) throws InvalidRegexException {
         this(Collections.singletonList(namespacedKey));
     }
 
     /**
      * Constructs a new custom choice with the specified namespaced keys
      *
-     * @param namespacedKeys The namespaced keys to use for the choice
-     * @throws IllegalArgumentException If the namespaced keys are empty, or if
-     *                                  any of the namespaced keys are invalid
+     * @param first The first namespaced key to use for the choice
+     * @param rest  The rest of the namespaced keys to use for the choice
+     * @throws InvalidRegexException If any of the namespaced keys are invalid
      */
-    public CustomChoice(final String @NotNull ... namespacedKeys) throws IllegalArgumentException {
-        this(Arrays.asList(namespacedKeys));
+    public CustomChoice(
+            final @ResourceKey @NotNull String first,
+            final String @NotNull ... rest
+    ) throws InvalidRegexException {
+        this(Lists.asList(first, rest));
     }
 
     /**
      * Constructs a new custom choice with the specified namespaced keys
      *
      * @param namespacedKeys The namespaced keys to use for the choice
-     * @throws IllegalArgumentException If the namespaced keys are empty, or if
-     *                                  any of the namespaced keys are null or
+     * @throws IllegalArgumentException If the namespaced keys are empty
+     * @throws InvalidRegexException    If any of the namespaced keys are
      *                                  invalid
      */
-    public CustomChoice(final @NotNull Collection<String> namespacedKeys) throws IllegalArgumentException {
+    public CustomChoice(final @NotNull Collection<String> namespacedKeys) throws IllegalArgumentException, InvalidRegexException {
         if (namespacedKeys.isEmpty()) {
             throw new IllegalArgumentException("Must have at least one namespacedKey");
         }
 
         this.choiceMap = new Object2ObjectOpenHashMap<>(namespacedKeys.size());
 
-        for (final var namespacedKey : namespacedKeys) {
-            if (ChatUtils.isBlank(namespacedKey)) {
-                throw new IllegalArgumentException("Cannot have a blank namespacedKey");
-            }
-
-            if (!PATTERN.matcher(namespacedKey).matches()) {
-                throw new IllegalArgumentException("Invalid namespacedKey : " + namespacedKey);
-            }
-
+        for (final @ResourceKey var namespacedKey : namespacedKeys) {
+            ResourceKey.Validator.validate(namespacedKey);
             MSCustomUtils.getItemStack(namespacedKey)
             .ifPresent(itemStack -> this.choiceMap.put(namespacedKey, itemStack));
         }
@@ -101,7 +98,7 @@ public final class CustomChoice implements RecipeChoice {
      * @param namespacedKey The namespaced key to get the item stack for
      * @return A clone of the item stack for the specified namespaced key
      */
-    public @NotNull ItemStack getItemStack(final @NotNull String namespacedKey) {
+    public @NotNull ItemStack getItemStack(final @ResourceKey @NotNull String namespacedKey) {
         return this.choiceMap.get(namespacedKey).clone();
     }
 
@@ -169,7 +166,7 @@ public final class CustomChoice implements RecipeChoice {
      * @param namespacedKey The namespaced key to test
      * @return True if the namespaced key is present in the choices
      */
-    public boolean test(final @NotNull String namespacedKey) {
+    public boolean test(final @ResourceKey @NotNull String namespacedKey) {
         return this.choiceMap.containsKey(namespacedKey);
     }
 

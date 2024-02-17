@@ -1,9 +1,11 @@
 package com.minersstudios.mscustoms.custom.decor;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.location.MSVector;
+import com.minersstudios.mscore.throwable.InvalidRegexException;
 import com.minersstudios.mscore.utility.*;
 import com.minersstudios.mscustoms.custom.decor.action.DecorBreakAction;
 import com.minersstudios.mscustoms.custom.decor.action.DecorClickAction;
@@ -39,6 +41,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.*;
 
 import javax.annotation.concurrent.Immutable;
@@ -1374,8 +1377,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this.namespacedKey;
         }
 
-        public @NotNull Builder key(final @NotNull String key) throws IllegalArgumentException {
-            ChatUtils.validateKey(key);
+        public @NotNull Builder key(final @Key @NotNull String key) throws InvalidRegexException {
+            Key.Validator.validate(key);
 
             this.namespacedKey = new NamespacedKey(SharedConstants.MSDECOR_NAMESPACE, key);
 
@@ -1919,10 +1922,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
         public Type(
                 final @NotNull Builder builder,
-                final @NotNull String key,
+                final @Key @NotNull String key,
                 final @NotNull ItemStack itemStack
-        ) {
-            ChatUtils.validateKey(key);
+        ) throws InvalidRegexException {
+            Key.Validator.validate(key);
 
             final String typedKey = builder.namespacedKey.getKey() + ".type." + key;
             this.namespacedKey = new NamespacedKey(SharedConstants.MSDECOR_NAMESPACE, typedKey);
@@ -1972,8 +1975,10 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         @SuppressWarnings("unchecked")
         @Override
         public @NotNull D buildData() {
+            final @Subst("key") String key = this.namespacedKey.getKey();
+
             return (D) CustomDecorDataImpl.this.builder()
-                    .key(this.namespacedKey.getKey())
+                    .key(key)
                     .itemStack(this.itemStack)
                     .preBuild()
                     .build();

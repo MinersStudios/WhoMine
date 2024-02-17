@@ -1,5 +1,6 @@
 package com.minersstudios.mscustoms.utility;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -24,7 +25,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomDecorData}
  */
 public final class MSDecorUtils {
-    public static final String NAMESPACED_KEY_REGEX = '(' + SharedConstants.MSDECOR_NAMESPACE + "):(" + ChatUtils.KEY_REGEX + ")";
+    public static final String NAMESPACED_KEY_REGEX = '(' + SharedConstants.MSDECOR_NAMESPACE + "):(" + Key.REGEX + ")";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(" -> fail")
