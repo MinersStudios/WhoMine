@@ -1,8 +1,8 @@
 package com.minersstudios.mscustoms;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.plugin.status.FailureStatus;
-import com.minersstudios.mscore.plugin.status.SuccessStatus;
+import com.minersstudios.mscore.status.FailureStatus;
+import com.minersstudios.mscore.status.SuccessStatus;
 import com.minersstudios.mscore.utility.ItemUtils;
 import com.minersstudios.mscore.utility.PaperUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
@@ -18,7 +18,8 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
-import static com.minersstudios.mscore.plugin.status.SuccessStatus.low;
+import static com.minersstudios.mscore.status.Status.failureLow;
+import static com.minersstudios.mscore.status.Status.successLow;
 
 /**
  * The main class of the MSCustoms plugin
@@ -32,19 +33,20 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
     private Config config;
 
     //<editor-fold desc="Plugin Statuses" defaultstate="collapsed">
-    public static final FailureStatus FAILED_LOAD_BLOCKS =      FailureStatus.low("FAILED_LOAD_BLOCKS");
-    public static final FailureStatus FAILED_LOAD_RENAMEABLES = FailureStatus.low("FAILED_LOAD_RENAMEABLES");
+    public static final FailureStatus FAILED_LOAD_BLOCKS =      failureLow("FAILED_LOAD_BLOCKS");
+    public static final FailureStatus FAILED_LOAD_RENAMEABLES = failureLow("FAILED_LOAD_RENAMEABLES");
 
-    public static final SuccessStatus LOADING_DECORATIONS = low("LOADING_DECORATIONS");
-    public static final SuccessStatus LOADED_DECORATIONS =  low("LOADED_DECORATIONS");
-    public static final SuccessStatus LOADING_BLOCKS =      low("LOADING_BLOCKS");
-    public static final SuccessStatus LOADED_BLOCKS =       low("LOADED_BLOCKS", FAILED_LOAD_BLOCKS);
-    public static final SuccessStatus LOADING_ITEMS =       low("LOADING_ITEMS");
-    public static final SuccessStatus LOADED_ITEMS =        low("LOADED_ITEMS");
-    public static final SuccessStatus LOADING_RENAMEABLES = low("LOADING_RENAMEABLES");
-    public static final SuccessStatus LOADED_RENAMEABLES =  low("LOADED_RENAMEABLES", FAILED_LOAD_RENAMEABLES);
+    public static final SuccessStatus LOADING_DECORATIONS = successLow("LOADING_DECORATIONS");
+    public static final SuccessStatus LOADED_DECORATIONS =  successLow("LOADED_DECORATIONS");
+    public static final SuccessStatus LOADING_BLOCKS =      successLow("LOADING_BLOCKS");
+    public static final SuccessStatus LOADED_BLOCKS =       successLow("LOADED_BLOCKS", FAILED_LOAD_BLOCKS);
+    public static final SuccessStatus LOADING_ITEMS =       successLow("LOADING_ITEMS");
+    public static final SuccessStatus LOADED_ITEMS =        successLow("LOADED_ITEMS");
+    public static final SuccessStatus LOADING_RENAMEABLES = successLow("LOADING_RENAMEABLES");
+    public static final SuccessStatus LOADED_RENAMEABLES =  successLow("LOADED_RENAMEABLES", FAILED_LOAD_RENAMEABLES);
     //</editor-fold>
 
+    /** The namespace of the plugin */
     public static final String NAMESPACE = "mscustoms";
 
     static {
@@ -88,6 +90,8 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
     }
 
     /**
+     * Returns the cache of the plugin
+     *
      * @return The cache of the plugin or null if the plugin is disabled
      */
     public @UnknownNullability Cache getCache() {

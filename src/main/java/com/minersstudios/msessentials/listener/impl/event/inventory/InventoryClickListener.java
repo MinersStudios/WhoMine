@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.listener.impl.event.inventory;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
@@ -68,7 +68,7 @@ public final class InventoryClickListener extends AbstractEventListener<MSEssent
             if (remove) {
                 clickedInventory.setItem(slot, new ItemStack(Material.AIR));
                 MSLogger.warning(
-                        LanguageRegistry.Components.INFO_PLAYER_ITEM_REMOVED
+                        Translations.INFO_PLAYER_ITEM_REMOVED.asTranslatable()
                         .arguments(
                                 player.name(),
                                 text(currentItem.toString())

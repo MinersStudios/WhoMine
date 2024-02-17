@@ -1,6 +1,5 @@
 package com.minersstudios.msessentials.listener.impl.event.chat;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
@@ -17,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
+import static com.minersstudios.mscore.locale.Translations.COMMAND_MUTE_ALREADY_RECEIVER;
+import static com.minersstudios.mscore.locale.Translations.WARNING_YOU_CANT_DO_THIS_NOW;
 import static net.kyori.adventure.text.Component.text;
 
 @EventListener
@@ -36,8 +37,9 @@ public final class AsyncChatListener extends AbstractEventListener<MSEssentials>
         ) {
             MSLogger.warning(
                     player,
-                    LanguageRegistry.Components.WARNING_YOU_CANT_DO_THIS_NOW
+                    WARNING_YOU_CANT_DO_THIS_NOW.asTranslatable()
             );
+
             return;
         }
 
@@ -51,8 +53,9 @@ public final class AsyncChatListener extends AbstractEventListener<MSEssentials>
         if (playerInfo.isMuted()) {
             MSLogger.warning(
                     player,
-                    LanguageRegistry.Components.COMMAND_MUTE_ALREADY_RECEIVER
+                    COMMAND_MUTE_ALREADY_RECEIVER.asTranslatable()
             );
+
             return;
         }
 

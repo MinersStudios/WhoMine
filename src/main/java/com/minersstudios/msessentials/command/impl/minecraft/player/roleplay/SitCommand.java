@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.minecraft.player.roleplay;
 
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.command.api.MSCommand;
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -47,8 +47,9 @@ public final class SitCommand extends AbstractCommandExecutor<MSEssentials> {
         if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
             MSLogger.warning(
                     player,
-                    LanguageRegistry.Components.COMMAND_SIT_IN_AIR
+                    Translations.COMMAND_SIT_IN_AIR.asTranslatable()
             );
+
             return true;
         }
 
@@ -61,8 +62,9 @@ public final class SitCommand extends AbstractCommandExecutor<MSEssentials> {
         ) {
             MSLogger.warning(
                     player,
-                    LanguageRegistry.Components.COMMAND_MUTE_ALREADY_RECEIVER
+                    Translations.COMMAND_MUTE_ALREADY_RECEIVER.asTranslatable()
             );
+
             return true;
         }
 

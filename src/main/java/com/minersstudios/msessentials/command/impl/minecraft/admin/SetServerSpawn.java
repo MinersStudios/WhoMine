@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
@@ -66,8 +66,9 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                 if (!(sender instanceof final Player player)) {
                     MSLogger.warning(
                             sender,
-                            ERROR_ONLY_PLAYER_COMMAND
+                            ERROR_ONLY_PLAYER_COMMAND.asTranslatable()
                     );
+
                     return true;
                 }
 
@@ -79,8 +80,9 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                 if (world == null) {
                     MSLogger.warning(
                             sender,
-                            COMMAND_SET_SERVER_SPAWN_WORLD_NOT_FOUND
+                            COMMAND_SET_SERVER_SPAWN_WORLD_NOT_FOUND.asTranslatable()
                     );
+
                     return true;
                 }
 
@@ -92,8 +94,9 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                 if (world == null) {
                     MSLogger.warning(
                             sender,
-                            COMMAND_SET_SERVER_SPAWN_WORLD_NOT_FOUND
+                            COMMAND_SET_SERVER_SPAWN_WORLD_NOT_FOUND.asTranslatable()
                     );
+
                     return true;
                 }
 
@@ -115,8 +118,9 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                 ) {
                     MSLogger.warning(
                             sender,
-                            COMMAND_SET_SERVER_SPAWN_TOO_BIG_COORDINATES
+                            COMMAND_SET_SERVER_SPAWN_TOO_BIG_COORDINATES.asTranslatable()
                     );
+
                     return true;
                 }
 
@@ -128,8 +132,9 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                 if (world == null) {
                     MSLogger.warning(
                             sender,
-                            COMMAND_SET_SERVER_SPAWN_WORLD_NOT_FOUND
+                            COMMAND_SET_SERVER_SPAWN_WORLD_NOT_FOUND.asTranslatable()
                     );
+
                     return true;
                 }
 
@@ -148,8 +153,9 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
                 if (x > 29999984 || z > 29999984) {
                     MSLogger.warning(
                             sender,
-                            COMMAND_SET_SERVER_SPAWN_TOO_BIG_COORDINATES
+                            COMMAND_SET_SERVER_SPAWN_TOO_BIG_COORDINATES.asTranslatable()
                     );
+
                     return true;
                 }
 
@@ -251,7 +257,7 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
         config.setSpawnLocation(location);
         MSLogger.fine(
                 sender,
-                COMMAND_SET_SERVER_SPAWN_SUCCESSFULLY_SET
+                COMMAND_SET_SERVER_SPAWN_SUCCESSFULLY_SET.asTranslatable()
                 .arguments(
                         text(location.getWorld().getName()),
                         text(String.valueOf(location.x())),

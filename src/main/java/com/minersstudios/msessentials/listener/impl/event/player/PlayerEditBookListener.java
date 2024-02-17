@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.listener.impl.event.player;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.msessentials.MSEssentials;
@@ -31,7 +31,7 @@ public final class PlayerEditBookListener extends AbstractEventListener<MSEssent
         event.setNewBookMeta(bookMeta
                 .author(
                         isAnon
-                        ? LanguageRegistry.Components.BOOK_ANONYMOUS
+                        ? Translations.BOOK_ANONYMOUS.asTranslatable()
                         : playerInfo.getDefaultName()
                 ).title(
                         isAnon

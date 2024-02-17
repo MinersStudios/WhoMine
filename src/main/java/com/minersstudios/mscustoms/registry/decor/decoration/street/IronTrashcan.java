@@ -45,8 +45,8 @@ public final class IronTrashcan extends CustomDecorDataImpl<IronTrashcan> {
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(
-                        unused -> RecipeEntry.of(
-                                RecipeBuilder.shapedBuilder()
+                        unused -> RecipeEntry.fromBuilder(
+                                RecipeBuilder.shaped()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
                                         "III",

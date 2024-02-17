@@ -38,8 +38,8 @@ public final class FireHydrant extends CustomDecorDataImpl<FireHydrant> {
                 .soundGroup(SoundGroup.ANVIL)
                 .itemStack(itemStack)
                 .recipes(
-                        unused -> RecipeEntry.of(
-                                RecipeBuilder.shapedBuilder()
+                        unused -> RecipeEntry.fromBuilder(
+                                RecipeBuilder.shaped()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
                                         " B ",

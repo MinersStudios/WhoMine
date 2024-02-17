@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.security.SecureRandom;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.minersstudios.msessentials.utility.MessageUtils.RolePlayActionType.ME;
 import static com.minersstudios.msessentials.utility.MessageUtils.sendRPEventMessage;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -39,8 +39,8 @@ public final class TryCommand extends AbstractCommandExecutor<MSEssentials> {
             .build();
 
     private static final TranslatableComponent[] VARIANTS = new TranslatableComponent[] {
-            COMMAND_TRY_VARIANT_SUCCESS.color(NamedTextColor.GREEN),
-            COMMAND_TRY_VARIANT_FAIL.color(NamedTextColor.RED)
+            COMMAND_TRY_VARIANT_SUCCESS.asTranslatable().color(NamedTextColor.GREEN),
+            COMMAND_TRY_VARIANT_FAIL.asTranslatable().color(NamedTextColor.RED)
     };
 
     private final SecureRandom random = new SecureRandom();
@@ -62,8 +62,9 @@ public final class TryCommand extends AbstractCommandExecutor<MSEssentials> {
         if (playerInfo.isMuted()) {
             MSLogger.warning(
                     player,
-                    COMMAND_MUTE_ALREADY_RECEIVER
+                    COMMAND_MUTE_ALREADY_RECEIVER.asTranslatable()
             );
+
             return true;
         }
 
@@ -74,6 +75,7 @@ public final class TryCommand extends AbstractCommandExecutor<MSEssentials> {
                 .append(VARIANTS[this.random.nextInt(2)]),
                 ME
         );
+
         return true;
     }
 

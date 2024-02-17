@@ -39,8 +39,8 @@ public final class SmallClock extends CustomDecorDataImpl<SmallClock> {
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        unused -> RecipeEntry.of(
-                                RecipeBuilder.shapedBuilder()
+                        unused -> RecipeEntry.fromBuilder(
+                                RecipeBuilder.shaped()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
                                         "LLL",

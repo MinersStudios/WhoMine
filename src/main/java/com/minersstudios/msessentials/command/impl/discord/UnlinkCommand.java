@@ -1,18 +1,18 @@
 package com.minersstudios.msessentials.command.impl.discord;
 
-import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.msessentials.command.api.discord.interaction.CommandHandler;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.command.api.discord.SlashCommand;
 import com.minersstudios.msessentials.command.api.discord.SlashCommandExecutor;
+import com.minersstudios.msessentials.command.api.discord.interaction.CommandHandler;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.COMMAND_DISCORD_UNLINK_DISCORD_SUCCESS;
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS;
+import static com.minersstudios.mscore.locale.Translations.COMMAND_DISCORD_UNLINK_DISCORD_SUCCESS;
+import static com.minersstudios.mscore.locale.Translations.COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS;
 import static net.kyori.adventure.text.Component.text;
 
 @SlashCommand
@@ -34,12 +34,10 @@ public final class UnlinkCommand extends SlashCommandExecutor {
             playerInfo.unlinkDiscord();
             handler.send(
                     BotHandler.craftEmbed(
-                            LanguageFile.renderTranslation(
-                                    COMMAND_DISCORD_UNLINK_DISCORD_SUCCESS
-                                    .arguments(
-                                            playerInfo.getDefaultName(),
-                                            text(playerInfo.getPlayerFile().getPlayerName().getNickname())
-                                    )
+                            COMMAND_DISCORD_UNLINK_DISCORD_SUCCESS
+                            .asString(
+                                    ChatUtils.serializePlainComponent(playerInfo.getDefaultName()),
+                                    playerInfo.getPlayerFile().getPlayerName().getNickname()
                             )
                     )
             );
@@ -49,7 +47,7 @@ public final class UnlinkCommand extends SlashCommandExecutor {
             if (onlinePlayer != null) {
                 MSLogger.fine(
                         onlinePlayer,
-                        COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS
+                        COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS.asTranslatable()
                         .arguments(text(handler.getInteraction().getUser().getName()))
                 );
             }

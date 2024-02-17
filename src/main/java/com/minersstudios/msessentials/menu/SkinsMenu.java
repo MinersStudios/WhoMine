@@ -4,8 +4,6 @@ import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.InventoryButton;
 import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
 import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
-import com.minersstudios.mscore.language.LanguageFile;
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.MSEssentials;
@@ -23,11 +21,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 @InventoryHolder
 public final class SkinsMenu extends AbstractInventoryHolder<MSEssentials> {
-    private static final Component TITLE = LanguageRegistry.Components.MENU_SKINS_TITLE.style(ChatUtils.DEFAULT_STYLE);
+    private static final Component TITLE = MENU_SKINS_TITLE.asTranslatable().style(ChatUtils.DEFAULT_STYLE);
     private static final InventoryButton EMPTY_BUTTON = new InventoryButton().item(new ItemStack(Material.AIR));
     private InventoryButton applyButton;
     private InventoryButton applyButtonEmpty;
@@ -43,7 +42,7 @@ public final class SkinsMenu extends AbstractInventoryHolder<MSEssentials> {
         final ItemStack applyEmpty = applyItem.clone();
         final ItemMeta applyEmptyMeta = applyEmpty.getItemMeta();
 
-        final Component applyName = LanguageRegistry.Components.MENU_SKINS_BUTTON_APPLY.style(ChatUtils.DEFAULT_STYLE);
+        final Component applyName = MENU_SKINS_BUTTON_APPLY.asComponent().style(ChatUtils.DEFAULT_STYLE);
 
         applyMeta.displayName(applyName);
         applyMeta.setCustomModelData(5004);
@@ -73,7 +72,7 @@ public final class SkinsMenu extends AbstractInventoryHolder<MSEssentials> {
         final ItemStack deleteEmpty = deleteItem.clone();
         final ItemMeta deleteEmptyMeta = deleteEmpty.getItemMeta();
 
-        final Component deleteName = LanguageRegistry.Components.MENU_SKINS_BUTTON_DELETE.style(ChatUtils.DEFAULT_STYLE);
+        final Component deleteName = MENU_SKINS_BUTTON_DELETE.asComponent().style(ChatUtils.DEFAULT_STYLE);
 
         deleteMeta.displayName(deleteName);
         deleteMeta.setCustomModelData(5005);
@@ -100,13 +99,13 @@ public final class SkinsMenu extends AbstractInventoryHolder<MSEssentials> {
                 playerFile.removeSkin(selectedSkin);
                 MSLogger.fine(
                         player,
-                        LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT
+                        DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT.asTranslatable()
                         .arguments(skinName)
                 );
                 playerInfo.sendPrivateDiscordMessage(BotHandler.craftEmbed(
-                        LanguageFile.renderTranslation(
-                                LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED
-                                .arguments(
+                        ChatUtils.serializePlainComponent(
+                                DISCORD_SKIN_SUCCESSFULLY_REMOVED
+                                .asComponent(
                                         skinName,
                                         playerInfo.getDefaultName(),
                                         text(playerInfo.getNickname())
@@ -116,7 +115,7 @@ public final class SkinsMenu extends AbstractInventoryHolder<MSEssentials> {
             } catch (final Throwable ignored) {
                 MSLogger.severe(
                         player,
-                        LanguageRegistry.Components.ERROR_SOMETHING_WENT_WRONG
+                        ERROR_SOMETHING_WENT_WRONG.asTranslatable()
                 );
             }
 

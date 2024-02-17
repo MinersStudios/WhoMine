@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.listener.impl.event.server;
 
 import com.minersstudios.mscore.MSCore;
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.plugin.MSLogger;
@@ -23,7 +23,7 @@ public final class ServerCommandListener extends AbstractEventListener<MSCore> {
         if (ONLY_PLAYER_COMMAND_SET.contains(command)) {
             MSLogger.severe(
                     event.getSender(),
-                    LanguageRegistry.Components.ERROR_ONLY_PLAYER_COMMAND
+                    Translations.ERROR_ONLY_PLAYER_COMMAND.asTranslatable()
             );
             event.setCancelled(true);
         }

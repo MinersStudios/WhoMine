@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.msessentials;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.Cache;
 import com.minersstudios.msessentials.MSEssentials;
@@ -23,7 +23,7 @@ public final class UpdateIdsCommand {
         cache.getPlayerInfoMap().playerInfos().forEach(PlayerInfo::initNames);
         MSLogger.fine(
                 sender,
-                LanguageRegistry.Components.COMMAND_MSESSENTIALS_UPDATE_IDS_SUCCESS
+                Translations.COMMAND_MSESSENTIALS_UPDATE_IDS_SUCCESS.asTranslatable()
                 .arguments(text(System.currentTimeMillis() - time))
         );
 

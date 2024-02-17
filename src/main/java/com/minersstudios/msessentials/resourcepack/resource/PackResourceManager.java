@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.resourcepack.resource;
 
+import com.minersstudios.mscore.resource.ResourceManager;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,8 +20,8 @@ import java.util.concurrent.CompletableFuture;
  * <br>
  * There are two types of resource managers :
  * <ul>
- *     <li>{@link URIResourceManager}</li>
- *     <li>{@link GitHubResourceManager}</li>
+ *     <li>{@link URIPackResourceManager}</li>
+ *     <li>{@link GitHubPackResourceManager}</li>
  * </ul>
  *
  * You can create them using the static methods of this class :
@@ -31,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
  *     <li>{@link #github(File, String, String, String, String)}</li>
  * </ul>
  */
-public interface ResourceManager {
+public interface PackResourceManager extends ResourceManager {
     String SHA1 = "SHA-1";
 
     /**
@@ -39,11 +40,11 @@ public interface ResourceManager {
      * <br>
      * Method to get URI according to resource manager type :
      * <ul>
-     *     <li>{@link URIResourceManager} :    Returns the URI passed in the
-     *                                         constructor</li>
-     *     <li>{@link GitHubResourceManager} : Generates a new URI from the user,
-     *                                         repo, latest tag and file name
-     *                                         fields</li>
+     *     <li>{@link URIPackResourceManager} : Returns the URI passed in the
+     *                                          constructor</li>
+     *     <li>{@link GitHubPackResourceManager} : Generates a new URI from the
+     *                                             user, repo, latest tag and
+     *                                             file name fields</li>
      * </ul>
      *
      * @return The future containing the URI of the resource pack file
@@ -57,12 +58,12 @@ public interface ResourceManager {
      * <br>
      * Method to generate the hash according to resource manager type :
      * <ul>
-     *     <li>{@link URIResourceManager} :    Generates the hash of the file
-     *                                         pointed by the URI</li>
-     *     <li>{@link GitHubResourceManager} : Downloads the resource pack file
-     *                                         from the latest release and
-     *                                         generates the hash of the
-     *                                         downloaded file</li>
+     *     <li>{@link URIPackResourceManager} :    Generates the hash of the
+     *                                             file pointed by the URI</li>
+     *     <li>{@link GitHubPackResourceManager} : Downloads the resource pack
+     *                                             file from the latest release
+     *                                             and generates the hash of the
+     *                                             downloaded file</li>
      * </ul>
      *
      * @return The future containing the hash of the resource pack file
@@ -71,14 +72,6 @@ public interface ResourceManager {
      *                               the hash of the resource pack file
      */
     @NotNull CompletableFuture<String> generateHash() throws IllegalStateException;
-
-    /**
-     * Returns the string representation of this resource manager
-     *
-     * @return The string representation of this resource manager
-     */
-    @Override
-    @NotNull String toString();
 
     /**
      * Creates a new resource manager for the given url
@@ -90,7 +83,7 @@ public interface ResourceManager {
      * @see #uri(URI)
      */
     @Contract("_ -> new")
-    static @NotNull ResourceManager url(final @NotNull String url) throws IllegalArgumentException {
+    static @NotNull URIPackResourceManager url(final @NotNull String url) throws IllegalArgumentException {
         return uri(URI.create(url));
     }
 
@@ -101,8 +94,8 @@ public interface ResourceManager {
      * @return The resource manager for the given URI
      */
     @Contract("_ -> new")
-    static @NotNull ResourceManager uri(final @NotNull URI uri) {
-        return new URIResourceManager(uri);
+    static @NotNull URIPackResourceManager uri(final @NotNull URI uri) {
+        return new URIPackResourceManager(uri);
     }
 
     /**
@@ -114,7 +107,7 @@ public interface ResourceManager {
      * @return The resource manager for the given GitHub repository
      */
     @Contract("_, _, _ -> new")
-    static @NotNull ResourceManager github(
+    static @NotNull GitHubPackResourceManager github(
             final @NotNull File file,
             final @NotNull String user,
             final @NotNull String repo
@@ -133,14 +126,14 @@ public interface ResourceManager {
      * @return The resource manager for the given GitHub repository
      */
     @Contract("_, _, _, _, _ -> new")
-    static @NotNull ResourceManager github(
+    static @NotNull GitHubPackResourceManager github(
             final @NotNull File file,
             final @NotNull String user,
             final @NotNull String repo,
             final @Nullable String currentTag,
             final @Nullable String token
     ) {
-        return new GitHubResourceManager(file, user, repo, currentTag, token);
+        return new GitHubPackResourceManager(file, user, repo, currentTag, token);
     }
 
     /**

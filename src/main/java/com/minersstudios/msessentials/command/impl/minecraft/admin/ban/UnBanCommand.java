@@ -3,7 +3,7 @@ package com.minersstudios.msessentials.command.impl.minecraft.admin.ban;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.command.api.MSCommand;
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
@@ -59,8 +59,9 @@ public final class UnBanCommand extends AbstractCommandExecutor<MSEssentials> {
         if (playerInfo == null) {
             MSLogger.severe(
                     sender,
-                    LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND
+                    Translations.ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
+
             return true;
         }
 

@@ -1,9 +1,9 @@
 package com.minersstudios.msessentials.resourcepack.data;
 
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.msessentials.resourcepack.resource.GitHubResourceManager;
-import com.minersstudios.msessentials.resourcepack.resource.ResourceManager;
-import com.minersstudios.msessentials.resourcepack.resource.Tag;
+import com.minersstudios.msessentials.resourcepack.resource.GitHubPackResourceManager;
+import com.minersstudios.msessentials.resourcepack.resource.PackResourceManager;
+import com.minersstudios.mscore.resource.github.Tag;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
@@ -138,7 +138,7 @@ final class ResourcePackDataImpl implements ResourcePackData {
         private Component prompt;
         private boolean required;
         private boolean autoUpdate;
-        private ResourceManager resourceManager;
+        private PackResourceManager resourceManager;
         private Consumer<ResourcePackData.Builder> onBuilt;
 
         BuilderImpl() {
@@ -272,13 +272,13 @@ final class ResourcePackDataImpl implements ResourcePackData {
         }
 
         @Override
-        public @UnknownNullability ResourceManager resourceManager() {
+        public @UnknownNullability PackResourceManager resourceManager() {
             return this.resourceManager;
         }
 
         @Contract("_ -> this")
         @Override
-        public @NotNull ResourcePackData.Builder resourceManager(final @Nullable ResourceManager resourceManager) {
+        public @NotNull ResourcePackData.Builder resourceManager(final @Nullable PackResourceManager resourceManager) {
             this.resourceManager = resourceManager;
 
             return this;
@@ -338,7 +338,7 @@ final class ResourcePackDataImpl implements ResourcePackData {
             }
 
             if (this.uri() == null) {
-                if (this.resourceManager instanceof final GitHubResourceManager gitHubManager) {
+                if (this.resourceManager instanceof final GitHubPackResourceManager gitHubManager) {
                     final Tag[] tags = gitHubManager.getTagsNow();
 
                     if (
@@ -361,36 +361,21 @@ final class ResourcePackDataImpl implements ResourcePackData {
         }
 
         private @NotNull CompletableFuture<ResourcePackData> getUpdatedData() {
-            if (this.resourceManager == null) {
-                return failedState("Provide a resource manager for auto-updating");
-            }
+            return this.resourceManager == null
+                   ? failedState("Provide a resource manager for auto-updating")
+                   : this.resourceManager
+                           .generateHash()
+                           .thenApply(
+                                   hash -> {
+                                       if (ChatUtils.isBlank(hash)) {
+                                           throw new IllegalStateException("Failed to generate hash");
+                                       }
 
-            final CompletableFuture<String> hashFuture;
+                                       this.hash.set(hash);
 
-            if (this.resourceManager instanceof final GitHubResourceManager gitHubManager) {
-                hashFuture =
-                        gitHubManager.generateHash()
-                        .thenApplyAsync(hash -> {
-
-
-                            return hash;
-                        });
-            } else {
-                hashFuture = this.resourceManager.generateHash();
-            }
-
-            return hashFuture
-                    .thenApply(
-                            hash -> {
-                                if (ChatUtils.isBlank(hash)) {
-                                    throw new IllegalStateException("Failed to generate hash");
-                                }
-
-                                this.hash.set(hash);
-
-                                return new ResourcePackDataImpl(this);
-                            }
-                    );
+                                       return new ResourcePackDataImpl(this);
+                                   }
+                           );
         }
 
         private static <U> @NotNull CompletableFuture<U> failedState(final @Nullable String message) {

@@ -1,7 +1,5 @@
 package com.minersstudios.mscore;
 
-import com.minersstudios.mscore.language.LanguageFile;
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utility.CoreProtectUtils;
@@ -13,7 +11,7 @@ import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.logging.Logger;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Keys.ERROR_NO_PERMISSION;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.minersstudios.mscore.utility.Font.Chars.RED_EXCLAMATION_MARK;
 
 /**
@@ -27,30 +25,30 @@ public final class MSCore extends MSPlugin<MSCore> {
     public static final String NAMESPACE = "mscore";
 
     //<editor-fold desc="Config keys" defaultstate="collapsed">
-    private static final String CONNECTION_THROTTLE = "messages.kick.connection-throttle";
-    private static final String FLYING_PLAYER = "messages.kick.flying-player";
-    private static final String FLYING_VEHICLE = "messages.kick.flying-vehicle";
-    private static final String NO_PERMISSION = "messages.no-permission";
-    private static final String TOO_MANY_PACKETS = "packet-limiter.kick-message";
+    private static final String KEY_CONNECTION_THROTTLE = "messages.kick.connection-throttle";
+    private static final String KEY_FLYING_PLAYER =       "messages.kick.flying-player";
+    private static final String KEY_FLYING_VEHICLE =      "messages.kick.flying-vehicle";
+    private static final String KEY_NO_PERMISSION =       "messages.no-permission";
+    private static final String KEY_TOO_MANY_PACKETS =    "packet-limiter.kick-message";
     //</editor-fold>
 
-    //<editor-fold desc="Config messages" defaultstate="collapsed">
-    private static final String MESSAGE_CONNECTION_THROTTLE = "<red><lang:" + LanguageRegistry.Keys.ERROR_CONNECTION_THROTTLE + '>';
-    private static final String MESSAGE_FLYING_PLAYER = "<red><lang:" + LanguageRegistry.Keys.ERROR_FLYING_PLAYER + '>';
-    private static final String MESSAGE_FLYING_VEHICLE = "<red><lang:" + LanguageRegistry.Keys.ERROR_FLYING_VEHICLE + '>';
-    private static final String MESSAGE_NO_PERMISSION = ' ' + RED_EXCLAMATION_MARK + " <red><lang:" + ERROR_NO_PERMISSION + '>';
-    private static final String MESSAGE_TOO_MANY_PACKETS = "<red><lang:" + LanguageRegistry.Keys.ERROR_TOO_MANY_PACKETS + '>';
+    //<editor-fold desc="Config values" defaultstate="collapsed">
+    private static final String VALUE_CONNECTION_THROTTLE = "<red><lang:" + ERROR_CONNECTION_THROTTLE.getKey() + '>';
+    private static final String VALUE_FLYING_PLAYER =       "<red><lang:" + ERROR_FLYING_PLAYER.getKey() + '>';
+    private static final String VALUE_FLYING_VEHICLE =      "<red><lang:" + ERROR_FLYING_VEHICLE.getKey() + '>';
+    private static final String VALUE_NO_PERMISSION =       ' ' + RED_EXCLAMATION_MARK + " <red><lang:" + ERROR_NO_PERMISSION.getKey() + '>';
+    private static final String VALUE_TOO_MANY_PACKETS =    "<red><lang:" + ERROR_TOO_MANY_PACKETS.getKey() + '>';
     //</editor-fold>
 
     @Override
     public void load() {
         PaperUtils
         .editConfig(PaperUtils.ConfigType.GLOBAL, this.getServer())
-        .set(CONNECTION_THROTTLE, MESSAGE_CONNECTION_THROTTLE)
-        .set(FLYING_PLAYER, MESSAGE_FLYING_PLAYER)
-        .set(FLYING_VEHICLE, MESSAGE_FLYING_VEHICLE)
-        .set(NO_PERMISSION, MESSAGE_NO_PERMISSION)
-        .set(TOO_MANY_PACKETS, MESSAGE_TOO_MANY_PACKETS)
+        .set(KEY_CONNECTION_THROTTLE, VALUE_CONNECTION_THROTTLE)
+        .set(KEY_FLYING_PLAYER,       VALUE_FLYING_PLAYER)
+        .set(KEY_FLYING_VEHICLE,      VALUE_FLYING_VEHICLE)
+        .set(KEY_NO_PERMISSION,       VALUE_NO_PERMISSION)
+        .set(KEY_TOO_MANY_PACKETS,    VALUE_TOO_MANY_PACKETS)
         .save();
     }
 
@@ -59,20 +57,11 @@ public final class MSCore extends MSPlugin<MSCore> {
         singleton = this;
 
         this.setupCoreProtect();
-
-        if (!LanguageFile.isLoaded()) {
-            LanguageFile.loadLanguage(
-                    globalConfig().getLanguageFolderLink(),
-                    globalConfig().getLanguageCode()
-            );
-        }
     }
 
     @Override
     public void disable() {
         singleton = null;
-
-        LanguageFile.unloadLanguage();
     }
 
     /**
@@ -87,18 +76,12 @@ public final class MSCore extends MSPlugin<MSCore> {
 
             if (coreProtect == null) {
                 MSLogger.warning("CoreProtectAPI is not running yet");
-
-                return;
-            }
-
-            if (coreProtect.isEnabled()) {
+            } else if (coreProtect.isEnabled()) {
                 CoreProtectUtils.set(coreProtect.getAPI());
                 MSLogger.fine("CoreProtect connected");
-
-                return;
+            } else {
+                MSLogger.warning("CoreProtect is not Enabled, actions logging will not be available");
             }
-
-            MSLogger.warning("CoreProtect is not Enabled, actions logging will not be available");
         } catch (final IllegalStateException e) {
             MSLogger.warning("CoreProtect is already connected");
         } catch (final NoClassDefFoundError e) {

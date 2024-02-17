@@ -37,6 +37,7 @@ import static org.bukkit.SoundCategory.PLAYERS;
  *
  * @version 1.20.4
  */
+@SuppressWarnings("unused")
 @Immutable
 public final class SoundGroup {
     private final Sound placeSound;
@@ -157,14 +158,6 @@ public final class SoundGroup {
     public static final SoundGroup WET_SPONGE =               create(SoundType.WET_SPONGE);
     //</editor-fold>
 
-    /**
-     * Constructs a SoundGroup with the specified sounds
-     *
-     * @param placeSound The place sound
-     * @param breakSound The break sound
-     * @param hitSound   The hit sound
-     * @param stepSound  The step sound
-     */
     private SoundGroup(
             final @NotNull Sound placeSound,
             final @NotNull Sound breakSound,

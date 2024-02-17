@@ -2,7 +2,7 @@ package com.minersstudios.mscustoms;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.plugin.config.PluginConfig;
-import com.minersstudios.mscore.plugin.status.StatusWatcher;
+import com.minersstudios.mscore.status.StatusWatcher;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.block.CustomBlockData;
 import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
@@ -12,6 +12,7 @@ import com.minersstudios.mscustoms.menu.CraftsMenu;
 import com.minersstudios.mscustoms.menu.RenamesMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -29,11 +30,11 @@ import java.util.logging.Level;
  * save configuration.
  */
 public final class Config extends PluginConfig<MSCustoms> {
+    private long dosimeterCheckRate;
     private String woodSoundPlace;
     private String woodSoundBreak;
     private String woodSoundStep;
     private String woodSoundHit;
-    private long dosimeterCheckRate;
 
     //<editor-fold desc="File paths" defaultstate="collapsed">
     private static final String JSON_EXTENSION = ".json";
@@ -58,40 +59,55 @@ public final class Config extends PluginConfig<MSCustoms> {
     public static final String EXAMPLE_RENAMEABLE_FILE_PATH = ITEMS_FOLDER + '/' + EXAMPLE_RENAMEABLE_FILE_NAME;
     //</editor-fold>
 
-    /**
-     * Configuration constructor
-     *
-     * @param plugin The plugin that owns this config
-     */
+    //<editor-fold desc="Config keys" defaultstate="collapsed">
+    public static final String KEY_DOSIMETER_CHECK_RATE = "dosimeter-check-rate";
+
+    public static final String KEY_WOOD_SOUND_SECTION =   "wood-sound";
+    public static final String KEY_PLACE =                "place";
+    public static final String KEY_BREAK =                "break";
+    public static final String KEY_STEP =                 "step";
+    public static final String KEY_HIT =                  "hit";
+    //</editor-fold>
+
+    //<editor-fold desc="Config default values" defaultstate="collapsed">
+    public static final long DEFAULT_DOSIMETER_CHECK_RATE = 100;
+    public static final String DEFAULT_WOOD_SOUND_PLACE =   "custom.block.wood.place";
+    public static final String DEFAULT_WOOD_SOUND_BREAK =   "custom.block.wood.break";
+    public static final String DEFAULT_WOOD_SOUND_STEP =    "custom.block.wood.step";
+    public static final String DEFAULT_WOOD_SOUND_HIT =     "custom.block.wood.hit";
+    //</editor-fold>
+
     Config(final @NotNull MSCustoms plugin) {
         super(plugin, plugin.getConfigFile());
     }
 
-    /**
-     * Reloads config variables
-     */
     @Override
     public void reloadVariables() {
-        this.woodSoundPlace = this.yaml.getString("wood-sound.place");
-        this.woodSoundBreak = this.yaml.getString("wood-sound.break");
-        this.woodSoundStep = this.yaml.getString("wood-sound.step");
-        this.woodSoundHit = this.yaml.getString("wood-sound.hit");
-        this.dosimeterCheckRate = this.yaml.getLong("dosimeter-check-rate");
+        this.dosimeterCheckRate = this.yaml.getLong(KEY_DOSIMETER_CHECK_RATE, DEFAULT_DOSIMETER_CHECK_RATE);
+
+        final ConfigurationSection woodSoundSection = this.yaml.getConfigurationSection(KEY_WOOD_SOUND_SECTION);
+
+        if (woodSoundSection != null) {
+            this.woodSoundPlace = woodSoundSection.getString(KEY_PLACE);
+            this.woodSoundBreak = woodSoundSection.getString(KEY_BREAK);
+            this.woodSoundStep = woodSoundSection.getString(KEY_STEP);
+            this.woodSoundHit = woodSoundSection.getString(KEY_HIT);
+        }
 
         if (ChatUtils.isBlank(this.woodSoundPlace)) {
-            this.woodSoundPlace = "block.wood.place";
+            this.woodSoundPlace = DEFAULT_WOOD_SOUND_PLACE;
         }
 
         if (ChatUtils.isBlank(this.woodSoundBreak)) {
-            this.woodSoundBreak = "block.wood.break";
+            this.woodSoundBreak = DEFAULT_WOOD_SOUND_BREAK;
         }
 
         if (ChatUtils.isBlank(this.woodSoundStep)) {
-            this.woodSoundStep = "block.wood.step";
+            this.woodSoundStep = DEFAULT_WOOD_SOUND_STEP;
         }
 
         if (ChatUtils.isBlank(this.woodSoundHit)) {
-            this.woodSoundHit = "block.wood.hit";
+            this.woodSoundHit = DEFAULT_WOOD_SOUND_HIT;
         }
 
         final MSCustoms plugin = this.getPlugin();
@@ -132,16 +148,21 @@ public final class Config extends PluginConfig<MSCustoms> {
         );
     }
 
-    /**
-     * Reloads default config variables
-     */
     @Override
     public void reloadDefaultVariables() {
-        this.setIfNotExists("wood-sound.place", "custom.block.wood.place");
-        this.setIfNotExists("wood-sound.break", "custom.block.wood.break");
-        this.setIfNotExists("wood-sound.step", "custom.block.wood.step");
-        this.setIfNotExists("wood-sound.hit", "custom.block.wood.hit");
-        this.setIfNotExists("dosimeter-check-rate", 100);
+        this.setIfNotExists(KEY_DOSIMETER_CHECK_RATE, DEFAULT_DOSIMETER_CHECK_RATE);
+
+        this.setIfNotExists(KEY_WOOD_SOUND_SECTION + '.' + KEY_PLACE, DEFAULT_WOOD_SOUND_PLACE);
+        this.setIfNotExists(KEY_WOOD_SOUND_SECTION + '.' + KEY_BREAK, DEFAULT_WOOD_SOUND_BREAK);
+        this.setIfNotExists(KEY_WOOD_SOUND_SECTION + '.' + KEY_STEP, DEFAULT_WOOD_SOUND_STEP);
+        this.setIfNotExists(KEY_WOOD_SOUND_SECTION + '.' + KEY_HIT, DEFAULT_WOOD_SOUND_HIT);
+    }
+
+    /**
+     * @return The dosimeter check rate
+     */
+    public long getDosimeterCheckRate() {
+        return this.dosimeterCheckRate;
     }
 
     /**
@@ -172,18 +193,11 @@ public final class Config extends PluginConfig<MSCustoms> {
         return this.woodSoundHit;
     }
 
-    /**
-     * @return The dosimeter check rate
-     */
-    public long getDosimeterCheckRate() {
-        return this.dosimeterCheckRate;
-    }
-
     private void loadBlocks() {
         final long start = System.currentTimeMillis();
         final MSCustoms plugin = this.getPlugin();
 
-        plugin.setStatus(MSCustoms.LOADING_BLOCKS);
+        plugin.assignStatus(MSCustoms.LOADING_BLOCKS);
 
         try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + '/' + BLOCKS_FOLDER))) {
             pathStream.parallel()
@@ -197,7 +211,7 @@ public final class Config extends PluginConfig<MSCustoms> {
             .filter(Objects::nonNull)
             .forEach(CustomBlockRegistry::register);
 
-            plugin.setStatus(MSCustoms.LOADED_BLOCKS);
+            plugin.assignStatus(MSCustoms.LOADED_BLOCKS);
             plugin.getComponentLogger().info(
                     Component.text(
                             "Loaded " + CustomBlockRegistry.size() + " custom blocks in " + (System.currentTimeMillis() - start) + "ms",
@@ -205,7 +219,7 @@ public final class Config extends PluginConfig<MSCustoms> {
                     )
             );
         } catch (final IOException e) {
-            plugin.setStatus(MSCustoms.FAILED_LOAD_BLOCKS);
+            plugin.assignStatus(MSCustoms.FAILED_LOAD_BLOCKS);
             plugin.getLogger().log(
                     Level.SEVERE,
                     "An error occurred while loading blocks",
@@ -218,7 +232,7 @@ public final class Config extends PluginConfig<MSCustoms> {
         final long start = System.currentTimeMillis();
         final MSCustoms plugin = this.getPlugin();
 
-        plugin.setStatus(MSCustoms.LOADING_RENAMEABLES);
+        plugin.assignStatus(MSCustoms.LOADING_RENAMEABLES);
 
         try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + '/' + ITEMS_FOLDER))) {
             pathStream.parallel()
@@ -232,7 +246,7 @@ public final class Config extends PluginConfig<MSCustoms> {
             .filter(Objects::nonNull)
             .forEach(RenameableItemRegistry::register);
 
-            plugin.setStatus(MSCustoms.LOADED_RENAMEABLES);
+            plugin.assignStatus(MSCustoms.LOADED_RENAMEABLES);
             plugin.getComponentLogger().info(
                     Component.text(
                             "Loaded " + RenameableItemRegistry.keysSize() + " renameable items in " + (System.currentTimeMillis() - start) + "ms",
@@ -242,7 +256,7 @@ public final class Config extends PluginConfig<MSCustoms> {
 
             RenamesMenu.update(plugin);
         } catch (final IOException e) {
-            plugin.setStatus(MSCustoms.FAILED_LOAD_RENAMEABLES);
+            plugin.assignStatus(MSCustoms.FAILED_LOAD_RENAMEABLES);
             plugin.getLogger().log(
                     Level.SEVERE,
                     "An error occurred while loading renameable items",

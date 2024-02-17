@@ -17,7 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.minersstudios.mscore.utility.ChatUtils.DEFAULT_STYLE;
 
 public final class CraftsMenu {
@@ -61,7 +61,7 @@ public final class CraftsMenu {
 
         CATEGORIES_INVENTORY =
                 CustomInventory.single(
-                        MENU_CRAFTS_CATEGORIES_TITLE.style(DEFAULT_STYLE),
+                        MENU_CRAFTS_CATEGORIES_TITLE.asComponent().style(DEFAULT_STYLE),
                         4
                 )
                 .buttons(
@@ -80,8 +80,8 @@ public final class CraftsMenu {
                         .collect(Collectors.toMap(Function.identity(), slot -> itemsButton))
                 );
 
-        final Component previousButton = MENU_CRAFTS_BUTTON_PREVIOUS_PAGE.style(DEFAULT_STYLE);
-        final Component nextButton = MENU_CRAFTS_BUTTON_NEXT_PAGE.style(DEFAULT_STYLE);
+        final Component previousButton = MENU_CRAFTS_BUTTON_PREVIOUS_PAGE.asComponent().style(DEFAULT_STYLE);
+        final Component nextButton = MENU_CRAFTS_BUTTON_NEXT_PAGE.asComponent().style(DEFAULT_STYLE);
 
         final ItemStack previousPageItem = new ItemStack(Material.PAPER);
         final ItemMeta previousPageMeta = previousPageItem.getItemMeta();
@@ -166,7 +166,7 @@ public final class CraftsMenu {
             final ItemStack resultItem = recipe.getResult();
             final SingleInventory craftInventory =
                     CustomInventory.single(
-                            MENU_CRAFTS_CRAFT_TITLE.style(DEFAULT_STYLE),
+                            MENU_CRAFTS_CRAFT_TITLE.asTranslatable().style(DEFAULT_STYLE),
                             4
                     );
 
@@ -260,7 +260,7 @@ public final class CraftsMenu {
     private static @NotNull ElementPagedInventory buildCraftsInventory() {
         return CustomInventory
                 .elementPaged(
-                        MENU_CRAFTS_CATEGORY_TITLE.style(DEFAULT_STYLE),
+                        MENU_CRAFTS_CATEGORY_TITLE.asTranslatable().style(DEFAULT_STYLE),
                         5,
                         IntStream.range(0, 36).toArray()
                 )

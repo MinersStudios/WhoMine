@@ -61,8 +61,8 @@ public final class ChristmasBall extends CustomDecorDataImpl<ChristmasBall> {
 
         return MSPlugin.globalConfig().isChristmas()
                 ? builder0.recipes(
-                        unused -> RecipeEntry.of(
-                                RecipeBuilder.shapedBuilder()
+                        unused -> RecipeEntry.fromBuilder(
+                                RecipeBuilder.shaped()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
                                         " S ",

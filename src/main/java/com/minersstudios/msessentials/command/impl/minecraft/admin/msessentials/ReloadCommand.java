@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.msessentials;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import org.bukkit.command.CommandSender;
@@ -21,7 +21,7 @@ public final class ReloadCommand {
         plugin.getConfiguration().reload();
         MSLogger.fine(
                 sender,
-                LanguageRegistry.Components.COMMAND_MSESSENTIALS_RELOAD_SUCCESS
+                Translations.COMMAND_MSESSENTIALS_RELOAD_SUCCESS.asTranslatable()
                 .arguments(text(System.currentTimeMillis() - time))
         );
 

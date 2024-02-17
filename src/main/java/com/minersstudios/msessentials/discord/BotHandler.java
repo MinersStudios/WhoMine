@@ -1,7 +1,6 @@
 package com.minersstudios.msessentials.discord;
 
 import com.minersstudios.mscore.inventory.CustomInventory;
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.command.impl.discord.EditSkinCommand;
@@ -21,8 +20,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import static com.minersstudios.mscore.language.LanguageFile.renderTranslation;
-import static com.minersstudios.mscore.language.LanguageRegistry.Strings.*;
+import static com.minersstudios.mscore.locale.Translations.*;
+import static com.minersstudios.mscore.utility.ChatUtils.serializePlainComponent;
 import static net.kyori.adventure.text.Component.text;
 
 public final class BotHandler {
@@ -44,9 +43,9 @@ public final class BotHandler {
     private static final String LIST_INDEX_REGEX = "\\d{1,2}";
     private static final Pattern LIST_INDEX_PATTERN = Pattern.compile(LIST_INDEX_REGEX);
 
-    private static final String MENU_TITLE = "§f" + MENU_DISCORD_TITLE;
-    private static final String VARIANT_YES = DISCORD_SKIN_VARIANT_YES.toLowerCase(Locale.ROOT);
-    private static final String VARIANT_NO = DISCORD_SKIN_VARIANT_NO.toLowerCase(Locale.ROOT);
+    private static final String MENU_TITLE = "§f" + MENU_DISCORD_TITLE.asString();
+    private static final String VARIANT_YES = DISCORD_SKIN_VARIANT_YES.asString().toLowerCase(Locale.ROOT);
+    private static final String VARIANT_NO = DISCORD_SKIN_VARIANT_NO.asString().toLowerCase(Locale.ROOT);
 
     public BotHandler(
             final @NotNull MSEssentials plugin,
@@ -95,12 +94,14 @@ public final class BotHandler {
         short code = 0;
 
         if (!this.plugin.getCache().getDiscordManager().isVerified(this.user)) {
-            this.reply(DISCORD_NOT_A_USER);
+            this.reply(DISCORD_NOT_A_USER.asString());
+
             return;
         }
 
         if (this.isFlooding()) {
-            this.reply(DISCORD_MESSAGE_ATTEMPTS_LIMIT_REACHED);
+            this.reply(DISCORD_MESSAGE_ATTEMPTS_LIMIT_REACHED.asString());
+
             return;
         }
 
@@ -108,6 +109,7 @@ public final class BotHandler {
             if (this.waitingReplyTask.run()) {
                 this.waitingReplyTask = null;
             }
+
             return;
         }
 
@@ -115,17 +117,23 @@ public final class BotHandler {
             try {
                 code = Short.parseShort(this.messageString);
             } catch (final NumberFormatException ignored) {
-                this.reply(DISCORD_INVALID_CODE);
+                this.reply(DISCORD_INVALID_CODE.asString());
+
                 return;
             }
 
-            if (code < 1000 || code > 9999) {
-                this.reply(DISCORD_INVALID_CODE);
+            if (
+                    code < 1000
+                    || code > 9999
+            ) {
+                this.reply(DISCORD_INVALID_CODE.asString());
+
                 return;
             }
 
             if (this.isCodeFlooding()) {
-                this.reply(DISCORD_CODE_ATTEMPTS_LIMIT_REACHED);
+                this.reply(DISCORD_CODE_ATTEMPTS_LIMIT_REACHED.asString());
+
                 return;
             }
         }
@@ -134,7 +142,8 @@ public final class BotHandler {
                 code == 0
                 && this.playerInfo == null
         ) {
-            this.reply(DISCORD_NOT_LINKED);
+            this.reply(DISCORD_NOT_LINKED.asString());
+
             return;
         }
 
@@ -144,7 +153,8 @@ public final class BotHandler {
         }
 
         if (attachmentSize > 1) {
-            this.reply(DISCORD_SKIN_ONLY_ONE_IMG);
+            this.reply(DISCORD_SKIN_ONLY_ONE_IMG.asString());
+
             return;
         } else if (attachmentSize == 1) {
             final Message.Attachment attachment = attachments.get(0);
@@ -153,13 +163,13 @@ public final class BotHandler {
             try {
                 this.handleSkin(link);
             } catch (final IllegalArgumentException ignored) {
-                this.reply(DISCORD_SKIN_INVALID_IMG);
+                this.reply(DISCORD_SKIN_INVALID_IMG.asString());
             }
 
             return;
         }
 
-        this.reply(DISCORD_UNKNOWN_COMMAND);
+        this.reply(DISCORD_UNKNOWN_COMMAND.asString());
     }
 
     private void reply(@NotNull String reply) {
@@ -178,6 +188,7 @@ public final class BotHandler {
 
         if (lastAttempt == 0L) {
             this.codeAttempt = newAttempt;
+
             return false;
         }
 
@@ -190,6 +201,7 @@ public final class BotHandler {
         }
 
         this.codeAttempt = Attempt.ZERO_ATTEMPT;
+
         return false;
     }
 
@@ -214,6 +226,7 @@ public final class BotHandler {
         }
 
         this.messageAttempt = Attempt.ZERO_ATTEMPT;
+
         return false;
     }
 
@@ -222,9 +235,9 @@ public final class BotHandler {
         final PlayerInfo fromCode = discordMap.validateCode(code);
 
         if (fromCode == null) {
-            this.reply(DISCORD_NO_CODE);
+            this.reply(DISCORD_NO_CODE.asString());
         } else if (fromCode.equals(this.playerInfo)) {
-            this.replyEmbed(DISCORD_ALREADY_LINKED);
+            this.replyEmbed(DISCORD_ALREADY_LINKED.asString());
         } else {
             this.playerInfo = fromCode;
             final Player onlinePlayer = fromCode.getOnlinePlayer();
@@ -232,9 +245,9 @@ public final class BotHandler {
             discordMap.removeCode(code);
             fromCode.linkDiscord(this.userId);
             this.replyEmbed(
-                    renderTranslation(
-                            LanguageRegistry.Components.DISCORD_SUCCESSFULLY_LINKED
-                            .arguments(
+                    serializePlainComponent(
+                            DISCORD_SUCCESSFULLY_LINKED
+                            .asComponent(
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
                             )
@@ -251,7 +264,7 @@ public final class BotHandler {
 
                 MSLogger.fine(
                         onlinePlayer,
-                        LanguageRegistry.Components.COMMAND_DISCORD_LINK_SUCCESS
+                        COMMAND_DISCORD_LINK_SUCCESS.asTranslatable()
                         .arguments(text(this.user.getName()))
                 );
             }
@@ -262,12 +275,14 @@ public final class BotHandler {
         final String skinName = this.messageString;
 
         if (skinName.isEmpty()) {
-            this.reply(DISCORD_SKIN_NO_NAME);
+            this.reply(DISCORD_SKIN_NO_NAME.asString());
+
             return;
         }
 
         if (!Skin.matchesNameRegex(skinName)) {
-            this.reply(DISCORD_SKIN_INVALID_NAME_REGEX);
+            this.reply(DISCORD_SKIN_INVALID_NAME_REGEX.asString());
+
             return;
         }
 
@@ -276,9 +291,9 @@ public final class BotHandler {
         if (playerFile.containsSkin(skinName)) {
             this.plugin.runTask(() -> this.handleEditTask(link, skinName));
             this.replyEmbed(
-                    renderTranslation(
-                            LanguageRegistry.Components.DISCORD_SKIN_ALREADY_SET
-                            .arguments(
+                    serializePlainComponent(
+                            DISCORD_SKIN_ALREADY_SET
+                            .asComponent(
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
                             )
@@ -292,15 +307,16 @@ public final class BotHandler {
             final Skin skin = Skin.create(this.plugin, skinName, link);
 
             if (skin == null) {
-                this.reply(DISCORD_SKIN_SERVICE_UNAVAILABLE);
+                this.reply(DISCORD_SKIN_SERVICE_UNAVAILABLE.asString());
+
                 return;
             }
 
             playerFile.addSkin(skin);
             this.replyEmbed(
-                    renderTranslation(
-                            LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_ADDED
-                            .arguments(
+                    serializePlainComponent(
+                            DISCORD_SKIN_SUCCESSFULLY_ADDED
+                            .asComponent(
                                     text(skinName),
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
@@ -313,7 +329,7 @@ public final class BotHandler {
             if (player != null) {
                 MSLogger.fine(
                         player,
-                        LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_ADDED_MINECRAFT
+                        DISCORD_SKIN_SUCCESSFULLY_ADDED_MINECRAFT.asTranslatable()
                         .arguments(text(skinName))
                 );
             }
@@ -321,9 +337,9 @@ public final class BotHandler {
             this.plugin.runTask(this::handleShowSkinListTask);
 
             this.replyEmbed(
-                    renderTranslation(
-                            LanguageRegistry.Components.DISCORD_SKIN_TOO_MANY_SKINS
-                            .arguments(
+                    serializePlainComponent(
+                            DISCORD_SKIN_TOO_MANY_SKINS
+                            .asComponent(
                                     this.playerInfo.getDefaultName(),
                                     text(this.playerInfo.getNickname())
                             )
@@ -350,14 +366,15 @@ public final class BotHandler {
                 if (player != null) {
                     MSLogger.fine(
                             player,
-                            LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_EDITED_MINECRAFT
+                            DISCORD_SKIN_SUCCESSFULLY_EDITED_MINECRAFT.asTranslatable()
                             .arguments(text(skinName))
                     );
                 }
             } else if (reply.equals(VARIANT_NO)) {
-                this.reply(DISCORD_SKIN_VARIANT_NO_REPLY);
+                this.reply(DISCORD_SKIN_VARIANT_NO_REPLY.asString());
             } else {
-                this.reply(DISCORD_UNKNOWN_COMMAND);
+                this.reply(DISCORD_UNKNOWN_COMMAND.asString());
+
                 return false;
             }
 
@@ -384,15 +401,16 @@ public final class BotHandler {
                     .append("\"");
                 }
 
-                this.replyEmbed(renderTranslation(
-                        LanguageRegistry.Components.DISCORD_SKIN_LIST_OF_SKINS
-                        .arguments(text(skinList.toString()))
+                this.replyEmbed(serializePlainComponent(
+                        DISCORD_SKIN_LIST_OF_SKINS
+                        .asComponent(text(skinList.toString()))
                 ));
                 this.plugin.runTask(this::handleSkinListTask);
             } else if (reply.equals(VARIANT_NO)) {
-                this.reply(DISCORD_SKIN_VARIANT_NO_REPLY);
+                this.reply(DISCORD_SKIN_VARIANT_NO_REPLY.asString());
             } else {
-                this.reply(DISCORD_UNKNOWN_COMMAND);
+                this.reply(DISCORD_UNKNOWN_COMMAND.asString());
+
                 return false;
             }
 
@@ -403,7 +421,8 @@ public final class BotHandler {
     private void handleSkinListTask() {
         this.waitingReplyTask = () -> {
             if (!LIST_INDEX_PATTERN.matcher(this.messageString).matches()) {
-                this.reply(DISCORD_SKIN_VARIANT_NO_REPLY);
+                this.reply(DISCORD_SKIN_VARIANT_NO_REPLY.asString());
+
                 return true;
             }
 
@@ -411,28 +430,32 @@ public final class BotHandler {
             try {
                 skinIndex = Byte.parseByte(this.messageString);
             } catch (final NumberFormatException ignored) {
-                this.reply(DISCORD_SKIN_INVALID_INDEX);
+                this.reply(DISCORD_SKIN_INVALID_INDEX.asString());
+
                 return false;
             }
 
             final Skin skin = this.playerInfo.getPlayerFile().getSkin(skinIndex - 1);
 
             if (skin == null) {
-                this.reply(DISCORD_SKIN_INVALID_INDEX);
+                this.reply(DISCORD_SKIN_INVALID_INDEX.asString());
+
                 return false;
             }
 
             this.plugin.runTask(() -> this.handleSkinTask(skin));
+
             return true;
         };
     }
 
     private void handleSkinTask(final @NotNull Skin skin) {
-        this.replyEmbed(DISCORD_SKIN_LIST_OF_SKIN_ACTIONS);
+        this.replyEmbed(DISCORD_SKIN_LIST_OF_SKIN_ACTIONS.asString());
 
         this.waitingReplyTask = () -> {
             if (!LIST_INDEX_PATTERN.matcher(this.messageString).matches()) {
-                this.reply(DISCORD_SKIN_VARIANT_NO_REPLY);
+                this.reply(DISCORD_SKIN_VARIANT_NO_REPLY.asString());
+
                 return true;
             }
 
@@ -440,7 +463,8 @@ public final class BotHandler {
             try {
                 actionIndex = Byte.parseByte(this.messageString);
             } catch (final NumberFormatException ignored) {
-                this.reply(DISCORD_SKIN_INVALID_INDEX);
+                this.reply(DISCORD_SKIN_INVALID_INDEX.asString());
+
                 return false;
             }
 
@@ -449,7 +473,8 @@ public final class BotHandler {
                 case 2 -> this.plugin.runTask(() -> this.handleEditNameTask(skin));
                 case 3 -> this.plugin.runTask(() -> RemoveSkinCommand.remove(playerInfo, skin, message, null));
                 default -> {
-                    this.reply(DISCORD_SKIN_INVALID_INDEX);
+                    this.reply(DISCORD_SKIN_INVALID_INDEX.asString());
+
                     return false;
                 }
             }
@@ -462,14 +487,15 @@ public final class BotHandler {
         final PlayerFile playerFile = this.playerInfo.getPlayerFile();
         final String skinName = editableSkin.getName();
 
-        this.replyEmbed(DISCORD_SKIN_ACTION_EDIT_INFO);
+        this.replyEmbed(DISCORD_SKIN_ACTION_EDIT_INFO.asString());
 
         this.waitingReplyTask = () -> {
             final var attachments = this.message.getAttachments();
 
             switch (attachments.size()) {
                 case 0 -> {
-                    this.reply(DISCORD_SKIN_VARIANT_NO_REPLY);
+                    this.reply(DISCORD_SKIN_VARIANT_NO_REPLY.asString());
+
                     return true;
                 }
                 case 1 -> {
@@ -489,12 +515,14 @@ public final class BotHandler {
                                         null
                                 );
                     } catch (final Throwable ignored) {
-                        this.reply(DISCORD_SKIN_INVALID_IMG);
+                        this.reply(DISCORD_SKIN_INVALID_IMG.asString());
+
                         return false;
                     }
                 }
                 default -> {
-                    this.reply(DISCORD_SKIN_ONLY_ONE_IMG);
+                    this.reply(DISCORD_SKIN_ONLY_ONE_IMG.asString());
+
                     return false;
                 }
             }
@@ -505,26 +533,28 @@ public final class BotHandler {
         final PlayerFile playerFile = this.playerInfo.getPlayerFile();
         final String oldName = editableSkin.getName();
 
-        this.replyEmbed(DISCORD_SKIN_ACTION_RENAME_INFO);
+        this.replyEmbed(DISCORD_SKIN_ACTION_RENAME_INFO.asString());
 
         this.waitingReplyTask = () -> {
             final String newName = this.messageString;
 
             if (!Skin.matchesNameRegex(newName)) {
-                this.reply(DISCORD_SKIN_INVALID_NAME_REGEX);
+                this.reply(DISCORD_SKIN_INVALID_NAME_REGEX.asString());
+
                 return false;
             }
 
             if (playerFile.containsSkin(newName)) {
                 this.replyEmbed(
-                        renderTranslation(
-                                LanguageRegistry.Components.DISCORD_SKIN_ALREADY_SET
-                                .arguments(
+                        serializePlainComponent(
+                                DISCORD_SKIN_ALREADY_SET
+                                .asComponent(
                                         this.playerInfo.getDefaultName(),
                                         text(this.playerInfo.getNickname())
                                 )
                         )
                 );
+
                 return false;
             }
 
@@ -533,9 +563,9 @@ public final class BotHandler {
                     Skin.create(newName, editableSkin.getValue(), editableSkin.getSignature())
             );
             this.replyEmbed(
-                    renderTranslation(
-                            LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_RENAMED
-                            .arguments(
+                    serializePlainComponent(
+                            DISCORD_SKIN_SUCCESSFULLY_RENAMED
+                            .asComponent(
                                     text(oldName),
                                     text(newName),
                                     this.playerInfo.getDefaultName(),
@@ -549,7 +579,7 @@ public final class BotHandler {
             if (player != null) {
                 MSLogger.fine(
                         player,
-                        LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_RENAMED_MINECRAFT
+                        DISCORD_SKIN_SUCCESSFULLY_RENAMED_MINECRAFT.asTranslatable()
                         .arguments(
                                 text(oldName),
                                 text(newName)
@@ -570,28 +600,30 @@ public final class BotHandler {
         final Skin skin = Skin.create(this.plugin, skinName, link);
 
         if (skin == null) {
-            this.reply(DISCORD_SKIN_SERVICE_UNAVAILABLE);
+            this.reply(DISCORD_SKIN_SERVICE_UNAVAILABLE.asString());
+
             return true;
         }
 
         playerFile.setSkin(skinIndex, skin);
         this.replyEmbed(
-                renderTranslation(
-                        LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_EDITED
-                        .arguments(
+                serializePlainComponent(
+                        DISCORD_SKIN_SUCCESSFULLY_EDITED
+                        .asComponent(
                                 text(skinName),
                                 this.playerInfo.getDefaultName(),
                                 text(this.playerInfo.getNickname())
                         )
                 )
         );
+
         return false;
     }
 
     public static @NotNull MessageEmbed craftEmbed(final @NotNull String description) {
         return new MessageEmbed(
                 null,
-                DISCORD_EMBED_TITLE,
+                DISCORD_EMBED_TITLE.asString(),
                 description,
                 EmbedType.RICH,
                 null,

@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.resourcepack.data;
 
-import com.minersstudios.msessentials.resourcepack.resource.ResourceManager;
+import com.minersstudios.msessentials.resourcepack.resource.PackResourceManager;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackInfoLike;
 import net.kyori.adventure.text.Component;
@@ -38,71 +38,6 @@ import java.util.function.Consumer;
  * @see Builder
  */
 public interface ResourcePackData extends ResourcePackInfoLike {
-
-    /**
-     * Returns resource pack data with a random UUID, an empty URL, an empty
-     * hash, a null prompt, and a required status of false. The hash code of
-     * this data will always be 0.
-     *
-     * @return An empty resource pack data constant
-     */
-    static @NotNull ResourcePackData empty() {
-        return EmptyResourcePackData.SINGLETON;
-    }
-
-    /**
-     * Returns a new builder based on the specified resource pack info
-     *
-     * @param info The resource pack info
-     * @return A new builder based on the specified resource pack info
-     */
-    @Contract("_ -> new")
-    static @NotNull Builder builder(final @NotNull ResourcePackInfo info) {
-        return new ResourcePackDataImpl.BuilderImpl(info);
-    }
-
-    /**
-     * Creates a new builder for a {@link ResourcePackData}
-     *
-     * @return A new builder
-     */
-    @Contract(" -> new")
-    static @NotNull Builder builder() {
-        return new ResourcePackDataImpl.BuilderImpl();
-    }
-
-    /**
-     * Creates new resource pack data based on the specified info with a null
-     * prompt and a required status of false.
-     *
-     * @param info The resource pack info
-     * @return New resource pack data based on the specified info with a null
-     *         prompt and a required status of false
-     * @see #of(ResourcePackInfo, Component, boolean)
-     */
-    @Contract("_ -> new")
-    static @NotNull ResourcePackData of(final @NotNull ResourcePackInfo info) {
-        return of(info, null, false);
-    }
-
-    /**
-     * Creates new resource pack data based on the specified info, prompt, and
-     * required status.
-     *
-     * @param info     The resource pack info
-     * @param prompt   The prompt displayed to the user when accepting a pack
-     * @param required Whether the resource pack is required
-     * @return New resource pack data based on the specified info, prompt, and
-     *         required status
-     */
-    @Contract("_, _, _ -> new")
-    static @NotNull ResourcePackData of(
-            final @NotNull ResourcePackInfo info,
-            final @Nullable Component prompt,
-            final boolean required
-    ) {
-        return new ResourcePackDataImpl(info, prompt, required);
-    }
 
     /**
      * Gets the unique ID of the resource pack.
@@ -203,6 +138,71 @@ public interface ResourcePackData extends ResourcePackInfoLike {
      */
     @Contract(" -> new")
     @NotNull ResourcePackInfo asResourcePackInfo() throws UnsupportedOperationException;
+
+    /**
+     * Returns resource pack data with a random UUID, an empty URL, an empty
+     * hash, a null prompt, and a required status of false. The hash code of
+     * this data will always be 0.
+     *
+     * @return An empty resource pack data constant
+     */
+    static @NotNull ResourcePackData empty() {
+        return EmptyResourcePackData.SINGLETON;
+    }
+
+    /**
+     * Returns a new builder based on the specified resource pack info
+     *
+     * @param info The resource pack info
+     * @return A new builder based on the specified resource pack info
+     */
+    @Contract("_ -> new")
+    static @NotNull Builder builder(final @NotNull ResourcePackInfo info) {
+        return new ResourcePackDataImpl.BuilderImpl(info);
+    }
+
+    /**
+     * Creates a new builder for a {@link ResourcePackData}
+     *
+     * @return A new builder
+     */
+    @Contract(" -> new")
+    static @NotNull Builder builder() {
+        return new ResourcePackDataImpl.BuilderImpl();
+    }
+
+    /**
+     * Creates new resource pack data based on the specified info with a null
+     * prompt and a required status of false.
+     *
+     * @param info The resource pack info
+     * @return New resource pack data based on the specified info with a null
+     *         prompt and a required status of false
+     * @see #of(ResourcePackInfo, Component, boolean)
+     */
+    @Contract("_ -> new")
+    static @NotNull ResourcePackData of(final @NotNull ResourcePackInfo info) {
+        return of(info, null, false);
+    }
+
+    /**
+     * Creates new resource pack data based on the specified info, prompt, and
+     * required status.
+     *
+     * @param info     The resource pack info
+     * @param prompt   The prompt displayed to the user when accepting a pack
+     * @param required Whether the resource pack is required
+     * @return New resource pack data based on the specified info, prompt, and
+     *         required status
+     */
+    @Contract("_, _, _ -> new")
+    static @NotNull ResourcePackData of(
+            final @NotNull ResourcePackInfo info,
+            final @Nullable Component prompt,
+            final boolean required
+    ) {
+        return new ResourcePackDataImpl(info, prompt, required);
+    }
 
     /**
      * A builder for a {@link ResourcePackData}
@@ -341,7 +341,7 @@ public interface ResourcePackData extends ResourcePackInfoLike {
          *
          * @return The resource manager
          */
-        @UnknownNullability ResourceManager resourceManager();
+        @UnknownNullability PackResourceManager resourceManager();
 
         /**
          * Sets the resource manager
@@ -350,7 +350,7 @@ public interface ResourcePackData extends ResourcePackInfoLike {
          * @return This builder, for chaining
          */
         @Contract("_ -> this")
-        @NotNull Builder resourceManager(final @Nullable ResourceManager resourceManager);
+        @NotNull Builder resourceManager(final @Nullable PackResourceManager resourceManager);
 
         /**
          * Returns the consumer to run when the resource pack data is built

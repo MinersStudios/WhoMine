@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.command.api.discord.interaction;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -34,7 +34,7 @@ public final class CommandHandler extends AbstractInteractionHandler<SlashComman
         final User user = this.getInteraction().getUser();
 
         if (!this.getPlugin().getCache().getDiscordManager().isVerified(user)) {
-            this.send(LanguageRegistry.Strings.DISCORD_NOT_A_USER);
+            this.send(Translations.DISCORD_NOT_A_USER.asString());
 
             return null;
         }
@@ -42,7 +42,7 @@ public final class CommandHandler extends AbstractInteractionHandler<SlashComman
         final PlayerInfo playerInfo = PlayerInfo.fromDiscord(this.getPlugin(), user.getIdLong());
 
         if (playerInfo == null) {
-            this.send(LanguageRegistry.Strings.DISCORD_NOT_LINKED);
+            this.send(Translations.DISCORD_NOT_LINKED.asString());
 
             return null;
         }

@@ -47,38 +47,53 @@ import org.jetbrains.annotations.UnknownNullability;
 public interface Sound {
 
     /**
+     * Returns the key of this Sound
+     *
      * @return The key of this Sound
      */
     @NotNull String getKey();
 
     /**
-     * @return The sound category of this Sound
+     * Returns the sound category of this sound
+     *
+     * @return The sound category of this sound
      */
     @NotNull SoundCategory getCategory();
 
     /**
-     * @return The volume of this Sound
+     * Returns the volume of this sound
+     *
+     * @return The volume of this sound
      */
     float getVolume();
 
     /**
-     * @return The pitch of this Sound
+     * Returns the pitch of this sound
+     *
+     * @return The pitch of this sound
      */
     float getPitch();
 
     /**
-     * @return The hash code value for this sound. If this sound is empty, the
-     *         hash code will be 0.
+     * Returns the hash code value for this sound.
+     * <br>
+     * If this sound is empty, the hash code will be 0.
+     *
+     * @return The hash code value for this sound
      */
     @Override
     int hashCode();
 
     /**
+     * Returns whether this Sound is empty
+     *
      * @return True if this Sound is empty
      */
     boolean isEmpty();
 
     /**
+     * Returns whether this Sound is the same as the specified object
+     *
      * @param obj The reference object with which to compare
      * @return True if this Sound is the same as the obj argument
      */
@@ -87,13 +102,17 @@ public interface Sound {
     boolean equals(final @Nullable Object obj);
 
     /**
+     * Returns a string representation of this Sound
+     *
      * @return A string representation of this Sound
      */
     @Override
     @NotNull String toString();
 
     /**
-     * @return A builder with the values of this Sound
+     * Creates a new {@link Builder} with the values of this Sound
+     *
+     * @return A new builder with the values of this Sound
      */
     @Contract(" -> new")
     @NotNull Builder toBuilder();
@@ -141,7 +160,7 @@ public interface Sound {
     );
 
     /**
-     * Plays this Sound at the specified entity in the world.
+     * Plays this sound at the specified entity in the world.
      * <br>
      * If the place sound is {@link SoundGroup#WOOD}, the wood place sound from
      * the {@link Config} will be played instead.
@@ -191,12 +210,12 @@ public interface Sound {
      *
      * @param key The key of the sound
      * @return A new Sound instance
-     * @throws IllegalArgumentException If the key is blank
+     * @throws IllegalStateException If the specified key is blank or null
      * @see #create(String, SoundCategory)
      * @see #create(String, SoundCategory, float, float)
      */
     @Contract("_ -> new")
-    static @NotNull Sound create(final @NotNull String key) throws IllegalArgumentException {
+    static @NotNull Sound create(final @NotNull String key) throws IllegalStateException {
         return create(
                 key,
                 SoundCategory.MASTER
@@ -228,14 +247,14 @@ public interface Sound {
      * @param key           The key of the sound
      * @param soundCategory The sound category of the sound
      * @return A new Sound instance
-     * @throws IllegalArgumentException If the key is blank
+     * @throws IllegalStateException If the specified key is blank or null
      * @see #create(String, SoundCategory, float, float)
      */
     @Contract("_, _ -> new")
     static @NotNull Sound create(
             final @NotNull String key,
             final @NotNull SoundCategory soundCategory
-    ) throws IllegalArgumentException {
+    ) throws IllegalStateException {
         return create(
                 key,
                 soundCategory,
@@ -269,14 +288,14 @@ public interface Sound {
     }
 
     /**
-     * Creates a new Sound instance
+     * Creates a new {@link Sound} instance
      *
      * @param key           The key of the sound
      * @param soundCategory The sound category of the sound
      * @param volume        The volume of the sound
      * @param pitch         The pitch of the sound
      * @return A new Sound instance
-     * @throws IllegalArgumentException If the key is blank
+     * @throws IllegalStateException If the specified key is blank or null
      */
     @Contract("_, _, _, _ -> new")
     static @NotNull Sound create(
@@ -284,7 +303,7 @@ public interface Sound {
             final @NotNull SoundCategory soundCategory,
             final float volume,
             final float pitch
-    ) throws IllegalArgumentException {
+    ) throws IllegalStateException {
         return builder()
                 .key(key)
                 .category(soundCategory)
@@ -304,7 +323,9 @@ public interface Sound {
     }
 
     /**
-     * @return An empty Sound constant
+     * Returns an empty sound constant
+     *
+     * @return An empty sound constant
      */
     static @NotNull Sound empty() {
         return EmptySound.SINGLETON;
@@ -333,12 +354,14 @@ public interface Sound {
     interface Builder {
 
         /**
-         * @return The key of this Sound
+         * Returns the key of this sound
+         *
+         * @return The key of this sound, or null if not set
          */
         @UnknownNullability String key();
 
         /**
-         * Sets the key of this Sound
+         * Sets the key of this sound
          *
          * @param soundEvent The sound event, which will be converted to a key
          * @return This builder, for chaining
@@ -348,7 +371,7 @@ public interface Sound {
         @NotNull Builder key(final @NotNull SoundEvent soundEvent);
 
         /**
-         * Sets the key of this Sound
+         * Sets the key of this sound
          *
          * @param key The key to set
          * @return This builder, for chaining
@@ -357,12 +380,14 @@ public interface Sound {
         @NotNull Builder key(final @NotNull String key);
 
         /**
-         * @return The sound category of this Sound
+         * Returns the sound category of this sound
+         *
+         * @return The sound category of this sound, or null if not set
          */
         @UnknownNullability SoundCategory category();
 
         /**
-         * Sets the sound category of this Sound
+         * Sets the sound category of this sound
          *
          * @param category The sound category to set
          * @return This builder, for chaining
@@ -371,12 +396,14 @@ public interface Sound {
         @NotNull Builder category(final @NotNull SoundCategory category);
 
         /**
-         * @return The volume of this Sound
+         * Returns the volume of this sound
+         *
+         * @return The volume of this sound
          */
         float volume();
 
         /**
-         * Sets the volume of this Sound
+         * Sets the volume of this sound
          *
          * @param volume The volume to set
          * @return This builder, for chaining
@@ -385,12 +412,14 @@ public interface Sound {
         @NotNull Builder volume(final float volume);
 
         /**
-         * @return The pitch of this Sound
+         * Returns the pitch of this sound
+         *
+         * @return The pitch of this sound
          */
         float pitch();
 
         /**
-         * Sets the pitch of this Sound
+         * Sets the pitch of this sound
          *
          * @param pitch The pitch to set
          * @return This builder, for chaining
@@ -399,15 +428,17 @@ public interface Sound {
         @NotNull Builder pitch(final float pitch);
 
         /**
-         * Builds a Sound with the values of this builder
+         * Builds a {@code Sound} with the values of this builder
          *
-         * @return The built Sound
+         * @return The built {@code Sound}
          * @throws IllegalStateException If the key is blank or null
          */
         @Contract(" -> new")
         @NotNull Sound build() throws IllegalStateException;
 
         /**
+         * Returns a string representation of this builder
+         *
          * @return A string representation of this builder
          */
         @Override

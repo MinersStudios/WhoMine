@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 public final class AdminGameParamsCommand {
@@ -23,7 +23,7 @@ public final class AdminGameParamsCommand {
         if (args.length < 3) {
             MSLogger.severe(
                     sender,
-                    COMMAND_PLAYER_GAME_PARAMS_USE_ONE_OF
+                    COMMAND_PLAYER_GAME_PARAMS_USE_ONE_OF.asTranslatable()
             );
             return true;
         }
@@ -40,12 +40,14 @@ public final class AdminGameParamsCommand {
                     MSLogger.fine(
                             sender,
                             player == null
-                            ? COMMAND_PLAYER_GAME_PARAMS_GET_GAME_MODE.arguments(
+                            ? COMMAND_PLAYER_GAME_PARAMS_GET_GAME_MODE.asTranslatable()
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerFile.getGameMode().name().toLowerCase(Locale.ROOT))
                             )
-                            : COMMAND_PLAYER_GAME_PARAMS_GET_GAME_MODE_FULL.arguments(
+                            : COMMAND_PLAYER_GAME_PARAMS_GET_GAME_MODE_FULL.asTranslatable()
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerFile.getGameMode().name().toLowerCase(Locale.ROOT)),
@@ -61,7 +63,7 @@ public final class AdminGameParamsCommand {
                 } catch (final IllegalArgumentException ignore) {
                     MSLogger.severe(
                             sender,
-                            COMMAND_PLAYER_GAME_PARAMS_GAME_MODE_USE_ONE_OF
+                            COMMAND_PLAYER_GAME_PARAMS_GAME_MODE_USE_ONE_OF.asTranslatable()
                     );
                     return true;
                 }
@@ -74,7 +76,7 @@ public final class AdminGameParamsCommand {
                 playerFile.save();
                 MSLogger.fine(
                         sender,
-                        COMMAND_PLAYER_GAME_PARAMS_SET_GAME_MODE
+                        COMMAND_PLAYER_GAME_PARAMS_SET_GAME_MODE.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
@@ -88,18 +90,21 @@ public final class AdminGameParamsCommand {
                     MSLogger.fine(
                             sender,
                             player == null
-                            ? COMMAND_PLAYER_GAME_PARAMS_GET_HEALTH.arguments(
+                            ? COMMAND_PLAYER_GAME_PARAMS_GET_HEALTH.asTranslatable()
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(Double.toString(playerFile.getHealth()))
                             )
-                            : COMMAND_PLAYER_GAME_PARAMS_GET_HEALTH_FULL.arguments(
+                            : COMMAND_PLAYER_GAME_PARAMS_GET_HEALTH_FULL.asTranslatable()
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(Double.toString(playerFile.getHealth())),
                                     text(Double.toString(player.getHealth()))
                             )
                     );
+
                     return true;
                 }
 
@@ -109,8 +114,9 @@ public final class AdminGameParamsCommand {
                 } catch (final NumberFormatException ignore) {
                     MSLogger.severe(
                             sender,
-                            ERROR_WRONG_FORMAT
+                            ERROR_WRONG_FORMAT.asTranslatable()
                     );
+
                     return true;
                 }
 
@@ -122,13 +128,14 @@ public final class AdminGameParamsCommand {
                 playerFile.save();
                 MSLogger.fine(
                         sender,
-                        COMMAND_PLAYER_GAME_PARAMS_SET_HEALTH
+                        COMMAND_PLAYER_GAME_PARAMS_SET_HEALTH.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(paramArgString)
                         )
                 );
+
                 return true;
             }
             case "air" -> {
@@ -136,18 +143,21 @@ public final class AdminGameParamsCommand {
                     MSLogger.fine(
                             sender,
                             player == null
-                            ? COMMAND_PLAYER_GAME_PARAMS_GET_AIR.arguments(
+                            ? COMMAND_PLAYER_GAME_PARAMS_GET_AIR.asTranslatable()
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerFile.getAir())
                             )
-                            : COMMAND_PLAYER_GAME_PARAMS_GET_AIR_FULL.arguments(
+                            : COMMAND_PLAYER_GAME_PARAMS_GET_AIR_FULL.asTranslatable()
+                            .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     text(playerFile.getAir()),
                                     text(player.getRemainingAir())
                             )
                     );
+
                     return true;
                 }
 
@@ -157,8 +167,9 @@ public final class AdminGameParamsCommand {
                 } catch (final NumberFormatException ignore) {
                     MSLogger.severe(
                             sender,
-                            ERROR_WRONG_FORMAT
+                            ERROR_WRONG_FORMAT.asTranslatable()
                     );
+
                     return true;
                 }
 
@@ -170,13 +181,14 @@ public final class AdminGameParamsCommand {
                 playerFile.save();
                 MSLogger.fine(
                         sender,
-                        COMMAND_PLAYER_GAME_PARAMS_SET_AIR
+                        COMMAND_PLAYER_GAME_PARAMS_SET_AIR.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(paramArgString)
                         )
                 );
+
                 return true;
             }
         }

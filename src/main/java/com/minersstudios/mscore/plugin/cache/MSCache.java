@@ -1,7 +1,9 @@
 package com.minersstudios.mscore.plugin.cache;
 
+import org.jetbrains.annotations.NotNull;
+
 public abstract class MSCache {
-    private boolean loaded;
+    private boolean isLoaded;
 
     /**
      * Loads the cache
@@ -13,7 +15,7 @@ public abstract class MSCache {
             throw new IllegalStateException("Cache is already loaded");
         }
 
-        this.loaded = true;
+        this.isLoaded = true;
         this.onLoad();
     }
 
@@ -27,15 +29,27 @@ public abstract class MSCache {
             throw new IllegalStateException("Cache is not loaded");
         }
 
-        this.loaded = false;
+        this.isLoaded = false;
         this.onUnload();
     }
 
     /**
+     * Returns whether the cache is loaded
+     *
      * @return Whether the cache is loaded
      */
     public final boolean isLoaded() {
-        return this.loaded;
+        return this.isLoaded;
+    }
+
+    /**
+     * Returns a string representation of this cache
+     *
+     * @return A string representation of this cache
+     */
+    @Override
+    public @NotNull String toString() {
+        return this.getClass().getSimpleName() + "{isLoaded=" + this.isLoaded + "}";
     }
 
     /**

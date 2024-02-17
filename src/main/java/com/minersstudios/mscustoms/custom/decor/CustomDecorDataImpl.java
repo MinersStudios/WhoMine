@@ -657,7 +657,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             }
 
             this.recipeEntries.add(
-                    RecipeEntry.of(
+                    RecipeEntry.fromRecipe(
                             recipe,
                             registerInMenu
                     )

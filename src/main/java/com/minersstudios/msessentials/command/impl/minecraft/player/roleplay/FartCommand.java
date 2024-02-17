@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.minecraft.player.roleplay;
 
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.command.api.MSCommand;
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.location.MSPosition;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.BlockUtils;
@@ -57,8 +57,9 @@ public final class FartCommand extends AbstractCommandExecutor<MSEssentials> {
         if (playerInfo.isMuted()) {
             MSLogger.warning(
                     player,
-                    LanguageRegistry.Components.COMMAND_MUTE_ALREADY_RECEIVER
+                    Translations.COMMAND_MUTE_ALREADY_RECEIVER.asTranslatable()
             );
+
             return true;
         }
 

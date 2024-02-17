@@ -1,11 +1,11 @@
 package com.minersstudios.msessentials.player;
 
 
-import com.minersstudios.mscore.language.LanguageFile;
-import net.kyori.adventure.text.Component;
+import com.minersstudios.mscore.locale.LanguageFile;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 
 /**
  * Pronouns enum with custom messages. All messages stored in the
@@ -15,69 +15,69 @@ import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
  */
 public enum Pronouns {
     HE(
-            PLAYER_PRONOUNS_HE_JOIN,
-            PLAYER_PRONOUNS_HE_QUIT,
-            PLAYER_PRONOUNS_HE_SPIT,
-            PLAYER_PRONOUNS_HE_FART,
-            PLAYER_PRONOUNS_HE_PRONOUNS,
-            PLAYER_PRONOUNS_HE_TRAVELER,
-            PLAYER_PRONOUNS_HE_SIT,
-            PLAYER_PRONOUNS_HE_GET_UP,
-            PLAYER_PRONOUNS_HE_DEATH,
-            PLAYER_PRONOUNS_HE_KILL,
-            PLAYER_PRONOUNS_HE_SAID
+            PLAYER_PRONOUNS_HE_JOIN.asTranslatable(),
+            PLAYER_PRONOUNS_HE_QUIT.asTranslatable(),
+            PLAYER_PRONOUNS_HE_SPIT.asTranslatable(),
+            PLAYER_PRONOUNS_HE_FART.asTranslatable(),
+            PLAYER_PRONOUNS_HE_PRONOUNS.asTranslatable(),
+            PLAYER_PRONOUNS_HE_TRAVELER.asTranslatable(),
+            PLAYER_PRONOUNS_HE_SIT.asTranslatable(),
+            PLAYER_PRONOUNS_HE_GET_UP.asTranslatable(),
+            PLAYER_PRONOUNS_HE_DEATH.asTranslatable(),
+            PLAYER_PRONOUNS_HE_KILL.asTranslatable(),
+            PLAYER_PRONOUNS_HE_SAID.asTranslatable()
     ),
     SHE(
-            PLAYER_PRONOUNS_SHE_JOIN,
-            PLAYER_PRONOUNS_SHE_QUIT,
-            PLAYER_PRONOUNS_SHE_SPIT,
-            PLAYER_PRONOUNS_SHE_FART,
-            PLAYER_PRONOUNS_SHE_PRONOUNS,
-            PLAYER_PRONOUNS_SHE_TRAVELER,
-            PLAYER_PRONOUNS_SHE_SIT,
-            PLAYER_PRONOUNS_SHE_GET_UP,
-            PLAYER_PRONOUNS_SHE_DEATH,
-            PLAYER_PRONOUNS_SHE_KILL,
-            PLAYER_PRONOUNS_SHE_SAID
+            PLAYER_PRONOUNS_SHE_JOIN.asTranslatable(),
+            PLAYER_PRONOUNS_SHE_QUIT.asTranslatable(),
+            PLAYER_PRONOUNS_SHE_SPIT.asTranslatable(),
+            PLAYER_PRONOUNS_SHE_FART.asTranslatable(),
+            PLAYER_PRONOUNS_SHE_PRONOUNS.asTranslatable(),
+            PLAYER_PRONOUNS_SHE_TRAVELER.asTranslatable(),
+            PLAYER_PRONOUNS_SHE_SIT.asTranslatable(),
+            PLAYER_PRONOUNS_SHE_GET_UP.asTranslatable(),
+            PLAYER_PRONOUNS_SHE_DEATH.asTranslatable(),
+            PLAYER_PRONOUNS_SHE_KILL.asTranslatable(),
+            PLAYER_PRONOUNS_SHE_SAID.asTranslatable()
     ),
     THEY(
-            PLAYER_PRONOUNS_THEY_JOIN,
-            PLAYER_PRONOUNS_THEY_QUIT,
-            PLAYER_PRONOUNS_THEY_SPIT,
-            PLAYER_PRONOUNS_THEY_FART,
-            PLAYER_PRONOUNS_THEY_PRONOUNS,
-            PLAYER_PRONOUNS_THEY_TRAVELER,
-            PLAYER_PRONOUNS_THEY_SIT,
-            PLAYER_PRONOUNS_THEY_GET_UP,
-            PLAYER_PRONOUNS_THEY_DEATH,
-            PLAYER_PRONOUNS_THEY_KILL,
-            PLAYER_PRONOUNS_THEY_SAID
+            PLAYER_PRONOUNS_THEY_JOIN.asTranslatable(),
+            PLAYER_PRONOUNS_THEY_QUIT.asTranslatable(),
+            PLAYER_PRONOUNS_THEY_SPIT.asTranslatable(),
+            PLAYER_PRONOUNS_THEY_FART.asTranslatable(),
+            PLAYER_PRONOUNS_THEY_PRONOUNS.asTranslatable(),
+            PLAYER_PRONOUNS_THEY_TRAVELER.asTranslatable(),
+            PLAYER_PRONOUNS_THEY_SIT.asTranslatable(),
+            PLAYER_PRONOUNS_THEY_GET_UP.asTranslatable(),
+            PLAYER_PRONOUNS_THEY_DEATH.asTranslatable(),
+            PLAYER_PRONOUNS_THEY_KILL.asTranslatable(),
+            PLAYER_PRONOUNS_THEY_SAID.asTranslatable()
     );
 
-    private final Component joinMessage;
-    private final Component quitMessage;
-    private final Component spitMessage;
-    private final Component fartMessage;
-    private final Component pronouns;
-    private final Component traveler;
-    private final Component sitMessage;
-    private final Component unSitMessage;
-    private final Component deathMessage;
-    private final Component killMessage;
-    private final Component saidMessage;
+    private final TranslatableComponent joinMessage;
+    private final TranslatableComponent quitMessage;
+    private final TranslatableComponent spitMessage;
+    private final TranslatableComponent fartMessage;
+    private final TranslatableComponent pronouns;
+    private final TranslatableComponent traveler;
+    private final TranslatableComponent sitMessage;
+    private final TranslatableComponent unSitMessage;
+    private final TranslatableComponent deathMessage;
+    private final TranslatableComponent killMessage;
+    private final TranslatableComponent saidMessage;
 
     Pronouns(
-            final @NotNull Component joinMessage,
-            final @NotNull Component quitMessage,
-            final @NotNull Component spitMessage,
-            final @NotNull Component fartMessage,
-            final @NotNull Component pronouns,
-            final @NotNull Component traveler,
-            final @NotNull Component sitMessage,
-            final @NotNull Component unSitMessage,
-            final @NotNull Component deathMessage,
-            final @NotNull Component killMessage,
-            final @NotNull Component saidMessage
+            final @NotNull TranslatableComponent joinMessage,
+            final @NotNull TranslatableComponent quitMessage,
+            final @NotNull TranslatableComponent spitMessage,
+            final @NotNull TranslatableComponent fartMessage,
+            final @NotNull TranslatableComponent pronouns,
+            final @NotNull TranslatableComponent traveler,
+            final @NotNull TranslatableComponent sitMessage,
+            final @NotNull TranslatableComponent unSitMessage,
+            final @NotNull TranslatableComponent deathMessage,
+            final @NotNull TranslatableComponent killMessage,
+            final @NotNull TranslatableComponent saidMessage
     ) {
         this.joinMessage = joinMessage;
         this.quitMessage = quitMessage;
@@ -92,47 +92,47 @@ public enum Pronouns {
         this.saidMessage = saidMessage;
     }
 
-    public @NotNull Component getJoinMessage() {
+    public @NotNull TranslatableComponent getJoinMessage() {
         return this.joinMessage;
     }
 
-    public @NotNull Component getQuitMessage() {
+    public @NotNull TranslatableComponent getQuitMessage() {
         return this.quitMessage;
     }
 
-    public @NotNull Component getSpitMessage() {
+    public @NotNull TranslatableComponent getSpitMessage() {
         return this.spitMessage;
     }
 
-    public @NotNull Component getFartMessage() {
+    public @NotNull TranslatableComponent getFartMessage() {
         return this.fartMessage;
     }
 
-    public @NotNull Component getPronouns() {
+    public @NotNull TranslatableComponent getPronouns() {
         return this.pronouns;
     }
 
-    public @NotNull Component getTraveler() {
+    public @NotNull TranslatableComponent getTraveler() {
         return this.traveler;
     }
 
-    public @NotNull Component getSitMessage() {
+    public @NotNull TranslatableComponent getSitMessage() {
         return this.sitMessage;
     }
 
-    public @NotNull Component getUnSitMessage() {
+    public @NotNull TranslatableComponent getUnSitMessage() {
         return this.unSitMessage;
     }
 
-    public @NotNull Component getDeathMessage() {
+    public @NotNull TranslatableComponent getDeathMessage() {
         return this.deathMessage;
     }
 
-    public @NotNull Component getKillMessage() {
+    public @NotNull TranslatableComponent getKillMessage() {
         return this.killMessage;
     }
 
-    public @NotNull Component getSaidMessage() {
+    public @NotNull TranslatableComponent getSaidMessage() {
         return this.saidMessage;
     }
 }

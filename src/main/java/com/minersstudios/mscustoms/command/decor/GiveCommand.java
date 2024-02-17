@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 public final class GiveCommand {
@@ -33,7 +33,7 @@ public final class GiveCommand {
         if (playerInfo == null) {
             MSLogger.severe(
                     sender,
-                    ERROR_PLAYER_NOT_FOUND
+                    ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
             return true;
         }
@@ -43,7 +43,7 @@ public final class GiveCommand {
         if (player == null) {
             MSLogger.warning(
                     sender,
-                    ERROR_PLAYER_NOT_ONLINE
+                    ERROR_PLAYER_NOT_ONLINE.asTranslatable()
             );
             return true;
         }
@@ -57,7 +57,7 @@ public final class GiveCommand {
                     } catch (final NumberFormatException ignore) {
                         MSLogger.severe(
                                 sender,
-                                ERROR_WRONG_FORMAT
+                                ERROR_WRONG_FORMAT.asTranslatable()
                         );
                         return;
                     }
@@ -68,7 +68,7 @@ public final class GiveCommand {
                     player.getInventory().addItem(itemStack);
                     MSLogger.fine(
                             sender,
-                            COMMAND_MSDECOR_GIVE_SUCCESS
+                            COMMAND_MSDECOR_GIVE_SUCCESS.asTranslatable()
                             .arguments(
                                     text(amount),
                                     itemStack.displayName(),
@@ -78,7 +78,7 @@ public final class GiveCommand {
                 },
                 () -> MSLogger.severe(
                         sender,
-                        COMMAND_MSDECOR_GIVE_WRONG_DECOR
+                        COMMAND_MSDECOR_GIVE_WRONG_DECOR.asTranslatable()
                 )
         );
 

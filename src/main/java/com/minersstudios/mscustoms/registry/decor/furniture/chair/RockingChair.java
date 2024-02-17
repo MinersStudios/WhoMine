@@ -40,8 +40,8 @@ public abstract class RockingChair<C extends CustomDecorData<C>> extends CustomD
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        unused -> RecipeEntry.of(
-                                RecipeBuilder.shapedBuilder()
+                        unused -> RecipeEntry.fromBuilder(
+                                RecipeBuilder.shaped()
                                 .group(SharedConstants.MSDECOR_NAMESPACE + ":rocking_chair")
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(

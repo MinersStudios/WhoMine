@@ -1,8 +1,7 @@
 package com.minersstudios.mscustoms.command.block;
 
-import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import org.bukkit.command.CommandSender;
@@ -10,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 public final class GiveCommand {
@@ -30,8 +30,9 @@ public final class GiveCommand {
         if (playerInfo == null) {
             MSLogger.severe(
                     sender,
-                    LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND
+                    ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
+
             return true;
         }
 
@@ -40,8 +41,9 @@ public final class GiveCommand {
         if (player == null) {
             MSLogger.warning(
                     sender,
-                    LanguageRegistry.Components.ERROR_PLAYER_NOT_ONLINE
+                    ERROR_PLAYER_NOT_ONLINE.asTranslatable()
             );
+
             return true;
         }
 
@@ -54,8 +56,9 @@ public final class GiveCommand {
                     } catch (final NumberFormatException ignore) {
                         MSLogger.severe(
                                 sender,
-                                LanguageRegistry.Components.ERROR_WRONG_FORMAT
+                                ERROR_WRONG_FORMAT.asTranslatable()
                         );
+
                         return;
                     }
 
@@ -65,7 +68,7 @@ public final class GiveCommand {
                     player.getInventory().addItem(itemStack);
                     MSLogger.fine(
                             sender,
-                            LanguageRegistry.Components.COMMAND_MSBLOCK_GIVE_SUCCESS
+                            COMMAND_MSBLOCK_GIVE_SUCCESS.asTranslatable()
                             .arguments(
                                     text(amount),
                                     itemStack.displayName(),
@@ -75,7 +78,7 @@ public final class GiveCommand {
                 },
                 () -> MSLogger.severe(
                         sender,
-                        LanguageRegistry.Components.COMMAND_MSBLOCK_GIVE_WRONG_BLOCK
+                        COMMAND_MSBLOCK_GIVE_WRONG_BLOCK.asTranslatable()
                 )
         );
 

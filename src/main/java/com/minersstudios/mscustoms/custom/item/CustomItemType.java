@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.custom.item;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.plugin.status.StatusWatcher;
+import com.minersstudios.mscore.status.StatusWatcher;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.MSCustoms;
@@ -91,7 +91,7 @@ public enum CustomItemType {
         final long startTime = System.currentTimeMillis();
         final var typesWithRecipes = new ObjectArrayList<CustomItemType>();
 
-        plugin.setStatus(MSCustoms.LOADING_ITEMS);
+        plugin.assignStatus(MSCustoms.LOADING_ITEMS);
         Stream.of(VALUES).parallel()
         .forEach(type -> {
             final CustomItem customItem;
@@ -120,7 +120,7 @@ public enum CustomItemType {
             }
         });
         typesWithRecipes.sort(Comparator.comparingInt(CustomItemType::ordinal));
-        plugin.setStatus(MSCustoms.LOADED_ITEMS);
+        plugin.assignStatus(MSCustoms.LOADED_ITEMS);
 
         plugin.getComponentLogger().info(
                 Component.text(

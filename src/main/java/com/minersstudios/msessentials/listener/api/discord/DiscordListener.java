@@ -1,9 +1,6 @@
 package com.minersstudios.msessentials.listener.api.discord;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * All event listeners annotated using {@link DiscordListener} will be
@@ -12,6 +9,7 @@ import java.lang.annotation.Target;
  *
  * @see AbstractDiscordListener
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface DiscordListener {}

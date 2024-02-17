@@ -4,9 +4,6 @@ import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.concurrent.Immutable;
-
-@Immutable
 final class BuilderRecipeEntry extends RecipeEntryImpl {
     private final RecipeBuilder<?> builder;
 

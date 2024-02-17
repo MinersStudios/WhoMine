@@ -2,7 +2,6 @@ package com.minersstudios.msessentials.command.impl.minecraft.admin.mute;
 
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.command.api.MSCommand;
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.DateUtils;
@@ -25,8 +24,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND;
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.ERROR_WRONG_FORMAT;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -64,22 +62,24 @@ public final class MuteCommand extends AbstractCommandExecutor<MSEssentials> {
         if (date == null) {
             MSLogger.severe(
                     sender,
-                    ERROR_WRONG_FORMAT
+                    ERROR_WRONG_FORMAT.asTranslatable()
             );
+
             return true;
         }
 
         final String reason = args.length > 2
                 ? ChatUtils.extractMessage(args, 2)
-                : LanguageRegistry.Strings.COMMAND_MUTE_DEFAULT_REASON;
+                : COMMAND_MUTE_DEFAULT_REASON.asString();
 
         final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(
                     sender,
-                    ERROR_PLAYER_NOT_FOUND
+                    ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
+
             return true;
         }
 

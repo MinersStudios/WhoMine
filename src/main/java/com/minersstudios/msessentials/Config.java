@@ -39,9 +39,9 @@ import static net.kyori.adventure.text.Component.text;
  * configuration.
  */
 public final class Config extends PluginConfig<MSEssentials> {
+    private boolean developerMode;
     private long anomalyCheckRate;
     private long anomalyParticlesCheckRate;
-    private boolean developerMode;
     private long discordServerId;
     private long memberRoleId;
     private long discordGlobalChannelId;
@@ -72,41 +72,99 @@ public final class Config extends PluginConfig<MSEssentials> {
     public static final String EXAMPLE_ANOMALY_FILE_PATH = ANOMALIES_FOLDER + '/' + EXAMPLE_ANOMALY_FILE_NAME;
     //</editor-fold>
 
-    /**
-     * Configuration constructor
-     *
-     * @param plugin The plugin that owns this config
-     */
+    //<editor-fold desc="Config keys" defaultstate="collapsed">
+    public static final String KEY_DEVELOPER_MODE =               "developer-mode";
+    public static final String KEY_ANOMALY_CHECK_RATE =           "anomaly-check-rate";
+    public static final String KEY_ANOMALY_PARTICLES_CHECK_RATE = "anomaly-particles-check-rate";
+
+    public static final String KEY_SKIN_SECTION =                 "skin";
+    public static final String KEY_MINE_SKIN_API_KEY =            "mine-skin-api-key";
+
+    public static final String KEY_DISCORD_SECTION =              "discord";
+    public static final String KEY_SERVER_ID =                    "server-id";
+    public static final String KEY_MEMBER_ROLE_ID =               "member-role-id";
+    public static final String KEY_BOT_TOKEN =                    "bot-token";
+
+    public static final String KEY_CHAT_SECTION =                 "chat";
+    public static final String KEY_LOCAL_SECTION =                "local";
+    public static final String KEY_GLOBAL_SECTION =               "global";
+    public static final String KEY_RADIUS =                       "radius";
+    public static final String KEY_DISCORD_CHANNEL_ID =           "discord-channel-id";
+
+    public static final String KEY_SPAWN_LOCATION_SECTION =       "spawn-location";
+    public static final String KEY_WORLD =                        "world";
+    public static final String KEY_X =                            "x";
+    public static final String KEY_Y =                            "y";
+    public static final String KEY_Z =                            "z";
+    public static final String KEY_YAW =                          "yaw";
+    public static final String KEY_PITCH =                        "pitch";
+
+    public static final String KEY_RESOURCE_PACKS_SECTION =       "resource-packs";
+    //</editor-fold>
+
+    //<editor-fold desc="Config default values" defaultstate="collapsed">
+    public static boolean DEFAULT_DEVELOPER_MODE =            false;
+    public static long DEFAULT_ANOMALY_CHECK_RATE =           100L;
+    public static long DEFAULT_ANOMALY_PARTICLES_CHECK_RATE = 10L;
+    public static double DEFAULT_LOCAL_CHAT_RADIUS =          25.0d;
+    public static long DEFAULT_DISCORD_CHANNEL_ID =           -1;
+    public static char DEFAULT_BOT_TOKEN =                    ' ';
+    public static long DEFAULT_SERVER_ID =                    -1;
+    public static long DEFAULT_MEMBER_ROLE_ID =               -1;
+    public static char DEFAULT_MINE_SKIN_API_KEY =            ' ';
+    //</editor-fold>
+
     Config(final @NotNull MSEssentials plugin) throws IllegalArgumentException {
         super(plugin, plugin.getConfigFile());
     }
 
-    /**
-     * Reloads config variables
-     */
     @Override
     public void reloadVariables() {
         final MSEssentials plugin = this.getPlugin();
         final Cache cache = plugin.getCache();
 
-        this.developerMode = this.yaml.getBoolean("developer-mode");
-        this.anomalyCheckRate = this.yaml.getLong("anomaly-check-rate");
-        this.anomalyParticlesCheckRate = this.yaml.getLong("anomaly-particles-check-rate");
-        this.localChatRadius = this.yaml.getDouble("chat.local.radius");
-        this.discordServerId = this.yaml.getLong("discord.server-id");
-        this.memberRoleId = this.yaml.getLong("discord.member-role-id");
-        this.discordGlobalChannelId = this.yaml.getLong("chat.global.discord-channel-id");
-        this.discordLocalChannelId = this.yaml.getLong("chat.local.discord-channel-id");
-        this.mineSkinApiKey = this.yaml.getString("skin.mine-skin-api-key");
+        this.developerMode = this.yaml.getBoolean(KEY_DEVELOPER_MODE);
+        this.anomalyCheckRate = this.yaml.getLong(KEY_ANOMALY_CHECK_RATE);
+        this.anomalyParticlesCheckRate = this.yaml.getLong(KEY_ANOMALY_PARTICLES_CHECK_RATE);
+
+        final ConfigurationSection chatSection = this.yaml.getConfigurationSection(KEY_CHAT_SECTION);
+
+        if (chatSection != null) {
+            final ConfigurationSection localSection = chatSection.getConfigurationSection(KEY_LOCAL_SECTION);
+
+            if (localSection != null) {
+                this.localChatRadius = localSection.getDouble(KEY_RADIUS);
+                this.discordLocalChannelId = localSection.getLong(KEY_DISCORD_CHANNEL_ID);
+            }
+
+            final ConfigurationSection globalSection = chatSection.getConfigurationSection(KEY_GLOBAL_SECTION);
+
+            if (globalSection != null) {
+                this.discordGlobalChannelId = globalSection.getLong(KEY_DISCORD_CHANNEL_ID);
+            }
+        }
+
+        final ConfigurationSection discordSection = this.yaml.getConfigurationSection(KEY_DISCORD_SECTION);
+
+        if (discordSection != null) {
+            this.discordServerId = discordSection.getLong(KEY_SERVER_ID);
+            this.memberRoleId = discordSection.getLong(KEY_MEMBER_ROLE_ID);
+        }
+
+        final ConfigurationSection skinSection = this.yaml.getConfigurationSection(KEY_SKIN_SECTION);
+
+        if (skinSection != null) {
+            this.mineSkinApiKey = skinSection.getString(KEY_MINE_SKIN_API_KEY);
+        }
 
         final Server server = plugin.getServer();
-        final String spawnLocationWorldName = this.yaml.getString("spawn-location.world", "");
+        final String spawnLocationWorldName = this.yaml.getString(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_WORLD, "");
         final World spawnLocationWorld = server.getWorld(spawnLocationWorldName);
-        final double spawnLocationX = this.yaml.getDouble("spawn-location.x");
-        final double spawnLocationY = this.yaml.getDouble("spawn-location.y");
-        final double spawnLocationZ = this.yaml.getDouble("spawn-location.z");
-        final float spawnLocationYaw = (float) this.yaml.getDouble("spawn-location.yaw");
-        final float spawnLocationPitch = (float) this.yaml.getDouble("spawn-location.pitch");
+        final double spawnLocationX = this.yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_X);
+        final double spawnLocationY = this.yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Y);
+        final double spawnLocationZ = this.yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Z);
+        final float spawnLocationYaw = (float) this.yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_YAW);
+        final float spawnLocationPitch = (float) this.yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_PITCH);
 
         if (spawnLocationWorld == null) {
             plugin.getLogger().warning("World \"" + spawnLocationWorldName + "\" not found!\nUsing default spawn location!");
@@ -150,30 +208,50 @@ public final class Config extends PluginConfig<MSEssentials> {
         cache.getDiscordManager().load();
     }
 
-    /**
-     * Reloads default config variables
-     */
     @Override
     public void reloadDefaultVariables() {
-        this.setIfNotExists("developer-mode", false);
-        this.setIfNotExists("anomaly-check-rate", 100L);
-        this.setIfNotExists("anomaly-particles-check-rate", 10L);
-        this.setIfNotExists("chat.local.radius", 25.0d);
-        this.setIfNotExists("chat.global.discord-channel-id", -1);
-        this.setIfNotExists("chat.local.discord-channel-id", -1);
-        this.setIfNotExists("discord.bot-token", "");
-        this.setIfNotExists("discord.server-id", -1);
-        this.setIfNotExists("discord.member-role-id", -1);
-        this.setIfNotExists("skin.mine-skin-api-key", "");
+        this.setIfNotExists(KEY_DEVELOPER_MODE, DEFAULT_DEVELOPER_MODE);
+        this.setIfNotExists(KEY_ANOMALY_CHECK_RATE, DEFAULT_ANOMALY_CHECK_RATE);
+        this.setIfNotExists(KEY_ANOMALY_PARTICLES_CHECK_RATE, DEFAULT_ANOMALY_PARTICLES_CHECK_RATE);
+
+        this.setIfNotExists(KEY_CHAT_SECTION + '.' + KEY_LOCAL_SECTION + '.' + KEY_RADIUS, DEFAULT_LOCAL_CHAT_RADIUS);
+        this.setIfNotExists(KEY_CHAT_SECTION + '.' + KEY_LOCAL_SECTION + '.' + KEY_DISCORD_CHANNEL_ID, DEFAULT_DISCORD_CHANNEL_ID);
+        this.setIfNotExists(KEY_CHAT_SECTION + '.' + KEY_GLOBAL_SECTION + '.' + KEY_DISCORD_CHANNEL_ID, DEFAULT_DISCORD_CHANNEL_ID);
+
+        this.setIfNotExists(KEY_DISCORD_SECTION + '.' + KEY_BOT_TOKEN, DEFAULT_BOT_TOKEN);
+        this.setIfNotExists(KEY_DISCORD_SECTION + '.' + KEY_SERVER_ID, DEFAULT_SERVER_ID);
+        this.setIfNotExists(KEY_DISCORD_SECTION + '.' + KEY_MEMBER_ROLE_ID, DEFAULT_MEMBER_ROLE_ID);
+
+        this.setIfNotExists(KEY_SKIN_SECTION + '.' + KEY_MINE_SKIN_API_KEY, DEFAULT_MINE_SKIN_API_KEY);
 
         final Location mainWorldSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
 
-        this.setIfNotExists("spawn-location.world", mainWorldSpawn.getWorld().getName());
-        this.setIfNotExists("spawn-location.x", mainWorldSpawn.x());
-        this.setIfNotExists("spawn-location.y", mainWorldSpawn.y());
-        this.setIfNotExists("spawn-location.z", mainWorldSpawn.z());
-        this.setIfNotExists("spawn-location.yaw", mainWorldSpawn.getYaw());
-        this.setIfNotExists("spawn-location.pitch", mainWorldSpawn.getPitch());
+        this.setIfNotExists(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_WORLD, mainWorldSpawn.getWorld().getName());
+        this.setIfNotExists(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_X, mainWorldSpawn.x());
+        this.setIfNotExists(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Y, mainWorldSpawn.y());
+        this.setIfNotExists(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Z, mainWorldSpawn.z());
+        this.setIfNotExists(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_YAW, mainWorldSpawn.getYaw());
+        this.setIfNotExists(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_PITCH, mainWorldSpawn.getPitch());
+    }
+
+    /**
+     * @return True if developer mode is enabled
+     */
+    public boolean isDeveloperMode() {
+        return this.developerMode;
+    }
+
+    /**
+     * Sets developer mode state
+     *
+     * @param developerMode The new developer mode state
+     */
+    public void setDeveloperMode(final boolean developerMode) {
+        this.developerMode = developerMode;
+
+        this.yaml.set(KEY_DEVELOPER_MODE, developerMode);
+
+        this.save();
     }
 
     /**
@@ -191,7 +269,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setAnomalyCheckRate(final long rate) {
         this.anomalyCheckRate = rate;
 
-        this.yaml.set("anomaly-check-rate", rate);
+        this.yaml.set(KEY_ANOMALY_CHECK_RATE, rate);
 
         this.save();
     }
@@ -211,27 +289,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setAnomalyParticlesCheckRate(final long rate) {
         this.anomalyParticlesCheckRate = rate;
 
-        this.yaml.set("anomaly-particles-check-rate", rate);
-
-        this.save();
-    }
-
-    /**
-     * @return True if developer mode is enabled
-     */
-    public boolean isDeveloperMode() {
-        return this.developerMode;
-    }
-
-    /**
-     * Sets developer mode state
-     *
-     * @param developerMode The new developer mode state
-     */
-    public void setDeveloperMode(final boolean developerMode) {
-        this.developerMode = developerMode;
-
-        this.yaml.set("developer-mode", developerMode);
+        this.yaml.set(KEY_ANOMALY_PARTICLES_CHECK_RATE, rate);
 
         this.save();
     }
@@ -251,7 +309,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setDiscordServerId(final long id) {
         this.discordServerId = id;
 
-        this.yaml.set("discord.server-id", id);
+        this.yaml.set(KEY_DISCORD_SECTION + '.' + KEY_SERVER_ID, id);
 
         this.save();
     }
@@ -271,7 +329,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setMemberRoleId(final long id) {
         this.memberRoleId = id;
 
-        this.yaml.set("discord.member-role-id", id);
+        this.yaml.set(KEY_DISCORD_SECTION + '.' + KEY_MEMBER_ROLE_ID, id);
 
         this.save();
     }
@@ -291,7 +349,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setDiscordGlobalChannelId(final long id) {
         this.discordGlobalChannelId = id;
 
-        this.yaml.set("chat.global.discord-channel-id", id);
+        this.yaml.set(KEY_CHAT_SECTION + '.' + KEY_GLOBAL_SECTION + '.' + KEY_DISCORD_CHANNEL_ID, id);
 
         this.save();
     }
@@ -311,7 +369,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setDiscordLocalChannelId(final long id) {
         this.discordLocalChannelId = id;
 
-        this.yaml.set("chat.local.discord-channel-id", id);
+        this.yaml.set(KEY_CHAT_SECTION + '.' + KEY_LOCAL_SECTION + '.' + KEY_DISCORD_CHANNEL_ID, id);
 
         this.save();
     }
@@ -331,7 +389,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setLocalChatRadius(final double radius) {
         this.localChatRadius = radius;
 
-        this.yaml.set("chat.local.radius", radius);
+        this.yaml.set(KEY_CHAT_SECTION + '.' + KEY_LOCAL_SECTION + '.' + KEY_RADIUS, radius);
 
         this.save();
     }
@@ -351,7 +409,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setMineSkinApiKey(final @Nullable String apiKey) {
         this.mineSkinApiKey = apiKey;
 
-        this.yaml.set("skin.mine-skin-api-key", apiKey);
+        this.yaml.set(KEY_SKIN_SECTION + '.' + KEY_MINE_SKIN_API_KEY, apiKey);
 
         this.save();
     }
@@ -371,24 +429,24 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setSpawnLocation(final @NotNull Location location) {
         this.spawnLocation = location;
 
-        this.yaml.set("spawn-location.world", location.getWorld().getName());
-        this.yaml.set("spawn-location.x", location.x());
-        this.yaml.set("spawn-location.y", location.y());
-        this.yaml.set("spawn-location.z", location.z());
-        this.yaml.set("spawn-location.yaw", location.getYaw());
-        this.yaml.set("spawn-location.pitch", location.getPitch());
+        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_WORLD, location.getWorld().getName());
+        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_X, location.x());
+        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Y, location.y());
+        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Z, location.z());
+        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_YAW, location.getYaw());
+        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_PITCH, location.getPitch());
 
         this.save();
     }
 
     private void loadResourcePacks() {
         final MSEssentials plugin = this.getPlugin();
-        final ConfigurationSection resourcePacksSection = this.yaml.getConfigurationSection("resource-packs");
+        final ConfigurationSection resourcePacksSection = this.yaml.getConfigurationSection(KEY_RESOURCE_PACKS_SECTION);
 
-        plugin.setStatus(MSEssentials.LOADING_RESOURCE_PACKS);
+        plugin.assignStatus(MSEssentials.LOADING_RESOURCE_PACKS);
 
         if (resourcePacksSection == null) {
-            plugin.setStatus(MSEssentials.LOADED_RESOURCE_PACKS);
+            plugin.assignStatus(MSEssentials.LOADED_RESOURCE_PACKS);
 
             return;
         }
@@ -426,7 +484,7 @@ public final class Config extends PluginConfig<MSEssentials> {
                     }
             );
         } catch (final FatalPackLoadException e) {
-            plugin.setStatus(MSEssentials.FAILED_LOAD_RESOURCE_PACKS);
+            plugin.assignStatus(MSEssentials.FAILED_LOAD_RESOURCE_PACKS);
             logger.error(
                     "Failed to load resource packs due to a fatal error!",
                     e
@@ -442,7 +500,7 @@ public final class Config extends PluginConfig<MSEssentials> {
                 .toArray(CompletableFuture[]::new)
         )
         .thenRun(
-                () -> plugin.setStatus(MSEssentials.LOADED_RESOURCE_PACKS)
+                () -> plugin.assignStatus(MSEssentials.LOADED_RESOURCE_PACKS)
         );
     }
 
@@ -451,7 +509,7 @@ public final class Config extends PluginConfig<MSEssentials> {
         final Cache cache = plugin.getCache();
         final Logger logger = plugin.getLogger();
 
-        plugin.setStatus(MSEssentials.LOADING_ANOMALIES);
+        plugin.assignStatus(MSEssentials.LOADING_ANOMALIES);
 
         try (final var path = Files.walk(Paths.get(this.file.getParent() + '/' + ANOMALIES_FOLDER))) {
             path.parallel()
@@ -476,9 +534,9 @@ public final class Config extends PluginConfig<MSEssentials> {
                 }
             });
 
-            plugin.setStatus(MSEssentials.LOADED_ANOMALIES);
+            plugin.assignStatus(MSEssentials.LOADED_ANOMALIES);
         } catch (final IOException e) {
-            plugin.setStatus(MSEssentials.FAILED_LOAD_ANOMALIES);
+            plugin.assignStatus(MSEssentials.FAILED_LOAD_ANOMALIES);
             logger.log(
                     Level.SEVERE,
                     "An error occurred while loading anomalies!",

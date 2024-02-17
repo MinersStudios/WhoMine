@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.player;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import org.bukkit.command.CommandSender;
@@ -17,7 +17,7 @@ public final class AdminUpdateCommand {
         playerInfo.update();
         MSLogger.fine(
                 sender,
-                LanguageRegistry.Components.COMMAND_PLAYER_UPDATE_SUCCESS
+                Translations.COMMAND_PLAYER_UPDATE_SUCCESS.asTranslatable()
                 .arguments(
                         playerInfo.getGrayIDGreenName(),
                         text(playerInfo.getNickname())

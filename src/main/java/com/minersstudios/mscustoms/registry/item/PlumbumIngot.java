@@ -44,14 +44,14 @@ public final class PlumbumIngot extends CustomItemImpl {
     public @NotNull @Unmodifiable List<RecipeEntry> initRecipes() {
         final ItemStack input = CustomItemType.RAW_PLUMBUM.getCustomItem().getItem();
         final var furnaceBuilder =
-                RecipeBuilder.furnaceBuilder()
+                RecipeBuilder.furnace()
                 .namespacedKey(new NamespacedKey(SharedConstants.MSITEMS_NAMESPACE, "plumbum_ingot_furnace"))
                 .result(this.itemStack)
                 .ingredient(new RecipeChoice.ExactChoice(input))
                 .experience(0.7f)
                 .cookingTime(200);
         final var blastingBuilder =
-                RecipeBuilder.blastingBuilder()
+                RecipeBuilder.blasting()
                 .namespacedKey(new NamespacedKey(SharedConstants.MSITEMS_NAMESPACE, "plumbum_ingot_blast"))
                 .result(this.itemStack)
                 .ingredient(new RecipeChoice.ExactChoice(input))
@@ -66,16 +66,16 @@ public final class PlumbumIngot extends CustomItemImpl {
             );
 
             return Arrays.asList(
-                    RecipeEntry.of(furnaceBuilder),
-                    RecipeEntry.of(blastingBuilder)
+                    RecipeEntry.fromBuilder(furnaceBuilder),
+                    RecipeEntry.fromBuilder(blastingBuilder)
             );
         }
 
         return Arrays.asList(
-                RecipeEntry.of(furnaceBuilder),
-                RecipeEntry.of(blastingBuilder),
-                RecipeEntry.of(
-                        RecipeBuilder.shapedBuilder()
+                RecipeEntry.fromBuilder(furnaceBuilder),
+                RecipeEntry.fromBuilder(blastingBuilder),
+                RecipeEntry.fromBuilder(
+                        RecipeBuilder.shaped()
                         .namespacedKey(new NamespacedKey(SharedConstants.MSITEMS_NAMESPACE, "plumbum_ingot_from_block"))
                         .result(this.itemStack.clone().add(8))
                         .shape("I")

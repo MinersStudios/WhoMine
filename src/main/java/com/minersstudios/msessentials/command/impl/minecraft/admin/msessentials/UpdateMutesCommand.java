@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.msessentials;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import org.bukkit.command.CommandSender;
@@ -19,7 +19,7 @@ public final class UpdateMutesCommand {
         plugin.getCache().getMuteMap().reloadMutes();
         MSLogger.fine(
                 sender,
-                LanguageRegistry.Components.COMMAND_MSESSENTIALS_UPDATE_MUTES_SUCCESS
+                Translations.COMMAND_MSESSENTIALS_UPDATE_MUTES_SUCCESS.asTranslatable()
                 .arguments(text(System.currentTimeMillis() - time))
         );
 

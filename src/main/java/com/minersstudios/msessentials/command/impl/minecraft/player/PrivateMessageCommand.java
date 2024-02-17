@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.minecraft.player;
 
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.command.api.MSCommand;
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -64,8 +64,9 @@ public final class PrivateMessageCommand extends AbstractCommandExecutor<MSEssen
         if (senderInfo.isMuted()) {
             MSLogger.warning(
                     sender,
-                    LanguageRegistry.Components.COMMAND_MUTE_ALREADY_RECEIVER
+                    Translations.COMMAND_MUTE_ALREADY_RECEIVER.asTranslatable()
             );
+
             return true;
         }
 
@@ -74,8 +75,9 @@ public final class PrivateMessageCommand extends AbstractCommandExecutor<MSEssen
         if (receiverInfo == null) {
             MSLogger.warning(
                     sender,
-                    LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND
+                    Translations.ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
+
             return true;
         }
 
@@ -85,8 +87,9 @@ public final class PrivateMessageCommand extends AbstractCommandExecutor<MSEssen
         ) {
             MSLogger.warning(
                     sender,
-                    LanguageRegistry.Components.ERROR_PLAYER_NOT_ONLINE
+                    Translations.ERROR_PLAYER_NOT_ONLINE.asTranslatable()
             );
+
             return true;
         }
 

@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 
 @InventoryHolder
 public final class PronounsMenu extends AbstractInventoryHolder<MSEssentials> {
@@ -31,8 +31,8 @@ public final class PronounsMenu extends AbstractInventoryHolder<MSEssentials> {
         final ItemMeta heMeta = heItem.getItemMeta();
         final var loreHe = new ObjectArrayList<Component>();
 
-        heMeta.displayName(MENU_PRONOUNS_BUTTON_HE_TITLE.style(ChatUtils.DEFAULT_STYLE));
-        loreHe.add(MENU_PRONOUNS_BUTTON_HE_LORE.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
+        heMeta.displayName(MENU_PRONOUNS_BUTTON_HE_TITLE.asComponent().style(ChatUtils.DEFAULT_STYLE));
+        loreHe.add(MENU_PRONOUNS_BUTTON_HE_LORE.asComponent().style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
         heMeta.lore(loreHe);
         heItem.setItemMeta(heMeta);
 
@@ -40,8 +40,8 @@ public final class PronounsMenu extends AbstractInventoryHolder<MSEssentials> {
         final ItemMeta sheMeta = sheItem.getItemMeta();
         final var loreShe = new ObjectArrayList<Component>();
 
-        sheMeta.displayName(MENU_PRONOUNS_BUTTON_SHE_TITLE.style(ChatUtils.DEFAULT_STYLE));
-        loreShe.add(MENU_PRONOUNS_BUTTON_SHE_LORE.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
+        sheMeta.displayName(MENU_PRONOUNS_BUTTON_SHE_TITLE.asComponent().style(ChatUtils.DEFAULT_STYLE));
+        loreShe.add(MENU_PRONOUNS_BUTTON_SHE_LORE.asComponent().style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
         sheMeta.lore(loreShe);
         sheItem.setItemMeta(sheMeta);
 
@@ -49,8 +49,8 @@ public final class PronounsMenu extends AbstractInventoryHolder<MSEssentials> {
         final ItemMeta theyMeta = theyItem.getItemMeta();
         final var loreThey = new ObjectArrayList<Component>();
 
-        theyMeta.displayName(MENU_PRONOUNS_BUTTON_THEY_TITLE.style(ChatUtils.DEFAULT_STYLE));
-        loreThey.add(MENU_PRONOUNS_BUTTON_THEY_LORE.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
+        theyMeta.displayName(MENU_PRONOUNS_BUTTON_THEY_TITLE.asComponent().style(ChatUtils.DEFAULT_STYLE));
+        loreThey.add(MENU_PRONOUNS_BUTTON_THEY_LORE.asComponent().style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
         theyMeta.lore(loreThey);
         theyItem.setItemMeta(theyMeta);
 
@@ -89,7 +89,7 @@ public final class PronounsMenu extends AbstractInventoryHolder<MSEssentials> {
 
         return CustomInventory
                 .single(
-                        MENU_PRONOUNS_TITLE.style(ChatUtils.DEFAULT_STYLE),
+                        MENU_PRONOUNS_TITLE.asTranslatable().style(ChatUtils.DEFAULT_STYLE),
                         1
                 )
                 .buttonAt(0, heButton)

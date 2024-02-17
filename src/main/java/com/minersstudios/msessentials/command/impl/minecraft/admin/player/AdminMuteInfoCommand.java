@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Instant;
 import java.util.Locale;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 public final class AdminMuteInfoCommand {
@@ -32,7 +32,8 @@ public final class AdminMuteInfoCommand {
             MSLogger.fine(
                     sender,
                     muted
-                    ? COMMAND_PLAYER_MUTE_INFO_INFO.arguments(
+                    ? COMMAND_PLAYER_MUTE_INFO_INFO.asTranslatable()
+                    .arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(playerInfo.getMutedBy()),
@@ -40,7 +41,8 @@ public final class AdminMuteInfoCommand {
                             playerInfo.getMutedFrom(sender),
                             playerInfo.getMutedTo(sender)
                     )
-                    : COMMAND_PLAYER_MUTE_INFO_INFO_NOT_MUTED.arguments(
+                    : COMMAND_PLAYER_MUTE_INFO_INFO_NOT_MUTED.asTranslatable()
+                    .arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname())
                     )
@@ -51,7 +53,7 @@ public final class AdminMuteInfoCommand {
         if (!muted) {
             MSLogger.severe(
                     sender,
-                    COMMAND_PLAYER_MUTE_INFO_NOT_MUTED
+                    COMMAND_PLAYER_MUTE_INFO_NOT_MUTED.asTranslatable()
                     .arguments(
                             playerInfo.getDefaultName(),
                             text(playerInfo.getNickname())
@@ -67,7 +69,7 @@ public final class AdminMuteInfoCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            COMMAND_PLAYER_MUTE_INFO_GET_REASON
+                            COMMAND_PLAYER_MUTE_INFO_GET_REASON.asTranslatable()
                             .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
@@ -82,7 +84,7 @@ public final class AdminMuteInfoCommand {
                 muteMap.put(playerInfo.getOfflinePlayer(), playerInfo.getMutedTo(), reason, sender.getName());
                 MSLogger.fine(
                         sender,
-                        COMMAND_PLAYER_MUTE_INFO_SET_REASON
+                        COMMAND_PLAYER_MUTE_INFO_SET_REASON.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
@@ -95,7 +97,7 @@ public final class AdminMuteInfoCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            COMMAND_PLAYER_MUTE_INFO_GET_TIME_TO
+                            COMMAND_PLAYER_MUTE_INFO_GET_TIME_TO.asTranslatable()
                             .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
@@ -110,7 +112,7 @@ public final class AdminMuteInfoCommand {
                 if (instant == null) {
                     MSLogger.severe(
                             sender,
-                            ERROR_WRONG_FORMAT
+                            ERROR_WRONG_FORMAT.asTranslatable()
                     );
                     return true;
                 }
@@ -118,7 +120,7 @@ public final class AdminMuteInfoCommand {
                 muteMap.put(playerInfo.getOfflinePlayer(), instant, playerInfo.getMuteReason(), sender.getName());
                 MSLogger.fine(
                         sender,
-                        COMMAND_PLAYER_MUTE_INFO_SET_TIME_TO
+                        COMMAND_PLAYER_MUTE_INFO_SET_TIME_TO.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),

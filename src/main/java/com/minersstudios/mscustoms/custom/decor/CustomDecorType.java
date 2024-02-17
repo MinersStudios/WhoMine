@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.custom.decor;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.plugin.status.StatusWatcher;
+import com.minersstudios.mscore.status.StatusWatcher;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.MSCustoms;
@@ -221,7 +221,7 @@ public enum CustomDecorType {
         final long startTime = System.currentTimeMillis();
         final var typesWithRecipes = new ObjectArrayList<CustomDecorType>();
 
-        plugin.setStatus(MSCustoms.LOADING_DECORATIONS);
+        plugin.assignStatus(MSCustoms.LOADING_DECORATIONS);
         Stream.of(VALUES).parallel()
         .forEach(type -> {
             final CustomDecorData<?> data;
@@ -246,7 +246,7 @@ public enum CustomDecorType {
             }
         });
         typesWithRecipes.sort(Comparator.comparingInt(CustomDecorType::ordinal));
-        plugin.setStatus(MSCustoms.LOADED_DECORATIONS);
+        plugin.assignStatus(MSCustoms.LOADED_DECORATIONS);
 
         plugin.getComponentLogger().info(
                 Component.text(

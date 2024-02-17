@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
@@ -57,23 +57,25 @@ public final class TeleportToLastDeathLocationCommand extends AbstractCommandExe
         if (playerInfo == null) {
             MSLogger.severe(
                     sender,
-                    ERROR_PLAYER_NOT_FOUND
+                    ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
+
             return true;
         }
 
         if (playerInfo.getOnlinePlayer() == null) {
             MSLogger.warning(
                     sender,
-                    ERROR_PLAYER_NOT_ONLINE
+                    ERROR_PLAYER_NOT_ONLINE.asTranslatable()
             );
+
             return true;
         }
 
         playerInfo.teleportToLastDeathLocation().thenRun(() ->
                 MSLogger.fine(
                         sender,
-                        COMMAND_TELEPORT_TO_LAST_DEATH_SENDER_MESSAGE
+                        COMMAND_TELEPORT_TO_LAST_DEATH_SENDER_MESSAGE.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname())

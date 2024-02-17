@@ -3,9 +3,9 @@ package com.minersstudios.msessentials.resourcepack;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.resourcepack.data.ResourcePackData;
-import com.minersstudios.msessentials.resourcepack.resource.GitHubResourceManager;
-import com.minersstudios.msessentials.resourcepack.resource.ResourceManager;
-import com.minersstudios.msessentials.resourcepack.resource.Tag;
+import com.minersstudios.msessentials.resourcepack.resource.GitHubPackResourceManager;
+import com.minersstudios.msessentials.resourcepack.resource.PackResourceManager;
+import com.minersstudios.mscore.resource.github.Tag;
 import com.minersstudios.msessentials.resourcepack.throwable.FatalPackLoadException;
 import com.minersstudios.msessentials.resourcepack.throwable.PackLoadException;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -57,24 +57,24 @@ public final class ResourcePackLoader {
     //</editor-fold>
 
     //<editor-fold desc="Config Keys" defaultstate="collapsed">
-    public static final String ENABLED_KEY =     "enabled";
-    public static final String AUTO_UPDATE_KEY = "auto-update";
-    public static final String NAME_KEY =        "name";
-    public static final String DESCRIPTION_KEY = "description";
-    public static final String FILE_NAME_KEY =   "file-name";
+    public static final String KEY_ENABLED =     "enabled";
+    public static final String KEY_AUTO_UPDATE = "auto-update";
+    public static final String KEY_NAME =        "name";
+    public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_FILE_NAME =   "file-name";
 
-    public static final String DATA_SECTION_KEY = "data";
-    public static final String UUID_KEY =         "uuid";
-    public static final String URL_KEY =          "url";
-    public static final String HASH_KEY =         "hash";
-    public static final String PROMPT_KEY =       "prompt";
-    public static final String REQUIRED_KEY =     "required";
+    public static final String KEY_DATA_SECTION = "data";
+    public static final String KEY_UUID =         "uuid";
+    public static final String KEY_URL =          "url";
+    public static final String KEY_HASH =         "hash";
+    public static final String KEY_PROMPT =       "prompt";
+    public static final String KEY_REQUIRED =     "required";
 
-    public static final String GITHUB_SECTION_KEY = "github";
-    public static final String TOKEN_KEY =          "token";
-    public static final String USER_KEY =           "user";
-    public static final String REPO_KEY =           "repo";
-    public static final String TAG_KEY =            "tag";
+    public static final String KEY_GITHUB_SECTION = "github";
+    public static final String KEY_TOKEN =          "token";
+    public static final String KEY_USER =           "user";
+    public static final String KEY_REPO =           "repo";
+    public static final String KEY_TAG =            "tag";
     //</editor-fold>
 
     ResourcePackLoader(
@@ -97,7 +97,7 @@ public final class ResourcePackLoader {
                 .thenCompose(ignored ->
                         this.isEnabled
                         ? this.setupBuilder()
-                        .thenCompose(ResourcePackData.Builder::buildAsync)
+                              .thenCompose(ResourcePackData.Builder::buildAsync)
                         : completedFuture(ResourcePackData.empty())
                 )
                 .thenApply(
@@ -150,17 +150,17 @@ public final class ResourcePackLoader {
     }
 
     private @NotNull CompletableFuture<Void> setupBase() throws FatalPackLoadException {
-        final String nameString = this.section.getString(NAME_KEY);
+        final String nameString = this.section.getString(KEY_NAME);
 
         if (ChatUtils.isBlank(nameString)) {
             throw new FatalPackLoadException("Name cannot be null or blank");
         }
 
-        final var descriptionList = this.section.getStringList(DESCRIPTION_KEY);
+        final var descriptionList = this.section.getStringList(KEY_DESCRIPTION);
         final int descriptionSize = descriptionList.size();
 
-        this.isEnabled = this.section.getBoolean(ENABLED_KEY);
-        this.isAutoUpdateEnabled = this.section.getBoolean(AUTO_UPDATE_KEY);
+        this.isEnabled = this.section.getBoolean(KEY_ENABLED);
+        this.isAutoUpdateEnabled = this.section.getBoolean(KEY_AUTO_UPDATE);
         this.name = MiniMessage.miniMessage().deserialize(nameString, TagResolver.standard());
         this.description = new Component[descriptionSize];
 
@@ -176,42 +176,42 @@ public final class ResourcePackLoader {
             return completedFuture(null);
         }
 
-        this.fileName = this.section.getString(FILE_NAME_KEY);
+        this.fileName = this.section.getString(KEY_FILE_NAME);
 
         if (ChatUtils.isBlank(this.fileName)) {
             return this.failed("File name cannot be null or blank");
         }
 
-        this.dataSection = this.section.getConfigurationSection(DATA_SECTION_KEY);
+        this.dataSection = this.section.getConfigurationSection(KEY_DATA_SECTION);
 
         if (this.dataSection == null) {
             return this.failed("Data section cannot be null");
         }
 
-        this.uuid = this.dataSection.getString(UUID_KEY);
+        this.uuid = this.dataSection.getString(KEY_UUID);
 
         if (ChatUtils.isBlank(this.uuid)) {
             this.onBuiltConsumers.add(
-                    builder -> this.dataSection.set(UUID_KEY, builder.uuid().toString())
+                    builder -> this.dataSection.set(KEY_UUID, builder.uuid().toString())
             );
         }
 
-        this.url = this.dataSection.getString(URL_KEY);
-        this.hash = this.dataSection.getString(HASH_KEY);
-        final String promptString = dataSection.getString(PROMPT_KEY);
+        this.url = this.dataSection.getString(KEY_URL);
+        this.hash = this.dataSection.getString(KEY_HASH);
+        final String promptString = dataSection.getString(KEY_PROMPT);
 
         this.prompt =
                 ChatUtils.isBlank(promptString)
                 ? null
                 : MiniMessage.miniMessage().deserialize(promptString, TagResolver.standard());
-        this.isRequired = this.dataSection.getBoolean(REQUIRED_KEY);
+        this.isRequired = this.dataSection.getBoolean(KEY_REQUIRED);
 
-        this.githubSection = this.section.getConfigurationSection(GITHUB_SECTION_KEY);
+        this.githubSection = this.section.getConfigurationSection(KEY_GITHUB_SECTION);
 
         if (this.githubSection != null) {
-            this.user = this.githubSection.getString(USER_KEY);
-            this.repo = this.githubSection.getString(REPO_KEY);
-            this.tag = this.githubSection.getString(TAG_KEY);
+            this.user = this.githubSection.getString(KEY_USER);
+            this.repo = this.githubSection.getString(KEY_REPO);
+            this.tag = this.githubSection.getString(KEY_TAG);
         }
 
         return completedFuture(null);
@@ -223,48 +223,48 @@ public final class ResourcePackLoader {
         if (ChatUtils.isNotBlank(this.url)) {
             if (this.isAutoUpdateEnabled) {
                 this.onBuiltConsumers.add(
-                        builder0 -> this.dataSection.set(HASH_KEY, builder0.hash())
+                        builder0 -> this.dataSection.set(KEY_HASH, builder0.hash())
                 );
                 builder
-                .resourceManager(ResourceManager.url(this.url));
+                .resourceManager(PackResourceManager.url(this.url));
             }
         } else {
             if (this.githubSection == null) {
                 return this.failed("GitHub section cannot be null if URL is not provided");
             }
 
-            this.user = this.githubSection.getString(USER_KEY);
+            this.user = this.githubSection.getString(KEY_USER);
 
             if (ChatUtils.isBlank(this.user)) {
                 return this.failed("User cannot be null or blank");
             }
 
-            this.repo = this.githubSection.getString(REPO_KEY);
+            this.repo = this.githubSection.getString(KEY_REPO);
 
             if (ChatUtils.isBlank(this.repo)) {
                 return this.failed("Repo cannot be null or blank");
             }
 
-            this.tag = this.githubSection.getString(TAG_KEY);
+            this.tag = this.githubSection.getString(KEY_TAG);
 
             this.onBuiltConsumers.add(
                     builder0 -> {
-                        final GitHubResourceManager manager = (GitHubResourceManager) builder0.resourceManager();
+                        final GitHubPackResourceManager manager = (GitHubPackResourceManager) builder0.resourceManager();
                         final Tag tag = manager.getLatestTagNow();
 
                         if (tag != null) {
-                            this.githubSection.set(TAG_KEY, tag.getName());
+                            this.githubSection.set(KEY_TAG, tag.getName());
                         }
 
-                        this.dataSection.set(HASH_KEY, builder0.hash());
+                        this.dataSection.set(KEY_HASH, builder0.hash());
                     }
             );
             builder
             .resourceManager(
-                    ResourceManager.github(
+                    PackResourceManager.github(
                             new File(this.configFile.getParent(), this.fileName),
                             this.user, this.repo, this.tag,
-                            this.githubSection.getString(TOKEN_KEY)
+                            this.githubSection.getString(KEY_TOKEN)
                     )
             );
         }
@@ -292,7 +292,7 @@ public final class ResourcePackLoader {
                                     this.yaml.save(this.configFile);
                                 } catch (final Throwable e) {
                                     MSLogger.warning(
-                                            "Failed to save resource pack configuration file: " + this.configFile,
+                                            "Failed to save the configuration file: " + this.configFile,
                                             e
                                     );
                                 }

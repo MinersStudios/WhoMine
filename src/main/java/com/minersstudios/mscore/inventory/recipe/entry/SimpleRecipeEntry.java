@@ -21,7 +21,7 @@ final class SimpleRecipeEntry extends RecipeEntryImpl {
 
     @Override
     public @NotNull RecipeBuilder<?> getBuilder() throws UnsupportedOperationException {
-        return RecipeBuilder.unknownRecipeBuilder(this.recipe);
+        return RecipeBuilder.unknown(this.recipe);
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 public final class AdminNameCommand {
@@ -33,7 +33,7 @@ public final class AdminNameCommand {
         if (args.length == 2) {
             MSLogger.fine(
                     sender,
-                    COMMAND_PLAYER_NAME_ABOUT
+                    COMMAND_PLAYER_NAME_ABOUT.asTranslatable()
                     .arguments(
                             playerInfo.getGrayIDGreenName()
                             .appendSpace()
@@ -42,6 +42,7 @@ public final class AdminNameCommand {
                             text(playerInfo.getUuid().toString())
                     )
             );
+
             return true;
         }
 
@@ -52,8 +53,9 @@ public final class AdminNameCommand {
         ) {
             MSLogger.severe(
                     sender,
-                    ERROR_WRONG_FORMAT
+                    ERROR_WRONG_FORMAT.asTranslatable()
             );
+
             return true;
         }
 
@@ -65,7 +67,7 @@ public final class AdminNameCommand {
 
                 MSLogger.fine(
                         sender,
-                        COMMAND_PLAYER_NAME_FULL_RESET_SENDER
+                        COMMAND_PLAYER_NAME_FULL_RESET_SENDER.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname())
@@ -79,8 +81,8 @@ public final class AdminNameCommand {
                 playerFile.save();
                 playerInfo.initNames();
                 playerInfo.kick(
-                        COMMAND_PLAYER_NAME_FULL_RESET_RECEIVER_TITLE,
-                        COMMAND_PLAYER_NAME_FULL_RESET_RECEIVER_SUBTITLE
+                        COMMAND_PLAYER_NAME_FULL_RESET_RECEIVER_TITLE.asTranslatable(),
+                        COMMAND_PLAYER_NAME_FULL_RESET_RECEIVER_SUBTITLE.asTranslatable()
                 );
 
                 return true;
@@ -89,9 +91,10 @@ public final class AdminNameCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            COMMAND_PLAYER_NAME_GET_FIRST_NAME
+                            COMMAND_PLAYER_NAME_GET_FIRST_NAME.asTranslatable()
                             .arguments(text(playerName.getFirstName()))
                     );
+
                     return true;
                 }
 
@@ -101,9 +104,10 @@ public final class AdminNameCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            COMMAND_PLAYER_NAME_GET_LAST_NAME
+                            COMMAND_PLAYER_NAME_GET_LAST_NAME.asTranslatable()
                             .arguments(text(playerName.getLastName()))
                     );
+
                     return true;
                 }
 
@@ -113,9 +117,10 @@ public final class AdminNameCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            COMMAND_PLAYER_NAME_GET_PATRONYMIC
+                            COMMAND_PLAYER_NAME_GET_PATRONYMIC.asTranslatable()
                             .arguments(text(playerName.getPatronymic()))
                     );
+
                     return true;
                 }
 
@@ -128,7 +133,7 @@ public final class AdminNameCommand {
         playerInfo.initNames();
         MSLogger.fine(
                 sender,
-                COMMAND_PLAYER_NAME_NOW_FULL
+                COMMAND_PLAYER_NAME_NOW_FULL.asTranslatable()
                 .arguments(
                         playerInfo.getGrayIDGreenName()
                         .appendSpace()

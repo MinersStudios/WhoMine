@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Strings.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 
 /**
  * Player file with player data, settings, etc.
@@ -57,10 +57,10 @@ public final class PlayerFile {
         this.config = config;
 
         this.playerName = PlayerName.create(
-                config.getString("name.nickname", PLAYER_NAME_NICKNAME),
-                config.getString("name.first-name", PLAYER_NAME_FIRST_NAME),
-                config.getString("name.last-name", PLAYER_NAME_LAST_NAME),
-                config.getString("name.patronymic", PLAYER_NAME_PATRONYMIC)
+                config.getString("name.nickname",   PLAYER_NAME_NICKNAME.asString()),
+                config.getString("name.first-name", PLAYER_NAME_FIRST_NAME.asString()),
+                config.getString("name.last-name",  PLAYER_NAME_LAST_NAME.asString()),
+                config.getString("name.patronymic", PLAYER_NAME_PATRONYMIC.asString())
         );
         this.pronouns = Pronouns.valueOf(config.getString("pronouns", "HE"));
         this.ipList = config.getStringList("ip-list");

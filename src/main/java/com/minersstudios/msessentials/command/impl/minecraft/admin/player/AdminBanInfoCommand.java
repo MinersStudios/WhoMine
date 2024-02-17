@@ -13,7 +13,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 public final class AdminBanInfoCommand {
@@ -32,7 +32,8 @@ public final class AdminBanInfoCommand {
             MSLogger.fine(
                     sender,
                     banned
-                    ? COMMAND_PLAYER_BAN_INFO_INFO.arguments(
+                    ? COMMAND_PLAYER_BAN_INFO_INFO.asTranslatable()
+                    .arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(playerInfo.getBannedBy()),
@@ -40,23 +41,26 @@ public final class AdminBanInfoCommand {
                             playerInfo.getBannedFrom(sender),
                             playerInfo.getBannedTo(sender)
                     )
-                    : COMMAND_PLAYER_BAN_INFO_NOT_BANNED.arguments(
+                    : COMMAND_PLAYER_BAN_INFO_NOT_BANNED.asTranslatable()
+                    .arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname())
                     )
             );
+
             return true;
         }
 
         if (!banned) {
             MSLogger.severe(
                     sender,
-                    COMMAND_PLAYER_BAN_INFO_NOT_BANNED
+                    COMMAND_PLAYER_BAN_INFO_NOT_BANNED.asTranslatable()
                     .arguments(
                             playerInfo.getDefaultName(),
                             text(playerInfo.getNickname())
                     )
             );
+
             return true;
         }
 
@@ -65,13 +69,14 @@ public final class AdminBanInfoCommand {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            COMMAND_PLAYER_BAN_INFO_GET_REASON
+                            COMMAND_PLAYER_BAN_INFO_GET_REASON.asTranslatable()
                             .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     playerInfo.getBanReason()
                             )
                     );
+
                     return true;
                 }
 
@@ -80,26 +85,28 @@ public final class AdminBanInfoCommand {
                 playerInfo.setBanReason(reason);
                 MSLogger.fine(
                         sender,
-                        COMMAND_PLAYER_BAN_INFO_SET_REASON
+                        COMMAND_PLAYER_BAN_INFO_SET_REASON.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(reason)
                         )
                 );
+
                 return true;
             }
             case "time" -> {
                 if (!haveArg) {
                     MSLogger.fine(
                             sender,
-                            COMMAND_PLAYER_BAN_INFO_GET_TIME_TO
+                            COMMAND_PLAYER_BAN_INFO_GET_TIME_TO.asTranslatable()
                             .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname()),
                                     playerInfo.getBannedTo(sender)
                             )
                     );
+
                     return true;
                 }
 
@@ -108,8 +115,9 @@ public final class AdminBanInfoCommand {
                 if (instant == null) {
                     MSLogger.severe(
                             sender,
-                            ERROR_WRONG_FORMAT
+                            ERROR_WRONG_FORMAT.asTranslatable()
                     );
+
                     return true;
                 }
 
@@ -126,16 +134,18 @@ public final class AdminBanInfoCommand {
 
                 MSLogger.fine(
                         sender,
-                        COMMAND_PLAYER_BAN_INFO_SET_TIME_TO
+                        COMMAND_PLAYER_BAN_INFO_SET_TIME_TO.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGreenName(),
                                 text(playerInfo.getNickname()),
                                 text(DateUtils.getSenderDate(instant, sender))
                         )
                 );
+
                 return true;
             }
         }
+
         return false;
     }
 }

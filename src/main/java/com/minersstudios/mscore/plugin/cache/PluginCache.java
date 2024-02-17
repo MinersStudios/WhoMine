@@ -2,7 +2,6 @@ package com.minersstudios.mscore.plugin.cache;
 
 import com.minersstudios.mscore.plugin.MSPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * This abstract class represents a cache for a plugin. It provides methods to
@@ -23,9 +22,24 @@ public abstract class PluginCache<P extends MSPlugin<P>> extends MSCache {
     }
 
     /**
-     * @return The plugin that owns this cache or null if the cache is not loaded
+     * Returns the plugin that owns this cache
+     *
+     * @return The plugin that owns this cache
      */
-    public final @UnknownNullability P getPlugin() {
+    public final @NotNull P getPlugin() {
         return this.plugin;
+    }
+
+    /**
+     * Returns a string representation of this cache
+     *
+     * @return A string representation of this cache
+     */
+    @Override
+    public @NotNull String toString() {
+        return this.getClass().getSimpleName() +
+                "{plugin=" + this.plugin.getName() +
+                ", isLoaded=" + this.isLoaded() +
+                '}';
     }
 }

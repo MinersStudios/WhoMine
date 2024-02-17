@@ -1,11 +1,11 @@
-package com.minersstudios.mscore.plugin.status;
+package com.minersstudios.mscore.status;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -15,14 +15,15 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Handles plugin statuses and runs registered watchers when a status is set
+ * Handles statuses and runs registered watchers when a status is set
  *
- * @see PluginStatus
+ * @see Status
  * @see StatusWatcher
  */
+@ThreadSafe
 public final class StatusHandler {
-    private final AtomicReference<PluginStatus> highStatus;
-    private final Set<PluginStatus> lowStatusSet;
+    private final AtomicReference<Status> highStatus;
+    private final Set<Status> lowStatusSet;
     private final List<StatusWatcher> watcherList;
 
     /**
@@ -35,74 +36,42 @@ public final class StatusHandler {
     }
 
     /**
-     * @return An unmodifiable set of all low-priority statuses
-     */
-    public @NotNull @Unmodifiable Set<PluginStatus> lowStatusSet() {
-        return Collections.unmodifiableSet(this.lowStatusSet);
-    }
-
-    /**
-     * @return An unmodifiable set of all statuses
-     */
-    public @NotNull @Unmodifiable Set<PluginStatus> statusSet() {
-        final var set = new ObjectOpenHashSet<>(this.lowStatusSet);
-        final PluginStatus highStatus = this.highStatus.get();
-
-        if (highStatus != null) {
-            set.add(highStatus);
-        }
-
-        return Collections.unmodifiableSet(set);
-    }
-
-    /**
-     * @return An unmodifiable watcher list
-     */
-    public @NotNull @Unmodifiable List<StatusWatcher> watcherList() {
-        return Collections.unmodifiableList(this.watcherList);
-    }
-
-    /**
+     * Returns the high-priority status
+     *
      * @return An optional containing the high-priority status if present,
      *         otherwise an empty optional
      */
-    public @NotNull Optional<PluginStatus> getHighStatus() {
+    public @NotNull Optional<Status> getHighStatus() {
         return Optional.ofNullable(this.highStatus.get());
     }
 
     /**
-     * Sets the specified status and runs all the registered watchers with
-     * this status
+     * Returns an unmodifiable set view of all high-priority statuses
      *
-     * @param status Status to be set
+     * @return An unmodifiable set view of all high-priority statuses
      */
-    public void setStatus(final @NotNull PluginStatus status) {
-        if (status.getPriority() == PluginStatus.Priority.HIGH) {
-            this.highStatus.set(status);
-        } else {
-            this.lowStatusSet.add(status);
-        }
-
-        if (!this.watcherList.isEmpty()) {
-            final var completed = new ObjectArrayList<StatusWatcher>();
-
-            for (final var watcher : this.watcherList) {
-                if (watcher.tryRun(status)) {
-                    completed.add(watcher);
-                }
-            }
-
-            this.watcherList.removeAll(completed);
-        }
+    public @NotNull @UnmodifiableView Set<Status> lowStatusSet() {
+        return Collections.unmodifiableSet(this.lowStatusSet);
     }
 
     /**
+     * Returns an unmodifiable view of the watcher list
+     *
+     * @return An unmodifiable view of the watcher list
+     */
+    public @NotNull @UnmodifiableView List<StatusWatcher> watcherList() {
+        return Collections.unmodifiableList(this.watcherList);
+    }
+
+    /**
+     * Gets all the watchers that contain the specified status
+     *
      * @param status Status to be checked
      * @return A new list of watchers that contain the specified status
      * @throws UnsupportedOperationException If the status type is not supported
      */
     @Contract("_ -> new")
-    public @NotNull List<StatusWatcher> getWatchers(final @NotNull PluginStatus status) throws UnsupportedOperationException {
+    public @NotNull List<StatusWatcher> getWatchers(final @NotNull Status status) throws UnsupportedOperationException {
         final var list = new ObjectArrayList<StatusWatcher>();
 
         for (final var watcher : this.watcherList) {
@@ -140,38 +109,34 @@ public final class StatusHandler {
     }
 
     /**
-     * @param status Status to be checked
-     * @return True if the status is present, false otherwise
+     * Assigns the specified status and runs all the registered watchers with
+     * this status
+     *
+     * @param status Status to be assigned
      */
-    public boolean contains(final @NotNull PluginStatus status) {
-        return status.isHighPriority()
-                ? status.equals(this.highStatus.get())
-                : this.lowStatusSet.contains(status);
-    }
-
-    /**
-     * @param first First status to be checked
-     * @param rest  Rest of the statuses to be checked
-     * @return True if any of the statuses is present, false otherwise
-     */
-    public boolean containsAny(
-            final @NotNull PluginStatus first,
-            final PluginStatus @NotNull ... rest
-    ) {
-        if (this.contains(first)) {
-            return true;
+    public void assignStatus(final @NotNull Status status) {
+        if (status.getPriority() == Status.Priority.HIGH) {
+            this.highStatus.set(status);
+        } else {
+            this.lowStatusSet.add(status);
         }
 
-        for (final var status : rest) {
-            if (this.contains(status)) {
-                return true;
+        if (!this.watcherList.isEmpty()) {
+            final var completed = new ObjectArrayList<StatusWatcher>();
+
+            for (final var watcher : this.watcherList) {
+                if (watcher.tryRun(status)) {
+                    completed.add(watcher);
+                }
             }
-        }
 
-        return false;
+            this.watcherList.removeAll(completed);
+        }
     }
 
     /**
+     * Returns whether all the specified statuses are present
+     *
      * @param first First status to be checked
      * @param rest  Rest of the statuses to be checked
      * @return True if all the statuses are present, false otherwise
@@ -179,10 +144,10 @@ public final class StatusHandler {
      *                                  statuses specified
      */
     public boolean containsAll(
-            final @NotNull PluginStatus first,
-            final PluginStatus @NotNull ... rest
+            final @NotNull Status first,
+            final Status @NotNull ... rest
     ) throws IllegalArgumentException {
-        final PluginStatus highStatus = this.highStatus.get();
+        final Status highStatus = this.highStatus.get();
         boolean hasHighPriority = first.isHighPriority();
 
         if (
@@ -209,5 +174,41 @@ public final class StatusHandler {
         }
 
         return true;
+    }
+
+    /**
+     * Returns whether any of the specified statuses are present
+     *
+     * @param first First status to be checked
+     * @param rest  Rest of the statuses to be checked
+     * @return True if any of the statuses is present, false otherwise
+     */
+    public boolean containsAny(
+            final @NotNull Status first,
+            final Status @NotNull ... rest
+    ) {
+        if (this.contains(first)) {
+            return true;
+        }
+
+        for (final var status : rest) {
+            if (this.contains(status)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether the specified status is present
+     *
+     * @param status Status to be checked
+     * @return True if the status is present, false otherwise
+     */
+    public boolean contains(final @NotNull Status status) {
+        return status.isHighPriority()
+               ? status.equals(this.highStatus.get())
+               : this.lowStatusSet.contains(status);
     }
 }

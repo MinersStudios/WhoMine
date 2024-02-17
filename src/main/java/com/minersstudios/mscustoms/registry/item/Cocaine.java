@@ -51,8 +51,8 @@ public final class Cocaine extends CustomItemImpl {
     @Override
     public @NotNull @Unmodifiable List<RecipeEntry> initRecipes() {
         return Collections.singletonList(
-                RecipeEntry.of(
-                        RecipeBuilder.shapedBuilder()
+                RecipeEntry.fromBuilder(
+                        RecipeBuilder.shaped()
                         .namespacedKey(this.namespacedKey)
                         .result(this.itemStack)
                         .shape(

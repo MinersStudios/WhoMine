@@ -1,9 +1,6 @@
 package com.minersstudios.mscore.inventory.plugin;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * All event listeners annotated using {@link InventoryHolder} will be registered
@@ -11,6 +8,7 @@ import java.lang.annotation.Target;
  *
  * @see AbstractInventoryHolder
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface InventoryHolder {}

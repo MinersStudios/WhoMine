@@ -25,20 +25,20 @@ abstract class RecipeEntryImpl implements RecipeEntry {
         return result;
     }
 
-    @Override
-    public final boolean isRegisteredInMenu() {
-        return this.isRegisteredInMenu;
-    }
-
     @Contract("null -> false")
     @Override
-    public final boolean equals(final @Nullable Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         return this == obj
                 || (
                         obj instanceof RecipeEntryImpl that
                         && this.getRecipe().equals(that.getRecipe())
                         && this.isRegisteredInMenu == that.isRegisteredInMenu
                 );
+    }
+
+    @Override
+    public final boolean isRegisteredInMenu() {
+        return this.isRegisteredInMenu;
     }
 
     @Override

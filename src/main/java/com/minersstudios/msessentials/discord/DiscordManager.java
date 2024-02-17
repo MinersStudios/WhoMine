@@ -1,6 +1,5 @@
 package com.minersstudios.msessentials.discord;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
@@ -23,7 +22,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.Presence;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -34,6 +32,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.minersstudios.mscore.locale.Translations.DISCORD_BOT_STATUS;
+import static com.minersstudios.mscore.locale.Translations.DISCORD_SERVER_ENABLED;
 
 /**
  * This class handles the Discord integration for the MSEssentials plugin. It
@@ -456,7 +457,7 @@ public final class DiscordManager {
 
         this.plugin.runTaskAsync(() -> {
             try {
-                this.plugin.setStatus(MSEssentials.LOADING_DISCORD);
+                this.plugin.assignStatus(MSEssentials.LOADING_DISCORD);
 
                 this.jda = this.buildJda(botToken);
             } catch (final Throwable e) {
@@ -469,7 +470,7 @@ public final class DiscordManager {
 
             if (this.jda == null) {
                 logger.warning("Discord bot not found!");
-                this.plugin.setStatus(MSEssentials.FAILED_LOAD_DISCORD);
+                this.plugin.assignStatus(MSEssentials.FAILED_LOAD_DISCORD);
 
                 return;
             }
@@ -478,7 +479,7 @@ public final class DiscordManager {
 
             if (this.mainGuild == null) {
                 logger.warning("Discord server not found!");
-                this.plugin.setStatus(MSEssentials.FAILED_LOAD_DISCORD);
+                this.plugin.assignStatus(MSEssentials.FAILED_LOAD_DISCORD);
                 this.unload();
 
                 return;
@@ -519,19 +520,16 @@ public final class DiscordManager {
             }
 
             presence.setActivity(
-                    Activity.playing(ChatUtils.serializePlainComponent(
-                            LanguageRegistry.Components.DISCORD_BOT_STATUS
-                            .arguments(
-                                    Component.text(this.plugin.getServer().getMinecraftVersion())
-                            ))
+                    Activity.playing(
+                            DISCORD_BOT_STATUS.asString(this.plugin.getServer().getMinecraftVersion())
                     )
             );
 
             this.loadCommandsAndListeners();
-            this.plugin.setStatus(MSEssentials.LOADED_DISCORD);
+            this.plugin.assignStatus(MSEssentials.LOADED_DISCORD);
 
-            this.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_ENABLED);
-            this.sendMessage(ChatType.LOCAL, LanguageRegistry.Strings.DISCORD_SERVER_ENABLED);
+            this.sendMessage(ChatType.GLOBAL, DISCORD_SERVER_ENABLED.asString());
+            this.sendMessage(ChatType.LOCAL, DISCORD_SERVER_ENABLED.asString());
         });
     }
 

@@ -1,4 +1,4 @@
-package com.minersstudios.msessentials.resourcepack.resource;
+package com.minersstudios.mscore.resource.github;
 
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Contract;

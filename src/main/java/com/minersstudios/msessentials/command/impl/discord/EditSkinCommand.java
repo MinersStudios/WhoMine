@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.discord;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.command.api.discord.SlashCommand;
 import com.minersstudios.msessentials.command.api.discord.SlashCommandExecutor;
 import com.minersstudios.msessentials.command.api.discord.interaction.CommandHandler;
@@ -24,8 +24,7 @@ import org.jetbrains.annotations.Range;
 
 import java.util.List;
 
-import static com.minersstudios.mscore.language.LanguageFile.renderTranslation;
-import static com.minersstudios.mscore.language.LanguageRegistry.Strings.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 @SlashCommand
@@ -55,14 +54,14 @@ public final class EditSkinCommand extends SlashCommandExecutor {
         final OptionMapping nameOption = interaction.getOption("name");
 
         if (nameOption == null) {
-            handler.send(DISCORD_SKIN_INVALID_NAME_REGEX);
+            handler.send(DISCORD_SKIN_INVALID_NAME_REGEX.asString());
             return;
         }
 
         final String name = nameOption.getAsString();
 
         if (!Skin.matchesNameRegex(name)) {
-            handler.send(DISCORD_SKIN_INVALID_NAME_REGEX);
+            handler.send(DISCORD_SKIN_INVALID_NAME_REGEX.asString());
             return;
         }
 
@@ -70,9 +69,9 @@ public final class EditSkinCommand extends SlashCommandExecutor {
 
         if (skinIndex == -1) {
             handler.send(
-                    renderTranslation(
-                            LanguageRegistry.Components.DISCORD_COMMAND_SKIN_NOT_FOUND
-                                    .arguments(text(name))
+                    ChatUtils.serializePlainComponent(
+                            DISCORD_COMMAND_SKIN_NOT_FOUND
+                            .asComponent(text(name))
                     )
             );
         }
@@ -90,12 +89,12 @@ public final class EditSkinCommand extends SlashCommandExecutor {
                 final Skin skin = Skin.create(this.getPlugin(), name, urlOption.getAsString());
 
                 if (skin == null) {
-                    handler.send(DISCORD_SKIN_SERVICE_UNAVAILABLE);
+                    handler.send(DISCORD_SKIN_SERVICE_UNAVAILABLE.asString());
                 } else {
                     edit(playerInfo, skinIndex, skin, null, handler);
                 }
             } catch (final IllegalArgumentException ignored) {
-                handler.send(DISCORD_SKIN_INVALID_IMG);
+                handler.send(DISCORD_SKIN_INVALID_IMG.asString());
             }
         } else if (
                 urlOption == null
@@ -115,10 +114,10 @@ public final class EditSkinCommand extends SlashCommandExecutor {
                         handler
                 );
             } catch (final IllegalArgumentException ignored) {
-                handler.send(DISCORD_SKIN_INVALID_IMG);
+                handler.send(DISCORD_SKIN_INVALID_IMG.asString());
             }
         } else {
-            handler.send(DISCORD_COMMAND_INVALID_ARGUMENTS);
+            handler.send(DISCORD_COMMAND_INVALID_ARGUMENTS.asString());
         }
     }
 
@@ -165,9 +164,9 @@ public final class EditSkinCommand extends SlashCommandExecutor {
         final Player player = playerInfo.getOnlinePlayer();
         final MessageEmbed embed =
                 BotHandler.craftEmbed(
-                        renderTranslation(
-                                LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_EDITED
-                                .arguments(
+                        ChatUtils.serializePlainComponent(
+                                DISCORD_SKIN_SUCCESSFULLY_EDITED
+                                .asComponent(
                                         text(skinName),
                                         playerInfo.getDefaultName(),
                                         text(playerInfo.getNickname())
@@ -178,7 +177,7 @@ public final class EditSkinCommand extends SlashCommandExecutor {
         if (player != null) {
             MSLogger.fine(
                     player,
-                    LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_EDITED_MINECRAFT
+                    DISCORD_SKIN_SUCCESSFULLY_EDITED_MINECRAFT.asTranslatable()
                     .arguments(text(skinName))
             );
         }

@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
@@ -67,7 +67,7 @@ public final class WhitelistCommand extends AbstractCommandExecutor<MSEssentials
                 server.reloadWhitelist();
                 MSLogger.fine(
                         sender,
-                        COMMAND_WHITE_LIST_RELOAD
+                        COMMAND_WHITE_LIST_RELOAD.asTranslatable()
                 );
 
                 return true;
@@ -82,26 +82,28 @@ public final class WhitelistCommand extends AbstractCommandExecutor<MSEssentials
                 if (playerInfo == null) {
                     MSLogger.severe(
                             sender,
-                            ERROR_PLAYER_NOT_FOUND
+                            ERROR_PLAYER_NOT_FOUND.asTranslatable()
                     );
+
                     return true;
                 }
 
                 if (playerInfo.setWhiteListed(true)) {
                     MSLogger.fine(
                             sender,
-                            COMMAND_WHITE_LIST_ADD_SENDER_MESSAGE
+                            COMMAND_WHITE_LIST_ADD_SENDER_MESSAGE.asTranslatable()
                             .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname())
                             )
                     );
+
                     return true;
                 }
 
                 MSLogger.warning(
                         sender,
-                        COMMAND_WHITE_LIST_ADD_ALREADY
+                        COMMAND_WHITE_LIST_ADD_ALREADY.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGoldName(),
                                 text(playerInfo.getNickname())
@@ -120,26 +122,28 @@ public final class WhitelistCommand extends AbstractCommandExecutor<MSEssentials
                 if (playerInfo == null) {
                     MSLogger.severe(
                             sender,
-                            ERROR_PLAYER_NOT_FOUND
+                            ERROR_PLAYER_NOT_FOUND.asTranslatable()
                     );
+
                     return true;
                 }
 
                 if (playerInfo.setWhiteListed(false)) {
                     MSLogger.fine(
                             sender,
-                            COMMAND_WHITE_LIST_REMOVE_SENDER_MESSAGE
+                            COMMAND_WHITE_LIST_REMOVE_SENDER_MESSAGE.asTranslatable()
                             .arguments(
                                     playerInfo.getGrayIDGreenName(),
                                     text(playerInfo.getNickname())
                             )
                     );
+
                     return true;
                 }
 
                 MSLogger.warning(
                         sender,
-                        COMMAND_WHITE_LIST_REMOVE_NOT_FOUND
+                        COMMAND_WHITE_LIST_REMOVE_NOT_FOUND.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGoldName(),
                                 text(playerArg)

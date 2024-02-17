@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
@@ -54,15 +54,15 @@ public final class KickCommand extends AbstractCommandExecutor<MSEssentials> {
 
         final Component reason = args.length > 1
                 ? text(ChatUtils.extractMessage(args, 1))
-                : COMMAND_KICK_DEFAULT_REASON;
-
+                : COMMAND_KICK_DEFAULT_REASON.asTranslatable();
         final PlayerInfo playerInfo = PlayerInfo.fromString(this.getPlugin(), args[0]);
 
         if (playerInfo == null) {
             MSLogger.severe(
                     sender,
-                    ERROR_PLAYER_NOT_FOUND
+                    ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
+
             return true;
         }
 
@@ -71,20 +71,21 @@ public final class KickCommand extends AbstractCommandExecutor<MSEssentials> {
         if (player == null) {
             MSLogger.warning(
                     sender,
-                    ERROR_PLAYER_NOT_ONLINE
+                    ERROR_PLAYER_NOT_ONLINE.asTranslatable()
             );
+
             return true;
         }
 
         playerInfo.kick(
-                COMMAND_KICK_MESSAGE_RECEIVER_TITLE,
-                COMMAND_KICK_MESSAGE_RECEIVER_SUBTITLE
+                COMMAND_KICK_MESSAGE_RECEIVER_TITLE.asTranslatable(),
+                COMMAND_KICK_MESSAGE_RECEIVER_SUBTITLE.asTranslatable()
                         .arguments(reason),
                 PlayerKickEvent.Cause.KICK_COMMAND
         );
         MSLogger.fine(
                 sender,
-                COMMAND_KICK_MESSAGE_SENDER
+                COMMAND_KICK_MESSAGE_SENDER.asTranslatable()
                 .arguments(
                         playerInfo.getGrayIDGreenName(),
                         text(playerInfo.getNickname()),

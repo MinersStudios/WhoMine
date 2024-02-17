@@ -2,10 +2,10 @@ package com.minersstudios.msessentials.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.minersstudios.mscore.inventory.CustomInventory;
-import com.minersstudios.mscore.language.LanguageFile;
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.BlockUtils;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.DateUtils;
 import com.minersstudios.mscore.utility.PlayerUtils;
 import com.minersstudios.msessentials.Cache;
@@ -52,7 +52,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.minersstudios.msessentials.utility.MessageUtils.RolePlayActionType.ME;
 import static com.minersstudios.msessentials.utility.MessageUtils.RolePlayActionType.TODO;
 import static com.minersstudios.msessentials.utility.MessageUtils.*;
@@ -578,8 +578,8 @@ public final class PlayerInfo {
 
             userWhiteList.remove(gameProfile);
             this.kick(
-                    COMMAND_WHITE_LIST_REMOVE_RECEIVER_MESSAGE_TITLE,
-                    COMMAND_WHITE_LIST_REMOVE_RECEIVER_MESSAGE_SUBTITLE,
+                    COMMAND_WHITE_LIST_REMOVE_RECEIVER_MESSAGE_TITLE.asTranslatable(),
+                    COMMAND_WHITE_LIST_REMOVE_RECEIVER_MESSAGE_SUBTITLE.asTranslatable(),
                     PlayerKickEvent.Cause.WHITELIST
             );
         }
@@ -870,19 +870,20 @@ public final class PlayerInfo {
             if (this.isMuted()) {
                 MSLogger.warning(
                         sender,
-                        COMMAND_MUTE_ALREADY_SENDER
+                        COMMAND_MUTE_ALREADY_SENDER.asTranslatable()
                         .arguments(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
                         )
                 );
+
                 return;
             }
 
             muteMap.put(this.offlinePlayer, date, reason, sender.getName());
             MSLogger.fine(
                     sender,
-                    COMMAND_MUTE_MESSAGE_SENDER
+                    COMMAND_MUTE_MESSAGE_SENDER.asTranslatable()
                     .arguments(
                             this.getGrayIDGreenName(),
                             text(this.nickname),
@@ -894,7 +895,7 @@ public final class PlayerInfo {
             if (player != null) {
                 MSLogger.warning(
                         player,
-                        COMMAND_MUTE_MESSAGE_RECEIVER
+                        COMMAND_MUTE_MESSAGE_RECEIVER.asTranslatable()
                         .arguments(
                                 text(reason),
                                 text(DateUtils.getSenderDate(date, sender))
@@ -905,7 +906,7 @@ public final class PlayerInfo {
             if (!this.isMuted()) {
                 MSLogger.warning(
                         sender,
-                        COMMAND_UNMUTE_NOT_MUTED
+                        COMMAND_UNMUTE_NOT_MUTED.asTranslatable()
                         .arguments(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
@@ -917,7 +918,7 @@ public final class PlayerInfo {
             muteMap.remove(this.offlinePlayer);
             MSLogger.fine(
                     sender,
-                    COMMAND_UNMUTE_SENDER_MESSAGE
+                    COMMAND_UNMUTE_SENDER_MESSAGE.asTranslatable()
                     .arguments(
                             this.getGrayIDGreenName(),
                             text(this.nickname)
@@ -927,22 +928,22 @@ public final class PlayerInfo {
             if (player != null) {
                 MSLogger.warning(
                         player,
-                        COMMAND_UNMUTE_RECEIVER_MESSAGE
+                        COMMAND_UNMUTE_RECEIVER_MESSAGE.asTranslatable()
                 );
             }
         }
 
         if (this.isLinked()) {
             this.sendPrivateDiscordMessage(BotHandler.craftEmbed(
-                    LanguageFile.renderTranslation(
+                    ChatUtils.serializePlainComponent(
                             value
-                            ? DISCORD_MUTED.arguments(
+                            ? DISCORD_MUTED.asComponent(
                                     this.defaultName,
                                     text(this.nickname),
                                     text(reason),
                                     text(DateUtils.getSenderDate(date, player))
                             )
-                            : DISCORD_UNMUTED.arguments(
+                            : DISCORD_UNMUTED.asComponent(
                                     this.defaultName,
                                     text(this.nickname)
                             )
@@ -973,7 +974,7 @@ public final class PlayerInfo {
 
     /**
      * @return The ban reason of the player from {@link BanList.Type#PROFILE}
-     *         or {@link LanguageRegistry.Components#COMMAND_BAN_DEFAULT_REASON}
+     *         or {@link Translations#COMMAND_BAN_DEFAULT_REASON}
      *         if the reason is null
      * @throws IllegalStateException If the player is not banned, check
      *                               {@link #isBanned()} first
@@ -988,7 +989,7 @@ public final class PlayerInfo {
 
         final String reason = banEntry.getReason();
         return reason == null
-                ? COMMAND_BAN_DEFAULT_REASON
+                ? COMMAND_BAN_DEFAULT_REASON.asTranslatable()
                 : text(reason);
     }
 
@@ -1102,7 +1103,7 @@ public final class PlayerInfo {
 
         final Date expiration = banEntry.getExpiration();
         return expiration == null
-                ? COMMAND_BAN_TIME_FOREVER
+                ? COMMAND_BAN_TIME_FOREVER.asTranslatable()
                 : text(DateUtils.getSenderDate(expiration.toInstant(), sender));
     }
 
@@ -1124,7 +1125,7 @@ public final class PlayerInfo {
 
         final Date expiration = banEntry.getExpiration();
         return expiration == null
-                ? COMMAND_BAN_TIME_FOREVER
+                ? COMMAND_BAN_TIME_FOREVER.asTranslatable()
                 : text(DateUtils.getDate(expiration.toInstant(), address));
     }
 
@@ -1191,7 +1192,7 @@ public final class PlayerInfo {
             if (this.isBanned()) {
                 MSLogger.warning(
                         sender,
-                        COMMAND_BAN_ALREADY_SENDER
+                        COMMAND_BAN_ALREADY_SENDER.asTranslatable()
                         .arguments(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
@@ -1202,8 +1203,8 @@ public final class PlayerInfo {
 
             banList.addBan(this.profile, reason, Date.from(date), commandSender.getName());
             this.kick(
-                    COMMAND_BAN_MESSAGE_RECEIVER_TITLE,
-                    COMMAND_BAN_MESSAGE_RECEIVER_SUBTITLE
+                    COMMAND_BAN_MESSAGE_RECEIVER_TITLE.asTranslatable(),
+                    COMMAND_BAN_MESSAGE_RECEIVER_SUBTITLE.asTranslatable()
                     .arguments(
                             text(reason),
                             text(DateUtils.getSenderDate(date, player))
@@ -1212,7 +1213,7 @@ public final class PlayerInfo {
             );
             MSLogger.fine(
                     sender,
-                    COMMAND_BAN_MESSAGE_SENDER
+                    COMMAND_BAN_MESSAGE_SENDER.asTranslatable()
                     .arguments(
                             this.getGrayIDGreenName(),
                             text(this.nickname),
@@ -1224,7 +1225,7 @@ public final class PlayerInfo {
             if (!this.isBanned()) {
                 MSLogger.warning(
                         sender,
-                        COMMAND_UNBAN_NOT_BANNED
+                        COMMAND_UNBAN_NOT_BANNED.asTranslatable()
                         .arguments(
                                 this.getGrayIDGoldName(),
                                 text(this.nickname)
@@ -1236,7 +1237,7 @@ public final class PlayerInfo {
             banList.pardon(this.profile);
             MSLogger.fine(
                     sender,
-                    COMMAND_UNBAN_MESSAGE_SENDER
+                    COMMAND_UNBAN_MESSAGE_SENDER.asTranslatable()
                     .arguments(
                             this.getGrayIDGreenName(),
                             text(this.nickname)
@@ -1246,15 +1247,15 @@ public final class PlayerInfo {
 
         if (this.isLinked()) {
             this.sendPrivateDiscordMessage(BotHandler.craftEmbed(
-                    LanguageFile.renderTranslation(
+                    ChatUtils.serializePlainComponent(
                             value
-                            ? DISCORD_BANNED.arguments(
+                            ? DISCORD_BANNED.asComponent(
                                     this.defaultName,
                                     text(this.nickname),
                                     text(reason),
                                     text(DateUtils.getSenderDate(date, player))
                             )
-                            : DISCORD_UNBANNED.arguments(
+                            : DISCORD_UNBANNED.asComponent(
                                     this.defaultName,
                                     text(this.nickname)
                             )
@@ -1511,7 +1512,7 @@ public final class PlayerInfo {
                             switch (status) {
                                 case SUCCESSFULLY_LOADED -> {
                                     componentLogger.info(
-                                            RESOURCE_PACK_SUCCESSFULLY_LOADED
+                                            RESOURCE_PACK_SUCCESSFULLY_LOADED.asTranslatable()
                                             .arguments(text(this.nickname, NamedTextColor.GREEN))
                                     );
                                     return true;
@@ -1521,27 +1522,28 @@ public final class PlayerInfo {
                                     playerSettings.save();
 
                                     componentLogger.warn(
-                                            RESOURCE_PACK_FAILED_DOWNLOAD_CONSOLE
+                                            RESOURCE_PACK_FAILED_DOWNLOAD_CONSOLE.asTranslatable()
                                             .arguments(text(this.nickname, NamedTextColor.GOLD))
                                     );
                                     this.kick(
-                                            RESOURCE_PACK_FAILED_DOWNLOAD_RECEIVER_TITLE,
-                                            RESOURCE_PACK_FAILED_DOWNLOAD_RECEIVER_SUBTITLE,
+                                            RESOURCE_PACK_FAILED_DOWNLOAD_RECEIVER_TITLE.asTranslatable(),
+                                            RESOURCE_PACK_FAILED_DOWNLOAD_RECEIVER_SUBTITLE.asTranslatable(),
                                             PlayerKickEvent.Cause.RESOURCE_PACK_REJECTION
                                     );
                                 }
                                 case DECLINED -> {
                                     componentLogger.warn(
-                                            RESOURCE_PACK_DECLINED_CONSOLE
+                                            RESOURCE_PACK_DECLINED_CONSOLE.asTranslatable()
                                             .arguments(text(this.nickname, NamedTextColor.GOLD))
                                     );
                                     this.kick(
-                                            RESOURCE_PACK_DECLINED_RECEIVER_TITLE,
-                                            RESOURCE_PACK_DECLINED_RECEIVER_SUBTITLE,
+                                            RESOURCE_PACK_DECLINED_RECEIVER_TITLE.asTranslatable(),
+                                            RESOURCE_PACK_DECLINED_RECEIVER_SUBTITLE.asTranslatable(),
                                             PlayerKickEvent.Cause.RESOURCE_PACK_REJECTION
                                     );
                                 }
                             }
+
                             return false;
                         })
                         .exceptionally(
@@ -1551,8 +1553,8 @@ public final class PlayerInfo {
                                             throwable
                                     );
                                     this.kick(
-                                            SOMETHING_WENT_WRONG_TITLE,
-                                            SOMETHING_WENT_WRONG_SUBTITLE
+                                            SOMETHING_WENT_WRONG_TITLE.asTranslatable(),
+                                            SOMETHING_WENT_WRONG_SUBTITLE.asTranslatable()
                                     );
 
                                     return false;
@@ -1647,7 +1649,7 @@ public final class PlayerInfo {
 
         this.playerFile.save();
         this.plugin.getComponentLogger().info(
-                INFO_PLAYER_FILE_CREATED
+                INFO_PLAYER_FILE_CREATED.asTranslatable()
                 .arguments(
                         text(this.nickname),
                         text(this.offlinePlayer.getUniqueId().toString())
@@ -1739,9 +1741,9 @@ public final class PlayerInfo {
     ) {
         this.kick(
                 player,
-                COMMAND_KICK_MESSAGE_RECEIVER_TITLE,
-                COMMAND_KICK_MESSAGE_RECEIVER_SUBTITLE
-                        .arguments(COMMAND_KICK_DEFAULT_REASON),
+                COMMAND_KICK_MESSAGE_RECEIVER_TITLE.asTranslatable(),
+                COMMAND_KICK_MESSAGE_RECEIVER_SUBTITLE.asTranslatable()
+                .arguments(COMMAND_KICK_DEFAULT_REASON.asTranslatable()),
                 cause
         );
     }
@@ -1786,7 +1788,7 @@ public final class PlayerInfo {
         }
 
         player.kick(
-                FORMAT_LEAVE_MESSAGE
+                FORMAT_LEAVE_MESSAGE.asTranslatable()
                 .arguments(
                         title.color(NamedTextColor.RED).decorate(TextDecoration.BOLD),
                         reason.color(NamedTextColor.GRAY)

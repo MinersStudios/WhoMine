@@ -1,6 +1,10 @@
 package com.minersstudios.mscore.inventory.recipe.choice;
 
+import com.google.common.collect.Maps;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.utility.MSCustomUtils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -9,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -20,9 +25,9 @@ import java.util.regex.Pattern;
  * Use {@link #toExactChoice()} to convert this choice to an {@link ExactChoice}.
  * It is important because bukkit does not support custom choices.
  */
+@Immutable
 public final class CustomChoice implements RecipeChoice {
-    private List<ItemStack> choices;
-    private List<String> namespacedKeys;
+    private Object2ObjectMap<String, ItemStack> choiceMap;
 
     private static final String REGEX = "[a-z0-9/._-]+:[a-z0-9/._-]+";
     private static final Pattern PATTERN = Pattern.compile(REGEX);
@@ -56,91 +61,84 @@ public final class CustomChoice implements RecipeChoice {
      *                                  any of the namespaced keys are null or
      *                                  invalid
      */
-    public CustomChoice(final @NotNull List<String> namespacedKeys) throws IllegalArgumentException {
+    public CustomChoice(final @NotNull Collection<String> namespacedKeys) throws IllegalArgumentException {
         if (namespacedKeys.isEmpty()) {
             throw new IllegalArgumentException("Must have at least one namespacedKey");
         }
 
-        this.namespacedKeys = namespacedKeys;
-        this.choices = new ObjectArrayList<>();
+        this.choiceMap = new Object2ObjectOpenHashMap<>(namespacedKeys.size());
 
         for (final var namespacedKey : namespacedKeys) {
-            if (namespacedKey == null) {
-                throw new IllegalArgumentException("Cannot have null namespacedKey");
+            if (ChatUtils.isBlank(namespacedKey)) {
+                throw new IllegalArgumentException("Cannot have a blank namespacedKey");
             }
 
             if (!PATTERN.matcher(namespacedKey).matches()) {
-                throw new IllegalArgumentException("Invalid namespacedKey: " + namespacedKey);
+                throw new IllegalArgumentException("Invalid namespacedKey : " + namespacedKey);
             }
 
             MSCustomUtils.getItemStack(namespacedKey)
-            .ifPresent(itemStack -> this.choices.add(itemStack));
+            .ifPresent(itemStack -> this.choiceMap.put(namespacedKey, itemStack));
         }
     }
 
     /**
+     * Returns a clone of the first item stack
+     *
      * @return A clone of the first item stack
-     * @deprecated Use {@link #getChoices()} instead
+     * @deprecated Use {@link #choices()} or {@link #getItemStack(String)}
+     *             instead
      */
     @Deprecated
     @Override
     public @NotNull ItemStack getItemStack() {
-        return this.choices.get(0).clone();
+        return this.choiceMap.values().iterator().next().clone();
     }
 
     /**
+     * Returns a clone of the item stack for the specified namespaced key
+     *
+     * @param namespacedKey The namespaced key to get the item stack for
+     * @return A clone of the item stack for the specified namespaced key
+     */
+    public @NotNull ItemStack getItemStack(final @NotNull String namespacedKey) {
+        return this.choiceMap.get(namespacedKey).clone();
+    }
+
+    /**
+     * Returns the first namespaced key
+     *
      * @return The first namespaced key
      */
     public @NotNull String getNamespacedKey() {
-        return this.namespacedKeys.get(0);
+        return this.choiceMap.keySet().iterator().next();
     }
 
     /**
-     * @return An unmodifiable view of the choices
-     */
-    public @NotNull @Unmodifiable List<ItemStack> getChoices() {
-        return Collections.unmodifiableList(this.choices);
-    }
-
-    /**
-     * @return An unmodifiable view of the namespaced keys
-     */
-    public @NotNull @Unmodifiable List<String> getNamespacedKeys() {
-        return Collections.unmodifiableList(this.namespacedKeys);
-    }
-
-    /**
-     * Creates and returns a clone of this CustomChoice
+     * Returns an unmodifiable set of the namespaced keys
      *
-     * @return A clone of this choice
+     * @return An unmodifiable set of the namespaced keys
      */
-    @Override
-    public @NotNull CustomChoice clone() {
-        try {
-            final CustomChoice clone = (CustomChoice) super.clone();
-
-            clone.choices = new ObjectArrayList<>(this.choices);
-            clone.namespacedKeys = new ObjectArrayList<>(this.namespacedKeys);
-
-            return clone;
-        } catch (final CloneNotSupportedException e) {
-            throw new AssertionError("An error occurred while cloning '" + this + "'", e);
-        }
+    public @NotNull @Unmodifiable Set<String> namespacedKeySet() {
+        return Collections.unmodifiableSet(this.choiceMap.keySet());
     }
 
     /**
-     * @param itemStack The input itemStack to test
-     * @return True if the itemStack is similar to any of the choices
+     * Returns an unmodifiable collection of the choices
+     *
+     * @return An unmodifiable collection of the choices
      */
-    @Override
-    public boolean test(final @NotNull ItemStack itemStack) {
-        for (final var choice : this.choices) {
-            if (choice.isSimilar(itemStack)) {
-                return true;
-            }
-        }
+    public @NotNull @Unmodifiable Collection<ItemStack> choices() {
+        return Collections.unmodifiableCollection(this.choiceMap.values());
+    }
 
-        return false;
+    /**
+     * Returns an unmodifiable set of the entries
+     *
+     * @return An unmodifiable set of the entries
+     */
+    public @NotNull @Unmodifiable Set<Map.Entry<String, ItemStack>> entrySet() {
+        return Collections.unmodifiableSet(this.choiceMap.object2ObjectEntrySet());
     }
 
     /**
@@ -148,7 +146,7 @@ public final class CustomChoice implements RecipeChoice {
      */
     @Override
     public int hashCode() {
-        return 41 * 7 + Objects.hashCode(this.choices);
+        return this.choiceMap.hashCode();
     }
 
     /**
@@ -160,18 +158,64 @@ public final class CustomChoice implements RecipeChoice {
     public boolean equals(final @Nullable Object obj) {
         return this == obj
                 || (
-                        obj != null
-                        && this.getClass() == obj.getClass()
-                        && Objects.equals(this.choices, ((CustomChoice) obj).choices)
+                        obj instanceof CustomChoice that
+                        && Maps.difference(this.choiceMap, that.choiceMap).areEqual()
                 );
     }
 
     /**
+     * Returns whether the namespaced key is present in the choices
+     *
+     * @param namespacedKey The namespaced key to test
+     * @return True if the namespaced key is present in the choices
+     */
+    public boolean test(final @NotNull String namespacedKey) {
+        return this.choiceMap.containsKey(namespacedKey);
+    }
+
+    /**
+     * Returns whether the itemStack is similar to any of the choices
+     *
+     * @param itemStack The input itemStack to test
+     * @return True if the itemStack is similar to any of the choices
+     */
+    @Override
+    public boolean test(final @NotNull ItemStack itemStack) {
+        for (final var choice : this.choiceMap.values()) {
+            if (choice.isSimilar(itemStack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Creates and returns a clone of this {@code CustomChoice}
+     *
+     * @return A clone of this choice
+     */
+    @Override
+    public @NotNull CustomChoice clone() {
+        try {
+            final CustomChoice clone = (CustomChoice) super.clone();
+
+            clone.choiceMap = new Object2ObjectOpenHashMap<>(this.choiceMap);
+
+            return clone;
+        } catch (final CloneNotSupportedException e) {
+            throw new AssertionError("An error occurred while cloning '" + this + "'", e);
+        }
+    }
+
+    /**
+     * Returns a string representation of this choice
+     *
      * @return A string representation of this choice
      */
     @Override
     public @NotNull String toString() {
-        return "CustomChoice{choices=" + this.choices + '}';
+        return this.getClass().getSimpleName() + this.choiceMap;
     }
 
     /**
@@ -181,6 +225,6 @@ public final class CustomChoice implements RecipeChoice {
      * @return A new ExactChoice with the same choices as this CustomChoice
      */
     public @NotNull ExactChoice toExactChoice() {
-        return new ExactChoice(this.choices);
+        return new ExactChoice(new ObjectArrayList<>(this.choiceMap.values()));
     }
 }

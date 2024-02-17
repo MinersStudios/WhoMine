@@ -15,10 +15,10 @@ import org.jetbrains.annotations.Nullable;
  * <br>
  * Factory methods :
  * <ul>
- *     <li>{@link #of(RecipeBuilder)}</li>
- *     <li>{@link #of(Recipe)}</li>
- *     <li>{@link #of(RecipeBuilder, boolean)}</li>
- *     <li>{@link #of(Recipe, boolean)}</li>
+ *     <li>{@link #fromBuilder(RecipeBuilder)}</li>
+ *     <li>{@link #fromBuilder(RecipeBuilder, boolean)}</li>
+ *     <li>{@link #fromRecipe(Recipe)}</li>
+ *     <li>{@link #fromRecipe(Recipe, boolean)}</li>
  * </ul>
  *
  * @see #isSupportedInCraftsMenu(Recipe)
@@ -27,40 +27,38 @@ import org.jetbrains.annotations.Nullable;
 public interface RecipeEntry {
 
     /**
-     * @return The recipe builder associated with this RecipeEntry.
-     *         <br>
-     *         If a recipe builder was not used to create this RecipeEntry, a
-     *         new recipe builder will be created and returned from the recipe.
+     * Returns the recipe builder associated with this RecipeEntry.
+     * <br>
+     * If a recipe builder was not used to create this RecipeEntry, a new recipe
+     * builder will be created and returned from the recipe.
+     *
+     * @return The recipe builder associated with this RecipeEntry
      * @throws UnsupportedOperationException If the recipe is unsupported in
      *                                       the recipe builder
      */
     @NotNull RecipeBuilder<?> getBuilder() throws UnsupportedOperationException;
 
     /**
-     * @return The Bukkit Recipe object associated with this RecipeEntry.
-     *         <br>
-     *         If a recipe builder was used to create this RecipeEntry, the
-     *         recipe will be built and returned.
+     * Returns the Bukkit Recipe object associated with this RecipeEntry.
+     * <br>
+     * If a recipe builder was used to create this RecipeEntry, the recipe will
+     * be built and returned.
+     *
+     * @return The Bukkit Recipe object associated with this RecipeEntry
      */
     @NotNull Recipe getRecipe();
 
     /**
+     * Returns a hash code based on the recipe and isRegisteredInMenu flag
+     *
      * @return A hash code based on the recipe and isRegisteredInMenu flag
      */
     @Override
     int hashCode();
 
     /**
-     * @return True if the recipe should be shown in the {@link CraftsMenu}
-     */
-    boolean isRegisteredInMenu();
-
-    /**
-     * @return True if the recipe created with the recipe builder
-     */
-    boolean isBuildable();
-
-    /**
+     * Compares the specified object with this RecipeEntry for equality
+     *
      * @param obj The object to compare
      * @return True if the object is a RecipeEntry and has the same recipe and
      *         isRegisteredInMenu flag
@@ -70,7 +68,23 @@ public interface RecipeEntry {
     boolean equals(final @Nullable Object obj);
 
     /**
-     * @return A string representation of this RecipeEntry
+     * Returns whether the recipe should be shown in the {@link CraftsMenu}
+     *
+     * @return True if the recipe should be shown in the {@link CraftsMenu}
+     */
+    boolean isRegisteredInMenu();
+
+    /**
+     * Returns whether the recipe created with the recipe builder
+     *
+     * @return True if the recipe created with the recipe builder
+     */
+    boolean isBuildable();
+
+    /**
+     * Returns a string representation of this {@code RecipeEntry}
+     *
+     * @return A string representation of this {@code RecipeEntry}
      */
     @Override
     @NotNull String toString();
@@ -81,11 +95,11 @@ public interface RecipeEntry {
      *
      * @param builder The recipe builder
      * @return A new RecipeEntry
-     * @see #of(RecipeBuilder, boolean)
+     * @see #fromBuilder(RecipeBuilder, boolean)
      */
     @Contract("_ -> new")
-    static @NotNull RecipeEntry of(final @NotNull RecipeBuilder<?> builder) {
-        return of(builder, false);
+    static @NotNull RecipeEntry fromBuilder(final @NotNull RecipeBuilder<?> builder) {
+        return fromBuilder(builder, false);
     }
 
     /**
@@ -102,7 +116,7 @@ public interface RecipeEntry {
      * @see #isSupportedInCraftsMenu(RecipeBuilder)
      */
     @Contract("_, _ -> new")
-    static @NotNull RecipeEntry of(
+    static @NotNull RecipeEntry fromBuilder(
             final @NotNull RecipeBuilder<?> builder,
             final boolean isRegisteredInMenu
     ) {
@@ -119,11 +133,11 @@ public interface RecipeEntry {
      *
      * @param recipe The Bukkit Recipe object
      * @return A new RecipeEntry
-     * @see #of(Recipe, boolean)
+     * @see #fromRecipe(Recipe, boolean)
      */
     @Contract("_ -> new")
-    static @NotNull RecipeEntry of(final @NotNull Recipe recipe) {
-        return of(recipe, false);
+    static @NotNull RecipeEntry fromRecipe(final @NotNull Recipe recipe) {
+        return fromRecipe(recipe, false);
     }
 
     /**
@@ -140,7 +154,7 @@ public interface RecipeEntry {
      * @see #isSupportedInCraftsMenu(Recipe)
      */
     @Contract("_, _ -> new")
-    static @NotNull RecipeEntry of(
+    static @NotNull RecipeEntry fromRecipe(
             final @NotNull Recipe recipe,
             final boolean isRegisteredInMenu
     ) {
@@ -152,6 +166,8 @@ public interface RecipeEntry {
     }
 
     /**
+     * Returns whether the recipe type is supported in the {@link CraftsMenu}
+     *
      * @param recipe The Bukkit Recipe object
      * @return True if the recipe type is supported in the {@link CraftsMenu}
      */
@@ -160,6 +176,9 @@ public interface RecipeEntry {
     }
 
     /**
+     * Returns whether the recipe builder type is supported in the
+     * {@link CraftsMenu}
+     *
      * @param builder The recipe builder
      * @return True if the recipe builder type is supported in the
      *         {@link CraftsMenu}

@@ -1,5 +1,6 @@
 package com.minersstudios.msessentials.resourcepack.resource;
 
+import com.minersstudios.mscore.resource.uri.AbstractURIResourceManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.concurrent.Immutable;
@@ -12,30 +13,19 @@ import java.util.concurrent.CompletableFuture;
  * It provides methods to get the URI and the hash of the resource pack file
  * via {@link URI}.
  * <br>
- * You can create it using the static methods of {@link ResourceManager} :
+ * You can create it using the static methods of {@link PackResourceManager} :
  * <ul>
- *     <li>{@link ResourceManager#uri(URI)}</li>
- *     <li>{@link ResourceManager#url(String)}</li>
+ *     <li>{@link PackResourceManager#uri(URI)}</li>
+ *     <li>{@link PackResourceManager#url(String)}</li>
  * </ul>
  *
- * @see ResourceManager
+ * @see PackResourceManager
  */
 @Immutable
-public class URIResourceManager implements ResourceManager {
-    private final URI uri;
+public final class URIPackResourceManager extends AbstractURIResourceManager implements PackResourceManager {
 
-    URIResourceManager(final @NotNull URI uri) {
-        this.uri = uri;
-    }
-
-    /**
-     * Returns the URI passed in the constructor
-     *
-     * @return The future containing the URI of the resource pack file
-     */
-    @Override
-    public @NotNull CompletableFuture<URI> getUri() {
-        return CompletableFuture.completedFuture(this.uri);
+    URIPackResourceManager(final @NotNull URI uri) {
+        super(uri);
     }
 
     /**
@@ -49,21 +39,11 @@ public class URIResourceManager implements ResourceManager {
     @Override
     public @NotNull CompletableFuture<String> generateHash() throws IllegalStateException {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                return ResourceManager.generateSHA1(
-                        this.uri
-                        .toURL()
-                        .openConnection()
-                        .getInputStream()
-                );
+            try (final var in = this.openStream()) {
+                return PackResourceManager.generateSHA1(in);
             } catch (final Throwable e) {
                 throw new IllegalStateException("Failed to generate SHA-1 hash for resource pack file: " + this.uri, e);
             }
         });
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "URIResourceManager{uri=" + this.uri + '}';
     }
 }

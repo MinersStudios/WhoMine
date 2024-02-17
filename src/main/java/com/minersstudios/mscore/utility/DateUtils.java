@@ -97,7 +97,7 @@ public final class DateUtils {
         if (address == null) {
             return date
                     .atZone(DEFAULT_ZONE_ID)
-                    .format(MSPlugin.globalConfig().getTimeFormatter());
+                    .format(MSPlugin.globalConfig().getDateFormatter());
         }
 
         final String timeZone = getTimezone(address);
@@ -107,7 +107,7 @@ public final class DateUtils {
                                 ? "Europe/Kiev"
                                 : timeZone
                         )
-                ).format(MSPlugin.globalConfig().getTimeFormatter());
+                ).format(MSPlugin.globalConfig().getDateFormatter());
     }
 
     /**

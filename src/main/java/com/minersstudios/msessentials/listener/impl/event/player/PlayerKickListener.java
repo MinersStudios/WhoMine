@@ -10,15 +10,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 
 @EventListener
 public class PlayerKickListener extends AbstractEventListener<MSEssentials> {
     private static final TranslatableComponent SERVER_RESTARTING =
-            FORMAT_LEAVE_MESSAGE
+            FORMAT_LEAVE_MESSAGE.asTranslatable()
             .arguments(
-                    ON_DISABLE_MESSAGE_TITLE.color(NamedTextColor.RED).decorate(TextDecoration.BOLD),
-                    ON_DISABLE_MESSAGE_SUBTITLE.color(NamedTextColor.GRAY)
+                    ON_DISABLE_MESSAGE_TITLE.asTranslatable().color(NamedTextColor.RED).decorate(TextDecoration.BOLD),
+                    ON_DISABLE_MESSAGE_SUBTITLE.asTranslatable().color(NamedTextColor.GRAY)
             )
             .color(NamedTextColor.DARK_GRAY);
 

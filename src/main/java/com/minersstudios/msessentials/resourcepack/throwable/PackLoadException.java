@@ -11,14 +11,14 @@ import org.jetbrains.annotations.Nullable;
 public class PackLoadException extends RuntimeException {
 
     /**
-     * Constructs a PackLoadException with no detail message
+     * Constructs a new exception with no detail message
      */
     public PackLoadException() {
         super();
     }
 
     /**
-     * Constructs a PackLoadException with the specified detail message
+     * Constructs a new exception with the specified detail message
      *
      * @param message The detail message
      */

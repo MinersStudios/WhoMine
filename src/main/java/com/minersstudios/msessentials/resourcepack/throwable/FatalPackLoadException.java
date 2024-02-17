@@ -11,14 +11,14 @@ import org.jetbrains.annotations.Nullable;
 public class FatalPackLoadException extends Exception {
 
     /**
-     * Constructs a FatalPackLoadException with no detail message
+     * Constructs a new exception with no detail message
      */
     public FatalPackLoadException() {
         super();
     }
 
     /**
-     * Constructs a FatalPackLoadException with the specified detail message
+     * Constructs a new exception with the specified detail message
      *
      * @param message The detail message
      */

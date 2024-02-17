@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.plugin;
 
-import com.minersstudios.mscore.language.LanguageFile;
+import com.minersstudios.mscore.locale.TranslationRegistry;
 import com.minersstudios.mscore.utility.Font;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
@@ -39,15 +39,15 @@ public final class MSLogger {
     private static final String NAME = "MS";
     private static final Logger LOGGER = Logger.getLogger(NAME);
 
-    private static final String ANSI_LIME = "\u001B[92m";
+    private static final String ANSI_LIME =  "\u001B[92m";
     private static final String ANSI_RESET = "\u001B[0m";
 
-    private static final int SEVERE = 1000;
+    private static final int SEVERE =  1000;
     private static final int WARNING = 900;
-    private static final int FINE = 500;
+    private static final int FINE =    500;
 
     @Contract(" -> fail")
-    private MSLogger() {
+    private MSLogger() throws AssertionError {
         throw new AssertionError("This class cannot be instantiated!");
     }
 
@@ -222,7 +222,7 @@ public final class MSLogger {
         } else if (target instanceof BlockCommandSender) {
             target.sendMessage(
                     message instanceof final TranslatableComponent translatableComponent
-                    ? LanguageFile.renderTranslationComponent(translatableComponent)
+                    ? TranslationRegistry.renderComponent(translatableComponent)
                     : message
             );
         } else {

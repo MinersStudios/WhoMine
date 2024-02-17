@@ -2,8 +2,8 @@ package com.minersstudios.msessentials.command.impl.minecraft.player;
 
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.command.api.MSCommand;
-import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.discord.BotHandler;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.minersstudios.mscore.utility.SharedConstants.DISCORD_LINK;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static net.kyori.adventure.text.Component.text;
@@ -46,13 +46,13 @@ public final class DiscordCommand extends AbstractCommandExecutor<MSEssentials> 
             .build();
 
     private static final TranslatableComponent DISCORD_MESSAGE =
-            COMMAND_DISCORD
+            COMMAND_DISCORD.asTranslatable()
             .arguments(
                     text(DISCORD_LINK)
-                    .hoverEvent(showText(LINK_HOVER.color(NamedTextColor.GRAY)))
+                    .hoverEvent(showText(COMMAND_HOVER_SUGGEST.asTranslatable().color(NamedTextColor.GRAY)))
                     .clickEvent(ClickEvent.openUrl(DISCORD_LINK)),
                     text("/discord link")
-                    .hoverEvent(showText(COMMAND_HOVER_RUN.color(NamedTextColor.GRAY)))
+                    .hoverEvent(showText(COMMAND_HOVER_RUN.asTranslatable().color(NamedTextColor.GRAY)))
                     .clickEvent(ClickEvent.runCommand("/discord link"))
             );
 
@@ -76,8 +76,9 @@ public final class DiscordCommand extends AbstractCommandExecutor<MSEssentials> 
                     if (id == -1L) {
                         MSLogger.warning(
                                 sender,
-                                COMMAND_DISCORD_UNLINK_NO_LINKS
+                                COMMAND_DISCORD_UNLINK_NO_LINKS.asTranslatable()
                         );
+
                         return true;
                     }
 
@@ -88,9 +89,9 @@ public final class DiscordCommand extends AbstractCommandExecutor<MSEssentials> 
                         discordManager.sendEmbeds(
                                 user,
                                 BotHandler.craftEmbed(
-                                        LanguageFile.renderTranslation(
+                                        ChatUtils.serializePlainComponent(
                                                 COMMAND_DISCORD_UNLINK_DISCORD_SUCCESS
-                                                .arguments(
+                                                .asComponent(
                                                         playerInfo.getDefaultName(),
                                                         text(player.getName())
                                                 )
@@ -99,7 +100,7 @@ public final class DiscordCommand extends AbstractCommandExecutor<MSEssentials> 
                         );
                         MSLogger.fine(
                                 player,
-                                COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS
+                                COMMAND_DISCORD_UNLINK_MINECRAFT_SUCCESS.asTranslatable()
                                 .arguments(text(user.getName()))
                         );
                     });

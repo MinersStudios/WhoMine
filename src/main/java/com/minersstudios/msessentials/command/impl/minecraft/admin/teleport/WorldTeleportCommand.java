@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
@@ -71,8 +71,9 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
         if (playerInfo == null) {
             MSLogger.severe(
                     sender,
-                    ERROR_PLAYER_NOT_FOUND
+                    ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
+
             return true;
         }
 
@@ -81,8 +82,9 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
         if (player == null) {
             MSLogger.severe(
                     sender,
-                    ERROR_PLAYER_NOT_FOUND
+                    ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
+
             return true;
         }
 
@@ -91,8 +93,9 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
         if (world == null) {
             MSLogger.severe(
                     sender,
-                    COMMAND_WORLD_TELEPORT_WORLD_NOT_FOUND
+                    COMMAND_WORLD_TELEPORT_WORLD_NOT_FOUND.asTranslatable()
             );
+
             return true;
         }
 
@@ -115,8 +118,9 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
             ) {
                 MSLogger.severe(
                         sender,
-                        COMMAND_WORLD_TELEPORT_TOO_BIG_COORDINATES
+                        COMMAND_WORLD_TELEPORT_TOO_BIG_COORDINATES.asTranslatable()
                 );
+
                 return true;
             }
         } else {
@@ -130,7 +134,7 @@ public final class WorldTeleportCommand extends AbstractCommandExecutor<MSEssent
         .thenRun(
             () -> MSLogger.fine(
                     sender,
-                    COMMAND_WORLD_TELEPORT_SENDER_MESSAGE
+                    COMMAND_WORLD_TELEPORT_SENDER_MESSAGE.asTranslatable()
                     .arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),

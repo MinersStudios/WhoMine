@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.player;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.DateUtils;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -17,7 +17,7 @@ public final class AdminFirstJoinCommand {
     ) {
         MSLogger.fine(
                 sender,
-                LanguageRegistry.Components.COMMAND_PLAYER_FIRST_JOIN
+                Translations.COMMAND_PLAYER_FIRST_JOIN.asTranslatable()
                 .arguments(
                         playerInfo.getGrayIDGreenName(),
                         text(playerInfo.getNickname()),

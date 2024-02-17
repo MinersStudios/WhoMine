@@ -2,7 +2,7 @@ package com.minersstudios.mscustoms.command.block;
 
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.block.CustomBlockRegistry;
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -27,7 +27,7 @@ public final class ReloadCommand {
         plugin.getConfiguration().reload();
         MSLogger.fine(
                 sender,
-                LanguageRegistry.Components.COMMAND_MSBLOCK_RELOAD_SUCCESS
+                Translations.COMMAND_MSBLOCK_RELOAD_SUCCESS.asTranslatable()
                 .arguments(text(System.currentTimeMillis() - time))
         );
 

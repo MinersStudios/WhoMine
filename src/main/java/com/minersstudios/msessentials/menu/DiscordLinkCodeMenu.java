@@ -3,7 +3,6 @@ package com.minersstudios.msessentials.menu;
 import com.minersstudios.mscore.inventory.CustomInventory;
 import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
 import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.MSEssentials;
@@ -18,22 +17,23 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 @InventoryHolder
 public final class DiscordLinkCodeMenu extends AbstractInventoryHolder<MSEssentials> {
-    private static final Component TITLE = LanguageRegistry.Components.MENU_DISCORD_TITLE.style(ChatUtils.DEFAULT_STYLE);
+    private static final Component TITLE = MENU_DISCORD_TITLE.asTranslatable().style(ChatUtils.DEFAULT_STYLE);
     private static final List<TranslatableComponent> NUMBERS = Arrays.asList(
-            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_0,
-            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_1,
-            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_2,
-            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_3,
-            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_4,
-            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_5,
-            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_6,
-            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_7,
-            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_8,
-            LanguageRegistry.Components.MENU_DISCORD_NUMBERS_9
+            MENU_DISCORD_NUMBERS_0.asTranslatable(),
+            MENU_DISCORD_NUMBERS_1.asTranslatable(),
+            MENU_DISCORD_NUMBERS_2.asTranslatable(),
+            MENU_DISCORD_NUMBERS_3.asTranslatable(),
+            MENU_DISCORD_NUMBERS_4.asTranslatable(),
+            MENU_DISCORD_NUMBERS_5.asTranslatable(),
+            MENU_DISCORD_NUMBERS_6.asTranslatable(),
+            MENU_DISCORD_NUMBERS_7.asTranslatable(),
+            MENU_DISCORD_NUMBERS_8.asTranslatable(),
+            MENU_DISCORD_NUMBERS_9.asTranslatable()
     );
 
     @Override

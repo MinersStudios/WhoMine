@@ -61,6 +61,7 @@ public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDe
                         jsonObject.get(CHOICES_KEY),
                         NAMESPACED_LIST_TYPE
                 );
+
                 return new CustomChoice(namespacedKeys).toExactChoice();
             }
             default -> throw new IllegalArgumentException("Unknown RecipeChoice type : " + typeString);
@@ -89,7 +90,7 @@ public class RecipeChoiceAdapter implements JsonSerializer<RecipeChoice>, JsonDe
         } else if (choice instanceof final RecipeChoice.ExactChoice exactChoice) {
             jsonObject.add(CHOICES_KEY, context.serialize(exactChoice.getChoices()));
         } else if (choice instanceof final CustomChoice customChoice) {
-            jsonObject.add(CHOICES_KEY, context.serialize(customChoice.getNamespacedKeys()));
+            jsonObject.add(CHOICES_KEY, context.serialize(customChoice.namespacedKeySet()));
         } else {
             throw new IllegalArgumentException("Unknown RecipeChoice type: " + choice.getClass().getName());
         }

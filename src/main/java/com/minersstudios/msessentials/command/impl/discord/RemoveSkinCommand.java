@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.discord;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
+import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.msessentials.command.api.discord.SlashCommand;
 import com.minersstudios.msessentials.command.api.discord.SlashCommandExecutor;
 import com.minersstudios.msessentials.command.api.discord.interaction.CommandHandler;
@@ -23,8 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.minersstudios.mscore.language.LanguageFile.renderTranslation;
-import static com.minersstudios.mscore.language.LanguageRegistry.Strings.DISCORD_SKIN_INVALID_NAME_REGEX;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 @SlashCommand
@@ -51,14 +50,16 @@ public final class RemoveSkinCommand extends SlashCommandExecutor {
         final OptionMapping nameOption = interaction.getOption("name");
 
         if (nameOption == null) {
-            handler.send(DISCORD_SKIN_INVALID_NAME_REGEX);
+            handler.send(DISCORD_SKIN_INVALID_NAME_REGEX.asString());
+
             return;
         }
 
         final String name = nameOption.getAsString();
 
         if (!Skin.matchesNameRegex(name)) {
-            handler.send(DISCORD_SKIN_INVALID_NAME_REGEX);
+            handler.send(DISCORD_SKIN_INVALID_NAME_REGEX.asString());
+
             return;
         }
 
@@ -69,9 +70,9 @@ public final class RemoveSkinCommand extends SlashCommandExecutor {
                 || !remove(playerInfo, skin, null, handler)
         ) {
             handler.send(
-                    renderTranslation(
-                            LanguageRegistry.Components.DISCORD_COMMAND_SKIN_NOT_FOUND
-                            .arguments(text(name))
+                    ChatUtils.serializePlainComponent(
+                            DISCORD_COMMAND_SKIN_NOT_FOUND
+                            .asComponent(text(name))
                     )
             );
         }
@@ -119,9 +120,9 @@ public final class RemoveSkinCommand extends SlashCommandExecutor {
         final Player player = playerInfo.getOnlinePlayer();
         final MessageEmbed embed =
                 BotHandler.craftEmbed(
-                        renderTranslation(
-                                LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED
-                                .arguments(
+                        ChatUtils.serializePlainComponent(
+                                DISCORD_SKIN_SUCCESSFULLY_REMOVED
+                                .asComponent(
                                         text(skinName),
                                         playerInfo.getDefaultName(),
                                         text(playerInfo.getNickname())
@@ -132,7 +133,7 @@ public final class RemoveSkinCommand extends SlashCommandExecutor {
         if (player != null) {
             MSLogger.fine(
                     player,
-                    LanguageRegistry.Components.DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT
+                    DISCORD_SKIN_SUCCESSFULLY_REMOVED_MINECRAFT.asTranslatable()
                     .arguments(text(skinName))
             );
         }

@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.menu;
 
 import com.minersstudios.mscore.inventory.*;
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.item.renameable.RenameCollection;
@@ -43,9 +43,9 @@ public final class RenamesMenu {
     private static final ElementPagedInventory INVENTORY;
 
     static {
-        final Component previousButtonComponent = LanguageRegistry.Components.MENU_RENAMES_BUTTON_PREVIOUS_PAGE.style(ChatUtils.DEFAULT_STYLE);
-        final Component nextButtonComponent = LanguageRegistry.Components.MENU_RENAMES_BUTTON_NEXT_PAGE.style(ChatUtils.DEFAULT_STYLE);
-        final Component redCrossComponent = LanguageRegistry.Components.MENU_RENAME_NO_EXP.style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY);
+        final Component previousButtonComponent = Translations.MENU_RENAMES_BUTTON_PREVIOUS_PAGE.asComponent().style(ChatUtils.DEFAULT_STYLE);
+        final Component nextButtonComponent = Translations.MENU_RENAMES_BUTTON_NEXT_PAGE.asComponent().style(ChatUtils.DEFAULT_STYLE);
+        final Component redCrossComponent = Translations.MENU_RENAME_NO_EXP.asComponent().style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY);
 
         final ItemStack previousPageItem = new ItemStack(Material.PAPER);
         final ItemMeta previousPageMeta = previousPageItem.getItemMeta();
@@ -116,7 +116,7 @@ public final class RenamesMenu {
 
         INVENTORY = CustomInventory
                 .elementPaged(
-                        LanguageRegistry.Components.MENU_RENAMES_TITLE.style(ChatUtils.DEFAULT_STYLE),
+                        Translations.MENU_RENAMES_TITLE.asTranslatable().style(ChatUtils.DEFAULT_STYLE),
                         5,
                         IntStream.range(0, 36).toArray()
                 )
@@ -163,7 +163,7 @@ public final class RenamesMenu {
                 final Player player = (Player) buttonEvent.getWhoClicked();
                 final SingleInventory renameInventory =
                         CustomInventory.single(
-                                LanguageRegistry.Components.MENU_RENAME_TITLE.style(ChatUtils.DEFAULT_STYLE),
+                                Translations.MENU_RENAME_TITLE.asTranslatable().style(ChatUtils.DEFAULT_STYLE),
                                 5
                         );
 

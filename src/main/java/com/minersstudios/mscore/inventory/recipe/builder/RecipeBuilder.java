@@ -19,131 +19,131 @@ public interface RecipeBuilder<R extends Recipe> {
     @NotNull RecipeBuilder<R> result(final @NotNull ItemStack result) throws IllegalArgumentException;
 
     @Contract(" -> new")
-    static @NotNull ShapedRecipeBuilder shapedBuilder() {
+    static @NotNull ShapedRecipeBuilder shaped() {
         return new ShapedRecipeBuilder();
     }
 
     @Contract("_ -> new")
-    static @NotNull ShapedRecipeBuilder shapedBuilder(final @NotNull ShapedRecipe recipe) {
+    static @NotNull ShapedRecipeBuilder shaped(final @NotNull ShapedRecipe recipe) {
         return new ShapedRecipeBuilder(recipe);
     }
 
     @Contract(" -> new")
-    static @NotNull ShapelessRecipeBuilder shapelessBuilder() {
+    static @NotNull ShapelessRecipeBuilder shapeless() {
         return new ShapelessRecipeBuilder();
     }
 
     @Contract("_ -> new")
-    static @NotNull ShapelessRecipeBuilder shapelessBuilder(final @NotNull ShapelessRecipe recipe) {
+    static @NotNull ShapelessRecipeBuilder shapeless(final @NotNull ShapelessRecipe recipe) {
         return new ShapelessRecipeBuilder(recipe);
     }
 
     @Contract(" -> new")
-    static @NotNull FurnaceRecipeBuilder furnaceBuilder() {
+    static @NotNull FurnaceRecipeBuilder furnace() {
         return new FurnaceRecipeBuilder();
     }
 
     @Contract("_ -> new")
-    static @NotNull FurnaceRecipeBuilder furnaceBuilder(final @NotNull FurnaceRecipe recipe) {
+    static @NotNull FurnaceRecipeBuilder furnace(final @NotNull FurnaceRecipe recipe) {
         return new FurnaceRecipeBuilder(recipe);
     }
 
     @Contract(" -> new")
-    static @NotNull SmokingRecipeBuilder smokingBuilder() {
+    static @NotNull SmokingRecipeBuilder smoking() {
         return new SmokingRecipeBuilder();
     }
 
     @Contract("_ -> new")
-    static @NotNull SmokingRecipeBuilder smokingBuilder(final @NotNull SmokingRecipe recipe) {
+    static @NotNull SmokingRecipeBuilder smoking(final @NotNull SmokingRecipe recipe) {
         return new SmokingRecipeBuilder(recipe);
     }
 
     @Contract(" -> new")
-    static @NotNull BlastingRecipeBuilder blastingBuilder() {
+    static @NotNull BlastingRecipeBuilder blasting() {
         return new BlastingRecipeBuilder();
     }
 
     @Contract("_ -> new")
-    static @NotNull BlastingRecipeBuilder blastingBuilder(final @NotNull BlastingRecipe recipe) {
+    static @NotNull BlastingRecipeBuilder blasting(final @NotNull BlastingRecipe recipe) {
         return new BlastingRecipeBuilder(recipe);
     }
 
     @Contract(" -> new")
-    static @NotNull CampfireRecipeBuilder campfireBuilder() {
+    static @NotNull CampfireRecipeBuilder campfire() {
         return new CampfireRecipeBuilder();
     }
 
     @Contract("_ -> new")
-    static @NotNull CampfireRecipeBuilder campfireBuilder(final @NotNull CampfireRecipe recipe) {
+    static @NotNull CampfireRecipeBuilder campfire(final @NotNull CampfireRecipe recipe) {
         return new CampfireRecipeBuilder(recipe);
     }
 
     @Contract(" -> new")
-    static @NotNull StonecuttingRecipeBuilder stonecuttingBuilder() {
+    static @NotNull StonecuttingRecipeBuilder stonecutting() {
         return new StonecuttingRecipeBuilder();
     }
 
     @Contract("_ -> new")
-    static @NotNull StonecuttingRecipeBuilder stonecuttingBuilder(final @NotNull StonecuttingRecipe recipe) {
+    static @NotNull StonecuttingRecipeBuilder stonecutting(final @NotNull StonecuttingRecipe recipe) {
         return new StonecuttingRecipeBuilder(recipe);
     }
 
     @Contract(" -> new")
-    static @NotNull SmithingTransformRecipeBuilder smithingTransformBuilder() {
+    static @NotNull SmithingTransformRecipeBuilder smithingTransform() {
         return new SmithingTransformRecipeBuilder();
     }
 
     @Contract("_ -> new")
-    static @NotNull SmithingTransformRecipeBuilder smithingTransformBuilder(final @NotNull SmithingTransformRecipe recipe) {
+    static @NotNull SmithingTransformRecipeBuilder smithingTransform(final @NotNull SmithingTransformRecipe recipe) {
         return new SmithingTransformRecipeBuilder(recipe);
     }
 
     @Contract(" -> new")
-    static @NotNull SmithingTrimRecipeBuilder smithingTrimBuilder() {
+    static @NotNull SmithingTrimRecipeBuilder smithingTrim() {
         return new SmithingTrimRecipeBuilder();
     }
 
     @Contract("_ -> new")
-    static @NotNull SmithingTrimRecipeBuilder smithingTrimBuilder(final @NotNull SmithingTrimRecipe recipe) {
+    static @NotNull SmithingTrimRecipeBuilder smithingTrim(final @NotNull SmithingTrimRecipe recipe) {
         return new SmithingTrimRecipeBuilder(recipe);
     }
 
     @Contract("_ -> new")
-    static @NotNull RecipeBuilder<?> unknownRecipeBuilder(final @NotNull Recipe recipe) throws UnsupportedOperationException {
+    static @NotNull RecipeBuilder<?> unknown(final @NotNull Recipe recipe) throws UnsupportedOperationException {
         if (recipe instanceof final ShapedRecipe shaped) {
-            return shapedBuilder(shaped);
+            return shaped(shaped);
         }
 
         if (recipe instanceof final ShapelessRecipe shapeless) {
-            return shapelessBuilder(shapeless);
+            return shapeless(shapeless);
         }
 
         if (recipe instanceof final FurnaceRecipe furnace) {
-            return furnaceBuilder(furnace);
+            return furnace(furnace);
         }
 
         if (recipe instanceof final SmokingRecipe smoking) {
-            return smokingBuilder(smoking);
+            return smoking(smoking);
         }
 
         if (recipe instanceof final BlastingRecipe blasting) {
-            return blastingBuilder(blasting);
+            return blasting(blasting);
         }
 
         if (recipe instanceof final CampfireRecipe campfire) {
-            return campfireBuilder(campfire);
+            return campfire(campfire);
         }
 
         if (recipe instanceof final StonecuttingRecipe stonecutting) {
-            return stonecuttingBuilder(stonecutting);
+            return stonecutting(stonecutting);
         }
 
         if (recipe instanceof final SmithingTransformRecipe smithingTransform) {
-            return smithingTransformBuilder(smithingTransform);
+            return smithingTransform(smithingTransform);
         }
 
         if (recipe instanceof final SmithingTrimRecipe smithingTrim) {
-            return smithingTrimBuilder(smithingTrim);
+            return smithingTrim(smithingTrim);
         }
 
         throw new UnsupportedOperationException("Unknown recipe type: " + recipe.getClass().getName());

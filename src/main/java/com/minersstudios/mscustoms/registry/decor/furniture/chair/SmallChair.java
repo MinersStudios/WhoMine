@@ -40,8 +40,8 @@ public abstract class SmallChair<C extends CustomDecorData<C>> extends CustomDec
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        unused -> RecipeEntry.of(
-                                RecipeBuilder.shapedBuilder()
+                        unused -> RecipeEntry.fromBuilder(
+                                RecipeBuilder.shaped()
                                 .group(SharedConstants.MSDECOR_NAMESPACE + ":small_chair")
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(

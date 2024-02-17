@@ -19,7 +19,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -46,7 +46,7 @@ public final class GetMapLocationCommand extends AbstractCommandExecutor<MSEssen
         if (!(player.getInventory().getItemInMainHand().getItemMeta() instanceof final MapMeta mapMeta)) {
             MSLogger.warning(
                     player,
-                    COMMAND_GET_MAP_LOCATION_NO_MAP_IN_RIGHT_HAND
+                    COMMAND_GET_MAP_LOCATION_NO_MAP_IN_RIGHT_HAND.asTranslatable()
             );
 
             return true;
@@ -60,8 +60,9 @@ public final class GetMapLocationCommand extends AbstractCommandExecutor<MSEssen
         ) {
             MSLogger.severe(
                     sender,
-                    ERROR_SOMETHING_WENT_WRONG
+                    ERROR_SOMETHING_WENT_WRONG.asTranslatable()
             );
+
             return true;
         }
 
@@ -71,13 +72,13 @@ public final class GetMapLocationCommand extends AbstractCommandExecutor<MSEssen
 
         MSLogger.warning(
                 player,
-                COMMAND_GET_MAP_LOCATION_FORMAT
+                COMMAND_GET_MAP_LOCATION_FORMAT.asTranslatable()
                 .arguments(
                         text(mapView.getWorld().getName(), NamedTextColor.WHITE),
                         text(x, NamedTextColor.WHITE),
                         text(y, NamedTextColor.WHITE),
                         text(z, NamedTextColor.WHITE),
-                        COMMAND_GET_MAP_LOCATION_COMMAND_BUTTON_TEXT
+                        COMMAND_GET_MAP_LOCATION_COMMAND_BUTTON_TEXT.asTranslatable()
                                 .decorate(TextDecoration.BOLD)
                                 .clickEvent(ClickEvent.runCommand("/tp " + x + " " + y + " " + z))
                 )

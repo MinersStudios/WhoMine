@@ -43,8 +43,8 @@ public final class SantaSock extends CustomDecorDataImpl<SantaSock> {
 
         return MSPlugin.globalConfig().isChristmas()
                 ? builder.recipes(
-                        unused -> RecipeEntry.of(
-                                RecipeBuilder.shapedBuilder()
+                        unused -> RecipeEntry.fromBuilder(
+                                RecipeBuilder.shaped()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
                                         "LA",

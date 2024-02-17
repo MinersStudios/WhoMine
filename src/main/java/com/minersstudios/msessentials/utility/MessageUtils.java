@@ -1,9 +1,11 @@
 package com.minersstudios.msessentials.utility;
 
 import com.minersstudios.mscore.MSCore;
+import com.minersstudios.mscore.locale.TranslationRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.mscore.utility.ChatUtils;
+import com.minersstudios.mscore.utility.Font;
 import com.minersstudios.msessentials.Config;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.chat.ChatType;
@@ -23,7 +25,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.INFO_PLAYER_DEATH_INFO;
 import static com.minersstudios.msessentials.utility.MessageUtils.Colors.*;
 import static net.kyori.adventure.text.Component.*;
 
@@ -94,7 +95,10 @@ public final class MessageUtils {
                     .clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
                     .append(message)
                     .color(CHAT_COLOR_SECONDARY);
-            final String stringLocalMessage = ChatUtils.serializePlainComponent(localMessage);
+            final String stringLocalMessage =
+                    ChatUtils.serializePlainComponent(
+                            TranslationRegistry.renderComponent(localMessage)
+                    );
 
             sendLocalMessage(localMessage, location, config.getLocalChatRadius());
             MSEssentials.singleton().runTaskAsync(
@@ -113,7 +117,10 @@ public final class MessageUtils {
                 .clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
                 .append(message)
                 .color(CHAT_COLOR_SECONDARY);
-        final String stringGlobalMessage = ChatUtils.serializePlainComponent(globalMessage);
+        final String stringGlobalMessage =
+                ChatUtils.serializePlainComponent(
+                        TranslationRegistry.renderComponent(globalMessage)
+                );
 
         sendGlobalMessage(globalMessage);
         MSCore.singleton().runTaskAsync(() -> {
@@ -151,7 +158,10 @@ public final class MessageUtils {
                     .append(text(" : ")))))
                     .color(CHAT_COLOR_PRIMARY)
                     .append(message.color(CHAT_COLOR_SECONDARY));
-            final String privateMessageString = ChatUtils.serializePlainComponent(privateMessage);
+            final String privateMessageString =
+                    ChatUtils.serializePlainComponent(
+                            TranslationRegistry.renderComponent(privateMessage)
+                    );
 
             commandSender.sendMessage(
                     Font.Components.SPEECH.append(text()
@@ -235,7 +245,10 @@ public final class MessageUtils {
                 config.getLocalChatRadius()
         );
         MSCore.singleton().runTaskAsync(
-                () -> discordManager.sendMessage(ChatType.LOCAL, ChatUtils.serializePlainComponent(fullMessage))
+                () -> discordManager.sendMessage(
+                        ChatType.LOCAL,
+                        ChatUtils.serializePlainComponent(TranslationRegistry.renderComponent(fullMessage))
+                )
         );
         MSLogger.info(null, fullMessage);
     }
@@ -278,7 +291,10 @@ public final class MessageUtils {
                 .append(space()))
                 .append(killedInfo.getPlayerFile().getPronouns().getDeathMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
-        final String stringDeathMessage = ChatUtils.serializePlainComponent(deathMessage);
+        final String stringDeathMessage =
+                ChatUtils.serializePlainComponent(
+                        TranslationRegistry.renderComponent(deathMessage)
+                );
 
         killedInfo.setLastDeathLocation(deathLocation);
         sendGlobalMessage(deathMessage);
@@ -290,7 +306,7 @@ public final class MessageUtils {
 
         MSLogger.info(
                 null,
-                INFO_PLAYER_DEATH_INFO
+                Translations.INFO_PLAYER_DEATH_INFO.asTranslatable()
                 .arguments(
                         killedInfo.getDefaultName(),
                         text(killed.getName()),
@@ -326,7 +342,10 @@ public final class MessageUtils {
                 .append(space()))
                 .append(playerInfo.getPlayerFile().getPronouns().getJoinMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
-        final String stringJoinMessage = ChatUtils.serializePlainComponent(joinMessage);
+        final String stringJoinMessage =
+                ChatUtils.serializePlainComponent(
+                        TranslationRegistry.renderComponent(joinMessage)
+                );
 
         sendGlobalMessage(joinMessage);
         MSCore.singleton().runTaskAsync(() -> {
@@ -357,7 +376,10 @@ public final class MessageUtils {
                 .append(space()))
                 .append(playerInfo.getPlayerFile().getPronouns().getQuitMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
-        final String stringQuitMessage = ChatUtils.serializePlainComponent(quitMessage);
+        final String stringQuitMessage =
+                ChatUtils.serializePlainComponent(
+                        TranslationRegistry.renderComponent(quitMessage)
+                );
 
         sendGlobalMessage(quitMessage);
         MSCore.singleton().runTaskAsync(() -> {

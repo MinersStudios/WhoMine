@@ -1,9 +1,8 @@
 package com.minersstudios.msessentials;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscore.plugin.status.FailureStatus;
-import com.minersstudios.mscore.plugin.status.SuccessStatus;
+import com.minersstudios.mscore.status.FailureStatus;
+import com.minersstudios.mscore.status.SuccessStatus;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.discord.DiscordManager;
@@ -25,9 +24,9 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.ON_DISABLE_MESSAGE_SUBTITLE;
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.ON_DISABLE_MESSAGE_TITLE;
-import static com.minersstudios.mscore.plugin.status.SuccessStatus.low;
+import static com.minersstudios.mscore.locale.Translations.*;
+import static com.minersstudios.mscore.status.Status.failureLow;
+import static com.minersstudios.mscore.status.Status.successLow;
 
 /**
  * The main class of the MSEssentials plugin
@@ -45,16 +44,16 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     public static final String NAMESPACE = "msessentials";
 
     //<editor-fold desc="Plugin Statuses" defaultstate="collapsed">
-    public static final FailureStatus FAILED_LOAD_RESOURCE_PACKS = FailureStatus.low("FAILED_LOAD_RESOURCE_PACKS");
-    public static final FailureStatus FAILED_LOAD_ANOMALIES =      FailureStatus.low("FAILED_LOAD_ANOMALIES");
-    public static final FailureStatus FAILED_LOAD_DISCORD =        FailureStatus.low("FAILED_LOAD_DISCORD");
+    public static final FailureStatus FAILED_LOAD_RESOURCE_PACKS = failureLow("FAILED_LOAD_RESOURCE_PACKS");
+    public static final FailureStatus FAILED_LOAD_ANOMALIES =      failureLow("FAILED_LOAD_ANOMALIES");
+    public static final FailureStatus FAILED_LOAD_DISCORD =        failureLow("FAILED_LOAD_DISCORD");
 
-    public static final SuccessStatus LOADING_RESOURCE_PACKS = low("LOADING_RESOURCE_PACKS");
-    public static final SuccessStatus LOADED_RESOURCE_PACKS =  low("LOADED_RESOURCE_PACKS", FAILED_LOAD_RESOURCE_PACKS);
-    public static final SuccessStatus LOADING_ANOMALIES =      low("LOADING_ANOMALIES");
-    public static final SuccessStatus LOADED_ANOMALIES =       low("LOADED_ANOMALIES", FAILED_LOAD_ANOMALIES);
-    public static final SuccessStatus LOADING_DISCORD =        low("LOADING_DISCORD");
-    public static final SuccessStatus LOADED_DISCORD =         low("LOADED_DISCORD", FAILED_LOAD_DISCORD);
+    public static final SuccessStatus LOADING_RESOURCE_PACKS = successLow("LOADING_RESOURCE_PACKS");
+    public static final SuccessStatus LOADED_RESOURCE_PACKS =  successLow("LOADED_RESOURCE_PACKS", FAILED_LOAD_RESOURCE_PACKS);
+    public static final SuccessStatus LOADING_ANOMALIES =      successLow("LOADING_ANOMALIES");
+    public static final SuccessStatus LOADED_ANOMALIES =       successLow("LOADED_ANOMALIES", FAILED_LOAD_ANOMALIES);
+    public static final SuccessStatus LOADING_DISCORD =        successLow("LOADING_DISCORD");
+    public static final SuccessStatus LOADED_DISCORD =         successLow("LOADED_DISCORD", FAILED_LOAD_DISCORD);
     //</editor-fold>
 
     @Override
@@ -196,8 +195,8 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
                 .get(player)
                 .kick(
                         player,
-                        ON_DISABLE_MESSAGE_TITLE,
-                        ON_DISABLE_MESSAGE_SUBTITLE,
+                        ON_DISABLE_MESSAGE_TITLE.asTranslatable(),
+                        ON_DISABLE_MESSAGE_SUBTITLE.asTranslatable(),
                         PlayerKickEvent.Cause.RESTART_COMMAND
                 );
             }
@@ -208,8 +207,8 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
         final DiscordManager discordManager = this.cache.getDiscordManager();
 
         if (discordManager != null) {
-            discordManager.sendMessage(ChatType.GLOBAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
-            discordManager.sendMessage(ChatType.LOCAL, LanguageRegistry.Strings.DISCORD_SERVER_DISABLED);
+            discordManager.sendMessage(ChatType.GLOBAL, DISCORD_SERVER_DISABLED.asString());
+            discordManager.sendMessage(ChatType.LOCAL, DISCORD_SERVER_DISABLED.asString());
         }
     }
 }

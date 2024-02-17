@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Locale;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 
 public final class AdminPronounsCommand {
@@ -25,30 +25,32 @@ public final class AdminPronounsCommand {
         if (args.length == 2) {
             MSLogger.fine(
                     sender,
-                    COMMAND_PLAYER_PRONOUNS_GET
+                    COMMAND_PLAYER_PRONOUNS_GET.asTranslatable()
                     .arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),
                             text(playerFile.getPronouns().name().toLowerCase(Locale.ROOT))
                     )
             );
+
             return true;
         } else if (args.length == 3) {
             final String pronounsString = args[2];
-
             final Pronouns pronouns;
+
             try {
                 pronouns = Pronouns.valueOf(pronounsString.toUpperCase(Locale.ROOT));
             } catch (final IllegalArgumentException ignore) {
                 MSLogger.severe(
                         sender,
-                        COMMAND_PLAYER_PRONOUNS_USE_ONE_OF
+                        COMMAND_PLAYER_PRONOUNS_USE_ONE_OF.asTranslatable()
                         .arguments(text(
                                 Arrays.toString(Pronouns.values())
                                 .toLowerCase()
                                 .replaceAll("[\\[\\]]", "")
                         ))
                 );
+
                 return true;
             }
 
@@ -56,7 +58,7 @@ public final class AdminPronounsCommand {
             playerFile.save();
             MSLogger.fine(
                     sender,
-                    COMMAND_PLAYER_PRONOUNS_SET
+                    COMMAND_PLAYER_PRONOUNS_SET.asTranslatable()
                     .arguments(
                             playerInfo.getGrayIDGreenName(),
                             text(playerInfo.getNickname()),

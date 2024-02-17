@@ -30,7 +30,7 @@ public class RecipeEntryAdapter implements JsonSerializer<RecipeEntry>, JsonDese
             throw new JsonParseException("Missing showInCraftsMenu");
         }
 
-        return RecipeEntry.of(
+        return RecipeEntry.fromRecipe(
                 (Recipe) context.deserialize(
                         recipeElement,
                         Recipe.class

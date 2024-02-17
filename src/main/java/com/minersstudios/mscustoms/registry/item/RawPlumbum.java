@@ -42,7 +42,7 @@ public final class RawPlumbum extends CustomItemImpl {
     @Override
     public @NotNull @Unmodifiable List<RecipeEntry> initRecipes() {
         final var shapedBuilder =
-                RecipeBuilder.shapedBuilder()
+                RecipeBuilder.shaped()
                 .namespacedKey(this.namespacedKey)
                 .result(this.itemStack)
                 .shape(
@@ -62,13 +62,13 @@ public final class RawPlumbum extends CustomItemImpl {
                     "Can't find custom block with key: raw_plumbum_block! Shaped recipe for RawPlumbum will not be registered!"
             );
 
-            return Collections.singletonList(RecipeEntry.of(shapedBuilder, true));
+            return Collections.singletonList(RecipeEntry.fromBuilder(shapedBuilder, true));
         }
 
         return Arrays.asList(
-                RecipeEntry.of(shapedBuilder, true),
-                RecipeEntry.of(
-                        RecipeBuilder.shapedBuilder()
+                RecipeEntry.fromBuilder(shapedBuilder, true),
+                RecipeEntry.fromBuilder(
+                        RecipeBuilder.shaped()
                         .namespacedKey(new NamespacedKey(SharedConstants.MSITEMS_NAMESPACE, "raw_plumbum_from_block"))
                         .result(this.itemStack.clone().add(8))
                         .shape("I")

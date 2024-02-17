@@ -1,6 +1,6 @@
 package com.minersstudios.mscore.command.impl;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import org.bukkit.command.CommandSender;
@@ -16,7 +16,7 @@ public final class ReloadConfigCommand {
         MSPlugin.globalConfig().reload();
         MSLogger.fine(
                 sender,
-                LanguageRegistry.Components.COMMAND_MSCORE_RELOAD_CONFIG_SUCCESS
+                Translations.COMMAND_MSCORE_RELOAD_CONFIG_SUCCESS.asTranslatable()
                 .arguments(text(System.currentTimeMillis() - time))
         );
 

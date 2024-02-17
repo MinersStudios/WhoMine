@@ -2,7 +2,6 @@ package com.minersstudios.msessentials.command.impl.minecraft.admin.player;
 
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.command.api.MSCommand;
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.DateUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -26,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.minersstudios.mscore.locale.Translations.*;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -96,8 +96,8 @@ public final class AdminPlayerCommandHandler extends AbstractCommandExecutor<MSE
             "remove",
             "add"
     );
-    private final List<String> TAB_4_BAN_INFO_REASON = Collections.singletonList(LanguageRegistry.Strings.COMMAND_BAN_DEFAULT_REASON);
-    private final List<String> TAB_4_MUTE_INFO_REASON = Collections.singletonList(LanguageRegistry.Strings.COMMAND_MUTE_DEFAULT_REASON);
+    private final List<String> TAB_4_BAN_INFO_REASON = Collections.singletonList(COMMAND_BAN_DEFAULT_REASON.asString());
+    private final List<String> TAB_4_MUTE_INFO_REASON = Collections.singletonList(COMMAND_MUTE_DEFAULT_REASON.asString());
     private static final List<String> TAB_4_NAME_EMPTY = Collections.singletonList("empty");
     private static final CommandNode<?> COMMAND_NODE =
             literal("player")
@@ -217,8 +217,9 @@ public final class AdminPlayerCommandHandler extends AbstractCommandExecutor<MSE
         if (playerInfo == null) {
             MSLogger.severe(
                     sender,
-                    LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND
+                    ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
+
             return true;
         }
 

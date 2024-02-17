@@ -1,6 +1,6 @@
 package com.minersstudios.mscustoms.command.item;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -30,7 +30,7 @@ public final class GiveCommand {
         if (playerInfo == null) {
             MSLogger.severe(
                     sender,
-                    LanguageRegistry.Components.ERROR_PLAYER_NOT_FOUND
+                    Translations.ERROR_PLAYER_NOT_FOUND.asTranslatable()
             );
             return true;
         }
@@ -40,7 +40,7 @@ public final class GiveCommand {
         if (player == null) {
             MSLogger.warning(
                     sender,
-                    LanguageRegistry.Components.ERROR_PLAYER_NOT_ONLINE
+                    Translations.ERROR_PLAYER_NOT_ONLINE.asTranslatable()
             );
             return true;
         }
@@ -54,7 +54,7 @@ public final class GiveCommand {
                     } catch (final NumberFormatException ignored) {
                         MSLogger.severe(
                                 sender,
-                                LanguageRegistry.Components.ERROR_WRONG_FORMAT
+                                Translations.ERROR_WRONG_FORMAT.asTranslatable()
                         );
                         return;
                     }
@@ -65,7 +65,7 @@ public final class GiveCommand {
                     player.getInventory().addItem(itemStack);
                     MSLogger.fine(
                             sender,
-                            LanguageRegistry.Components.COMMAND_MSITEM_GIVE_SUCCESS
+                            Translations.COMMAND_MSITEM_GIVE_SUCCESS.asTranslatable()
                             .arguments(
                                     text(amount),
                                     itemStack.displayName(),
@@ -75,7 +75,7 @@ public final class GiveCommand {
                 },
                 () -> MSLogger.severe(
                         sender,
-                        LanguageRegistry.Components.COMMAND_MSITEM_GIVE_WRONG_ITEM
+                        Translations.COMMAND_MSITEM_GIVE_WRONG_ITEM.asTranslatable()
                 )
         );
 

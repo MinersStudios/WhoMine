@@ -1,6 +1,10 @@
 package com.minersstudios.mscore.utility;
 
+import net.kyori.adventure.translation.Translator;
 import org.jetbrains.annotations.Contract;
+
+import java.util.Locale;
+import java.util.Objects;
 
 import static io.papermc.paper.configuration.PaperConfigurations.CONFIG_DIR;
 
@@ -17,15 +21,16 @@ public final class SharedConstants {
     public static final String PAPER_GLOBAL_CONFIG_PATH =              CONFIG_DIR + '/' + PAPER_GLOBAL_CONFIG_FILE_NAME;
     public static final String PAPER_WORLD_DEFAULTS_PATH =             CONFIG_DIR + '/' + PAPER_WORLD_DEFAULTS_CONFIG_FILE_NAME;
     public static final String DATE_FORMAT =                           "EEE, yyyy-MM-dd HH:mm z";
-    public static final String LANGUAGE_CODE =                         "uk_ua";
-    public static final String LANGUAGE_FOLDER_LINK =                  "https://raw.githubusercontent.com/MinersStudios/WMConfig/release/lang/";
+    public static final String DEFAULT_LANGUAGE_CODE =                 "en_us";
     public static final String DISCORD_LINK =                          "https://discord.whomine.net";
     public static final String CONSOLE_NICKNAME =                      "$Console";
     public static final String INVISIBLE_ITEM_FRAME_TAG =              "invisibleItemFrame";
     public static final String HIDE_TAGS_TEAM_NAME =                   "hide_tags";
+    public static final String WHOMINE_NAMESPACE =                     "whomine";
     public static final String MSBLOCK_NAMESPACE =                     "msblock";
     public static final String MSITEMS_NAMESPACE =                     "msitems";
     public static final String MSDECOR_NAMESPACE =                     "msdecor";
+    public static final Locale DEFAULT_LOCALE =                        Objects.requireNonNull(Translator.parseLocale(DEFAULT_LANGUAGE_CODE), "Not found default locale for " + DEFAULT_LANGUAGE_CODE);
     public static final int SIT_RANGE =                                9;
     public static final int FINAL_DESTROY_STAGE =                      9;
     public static final int LEATHER_HORSE_ARMOR_MAX_STACK_SIZE =       8;

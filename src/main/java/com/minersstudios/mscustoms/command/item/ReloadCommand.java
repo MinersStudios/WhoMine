@@ -1,6 +1,6 @@
 package com.minersstudios.mscustoms.command.item;
 
-import com.minersstudios.mscore.language.LanguageRegistry;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utility.SharedConstants;
@@ -41,7 +41,7 @@ public final class ReloadCommand {
         plugin.getConfiguration().reload();
         MSLogger.fine(
                 sender,
-                LanguageRegistry.Components.COMMAND_MSITEM_RELOAD_SUCCESS
+                Translations.COMMAND_MSITEM_RELOAD_SUCCESS.asTranslatable()
                 .arguments(text(System.currentTimeMillis() - time))
         );
 

@@ -43,8 +43,8 @@ public abstract class SmallTable<C extends CustomDecorData<C>> extends CustomDec
                 .soundGroup(SoundGroup.WOOD)
                 .itemStack(itemStack)
                 .recipes(
-                        unused -> RecipeEntry.of(
-                                RecipeBuilder.shapedBuilder()
+                        unused -> RecipeEntry.fromBuilder(
+                                RecipeBuilder.shaped()
                                 .group(SharedConstants.MSDECOR_NAMESPACE + ":small_table")
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(

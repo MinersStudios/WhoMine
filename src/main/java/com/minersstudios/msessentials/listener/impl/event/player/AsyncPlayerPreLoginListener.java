@@ -1,8 +1,8 @@
 package com.minersstudios.msessentials.listener.impl.event.player;
 
-import com.minersstudios.mscore.language.LanguageFile;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
+import com.minersstudios.mscore.locale.TranslationRegistry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.msessentials.MSEssentials;
@@ -18,7 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static com.minersstudios.mscore.language.LanguageRegistry.Components.*;
+import static com.minersstudios.mscore.locale.Translations.*;
 import static net.kyori.adventure.text.Component.text;
 import static org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result.*;
 
@@ -29,25 +29,28 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
     private static final Style SUBTITLE_STYLE = Style.style(NamedTextColor.GRAY);
 
     private static final TranslatableComponent LEAVE_MESSAGE_FORMAT =
-            FORMAT_LEAVE_MESSAGE.color(NamedTextColor.DARK_GRAY);
-    private static final Component MESSAGE_WHITELIST = LanguageFile.renderTranslationComponent(
-            LEAVE_MESSAGE_FORMAT.arguments(
-                    PRE_LOGIN_WHITELISTED_TITLE.style(TITLE_STYLE),
-                    PRE_LOGIN_WHITELISTED_SUBTITLE.style(SUBTITLE_STYLE)
-            )
-    );
-    private static final Component MESSAGE_SERVER_NOT_FULLY_LOADED = LanguageFile.renderTranslationComponent(
-            LEAVE_MESSAGE_FORMAT.arguments(
-                    SERVER_NOT_FULLY_LOADED_TITLE.style(TITLE_STYLE),
-                    SERVER_NOT_FULLY_LOADED_SUBTITLE.style(SUBTITLE_STYLE)
-            )
-    );
-    private static final Component MESSAGE_TECH_WORKS = LanguageFile.renderTranslationComponent(
-            LEAVE_MESSAGE_FORMAT.arguments(
-                    PRE_LOGIN_TECH_WORKS_TITLE.style(TITLE_STYLE),
-                    PRE_LOGIN_TECH_WORKS_SUBTITLE.style(SUBTITLE_STYLE)
-            )
-    );
+            FORMAT_LEAVE_MESSAGE.asTranslatable().color(NamedTextColor.DARK_GRAY);
+    private static final Component MESSAGE_WHITELIST =
+            TranslationRegistry.renderComponent(
+                    LEAVE_MESSAGE_FORMAT.arguments(
+                            PRE_LOGIN_WHITELISTED_TITLE.asTranslatable().style(TITLE_STYLE),
+                            PRE_LOGIN_WHITELISTED_SUBTITLE.asTranslatable().style(SUBTITLE_STYLE)
+                    )
+            );
+    private static final Component MESSAGE_SERVER_NOT_FULLY_LOADED =
+            TranslationRegistry.renderComponent(
+                    LEAVE_MESSAGE_FORMAT.arguments(
+                            SERVER_NOT_FULLY_LOADED_TITLE.asTranslatable().style(TITLE_STYLE),
+                            SERVER_NOT_FULLY_LOADED_SUBTITLE.asTranslatable().style(SUBTITLE_STYLE)
+                    )
+            );
+    private static final Component MESSAGE_TECH_WORKS =
+            TranslationRegistry.renderComponent(
+                    LEAVE_MESSAGE_FORMAT.arguments(
+                            PRE_LOGIN_TECH_WORKS_TITLE.asTranslatable().style(TITLE_STYLE),
+                            PRE_LOGIN_TECH_WORKS_SUBTITLE.asTranslatable().style(SUBTITLE_STYLE)
+                    )
+            );
     //</editor-fold>
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -65,8 +68,8 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
             event.disallow(
                     KICK_BANNED,
                     LEAVE_MESSAGE_FORMAT.arguments(
-                            PRE_LOGIN_BANNED_TITLE,
-                            PRE_LOGIN_BANNED_SUBTITLE.arguments(
+                            PRE_LOGIN_BANNED_TITLE.asTranslatable(),
+                            PRE_LOGIN_BANNED_SUBTITLE.asTranslatable().arguments(
                                     playerInfo.getBanReason(),
                                     playerInfo.getBannedTo(event.getAddress())
                             )
@@ -96,7 +99,7 @@ public final class AsyncPlayerPreLoginListener extends AbstractEventListener<MSE
                 playerFile.addIp(hostAddress);
                 playerFile.save();
                 MSLogger.warning(
-                        INFO_PLAYER_ADDED_IP
+                        INFO_PLAYER_ADDED_IP.asTranslatable()
                         .arguments(
                                 playerInfo.getGrayIDGoldName(),
                                 text(nickname),

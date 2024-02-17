@@ -41,8 +41,8 @@ public final class TreeStar extends CustomDecorDataImpl<TreeStar> {
 
         return MSPlugin.globalConfig().isChristmas()
                 ? builder.recipes(
-                        unused -> RecipeEntry.of(
-                                RecipeBuilder.shapedBuilder()
+                        unused -> RecipeEntry.fromBuilder(
+                                RecipeBuilder.shaped()
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape(
                                         " I ",

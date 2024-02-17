@@ -2,23 +2,22 @@ package com.minersstudios.mscore.plugin;
 
 import com.google.common.base.Charsets;
 import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
-import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.command.api.Commodore;
+import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.inventory.plugin.AbstractInventoryHolder;
 import com.minersstudios.mscore.inventory.plugin.InventoryHolder;
-import com.minersstudios.mscore.language.LanguageFile;
-import com.minersstudios.mscore.language.LanguageRegistry;
 import com.minersstudios.mscore.listener.api.event.AbstractEventListener;
 import com.minersstudios.mscore.listener.api.event.EventListener;
 import com.minersstudios.mscore.listener.api.packet.AbstractPacketListener;
 import com.minersstudios.mscore.listener.api.packet.PacketListener;
+import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.packet.PacketEvent;
 import com.minersstudios.mscore.packet.PacketListenersMap;
 import com.minersstudios.mscore.packet.PacketRegistry;
 import com.minersstudios.mscore.packet.PacketType;
-import com.minersstudios.mscore.plugin.status.PluginStatus;
-import com.minersstudios.mscore.plugin.status.StatusHandler;
-import com.minersstudios.mscore.plugin.status.SuccessStatus;
+import com.minersstudios.mscore.status.Status;
+import com.minersstudios.mscore.status.StatusHandler;
+import com.minersstudios.mscore.status.SuccessStatus;
 import com.minersstudios.mscore.utility.*;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -55,8 +54,8 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.minersstudios.mscore.plugin.status.SuccessStatus.high;
-import static com.minersstudios.mscore.plugin.status.SuccessStatus.low;
+import static com.minersstudios.mscore.status.Status.successHigh;
+import static com.minersstudios.mscore.status.Status.successLow;
 import static net.kyori.adventure.text.Component.text;
 
 /**
@@ -81,36 +80,33 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     private Commodore commodore;
     private FileConfiguration newConfig;
 
+    //<editor-fold desc="Plugin statuses" defaultstate="collapsed">
+    /** High-priority plugin initializing status */
+    public static final SuccessStatus INITIALIZING = successHigh("INITIALIZING");
+    /** Low-priority plugin initialized status */
+    public static final SuccessStatus INITIALIZED = successLow("INITIALIZED");
+
+    /** High-priority plugin loading status */
+    public static final SuccessStatus LOADING = successHigh("LOADING");
+    /** Low-priority plugin loaded status */
+    public static final SuccessStatus LOADED = successLow("LOADED");
+
+    /** High-priority plugin enabling status */
+    public static final SuccessStatus ENABLING = successHigh("ENABLING");
+    /** High-priority plugin enabled status */
+    public static final SuccessStatus ENABLED = successHigh("ENABLED");
+
+    /** High-priority plugin disabling status */
+    public static final SuccessStatus DISABLING = successHigh("DISABLING");
+    /** High-priority plugin disabled status */
+    public static final SuccessStatus DISABLED = successHigh("DISABLED");
+    //</editor-fold>
+
     private static final Field DATA_FOLDER_FIELD;
     private static final Constructor<PluginCommand> COMMAND_CONSTRUCTOR;
-
-    //<editor-fold desc="Shared constants" defaultstate="collapsed">
     private static final File GLOBAL_FOLDER;
     private static final GlobalCache GLOBAL_CACHE;
     private static final GlobalConfig GLOBAL_CONFIG;
-    //</editor-fold>
-
-    //<editor-fold desc="Plugin statuses" defaultstate="collapsed">
-    /** High-priority plugin initializing status */
-    public static final SuccessStatus INITIALIZING = high("INITIALIZING");
-    /** Low-priority plugin initialized status */
-    public static final SuccessStatus INITIALIZED = low("INITIALIZED");
-
-    /** High-priority plugin loading status */
-    public static final SuccessStatus LOADING = high("LOADING");
-    /** Low-priority plugin loaded status */
-    public static final SuccessStatus LOADED = low("LOADED");
-
-    /** High-priority plugin enabling status */
-    public static final SuccessStatus ENABLING = high("ENABLING");
-    /** High-priority plugin enabled status */
-    public static final SuccessStatus ENABLED = high("ENABLED");
-
-    /** High-priority plugin disabling status */
-    public static final SuccessStatus DISABLING = high("DISABLING");
-    /** High-priority plugin disabled status */
-    public static final SuccessStatus DISABLED = high("DISABLED");
-    //</editor-fold>
 
     static {
         GLOBAL_FOLDER = new File(SharedConstants.GLOBAL_FOLDER_PATH);
@@ -122,10 +118,6 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         }
 
         GLOBAL_CONFIG.reload();
-        LanguageFile.loadLanguage(
-                GLOBAL_CONFIG.getLanguageFolderLink(),
-                GLOBAL_CONFIG.getLanguageCode()
-        );
 
         try {
             DATA_FOLDER_FIELD = JavaPlugin.class.getDeclaredField("dataFolder");
@@ -139,9 +131,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
             throw new IllegalStateException("Could not find command constructor", e);
         }
 
-        initClass(LanguageRegistry.Keys.class);
-        initClass(LanguageRegistry.Components.class);
-        initClass(LanguageRegistry.Strings.class);
+        initClass(Translations.class);
         initClass(PacketRegistry.class);
         initClass(Font.class);
         initClass(BlockUtils.class);
@@ -153,7 +143,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     protected MSPlugin() {
         this.statusHandler = new StatusHandler();
 
-        this.setStatus(INITIALIZING);
+        this.assignStatus(INITIALIZING);
 
         this.classNames = this.loadClassNames(SharedConstants.GLOBAL_PACKAGE + '.' + this.getName().toLowerCase());
         this.commandMap = new Object2ObjectOpenHashMap<>();
@@ -166,15 +156,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         try {
             DATA_FOLDER_FIELD.set(this, this.pluginFolder);
         } catch (final Throwable e) {
-            this.getLogger().log(
-                    Level.SEVERE,
-                    "Could not set data folder",
-                    e
-            );
-            this.getServer().getPluginManager().disablePlugin(this);
+            throw new IllegalStateException("Could not set data folder", e);
         }
 
-        this.setStatus(INITIALIZED);
+        this.assignStatus(INITIALIZED);
     }
 
     /**
@@ -189,19 +174,19 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      *         otherwise an empty optional
      * @see StatusHandler
      */
-    public final @NotNull Optional<PluginStatus> getStatus() {
+    public final @NotNull Optional<Status> getStatus() {
         return this.statusHandler.getHighStatus();
     }
 
     /**
-     * Sets the specified status and runs all the registered watchers with this
-     * status
+     * Assigns the specified status and runs all the registered watchers with
+     * this status
      *
-     * @param status Status to be set
+     * @param status Status to be assigned
      * @see StatusHandler
      */
-    public final void setStatus(final @NotNull PluginStatus status) {
-        this.statusHandler.setStatus(status);
+    public final void assignStatus(final @NotNull Status status) {
+        this.statusHandler.assignStatus(status);
     }
 
     /**
@@ -295,7 +280,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @return True if the status is present, false otherwise
      * @see StatusHandler
      */
-    public boolean containsStatus(final @NotNull PluginStatus status) {
+    public boolean containsStatus(final @NotNull Status status) {
         return this.statusHandler.contains(status);
     }
 
@@ -306,8 +291,8 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @see StatusHandler
      */
     public boolean containsAnyStatus(
-            final @NotNull PluginStatus first,
-            final PluginStatus @NotNull ... rest
+            final @NotNull Status first,
+            final Status @NotNull ... rest
     ) {
         return this.statusHandler.containsAny(first, rest);
     }
@@ -321,8 +306,8 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
      * @see StatusHandler
      */
     public boolean containsAllStatuses(
-            final @NotNull PluginStatus first,
-            final PluginStatus @NotNull ... rest
+            final @NotNull Status first,
+            final Status @NotNull ... rest
     ) throws IllegalArgumentException {
         return this.statusHandler.containsAll(first, rest);
     }
@@ -340,10 +325,10 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     public final void onLoad() {
         final long time = System.currentTimeMillis();
 
-        this.setStatus(LOADING);
+        this.assignStatus(LOADING);
         this.loadAnnotated();
         this.load();
-        this.setStatus(LOADED);
+        this.assignStatus(LOADED);
 
         this.getComponentLogger()
         .info(
@@ -369,7 +354,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     public final void onEnable() {
         final long time = System.currentTimeMillis();
 
-        this.setStatus(ENABLING);
+        this.assignStatus(ENABLING);
 
         this.commodore = new Commodore(this);
 
@@ -378,7 +363,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
         this.registerInventoryHolders();
         this.registerCommands();
         this.enable();
-        this.setStatus(ENABLED);
+        this.assignStatus(ENABLED);
 
         if (this.isEnabled()) {
             this.getComponentLogger()
@@ -400,9 +385,9 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
     public final void onDisable() {
         final long time = System.currentTimeMillis();
 
-        this.setStatus(DISABLING);
+        this.assignStatus(DISABLING);
         this.disable();
-        this.setStatus(DISABLED);
+        this.assignStatus(DISABLED);
 
         this.getComponentLogger()
         .info(
@@ -1024,7 +1009,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                 );
             }
         } catch (final Throwable e) {
-            logger.log(Level.SEVERE, "Failed to annotated class : " + givenClass.getName(), e);
+            throw new IllegalStateException("Failed to load annotated class : " + givenClass.getName(), e);
         }
     }
 
@@ -1174,8 +1159,7 @@ public abstract class MSPlugin<T extends MSPlugin<T>> extends JavaPlugin {
                 }
             }
         } catch (final Throwable e) {
-            MSLogger.severe("Failed to load class names", e);
-            this.getServer().getPluginManager().disablePlugin(this);
+            throw new IllegalStateException("Failed to load class names", e);
         }
 
         return classNames;
