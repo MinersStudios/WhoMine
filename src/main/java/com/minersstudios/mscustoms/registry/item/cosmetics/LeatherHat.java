@@ -1,7 +1,8 @@
 package com.minersstudios.mscustoms.registry.item.cosmetics;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 public final class LeatherHat extends CustomItemImpl implements Wearable {
-    private static final String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     static {
@@ -57,7 +58,7 @@ public final class LeatherHat extends CustomItemImpl implements Wearable {
                                 "LLL"
                         )
                         .ingredients(
-                                ShapedRecipeBuilder.material('L', Material.LEATHER)
+                                RecipeChoiceEntry.material('L', Material.LEATHER)
                         ),
                         true
                 )

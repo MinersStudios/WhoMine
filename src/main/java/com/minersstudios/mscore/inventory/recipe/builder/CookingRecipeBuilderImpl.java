@@ -6,19 +6,17 @@ import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.recipe.CookingBookCategory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.*;
 
 @SuppressWarnings("unchecked")
-abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>, R extends CookingRecipe<R>> implements RecipeBuilder<R> {
-    protected NamespacedKey namespacedKey;
-    protected ItemStack result;
-    protected RecipeChoice ingredient;
-    protected float experience;
-    protected int cookingTime;
-    protected String group;
-    protected CookingBookCategory category;
+abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilder<R>, R extends CookingRecipe<R>> implements CookingRecipeBuilder<R> {
+    private NamespacedKey namespacedKey;
+    private ItemStack result;
+    private RecipeChoice ingredient;
+    private float experience;
+    private int cookingTime;
+    private String group;
+    private CookingBookCategory category;
 
     CookingRecipeBuilderImpl() {}
 
@@ -32,8 +30,11 @@ abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>
         this.category = recipe.getCategory();
     }
 
+    @Contract(" -> new")
+    @ApiStatus.OverrideOnly
     protected abstract @NotNull R newRecipe();
 
+    @Contract(" -> new")
     @Override
     public final @NotNull R build() throws IllegalStateException {
         if (this.namespacedKey == null) {
@@ -69,6 +70,7 @@ abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>
         return this.namespacedKey;
     }
 
+    @Contract("_ -> this")
     @Override
     public final @NotNull B namespacedKey(final @NotNull NamespacedKey namespacedKey) {
         this.namespacedKey = namespacedKey;
@@ -81,6 +83,7 @@ abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>
         return this.result;
     }
 
+    @Contract("_ -> this")
     @Override
     public final @NotNull B result(final @NotNull ItemStack result) throws IllegalArgumentException {
         if (result.isEmpty()) {
@@ -92,58 +95,77 @@ abstract class CookingRecipeBuilderImpl<B extends CookingRecipeBuilderImpl<B, R>
         return (B) this;
     }
 
+    @Override
     public final @UnknownNullability RecipeChoice ingredient() {
         return this.ingredient;
     }
 
+    @Contract("_ -> this")
+    @Override
     public final @NotNull B ingredient(final @NotNull Material ingredient) {
         return this.ingredient(new RecipeChoice.MaterialChoice(ingredient));
     }
 
+    @Contract("_ -> this")
+    @Override
     public final @NotNull B ingredient(final @NotNull ItemStack ingredient) {
         return this.ingredient(new RecipeChoice.ExactChoice(ingredient));
     }
 
+    @Contract("_ -> this")
+    @Override
     public final @NotNull B ingredient(final @NotNull RecipeChoice ingredient) {
         this.ingredient = ingredient;
 
         return (B) this;
     }
 
+    @Override
     public final float experience() {
         return this.experience;
     }
 
+    @Contract("_ -> this")
+    @Override
     public final @NotNull B experience(final float experience) {
         this.experience = experience;
 
         return (B) this;
     }
 
+    @Override
     public final int cookingTime() {
         return this.cookingTime;
     }
 
+    @Contract("_ -> this")
+    @Override
     public final @NotNull B cookingTime(final @Range(from = 0, to = Integer.MAX_VALUE) int cookingTime) {
         this.cookingTime = cookingTime;
 
         return (B) this;
     }
 
+    @Override
     public final @UnknownNullability String group() {
         return this.group;
     }
 
+    @Contract("_ -> this")
+    @Override
     public final @NotNull B group(final @NotNull String group) {
         this.group = group;
 
         return (B) this;
     }
 
+    @Override
     public final @UnknownNullability CookingBookCategory category() {
         return this.category;
     }
 
+    @Contract("_ -> this")
+    @Override
     public final @NotNull B category(final @NotNull CookingBookCategory category) {
         this.category = category;
 

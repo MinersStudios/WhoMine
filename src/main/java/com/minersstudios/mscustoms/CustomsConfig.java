@@ -13,6 +13,7 @@ import com.minersstudios.mscustoms.menu.RenamesMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -29,7 +30,7 @@ import java.util.logging.Level;
  * Use {@link #reload()} to reload configuration and {@link #save()} to
  * save configuration.
  */
-public final class Config extends PluginConfig<MSCustoms> {
+public final class CustomsConfig extends PluginConfig<MSCustoms> {
     private long dosimeterCheckRate;
     private String woodSoundPlace;
     private String woodSoundBreak;
@@ -77,15 +78,17 @@ public final class Config extends PluginConfig<MSCustoms> {
     public static final String DEFAULT_WOOD_SOUND_HIT =     "custom.block.wood.hit";
     //</editor-fold>
 
-    Config(final @NotNull MSCustoms plugin) {
+    CustomsConfig(final @NotNull MSCustoms plugin) {
         super(plugin, plugin.getConfigFile());
     }
 
     @Override
     public void reloadVariables() {
-        this.dosimeterCheckRate = this.yaml.getLong(KEY_DOSIMETER_CHECK_RATE, DEFAULT_DOSIMETER_CHECK_RATE);
+        final YamlConfiguration yaml = this.getYaml();
 
-        final ConfigurationSection woodSoundSection = this.yaml.getConfigurationSection(KEY_WOOD_SOUND_SECTION);
+        this.dosimeterCheckRate = yaml.getLong(KEY_DOSIMETER_CHECK_RATE, DEFAULT_DOSIMETER_CHECK_RATE);
+
+        final ConfigurationSection woodSoundSection = yaml.getConfigurationSection(KEY_WOOD_SOUND_SECTION);
 
         if (woodSoundSection != null) {
             this.woodSoundPlace = woodSoundSection.getString(KEY_PLACE);
@@ -199,7 +202,7 @@ public final class Config extends PluginConfig<MSCustoms> {
 
         plugin.assignStatus(MSCustoms.LOADING_BLOCKS);
 
-        try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + '/' + BLOCKS_FOLDER))) {
+        try (final var pathStream = Files.walk(Paths.get(this.getFile().getParent() + '/' + BLOCKS_FOLDER))) {
             pathStream.parallel()
             .filter(file -> {
                 final String fileName = file.getFileName().toString();
@@ -234,7 +237,7 @@ public final class Config extends PluginConfig<MSCustoms> {
 
         plugin.assignStatus(MSCustoms.LOADING_RENAMEABLES);
 
-        try (final var pathStream = Files.walk(Paths.get(this.file.getParent() + '/' + ITEMS_FOLDER))) {
+        try (final var pathStream = Files.walk(Paths.get(this.getFile().getParent() + '/' + ITEMS_FOLDER))) {
             pathStream.parallel()
             .filter(file -> {
                 final String fileName = file.getFileName().toString();

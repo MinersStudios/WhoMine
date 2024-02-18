@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.furniture.chair;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -47,8 +47,8 @@ public final class CoolArmchair extends CustomDecorDataImpl<CoolArmchair> {
                                         "I I"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('I', Material.IRON_NUGGET),
-                                        ShapedRecipeBuilder.material('L', Material.LEATHER)
+                                        RecipeChoiceEntry.material('I', Material.IRON_NUGGET),
+                                        RecipeChoiceEntry.material('L', Material.LEATHER)
                                 ),
                                 true
                         )

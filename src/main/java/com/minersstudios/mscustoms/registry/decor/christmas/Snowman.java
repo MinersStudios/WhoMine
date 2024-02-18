@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -66,9 +66,9 @@ public final class Snowman extends CustomDecorDataImpl<Snowman> {
                                         " B "
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('L', Material.LEATHER),
-                                        ShapedRecipeBuilder.material('S', Material.STICK),
-                                        ShapedRecipeBuilder.material('B', Material.SNOW_BLOCK)
+                                        RecipeChoiceEntry.material('L', Material.LEATHER),
+                                        RecipeChoiceEntry.material('S', Material.STICK),
+                                        RecipeChoiceEntry.material('B', Material.SNOW_BLOCK)
                                 ),
                                 true
                         )

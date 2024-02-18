@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.decoration.home;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -42,8 +42,8 @@ public final class Patefon extends CustomDecorDataImpl<Patefon> {
                                 .category(CraftingBookCategory.BUILDING)
                                 .shape("PJP")
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('J', Material.JUKEBOX),
-                                        ShapedRecipeBuilder.material('P', Material.SPRUCE_PLANKS)
+                                        RecipeChoiceEntry.material('J', Material.JUKEBOX),
+                                        RecipeChoiceEntry.material('P', Material.SPRUCE_PLANKS)
                                 ),
                                 true
                         )

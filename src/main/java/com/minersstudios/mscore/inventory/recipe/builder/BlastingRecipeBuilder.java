@@ -1,8 +1,16 @@
 package com.minersstudios.mscore.inventory.recipe.builder;
 
 import org.bukkit.inventory.BlastingRecipe;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents a builder for blasting recipe
+ *
+ * @see RecipeBuilder#blasting()
+ * @see RecipeBuilder#blasting(BlastingRecipe)
+ */
 public final class BlastingRecipeBuilder extends CookingRecipeBuilderImpl<BlastingRecipeBuilder, BlastingRecipe> {
 
     BlastingRecipeBuilder() {}
@@ -11,14 +19,16 @@ public final class BlastingRecipeBuilder extends CookingRecipeBuilderImpl<Blasti
         super(recipe);
     }
 
+    @Contract(" -> new")
+    @ApiStatus.OverrideOnly
     @Override
-    protected @NotNull BlastingRecipe newRecipe() throws IllegalStateException {
+    protected @NotNull BlastingRecipe newRecipe() {
         return new BlastingRecipe(
-                this.namespacedKey,
-                this.result,
-                this.ingredient,
-                this.experience,
-                this.cookingTime
+                this.namespacedKey(),
+                this.result(),
+                this.ingredient(),
+                this.experience(),
+                this.cookingTime()
         );
     }
 }

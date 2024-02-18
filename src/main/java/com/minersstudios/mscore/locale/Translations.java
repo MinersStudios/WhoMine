@@ -376,7 +376,7 @@ public final class Translations {
             final @Nullable String translation
     ) {
         return translation == null
-               ? registry().registerKey(key)
+               ? registry().registerPath(key)
                : registry().register(
                        key,
                        SharedConstants.DEFAULT_LOCALE,

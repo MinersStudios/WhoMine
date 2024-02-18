@@ -31,7 +31,7 @@ public class RecipeEntryAdapter implements JsonSerializer<RecipeEntry>, JsonDese
         }
 
         return RecipeEntry.fromRecipe(
-                (Recipe) context.deserialize(
+                context.deserialize(
                         recipeElement,
                         Recipe.class
                 ),

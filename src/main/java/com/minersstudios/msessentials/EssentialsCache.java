@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Cache for all custom data
  */
-public final class Cache extends PluginCache<MSEssentials> {
+public final class EssentialsCache extends PluginCache<MSEssentials> {
     private PlayerInfoMap playerInfoMap;
     private MuteMap muteMap;
     private DiscordMap discordMap;
@@ -49,7 +49,7 @@ public final class Cache extends PluginCache<MSEssentials> {
      *
      * @param plugin The plugin that owns this cache
      */
-    Cache(final @NotNull MSEssentials plugin) {
+    EssentialsCache(final @NotNull MSEssentials plugin) {
         super(plugin);
     }
 

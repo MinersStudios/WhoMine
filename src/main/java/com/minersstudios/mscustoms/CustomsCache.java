@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Cache with all the data that needs to be stored
  */
-public final class Cache extends PluginCache<MSCustoms> {
+public final class CustomsCache extends PluginCache<MSCustoms> {
     private StepMap stepMap;
     private DiggingMap diggingMap;
     private Map<Player, EquipmentSlot> dosimeterPlayers;
@@ -32,7 +32,7 @@ public final class Cache extends PluginCache<MSCustoms> {
      *
      * @param plugin The plugin that owns this cache
      */
-    Cache(final @NotNull MSCustoms plugin) {
+    CustomsCache(final @NotNull MSCustoms plugin) {
         super(plugin);
     }
 

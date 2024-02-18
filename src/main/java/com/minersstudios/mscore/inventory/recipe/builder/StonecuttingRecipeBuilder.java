@@ -5,10 +5,17 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
-public final class StonecuttingRecipeBuilder implements RecipeBuilder<StonecuttingRecipe> {
+/**
+ * Represents a builder for stonecutting recipe
+ *
+ * @see RecipeBuilder#stonecutting()
+ * @see RecipeBuilder#stonecutting(StonecuttingRecipe)
+ */
+public final class StonecuttingRecipeBuilder implements GroupedRecipeBuilder<StonecuttingRecipe> {
     private NamespacedKey namespacedKey;
     private ItemStack result;
     private RecipeChoice ingredient;
@@ -23,6 +30,7 @@ public final class StonecuttingRecipeBuilder implements RecipeBuilder<Stonecutti
         this.group = recipe.getGroup();
     }
 
+    @Contract(" -> new")
     @Override
     public @NotNull StonecuttingRecipe build() throws IllegalStateException {
         if (this.namespacedKey == null) {
@@ -54,6 +62,7 @@ public final class StonecuttingRecipeBuilder implements RecipeBuilder<Stonecutti
         return this.namespacedKey;
     }
 
+    @Contract("_ -> this")
     @Override
     public @NotNull StonecuttingRecipeBuilder namespacedKey(final @NotNull NamespacedKey namespacedKey) {
         this.namespacedKey = namespacedKey;
@@ -66,6 +75,7 @@ public final class StonecuttingRecipeBuilder implements RecipeBuilder<Stonecutti
         return this.result;
     }
 
+    @Contract("_ -> this")
     @Override
     public @NotNull StonecuttingRecipeBuilder result(final @NotNull ItemStack result) throws IllegalArgumentException {
         if (result.isEmpty()) {
@@ -77,28 +87,57 @@ public final class StonecuttingRecipeBuilder implements RecipeBuilder<Stonecutti
         return this;
     }
 
+    @Override
     public @UnknownNullability String group() {
         return this.group;
     }
 
+    @Contract("_ -> this")
+    @Override
     public @NotNull StonecuttingRecipeBuilder group(final @NotNull String group) {
         this.group = group;
 
         return this;
     }
 
+    /**
+     * Returns the ingredient of the recipe
+     *
+     * @return The ingredient of the recipe
+     */
     public @UnknownNullability RecipeChoice ingredient() {
         return this.ingredient;
     }
 
+    /**
+     * Sets the ingredient of the recipe
+     *
+     * @param ingredient New ingredient of the recipe
+     * @return This builder, for chaining
+     */
+    @Contract("_ -> this")
     public @NotNull StonecuttingRecipeBuilder ingredient(final @NotNull Material ingredient) {
         return this.ingredient(new RecipeChoice.MaterialChoice(ingredient));
     }
 
+    /**
+     * Sets the ingredient of the recipe
+     *
+     * @param ingredient New ingredient of the recipe
+     * @return This builder, for chaining
+     */
+    @Contract("_ -> this")
     public @NotNull StonecuttingRecipeBuilder ingredient(final @NotNull ItemStack ingredient) {
         return this.ingredient(new RecipeChoice.ExactChoice(ingredient));
     }
 
+    /**
+     * Sets the ingredient of the recipe
+     *
+     * @param ingredient New ingredient of the recipe
+     * @return This builder, for chaining
+     */
+    @Contract("_ -> this")
     public @NotNull StonecuttingRecipeBuilder ingredient(final @NotNull RecipeChoice ingredient) {
         this.ingredient = ingredient;
 

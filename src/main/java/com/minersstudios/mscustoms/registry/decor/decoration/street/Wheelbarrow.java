@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.decoration.street;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -46,9 +46,9 @@ public final class Wheelbarrow extends CustomDecorDataImpl<Wheelbarrow> {
                                         " I "
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('S', Material.STICK),
-                                        ShapedRecipeBuilder.material('C', Material.CAULDRON),
-                                        ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
+                                        RecipeChoiceEntry.material('S', Material.STICK),
+                                        RecipeChoiceEntry.material('C', Material.CAULDRON),
+                                        RecipeChoiceEntry.material('I', Material.IRON_INGOT)
                                 ),
                                 true
                         )

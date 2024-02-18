@@ -30,8 +30,8 @@ import static com.minersstudios.mscore.status.Status.successLow;
 public class MSCustoms extends MSPlugin<MSCustoms> {
     private static MSCustoms singleton;
 
-    private Cache cache;
-    private Config config;
+    private CustomsCache cache;
+    private CustomsConfig config;
 
     /** The namespace of the plugin */
     public static final @Namespace String NAMESPACE = "mscustoms";
@@ -73,8 +73,8 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
     @Override
     public void enable() {
         singleton = this;
-        this.cache = new Cache(this);
-        this.config = new Config(this);
+        this.cache = new CustomsCache(this);
+        this.config = new CustomsConfig(this);
 
         this.cache.load();
         this.config.reload();
@@ -95,14 +95,14 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
      *
      * @return The cache of the plugin or null if the plugin is disabled
      */
-    public @UnknownNullability Cache getCache() {
+    public @UnknownNullability CustomsCache getCache() {
         return this.cache;
     }
 
     /**
      * @return The configuration of the plugin or null if the plugin is disabled
      */
-    public @UnknownNullability Config getConfiguration() {
+    public @UnknownNullability CustomsConfig getConfiguration() {
         return this.config;
     }
 
@@ -142,14 +142,14 @@ public class MSCustoms extends MSPlugin<MSCustoms> {
     /**
      * @return The cache of the plugin or null if the plugin is disabled
      */
-    public static @UnknownNullability Cache cache()  {
+    public static @UnknownNullability CustomsCache cache()  {
         return singleton == null ? null : singleton.cache;
     }
 
     /**
      * @return The configuration of the plugin or null if the plugin is disabled
      */
-    public static @UnknownNullability Config config() {
+    public static @UnknownNullability CustomsConfig config() {
         return singleton == null ? null : singleton.config;
     }
 }

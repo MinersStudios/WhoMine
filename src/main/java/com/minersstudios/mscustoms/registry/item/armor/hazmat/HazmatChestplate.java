@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.item.armor.hazmat;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
@@ -16,6 +16,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 public final class HazmatChestplate extends CustomItemImpl implements Damageable {
-    private static final String KEY;
+    private static final @Subst("key") String KEY;
     private static final ItemStack ITEM_STACK;
 
     /** Max durability of this item */
@@ -69,8 +70,8 @@ public final class HazmatChestplate extends CustomItemImpl implements Damageable
                                 "TTT"
                         )
                         .ingredients(
-                                ShapedRecipeBuilder.itemStack('T', CustomItemType.ANTI_RADIATION_TEXTILE.getCustomItem().getItem()),
-                                ShapedRecipeBuilder.itemStack('P', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem())
+                                RecipeChoiceEntry.itemStack('T', CustomItemType.ANTI_RADIATION_TEXTILE.getCustomItem().getItem()),
+                                RecipeChoiceEntry.itemStack('P', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem())
                         ),
                         true
                 )

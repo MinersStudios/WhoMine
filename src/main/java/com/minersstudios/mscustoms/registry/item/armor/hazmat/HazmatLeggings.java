@@ -1,7 +1,8 @@
 package com.minersstudios.mscustoms.registry.item.armor.hazmat;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 public final class HazmatLeggings extends CustomItemImpl implements Damageable {
-    private static final String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     /** Max durability of this item */
@@ -69,7 +70,7 @@ public final class HazmatLeggings extends CustomItemImpl implements Damageable {
                                 "T T"
                         )
                         .ingredients(
-                                ShapedRecipeBuilder.itemStack('T', CustomItemType.ANTI_RADIATION_TEXTILE.getCustomItem().getItem())
+                                RecipeChoiceEntry.itemStack('T', CustomItemType.ANTI_RADIATION_TEXTILE.getCustomItem().getItem())
                         ),
                         true
                 )

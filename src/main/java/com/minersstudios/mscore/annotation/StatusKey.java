@@ -1,4 +1,4 @@
-package com.minersstudios.mscore.status;
+package com.minersstudios.mscore.annotation;
 
 import com.minersstudios.mscore.throwable.InvalidRegexException;
 import org.intellij.lang.annotations.RegExp;
@@ -10,7 +10,6 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.regex.Pattern;
 
 import static java.lang.annotation.ElementType.*;
 
@@ -33,9 +32,6 @@ import static java.lang.annotation.ElementType.*;
 public @interface StatusKey {
     /** The regex pattern that a valid status key must match */
     @RegExp String REGEX = "^[A-Z][A-Z0-9_]*$";
-
-    /** The compiled Pattern of the {@link #REGEX regex} string */
-    Pattern PATTERN = Pattern.compile(REGEX);
 
     /**
      * Validator class for the {@link StatusKey} annotation to check whether the

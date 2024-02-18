@@ -1,7 +1,8 @@
 package com.minersstudios.mscustoms.registry.item;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 public final class Dosimeter extends CustomItemImpl {
-    private static final String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     static {
@@ -52,9 +53,9 @@ public final class Dosimeter extends CustomItemImpl {
                                 "IRI"
                         )
                         .ingredients(
-                                ShapedRecipeBuilder.itemStack('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem()),
-                                ShapedRecipeBuilder.material('L', Material.REDSTONE_LAMP),
-                                ShapedRecipeBuilder.material('R', Material.REDSTONE_TORCH)
+                                RecipeChoiceEntry.itemStack('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem()),
+                                RecipeChoiceEntry.material('L', Material.REDSTONE_LAMP),
+                                RecipeChoiceEntry.material('R', Material.REDSTONE_TORCH)
                         ),
                         true
                 )

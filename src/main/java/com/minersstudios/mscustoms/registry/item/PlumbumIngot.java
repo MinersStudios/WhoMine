@@ -1,14 +1,15 @@
 package com.minersstudios.mscustoms.registry.item;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscustoms.utility.MSBlockUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.MSCustoms;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
 import com.minersstudios.mscustoms.custom.item.CustomItemType;
+import com.minersstudios.mscustoms.utility.MSBlockUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class PlumbumIngot extends CustomItemImpl {
-    private static final String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     static {
@@ -80,7 +81,7 @@ public final class PlumbumIngot extends CustomItemImpl {
                         .result(this.itemStack.clone().add(8))
                         .shape("I")
                         .ingredients(
-                                ShapedRecipeBuilder.itemStack('I', plumbumBlock.get())
+                                RecipeChoiceEntry.itemStack('I', plumbumBlock.get())
                         ),
                         true
                 )

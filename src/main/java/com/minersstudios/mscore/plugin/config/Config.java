@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * Abstract configuration class, which provides a simple way to load and save 
@@ -19,9 +20,10 @@ import java.io.IOException;
  * configuration.
  * Use {@link #reloadVariables()} to reload variables.
  */
-public abstract class MSConfig {
-    protected final @NotNull File file;
-    protected final @NotNull YamlConfiguration yaml;
+public abstract class Config {
+    private final File file;
+    private final YamlConfiguration yaml;
+    private final Logger logger;
 
     /**
      * Configuration constructor. All variables must be initialized in
@@ -29,12 +31,15 @@ public abstract class MSConfig {
      *
      * @param file The config file, where the configuration is stored
      */
-    public MSConfig(final @NotNull File file) {
+    public Config(final @NotNull File file) {
         this.file = file;
         this.yaml = new YamlConfiguration();
+        this.logger = Logger.getLogger(this.getClass().getSimpleName());
     }
 
     /**
+     * Returns the config file, where the configuration is stored
+     *
      * @return The config file, where the configuration is stored
      */
     public final @NotNull File getFile() {
@@ -42,10 +47,21 @@ public abstract class MSConfig {
     }
 
     /**
+     * Returns the yaml configuration
+     *
      * @return The yaml configuration
      */
     public final @NotNull YamlConfiguration getYaml() {
         return this.yaml;
+    }
+
+    /**
+     * Returns the logger
+     *
+     * @return The logger
+     */
+    public final @NotNull Logger getLogger() {
+        return this.logger;
     }
 
     /**
@@ -81,6 +97,7 @@ public abstract class MSConfig {
             return true;
         } catch (final ConfigurationException e) {
             MSLogger.severe("An error occurred while loading the config!", e);
+
             return false;
         }
     }
@@ -124,9 +141,11 @@ public abstract class MSConfig {
     public boolean save() {
         try {
             this.yaml.save(this.file);
+
             return true;
         } catch (final IOException e) {
             MSLogger.severe("An error occurred while saving the config!", e);
+
             return false;
         }
     }
@@ -161,9 +180,12 @@ public abstract class MSConfig {
     }
 
     /**
-     * @return A string representation of this configuration. The string
-     *         representation consists of the class name, the config file path
-     *         and the config values.
+     * Returns a string representation of this configuration.
+     * <br>
+     * The string representation consists of the class name, the config file
+     * path and the config values.
+     *
+     * @return A string representation of this configuration
      */
     @Override
     public @NotNull String toString() {
@@ -173,9 +195,9 @@ public abstract class MSConfig {
                 .withKeyValueSeparator('=')
                 .join(this.yaml.getValues(true));
 
-        return this.getClass().getName()
-                + "{file=" + path
-                + ", config=[" + configValues
-                + "]}";
+        return this.getClass().getSimpleName() +
+                "{file=" + path +
+                ", config=[" + configValues +
+                "]}";
     }
 }

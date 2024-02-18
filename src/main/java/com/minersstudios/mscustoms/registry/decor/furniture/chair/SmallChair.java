@@ -1,7 +1,8 @@
 package com.minersstudios.mscustoms.registry.decor.furniture.chair;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class SmallChair<C extends CustomDecorData<C>> extends CustomDecorDataImpl<C> {
 
     protected final @NotNull Builder createBuilder(
-            final @NotNull String key,
+            final @Key @NotNull String key,
             final int customModelData,
             final @NotNull String displayName,
             final @NotNull Material planksMaterial
@@ -49,9 +50,9 @@ public abstract class SmallChair<C extends CustomDecorData<C>> extends CustomDec
                                         "PAP"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('P', planksMaterial),
-                                        ShapedRecipeBuilder.material('L', Material.LEATHER),
-                                        ShapedRecipeBuilder.material('A', Material.AIR)
+                                        RecipeChoiceEntry.material('P', planksMaterial),
+                                        RecipeChoiceEntry.material('L', Material.LEATHER),
+                                        RecipeChoiceEntry.material('A', Material.AIR)
                                 ),
                                 true
                         )

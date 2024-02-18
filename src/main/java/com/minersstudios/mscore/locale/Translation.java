@@ -1,6 +1,5 @@
 package com.minersstudios.mscore.locale;
 
-import com.google.common.collect.Maps;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -19,43 +18,43 @@ import static com.minersstudios.mscore.locale.TranslationRegistry.registry;
  * Represents a translation
  */
 public final class Translation {
-    private final String key;
+    private final String path;
     private final MessageFormat fallback;
     private final Map<Locale, MessageFormat> map;
     private final TranslatableComponent cachedTranslatable;
 
     Translation(
-            final @NotNull String key,
+            final @NotNull String path,
             final @Nullable String fallback
     ) {
-        this.key = key;
+        this.path = path;
         this.fallback =
                 new MessageFormat(
                         fallback == null
-                        ? key
+                        ? path
                         : fallback
                 );
         this.map = new ConcurrentHashMap<>();
         this.cachedTranslatable =
                 Component.translatable(
-                        this.key,
+                        this.path,
                         this.fallback.toPattern()
                 );
     }
 
     /**
-     * Returns the key of this translation
+     * Returns the path of this translation
      *
-     * @return The key of this translation
+     * @return The path of this translation
      */
-    public @NotNull String getKey() {
-        return this.key;
+    public @NotNull String getPath() {
+        return this.path;
     }
 
     /**
      * Returns the fallback of this translation
      *
-     * @return The fallback of this translation, or the key if no fallback was
+     * @return The fallback of this translation, or the path if no fallback was
      *         specified
      */
     public @NotNull MessageFormat getFallback() {
@@ -171,7 +170,7 @@ public final class Translation {
         final int prime = 31;
         int result = 1;
 
-        result = prime * result + this.key.hashCode();
+        result = prime * result + this.path.hashCode();
         result = prime * result + this.fallback.hashCode();
         result = prime * result + this.map.hashCode();
         result = prime * result + this.cachedTranslatable.hashCode();
@@ -224,9 +223,9 @@ public final class Translation {
         return obj == this
                 || (
                         obj instanceof final Translation that
-                        && that.key.equals(this.key)
+                        && that.path.equals(this.path)
                         && that.fallback.equals(this.fallback)
-                        && Maps.difference(that.map, this.map).areEqual()
+                        && that.map.values().equals(this.map.values())
                         && that.cachedTranslatable.equals(this.cachedTranslatable)
                 );
     }
@@ -252,11 +251,11 @@ public final class Translation {
             builder.setLength(builder.length() - 2);
         }
 
-        return "Translation{"
-                + "key=" + this.key
-                + ", fallback=" + this.fallback
-                + ", translations=[" + builder + ']'
-                + '}';
+        return "Translation{" +
+                "path=" + this.path +
+                ", fallback=" + this.fallback +
+                ", translations=[" + builder + ']' +
+                '}';
     }
 
     /**
@@ -278,7 +277,7 @@ public final class Translation {
     public @NotNull TranslatableComponent asTranslatable(final @Nullable String fallback) {
         return fallback == null
                ? this.cachedTranslatable
-               : Component.translatable(this.key, fallback);
+               : Component.translatable(this.path, fallback);
     }
 
     /**
@@ -435,28 +434,28 @@ public final class Translation {
     }
 
     /**
-     * Gets the translation for the given key from the translation registry
+     * Gets the translation for the given path from the translation registry
      *
-     * @param key The key to get the translation for
-     * @return The translation for the given key, or key if it doesn't exist
+     * @param path The path to get the translation for
+     * @return The translation for the given path, or path if it doesn't exist
      * @see #of(String, String)
      */
-    public static @NotNull Translation of(final @NotNull String key) {
-        return of(key, null);
+    public static @NotNull Translation of(final @NotNull String path) {
+        return of(path, null);
     }
 
     /**
-     * Gets the translation for the given key from the translation registry
+     * Gets the translation for the given path from the translation registry
      *
-     * @param key      The key to get the translation for
+     * @param path     The path to get the translation for
      * @param fallback The fallback to return if the translation doesn't exist
-     * @return The translation for the given key, or the fallback if it doesn't
+     * @return The translation for the given path, or the fallback if it doesn't
      * @see TranslationRegistry#getTranslation(String, String)
      */
     public static @NotNull Translation of(
-            final @NotNull String key,
+            final @NotNull String path,
             final @Nullable String fallback
     ) {
-        return registry().getTranslation(key, fallback);
+        return registry().getTranslation(path, fallback);
     }
 }

@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.task;
 
-import com.minersstudios.msessentials.Cache;
+import com.minersstudios.msessentials.EssentialsCache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.collection.PlayerInfoMap;
 import com.minersstudios.msessentials.world.WorldDark;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PlayerListTask implements Runnable {
     private final Server server;
-    private final Cache cache;
+    private final EssentialsCache cache;
 
     public PlayerListTask(final @NotNull MSEssentials plugin) {
         this.server = plugin.getServer();

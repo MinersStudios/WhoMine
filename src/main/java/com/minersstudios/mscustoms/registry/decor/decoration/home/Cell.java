@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.decoration.home;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -56,8 +56,8 @@ public final class Cell extends CustomDecorDataImpl<Cell> {
                                         "BBB"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('B', Material.IRON_BARS),
-                                        ShapedRecipeBuilder.material('C', Material.CHAIN)
+                                        RecipeChoiceEntry.material('B', Material.IRON_BARS),
+                                        RecipeChoiceEntry.material('C', Material.CHAIN)
                                 ),
                                 true
                         )

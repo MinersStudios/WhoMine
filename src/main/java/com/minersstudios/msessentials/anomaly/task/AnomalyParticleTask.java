@@ -1,6 +1,6 @@
 package com.minersstudios.msessentials.anomaly.task;
 
-import com.minersstudios.msessentials.Config;
+import com.minersstudios.msessentials.EssentialsConfig;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomaly.Anomaly;
 import com.minersstudios.msessentials.anomaly.AnomalyAction;
@@ -18,8 +18,8 @@ import java.util.Map;
  * performed and particles will be spawned. Otherwise, the action will be
  * removed.
  * <br>
- * The task is registered in {@link Config#reload()} with
- * {@link Config#getAnomalyParticlesCheckRate()}.
+ * The task is registered in {@link EssentialsConfig#reload()} with
+ * {@link EssentialsConfig#getAnomalyParticlesCheckRate()}.
  *
  * @see SpawnParticlesAction
  * @see AnomalyBoundingBox

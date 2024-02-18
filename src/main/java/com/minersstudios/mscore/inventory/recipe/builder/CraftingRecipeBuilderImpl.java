@@ -4,17 +4,17 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 @SuppressWarnings("unchecked")
-abstract class CraftingRecipeBuilderImpl<B extends CraftingRecipeBuilderImpl<B, R>, R extends CraftingRecipe> implements RecipeBuilder<R> {
-    protected NamespacedKey namespacedKey;
-    protected ItemStack result;
-    protected String group;
-    protected CraftingBookCategory category;
-
-    protected abstract @NotNull R newRecipe();
+abstract class CraftingRecipeBuilderImpl<B extends CraftingRecipeBuilder<R>, R extends CraftingRecipe> implements CraftingRecipeBuilder<R> {
+    private NamespacedKey namespacedKey;
+    private ItemStack result;
+    private String group;
+    private CraftingBookCategory category;
 
     CraftingRecipeBuilderImpl() {}
 
@@ -25,6 +25,11 @@ abstract class CraftingRecipeBuilderImpl<B extends CraftingRecipeBuilderImpl<B, 
         this.category = recipe.getCategory();
     }
 
+    @Contract(" -> new")
+    @ApiStatus.OverrideOnly
+    protected abstract @NotNull R newRecipe() throws IllegalStateException;
+
+    @Contract(" -> new")
     @Override
     public final @NotNull R build() throws IllegalStateException {
         if (this.namespacedKey == null) {
@@ -48,6 +53,7 @@ abstract class CraftingRecipeBuilderImpl<B extends CraftingRecipeBuilderImpl<B, 
         return this.namespacedKey;
     }
 
+    @Contract("_ -> this")
     @Override
     public final @NotNull B namespacedKey(final @NotNull NamespacedKey key) {
         this.namespacedKey = key;
@@ -60,6 +66,7 @@ abstract class CraftingRecipeBuilderImpl<B extends CraftingRecipeBuilderImpl<B, 
         return this.result;
     }
 
+    @Contract("_ -> this")
     @Override
     public final @NotNull B result(final @NotNull ItemStack result) throws IllegalArgumentException {
         if (result.isEmpty()) {
@@ -71,20 +78,26 @@ abstract class CraftingRecipeBuilderImpl<B extends CraftingRecipeBuilderImpl<B, 
         return (B) this;
     }
 
+    @Override
     public final @UnknownNullability String group() {
         return this.group;
     }
 
+    @Contract("_ -> this")
+    @Override
     public final @NotNull B group(final @NotNull String group) {
         this.group = group;
 
         return (B) this;
     }
 
+    @Override
     public final @UnknownNullability CraftingBookCategory category() {
         return this.category;
     }
 
+    @Contract("_ -> this")
+    @Override
     public final @NotNull B category(final @NotNull CraftingBookCategory category) {
         this.category = category;
 

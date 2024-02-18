@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscustoms.sound.SoundGroup;
@@ -73,9 +73,9 @@ public final class SnowmanBall extends CustomDecorDataImpl<SnowmanBall> {
                                         "BBB"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('S', Material.STRING),
-                                        ShapedRecipeBuilder.material('B', Material.SNOWBALL),
-                                        ShapedRecipeBuilder.material('L', Material.LEATHER)
+                                        RecipeChoiceEntry.material('S', Material.STRING),
+                                        RecipeChoiceEntry.material('B', Material.SNOWBALL),
+                                        RecipeChoiceEntry.material('L', Material.LEATHER)
                                 ),
                                 true
                         )

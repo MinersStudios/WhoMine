@@ -4,10 +4,18 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
-public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<ShapelessRecipeBuilder, ShapelessRecipe>  {
+/**
+ * Represents a builder for shapeless recipes
+ *
+ * @see RecipeBuilder#shapeless()
+ * @see RecipeBuilder#shapeless(ShapelessRecipe)
+ */
+public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<ShapelessRecipeBuilder, ShapelessRecipe> {
     private RecipeChoice[] ingredients;
 
     /** The maximum number of ingredients a shapeless recipe can have */
@@ -21,6 +29,8 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         this.ingredients = recipe.getChoiceList().toArray(new RecipeChoice[0]);
     }
 
+    @Contract(" -> new")
+    @ApiStatus.OverrideOnly
     @Override
     protected @NotNull ShapelessRecipe newRecipe() throws IllegalStateException {
         if (
@@ -30,7 +40,7 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
             throw new IllegalStateException("Recipe must have at least one ingredient");
         }
 
-        final ShapelessRecipe recipe = new ShapelessRecipe(this.namespacedKey, this.result);
+        final ShapelessRecipe recipe = new ShapelessRecipe(this.namespacedKey(), this.result());
 
         for (final var ingredient : this.ingredients) {
             recipe.addIngredient(ingredient);
@@ -39,10 +49,30 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return recipe;
     }
 
+    /**
+     * Returns the ingredients of the recipe
+     *
+     * @return The ingredients of the recipe
+     */
     public RecipeChoice @UnknownNullability [] ingredients() {
         return this.ingredients;
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @param seventh The seventh ingredient
+     * @param eighth  The eighth ingredient
+     * @param ninth   The ninth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull Material first,
             final @NotNull Material second,
@@ -57,6 +87,20 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @param seventh The seventh ingredient
+     * @param eighth  The eighth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull Material first,
             final @NotNull Material second,
@@ -70,6 +114,19 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth, seventh, eighth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @param seventh The seventh ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull Material first,
             final @NotNull Material second,
@@ -82,6 +139,18 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth, seventh);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first  The first ingredient
+     * @param second The second ingredient
+     * @param third  The third ingredient
+     * @param fourth The fourth ingredient
+     * @param fifth  The fifth ingredient
+     * @param sixth  The sixth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull Material first,
             final @NotNull Material second,
@@ -93,6 +162,17 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first  The first ingredient
+     * @param second The second ingredient
+     * @param third  The third ingredient
+     * @param fourth The fourth ingredient
+     * @param fifth  The fifth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull Material first,
             final @NotNull Material second,
@@ -103,6 +183,16 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first  The first ingredient
+     * @param second The second ingredient
+     * @param third  The third ingredient
+     * @param fourth The fourth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull Material first,
             final @NotNull Material second,
@@ -112,6 +202,15 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first  The first ingredient
+     * @param second The second ingredient
+     * @param third  The third ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull Material first,
             final @NotNull Material second,
@@ -120,6 +219,14 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first  The first ingredient
+     * @param second The second ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull Material first,
             final @NotNull Material second
@@ -127,10 +234,32 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first The first ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(final @NotNull Material first) {
         return this.setIngredients(first);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @param seventh The seventh ingredient
+     * @param eighth  The eighth ingredient
+     * @param ninth   The ninth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull ItemStack first,
             final @NotNull ItemStack second,
@@ -145,6 +274,20 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @param seventh The seventh ingredient
+     * @param eighth  The eighth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull ItemStack first,
             final @NotNull ItemStack second,
@@ -158,6 +301,19 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth, seventh, eighth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @param seventh The seventh ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull ItemStack first,
             final @NotNull ItemStack second,
@@ -170,6 +326,18 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth, seventh);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull ItemStack first,
             final @NotNull ItemStack second,
@@ -181,6 +349,17 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull ItemStack first,
             final @NotNull ItemStack second,
@@ -191,6 +370,16 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull ItemStack first,
             final @NotNull ItemStack second,
@@ -200,6 +389,15 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull ItemStack first,
             final @NotNull ItemStack second,
@@ -208,6 +406,14 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull ItemStack first,
             final @NotNull ItemStack second
@@ -215,10 +421,32 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first The first ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(final @NotNull ItemStack first) {
         return this.setIngredients(first);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @param seventh The seventh ingredient
+     * @param eighth  The eighth ingredient
+     * @param ninth   The ninth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull RecipeChoice first,
             final @NotNull RecipeChoice second,
@@ -233,6 +461,20 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @param seventh The seventh ingredient
+     * @param eighth  The eighth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull RecipeChoice first,
             final @NotNull RecipeChoice second,
@@ -246,6 +488,19 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth, seventh, eighth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @param seventh The seventh ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull RecipeChoice first,
             final @NotNull RecipeChoice second,
@@ -258,6 +513,18 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth, seventh);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @param sixth   The sixth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull RecipeChoice first,
             final @NotNull RecipeChoice second,
@@ -269,6 +536,17 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth, sixth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @param fifth   The fifth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull RecipeChoice first,
             final @NotNull RecipeChoice second,
@@ -279,6 +557,16 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth, fifth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @param fourth  The fourth ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull RecipeChoice first,
             final @NotNull RecipeChoice second,
@@ -288,6 +576,15 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third, fourth);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @param third   The third ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull RecipeChoice first,
             final @NotNull RecipeChoice second,
@@ -296,6 +593,14 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second, third);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first   The first ingredient
+     * @param second  The second ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_, _ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(
             final @NotNull RecipeChoice first,
             final @NotNull RecipeChoice second
@@ -303,10 +608,18 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(first, second);
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first The first ingredient
+     * @return This builder, for chaining
+     */
+    @Contract("_ -> this")
     public @NotNull ShapelessRecipeBuilder ingredients(final @NotNull RecipeChoice first) {
         return this.setIngredients(first);
     }
 
+    @Contract("_ -> this")
     private @NotNull ShapelessRecipeBuilder setIngredients(final Material @NotNull ... ingredients) throws IllegalArgumentException {
         final RecipeChoice[] choices = new RecipeChoice[ingredients.length];
 
@@ -317,6 +630,7 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(choices);
     }
 
+    @Contract("_ -> this")
     private @NotNull ShapelessRecipeBuilder setIngredients(final ItemStack @NotNull ... ingredients) throws IllegalArgumentException {
         final RecipeChoice[] choices = new RecipeChoice[ingredients.length];
 
@@ -327,6 +641,7 @@ public final class ShapelessRecipeBuilder extends CraftingRecipeBuilderImpl<Shap
         return this.setIngredients(choices);
     }
 
+    @Contract("_ -> this")
     private @NotNull ShapelessRecipeBuilder setIngredients(final RecipeChoice @NotNull ... ingredients) throws IllegalArgumentException {
         if (ingredients.length > MAX_INGREDIENTS) {
             throw new IllegalArgumentException("Shapeless recipes cannot have more than " + MAX_INGREDIENTS + " ingredients");

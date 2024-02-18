@@ -39,18 +39,18 @@ final class TranslationRegistryImpl implements TranslationRegistry {
         this.renderer = new TranslatableComponentRenderer<>() {
 
             protected @Nullable MessageFormat translate(
-                    final @NotNull String key,
+                    final @NotNull String path,
                     final @NotNull Locale locale
             ) {
-                return this.translate(key, null, locale);
+                return this.translate(path, null, locale);
             }
 
             protected @Nullable MessageFormat translate(
-                    final @NotNull String key,
+                    final @NotNull String path,
                     final @Nullable String fallback,
                     final @NotNull Locale locale
             ) {
-                final Translation translation = TranslationRegistryImpl.this.getTranslation(key);
+                final Translation translation = TranslationRegistryImpl.this.getTranslation(path);
 
                 return translation == null
                         ? null
@@ -88,36 +88,36 @@ final class TranslationRegistryImpl implements TranslationRegistry {
         return this.renderer;
     }
 
-    public @Nullable Translation getTranslation(final @NotNull String key) {
-        return this.translationMap.get(key);
+    public @Nullable Translation getTranslation(final @NotNull String path) {
+        return this.translationMap.get(path);
     }
 
     public @NotNull Translation getTranslation(
-            final @NotNull String key,
+            final @NotNull String path,
             final @Nullable String fallback
     ) {
         return this.translationMap.getOrDefault(
-                key,
-                new Translation(key, fallback)
+                path,
+                new Translation(path, fallback)
         );
     }
 
     @Override
     public @NotNull MessageFormat translate(
-            final @NotNull String key,
+            final @NotNull String path,
             final @NotNull Locale locale
     ) {
-        return this.translate(key, null, locale);
+        return this.translate(path, null, locale);
     }
 
     @Override
     public @NotNull MessageFormat translate(
-            final @NotNull String key,
+            final @NotNull String path,
             final @Nullable String fallback,
             final @NotNull Locale locale
     ) {
         return this
-                .getTranslation(key, fallback)
+                .getTranslation(path, fallback)
                 .translate(locale, fallback);
     }
 
@@ -144,34 +144,34 @@ final class TranslationRegistryImpl implements TranslationRegistry {
     }
 
     @Override
-    public boolean contains(final @Nullable String key) {
-        return ChatUtils.isNotBlank(key)
-                && this.translationMap.containsKey(key);
+    public boolean contains(final @Nullable String path) {
+        return ChatUtils.isNotBlank(path)
+                && this.translationMap.containsKey(path);
     }
 
     @Override
-    public @NotNull Translation registerKey(final @NotNull String key) {
-        return this.registerKey(key, null);
+    public @NotNull Translation registerPath(final @NotNull String path) {
+        return this.registerPath(path, null);
     }
 
     @Override
-    public @NotNull Translation registerKey(
-            final @NotNull String key,
+    public @NotNull Translation registerPath(
+            final @NotNull String path,
             final @Nullable String fallback
     ) {
         return this.translationMap.computeIfAbsent(
-                key,
-                k -> new Translation(key, fallback)
+                path,
+                k -> new Translation(path, fallback)
         );
     }
 
     @Override
     public void register(final @NotNull Translation translation) {
-        final String key = translation.getKey();
-        final Translation existing = this.translationMap.get(key);
+        final String path = translation.getPath();
+        final Translation existing = this.translationMap.get(path);
 
         if (existing == null) {
-            this.translationMap.put(key, translation);
+            this.translationMap.put(path, translation);
         } else {
             for (final var entry : translation.entrySet()) {
                 existing.register(
@@ -184,11 +184,11 @@ final class TranslationRegistryImpl implements TranslationRegistry {
 
     @Override
     public @NotNull Translation register(
-            final @NotNull String key,
+            final @NotNull String path,
             final @NotNull Locale locale,
             final @NotNull String translation
     ) {
-        final Translation translationObj = this.registerKey(key, translation);
+        final Translation translationObj = this.registerPath(path, translation);
 
         translationObj.register(
                 locale,
@@ -199,19 +199,19 @@ final class TranslationRegistryImpl implements TranslationRegistry {
     }
 
     @Override
-    public @NotNull List<Translation> registerAllKeys(final String @NotNull ... keys) {
-        return this.registerAllKeys(
-                Arrays.asList(keys)
+    public @NotNull List<Translation> registerAllPaths(final String @NotNull ... paths) {
+        return this.registerAllPaths(
+                Arrays.asList(paths)
         );
     }
 
     @Override
-    public @NotNull List<Translation> registerAllKeys(final @NotNull Iterable<String> keys) {
+    public @NotNull List<Translation> registerAllPaths(final @NotNull Iterable<String> paths) {
         final var translations = new ObjectArrayList<Translation>();
 
-        for (final var key : keys) {
+        for (final var path : paths) {
             translations.add(
-                    this.registerKey(key)
+                    this.registerPath(path)
             );
         }
 
@@ -219,12 +219,12 @@ final class TranslationRegistryImpl implements TranslationRegistry {
     }
 
     @Override
-    public @NotNull List<Translation> registerAllKeys(final @NotNull Map<String, String> keys) {
-        final var translations = new ObjectArrayList<Translation>(keys.size());
+    public @NotNull List<Translation> registerAllPaths(final @NotNull Map<String, String> paths) {
+        final var translations = new ObjectArrayList<Translation>(paths.size());
 
-        for (final var entry : keys.entrySet()) {
+        for (final var entry : paths.entrySet()) {
             translations.add(
-                    this.registerKey(
+                    this.registerPath(
                             entry.getKey(),
                             entry.getValue()
                     )
@@ -263,8 +263,8 @@ final class TranslationRegistryImpl implements TranslationRegistry {
     }
 
     @Override
-    public boolean unregister(final @NotNull String key) {
-        return this.translationMap.remove(key) != null;
+    public boolean unregister(final @NotNull String path) {
+        return this.translationMap.remove(path) != null;
     }
 
     @Override
@@ -280,10 +280,10 @@ final class TranslationRegistryImpl implements TranslationRegistry {
 
     @Override
     public boolean unregister(
-            final @NotNull String key,
+            final @NotNull String path,
             final @NotNull Locale locale
     ) {
-        final Translation translation = this.translationMap.get(key);
+        final Translation translation = this.translationMap.get(path);
 
         return translation != null
                 && translation.unregister(locale);
@@ -295,11 +295,11 @@ final class TranslationRegistryImpl implements TranslationRegistry {
     }
 
     @Override
-    public boolean unregister(final @NotNull Iterable<String> keys) {
+    public boolean unregister(final @NotNull Iterable<String> paths) {
         boolean removed = false;
 
-        for (final var key : keys) {
-            removed |= this.unregister(key);
+        for (final var path : paths) {
+            removed |= this.unregister(path);
         }
 
         return removed;

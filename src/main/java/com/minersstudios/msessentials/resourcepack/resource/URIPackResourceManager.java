@@ -42,7 +42,7 @@ public final class URIPackResourceManager extends AbstractURIResourceManager imp
             try (final var in = this.openStream()) {
                 return PackResourceManager.generateSHA1(in);
             } catch (final Throwable e) {
-                throw new IllegalStateException("Failed to generate SHA-1 hash for resource pack file: " + this.uri, e);
+                throw new IllegalStateException("Failed to generate SHA-1 hash for resource pack file: " + this.getUri(), e);
             }
         });
     }

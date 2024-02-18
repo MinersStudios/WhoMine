@@ -1,18 +1,21 @@
 package com.minersstudios.mscore.inventory.recipe.builder;
 
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
-import javax.annotation.concurrent.Immutable;
-
+/**
+ * Represents a builder for shaped recipe
+ *
+ * @see RecipeBuilder#shaped()
+ * @see RecipeBuilder#shaped(ShapedRecipe)
+ */
 public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedRecipeBuilder, ShapedRecipe> {
     private final Char2ObjectMap<RecipeChoice> ingredientMap;
     private String[] rows;
@@ -38,6 +41,8 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
         }
     }
 
+    @Contract(" -> new")
+    @ApiStatus.OverrideOnly
     @Override
     protected @NotNull ShapedRecipe newRecipe() throws IllegalStateException {
         if (this.rows == null) {
@@ -53,7 +58,7 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
         }
 
         final ShapedRecipe recipe =
-                new ShapedRecipe(this.namespacedKey, this.result)
+                new ShapedRecipe(this.namespacedKey(), this.result())
                 .shape(this.rows);
 
         for (final var entry : this.ingredientMap.char2ObjectEntrySet()) {
@@ -66,14 +71,38 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
         return recipe;
     }
 
+    /**
+     * Returns the shape of the recipe
+     *
+     * @return The shape of the recipe
+     */
     public String @UnknownNullability [] shape() {
         return this.rows;
     }
 
+    /**
+     * Sets the shape of the recipe
+     *
+     * @param first The first row of the recipe
+     * @return This builder, for chaining
+     * @throws IllegalArgumentException If the row is empty or longer than
+     *                                  {@link #MAX_ROW_LENGTH}
+     */
+    @Contract("_ -> this")
     public @NotNull ShapedRecipeBuilder shape(final @NotNull String first) throws IllegalArgumentException {
         return this.setShapes(first);
     }
 
+    /**
+     * Sets the shape of the recipe
+     *
+     * @param first  The first row of the recipe
+     * @param second The second row of the recipe
+     * @return This builder, for chaining
+     * @throws IllegalArgumentException If any row is empty or longer than
+     *                                  {@link #MAX_ROW_LENGTH}
+     */
+    @Contract("_, _ -> this")
     public @NotNull ShapedRecipeBuilder shape(
             final @NotNull String first,
             final @NotNull String second
@@ -81,6 +110,17 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
         return this.setShapes(first, second);
     }
 
+    /**
+     * Sets the shape of the recipe
+     *
+     * @param first  The first row of the recipe
+     * @param second The second row of the recipe
+     * @param third  The third row of the recipe
+     * @return This builder, for chaining
+     * @throws IllegalArgumentException If any row is empty or longer than
+     *                                  {@link #MAX_ROW_LENGTH}
+     */
+    @Contract("_, _, _ -> this")
     public @NotNull ShapedRecipeBuilder shape(
             final @NotNull String first,
             final @NotNull String second,
@@ -89,10 +129,26 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
         return this.setShapes(first, second, third);
     }
 
+    /**
+     * Returns the ingredients of the recipe
+     *
+     * @return The ingredients of the recipe
+     */
     public @NotNull Char2ObjectMap<RecipeChoice> ingredients() {
         return this.ingredientMap;
     }
 
+    /**
+     * Sets the ingredients of the recipe
+     *
+     * @param first The first ingredient of the recipe
+     * @param rest  The rest of the ingredients of the recipe
+     * @return This builder, for chaining
+     * @throws IllegalStateException    If the shape has not been set
+     * @throws IllegalArgumentException If any of the characters in the entries
+     *                                  do not appear in the shape
+     */
+    @Contract("_, _ -> this")
     public @NotNull ShapedRecipeBuilder ingredients(
             final @NotNull RecipeChoiceEntry first,
             final RecipeChoiceEntry @NotNull ... rest
@@ -101,10 +157,10 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
             throw new IllegalStateException("Must call shape() first");
         }
 
-        this.putIngredient(first.key, first.choice);
+        this.putIngredient(first.getKey(), first.getChoice());
 
         for (final var entry : rest) {
-            this.putIngredient(entry.key, entry.choice);
+            this.putIngredient(entry.getKey(), entry.getChoice());
         }
 
         if (this.ingredientMap.containsValue(null)) {
@@ -114,40 +170,16 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
         return this;
     }
 
-    public static @NotNull RecipeChoiceEntry material(
-            final char key,
-            final @NotNull Material material
-    ) {
-        return choice(
-                key,
-                new RecipeChoice.MaterialChoice(material)
-        );
-    }
-
-    public static @NotNull RecipeChoiceEntry itemStack(
-            final char key,
-            final @NotNull ItemStack ingredient
-    ) {
-        return choice(
-                key,
-                new RecipeChoice.ExactChoice(ingredient)
-        );
-    }
-
-    public static @NotNull RecipeChoiceEntry choice(
-            final char key,
-            final @NotNull RecipeChoice choice
-    ) {
-        return new RecipeChoiceEntry(key, choice);
-    }
-
+    @Contract("_ -> this")
     private @NotNull ShapedRecipeBuilder setShapes(final String @NotNull ... rows) throws IllegalArgumentException {
         int lastLength = -1;
 
         for (final var row : rows) {
+            final int length = row.length();
+
             if (
-                    row.isEmpty()
-                    || row.length() > MAX_ROW_LENGTH
+                    length == 0
+                    || length > MAX_ROW_LENGTH
             ) {
                 throw new IllegalArgumentException(
                         "Crafting rows must be between 1 and " + MAX_ROW_LENGTH + " characters long"
@@ -156,16 +188,18 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
 
             if (
                     lastLength != -1
-                    && lastLength != row.length()
+                    && lastLength != length
             ) {
                 throw new IllegalArgumentException("Crafting recipes must be rectangular");
             }
 
-            lastLength = row.length();
+            lastLength = length;
 
-            for (final char c : row.toCharArray()) {
-                if (!Character.isWhitespace(c)) {
-                    this.ingredientMap.put(c, null);
+            for (int i = 0; i < length; ++i) {
+                final char character = row.charAt(i);
+
+                if (!Character.isWhitespace(character)) {
+                    this.ingredientMap.put(character, null);
                 }
             }
         }
@@ -188,57 +222,5 @@ public final class ShapedRecipeBuilder extends CraftingRecipeBuilderImpl<ShapedR
         }
 
         this.ingredientMap.put(key, ingredient);
-    }
-
-    @Immutable
-    public static final class RecipeChoiceEntry {
-        private final char key;
-        private final RecipeChoice choice;
-
-        RecipeChoiceEntry(
-                final char key,
-                final @NotNull RecipeChoice choice
-        ) {
-            this.key = key;
-            this.choice = choice;
-        }
-
-        public char getKey() {
-            return this.key;
-        }
-
-        public @NotNull RecipeChoice getChoice() {
-            return this.choice;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-
-            result = prime * result + this.key;
-            result = prime * result + this.choice.hashCode();
-
-            return result;
-        }
-
-        @Contract("null -> false")
-        @Override
-        public boolean equals(final @Nullable Object obj) {
-            return obj == this
-                    || (
-                            obj instanceof final RecipeChoiceEntry that
-                            && this.key == that.key
-                            && this.choice.equals(that.choice)
-                    );
-        }
-
-        @Override
-        public @NotNull String toString() {
-            return "RecipeChoiceEntry{" +
-                    "key=" + this.key +
-                    ", choice=" + this.choice +
-                    '}';
-        }
     }
 }

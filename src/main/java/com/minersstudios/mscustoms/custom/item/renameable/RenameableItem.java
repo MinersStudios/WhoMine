@@ -1,5 +1,6 @@
 package com.minersstudios.mscustoms.custom.item.renameable;
 
+import com.minersstudios.mscore.annotation.ResourceKey;
 import com.minersstudios.mscustoms.utility.MSCustomUtils;
 import com.minersstudios.mscustoms.MSCustoms;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -196,15 +197,15 @@ public class RenameableItem {
             return null;
         }
 
-        for (final var item : itemsString) {
+        for (final @ResourceKey var itemString : itemsString) {
             final ItemStack itemStack;
 
-            if (item.contains(":")) {
-                itemStack = MSCustomUtils.getItemStack(item)
+            if (itemString.contains(":")) {
+                itemStack = MSCustomUtils.getItemStack(itemString)
                         .map(ItemStack::new)
                         .orElse(null);
             } else {
-                final Material material = Material.getMaterial(item);
+                final Material material = Material.getMaterial(itemString);
                 itemStack = material == null
                         ? null
                         : new ItemStack(material);
@@ -214,7 +215,7 @@ public class RenameableItem {
                     itemStack == null
                     || itemStack.isEmpty()
             ) {
-                logger.severe("Item " + item + " is not valid! (in " + fileName + ")");
+                logger.severe("Item " + itemString + " is not valid! (in " + fileName + ")");
                 return null;
             }
 

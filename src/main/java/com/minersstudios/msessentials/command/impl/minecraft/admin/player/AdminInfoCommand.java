@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.command.impl.minecraft.admin.player;
 
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.msessentials.Config;
+import com.minersstudios.msessentials.EssentialsConfig;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerFile;
 import com.minersstudios.msessentials.player.PlayerInfo;
@@ -18,7 +18,7 @@ public final class AdminInfoCommand {
             final @NotNull CommandSender sender,
             final @NotNull PlayerInfo playerInfo
     ) {
-        final Config config = plugin.getConfiguration();
+        final EssentialsConfig config = plugin.getConfiguration();
         final PlayerFile playerFile = playerInfo.getPlayerFile();
         final PlayerName playerName = playerFile.getPlayerName();
         final PlayerSettings playerSettings = playerFile.getPlayerSettings();

@@ -1,5 +1,6 @@
 package com.minersstudios.mscustoms.registry.item;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.UUID;
 
 public final class BanSword extends CustomItemImpl {
-    private static final String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     static {

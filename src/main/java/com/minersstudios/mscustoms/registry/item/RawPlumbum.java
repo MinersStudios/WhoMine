@@ -1,13 +1,14 @@
 package com.minersstudios.mscustoms.registry.item;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.mscustoms.utility.MSBlockUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
+import com.minersstudios.mscustoms.utility.MSBlockUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 public final class RawPlumbum extends CustomItemImpl {
-    private static final String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     static {
@@ -51,8 +52,8 @@ public final class RawPlumbum extends CustomItemImpl {
                         " I "
                 )
                 .ingredients(
-                        ShapedRecipeBuilder.material('I', Material.RAW_IRON),
-                        ShapedRecipeBuilder.material('B', Material.WATER_BUCKET)
+                        RecipeChoiceEntry.material('I', Material.RAW_IRON),
+                        RecipeChoiceEntry.material('B', Material.WATER_BUCKET)
                 );
 
         final var rawPlumbumBlock = MSBlockUtils.getItemStack("raw_plumbum_block");
@@ -73,7 +74,7 @@ public final class RawPlumbum extends CustomItemImpl {
                         .result(this.itemStack.clone().add(8))
                         .shape("I")
                         .ingredients(
-                                ShapedRecipeBuilder.itemStack('I', rawPlumbumBlock.get())
+                                RecipeChoiceEntry.itemStack('I', rawPlumbumBlock.get())
                         ),
                         true
                 )

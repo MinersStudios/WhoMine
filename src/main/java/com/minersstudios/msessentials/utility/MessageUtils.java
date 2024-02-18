@@ -6,7 +6,7 @@ import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
-import com.minersstudios.msessentials.Config;
+import com.minersstudios.msessentials.EssentialsConfig;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.discord.DiscordManager;
@@ -83,7 +83,7 @@ public final class MessageUtils {
             final @NotNull Component message
     ) {
         final MSEssentials plugin = MSEssentials.singleton();
-        final Config config = plugin.getConfiguration();
+        final EssentialsConfig config = plugin.getConfiguration();
         final DiscordManager discordManager = plugin.getCache().getDiscordManager();
 
         if (chatType == ChatType.LOCAL && location != null) {
@@ -204,7 +204,7 @@ public final class MessageUtils {
             final @NotNull RolePlayActionType rolePlayActionType
     ) {
         final MSEssentials plugin = MSEssentials.singleton();
-        final Config config = plugin.getConfiguration();
+        final EssentialsConfig config = plugin.getConfiguration();
         final DiscordManager discordManager = plugin.getCache().getDiscordManager();
         final PlayerInfo playerInfo = PlayerInfo.fromOnlinePlayer(plugin, sender);
         final Component fullMessage = switch (rolePlayActionType) {

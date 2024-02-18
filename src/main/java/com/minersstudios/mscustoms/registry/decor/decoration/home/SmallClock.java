@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.decoration.home;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -48,8 +48,8 @@ public final class SmallClock extends CustomDecorDataImpl<SmallClock> {
                                         "LLL"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('L', Material.CLAY_BALL),
-                                        ShapedRecipeBuilder.material('C', Material.CLOCK)
+                                        RecipeChoiceEntry.material('L', Material.CLAY_BALL),
+                                        RecipeChoiceEntry.material('C', Material.CLOCK)
                                 ),
                                 true
                         )

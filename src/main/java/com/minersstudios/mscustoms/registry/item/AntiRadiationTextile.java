@@ -1,7 +1,8 @@
 package com.minersstudios.mscustoms.registry.item;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
@@ -17,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 public final class AntiRadiationTextile extends CustomItemImpl {
-    private static final String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     static {
@@ -48,9 +49,9 @@ public final class AntiRadiationTextile extends CustomItemImpl {
                                 "WSW"
                         )
                         .ingredients(
-                                ShapedRecipeBuilder.itemStack('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem()),
-                                ShapedRecipeBuilder.material('W', Material.YELLOW_WOOL),
-                                ShapedRecipeBuilder.material('S', Material.STRING)
+                                RecipeChoiceEntry.itemStack('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem()),
+                                RecipeChoiceEntry.material('W', Material.YELLOW_WOOL),
+                                RecipeChoiceEntry.material('S', Material.STRING)
                         ),
                         true
                 )

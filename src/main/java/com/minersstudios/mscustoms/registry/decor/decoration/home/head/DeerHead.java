@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.decoration.home.head;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -47,9 +47,9 @@ public final class DeerHead extends CustomDecorDataImpl<DeerHead> {
                                         "  S"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('L', Material.LEATHER),
-                                        ShapedRecipeBuilder.material('B', Material.BONE),
-                                        ShapedRecipeBuilder.material('S', Material.SPRUCE_LOG)
+                                        RecipeChoiceEntry.material('L', Material.LEATHER),
+                                        RecipeChoiceEntry.material('B', Material.BONE),
+                                        RecipeChoiceEntry.material('S', Material.SPRUCE_LOG)
                                 ),
                                 true
                         )

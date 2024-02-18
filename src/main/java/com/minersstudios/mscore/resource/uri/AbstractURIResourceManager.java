@@ -8,7 +8,7 @@ import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractURIResourceManager implements URIResourceManager {
-    protected final URI uri;
+    private final URI uri;
 
     protected AbstractURIResourceManager(final @NotNull URI uri) {
         this.uri = uri;

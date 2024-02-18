@@ -53,7 +53,7 @@ public final class GitHubPackResourceManager extends AbstractGithubResourceManag
     @Override
     public @NotNull URI getFileUri(final @NotNull String tag) {
         return URI.create(
-                DOWNLOAD_RELEASE_URL.formatted(this.user, this.repo, tag, this.file.getName())
+                DOWNLOAD_RELEASE_URL.formatted(this.getUser(), this.getRepo(), tag, this.getFile().getName())
         );
     }
 
@@ -74,7 +74,7 @@ public final class GitHubPackResourceManager extends AbstractGithubResourceManag
                            return PackResourceManager.generateSHA1(in);
                        } catch (final Throwable e) {
                            throw new IllegalStateException(
-                                   "Failed to generate SHA-1 hash for resource pack file: " + this.file,
+                                   "Failed to generate SHA-1 hash for resource pack file: " + this.getFile(),
                                    e
                            );
                        }

@@ -30,10 +30,10 @@ public final class GitHubTranslationResourceManager extends AbstractGithubResour
     public @NotNull URI getFileUri(final @NotNull String tag) {
         return URI.create(
                 DOWNLOAD_TRANSLATION_URL.formatted(
-                        this.user, this.repo, tag,
+                        this.getUser(), this.getRepo(), tag,
                         this.folderPath == null
-                        ? this.file.getName()
-                        : this.folderPath + "/" + this.file.getName()
+                        ? this.getFile().getName()
+                        : this.folderPath + "/" + this.getFile().getName()
                 )
         );
     }

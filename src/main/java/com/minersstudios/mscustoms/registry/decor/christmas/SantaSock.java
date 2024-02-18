@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSPlugin;
 import com.minersstudios.mscore.utility.ChatUtils;
@@ -52,8 +52,8 @@ public final class SantaSock extends CustomDecorDataImpl<SantaSock> {
                                         "LL"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('L', Material.LEATHER),
-                                        ShapedRecipeBuilder.material('A', Material.AIR)
+                                        RecipeChoiceEntry.material('L', Material.LEATHER),
+                                        RecipeChoiceEntry.material('A', Material.AIR)
                                 ),
                                 true
                         )

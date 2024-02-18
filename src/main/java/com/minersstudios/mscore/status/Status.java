@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.status;
 
+import com.minersstudios.mscore.annotation.StatusKey;
 import com.minersstudios.mscore.throwable.InvalidRegexException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.minersstudios.mscore.status.StatusKey.Validator.validate;
+import static com.minersstudios.mscore.annotation.StatusKey.Validator.validate;
 
 /**
  * Represents a status.

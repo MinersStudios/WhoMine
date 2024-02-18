@@ -23,10 +23,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.net.HttpURLConnection.*;
 
 public abstract class AbstractGithubResourceManager extends AbstractFileResourceManager implements GithubResourceManager {
-    protected final String user;
-    protected final String repo;
-    protected final AtomicReference<Tag[]> tags;
-    protected final String currentTag;
+    private final String user;
+    private final String repo;
+    private final AtomicReference<Tag[]> tags;
+    private final String currentTag;
     private transient final String token;
 
     private static final Gson GSON = new Gson();
@@ -132,7 +132,8 @@ public abstract class AbstractGithubResourceManager extends AbstractFileResource
                ? this.getUri()
                      .thenApplyAsync(
                              uri -> {
-                                 final File directory = this.file.getParentFile();
+                                 final File file = this.getFile();
+                                 final File directory = file.getParentFile();
 
                                  if (
                                          !directory.exists()
@@ -141,7 +142,7 @@ public abstract class AbstractGithubResourceManager extends AbstractFileResource
                                      MSLogger.warning("Failed to create a new directory: " + directory.getAbsolutePath());
                                  }
 
-                                 final Path path = this.file.toPath();
+                                 final Path path = file.toPath();
                                  final HttpClient client =
                                          HttpClient.newBuilder()
                                          .followRedirects(HttpClient.Redirect.ALWAYS)
@@ -156,20 +157,20 @@ public abstract class AbstractGithubResourceManager extends AbstractFileResource
 
                                      if (statusCode != HTTP_OK) {
                                          throw new IllegalStateException(
-                                                 "Failed to update file: " + this.file + " (status code: " + statusCode + ')'
+                                                 "Failed to update file: " + file + " (status code: " + statusCode + ')'
                                          );
                                      }
                                  } catch (final IOException | InterruptedException e) {
-                                     throw new IllegalStateException("Failed to update file: " + this.file, e);
+                                     throw new IllegalStateException("Failed to update file: " + file, e);
                                  }
 
-                                 return this.file;
+                                 return file;
                              }
                      )
                : this.getLatestTag()
                      .thenCompose(
-                             tag -> tag.getName().equals(this.currentTag) && this.file.exists()
-                                    ? CompletableFuture.completedFuture(this.file)
+                             tag -> tag.getName().equals(this.currentTag) && this.getFile().exists()
+                                    ? CompletableFuture.completedFuture(this.getFile())
                                     : this.updateFile(true)
                      );
     }

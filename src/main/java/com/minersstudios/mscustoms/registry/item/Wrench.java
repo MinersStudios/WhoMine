@@ -1,7 +1,8 @@
 package com.minersstudios.mscustoms.registry.item;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.Font;
@@ -20,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 public final class Wrench extends CustomItemImpl implements Damageable {
-    private static final String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     static {
@@ -54,7 +55,7 @@ public final class Wrench extends CustomItemImpl implements Damageable {
                         .result(this.itemStack)
                         .shape("I", "I", "I")
                         .ingredients(
-                                ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
+                                RecipeChoiceEntry.material('I', Material.IRON_INGOT)
                         ),
                         true
                 )

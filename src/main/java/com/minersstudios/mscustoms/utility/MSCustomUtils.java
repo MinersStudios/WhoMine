@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,20 +50,21 @@ public final class MSCustomUtils {
      *         or empty optional if not found
      * @see #getItemStack(String, String)
      */
-    public static @NotNull Optional<ItemStack> getItemStack(final @ResourceKey @Nullable String namespacedKeyStr) {
-        if (
-                ChatUtils.isBlank(namespacedKeyStr)
-                || !namespacedKeyStr.contains(":")
-        ) {
+    public static @NotNull Optional<ItemStack> getItemStack(final @Subst("namespace:key") @ResourceKey @Nullable String namespacedKeyStr) {
+        if (ChatUtils.isBlank(namespacedKeyStr)) {
             return Optional.empty();
         }
 
-        final int index = namespacedKeyStr.indexOf(":");
+        final int colonIndex = namespacedKeyStr.indexOf(":");
 
-        return getItemStack(
-                namespacedKeyStr.substring(0, index),
-                namespacedKeyStr.substring(index + 1)
-        );
+        if (colonIndex == -1) {
+            return Optional.empty();
+        }
+
+        @Subst("namespace") final String namespace = namespacedKeyStr.substring(0, colonIndex);
+        @Subst("key") final String key = namespacedKeyStr.substring(colonIndex + 1);
+
+        return getItemStack(namespace, key);
     }
 
     /**
@@ -76,9 +78,14 @@ public final class MSCustomUtils {
      * @see #getItemStack(String, String)
      */
     public static @NotNull Optional<ItemStack> getItemStack(final @Nullable NamespacedKey namespacedKey) {
-        return namespacedKey == null
-                ? Optional.empty()
-                : getItemStack(namespacedKey.getNamespace(), namespacedKey.getKey());
+        if (namespacedKey == null) {
+            return Optional.empty();
+        }
+
+        @Subst("namespace") final String namespace = namespacedKey.getNamespace();
+        @Subst("key") final String key = namespacedKey.getKey();
+
+        return getItemStack(namespace, key);
     }
 
     /**
@@ -133,7 +140,10 @@ public final class MSCustomUtils {
 
         for (final var namespacedKey : container.getKeys()) {
             if (!namespacedKey.equals(RenameableItemRegistry.RENAMEABLE_NAMESPACED_KEY)) {
-                return getCustom(namespacedKey.getNamespace(), container.get(namespacedKey, PersistentDataType.STRING));
+                @Subst("namespace") final String namespace = namespacedKey.getNamespace();
+                @Subst("key") final String key = container.get(namespacedKey, PersistentDataType.STRING);
+
+                return getCustom(namespace, key);
             }
         }
 
@@ -150,7 +160,7 @@ public final class MSCustomUtils {
      *         or {@link CustomItem} or empty optional if not found
      * @see #getCustom(String, String)
      */
-    public static @NotNull Optional<?> getCustom(final @ResourceKey @Nullable String namespacedKeyStr) {
+    public static @NotNull Optional<?> getCustom(final @Subst("namespace:key") @ResourceKey @Nullable String namespacedKeyStr) {
         if (
                 ChatUtils.isBlank(namespacedKeyStr)
                 || !namespacedKeyStr.contains(":")
@@ -158,11 +168,18 @@ public final class MSCustomUtils {
             return Optional.empty();
         }
 
-        final int index = namespacedKeyStr.indexOf(":");
+        final int colonIndex = namespacedKeyStr.indexOf(":");
+
+        if (colonIndex == -1) {
+            return Optional.empty();
+        }
+
+        @Subst("namespace") final String namespace = namespacedKeyStr.substring(0, colonIndex);
+        @Subst("key") final String key = namespacedKeyStr.substring(colonIndex + 1);
 
         return getCustom(
-                namespacedKeyStr.substring(0, index),
-                namespacedKeyStr.substring(index + 1)
+                namespace,
+                key
         );
     }
 
@@ -177,9 +194,14 @@ public final class MSCustomUtils {
      * @see #getCustom(String, String)
      */
     public static @NotNull Optional<?> getCustom(final @Nullable NamespacedKey namespacedKey) {
-        return namespacedKey == null
-                ? Optional.empty()
-                : getCustom(namespacedKey.getNamespace(), namespacedKey.getKey());
+        if (namespacedKey == null) {
+            return Optional.empty();
+        }
+
+        @Subst("namespace") final String namespace = namespacedKey.getNamespace();
+        @Subst("key") final String key = namespacedKey.getKey();
+
+        return getCustom(namespace, key);
     }
 
     /**
@@ -197,8 +219,8 @@ public final class MSCustomUtils {
      * @see CustomItemType#fromKey(String)
      */
     public static @NotNull Optional<?> getCustom(
-            final @Nullable String namespace,
-            final @Nullable String key
+            final @Namespace @Nullable String namespace,
+            final @Key @Nullable String key
     ) {
         return ChatUtils.isBlank(namespace) || ChatUtils.isBlank(key)
                 ? Optional.empty()

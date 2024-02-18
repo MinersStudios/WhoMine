@@ -1,7 +1,8 @@
 package com.minersstudios.mscustoms.registry.item;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
@@ -19,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 public final class Cocaine extends CustomItemImpl {
-    private static final String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     static {
@@ -61,10 +62,10 @@ public final class Cocaine extends CustomItemImpl {
                                 "LFL"
                         )
                         .ingredients(
-                                ShapedRecipeBuilder.material('N', Material.IRON_INGOT),
-                                ShapedRecipeBuilder.material('F', Material.FERN),
-                                ShapedRecipeBuilder.material('S', Material.SUGAR_CANE),
-                                ShapedRecipeBuilder.material('L', Material.OAK_LEAVES)
+                                RecipeChoiceEntry.material('N', Material.IRON_INGOT),
+                                RecipeChoiceEntry.material('F', Material.FERN),
+                                RecipeChoiceEntry.material('S', Material.SUGAR_CANE),
+                                RecipeChoiceEntry.material('L', Material.OAK_LEAVES)
                         ),
                         true
                 )

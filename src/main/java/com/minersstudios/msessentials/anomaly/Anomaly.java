@@ -3,7 +3,7 @@ package com.minersstudios.msessentials.anomaly;
 import com.destroystokyo.paper.ParticleBuilder;
 import com.minersstudios.mscore.location.MSBoundingBox;
 import com.minersstudios.mscore.utility.BlockUtils;
-import com.minersstudios.msessentials.Cache;
+import com.minersstudios.msessentials.EssentialsCache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.anomaly.action.AddPotionAction;
 import com.minersstudios.msessentials.anomaly.action.SpawnParticlesAction;
@@ -29,7 +29,7 @@ import java.util.*;
 
 /**
  * Anomaly class with all anomaly data and associated namespaced key.
- * All anomalies are cached in {@link Cache#getAnomalies()} .
+ * All anomalies are cached in {@link EssentialsCache#getAnomalies()} .
  * <br>
  * Can have :
  * <ul>

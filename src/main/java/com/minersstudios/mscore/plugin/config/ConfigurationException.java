@@ -4,23 +4,27 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
+ * Checked configuration exception.
+ * <br>
  * Thrown when a configuration error occurs while working with the
- * {@link MSConfig} class. This exception is used to indicate problems
- * encountered during configuration operations.
+ * {@link Config} class.
+ * <br>
+ * This exception is used to indicate problems encountered during configuration
+ * operations.
  *
- * @see MSConfig
+ * @see Config
  */
 public class ConfigurationException extends Exception {
 
     /**
-     * Constructs a new ConfigurationException with no detail message
+     * Constructs a new exception with no detail message
      */
     public ConfigurationException() {
         super();
     }
 
     /**
-     * Constructs a new ConfigurationException with the specified detail message
+     * Constructs a new exception with the specified detail message
      *
      * @param message The detail message (which is saved for later retrieval
      *                by the {@link #getMessage()} method)
@@ -30,12 +34,11 @@ public class ConfigurationException extends Exception {
     }
 
     /**
-     * Constructs a new ConfigurationException with the specified detail
-     * message and cause
+     * Constructs a new exception with the specified detail message and cause
      *
      * @param message The detail message
-     *                (which is saved for later retrieval by {@link #getMessage()}
-     *                method)
+     *                (which is saved for later retrieval by
+     *                {@link #getMessage()} method)
      * @param cause   The cause
      *                (which is saved for later retrieval by {@link #getCause()}
      *                method)
@@ -50,8 +53,8 @@ public class ConfigurationException extends Exception {
     }
 
     /**
-     * Constructs a new ConfigurationException with the specified cause and a
-     * detail message of {@code (cause == null ? null : cause.toString())}
+     * Constructs a new exception with the specified cause and a detail message
+     * of {@code (cause == null ? null : cause.toString())}
      *
      * @param cause The cause
      *              (which is saved for later retrieval by {@link #getCause()}

@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.decoration.home;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -45,8 +45,8 @@ public final class SmallGlobe extends CustomDecorDataImpl<SmallGlobe> {
                                         "S"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('M', Material.MAP),
-                                        ShapedRecipeBuilder.material('S', Material.STICK)
+                                        RecipeChoiceEntry.material('M', Material.MAP),
+                                        RecipeChoiceEntry.material('S', Material.STICK)
                                 ),
                                 true
                         )

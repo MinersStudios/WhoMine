@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.decoration.home;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -47,9 +47,9 @@ public final class Whocintosh extends CustomDecorDataImpl<Whocintosh> {
                                         "ITI"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.itemStack('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem()),
-                                        ShapedRecipeBuilder.material('G', Material.GLASS_PANE),
-                                        ShapedRecipeBuilder.material('T', Material.REDSTONE_TORCH)
+                                        RecipeChoiceEntry.itemStack('I', CustomItemType.PLUMBUM_INGOT.getCustomItem().getItem()),
+                                        RecipeChoiceEntry.material('G', Material.GLASS_PANE),
+                                        RecipeChoiceEntry.material('T', Material.REDSTONE_TORCH)
                                 ),
                                 true
                         )

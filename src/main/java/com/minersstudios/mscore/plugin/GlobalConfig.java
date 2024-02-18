@@ -2,12 +2,13 @@ package com.minersstudios.mscore.plugin;
 
 import com.minersstudios.mscore.locale.LanguageFile;
 import com.minersstudios.mscore.locale.TranslationRegistry;
-import com.minersstudios.mscore.plugin.config.MSConfig;
+import com.minersstudios.mscore.plugin.config.Config;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscore.utility.SharedConstants;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.translation.Translator;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -25,7 +26,7 @@ import static net.kyori.adventure.text.Component.text;
  * Use {@link #reload()} to reload configuration and {@link #save()} to save
  * configuration.
  */
-public final class GlobalConfig extends MSConfig {
+public final class GlobalConfig extends Config {
     private String dateFormat;
     private boolean isChristmas;
     private boolean isHalloween;
@@ -52,11 +53,13 @@ public final class GlobalConfig extends MSConfig {
     }
 
     public void reloadVariables() {
-        this.dateFormat = this.yaml.getString(KEY_DATE_FORMAT);
-        this.isChristmas = this.yaml.getBoolean(KEY_IS_CHRISTMAS);
-        this.isHalloween = this.yaml.getBoolean(KEY_IS_HALLOWEEN);
+        final YamlConfiguration yaml = this.getYaml();
 
-        final ConfigurationSection languageSection = this.yaml.getConfigurationSection(KEY_LANGUAGE_SECTION);
+        this.dateFormat = yaml.getString(KEY_DATE_FORMAT);
+        this.isChristmas = yaml.getBoolean(KEY_IS_CHRISTMAS);
+        this.isHalloween = yaml.getBoolean(KEY_IS_HALLOWEEN);
+
+        final ConfigurationSection languageSection = yaml.getConfigurationSection(KEY_LANGUAGE_SECTION);
 
         if (languageSection == null) {
             throw new IllegalStateException("Language section cannot be null");
@@ -149,8 +152,9 @@ public final class GlobalConfig extends MSConfig {
     }
 
     private void loadLanguages() {
+        final YamlConfiguration yaml = this.getYaml();
         final ConfigurationSection languageSection =
-                this.yaml.getConfigurationSection(KEY_LANGUAGE_SECTION + '.' + KEY_CODES);
+                yaml.getConfigurationSection(KEY_LANGUAGE_SECTION + '.' + KEY_CODES);
 
         if (languageSection != null) {
             final long start = System.currentTimeMillis();
@@ -159,8 +163,8 @@ public final class GlobalConfig extends MSConfig {
             .allOf(
                     LanguageFile
                     .allFromSection(
-                            this.file,
-                            this.yaml,
+                            this.getFile(),
+                            yaml,
                             languageSection,
                             languageFile -> {
                                 TranslationRegistry.registry().registerAll(languageFile);

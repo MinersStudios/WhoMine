@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +39,7 @@ import static net.kyori.adventure.text.Component.text;
  * Use {@link #reload()} to reload configuration and {@link #save()} to save
  * configuration.
  */
-public final class Config extends PluginConfig<MSEssentials> {
+public final class EssentialsConfig extends PluginConfig<MSEssentials> {
     private boolean developerMode;
     private long anomalyCheckRate;
     private long anomalyParticlesCheckRate;
@@ -103,31 +104,32 @@ public final class Config extends PluginConfig<MSEssentials> {
     //</editor-fold>
 
     //<editor-fold desc="Config default values" defaultstate="collapsed">
-    public static boolean DEFAULT_DEVELOPER_MODE =            false;
-    public static long DEFAULT_ANOMALY_CHECK_RATE =           100L;
-    public static long DEFAULT_ANOMALY_PARTICLES_CHECK_RATE = 10L;
-    public static double DEFAULT_LOCAL_CHAT_RADIUS =          25.0d;
-    public static long DEFAULT_DISCORD_CHANNEL_ID =           -1;
-    public static char DEFAULT_BOT_TOKEN =                    ' ';
-    public static long DEFAULT_SERVER_ID =                    -1;
-    public static long DEFAULT_MEMBER_ROLE_ID =               -1;
-    public static char DEFAULT_MINE_SKIN_API_KEY =            ' ';
+    public static final boolean DEFAULT_DEVELOPER_MODE =            false;
+    public static final long DEFAULT_ANOMALY_CHECK_RATE =           100L;
+    public static final long DEFAULT_ANOMALY_PARTICLES_CHECK_RATE = 10L;
+    public static final double DEFAULT_LOCAL_CHAT_RADIUS =          25.0d;
+    public static final long DEFAULT_DISCORD_CHANNEL_ID =           -1;
+    public static final char DEFAULT_BOT_TOKEN =                    ' ';
+    public static final long DEFAULT_SERVER_ID =                    -1;
+    public static final long DEFAULT_MEMBER_ROLE_ID =               -1;
+    public static final char DEFAULT_MINE_SKIN_API_KEY =            ' ';
     //</editor-fold>
 
-    Config(final @NotNull MSEssentials plugin) throws IllegalArgumentException {
+    EssentialsConfig(final @NotNull MSEssentials plugin) throws IllegalArgumentException {
         super(plugin, plugin.getConfigFile());
     }
 
     @Override
     public void reloadVariables() {
         final MSEssentials plugin = this.getPlugin();
-        final Cache cache = plugin.getCache();
+        final EssentialsCache cache = plugin.getCache();
+        final YamlConfiguration yaml = this.getYaml();
 
-        this.developerMode = this.yaml.getBoolean(KEY_DEVELOPER_MODE);
-        this.anomalyCheckRate = this.yaml.getLong(KEY_ANOMALY_CHECK_RATE);
-        this.anomalyParticlesCheckRate = this.yaml.getLong(KEY_ANOMALY_PARTICLES_CHECK_RATE);
+        this.developerMode = yaml.getBoolean(KEY_DEVELOPER_MODE);
+        this.anomalyCheckRate = yaml.getLong(KEY_ANOMALY_CHECK_RATE);
+        this.anomalyParticlesCheckRate = yaml.getLong(KEY_ANOMALY_PARTICLES_CHECK_RATE);
 
-        final ConfigurationSection chatSection = this.yaml.getConfigurationSection(KEY_CHAT_SECTION);
+        final ConfigurationSection chatSection = yaml.getConfigurationSection(KEY_CHAT_SECTION);
 
         if (chatSection != null) {
             final ConfigurationSection localSection = chatSection.getConfigurationSection(KEY_LOCAL_SECTION);
@@ -144,27 +146,27 @@ public final class Config extends PluginConfig<MSEssentials> {
             }
         }
 
-        final ConfigurationSection discordSection = this.yaml.getConfigurationSection(KEY_DISCORD_SECTION);
+        final ConfigurationSection discordSection = yaml.getConfigurationSection(KEY_DISCORD_SECTION);
 
         if (discordSection != null) {
             this.discordServerId = discordSection.getLong(KEY_SERVER_ID);
             this.memberRoleId = discordSection.getLong(KEY_MEMBER_ROLE_ID);
         }
 
-        final ConfigurationSection skinSection = this.yaml.getConfigurationSection(KEY_SKIN_SECTION);
+        final ConfigurationSection skinSection = yaml.getConfigurationSection(KEY_SKIN_SECTION);
 
         if (skinSection != null) {
             this.mineSkinApiKey = skinSection.getString(KEY_MINE_SKIN_API_KEY);
         }
 
         final Server server = plugin.getServer();
-        final String spawnLocationWorldName = this.yaml.getString(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_WORLD, "");
+        final String spawnLocationWorldName = yaml.getString(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_WORLD, "");
         final World spawnLocationWorld = server.getWorld(spawnLocationWorldName);
-        final double spawnLocationX = this.yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_X);
-        final double spawnLocationY = this.yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Y);
-        final double spawnLocationZ = this.yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Z);
-        final float spawnLocationYaw = (float) this.yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_YAW);
-        final float spawnLocationPitch = (float) this.yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_PITCH);
+        final double spawnLocationX = yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_X);
+        final double spawnLocationY = yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Y);
+        final double spawnLocationZ = yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Z);
+        final float spawnLocationYaw = (float) yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_YAW);
+        final float spawnLocationPitch = (float) yaml.getDouble(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_PITCH);
 
         if (spawnLocationWorld == null) {
             plugin.getLogger().warning("World \"" + spawnLocationWorldName + "\" not found!\nUsing default spawn location!");
@@ -249,7 +251,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setDeveloperMode(final boolean developerMode) {
         this.developerMode = developerMode;
 
-        this.yaml.set(KEY_DEVELOPER_MODE, developerMode);
+        this.getYaml().set(KEY_DEVELOPER_MODE, developerMode);
 
         this.save();
     }
@@ -269,7 +271,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setAnomalyCheckRate(final long rate) {
         this.anomalyCheckRate = rate;
 
-        this.yaml.set(KEY_ANOMALY_CHECK_RATE, rate);
+        this.getYaml().set(KEY_ANOMALY_CHECK_RATE, rate);
 
         this.save();
     }
@@ -289,7 +291,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setAnomalyParticlesCheckRate(final long rate) {
         this.anomalyParticlesCheckRate = rate;
 
-        this.yaml.set(KEY_ANOMALY_PARTICLES_CHECK_RATE, rate);
+        this.getYaml().set(KEY_ANOMALY_PARTICLES_CHECK_RATE, rate);
 
         this.save();
     }
@@ -309,7 +311,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setDiscordServerId(final long id) {
         this.discordServerId = id;
 
-        this.yaml.set(KEY_DISCORD_SECTION + '.' + KEY_SERVER_ID, id);
+        this.getYaml().set(KEY_DISCORD_SECTION + '.' + KEY_SERVER_ID, id);
 
         this.save();
     }
@@ -329,7 +331,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setMemberRoleId(final long id) {
         this.memberRoleId = id;
 
-        this.yaml.set(KEY_DISCORD_SECTION + '.' + KEY_MEMBER_ROLE_ID, id);
+        this.getYaml().set(KEY_DISCORD_SECTION + '.' + KEY_MEMBER_ROLE_ID, id);
 
         this.save();
     }
@@ -349,7 +351,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setDiscordGlobalChannelId(final long id) {
         this.discordGlobalChannelId = id;
 
-        this.yaml.set(KEY_CHAT_SECTION + '.' + KEY_GLOBAL_SECTION + '.' + KEY_DISCORD_CHANNEL_ID, id);
+        this.getYaml().set(KEY_CHAT_SECTION + '.' + KEY_GLOBAL_SECTION + '.' + KEY_DISCORD_CHANNEL_ID, id);
 
         this.save();
     }
@@ -369,7 +371,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setDiscordLocalChannelId(final long id) {
         this.discordLocalChannelId = id;
 
-        this.yaml.set(KEY_CHAT_SECTION + '.' + KEY_LOCAL_SECTION + '.' + KEY_DISCORD_CHANNEL_ID, id);
+        this.getYaml().set(KEY_CHAT_SECTION + '.' + KEY_LOCAL_SECTION + '.' + KEY_DISCORD_CHANNEL_ID, id);
 
         this.save();
     }
@@ -389,7 +391,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setLocalChatRadius(final double radius) {
         this.localChatRadius = radius;
 
-        this.yaml.set(KEY_CHAT_SECTION + '.' + KEY_LOCAL_SECTION + '.' + KEY_RADIUS, radius);
+        this.getYaml().set(KEY_CHAT_SECTION + '.' + KEY_LOCAL_SECTION + '.' + KEY_RADIUS, radius);
 
         this.save();
     }
@@ -409,7 +411,7 @@ public final class Config extends PluginConfig<MSEssentials> {
     public void setMineSkinApiKey(final @Nullable String apiKey) {
         this.mineSkinApiKey = apiKey;
 
-        this.yaml.set(KEY_SKIN_SECTION + '.' + KEY_MINE_SKIN_API_KEY, apiKey);
+        this.getYaml().set(KEY_SKIN_SECTION + '.' + KEY_MINE_SKIN_API_KEY, apiKey);
 
         this.save();
     }
@@ -427,21 +429,23 @@ public final class Config extends PluginConfig<MSEssentials> {
      * @param location The new spawn location
      */
     public void setSpawnLocation(final @NotNull Location location) {
+        final YamlConfiguration yaml = this.getYaml();
         this.spawnLocation = location;
 
-        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_WORLD, location.getWorld().getName());
-        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_X, location.x());
-        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Y, location.y());
-        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Z, location.z());
-        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_YAW, location.getYaw());
-        this.yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_PITCH, location.getPitch());
+        yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_WORLD, location.getWorld().getName());
+        yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_X, location.x());
+        yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Y, location.y());
+        yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_Z, location.z());
+        yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_YAW, location.getYaw());
+        yaml.set(KEY_SPAWN_LOCATION_SECTION + '.' + KEY_PITCH, location.getPitch());
 
         this.save();
     }
 
     private void loadResourcePacks() {
         final MSEssentials plugin = this.getPlugin();
-        final ConfigurationSection resourcePacksSection = this.yaml.getConfigurationSection(KEY_RESOURCE_PACKS_SECTION);
+        final YamlConfiguration yaml = this.getYaml();
+        final ConfigurationSection resourcePacksSection = yaml.getConfigurationSection(KEY_RESOURCE_PACKS_SECTION);
 
         plugin.assignStatus(MSEssentials.LOADING_RESOURCE_PACKS);
 
@@ -457,8 +461,8 @@ public final class Config extends PluginConfig<MSEssentials> {
 
         try {
             futureMap = ResourcePack.loadAll(
-                    this.file,
-                    this.yaml,
+                    this.getFile(),
+                    yaml,
                     resourcePacksSection,
                     entry -> {
                         logger.info(
@@ -506,12 +510,12 @@ public final class Config extends PluginConfig<MSEssentials> {
 
     private void loadAnomalies() {
         final MSEssentials plugin = this.getPlugin();
-        final Cache cache = plugin.getCache();
+        final EssentialsCache cache = plugin.getCache();
         final Logger logger = plugin.getLogger();
 
         plugin.assignStatus(MSEssentials.LOADING_ANOMALIES);
 
-        try (final var path = Files.walk(Paths.get(this.file.getParent() + '/' + ANOMALIES_FOLDER))) {
+        try (final var path = Files.walk(Paths.get(this.getFile().getParent() + '/' + ANOMALIES_FOLDER))) {
             path.parallel()
             .filter(file -> {
                 final String fileName = file.getFileName().toString();

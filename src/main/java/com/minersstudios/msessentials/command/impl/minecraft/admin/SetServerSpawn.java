@@ -4,7 +4,7 @@ import com.minersstudios.mscore.command.api.AbstractCommandExecutor;
 import com.minersstudios.mscore.command.api.MSCommand;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.Font;
-import com.minersstudios.msessentials.Config;
+import com.minersstudios.msessentials.EssentialsConfig;
 import com.minersstudios.msessentials.MSEssentials;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -58,7 +58,7 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
             final @NotNull String label,
             final String @NotNull ... args
     ) {
-        final Config config = this.getPlugin().getConfiguration();
+        final EssentialsConfig config = this.getPlugin().getConfiguration();
         final Server server = sender.getServer();
 
         switch (args.length) {
@@ -250,7 +250,7 @@ public final class SetServerSpawn extends AbstractCommandExecutor<MSEssentials> 
     }
 
     private static void setNewLocation(
-            final @NotNull Config config,
+            final @NotNull EssentialsConfig config,
             final @NotNull CommandSender sender,
             final @NotNull Location location
     ) {

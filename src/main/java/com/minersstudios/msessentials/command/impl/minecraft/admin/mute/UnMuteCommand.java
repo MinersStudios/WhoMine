@@ -6,7 +6,7 @@ import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
 import com.minersstudios.mscore.utility.DateUtils;
 import com.minersstudios.mscore.utility.Font;
-import com.minersstudios.msessentials.Cache;
+import com.minersstudios.msessentials.EssentialsCache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import com.minersstudios.msessentials.player.collection.IDMap;
@@ -77,7 +77,7 @@ public final class UnMuteCommand extends AbstractCommandExecutor<MSEssentials> {
         switch (args.length) {
             case 1 -> {
                 final var completions = new ObjectArrayList<String>();
-                final Cache cache = this.getPlugin().getCache();
+                final EssentialsCache cache = this.getPlugin().getCache();
                 final MuteMap muteMap = cache.getMuteMap();
                 final IDMap idMap = cache.getIdMap();
                 final Server server = sender.getServer();

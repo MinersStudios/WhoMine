@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.decoration.home.plush;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -45,8 +45,8 @@ public final class BrownBearPlush extends CustomDecorDataImpl<BrownBearPlush> {
                                         "WAW"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('W', Material.BROWN_WOOL),
-                                        ShapedRecipeBuilder.material('A', Material.AIR)
+                                        RecipeChoiceEntry.material('W', Material.BROWN_WOOL),
+                                        RecipeChoiceEntry.material('A', Material.AIR)
                                 ),
                                 true
                         )

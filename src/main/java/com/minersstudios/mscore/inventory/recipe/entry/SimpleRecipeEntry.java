@@ -1,7 +1,7 @@
 package com.minersstudios.mscore.inventory.recipe.entry;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.concurrent.Immutable;

@@ -1,7 +1,7 @@
 package com.minersstudios.msessentials.discord;
 
 import com.minersstudios.mscore.utility.ChatUtils;
-import com.minersstudios.msessentials.Config;
+import com.minersstudios.msessentials.EssentialsConfig;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.chat.ChatType;
 import com.minersstudios.msessentials.command.api.discord.SlashCommand;
@@ -452,7 +452,7 @@ public final class DiscordManager {
         }
 
         final Logger logger = this.plugin.getLogger();
-        final Config config = this.plugin.getConfiguration();
+        final EssentialsConfig config = this.plugin.getConfiguration();
         final String botToken = config.getYaml().getString("discord.bot-token");
 
         this.plugin.runTaskAsync(() -> {

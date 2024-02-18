@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class CustomBlockEvent extends Event {
-    protected final CustomBlock customBlock;
+    private final CustomBlock customBlock;
 
     /**
      * Constructs a new CustomBlockEvent

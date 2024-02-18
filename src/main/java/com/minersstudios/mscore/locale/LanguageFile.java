@@ -44,8 +44,6 @@ public final class LanguageFile {
     private final Locale locale;
     private final Map<String, String> translationMap;
 
-    private static final String JSON_EXTENSION = ".json";
-
     //<editor-fold desc="Config keys">
     private static final String KEY_URL =         "url";
     private static final String KEY_TOKEN =       "token";
@@ -79,29 +77,29 @@ public final class LanguageFile {
     }
 
     /**
-     * Gets the translation for the given key
+     * Gets the translation for the given path
      *
-     * @param key The key to get the translation for
-     * @return The translation for the given key, or null if it doesn't exist
+     * @param path The path to get the translation for
+     * @return The translation for the given path, or null if it doesn't exist
      */
-    public @Nullable String get(final @NotNull String key) {
-        return this.getOrDefault(key, null);
+    public @Nullable String get(final @NotNull String path) {
+        return this.getOrDefault(path, null);
     }
 
     /**
-     * Gets the translation for the given key, or the fallback if it doesn't
+     * Gets the translation for the given path, or the fallback if it doesn't
      * exist
      *
-     * @param key      The key to get the translation for
+     * @param path     The path to get the translation for
      * @param fallback The fallback to return if the translation doesn't exist
-     * @return The translation for the given key, or the fallback if it doesn't
+     * @return The translation for the given path, or the fallback if it doesn't
      *         exist
      */
     public @UnknownNullability String getOrDefault(
-            final @NotNull String key,
+            final @NotNull String path,
             final @Nullable String fallback
     ) {
-        return this.translationMap.getOrDefault(key, fallback);
+        return this.translationMap.getOrDefault(path, fallback);
     }
 
     /**
@@ -148,13 +146,13 @@ public final class LanguageFile {
     }
 
     /**
-     * Checks whether the given key exists in this language file
+     * Checks whether the given path exists in this language file
      *
-     * @param key The key to check for
-     * @return Whether the given key exists in this language file
+     * @param path The path to check for
+     * @return Whether the given path exists in this language file
      */
-    public boolean containsKey(final @NotNull String key) {
-        return this.translationMap.containsKey(key);
+    public boolean containsPath(final @NotNull String path) {
+        return this.translationMap.containsKey(path);
     }
 
     /**
@@ -492,6 +490,6 @@ public final class LanguageFile {
     }
 
     private static @NotNull File getFile(final @NotNull String path) {
-        return new File(SharedConstants.LANGUAGE_FOLDER_PATH, path + JSON_EXTENSION);
+        return new File(SharedConstants.LANGUAGE_FOLDER_PATH, path + ".json");
     }
 }

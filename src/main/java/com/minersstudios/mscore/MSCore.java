@@ -35,11 +35,11 @@ public final class MSCore extends MSPlugin<MSCore> {
     //</editor-fold>
 
     //<editor-fold desc="Config values" defaultstate="collapsed">
-    private static final String VALUE_CONNECTION_THROTTLE = "<red><lang:" + ERROR_CONNECTION_THROTTLE.getKey() + '>';
-    private static final String VALUE_FLYING_PLAYER =       "<red><lang:" + ERROR_FLYING_PLAYER.getKey() + '>';
-    private static final String VALUE_FLYING_VEHICLE =      "<red><lang:" + ERROR_FLYING_VEHICLE.getKey() + '>';
-    private static final String VALUE_NO_PERMISSION =       ' ' + RED_EXCLAMATION_MARK + " <red><lang:" + ERROR_NO_PERMISSION.getKey() + '>';
-    private static final String VALUE_TOO_MANY_PACKETS =    "<red><lang:" + ERROR_TOO_MANY_PACKETS.getKey() + '>';
+    private static final String VALUE_CONNECTION_THROTTLE = "<red><lang:" + ERROR_CONNECTION_THROTTLE.getPath() + '>';
+    private static final String VALUE_FLYING_PLAYER =       "<red><lang:" + ERROR_FLYING_PLAYER.getPath() + '>';
+    private static final String VALUE_FLYING_VEHICLE =      "<red><lang:" + ERROR_FLYING_VEHICLE.getPath() + '>';
+    private static final String VALUE_NO_PERMISSION =       ' ' + RED_EXCLAMATION_MARK + " <red><lang:" + ERROR_NO_PERMISSION.getPath() + '>';
+    private static final String VALUE_TOO_MANY_PACKETS =    "<red><lang:" + ERROR_TOO_MANY_PACKETS.getPath() + '>';
     //</editor-fold>
 
     @Override

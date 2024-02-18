@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.decoration.home.plush;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -45,8 +45,8 @@ public final class BMOPlush extends CustomDecorDataImpl<BMOPlush> {
                                         "DI"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('D', Material.LIGHT_BLUE_DYE),
-                                        ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
+                                        RecipeChoiceEntry.material('D', Material.LIGHT_BLUE_DYE),
+                                        RecipeChoiceEntry.material('I', Material.IRON_INGOT)
                                 ),
                                 true
                         )

@@ -37,8 +37,8 @@ import static com.minersstudios.mscore.status.Status.successLow;
 public final class MSEssentials extends MSPlugin<MSEssentials> {
     private static MSEssentials singleton;
 
-    private Cache cache;
-    private Config config;
+    private EssentialsCache cache;
+    private EssentialsConfig config;
     private Scoreboard scoreboardHideTags;
     private Team scoreboardHideTagsTeam;
 
@@ -61,8 +61,8 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     @Override
     public void enable() {
         singleton = this;
-        this.cache = new Cache(this);
-        this.config = new Config(this);
+        this.cache = new EssentialsCache(this);
+        this.config = new EssentialsConfig(this);
 
         this.cache.load();
         this.config.reload();
@@ -92,14 +92,14 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     /**
      * @return The cache of the plugin or null if the plugin is disabled
      */
-    public @UnknownNullability Cache getCache() {
+    public @UnknownNullability EssentialsCache getCache() {
         return this.cache;
     }
 
     /**
      * @return The configuration of the plugin or null if the plugin is disabled
      */
-    public @UnknownNullability Config getConfiguration() {
+    public @UnknownNullability EssentialsConfig getConfiguration() {
         return this.config;
     }
 
@@ -141,14 +141,14 @@ public final class MSEssentials extends MSPlugin<MSEssentials> {
     /**
      * @return The player info of the console or null if the plugin is disabled
      */
-    public static @UnknownNullability Cache cache() {
+    public static @UnknownNullability EssentialsCache cache() {
         return singleton == null ? null : singleton.cache;
     }
 
     /**
      * @return The player info of the console or null if the plugin is disabled
      */
-    public static @UnknownNullability Config config() {
+    public static @UnknownNullability EssentialsConfig config() {
         return singleton == null ? null : singleton.config;
     }
 

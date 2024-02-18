@@ -1,7 +1,8 @@
 package com.minersstudios.mscustoms.registry.item.cards;
 
+import com.minersstudios.mscore.annotation.Key;
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.item.CustomItemImpl;
@@ -124,7 +125,7 @@ public interface CardsBicycle {
         }
 
         public static final class First extends CustomItemImpl implements CardsBicycle {
-            private static final String KEY;
+            private static final @Key String KEY;
             private static final ItemStack ITEM_STACK;
 
             static {
@@ -163,9 +164,9 @@ public interface CardsBicycle {
                                         "DSD"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('D', Material.BLUE_DYE),
-                                        ShapedRecipeBuilder.material('S', Material.STRING),
-                                        ShapedRecipeBuilder.material('P', Material.PAPER)
+                                        RecipeChoiceEntry.material('D', Material.BLUE_DYE),
+                                        RecipeChoiceEntry.material('S', Material.STRING),
+                                        RecipeChoiceEntry.material('P', Material.PAPER)
                                 ),
                                 true
                         )
@@ -174,7 +175,7 @@ public interface CardsBicycle {
         }
 
         public static final class Second extends CustomItemImpl implements CardsBicycle {
-            private static final String KEY;
+            private static final @Key String KEY;
             private static final ItemStack ITEM_STACK;
 
             static {
@@ -213,10 +214,10 @@ public interface CardsBicycle {
                                         "ISI"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('D', Material.BLUE_DYE),
-                                        ShapedRecipeBuilder.material('S', Material.STRING),
-                                        ShapedRecipeBuilder.material('P', Material.PAPER),
-                                        ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
+                                        RecipeChoiceEntry.material('D', Material.BLUE_DYE),
+                                        RecipeChoiceEntry.material('S', Material.STRING),
+                                        RecipeChoiceEntry.material('P', Material.PAPER),
+                                        RecipeChoiceEntry.material('I', Material.IRON_INGOT)
                                 ),
                                 true
                         )
@@ -302,7 +303,7 @@ public interface CardsBicycle {
         }
         
         public static final class First extends CustomItemImpl implements CardsBicycle {
-            private static final String KEY;
+            private static final @Key String KEY;
             private static final ItemStack ITEM_STACK;
 
             static {
@@ -341,9 +342,9 @@ public interface CardsBicycle {
                                         "DSD"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('D', Material.RED_DYE),
-                                        ShapedRecipeBuilder.material('S', Material.STRING),
-                                        ShapedRecipeBuilder.material('P', Material.PAPER)
+                                        RecipeChoiceEntry.material('D', Material.RED_DYE),
+                                        RecipeChoiceEntry.material('S', Material.STRING),
+                                        RecipeChoiceEntry.material('P', Material.PAPER)
                                 ),
                                 true
                         )
@@ -352,7 +353,7 @@ public interface CardsBicycle {
         }
 
         public static final class Second extends CustomItemImpl implements CardsBicycle {
-            private static final String KEY;
+            private static final @Key String KEY;
             private static final ItemStack ITEM_STACK;
 
             static {
@@ -389,10 +390,10 @@ public interface CardsBicycle {
                                         "ISI"
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('D', Material.RED_DYE),
-                                        ShapedRecipeBuilder.material('S', Material.STRING),
-                                        ShapedRecipeBuilder.material('P', Material.PAPER),
-                                        ShapedRecipeBuilder.material('I', Material.IRON_INGOT)
+                                        RecipeChoiceEntry.material('D', Material.RED_DYE),
+                                        RecipeChoiceEntry.material('S', Material.STRING),
+                                        RecipeChoiceEntry.material('P', Material.PAPER),
+                                        RecipeChoiceEntry.material('I', Material.IRON_INGOT)
                                 ),
                                 true
                         )

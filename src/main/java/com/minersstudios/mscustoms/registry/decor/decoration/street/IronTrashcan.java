@@ -1,7 +1,7 @@
 package com.minersstudios.mscustoms.registry.decor.decoration.street;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
@@ -53,7 +53,9 @@ public final class IronTrashcan extends CustomDecorDataImpl<IronTrashcan> {
                                         "I I",
                                         "III"
                                 )
-                                .ingredients(ShapedRecipeBuilder.material('I', Material.IRON_INGOT)),
+                                .ingredients(
+                                        RecipeChoiceEntry.material('I', Material.IRON_INGOT)
+                                ),
                                 true
                         )
                 )

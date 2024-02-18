@@ -1,15 +1,15 @@
 package com.minersstudios.mscustoms.registry.decor.christmas;
 
 import com.minersstudios.mscore.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.mscore.inventory.recipe.builder.ShapedRecipeBuilder;
+import com.minersstudios.mscore.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.mscore.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.mscore.plugin.MSPlugin;
-import com.minersstudios.mscustoms.sound.SoundGroup;
 import com.minersstudios.mscore.utility.ChatUtils;
 import com.minersstudios.mscustoms.custom.decor.CustomDecorDataImpl;
 import com.minersstudios.mscustoms.custom.decor.DecorHitBox;
 import com.minersstudios.mscustoms.custom.decor.DecorParameter;
 import com.minersstudios.mscustoms.custom.decor.Facing;
+import com.minersstudios.mscustoms.sound.SoundGroup;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -70,8 +70,8 @@ public final class ChristmasTallBall extends CustomDecorDataImpl<ChristmasTallBa
                                         " C "
                                 )
                                 .ingredients(
-                                        ShapedRecipeBuilder.material('S', Material.STRING),
-                                        ShapedRecipeBuilder.material('C', Material.CLAY_BALL)
+                                        RecipeChoiceEntry.material('S', Material.STRING),
+                                        RecipeChoiceEntry.material('C', Material.CLAY_BALL)
                                 ),
                                 true
                         )

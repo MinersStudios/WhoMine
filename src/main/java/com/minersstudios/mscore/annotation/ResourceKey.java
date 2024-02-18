@@ -11,7 +11,6 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.regex.Pattern;
 
 import static java.lang.annotation.ElementType.*;
 
@@ -34,9 +33,6 @@ import static java.lang.annotation.ElementType.*;
 public @interface ResourceKey {
     /** The regex pattern that a valid namespaced-key must match */
     @RegExp String REGEX = "(" + Namespace.REGEX + ")(:(" + Key.REGEX + "))?";
-
-    /** The compiled Pattern of the {@link #REGEX regex} string */
-    Pattern PATTERN = Pattern.compile(REGEX);
 
     /**
      * Validator class for the {@link ResourceKey} annotation to check whether

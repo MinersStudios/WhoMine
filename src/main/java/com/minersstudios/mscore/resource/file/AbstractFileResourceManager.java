@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public abstract class AbstractFileResourceManager implements FileResourceManager {
-    protected final File file;
+    private final File file;
 
     protected AbstractFileResourceManager(final @NotNull File file) {
         this.file = file;

@@ -2,7 +2,7 @@ package com.minersstudios.msessentials.command.impl.minecraft.admin.msessentials
 
 import com.minersstudios.mscore.locale.Translations;
 import com.minersstudios.mscore.plugin.MSLogger;
-import com.minersstudios.msessentials.Cache;
+import com.minersstudios.msessentials.EssentialsCache;
 import com.minersstudios.msessentials.MSEssentials;
 import com.minersstudios.msessentials.player.PlayerInfo;
 import org.bukkit.command.CommandSender;
@@ -17,7 +17,7 @@ public final class UpdateIdsCommand {
             final @NotNull CommandSender sender
     ) {
         final long time = System.currentTimeMillis();
-        final Cache cache = plugin.getCache();
+        final EssentialsCache cache = plugin.getCache();
 
         cache.getIdMap().reloadIds();
         cache.getPlayerInfoMap().playerInfos().forEach(PlayerInfo::initNames);

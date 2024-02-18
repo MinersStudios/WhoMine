@@ -1,5 +1,6 @@
 package com.minersstudios.mscore.status;
 
+import com.minersstudios.mscore.annotation.StatusKey;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
