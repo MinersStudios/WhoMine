@@ -1,6 +1,6 @@
 package com.minersstudios.wholib.paper.custom.item.registry;
 
-import com.minersstudios.wholib.annotation.Path;
+import com.minersstudios.wholib.key.Key;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.item.CustomItemImpl;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class BanSword extends CustomItemImpl {
-    private static final @Path String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     static {

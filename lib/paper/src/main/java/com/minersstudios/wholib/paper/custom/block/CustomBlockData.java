@@ -7,8 +7,8 @@ import com.minersstudios.wholib.paper.custom.block.params.*;
 import com.minersstudios.wholib.paper.custom.block.params.settings.Placing;
 import com.minersstudios.wholib.paper.custom.block.params.settings.Tool;
 import com.minersstudios.wholib.paper.custom.block.file.adapter.RecipeAdapter;
-import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.paper.world.sound.SoundGroup;
+import com.minersstudios.wholib.recipe.entry.RecipeEntry;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import org.bukkit.Keyed;
@@ -301,7 +301,7 @@ public final class CustomBlockData {
         }
 
         for (final var entry : this.recipeEntries) {
-            final Keyed recipe = (Keyed) entry.getRecipe();
+            final Keyed recipe = entry.getRecipe();
 
             plugin.getServer().removeRecipe(recipe.getKey());
 

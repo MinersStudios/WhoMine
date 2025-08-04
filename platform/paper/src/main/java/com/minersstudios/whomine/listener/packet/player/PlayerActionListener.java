@@ -15,7 +15,7 @@ import com.minersstudios.wholib.paper.world.location.MSPosition;
 import com.minersstudios.wholib.paper.world.sound.SoundGroup;
 import com.minersstudios.wholib.paper.utility.BlockUtils;
 import com.minersstudios.wholib.paper.utility.PlayerUtils;
-import com.minersstudios.wholib.utility.ResourcedPath;
+import com.minersstudios.wholib.key.ResourceKey;
 import com.minersstudios.wholib.utility.SharedConstants;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -119,7 +119,7 @@ public final class PlayerActionListener extends PaperPacketListener {
         @SuppressWarnings("UnstableApiUsage")
         private static final AttributeModifier BREAK_SPEED_MODIFIER =
                 new AttributeModifier(
-                        ApiConverter.apiToBukkit(ResourcedPath.whomine("custom_break_speed")),
+                        ApiConverter.apiToBukkit(ResourceKey.whomine("custom_break_speed")),
                         -1,
                         AttributeModifier.Operation.MULTIPLY_SCALAR_1,
                         EquipmentSlotGroup.HAND

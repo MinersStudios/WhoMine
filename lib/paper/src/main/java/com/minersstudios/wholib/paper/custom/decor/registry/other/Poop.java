@@ -22,7 +22,7 @@ public final class Poop extends CustomDecorDataImpl<Poop> {
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("poop")
+                .path("poop")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)

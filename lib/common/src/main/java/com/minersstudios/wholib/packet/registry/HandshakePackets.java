@@ -40,7 +40,7 @@ public final class HandshakePackets {
 
     private static final PacketRegistry REGISTRY =
             PacketRegistry.create(
-                    PacketMap.path2PacketBuilder()
+                    PacketMap.key2PacketBuilder()
                              .add(
                                      //<editor-fold desc="Serverbound packets" defaultstate="collapsed">
 

@@ -7,9 +7,11 @@ import com.minersstudios.wholib.paper.custom.decor.action.DecorPlaceAction;
 import com.minersstudios.wholib.paper.custom.decor.event.CustomDecorBreakEvent;
 import com.minersstudios.wholib.paper.custom.decor.event.CustomDecorClickEvent;
 import com.minersstudios.wholib.paper.custom.decor.event.CustomDecorPlaceEvent;
-import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.paper.world.location.MSPosition;
 import com.minersstudios.wholib.paper.world.sound.SoundGroup;
+import com.minersstudios.wholib.key.ResourceKeyed;
+import com.minersstudios.wholib.key.ResourceKey;
+import com.minersstudios.wholib.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.utility.MSDecorUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -43,13 +45,14 @@ import java.util.function.Function;
  * @param <D> The type of the custom decor data
  * @see CustomDecorDataImpl
  */
-public interface CustomDecorData<D extends CustomDecorData<D>> extends Keyed {
+public interface CustomDecorData<D extends CustomDecorData<D>> extends ResourceKeyed {
 
     /**
-     * @return The unique namespaced key identifying the custom decor
+     * @return The unique resource key identifying the custom decor
      */
     @Override
-    @NotNull NamespacedKey getKey();
+    @NotNull
+    ResourceKey getResourceKey();
 
     /**
      * @return The hit box of custom decor

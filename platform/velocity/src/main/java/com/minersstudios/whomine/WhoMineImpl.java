@@ -1,6 +1,6 @@
 package com.minersstudios.whomine;
 
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.status.StatusHandler;
 import com.minersstudios.wholib.velocity.VelocityCache;
 import com.minersstudios.wholib.velocity.VelocityConfig;

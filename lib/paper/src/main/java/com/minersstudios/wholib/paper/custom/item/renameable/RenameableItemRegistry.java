@@ -1,6 +1,6 @@
 package com.minersstudios.wholib.paper.custom.item.renameable;
 
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.utility.ChatUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.NamespacedKey;

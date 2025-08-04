@@ -2,7 +2,6 @@ package com.minersstudios.wholib.paper.custom.decor.registry.christmas;
 
 import com.minersstudios.wholib.paper.WhoMine;
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.paper.world.sound.SoundGroup;
 import com.minersstudios.wholib.utility.ChatUtils;
@@ -10,6 +9,8 @@ import com.minersstudios.wholib.paper.custom.decor.CustomDecorDataImpl;
 import com.minersstudios.wholib.paper.custom.decor.DecorHitBox;
 import com.minersstudios.wholib.paper.custom.decor.DecorParameter;
 import com.minersstudios.wholib.paper.custom.decor.Facing;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -40,7 +41,7 @@ public final class StarOnString extends CustomDecorDataImpl<StarOnString> {
         wall.setItemMeta(wallMeta);
 
         final Builder builder0 = new Builder()
-                .key("star_on_string")
+                .path("star_on_string")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)

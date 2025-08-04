@@ -4,7 +4,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.minersstudios.wholib.paper.custom.block.file.CustomBlockFile;
 import com.minersstudios.wholib.paper.custom.block.params.RecipeType;
-import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
+import com.minersstudios.wholib.recipe.entry.RecipeEntry;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;

@@ -1,6 +1,5 @@
 package com.minersstudios.wholib.status;
 
-import com.minersstudios.wholib.annotation.StatusKey;
 import com.minersstudios.wholib.order.Ordered;
 import com.minersstudios.wholib.throwable.InvalidRegexException;
 import org.jetbrains.annotations.Contract;
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.minersstudios.wholib.annotation.StatusKey.Validator.validate;
+import static com.minersstudios.wholib.status.StatusKey.Validator.validate;
 
 /**
  * Represents a status.

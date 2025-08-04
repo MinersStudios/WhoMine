@@ -1,8 +1,7 @@
 package com.minersstudios.wholib.paper.custom.item.registry.cards;
 
-import com.minersstudios.wholib.annotation.Path;
+import com.minersstudios.wholib.key.Key;
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.item.CustomItemImpl;
@@ -125,7 +124,7 @@ public interface CardsBicycle {
         }
 
         public static final class First extends CustomItemImpl implements CardsBicycle {
-            private static final @Path String KEY;
+            private static final @Key String KEY;
             private static final ItemStack ITEM_STACK;
 
             static {
@@ -175,7 +174,7 @@ public interface CardsBicycle {
         }
 
         public static final class Second extends CustomItemImpl implements CardsBicycle {
-            private static final @Path String KEY;
+            private static final @Key String KEY;
             private static final ItemStack ITEM_STACK;
 
             static {
@@ -303,7 +302,7 @@ public interface CardsBicycle {
         }
 
         public static final class First extends CustomItemImpl implements CardsBicycle {
-            private static final @Path String KEY;
+            private static final @Key String KEY;
             private static final ItemStack ITEM_STACK;
 
             static {
@@ -353,7 +352,7 @@ public interface CardsBicycle {
         }
 
         public static final class Second extends CustomItemImpl implements CardsBicycle {
-            private static final @Path String KEY;
+            private static final @Key String KEY;
             private static final ItemStack ITEM_STACK;
 
             static {

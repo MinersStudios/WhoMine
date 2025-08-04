@@ -1,7 +1,6 @@
 package com.minersstudios.wholib.paper.custom.decor.registry.decoration.home;
 
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.decor.CustomDecorDataImpl;
@@ -26,7 +25,7 @@ public final class OldCamera extends CustomDecorDataImpl<OldCamera> {
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("old_camera")
+                .path("old_camera")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)

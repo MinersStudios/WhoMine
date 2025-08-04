@@ -1,7 +1,7 @@
 package com.minersstudios.wholib.paper.custom.block.file.adapter;
 
 import com.google.gson.*;
-import com.minersstudios.wholib.annotation.ResourcePath;
+import com.minersstudios.wholib.key.ResKey;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 public class NamespacedKeyAdapter implements JsonSerializer<NamespacedKey>, JsonDeserializer<NamespacedKey> {
     private final String namespace;
 
-    public NamespacedKeyAdapter(final @ResourcePath @NotNull String namespace) {
+    public NamespacedKeyAdapter(final @ResKey @NotNull String namespace) {
         this.namespace = namespace;
     }
 

@@ -19,13 +19,14 @@ import javax.annotation.concurrent.Immutable;
 import java.util.EnumSet;
 import java.util.Set;
 
-import static com.minersstudios.wholib.annotation.Resource.WMDECOR;
+import static com.minersstudios.wholib.key.Resource.WMDECOR;
 
 /**
  * Represents a DecorHitBox, defining the hitbox properties for custom decor
  */
 @Immutable
 public final class DecorHitBox {
+
     private final Type type;
     private final EnumSet<Facing> facingSet;
     private final double x;

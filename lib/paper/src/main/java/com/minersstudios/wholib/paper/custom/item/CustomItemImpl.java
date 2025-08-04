@@ -1,8 +1,8 @@
 package com.minersstudios.wholib.paper.custom.item;
 
 import com.minersstudios.wholib.paper.WhoMine;
-import com.minersstudios.wholib.annotation.Path;
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Key;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.throwable.InvalidRegexException;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -40,13 +40,13 @@ public abstract class CustomItemImpl implements CustomItem, Cloneable {
      * @param itemStack The {@link ItemStack} representing the custom item
      * @throws IllegalArgumentException If the key format is invalid or the item
      *                                  stack type is air
-     * @see Path.Validator#matches(String)
+     * @see Key.Validator#matchesPattern(String)
      */
     protected CustomItemImpl(
-            final @Path @NotNull String key,
+            final @Key @NotNull String key,
             final @NotNull ItemStack itemStack
     ) throws InvalidRegexException, IllegalArgumentException {
-        Path.Validator.validate(key);
+        Key.Validator.validatePattern(key);
 
         if (itemStack.isEmpty()) {
             throw new IllegalArgumentException("Item type cannot be empty! Check " + key);

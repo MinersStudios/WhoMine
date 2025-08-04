@@ -39,7 +39,7 @@
  *         <td>{@link com.minersstudios.wholib.packet.PacketType}</td>
  *         <td>Represents a packet type used in the Minecraft server networking.
  *         It contains information about the packet's bound, its ID, and its
- *         resourced-path.</td>
+ *         resource key.</td>
  *     </tr>
  *     <tr>
  *         <td>{@link com.minersstudios.wholib.packet.PacketBound}</td>

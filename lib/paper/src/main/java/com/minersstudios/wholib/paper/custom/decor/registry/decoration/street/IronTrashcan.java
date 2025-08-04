@@ -1,7 +1,6 @@
 package com.minersstudios.wholib.paper.custom.decor.registry.decoration.street;
 
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.decor.CustomDecorDataImpl;
@@ -34,7 +33,7 @@ public final class IronTrashcan extends CustomDecorDataImpl<IronTrashcan> {
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("iron_trashcan")
+                .path("iron_trashcan")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.SOLID)

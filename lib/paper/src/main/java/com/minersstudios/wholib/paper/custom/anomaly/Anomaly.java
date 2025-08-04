@@ -5,7 +5,7 @@ import com.minersstudios.wholib.paper.PaperCache;
 import com.minersstudios.wholib.paper.custom.anomaly.action.AddPotionAction;
 import com.minersstudios.wholib.paper.custom.anomaly.action.SpawnParticlesAction;
 import com.minersstudios.wholib.paper.WhoMine;
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.paper.world.location.MSBoundingBox;
 import com.minersstudios.wholib.paper.utility.BlockUtils;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;

@@ -2,7 +2,7 @@ package com.minersstudios.wholib.paper.custom.block.file;
 
 import com.google.gson.*;
 import com.minersstudios.wholib.paper.WhoMine;
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.paper.custom.block.file.adapter.*;
 import com.minersstudios.wholib.paper.custom.block.params.NoteBlockData;
 import com.minersstudios.wholib.paper.custom.block.params.PlacingType;

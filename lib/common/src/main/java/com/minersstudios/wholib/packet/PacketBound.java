@@ -1,6 +1,6 @@
 package com.minersstudios.wholib.packet;
 
-import com.minersstudios.wholib.annotation.Path;
+import com.minersstudios.wholib.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -35,7 +35,7 @@ public enum PacketBound {
      *
      * @param id The state ID of the bound
      */
-    PacketBound(final @Path @NotNull String id) {
+    PacketBound(final @Key @NotNull String id) {
         this.id = id;
     }
 
@@ -44,7 +44,7 @@ public enum PacketBound {
      *
      * @return The state ID of the bound
      */
-    public @Path @NotNull String getId() {
+    public @Key @NotNull String getId() {
         return this.id;
     }
 
@@ -86,7 +86,7 @@ public enum PacketBound {
      * @return The bound from the given ID
      * @throws EnumConstantNotPresentException If the state ID is unknown
      */
-    public static @NotNull PacketBound fromId(final @Path @NotNull String id) throws EnumConstantNotPresentException {
+    public static @NotNull PacketBound fromId(final @Key @NotNull String id) throws EnumConstantNotPresentException {
         return dummyId(id.toLowerCase(Locale.ENGLISH));
     }
 
@@ -97,7 +97,7 @@ public enum PacketBound {
      * @return The bound from the given ID
      * @throws EnumConstantNotPresentException If the state ID is unknown
      */
-    public static @NotNull PacketBound dummyId(final @Path @NotNull String id) throws EnumConstantNotPresentException {
+    public static @NotNull PacketBound dummyId(final @Key @NotNull String id) throws EnumConstantNotPresentException {
         return switch (id) {
             case "serverbound" -> SERVERBOUND;
             case "clientbound" -> CLIENTBOUND;
@@ -111,7 +111,7 @@ public enum PacketBound {
      * @param id The state ID of the bound
      * @return The bound from the given ID, or null if the state ID is unknown
      */
-    public static @Nullable PacketBound fromIdOrNull(final @Path @NotNull String id) {
+    public static @Nullable PacketBound fromIdOrNull(final @Key @NotNull String id) {
         return dummyIdOrNull(id.toLowerCase(Locale.ENGLISH));
     }
 
@@ -121,7 +121,7 @@ public enum PacketBound {
      * @param id The state ID of the bound
      * @return The bound from the given ID, or null if the state ID is unknown
      */
-    public static @Nullable PacketBound dummyIdOrNull(final @Path @NotNull String id) {
+    public static @Nullable PacketBound dummyIdOrNull(final @Key @NotNull String id) {
         return switch (id) {
             case "serverbound" -> SERVERBOUND;
             case "clientbound" -> CLIENTBOUND;

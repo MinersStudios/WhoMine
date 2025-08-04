@@ -2,7 +2,6 @@ package com.minersstudios.wholib.paper.custom.decor.registry.christmas;
 
 import com.minersstudios.wholib.paper.WhoMine;
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.paper.world.sound.SoundGroup;
 import com.minersstudios.wholib.utility.ChatUtils;
@@ -40,7 +39,7 @@ public final class SnowflakeOnString extends CustomDecorDataImpl<SnowflakeOnStri
         wall.setItemMeta(wallMeta);
 
         final Builder builder0 = new Builder()
-                .key("snowflake_on_string")
+                .path("snowflake_on_string")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)

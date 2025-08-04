@@ -1,6 +1,6 @@
 package com.minersstudios.wholib.packet;
 
-import com.minersstudios.wholib.annotation.Path;
+import com.minersstudios.wholib.key.Key;
 import com.minersstudios.wholib.packet.registry.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -94,7 +94,7 @@ public enum PacketProtocol {
      * @param registry The packet registry of this protocol
      */
     PacketProtocol(
-            final @Path @NotNull String id,
+            final @Key @NotNull String id,
             final @NotNull PacketRegistry registry
     ) {
         this.id = id;
@@ -149,7 +149,7 @@ public enum PacketProtocol {
      * @throws EnumConstantNotPresentException If the state ID is unknown
      * @see #dummyId(String)
      */
-    public static @NotNull PacketProtocol fromId(final @Path @NotNull String id) throws EnumConstantNotPresentException {
+    public static @NotNull PacketProtocol fromId(final @Key @NotNull String id) throws EnumConstantNotPresentException {
         return dummyId(id.toLowerCase(Locale.ENGLISH));
     }
 
@@ -161,7 +161,7 @@ public enum PacketProtocol {
      * @throws EnumConstantNotPresentException If the state ID is unknown
      * @see #fromId(String)
      */
-    public static @NotNull PacketProtocol dummyId(final @Path @NotNull String id) throws EnumConstantNotPresentException {
+    public static @NotNull PacketProtocol dummyId(final @Key @NotNull String id) throws EnumConstantNotPresentException {
         return switch (id) {
             case "handshake"     -> HANDSHAKING;
             case "play"          -> PLAY;
@@ -179,7 +179,7 @@ public enum PacketProtocol {
      * @return The protocol from the given state ID or null if the ID is unknown
      * @see #dummyIdOrNull(String)
      */
-    public static @Nullable PacketProtocol fromIdOrNull(final @Path @NotNull String id) {
+    public static @Nullable PacketProtocol fromIdOrNull(final @Key @NotNull String id) {
         return dummyIdOrNull(id.toLowerCase(Locale.ENGLISH));
     }
 
@@ -190,7 +190,7 @@ public enum PacketProtocol {
      * @return The protocol from the given state ID or null if the ID is unknown
      * @see #fromIdOrNull(String)
      */
-    public static @Nullable PacketProtocol dummyIdOrNull(final @Path @NotNull String id) {
+    public static @Nullable PacketProtocol dummyIdOrNull(final @Key @NotNull String id) {
         return switch (id) {
             case "handshake"     -> HANDSHAKING;
             case "play"          -> PLAY;

@@ -1,14 +1,18 @@
 package com.minersstudios.wholib.paper.custom.decor;
 
 import com.minersstudios.wholib.paper.WhoMine;
-import com.minersstudios.wholib.annotation.Path;
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Key;
+import com.minersstudios.wholib.key.Resource;
+import com.minersstudios.wholib.key.ResourceKeyed;
+import com.minersstudios.wholib.key.ResourceKey;
+import com.minersstudios.wholib.recipe.Recipe;
+import com.minersstudios.wholib.recipe.builder.PathedRecipeBuilder;
+import com.minersstudios.wholib.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.Font;
 import com.minersstudios.wholib.utility.SharedConstants;
 import com.minersstudios.wholib.paper.custom.decor.action.DecorBreakAction;
 import com.minersstudios.wholib.paper.custom.decor.action.DecorClickAction;
 import com.minersstudios.wholib.paper.custom.decor.action.DecorPlaceAction;
-import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.paper.world.location.MSBoundingBox;
 import com.minersstudios.wholib.paper.world.location.MSPosition;
 import com.minersstudios.wholib.paper.world.location.MSVector;
@@ -42,7 +46,6 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -68,8 +71,9 @@ import java.util.function.Predicate;
  * @see Builder
  */
 @Immutable
-public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implements CustomDecorData<D> {
-    private final NamespacedKey namespacedKey;
+public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implements CustomDecorData<D>, ResourceKeyed {
+
+    private final ResourceKey path;
     private final DecorHitBox hitBox;
     private final EnumSet<Facing> facingSet;
     private final SoundGroup soundGroup;
@@ -100,7 +104,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
         builder.preBuild();
 
-        this.namespacedKey = builder.namespacedKey;
+        this.path = builder.path;
         this.hitBox = builder.hitBox;
         this.facingSet = builder.facingSet;
         this.soundGroup = builder.soundGroup;
@@ -138,7 +142,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
         builder.preBuild();
 
-        this.namespacedKey = builder.namespacedKey;
+        this.path = builder.path;
         this.hitBox = builder.hitBox;
         this.facingSet = builder.facingSet;
         this.soundGroup = builder.soundGroup;
@@ -182,8 +186,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
     }
 
     @Override
-    public final @NotNull NamespacedKey getKey() {
-        return this.namespacedKey;
+    public final @NotNull ResourceKey getResourceKey() {
+        return this.path;
     }
 
     @Override
@@ -708,8 +712,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             if (entry.isBuildable()) {
                 final var recipeBuilder = entry.getBuilder();
 
-                if (recipeBuilder.namespacedKey() == null) {
-                    recipeBuilder.namespacedKey(this.namespacedKey);
+                if (
+                        recipeBuilder instanceof final PathedRecipeBuilder<?> pathed
+                        && pathed.path() == null
+                ) {
+                    pathed.path(this.path);
                 }
 
                 if (recipeBuilder.result() == null) {
@@ -1140,7 +1147,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         firstContainer.set(
                 CustomDecorType.TYPE_NAMESPACED_KEY,
                 PersistentDataType.STRING,
-                this.namespacedKey.getKey()
+                this.path.getKey()
         );
 
         firstContainer.set(
@@ -1261,7 +1268,8 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
      * Builder for {@link CustomDecorDataImpl}
      */
     public final class Builder {
-        private NamespacedKey namespacedKey;
+
+        private ResourceKey path;
         private DecorHitBox hitBox;
         private EnumSet<Facing> facingSet;
         private ItemStack itemStack;
@@ -1306,7 +1314,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         public @NotNull Builder preBuild() throws IllegalStateException {
-            if (this.namespacedKey == null) {
+            if (this.path == null) {
                 throw new IllegalStateException("Key is not set!");
             }
 
@@ -1441,14 +1449,20 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             return this;
         }
 
-        public @UnknownNullability NamespacedKey key() {
-            return this.namespacedKey;
+        public @UnknownNullability ResourceKey path() {
+            return this.path;
         }
 
-        public @NotNull Builder key(final @Path @NotNull String key) throws InvalidRegexException {
-            Path.Validator.validate(key);
+        public @NotNull Builder path(final @NotNull ResourceKey path) {
+            this.path = path;
 
-            this.namespacedKey = new NamespacedKey(Resource.WMDECOR, key);
+            return this;
+        }
+
+        public @NotNull Builder path(final @Key @NotNull String path) throws InvalidRegexException {
+            Key.Validator.validatePattern(path);
+
+            this.path = ResourceKey.of(Resource.WMDECOR, path);
 
             return this;
         }
@@ -1491,11 +1505,11 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
         }
 
         public @NotNull Builder itemStack(final @NotNull ItemStack itemStack) throws IllegalStateException {
-            if (this.namespacedKey == null) {
+            if (this.path == null) {
                 throw new IllegalStateException("Key is not set! Set key before setting item stack!");
             }
 
-            this.itemStack = setTypeKey(itemStack, this.namespacedKey.getKey());
+            this.itemStack = setTypeKey(itemStack, this.path.getKey());
             final ItemMeta meta = this.itemStack.getItemMeta();
 
             meta.setMaxStackSize(SharedConstants.DECOR_MAX_STACK_SIZE);
@@ -1994,12 +2008,12 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
 
         public Type(
                 final @NotNull Builder builder,
-                final @Path @NotNull String key,
+                final @Key @NotNull String key,
                 final @NotNull ItemStack itemStack
         ) throws InvalidRegexException {
-            Path.Validator.validate(key);
+            Key.Validator.validatePattern(key);
 
-            final String typedKey = builder.namespacedKey.getKey() + ".type." + key;
+            final String typedKey = builder.path.getKey() + ".type." + key;
             this.namespacedKey = new NamespacedKey(Resource.WMDECOR, typedKey);
             this.itemStack = setTypeKey(itemStack, typedKey);
         }
@@ -2050,7 +2064,7 @@ public abstract class CustomDecorDataImpl<D extends CustomDecorData<D>> implemen
             final @Subst("key") String key = this.namespacedKey.getKey();
 
             return (D) CustomDecorDataImpl.this.builder()
-                    .key(key)
+                    .path(key)
                     .itemStack(this.itemStack)
                     .preBuild()
                     .build();

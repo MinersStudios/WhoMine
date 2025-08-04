@@ -1,7 +1,6 @@
 package com.minersstudios.wholib.paper.custom.decor.registry.decoration.street;
 
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.utility.ItemUtils;
@@ -38,7 +37,7 @@ public final class Brazier extends CustomDecorDataImpl<Brazier> {
         itemStack2.setItemMeta(itemMeta2);
 
         return new Builder()
-                .key("brazier")
+                .path("brazier")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.LIGHT)

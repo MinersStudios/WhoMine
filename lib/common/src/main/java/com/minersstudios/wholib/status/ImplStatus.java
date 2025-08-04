@@ -1,6 +1,5 @@
 package com.minersstudios.wholib.status;
 
-import com.minersstudios.wholib.annotation.StatusKey;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

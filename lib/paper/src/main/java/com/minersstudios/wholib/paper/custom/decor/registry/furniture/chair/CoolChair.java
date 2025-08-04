@@ -1,7 +1,6 @@
 package com.minersstudios.wholib.paper.custom.decor.registry.furniture.chair;
 
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.decor.CustomDecorDataImpl;
@@ -27,7 +26,7 @@ public final class CoolChair extends CustomDecorDataImpl<CoolChair> {
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("cool_chair")
+                .path("cool_chair")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.SOLID)

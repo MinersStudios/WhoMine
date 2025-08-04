@@ -60,7 +60,7 @@ public final class ConfigurationPackets {
 
     private static final PacketRegistry REGISTRY =
             PacketRegistry.create(
-                    PacketMap.path2PacketBuilder()
+                    PacketMap.key2PacketBuilder()
                              .add(
                                      //<editor-fold desc="Clientbound packets" defaultstate="collapsed">
 

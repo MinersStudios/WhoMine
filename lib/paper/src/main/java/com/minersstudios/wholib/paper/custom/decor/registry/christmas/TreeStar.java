@@ -2,7 +2,6 @@ package com.minersstudios.wholib.paper.custom.decor.registry.christmas;
 
 import com.minersstudios.wholib.paper.WhoMine;
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.decor.CustomDecorDataImpl;
@@ -31,7 +30,7 @@ public final class TreeStar extends CustomDecorDataImpl<TreeStar> {
         itemStack.setItemMeta(itemMeta);
 
         final Builder builder = new Builder()
-                .key("tree_star")
+                .path("tree_star")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)

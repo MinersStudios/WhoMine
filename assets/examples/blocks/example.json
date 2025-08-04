@@ -1,10 +1,41 @@
 {
-    "key": "example",
-    "blockSettings": {
-        "hardness": 10.0,
+    "key": "example_key",
+    "properties": {
+        "strength": {
+            "hardness": 10.0,
+            "resistance": 10.0
+        },
+        "ignitable": false,
+        "instrument": "HARP/BASEDRUM/SNARE/HAT/BASS/FLUTE/BELL/GUITAR/CHIME/XYLOPHONE/IRON_XYLOPHONE/COW_BELL/DIDGERIDOO/BIT/BANJO/PLING/ZOMBIE/SKELETON/CREEPER/DRAGON/WITHER_SKELETON/PIGLIN/CUSTOM_HEAD",
         "tool": {
             "type": "HAND/SWORD/PICKAXE/AXE/SHOVEL/HOE/SHEARS",
             "force": false
+        },
+        "soundGroup": {
+            "place": {
+                "key": "block.example.place",
+                "category": "BLOCKS",
+                "volume": 1.0,
+                "pitch": 1.0
+            },
+            "break": {
+                "key": "block.example.break",
+                "category": "BLOCKS",
+                "volume": 1.0,
+                "pitch": 1.0
+            },
+            "hit": {
+                "key": "block.example.hit",
+                "category": "BLOCKS",
+                "volume": 1.0,
+                "pitch": 1.0
+            },
+            "step": {
+                "key": "block.example.step",
+                "category": "PLAYERS",
+                "volume": 1.0,
+                "pitch": 1.0
+            }
         },
         "placing": {
             "type": {
@@ -13,24 +44,24 @@
 
                     "NEXT FOR DEFAULT": "USE IT IF YOU DON'T WANT TO USE ORIENTABLE OR DIRECTIONAL",
 
-                    "instrument": "BELL",
+                    "instrument": "HARP",
                     "note": 0,
                     "powered": false,
 
                     "NEXT FOR ORIENTABLE": "USE IT IF YOU DON'T WANT TO USE DEFAULT OR DIRECTIONAL",
 
                     "X": {
-                        "instrument": "BELL",
+                        "instrument": "HARP",
                         "note": 0,
                         "powered": false
                     },
                     "Y": {
-                        "instrument": "BELL",
+                        "instrument": "HARP",
                         "note": 1,
                         "powered": true
                     },
                     "Z": {
-                        "instrument": "BELL",
+                        "instrument": "HARP",
                         "note": 2,
                         "powered": false
                     },
@@ -38,32 +69,32 @@
                     "NEXT FOR DIRECTIONAL": "USE IT IF YOU DON'T WANT TO USE DEFAULT OR ORIENTABLE",
 
                     "UP": {
-                        "instrument": "BELL",
+                        "instrument": "HARP",
                         "note": 0,
                         "powered": false
                     },
                     "DOWN": {
-                        "instrument": "BELL",
+                        "instrument": "HARP",
                         "note": 1,
                         "powered": true
                     },
                     "NORTH": {
-                        "instrument": "BELL",
+                        "instrument": "HARP",
                         "note": 2,
                         "powered": false
                     },
                     "EAST": {
-                        "instrument": "BELL",
+                        "instrument": "HARP",
                         "note": 3,
                         "powered": true
                     },
                     "SOUTH": {
-                        "instrument": "BELL",
+                        "instrument": "HARP",
                         "note": 4,
                         "powered": false
                     },
                     "WEST": {
-                        "instrument": "BELL",
+                        "instrument": "HARP",
                         "note": 5,
                         "powered": true
                     }
@@ -75,7 +106,7 @@
             ]
         }
     },
-    "dropSettings": {
+    "drop": {
         "item": {
             "type": "PAPER",
             "amount": 1,
@@ -83,38 +114,13 @@
         },
         "experience": 0
     },
-    "soundGroup": {
-        "placeSound": {
-            "key": "block.example.place",
-            "category": "BLOCKS",
-            "volume": 1.0,
-            "pitch": 1.0
-        },
-        "breakSound": {
-            "key": "block.example.break",
-            "category": "BLOCKS",
-            "volume": 1.0,
-            "pitch": 1.0
-        },
-        "hitSound": {
-            "key": "block.example.hit",
-            "category": "BLOCKS",
-            "volume": 1.0,
-            "pitch": 1.0
-        },
-        "stepSound": {
-            "key": "block.example.step",
-            "category": "PLAYERS",
-            "volume": 1.0,
-            "pitch": 1.0
-        }
-    },
     "recipeEntries": [
         {
+            "showInCraftsMenu": true,
             "recipe": {
                 "type": "SHAPED",
                 "recipe": {
-                    "key": "example_shaped",
+                    "key": "example_shaped_key",
                     "amount": 3,
                     "rows": [
                         " E ",
@@ -141,21 +147,21 @@
                         "C": {
                             "type": "CUSTOM_CHOICE",
                             "choices": [
-                                "msitems:example"
+                                "msitem:example"
                             ]
                         }
                     },
-                    "group": "example_group",
+                    "group": "example_group_key",
                     "category": "BUILDING/REDSTONE/EQUIPMENT/MISC"
                 }
-            },
-            "showInCraftsMenu": true
+            }
         },
         {
+            "showInCraftsMenu": true,
             "recipe": {
                 "type": "SHAPELESS",
                 "recipe": {
-                    "key": "example_shapeless",
+                    "key": "example_shapeless_key",
                     "amount": 3,
                     "ingredients": [
                         {
@@ -187,17 +193,17 @@
                             ]
                         }
                     ],
-                    "group": "example_group",
+                    "group": "example_group_key",
                     "category": "BUILDING/REDSTONE/EQUIPMENT/MISC"
                 }
-            },
-            "showInCraftsMenu": false
+            }
         },
         {
+            "showInCraftsMenu": false,
             "recipe": {
                 "type": "FURNACE",
                 "recipe": {
-                    "key": "example_furnace",
+                    "key": "example_furnace_key",
                     "amount": 1,
                     "ingredient": {
                         "type": "MATERIAL_CHOICE",
@@ -207,17 +213,17 @@
                     },
                     "experience": 0.5,
                     "cookingTime": 200,
-                    "group": "example_group",
+                    "group": "example_group_key",
                     "category": "FOOD/BLOCKS/MISC"
                 }
-            },
-            "showInCraftsMenu": false
+            }
         },
         {
+            "showInCraftsMenu": true,
             "recipe": {
                 "type": "BLAST_FURNACE",
                 "recipe": {
-                    "key": "example_blast_furnace",
+                    "key": "example_blast_furnace_key",
                     "amount": 1,
                     "ingredient": {
                         "type": "MATERIAL_CHOICE",
@@ -227,17 +233,17 @@
                     },
                     "experience": 0.5,
                     "cookingTime": 100,
-                    "group": "example_group",
+                    "group": "example_group_key",
                     "category": "FOOD/BLOCKS/MISC"
                 }
-            },
-            "showInCraftsMenu": false
+            }
         },
         {
+            "showInCraftsMenu": true,
             "recipe": {
                 "type": "SMOKER",
                 "recipe": {
-                    "key": "example_smoker",
+                    "key": "example_smoker_key",
                     "amount": 1,
                     "ingredient": {
                         "type": "MATERIAL_CHOICE",
@@ -247,17 +253,17 @@
                     },
                     "experience": 0.5,
                     "cookingTime": 100,
-                    "group": "example_group",
+                    "group": "example_group_key",
                     "category": "FOOD/BLOCKS/MISC"
                 }
-            },
-            "showInCraftsMenu": false
+            }
         },
         {
+            "showInCraftsMenu": true,
             "recipe": {
                 "type": "CAMPFIRE",
                 "recipe": {
-                    "key": "example_campfire",
+                    "key": "example_campfire_key",
                     "amount": 1,
                     "ingredient": {
                         "type": "MATERIAL_CHOICE",
@@ -267,17 +273,17 @@
                     },
                     "experience": 0.5,
                     "cookingTime": 100,
-                    "group": "example_group",
+                    "group": "example_group_key",
                     "category": "FOOD/BLOCKS/MISC"
                 }
-            },
-            "showInCraftsMenu": false
+            }
         },
         {
+            "showInCraftsMenu": true,
             "recipe": {
                 "type": "STONECUTTER",
                 "recipe": {
-                    "key": "example_stonecutter",
+                    "key": "example_stonecutter_key",
                     "amount": 1,
                     "ingredient": {
                         "type": "MATERIAL_CHOICE",
@@ -285,10 +291,9 @@
                             "PAPER"
                         ]
                     },
-                    "group": "example_group"
+                    "group": "example_group_key"
                 }
-            },
-            "showInCraftsMenu": false
+            }
         }
     ]
 }

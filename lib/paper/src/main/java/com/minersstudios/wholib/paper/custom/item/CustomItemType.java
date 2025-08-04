@@ -1,7 +1,7 @@
 package com.minersstudios.wholib.paper.custom.item;
 
 import com.minersstudios.wholib.paper.WhoMine;
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.module.MainModule;
 import com.minersstudios.wholib.paper.custom.item.damageable.Damageable;
 import com.minersstudios.wholib.paper.custom.item.registry.*;
@@ -11,7 +11,6 @@ import com.minersstudios.wholib.paper.custom.item.registry.hazmat.HazmatBoots;
 import com.minersstudios.wholib.paper.custom.item.registry.hazmat.HazmatChestplate;
 import com.minersstudios.wholib.paper.custom.item.registry.hazmat.HazmatHelmet;
 import com.minersstudios.wholib.paper.custom.item.registry.hazmat.HazmatLeggings;
-import com.minersstudios.wholib.paper.custom.item.registry.*;
 import com.minersstudios.wholib.status.StatusHandler;
 import com.minersstudios.wholib.status.StatusWatcher;
 import com.minersstudios.wholib.utility.ChatUtils;

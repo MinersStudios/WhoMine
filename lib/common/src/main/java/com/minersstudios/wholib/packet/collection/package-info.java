@@ -12,7 +12,7 @@
  *         <td>Represents a packet map. It maps any key to a packet type.</td>
  *     </tr>
  *     <tr>
- *         <td>{@link com.minersstudios.wholib.packet.collection.Path2PacketMap}</td>
+ *         <td>{@link com.minersstudios.wholib.packet.collection.Key2PacketMap}</td>
  *         <td>Represents a path packet map. It maps a packet's path to a packet
  *         type.</td>
  *     </tr>

@@ -14,7 +14,7 @@ import java.util.Map;
  * <p>
  * To create a new packet map, use one of the following methods:
  * <ul>
- *     <li>{@link #path2PacketBuilder()} -  Creates a new path to packet map
+ *     <li>{@link #key2PacketBuilder()} -  Creates a new path to packet map
  *                                          builder</li>
  *     <li>{@link #class2PacketBuilder()} - Creates a new class to packet map
  *                                          builder</li>
@@ -22,7 +22,7 @@ import java.util.Map;
  *
  * @param <K> The key type of the packet map
  *
- * @see Path2PacketMap
+ * @see Key2PacketMap
  * @see Class2PacketMap
  */
 @SuppressWarnings("unused")
@@ -98,14 +98,14 @@ public interface PacketMap<K> {
     int size(final @NotNull PacketBound bound);
 
     /**
-     * Creates a new path to packet map builder
+     * Creates a new key to packet map builder
      *
-     * @return A new path to packet map builder
-     * @see Path2PacketMap
+     * @return A new key to packet map builder
+     * @see Key2PacketMap
      */
     @Contract(" -> new")
-    static @NotNull Path2PacketMap.Builder path2PacketBuilder() {
-        return Path2PacketMap.builder();
+    static @NotNull Key2PacketMap.Builder key2PacketBuilder() {
+        return Key2PacketMap.builder();
     }
 
     /**

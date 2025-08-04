@@ -3,7 +3,6 @@ package com.minersstudios.wholib.paper.custom.decor.registry.furniture.lamp;
 import com.minersstudios.wholib.paper.custom.decor.*;
 import com.minersstudios.wholib.paper.custom.decor.event.CustomDecorClickEvent;
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.world.sound.SoundGroup;
@@ -30,7 +29,7 @@ public final class BigLamp extends CustomDecorDataImpl<BigLamp> {
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("big_lamp")
+                .path("big_lamp")
                 .hitBox(
                         DecorHitBox.builder()
                                    .type(DecorHitBox.Type.LIGHT)

@@ -6,7 +6,6 @@ import com.minersstudios.wholib.paper.inventory.holder.InventoryHolder;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.utility.Font;
 import com.minersstudios.wholib.paper.player.PlayerInfo;
-import com.minersstudios.wholib.utility.ResourcedPath;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;

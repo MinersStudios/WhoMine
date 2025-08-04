@@ -1,6 +1,6 @@
 package com.minersstudios.wholib.paper.custom.block;
 
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.module.MainModule;
 import com.minersstudios.wholib.paper.custom.block.params.NoteBlockData;
 import com.minersstudios.wholib.paper.custom.block.params.PlacingType;
@@ -76,7 +76,8 @@ import java.util.*;
  * }</pre>
  */
 public final class CustomBlockRegistry {
-    public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(Resource.WMBLOCK, "type");
+    public static final NamespacedKey TYPE_NAMESPACED_KEY =
+            new NamespacedKey(Resource.WMBLOCK, "type");
 
     private static final Int2ObjectMap<CustomBlockData> HASH_CODE_MAP = new Int2ObjectOpenHashMap<>();
     private static final Map<String, IntSet> KEY_MAP = new Object2ObjectOpenHashMap<>();
@@ -90,60 +91,22 @@ public final class CustomBlockRegistry {
         throw new AssertionError("Utility class");
     }
 
-    /**
-     * @return An unmodifiable view of the hash codes of all registered custom
-     *         block data (NoteBlockData)
-     * @see #HASH_CODE_MAP
-     */
     public static @NotNull @UnmodifiableView Set<Integer> hashCodeSet() {
         return Collections.unmodifiableSet(HASH_CODE_MAP.keySet());
     }
 
-    /**
-     * @return An unmodifiable view of the keys of all registered custom
-     *         block data
-     * @see #KEY_MAP
-     */
     public static @NotNull @UnmodifiableView Set<String> keySet() {
         return Collections.unmodifiableSet(KEY_MAP.keySet());
     }
 
-    /**
-     * @return An unmodifiable view of all registered custom block data
-     * @see #HASH_CODE_MAP
-     */
     public static @NotNull @UnmodifiableView Collection<CustomBlockData> customBlockDataCollection() {
         return Collections.unmodifiableCollection(HASH_CODE_MAP.values());
     }
 
-    /**
-     * Gets the {@link CustomBlockData} from the given hash code of the
-     * {@link NoteBlockData}. It will get the custom block data from the
-     * {@link #HASH_CODE_MAP}.
-     *
-     * @param hashCode The hash code to get the {@link CustomBlockData} from
-     * @return An {@link Optional} containing the {@link CustomBlockData}
-     *         or an {@link Optional#empty()} if the given hash code is not
-     *         associated with any custom block data
-     * @see #HASH_CODE_MAP
-     */
     public static @NotNull Optional<CustomBlockData> fromHashCode(final int hashCode) {
         return Optional.ofNullable(HASH_CODE_MAP.get(hashCode));
     }
 
-    /**
-     * Gets the {@link CustomBlockData} from the given custom block data key. It
-     * will get the hash code from the {@link #KEY_MAP}, then get the custom
-     * block data from the {@link #HASH_CODE_MAP}.
-     *
-     * @param key The custom block data key to get the {@link CustomBlockData}
-     *            from, must not be blank
-     * @return An {@link Optional} containing the {@link CustomBlockData}
-     *         or an {@link Optional#empty()} if the given key is not associated
-     *         with any custom block data
-     * @see #KEY_MAP
-     * @see #fromHashCode(int)
-     */
     public static @NotNull Optional<CustomBlockData> fromKey(final @Nullable String key) {
         return ChatUtils.isBlank(key)
                 ? Optional.empty()
@@ -155,76 +118,20 @@ public final class CustomBlockRegistry {
                 );
     }
 
-    /**
-     * Gets the {@link CustomBlockData} from the given block data. It will check
-     * if the given block data is an instance of {@link NoteBlock} and if it is,
-     * it will get the custom block data from the {@link NoteBlock} by calling
-     * {@link #fromNoteBlock(NoteBlock)} method.
-     *
-     * @param blockData The block data to get the {@link CustomBlockData} from,
-     *                  must be an instance of {@link NoteBlock}
-     * @return An {@link Optional} containing the {@link CustomBlockData}
-     *         or an {@link Optional#empty()} if the given block data is not an
-     *         instance of {@link NoteBlock} or if the given block data is not
-     *         associated with any custom block data
-     * @see #fromNoteBlock(NoteBlock)
-     */
     public static @NotNull Optional<CustomBlockData> fromBlockData(final @NotNull BlockData blockData) {
         return blockData instanceof final NoteBlock noteBlock
                 ? fromNoteBlock(noteBlock)
                 : Optional.empty();
     }
 
-    /**
-     * Gets the {@link CustomBlockData} from the given note block. It will get
-     * the {@link NoteBlockData} from the note block, by calling
-     * {@link NoteBlockData#from(NoteBlock)} method, and then it will
-     * get the custom block data from the note block data, by calling
-     * {@link #fromNoteBlockData(NoteBlockData)} method.
-     *
-     * @param noteBlock The note block to get the {@link CustomBlockData} from
-     * @return An {@link Optional} containing the {@link CustomBlockData},
-     *         or an {@link Optional#empty()} if the given note block is not
-     *         associated with any custom block data
-     * @see NoteBlockData#from(NoteBlock)
-     * @see #fromNoteBlockData(NoteBlockData)
-     */
     public static @NotNull Optional<CustomBlockData> fromNoteBlock(final @NotNull NoteBlock noteBlock) {
         return fromNoteBlockData(NoteBlockData.from(noteBlock));
     }
 
-    /**
-     * Gets the {@link CustomBlockData} from the given note block data. It will
-     * check the hash code of the note block data, and if it is registered, it
-     * will get the {@link CustomBlockData} from the hash code by calling
-     * {@link #fromHashCode(int)} method.
-     *
-     * @param noteBlockData The note block data get the {@link CustomBlockData}
-     *                      from
-     * @return An {@link Optional} containing the {@link CustomBlockData}
-     *         or an {@link Optional#empty()} if the given note block data
-     *         is not associated with any custom block data
-     * @see NoteBlockData#hashCode()
-     * @see #fromHashCode(int)
-     */
     public static @NotNull Optional<CustomBlockData> fromNoteBlockData(final @NotNull NoteBlockData noteBlockData) {
         return fromHashCode(noteBlockData.hashCode());
     }
 
-    /**
-     * Gets the {@link CustomBlockData} from the given item stack. It will check
-     * the item stack's persistent data container for the
-     * {@link #TYPE_NAMESPACED_KEY} key, and if it has it, it will get the
-     * custom block data from the key by calling {@link #fromKey(String)} method.
-     *
-     * @param itemStack The item stack to get the {@link CustomBlockData} from
-     * @return An {@link Optional} containing the {@link CustomBlockData}, or an
-     *         {@link Optional#empty()} if the key from the item stack's
-     *         persistent data container is not associated with any custom block
-     *         data
-     * @see #TYPE_NAMESPACED_KEY
-     * @see #fromKey(String)
-     */
     public static @NotNull Optional<CustomBlockData> fromItemStack(final @Nullable ItemStack itemStack) {
         if (itemStack == null) {
             return Optional.empty();
@@ -238,30 +145,16 @@ public final class CustomBlockRegistry {
                 );
     }
 
-    /**
-     * @param hashCode The hash code of the note block data to check
-     * @return True if the {@link #HASH_CODE_MAP} contains the hash code
-     */
     public static boolean containsHashCode(final int hashCode) {
         return HASH_CODE_MAP.containsKey(hashCode);
     }
 
-    /**
-     * @param key The key to check
-     * @return True if the {@link #KEY_MAP} contains the key
-     *         and key is not blank or null (case-insensitive)
-     */
     @Contract("null -> false")
     public static boolean containsKey(final @Nullable String key) {
         return ChatUtils.isNotBlank(key)
                 && KEY_MAP.containsKey(key.toLowerCase(Locale.ENGLISH));
     }
 
-    /**
-     * @param customBlockData The custom block data to check
-     * @return True if the {@link #HASH_CODE_MAP} contains the hash code of the
-     *         note block data associated with the custom block data
-     */
     @Contract("null -> false")
     public static boolean containsCustomBlockData(final @Nullable CustomBlockData customBlockData) {
         if (customBlockData == null) {
@@ -294,83 +187,32 @@ public final class CustomBlockRegistry {
         return false;
     }
 
-    /**
-     * Checks if the item stack is a custom block by verifying if it has a valid
-     * custom block data key associated with it
-     *
-     * @param itemStack The item stack to check
-     * @return True if the item stack is a custom block
-     * @see #fromItemStack(ItemStack)
-     */
     @Contract("null -> false")
     public static boolean isCustomBlock(final @Nullable ItemStack itemStack) {
         return itemStack != null
                 && fromItemStack(itemStack).isPresent();
     }
 
-    /**
-     * Checks if the block is a custom block by verifying if its block data is
-     * an instance of {@link NoteBlock} and if it has a valid custom block data
-     * associated with it
-     *
-     * @param block The block to check
-     * @return True if the block is a custom block
-     * @see #isCustomBlock(BlockData)
-     */
     @Contract("null -> false")
     public static boolean isCustomBlock(final @Nullable Block block) {
         return block != null
                 && isCustomBlock(block.getBlockData());
     }
 
-    /**
-     * Checks if the block data is a custom block by verifying if it is an
-     * instance of {@link NoteBlock} and if it has a valid custom block data
-     * associated with it
-     *
-     * @param blockData The block data to check
-     * @return True if the block data is a custom block
-     * @see #fromNoteBlock(NoteBlock)
-     */
     @Contract("null -> false")
     public static boolean isCustomBlock(final @Nullable BlockData blockData) {
         return blockData instanceof NoteBlock noteBlock
                 && fromNoteBlock(noteBlock).isPresent();
     }
 
-    /**
-     * @return True if the data map is empty
-     * @see #HASH_CODE_MAP
-     */
     public static boolean isEmpty() {
         return HASH_CODE_MAP.isEmpty();
     }
 
-    /**
-     * @return The size of the data map
-     * @see #HASH_CODE_MAP
-     */
     public static int size() {
         return HASH_CODE_MAP.size();
     }
 
-    /**
-     * Registers the custom block data to the data map. The key and hash code
-     * are all used to register the custom block data. If the custom block data
-     * have the note block data, the note block data's hash code is used to
-     * register the custom block data in the data maps, otherwise the block
-     * {@link PlacingType.Directional} or {@link PlacingType.Orientable} is used
-     * to generate the hash code of the note block data. Make sure that one of
-     * the note block data, block face map, or block axis map is not null.
-     *
-     * @param customBlockData The custom block data to register
-     * @throws IllegalArgumentException If the custom block data is already
-     *                                  registered, or if the custom block data
-     *                                  has an unknown placing type
-     * @see CustomBlockData
-     * @see #KEY_MAP
-     * @see #HASH_CODE_MAP
-     */
     public static synchronized void register(final @NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
         final String key = customBlockData.getKey();
         final PlacingType placingType = customBlockData.getBlockSettings().getPlacing().getType();
@@ -392,13 +234,6 @@ public final class CustomBlockRegistry {
         }
     }
 
-    /**
-     * Unregister a custom block data from the data map
-     *
-     * @param customBlockData The custom block data to unregister
-     * @throws IllegalArgumentException If the key, or hash code is not
-     *                                  registered
-     */
     public static synchronized void unregister(final @NotNull CustomBlockData customBlockData) throws IllegalArgumentException {
         final String key = customBlockData.getKey().toLowerCase(Locale.ENGLISH);
         final int hashCode = customBlockData.hashCode();
@@ -415,31 +250,11 @@ public final class CustomBlockRegistry {
         HASH_CODE_MAP.remove(hashCode);
     }
 
-    /**
-     * Unregisters all custom block data and recipes by clearing all maps and
-     * lists used to store them. After this method is called, the custom block
-     * registry will be empty.
-     */
     public static synchronized void unregisterAll() {
         KEY_MAP.clear();
         HASH_CODE_MAP.clear();
     }
 
-    /**
-     * Registers the custom block data to the :
-     * <ul>
-     *     <li>{@link #HASH_CODE_MAP}</li>
-     *     <li>{@link #KEY_MAP}</li>
-     * </ul>
-     *
-     * @param customBlockData The custom block data to register
-     * @param hashCode        The hash code of the note block data to register
-     * @param key             The key of the custom block data to register
-     * @throws IllegalArgumentException If the hash code, or key is already
-     *                                  registered
-     * @see #HASH_CODE_MAP
-     * @see #KEY_MAP
-     */
     private static synchronized void register(
             final @NotNull CustomBlockData customBlockData,
             final int hashCode,

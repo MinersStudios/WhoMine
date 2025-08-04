@@ -1,7 +1,6 @@
 package com.minersstudios.wholib.paper.custom.decor.registry.decoration.home;
 
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.decor.CustomDecorDataImpl;
@@ -26,7 +25,7 @@ public final class Patefon extends CustomDecorDataImpl<Patefon> {
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("patefon")
+                .path("patefon")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)

@@ -1,9 +1,8 @@
 package com.minersstudios.wholib.paper.custom.decor.registry.furniture.table;
 
-import com.minersstudios.wholib.annotation.Path;
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Key;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.decor.CustomDecorData;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class SmallTable<C extends CustomDecorData<C>> extends CustomDecorDataImpl<C> {
 
     protected final @NotNull Builder createBuilder(
-            final @Path @NotNull String key,
+            final @Key @NotNull String key,
             final int customModelData,
             final @NotNull String displayName,
             final @NotNull Material planksMaterial
@@ -33,7 +32,7 @@ public abstract class SmallTable<C extends CustomDecorData<C>> extends CustomDec
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key(key)
+                .path(key)
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.SOLID)

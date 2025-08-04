@@ -2,7 +2,7 @@ package com.minersstudios.wholib.packet;
 
 import com.minersstudios.wholib.packet.collection.Class2PacketMap;
 import com.minersstudios.wholib.packet.collection.PacketMap;
-import com.minersstudios.wholib.packet.collection.Path2PacketMap;
+import com.minersstudios.wholib.packet.collection.Key2PacketMap;
 import com.minersstudios.wholib.packet.registry.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -26,12 +26,12 @@ import org.jetbrains.annotations.Nullable;
  *         <th>Description</th>
  *     </tr>
  *     <tr>
- *         <td>{@link #create(Path2PacketMap)}</td>
+ *         <td>{@link #create(Key2PacketMap)}</td>
  *         <td>Creates a new packet registry with the given path packet map
  *             and an empty mutable class packet map</td>
  *     </tr>
  *     <tr>
- *         <td>{@link #create(Path2PacketMap, Class2PacketMap)}</td>
+ *         <td>{@link #create(Key2PacketMap, Class2PacketMap)}</td>
  *         <td>Creates a new packet registry with the given packet maps, the
  *             class packet map will be a mutable map</td>
  *     </tr>
@@ -46,17 +46,17 @@ import org.jetbrains.annotations.Nullable;
  *     <li>{@link ConfigurationPackets}</li>
  * </ul>
  *
- * @see Path2PacketMap
+ * @see Key2PacketMap
  * @see Class2PacketMap
  */
 @SuppressWarnings("unused")
 public final class PacketRegistry {
 
-    private final Path2PacketMap byPath;
+    private final Key2PacketMap byPath;
     private final Class2PacketMap byClass;
 
     private PacketRegistry(
-            final @NotNull Path2PacketMap byPath,
+            final @NotNull Key2PacketMap byPath,
             final @NotNull Class2PacketMap byClass
     ) {
         this.byPath = byPath;
@@ -68,7 +68,7 @@ public final class PacketRegistry {
      *
      * @return The packet map, which maps the packet's path to the packet type
      */
-    public @NotNull Path2PacketMap byPath() {
+    public @NotNull Key2PacketMap byPath() {
         return this.byPath;
     }
 
@@ -139,10 +139,10 @@ public final class PacketRegistry {
      * @param byPath The packet map, which maps the packet's path to the packet
      *               type
      * @return A new packet registry with the given path packet map
-     * @see #create(Path2PacketMap, Class2PacketMap)
+     * @see #create(Key2PacketMap, Class2PacketMap)
      */
     @Contract("_ -> new")
-    public static @NotNull PacketRegistry create(final @NotNull Path2PacketMap byPath) {
+    public static @NotNull PacketRegistry create(final @NotNull Key2PacketMap byPath) {
         return new PacketRegistry(byPath, PacketMap.class2PacketBuilder().build());
     }
 
@@ -160,7 +160,7 @@ public final class PacketRegistry {
      */
     @Contract("_, _ -> new")
     public static @NotNull PacketRegistry create(
-            final @NotNull Path2PacketMap byPath,
+            final @NotNull Key2PacketMap byPath,
             final @NotNull Class2PacketMap byClass
     ) {
         return new PacketRegistry(byPath, byClass);

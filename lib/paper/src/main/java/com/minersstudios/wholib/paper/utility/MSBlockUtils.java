@@ -1,7 +1,7 @@
 package com.minersstudios.wholib.paper.utility;
 
-import com.minersstudios.wholib.annotation.Path;
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Key;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.block.CustomBlockData;
 import com.minersstudios.wholib.paper.custom.block.CustomBlockRegistry;
@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomBlockData}
  */
 public final class MSBlockUtils {
-    public static final String NAMESPACED_KEY_REGEX = '(' + Resource.WMBLOCK + "):(" + Path.REGEX + ")";
+    public static final String NAMESPACED_KEY_REGEX = '(' + Resource.WMBLOCK + "):(" + Key.REGEX + ")";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(" -> fail")

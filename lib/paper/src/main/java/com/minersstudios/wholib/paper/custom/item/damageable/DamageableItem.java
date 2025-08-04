@@ -1,6 +1,6 @@
 package com.minersstudios.wholib.paper.custom.item.damageable;
 
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.utility.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;

@@ -1,7 +1,7 @@
 package com.minersstudios.wholib.paper.utility;
 
 import com.minersstudios.wholib.event.EventOrder;
-import com.minersstudios.wholib.utility.ResourcedPath;
+import com.minersstudios.wholib.key.ResourceKey;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventPriority;
 import org.intellij.lang.annotations.Subst;
@@ -15,15 +15,15 @@ public final class ApiConverter {
         throw new AssertionError("Utility class");
     }
 
-    public static @NotNull NamespacedKey apiToBukkit(final @NotNull ResourcedPath resourcedPath) {
-        return new NamespacedKey(resourcedPath.getResource(), resourcedPath.getPath());
+    public static @NotNull NamespacedKey apiToBukkit(final @NotNull ResourceKey resourceKey) {
+        return new NamespacedKey(resourceKey.getResource(), resourceKey.getKey());
     }
 
-    public static @NotNull ResourcedPath bukkitToApi(final @NotNull NamespacedKey key) {
+    public static @NotNull ResourceKey bukkitToApi(final @NotNull NamespacedKey key) {
         final @Subst("resource") String resource = key.getNamespace();
         final @Subst("path") String path = key.getKey();
 
-        return ResourcedPath.of(resource, path);
+        return ResourceKey.of(resource, path);
     }
 
     public static @NotNull EventPriority apiToBukkit(final @NotNull EventOrder order) {

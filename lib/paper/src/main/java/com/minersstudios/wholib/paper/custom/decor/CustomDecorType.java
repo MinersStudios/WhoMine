@@ -1,9 +1,9 @@
 package com.minersstudios.wholib.paper.custom.decor;
 
 import com.minersstudios.wholib.paper.WhoMine;
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.module.MainModule;
-import com.minersstudios.wholib.annotation.Path;
+import com.minersstudios.wholib.key.Key;
 import com.minersstudios.wholib.paper.custom.decor.registry.christmas.*;
 import com.minersstudios.wholib.paper.custom.decor.registry.decoration.home.*;
 import com.minersstudios.wholib.paper.custom.decor.registry.decoration.home.head.DeerHead;
@@ -191,7 +191,7 @@ public enum CustomDecorType {
     public static final String TYPE_TAG_NAME = "type";
     public static final NamespacedKey TYPE_NAMESPACED_KEY = new NamespacedKey(Resource.WMDECOR, TYPE_TAG_NAME);
 
-    public static final String TYPED_KEY_REGEX = "(" + Path.REGEX + ")\\.type\\.(" + Path.REGEX + ")";
+    public static final String TYPED_KEY_REGEX = "(" + Key.REGEX + ")\\.type\\.(" + Key.REGEX + ")";
     public static final Pattern TYPED_KEY_PATTERN = Pattern.compile(TYPED_KEY_REGEX);
 
     private static final Map<String, CustomDecorType> KEY_TO_TYPE_MAP = new Object2ObjectOpenHashMap<>();

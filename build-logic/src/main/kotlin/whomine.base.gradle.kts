@@ -44,6 +44,7 @@ dependencies {
     compileOnlyApi(libs.jda)
     compileOnlyApi(libs.jetbrains.annotations)
     compileOnlyApi(libs.netty.buffer)
+    compileOnlyApi(libs.yaml.snakeyaml)
 }
 
 sourceSets {

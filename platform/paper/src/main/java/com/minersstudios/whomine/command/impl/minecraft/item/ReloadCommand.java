@@ -1,7 +1,7 @@
 package com.minersstudios.whomine.command.impl.minecraft.item;
 
 import com.minersstudios.wholib.paper.WhoMine;
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.locale.Translations;
 import com.minersstudios.wholib.paper.utility.MSLogger;
 import com.minersstudios.wholib.paper.custom.item.renameable.RenameableItemRegistry;

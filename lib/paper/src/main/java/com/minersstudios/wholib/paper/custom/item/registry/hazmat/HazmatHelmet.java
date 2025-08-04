@@ -1,8 +1,7 @@
 package com.minersstudios.wholib.paper.custom.item.registry.hazmat;
 
-import com.minersstudios.wholib.annotation.Path;
+import com.minersstudios.wholib.key.Key;
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.item.CustomItemImpl;
@@ -27,7 +26,7 @@ import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class HazmatHelmet extends CustomItemImpl implements Damageable {
-    private static final @Path String KEY;
+    private static final @Key String KEY;
     private static final ItemStack ITEM_STACK;
 
     /** Max durability of this item */

@@ -1,7 +1,7 @@
 package com.minersstudios.wholib.paper.custom.block.file.adapter;
 
 import com.google.gson.*;
-import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
+import com.minersstudios.wholib.recipe.entry.RecipeEntry;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 

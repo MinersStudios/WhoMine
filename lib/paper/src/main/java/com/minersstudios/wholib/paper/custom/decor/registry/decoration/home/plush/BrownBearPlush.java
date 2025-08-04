@@ -1,7 +1,6 @@
 package com.minersstudios.wholib.paper.custom.decor.registry.decoration.home.plush;
 
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.decor.CustomDecorDataImpl;
@@ -26,7 +25,7 @@ public final class BrownBearPlush extends CustomDecorDataImpl<BrownBearPlush> {
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("brown_bear_plush")
+                .path("brown_bear_plush")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)

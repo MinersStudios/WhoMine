@@ -1,8 +1,8 @@
 package com.minersstudios.wholib.paper.utility;
 
-import com.minersstudios.wholib.annotation.Path;
-import com.minersstudios.wholib.annotation.Resource;
-import com.minersstudios.wholib.annotation.ResourcePath;
+import com.minersstudios.wholib.key.Key;
+import com.minersstudios.wholib.key.Resource;
+import com.minersstudios.wholib.key.ResKey;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.block.CustomBlockData;
 import com.minersstudios.wholib.paper.custom.block.CustomBlockRegistry;
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static com.minersstudios.wholib.annotation.Resource.*;
+import static com.minersstudios.wholib.key.Resource.*;
 
 /**
  * Utility class for custom items / blocks / decor.
@@ -50,7 +50,7 @@ public final class MSCustomUtils {
      *         or empty optional if not found
      * @see #getItemStack(String, String)
      */
-    public static @NotNull Optional<ItemStack> getItemStack(final @Subst("namespace:key") @ResourcePath @Nullable String namespacedKeyStr) {
+    public static @NotNull Optional<ItemStack> getItemStack(final @Subst("namespace:key") @ResKey @Nullable String namespacedKeyStr) {
         if (ChatUtils.isBlank(namespacedKeyStr)) {
             return Optional.empty();
         }
@@ -104,7 +104,7 @@ public final class MSCustomUtils {
      */
     public static @NotNull Optional<ItemStack> getItemStack(
             final @Resource @Nullable String namespace,
-            final @Path @Nullable String key
+            final @Key @Nullable String key
     ) {
         return namespace == null || key == null
                 ? Optional.empty()
@@ -160,7 +160,7 @@ public final class MSCustomUtils {
      *         or {@link CustomItem} or empty optional if not found
      * @see #getCustom(String, String)
      */
-    public static @NotNull Optional<?> getCustom(final @Subst("namespace:key") @ResourcePath @Nullable String namespacedKeyStr) {
+    public static @NotNull Optional<?> getCustom(final @Subst("namespace:key") @ResKey @Nullable String namespacedKeyStr) {
         if (
                 ChatUtils.isBlank(namespacedKeyStr)
                 || !namespacedKeyStr.contains(":")
@@ -220,7 +220,7 @@ public final class MSCustomUtils {
      */
     public static @NotNull Optional<?> getCustom(
             final @Resource @Nullable String namespace,
-            final @Path @Nullable String key
+            final @Key @Nullable String key
     ) {
         return ChatUtils.isBlank(namespace) || ChatUtils.isBlank(key)
                 ? Optional.empty()

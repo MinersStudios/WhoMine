@@ -21,6 +21,7 @@ dependencies {
     runtimeClasspath(libs.jda)
     runtimeClasspath(libs.jetbrains.annotations)
     runtimeClasspath(libs.netty.buffer)
+    runtimeClasspath(libs.yaml.snakeyaml)
 }
 
 tasks {

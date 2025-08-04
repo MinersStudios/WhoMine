@@ -22,7 +22,7 @@ public final class ATM extends CustomDecorDataImpl<ATM> {
         itemStack.setItemMeta(itemMeta);
 
         return new Builder()
-                .key("atm")
+                .path("atm")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.SOLID)

@@ -1,7 +1,7 @@
 package com.minersstudios.wholib.paper.utility;
 
-import com.minersstudios.wholib.annotation.Path;
-import com.minersstudios.wholib.annotation.Resource;
+import com.minersstudios.wholib.key.Key;
+import com.minersstudios.wholib.key.Resource;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.item.CustomItem;
 import com.minersstudios.wholib.paper.custom.item.CustomItemType;
@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * Utility class for {@link CustomItem}
  */
 public final class MSItemUtils {
-    public static final String NAMESPACED_KEY_REGEX = '(' + Resource.WMITEM + "):(" + Path.REGEX + ")";
+    public static final String NAMESPACED_KEY_REGEX = '(' + Resource.WMITEM + "):(" + Key.REGEX + ")";
     public static final Pattern NAMESPACED_KEY_PATTERN = Pattern.compile(NAMESPACED_KEY_REGEX);
 
     @Contract(" -> fail")

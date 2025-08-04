@@ -1,9 +1,10 @@
 package com.minersstudios.wholib.paper.custom.decor.registry.christmas;
 
 import com.minersstudios.wholib.paper.WhoMine;
-import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
-import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
+import com.minersstudios.wholib.recipe.builder.RecipeBuilder;
+import com.minersstudios.wholib.recipe.category.CraftingRecipeCategory;
+import com.minersstudios.wholib.recipe.choice.RecipeChoiceEntry;
+import com.minersstudios.wholib.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.utility.ChatUtils;
 import com.minersstudios.wholib.paper.custom.decor.CustomDecorDataImpl;
 import com.minersstudios.wholib.paper.custom.decor.DecorHitBox;
@@ -13,7 +14,6 @@ import com.minersstudios.wholib.paper.world.sound.SoundGroup;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -40,7 +40,7 @@ public final class ChristmasBall extends CustomDecorDataImpl<ChristmasBall> {
         wall.setItemMeta(wallMeta);
 
         final Builder builder0 = new Builder()
-                .key("christmas_ball")
+                .path("christmas_ball")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)
@@ -66,16 +66,17 @@ public final class ChristmasBall extends CustomDecorDataImpl<ChristmasBall> {
         return plugin.getConfiguration().isChristmas()
                 ? builder0.recipes(
                         unused -> RecipeEntry.fromBuilder(
-                                RecipeBuilder.shaped()
-                                .category(CraftingBookCategory.BUILDING)
+                                RecipeBuilder
+                                .shaped()
+                                .category(CraftingRecipeCategory.BUILDING)
                                 .shape(
                                         " S ",
                                         "CCC",
                                         "CCC"
                                 )
                                 .ingredients(
-                                        RecipeChoiceEntry.material('S', Material.STRING),
-                                        RecipeChoiceEntry.material('C', Material.CLAY_BALL)
+                                        RecipeChoiceEntry.ofEnum('S', Material.STRING),
+                                        RecipeChoiceEntry.ofEnum('C', Material.CLAY_BALL)
                                 ),
                                 true
                         )

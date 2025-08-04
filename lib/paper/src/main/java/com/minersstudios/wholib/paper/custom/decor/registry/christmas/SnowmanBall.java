@@ -2,7 +2,6 @@ package com.minersstudios.wholib.paper.custom.decor.registry.christmas;
 
 import com.minersstudios.wholib.paper.WhoMine;
 import com.minersstudios.wholib.paper.inventory.recipe.builder.RecipeBuilder;
-import com.minersstudios.wholib.paper.inventory.recipe.choice.RecipeChoiceEntry;
 import com.minersstudios.wholib.paper.inventory.recipe.entry.RecipeEntry;
 import com.minersstudios.wholib.paper.world.sound.SoundGroup;
 import com.minersstudios.wholib.utility.ChatUtils;
@@ -40,7 +39,7 @@ public final class SnowmanBall extends CustomDecorDataImpl<SnowmanBall> {
         wall.setItemMeta(wallMeta);
 
         final Builder builder0 = new Builder()
-                .key("snowman_ball")
+                .path("snowman_ball")
                 .hitBox(
                         DecorHitBox.builder()
                         .type(DecorHitBox.Type.NONE)

@@ -1,8 +1,9 @@
 package com.minersstudios.wholib.packet;
 
-import com.minersstudios.wholib.annotation.Path;
+import com.minersstudios.wholib.key.Key;
+import com.minersstudios.wholib.key.ResourceKeyed;
 import com.minersstudios.wholib.packet.registry.*;
-import com.minersstudios.wholib.utility.ResourcedPath;
+import com.minersstudios.wholib.key.ResourceKey;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,28 +29,28 @@ import static com.minersstudios.wholib.packet.PacketBound.*;
  * To create a new packet type, use one of the following methods:
  * <ul>
  *     <li>{@link #ofMC(PacketBound, int, String)}</li>
- *     <li>{@link #of(PacketBound, int, ResourcedPath)}</li>
+ *     <li>{@link #of(PacketBound, int, ResourceKey)}</li>
  * </ul>
  *
  * @see PacketBound
- * @see ResourcedPath
+ * @see ResourceKey
  */
 @SuppressWarnings("unused")
 @Immutable
-public final class PacketType {
+public final class PacketType implements ResourceKeyed {
 
     private final PacketBound bound;
     private final int id;
-    private final ResourcedPath resourcedPath;
+    private final ResourceKey resourceKey;
 
     private PacketType(
             final @NotNull PacketBound bound,
             final int id,
-            final @NotNull ResourcedPath resourcedPath
+            final @NotNull ResourceKey resourceKey
     ) {
         this.bound = bound;
         this.id = id;
-        this.resourcedPath = resourcedPath;
+        this.resourceKey = resourceKey;
     }
 
     /**
@@ -71,12 +72,13 @@ public final class PacketType {
     }
 
     /**
-     * Returns the resourced-path of the packet
+     * Returns the resource key of the packet
      *
-     * @return The resourced-path of the packet
+     * @return The resource key of the packet
      */
-    public @NotNull ResourcedPath getResourcedPath() {
-        return this.resourcedPath;
+    @Override
+    public @NotNull ResourceKey getResourceKey() {
+        return this.resourceKey;
     }
 
     /**
@@ -109,7 +111,7 @@ public final class PacketType {
 
         result = prime * result + this.bound.hashCode();
         result = prime * result + Integer.hashCode(this.id);
-        result = prime * result + this.resourcedPath.hashCode();
+        result = prime * result + this.resourceKey.hashCode();
 
         return result;
     }
@@ -126,9 +128,9 @@ public final class PacketType {
         return this == obj
                 || (
                         obj instanceof PacketType that
-                        && this.bound == that.getBound()
-                        && this.id == that.getId()
-                        && this.resourcedPath.equals(that.getResourcedPath())
+                        && this.getBound() == that.getBound()
+                        && this.getId() == that.getId()
+                        && this.getResourceKey().equals(that.getResourceKey())
                 );
     }
 
@@ -139,7 +141,7 @@ public final class PacketType {
      */
     @Override
     public @NotNull String toString() {
-        return this.bound + "/" + this.resourcedPath;
+        return this.bound + "/" + this.resourceKey;
     }
 
     /**
@@ -148,35 +150,35 @@ public final class PacketType {
      *
      * @param bound The bound of the packet
      * @param id    The ID of the packet
-     * @param path  The path of the packet
+     * @param key   The minecraft key of the packet
      * @return A new packet type with the given bound, ID, minecraft resource,
      *         and path
-     * @see ResourcedPath#minecraft(String)
-     * @see #of(PacketBound, int, ResourcedPath)
+     * @see ResourceKey#minecraft(String)
+     * @see #of(PacketBound, int, ResourceKey)
      */
     @Contract("_, _, _ -> new")
     public static @NotNull PacketType ofMC(
             final @NotNull PacketBound bound,
             final int id,
-            final @Path @NotNull String path
+            final @Key @NotNull String key
     ) {
-        return of(bound, id, ResourcedPath.minecraft(path));
+        return of(bound, id, ResourceKey.minecraft(key));
     }
 
     /**
-     * Creates a new packet type with the given bound, ID, and resourced-path
+     * Creates a new packet type with the given bound, ID, and resource key
      *
      * @param bound         The bound of the packet
      * @param id            The ID of the packet
-     * @param resourcedPath The resourced-path of the packet
-     * @return A new packet type with the given bound, ID, and resourced-path
+     * @param resourceKey   The resource key of the packet
+     * @return A new packet type with the given bound, ID, and resource key
      */
     @Contract("_, _, _ -> new")
     public static @NotNull PacketType of(
             final @NotNull PacketBound bound,
             final int id,
-            final @NotNull ResourcedPath resourcedPath
+            final @NotNull ResourceKey resourceKey
     ) {
-        return new PacketType(bound, id, resourcedPath);
+        return new PacketType(bound, id, resourceKey);
     }
 }

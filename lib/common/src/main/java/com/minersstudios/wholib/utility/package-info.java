@@ -3,7 +3,7 @@
  *
  * @see com.minersstudios.wholib.utility.SharedConstants
  * @see com.minersstudios.wholib.utility.Font
- * @see com.minersstudios.wholib.utility.ResourcedPath
+ * @see com.minersstudios.wholib.key.ResourceKey
  * @see com.minersstudios.wholib.utility.ChatUtils
  * @see com.minersstudios.wholib.utility.IDUtils
  */
