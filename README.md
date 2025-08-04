@@ -47,26 +47,26 @@
   <br><br>
   <a rel="noopener noreferrer" href="https://github.com/MinersStudios/WMResources">
     <picture>
-      <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMResources&icon_color=baa8d5&hide_border=true&border_radius=20&title_color=baa8d5&bg_color=c5c5c91e&cache_seconds=86400">
-      <img alt="WMResources repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMResources&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363f1e&cache_seconds=86400" width="49%">
+      <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api/pin/?username=MinersStudios&repo=WMResources&icon_color=baa8d5&hide_border=true&border_radius=20&title_color=baa8d5&bg_color=c5c5c91e&cache_seconds=86400">
+      <img alt="WMResources repo" src="https://github-readme-stats.vercel.app/api/pin/?username=MinersStudios&repo=WMResources&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363f1e&cache_seconds=86400" width="49%">
     </picture>
   </a>
   <a rel="noopener noreferrer" href="https://github.com/MinersStudios/WMConfig">
     <picture>
-      <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMConfig&icon_color=baa8d5&hide_border=true&border_radius=20&title_color=baa8d5&bg_color=c5c5c91e&cache_seconds=86400">
-      <img alt="WMConfig repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMConfig&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363f1e&cache_seconds=86400" width="49%">
+      <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api/pin/?username=MinersStudios&repo=WMConfig&icon_color=baa8d5&hide_border=true&border_radius=20&title_color=baa8d5&bg_color=c5c5c91e&cache_seconds=86400">
+      <img alt="WMConfig repo" src="https://github-readme-stats.vercel.app/api/pin/?username=MinersStudios&repo=WMConfig&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363f1e&cache_seconds=86400" width="49%">
     </picture>
   </a>
   <a href="https://github.com/MinersStudios/WMSite">
     <picture>
-      <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMSite&icon_color=baa8d5&hide_border=true&border_radius=20&title_color=baa8d5&bg_color=c5c5c91e&cache_seconds=86400">
-      <img alt="WMSite repo" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMSite&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363f1e&cache_seconds=86400" width="49%">
+      <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api/pin/?username=MinersStudios&repo=WMSite&icon_color=baa8d5&hide_border=true&border_radius=20&title_color=baa8d5&bg_color=c5c5c91e&cache_seconds=86400">
+      <img alt="WMSite repo" src="https://github-readme-stats.vercel.app/api/pin/?username=MinersStudios&repo=WMSite&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363f1e&cache_seconds=86400" width="49%">
     </picture>
   </a>
   <a rel="noopener noreferrer" href="https://github.com/MinersStudios/WMDocs">
     <picture>
-      <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMDocs&icon_color=baa8d5&hide_border=true&border_radius=20&title_color=baa8d5&bg_color=c5c5c91e&cache_seconds=86400">
-      <img alt="WhoMine documentation" src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/pin/?username=MinersStudios&repo=WMDocs&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363f1e&cache_seconds=86400" width="49%">
+      <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api/pin/?username=MinersStudios&repo=WMDocs&icon_color=baa8d5&hide_border=true&border_radius=20&title_color=baa8d5&bg_color=c5c5c91e&cache_seconds=86400">
+      <img alt="WhoMine documentation" src="https://github-readme-stats.vercel.app/api/pin/?username=MinersStudios&repo=WMDocs&icon_color=d5c3f0&hide_border=true&theme=dark&border_radius=20&title_color=d5c3f0&bg_color=39363f1e&cache_seconds=86400" width="49%">
     </picture>
   </a>
   <br><br>
